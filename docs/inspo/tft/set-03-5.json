@@ -1,0 +1,4519 @@
+{
+ "set": {
+  "number": "3.5",
+  "name": "Galaxies: Return to the Stars",
+  "livePatches": "10.12 to 10.18",
+  "startDate": "2020-06-10",
+  "endDate": "2020-09-15",
+  "theme": "Mid-set update to Galaxies. Added Astro, Battlecast, Paragon traits; removed Void and Valkyrie.",
+  "dataPatch": "10.18",
+  "nameNote": null
+ },
+ "sources": [
+  "https://raw.communitydragon.org/10.18/cdragon/tft/en_us.json",
+  "https://raw.communitydragon.org/10.18/game/data/characters/<unit>/<unit>.bin.json",
+  "https://teamfighttactics.leagueoflegends.com/en-us/news/game-updates/teamfight-tactics-patch-10-12-notes/",
+  "https://leagueoflegends.fandom.com/wiki/Galaxy_(Teamfight_Tactics)",
+  "https://leagueoflegends.fandom.com/wiki/Galaxies:_Return_to_the_Stars_(Teamfight_Tactics)",
+  "https://leagueoflegends.fandom.com/wiki/Gold_(Teamfight_Tactics)"
+ ],
+ "retrieved": "2026-10-15",
+ "notes": {
+  "itemScope": "Items come from the patch 10.18 CDragon file. Legacy entries left in that file from earlier sets were dropped: where two items share a recipe, the one with this set's icon tag was kept; disabled items (negative ids) and internal placeholders were dropped.",
+  "abilityValues": "Computed with 100 AP and no items; star order 1/2/3. Unresolved placeholders listed per ability.",
+  "augmentTiers": "Inferred from icon art suffix or apiName; approximate."
+ },
+ "mechanics": [
+  "Galaxies continued with a rotation: from 10.13 one galaxy added and one removed per patch. Lilac Nebula removed in 10.12. [10.12 notes, wiki Galaxy]",
+  "Galaxies added during 3.5: Binary Star (10.13, champions limited to two items), Dwarf Planet (10.14, nearest and farthest rows impassable), Plunder Planet (10.15, champions may drop coins), Salvage World (10.16, selling a champion breaks its completed items into components), Manatee's Delight (10.17, free Spatula), Big Bang (10.18, free reroll per round, orbs from all monsters, Force of Nature at stage 3). [wiki Galaxy]",
+  "Galaxy odds 10.12: Normal 20%, each other galaxy 10%. 10.18: Big Bang 20%, others and Normal 10%. [wiki Galaxy]",
+  "Bard (Astro) spawns a meep on the bench that sells for 1 XP. [10.12 notes]"
+ ],
+ "systemChanges": [
+  "Tier 3 champion pool: 16 to 18 copies. [10.12 notes]",
+  "Sell value: 1-star and 1-cost units sell for full value; all others sell for 1 less than full value (2-star 3-cost: 5 to 8; 3-star 1-cost: 5 to 9). [10.12 notes]",
+  "Odds: L4 55/30/15/0/0, L9 10/15/30/30/15. [10.12 notes]",
+  "Neeko's Help always works even if no copies remain in the pool; the extra copy does not return to the pool. [10.12 notes]"
+ ],
+ "champions": [
+  {
+   "name": "Caitlyn",
+   "apiName": "TFT3_Caitlyn",
+   "cost": 1,
+   "traits": [
+    "Chrono",
+    "Sniper"
+   ],
+   "stats": {
+    "hp": 500.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.75,
+    "range": 6.0,
+    "mana": 125.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Ace In The Hole",
+    "description": "Caitlyn takes aim at the farthest enemy, firing a deadly bullet towards them that deals 750/1500/2250 magic damage to the first enemy it hits.",
+    "descriptionRaw": "Caitlyn takes aim at the farthest enemy, firing a deadly bullet towards them that deals @ModifiedDamage@ magic damage to the first enemy it hits.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 750.0,
+      "star2": 1500.0,
+      "star3": 2250.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Fiora",
+   "apiName": "TFT3_Fiora",
+   "cost": 1,
+   "traits": [
+    "Cybernetic",
+    "Blademaster"
+   ],
+   "stats": {
+    "hp": 500.0,
+    "armor": 30.0,
+    "magicResist": 20.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 1.0,
+    "range": 1.0,
+    "mana": 85.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Riposte",
+    "description": "Fiora enters a defensive stance for 1.5 seconds, becoming immune to damage and enemy spell effects. As she exits this stance, she ripostes, dealing 200/300/450 magic damage to a nearby enemy and stunning them for 1.5/1.5/3 seconds.",
+    "descriptionRaw": "Fiora enters a defensive stance for @BlockDuration@ seconds, becoming immune to damage and enemy spell effects. As she exits this stance, she ripostes, dealing @ModifiedDamage@ magic damage to a nearby enemy and stunning them for @StunDuration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 200.0,
+      "star2": 300.0,
+      "star3": 450.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 1.5,
+      "star2": 1.5,
+      "star3": 3.0
+     },
+     {
+      "name": "BlockDuration",
+      "star1": 1.5,
+      "star2": 1.5,
+      "star3": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "name": "Graves",
+   "apiName": "TFT3_Graves",
+   "cost": 1,
+   "traits": [
+    "Space Pirate",
+    "Blaster"
+   ],
+   "stats": {
+    "hp": 650.0,
+    "armor": 40.0,
+    "magicResist": 30.0,
+    "attackDamage": 55.0,
+    "attackSpeed": 0.55,
+    "range": 1.0,
+    "mana": 80.0,
+    "initialMana": 50.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Smoke Grenade",
+    "description": "Graves launches a smoke grenade toward the enemy with the most Attack Speed. The grenade explodes on impact dealing 150/200/400 magic damage to nearby enemies and causing their attacks to miss for 3/4/6 seconds.",
+    "descriptionRaw": "Graves launches a smoke grenade toward the enemy with the most Attack Speed. The grenade explodes on impact dealing @ModifiedDamage@ magic damage to nearby enemies and causing their attacks to miss for @BlindDuration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 150.0,
+      "star2": 200.0,
+      "star3": 400.0
+     },
+     {
+      "name": "BlindDuration",
+      "star1": 3.0,
+      "star2": 4.0,
+      "star3": 6.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Illaoi",
+   "apiName": "TFT3_Illaoi",
+   "cost": 1,
+   "traits": [
+    "Battlecast",
+    "Brawler"
+   ],
+   "stats": {
+    "hp": 700.0,
+    "armor": 40.0,
+    "magicResist": 30.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.7,
+    "range": 1.0,
+    "mana": 80.0,
+    "initialMana": 40.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Tentacle Smash",
+    "description": "Illaoi slams a tentacle in a line in front of her, dealing 125/200/325 damage and stealing 30/40/60% Armor and Magic Resist from each target hit for 6 seconds.",
+    "descriptionRaw": "Illaoi slams a tentacle in a line in front of her, dealing @ModifiedDamage@ damage and stealing @ResistStealPercent@% Armor and Magic Resist from each target hit for @Duration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 125.0,
+      "star2": 200.0,
+      "star3": 325.0
+     },
+     {
+      "name": "Duration",
+      "star1": 6.0,
+      "star2": 6.0,
+      "star3": 6.0
+     },
+     {
+      "name": "ResistStealPercent",
+      "star1": 30.0,
+      "star2": 40.0,
+      "star3": 60.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Jarvan IV",
+   "apiName": "TFT3_JarvanIV",
+   "cost": 1,
+   "traits": [
+    "Dark Star",
+    "Protector"
+   ],
+   "stats": {
+    "hp": 700.0,
+    "armor": 40.0,
+    "magicResist": 30.0,
+    "attackDamage": 55.0,
+    "attackSpeed": 0.6,
+    "range": 1.0,
+    "mana": 100,
+    "initialMana": 60.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Ageless Standard",
+    "description": "Jarvan calls down his standard to a nearby location, granting all nearby allies 50/60/75 Attack Speed for 6 seconds.",
+    "descriptionRaw": "Jarvan calls down his standard to a nearby location, granting all nearby allies @ModifiedAS@ Attack Speed for @Duration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Duration",
+      "star1": 6.0,
+      "star2": 6.0,
+      "star3": 6.0
+     },
+     {
+      "name": "HexRadius",
+      "star1": 3.0,
+      "star2": 3.0,
+      "star3": 3.0
+     },
+     {
+      "name": "ASPercent",
+      "star1": 0.5,
+      "star2": 0.6000000238418579,
+      "star3": 0.75
+     }
+    ]
+   }
+  },
+  {
+   "name": "Leona",
+   "apiName": "TFT3_Leona",
+   "cost": 1,
+   "traits": [
+    "Cybernetic",
+    "Vanguard"
+   ],
+   "stats": {
+    "hp": 600.0,
+    "armor": 45.0,
+    "magicResist": 30.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.55,
+    "range": 1.0,
+    "mana": 100,
+    "initialMana": 50.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Cyber Barrier",
+    "description": "Leona creates a barrier, reducing all incoming damage by 40/80/400 for 4 seconds.",
+    "descriptionRaw": "Leona creates a barrier, reducing all incoming damage by @ModifiedDamageReduction@ for 4 seconds.<br><br>",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "FlatDamageReduction",
+      "star1": 40.0,
+      "star2": 80.0,
+      "star3": 400.0
+     },
+     {
+      "name": "Duration",
+      "star1": 4.0,
+      "star2": 4.0,
+      "star3": 4.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Malphite",
+   "apiName": "TFT3_Malphite",
+   "cost": 1,
+   "traits": [
+    "Rebel",
+    "Brawler"
+   ],
+   "stats": {
+    "hp": 700.0,
+    "armor": 35.0,
+    "magicResist": 30.0,
+    "attackDamage": 70.0,
+    "attackSpeed": 0.5,
+    "range": 1.0,
+    "mana": 0.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Energy Shield",
+    "description": "Passive: Malphite starts combat with a shield equal to 40/45/70 of his maximum health.",
+    "descriptionRaw": "Passive: Malphite starts combat with a shield equal to @ModifiedPercentHealth@ of his maximum health.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "PercentHealth",
+      "star1": 0.4000000059604645,
+      "star2": 0.44999998807907104,
+      "star3": 0.699999988079071
+     },
+     {
+      "name": "SecondsPerRefresh",
+      "star1": 9.0,
+      "star2": 9.0,
+      "star3": 9.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Nocturne",
+   "apiName": "TFT3_Nocturne",
+   "cost": 1,
+   "traits": [
+    "Battlecast",
+    "Infiltrator"
+   ],
+   "stats": {
+    "hp": 500.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.75,
+    "range": 1.0,
+    "mana": 80.0,
+    "initialMana": 40.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Unspeakable Horror",
+    "description": "Nocturne terrifies his target, stunning them with fear for 2/2.5/4 seconds and dealing 200/250/400 magic damage over the duration.",
+    "descriptionRaw": "Nocturne terrifies his target, stunning them with fear for @StunDuration@ seconds and dealing @ModifiedDamage@ magic damage over the duration.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 200.0,
+      "star2": 250.0,
+      "star3": 400.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 2.0,
+      "star2": 2.5,
+      "star3": 4.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Poppy",
+   "apiName": "TFT3_Poppy",
+   "cost": 1,
+   "traits": [
+    "Star Guardian",
+    "Vanguard"
+   ],
+   "stats": {
+    "hp": 650.0,
+    "armor": 45.0,
+    "magicResist": 35.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.55,
+    "range": 1.0,
+    "mana": 90.0,
+    "initialMana": 50.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Buckler Toss",
+    "description": "Poppy throws her buckler at the furthest enemy, dealing 100/150/225 magic damage. The buckler then bounces back, granting Poppy a shield that blocks 200/300/450 damage.",
+    "descriptionRaw": "Poppy throws her buckler at the furthest enemy, dealing @ModifiedDamage@ magic damage. The buckler then bounces back, granting Poppy a shield that blocks @ModifiedShield@ damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 100.0,
+      "star2": 150.0,
+      "star3": 225.0
+     },
+     {
+      "name": "ShieldAmount",
+      "star1": 200.0,
+      "star2": 300.0,
+      "star3": 450.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Twisted Fate",
+   "apiName": "TFT3_TwistedFate",
+   "cost": 1,
+   "traits": [
+    "Chrono",
+    "Sorcerer"
+   ],
+   "stats": {
+    "hp": 550.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.7,
+    "range": 3.0,
+    "mana": 75.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Wild Cards",
+    "description": "Twisted Fate throws three cards in a cone that deal 200/300/450 magic damage to each enemy they pass through.",
+    "descriptionRaw": "Twisted Fate throws three cards in a cone that deal @ModifiedDamage@ magic damage to each enemy they pass through.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "BaseDamage",
+      "star1": 200.0,
+      "star2": 300.0,
+      "star3": 450.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Xayah",
+   "apiName": "TFT3_Xayah",
+   "cost": 1,
+   "traits": [
+    "Celestial",
+    "Blademaster"
+   ],
+   "stats": {
+    "hp": 500.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.9,
+    "range": 3.0,
+    "mana": 60.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Deadly Plumage",
+    "description": "Xayah creates a storm of feather-blades, gaining 100/125/150 Attack Speed for 8 seconds.",
+    "descriptionRaw": "Xayah creates a storm of feather-blades, gaining @ModifiedAS@ Attack Speed for @Duration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Duration",
+      "star1": 8.0,
+      "star2": 8.0,
+      "star3": 8.0
+     },
+     {
+      "name": "AttackSpeed",
+      "star1": 1.0,
+      "star2": 1.25,
+      "star3": 1.5
+     },
+     {
+      "name": "DamageReduction",
+      "star1": 50.0,
+      "star2": 50.0,
+      "star3": 50.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Ziggs",
+   "apiName": "TFT3_Ziggs",
+   "cost": 1,
+   "traits": [
+    "Rebel",
+    "Demolitionist"
+   ],
+   "stats": {
+    "hp": 500.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 40.0,
+    "attackSpeed": 0.7,
+    "range": 3.0,
+    "mana": 40.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Bomb!",
+    "description": "Ziggs throws a bomb at an enemy, dealing 300/400/600 magic damage.",
+    "descriptionRaw": "Ziggs throws a bomb at an enemy, dealing @ModifiedDamage@ magic damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 300.0,
+      "star2": 400.0,
+      "star3": 600.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Zoe",
+   "apiName": "TFT3_Zoe",
+   "cost": 1,
+   "traits": [
+    "Star Guardian",
+    "Sorcerer"
+   ],
+   "stats": {
+    "hp": 500.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 40.0,
+    "attackSpeed": 0.7,
+    "range": 3.0,
+    "mana": 80.0,
+    "initialMana": 40.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Sleepy Trouble Bubble",
+    "description": "Zoe kicks a bubble at the enemy with the the highest current Health percentage, stunning them for 2/2.5/4 seconds and dealing 200/275/400 magic damage. Highest total health breaks targeting ties.",
+    "descriptionRaw": "Zoe kicks a bubble at the enemy with the the highest current Health percentage, stunning them for @StunDuration@ seconds and dealing @ModifiedDamage@ magic damage.<br><br><tftitemrules>Highest total health breaks targeting ties.</tftitemrules>",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 200.0,
+      "star2": 275.0,
+      "star3": 400.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 2.0,
+      "star2": 2.5,
+      "star3": 4.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Ahri",
+   "apiName": "TFT3_Ahri",
+   "cost": 2,
+   "traits": [
+    "Star Guardian",
+    "Sorcerer"
+   ],
+   "stats": {
+    "hp": 600.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.75,
+    "range": 3.0,
+    "mana": 60.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Orb of Deception",
+    "description": "Ahri fires an orb in a line, dealing 175/250/425 magic damage to all enemies it passes through on the way out, and 175/250/425 true damage on the way back.",
+    "descriptionRaw": "Ahri fires an orb in a line, dealing @ModifiedDamage@ magic damage to all enemies it passes through on the way out, and @ModifiedDamage@ true damage on the way back.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 175.0,
+      "star2": 250.0,
+      "star3": 425.0
+     },
+     {
+      "name": "HexRange",
+      "star1": 4.0,
+      "star2": 4.0,
+      "star3": 4.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Annie",
+   "apiName": "TFT3_Annie",
+   "cost": 2,
+   "traits": [
+    "Mech-Pilot",
+    "Sorcerer"
+   ],
+   "stats": {
+    "hp": 750.0,
+    "armor": 50.0,
+    "magicResist": 35.0,
+    "attackDamage": 40.0,
+    "attackSpeed": 0.65,
+    "range": 2.0,
+    "mana": 150.0,
+    "initialMana": 70.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Galaxy Shield-Blast",
+    "description": "Annie blasts a cone of fire dealing 300/400/700 magic damage to enemies in front of her, then creates a shield with 400/500/800 health for herself for 4 seconds.",
+    "descriptionRaw": "Annie blasts a cone of fire dealing @ModifiedDamage@ magic damage to enemies in front of her, then creates a shield with @ModifiedShield@ health for herself for @ShieldDuration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 300.0,
+      "star2": 400.0,
+      "star3": 700.0
+     },
+     {
+      "name": "ShieldAmount",
+      "star1": 400.0,
+      "star2": 500.0,
+      "star3": 800.0
+     },
+     {
+      "name": "ShieldDuration",
+      "star1": 4.0,
+      "star2": 4.0,
+      "star3": 4.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Blitzcrank",
+   "apiName": "TFT3_Blitzcrank",
+   "cost": 2,
+   "traits": [
+    "Chrono",
+    "Brawler"
+   ],
+   "stats": {
+    "hp": 650.0,
+    "armor": 60.0,
+    "magicResist": 35.0,
+    "attackDamage": 55.0,
+    "attackSpeed": 0.5,
+    "range": 1.0,
+    "mana": 125.0,
+    "initialMana": 125.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Rocket Grab",
+    "description": "Blitzcrank pulls the farthest enemy, dealing 200/350/1337 magic damage and stunning them for 2.5 seconds. His next attack after pulling knocks up for 1 second. Allies within range will prefer to attack Blitzcrank's target.",
+    "descriptionRaw": "Blitzcrank pulls the farthest enemy, dealing @ModifiedDamage@ magic damage and stunning them for @StunDuration@ seconds.<br><br>His next attack after pulling knocks up for 1 second.<br><br>Allies within range will prefer to attack Blitzcrank's target.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 200.0,
+      "star2": 350.0,
+      "star3": 1337.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 2.5,
+      "star2": 2.5,
+      "star3": 2.5
+     }
+    ]
+   }
+  },
+  {
+   "name": "Darius",
+   "apiName": "TFT3_Darius",
+   "cost": 2,
+   "traits": [
+    "Space Pirate",
+    "Mana-Reaver"
+   ],
+   "stats": {
+    "hp": 800.0,
+    "armor": 40.0,
+    "magicResist": 30.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.65,
+    "range": 1.0,
+    "mana": 50.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Dreadnova Guillotine",
+    "description": "Darius dunks an enemy, dealing 400/550/888 magic damage. If this kills the target, Darius immediately casts again. Targets below 50% health take double damage.",
+    "descriptionRaw": "Darius dunks an enemy, dealing @ModifiedDamage@ magic damage. If this kills the target, Darius immediately casts again.<br><br>Targets below @HealthThreshold@% health take double damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 400.0,
+      "star2": 550.0,
+      "star3": 888.0
+     },
+     {
+      "name": "HealthThreshold",
+      "star1": 50.0,
+      "star2": 50.0,
+      "star3": 50.0
+     },
+     {
+      "name": "DamageMultiplier",
+      "star1": 2.0,
+      "star2": 2.0,
+      "star3": 2.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Kog'Maw",
+   "apiName": "TFT3_KogMaw",
+   "cost": 2,
+   "traits": [
+    "Battlecast",
+    "Blaster"
+   ],
+   "stats": {
+    "hp": 550.0,
+    "armor": 25.0,
+    "magicResist": 20.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.7,
+    "range": 3.0,
+    "mana": 30.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Barrage",
+    "description": "For 3 seconds, Kog'Maw gains infinite Attack Range, 80% Attack Speed, and his attacks deal 2/4/8% of the target's maximum Health as bonus magic damage.",
+    "descriptionRaw": "For @Duration@ seconds, Kog'Maw gains infinite Attack Range, @PercentAttackSpeed@% Attack Speed, and his attacks deal @ModifiedPercentMaxHPDamage@% of the target's maximum Health as bonus magic damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Duration",
+      "star1": 3.0,
+      "star2": 3.0,
+      "star3": 3.0
+     },
+     {
+      "name": "PercentAttackSpeed",
+      "star1": 80.0,
+      "star2": 80.0,
+      "star3": 80.0
+     },
+     {
+      "name": "PercentMaxHPDamage",
+      "star1": 2.0,
+      "star2": 4.0,
+      "star3": 8.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Lucian",
+   "apiName": "TFT3_Lucian",
+   "cost": 2,
+   "traits": [
+    "Cybernetic",
+    "Blaster"
+   ],
+   "stats": {
+    "hp": 500.0,
+    "armor": 25.0,
+    "magicResist": 20.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.7,
+    "range": 4.0,
+    "mana": 30.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Relentless Pursuit",
+    "description": "Lucian dashes away from his current target, then Basic Attacks them and fires a second shot which deals 175/250/600 magic damage.",
+    "descriptionRaw": "Lucian dashes away from his current target, then Basic Attacks them and fires a second shot which deals @ModifiedDamage@ magic damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "FirstShotRatio",
+      "star1": 1.0,
+      "star2": 1.0,
+      "star3": 1.0
+     },
+     {
+      "name": "SecondShotDamage",
+      "star1": 175.0,
+      "star2": 250.0,
+      "star3": 600.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Mordekaiser",
+   "apiName": "TFT3_Mordekaiser",
+   "cost": 2,
+   "traits": [
+    "Dark Star",
+    "Vanguard"
+   ],
+   "stats": {
+    "hp": 700.0,
+    "armor": 50.0,
+    "magicResist": 40.0,
+    "attackDamage": 55.0,
+    "attackSpeed": 0.6,
+    "range": 1.0,
+    "mana": 90.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Indestructible",
+    "description": "Mordekaiser gains a shield for that absorbs 350/500/850 damage over 8 seconds. While the shield persists, Mordekaiser deals 75/100/200 magic damage per second to all nearby enemies.",
+    "descriptionRaw": "Mordekaiser gains a shield for that absorbs @ModifiedShield@ damage over @Duration@ seconds. While the shield persists, Mordekaiser deals @ModifiedDamage@ magic damage per second to all nearby enemies.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "DamagePerSecond",
+      "star1": 75.0,
+      "star2": 100.0,
+      "star3": 200.0
+     },
+     {
+      "name": "ShieldAmount",
+      "star1": 350.0,
+      "star2": 500.0,
+      "star3": 850.0
+     },
+     {
+      "name": "Duration",
+      "star1": 8.0,
+      "star2": 8.0,
+      "star3": 8.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Nautilus",
+   "apiName": "TFT3_Nautilus",
+   "cost": 2,
+   "traits": [
+    "Astro",
+    "Vanguard"
+   ],
+   "stats": {
+    "hp": 750.0,
+    "armor": 50.0,
+    "magicResist": 35.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.65,
+    "range": 1.0,
+    "mana": 120.0,
+    "initialMana": 50.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Impact Crater",
+    "description": "Nautilus erupts the ground beneath his target, knocking them up and stunning them for 3/3/6 seconds, and dealing 100/200/500 magic damage. Enemies adjacent to the target receive half of this effect.",
+    "descriptionRaw": "Nautilus erupts the ground beneath his target, knocking them up and stunning them for @StunDuration@ seconds, and dealing @ModifiedDamage@ magic damage. Enemies adjacent to the target receive half of this effect.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 100.0,
+      "star2": 200.0,
+      "star3": 500.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 3.0,
+      "star2": 3.0,
+      "star3": 6.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Rakan",
+   "apiName": "TFT3_Rakan",
+   "cost": 2,
+   "traits": [
+    "Celestial",
+    "Protector"
+   ],
+   "stats": {
+    "hp": 650.0,
+    "armor": 45.0,
+    "magicResist": 35.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.7,
+    "range": 2.0,
+    "mana": 100,
+    "initialMana": 50.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Grand Entrance",
+    "description": "Rakan dashes to the furthest enemy within range and leaps into the air, knocking them up for 1.5/2/2.5 seconds and dealing 175/275/400 magic damage.",
+    "descriptionRaw": "Rakan dashes to the furthest enemy within range and leaps into the air, knocking them up for @StunDuration@ seconds and dealing @ModifiedDamage@ magic damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 175.0,
+      "star2": 275.0,
+      "star3": 400.0
+     },
+     {
+      "name": "Radius",
+      "star1": 1.0,
+      "star2": 1.0,
+      "star3": 1.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 1.5,
+      "star2": 2.0,
+      "star3": 2.5
+     },
+     {
+      "name": "KnockupDuration",
+      "star1": 1.0,
+      "star2": 1.0,
+      "star3": 1.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Shen",
+   "apiName": "TFT3_Shen",
+   "cost": 2,
+   "traits": [
+    "Chrono",
+    "Blademaster"
+   ],
+   "stats": {
+    "hp": 800.0,
+    "armor": 45.0,
+    "magicResist": 35.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.7,
+    "range": 1.0,
+    "mana": 150.0,
+    "initialMana": 100.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Future's Refuge",
+    "description": "Shen creates a zone around himself for 2.5/3/5 seconds, in which all nearby allies automatically dodge incoming Basic Attacks. While it's active, Shen gains 15/30/45 Magic Resist.",
+    "descriptionRaw": "Shen creates a zone around himself for @ZoneDuration@ seconds, in which all nearby allies automatically dodge incoming Basic Attacks. While it's active, Shen gains @ModifiedMR@ Magic Resist.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "ZoneDuration",
+      "star1": 2.5,
+      "star2": 3.0,
+      "star3": 5.0
+     },
+     {
+      "name": "MagicResist",
+      "star1": 15.0,
+      "star2": 30.0,
+      "star3": 45.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Xin Zhao",
+   "apiName": "TFT3_XinZhao",
+   "cost": 2,
+   "traits": [
+    "Celestial",
+    "Protector"
+   ],
+   "stats": {
+    "hp": 650.0,
+    "armor": 45.0,
+    "magicResist": 30.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.7,
+    "range": 1.0,
+    "mana": 60.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Three Talon Strike",
+    "description": "Xin Zhao quickly strikes his target three times, dealing Basic Attack damage and applying on-hit effects. The third strike knocks his target up for 1.5 seconds and deals 200/275/375 bonus magic damage.",
+    "descriptionRaw": "Xin Zhao quickly strikes his target three times, dealing Basic Attack damage and applying on-hit effects. The third strike knocks his target up for @StunDuration@ seconds and deals @ModifiedDamage@ bonus magic damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "StunDuration",
+      "star1": 1.5,
+      "star2": 1.5,
+      "star3": 1.5
+     },
+     {
+      "name": "BonusDamage",
+      "star1": 200.0,
+      "star2": 275.0,
+      "star3": 375.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Yasuo",
+   "apiName": "TFT3_Yasuo",
+   "cost": 2,
+   "traits": [
+    "Rebel",
+    "Blademaster"
+   ],
+   "stats": {
+    "hp": 700.0,
+    "armor": 30.0,
+    "magicResist": 20.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.75,
+    "range": 1.0,
+    "mana": 80.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Last Breath",
+    "description": "Yasuo blinks to the farthest enemy in range, knocks them up for 1 seconds, and Attacks them 4/5/6 times (applies on-hit effects).",
+    "descriptionRaw": "Yasuo blinks to the farthest enemy in range, knocks them up for @StunDuration@ seconds, and Attacks them @ModifiedAttacks@ times (applies on-hit effects).",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "StunDuration",
+      "star1": 1.0,
+      "star2": 1.0,
+      "star3": 1.0
+     },
+     {
+      "name": "Damage",
+      "star1": 100.0,
+      "star2": 100.0,
+      "star3": 100.0
+     },
+     {
+      "name": "NumHits",
+      "star1": 4.0,
+      "star2": 5.0,
+      "star3": 6.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Zed",
+   "apiName": "TFT3_Zed",
+   "cost": 2,
+   "traits": [
+    "Rebel",
+    "Infiltrator"
+   ],
+   "stats": {
+    "hp": 650.0,
+    "armor": 25.0,
+    "magicResist": 20.0,
+    "attackDamage": 55.0,
+    "attackSpeed": 0.75,
+    "range": 1.0,
+    "mana": 0.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Contempt For The Weak",
+    "description": "Passive: Every third attack, Zed deals 50/90/150 bonus magic damage and steals 20/33/50% of the target's current Attack Damage.",
+    "descriptionRaw": "Passive: Every third attack, Zed deals @ModifiedDamage@ bonus magic damage and steals @ADSteal*100@% of the target's current Attack Damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "ADSteal",
+      "star1": 0.20000000298023224,
+      "star2": 0.33000001311302185,
+      "star3": 0.5
+     },
+     {
+      "name": "Damage",
+      "star1": 50.0,
+      "star2": 90.0,
+      "star3": 150.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Ashe",
+   "apiName": "TFT3_Ashe",
+   "cost": 3,
+   "traits": [
+    "Celestial",
+    "Sniper"
+   ],
+   "stats": {
+    "hp": 650.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.85,
+    "range": 6.0,
+    "mana": 100,
+    "initialMana": 40.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Enchanted Crystal Arrow",
+    "description": "Ashe fires an arrow at the farthest enemy that explodes on the first target hit, dealing 200/300/600 magic damage to all nearby enemies and stunning them for 2/3/4 seconds.",
+    "descriptionRaw": "Ashe fires an arrow at the farthest enemy that explodes on the first target hit, dealing @ModifiedDamage@ magic damage to all nearby enemies and stunning them for @StunDurationPerSquare@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 200.0,
+      "star2": 300.0,
+      "star3": 600.0
+     },
+     {
+      "name": "StunDurationPerSquare",
+      "star1": 2.0,
+      "star2": 3.0,
+      "star3": 4.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Bard",
+   "apiName": "TFT3_Bard",
+   "cost": 3,
+   "traits": [
+    "Astro",
+    "Mystic"
+   ],
+   "stats": {
+    "hp": 700.0,
+    "armor": 30.0,
+    "magicResist": 20.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.7,
+    "range": 3.0,
+    "mana": 90.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Traveler's Call",
+    "description": "Bard spawns a meep on his owner's bench which can be sold for 1 XP. Passive: Bard gains an additional 5/20/90 mana each attack, but cannot gain mana in rounds with no enemy champions.",
+    "descriptionRaw": "Bard spawns a meep on his owner's bench which can be sold for 1 XP.<br><br>Passive: Bard gains an additional @ModifiedManaPerAttack@ mana each attack, but cannot gain mana in rounds with no enemy champions.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "ManaPerAttack",
+      "star1": 5.0,
+      "star2": 20.0,
+      "star3": 90.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Cassiopeia",
+   "apiName": "TFT3_Cassiopeia",
+   "cost": 3,
+   "traits": [
+    "Battlecast",
+    "Mystic"
+   ],
+   "stats": {
+    "hp": 750.0,
+    "armor": 30.0,
+    "magicResist": 20.0,
+    "attackDamage": 40.0,
+    "attackSpeed": 0.75,
+    "range": 2.0,
+    "mana": 25.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Noxious Blast",
+    "description": "Cassiopeia launches poison at the nearest unpoisoned enemy, dealing 750/1600/4000 magic damage over 14 seconds, and reducing the effectiveness of new shields by 50%.",
+    "descriptionRaw": "Cassiopeia launches poison at the nearest unpoisoned enemy, dealing @ModifiedDamage@ magic damage over @Duration@ seconds, and reducing the effectiveness of new shields by @ShieldReductionPercent@%.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 750.0,
+      "star2": 1600.0,
+      "star3": 4000.0
+     },
+     {
+      "name": "Duration",
+      "star1": 14.0,
+      "star2": 14.0,
+      "star3": 14.0
+     },
+     {
+      "name": "ShieldReductionPercent",
+      "star1": 50.0,
+      "star2": 50.0,
+      "star3": 50.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Ezreal",
+   "apiName": "TFT3_Ezreal",
+   "cost": 3,
+   "traits": [
+    "Chrono",
+    "Blaster"
+   ],
+   "stats": {
+    "hp": 600.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 55.0,
+    "attackSpeed": 0.75,
+    "range": 3.0,
+    "mana": 80.0,
+    "initialMana": 30.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "E.M.P.",
+    "description": "Ezreal fires an electromagnetic pulse at a random enemy that explodes on impact, dealing 100/150/800 damage to all nearby enemies and increasing the cost of their next spellcast by 33%.",
+    "descriptionRaw": "Ezreal fires an electromagnetic pulse at a random enemy that explodes on impact, dealing @ModifiedDamage@ damage to all nearby enemies and increasing the cost of their next spellcast by @PercentCostIncrease@%.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 100.0,
+      "star2": 150.0,
+      "star3": 800.0
+     },
+     {
+      "name": "HexRadius",
+      "star1": 2.0,
+      "star2": 2.0,
+      "star3": 2.0
+     },
+     {
+      "name": "PercentCostIncrease",
+      "star1": 33.0,
+      "star2": 33.0,
+      "star3": 33.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Jayce",
+   "apiName": "TFT3_Jayce",
+   "cost": 3,
+   "traits": [
+    "Space Pirate",
+    "Vanguard"
+   ],
+   "stats": {
+    "hp": 800.0,
+    "armor": 40.0,
+    "magicResist": 30.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.7,
+    "range": 1.0,
+    "mana": 80.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "To the Skies!",
+    "description": "Jayce slams his hammer, dealing 450/600/1200 magic damage to nearby enemies.",
+    "descriptionRaw": "Jayce slams his hammer, dealing @ModifiedDamage@ magic damage to nearby enemies.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 450.0,
+      "star2": 600.0,
+      "star3": 1200.0
+     },
+     {
+      "name": "Radius",
+      "star1": 1.0,
+      "star2": 1.0,
+      "star3": 1.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Karma",
+   "apiName": "TFT3_Karma",
+   "cost": 3,
+   "traits": [
+    "Dark Star",
+    "Mystic"
+   ],
+   "stats": {
+    "hp": 600.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.65,
+    "range": 3.0,
+    "mana": 100,
+    "initialMana": 75.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Inspire",
+    "description": "At start of combat, Karma bonds to her closest ally. Karma grants the bonded ally (or a random one if that ally is dead) a 300/450/900-health shield for 4 seconds. While the shield holds, the ally receives 70/90/150 bonus Attack Speed.",
+    "descriptionRaw": "At start of combat, Karma bonds to her closest ally.<br><br>Karma grants the bonded ally (or a random one if that ally is dead) a @ModifiedShield@-health shield for @Duration@ seconds. While the shield holds, the ally receives @ModifiedAS@ bonus Attack Speed.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Duration",
+      "star1": 4.0,
+      "star2": 4.0,
+      "star3": 4.0
+     },
+     {
+      "name": "ShieldAmount",
+      "star1": 300.0,
+      "star2": 450.0,
+      "star3": 900.0
+     },
+     {
+      "name": "BonusAS",
+      "star1": 0.699999988079071,
+      "star2": 0.8999999761581421,
+      "star3": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "name": "Master Yi",
+   "apiName": "TFT3_MasterYi",
+   "cost": 3,
+   "traits": [
+    "Rebel",
+    "Blademaster"
+   ],
+   "stats": {
+    "hp": 750.0,
+    "armor": 50.0,
+    "magicResist": 35.0,
+    "attackDamage": 55.0,
+    "attackSpeed": 0.85,
+    "range": 1.0,
+    "mana": 55.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Chosen One",
+    "description": "For 5 seconds Master Yi gains massively increased movement speed, heals for 12 of his maximum health each second, and deals 70/95/145 bonus true damage with his Basic Attacks.",
+    "descriptionRaw": "For @Duration@ seconds Master Yi gains massively increased movement speed, heals for @ModifiedHeal@ of his maximum health each second, and deals @ModifiedDamage@ bonus true damage with his Basic Attacks.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Duration",
+      "star1": 5.0,
+      "star2": 5.0,
+      "star3": 5.0
+     },
+     {
+      "name": "HealAmountPercent",
+      "star1": 0.11999999731779099,
+      "star2": 0.11999999731779099,
+      "star3": 0.11999999731779099
+     },
+     {
+      "name": "BonusTrueDamage",
+      "star1": 70.0,
+      "star2": 95.0,
+      "star3": 145.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Neeko",
+   "apiName": "TFT3_Neeko",
+   "cost": 3,
+   "traits": [
+    "Star Guardian",
+    "Protector"
+   ],
+   "stats": {
+    "hp": 850.0,
+    "armor": 50.0,
+    "magicResist": 40.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.65,
+    "range": 2.0,
+    "mana": 110.0,
+    "initialMana": 35.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Pop Blossom",
+    "description": "Neeko leaps into the air and slams into the ground, dealing 150/250/450 magic damage to all nearby enemies and stunning them for 1.5/2/2.5 seconds.",
+    "descriptionRaw": "Neeko leaps into the air and slams into the ground, dealing @ModifiedDamage@ magic damage to all nearby enemies and stunning them for @StunDuration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "DamageAmount",
+      "star1": 150.0,
+      "star2": 250.0,
+      "star3": 450.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 1.5,
+      "star2": 2.0,
+      "star3": 2.5
+     },
+     {
+      "name": "HexRadius",
+      "star1": 2.0,
+      "star2": 2.0,
+      "star3": 2.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Rumble",
+   "apiName": "TFT3_Rumble",
+   "cost": 3,
+   "traits": [
+    "Mech-Pilot",
+    "Demolitionist"
+   ],
+   "stats": {
+    "hp": 900.0,
+    "armor": 45.0,
+    "magicResist": 40.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.7,
+    "range": 1.0,
+    "mana": 50.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Flamespitter",
+    "description": "Rumble torches his enemies, dealing 500/750/1650 magic damage over 3 seconds, and reducing healing on them by 50% for 5 seconds.",
+    "descriptionRaw": "Rumble torches his enemies, dealing @ModifiedDamage@ magic damage over @Duration@ seconds, and reducing healing on them by @GrievousWoundsPercent@% for @GrievousWoundsDuration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "TotalDamage",
+      "star1": 500.0,
+      "star2": 750.0,
+      "star3": 1650.0
+     },
+     {
+      "name": "Duration",
+      "star1": 3.0,
+      "star2": 3.0,
+      "star3": 3.0
+     },
+     {
+      "name": "NumberOfTicks",
+      "star1": 12.0,
+      "star2": 12.0,
+      "star3": 12.0
+     },
+     {
+      "name": "TickRate",
+      "star1": 0.25,
+      "star2": 0.25,
+      "star3": 0.25
+     },
+     {
+      "name": "GrievousWoundsDuration",
+      "star1": 5.0,
+      "star2": 5.0,
+      "star3": 5.0
+     },
+     {
+      "name": "ConeHexRange",
+      "star1": 2.0,
+      "star2": 2.0,
+      "star3": 2.0
+     },
+     {
+      "name": "GrievousWoundsPercent",
+      "star1": 50.0,
+      "star2": 50.0,
+      "star3": 50.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Shaco",
+   "apiName": "TFT3_Shaco",
+   "cost": 3,
+   "traits": [
+    "Dark Star",
+    "Infiltrator"
+   ],
+   "stats": {
+    "hp": 650.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 75.0,
+    "attackSpeed": 0.8,
+    "range": 1.0,
+    "mana": 70.0,
+    "initialMana": 30.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Deceive",
+    "description": "Shaco teleports and backstabs his target for 250/275/300 of his Basic Attack damage. This is also always a critical hit. (Total: [unknown: TooltipADBonus])",
+    "descriptionRaw": "Shaco teleports and backstabs his target for @TooltipPercentage@ of his Basic Attack damage. This is also always a critical hit. (Total: @TooltipADBonus@)",
+    "unresolvedPlaceholders": [
+     "TooltipADBonus"
+    ],
+    "variables": [
+     {
+      "name": "Duration",
+      "star1": 1.5,
+      "star2": 1.5,
+      "star3": 1.5
+     },
+     {
+      "name": "PercentOfAD",
+      "star1": 2.5,
+      "star2": 2.75,
+      "star3": 3.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Syndra",
+   "apiName": "TFT3_Syndra",
+   "cost": 3,
+   "traits": [
+    "Star Guardian",
+    "Sorcerer"
+   ],
+   "stats": {
+    "hp": 600.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.7,
+    "range": 4.0,
+    "mana": 50.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Unleashed Power",
+    "description": "Syndra pulls in all orbs on the battlefield and creates 3 new ones, then fires them all at the enemy with the highest current Health percentage, dealing 100/140/220 magic damage per orb. Lowest total health breaks targeting ties.",
+    "descriptionRaw": "Syndra pulls in all orbs on the battlefield and creates @Spheres@ new ones, then fires them all at the enemy with the highest current Health percentage, dealing @ModifiedDamage@ magic damage per orb.<br><br><tftitemrules>Lowest total health breaks targeting ties.</tftitemrules>",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Spheres",
+      "star1": 3.0,
+      "star2": 3.0,
+      "star3": 3.0
+     },
+     {
+      "name": "CastTime",
+      "star1": 0.75,
+      "star2": 0.75,
+      "star3": 0.75
+     },
+     {
+      "name": "Damage",
+      "star1": 100.0,
+      "star2": 140.0,
+      "star3": 220.0
+     },
+     {
+      "name": "RetargetOnKill",
+      "star1": 1.0,
+      "star2": 1.0,
+      "star3": 1.0
+     },
+     {
+      "name": "RetargetOverkillAmount",
+      "star1": 500.0,
+      "star2": 500.0,
+      "star3": 500.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Vayne",
+   "apiName": "TFT3_Vayne",
+   "cost": 3,
+   "traits": [
+    "Cybernetic",
+    "Sniper"
+   ],
+   "stats": {
+    "hp": 500.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 55.0,
+    "attackSpeed": 0.85,
+    "range": 6.0,
+    "mana": 50.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Final Hour",
+    "description": "Vayne focuses for 10 seconds, tumbling away from her target immediately and every third attack thereafter. When Vayne tumbles, she becomes invisible and her next attack deals 175/200/275% of her Attack Damage.",
+    "descriptionRaw": "Vayne focuses for @ModifiedDuration@ seconds, tumbling away from her target immediately and every third attack thereafter. When Vayne tumbles, she becomes invisible and her next attack deals @TumbleAttackPercentAD@% of her Attack Damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "TumbleAttackPercentAD",
+      "star1": 175.0,
+      "star2": 200.0,
+      "star3": 275.0
+     },
+     {
+      "name": "Duration",
+      "star1": 10.0,
+      "star2": 10.0,
+      "star3": 10.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Vi",
+   "apiName": "TFT3_Vi",
+   "cost": 3,
+   "traits": [
+    "Cybernetic",
+    "Brawler"
+   ],
+   "stats": {
+    "hp": 750.0,
+    "armor": 45.0,
+    "magicResist": 40.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.65,
+    "range": 1.0,
+    "mana": 140.0,
+    "initialMana": 70.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Assault and Battery",
+    "description": "Vi charges at the farthest enemy, knocking aside all enemies in her path and dealing them 150/200/600 magic damage. When she reaches her target, she knocks them up for 2/2.5/3 seconds and deals 350/550/1350 magic damage.",
+    "descriptionRaw": "Vi charges at the farthest enemy, knocking aside all enemies in her path and dealing them @ModifiedSecondaryDamage@ magic damage. When she reaches her target, she knocks them up for @CCDuration@ seconds and deals @ModifiedPrimaryDamage@ magic damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "PrimaryDamage",
+      "star1": 350.0,
+      "star2": 550.0,
+      "star3": 1350.0
+     },
+     {
+      "name": "CCDuration",
+      "star1": 2.0,
+      "star2": 2.5,
+      "star3": 3.0
+     },
+     {
+      "name": "MoveSpeed",
+      "star1": 1000.0,
+      "star2": 1000.0,
+      "star3": 1000.0
+     },
+     {
+      "name": "OthersCCDuration",
+      "star1": 0.25,
+      "star2": 0.25,
+      "star3": 0.25
+     },
+     {
+      "name": "SecondaryDamage",
+      "star1": 150.0,
+      "star2": 200.0,
+      "star3": 600.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Fizz",
+   "apiName": "TFT3_Fizz",
+   "cost": 4,
+   "traits": [
+    "Mech-Pilot",
+    "Infiltrator"
+   ],
+   "stats": {
+    "hp": 700.0,
+    "armor": 25.0,
+    "magicResist": 20.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.85,
+    "range": 1.0,
+    "mana": 120.0,
+    "initialMana": 50.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Chum the Waters",
+    "description": "Fizz throws a lure that attracts a shark. It deals 350/550/4000 magic damage to enemies caught, knocking them back and stunning them for 1.5 seconds.",
+    "descriptionRaw": "Fizz throws a lure that attracts a shark. It deals @ModifiedDamage@ magic damage to enemies caught, knocking them back and stunning them for @StunDuration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Delay",
+      "star1": 1.5,
+      "star2": 1.5,
+      "star3": 1.5
+     },
+     {
+      "name": "Damage",
+      "star1": 350.0,
+      "star2": 550.0,
+      "star3": 4000.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 1.5,
+      "star2": 1.5,
+      "star3": 1.5
+     }
+    ]
+   }
+  },
+  {
+   "name": "Gnar",
+   "apiName": "TFT3_Gnar",
+   "cost": 4,
+   "traits": [
+    "Astro",
+    "Brawler"
+   ],
+   "stats": {
+    "hp": 750.0,
+    "armor": 45.0,
+    "magicResist": 40.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.8,
+    "range": 2.0,
+    "mana": 120.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "GNAR!",
+    "description": "Gnar leaps towards his target and transforms into Mega Gnar, throwing nearby enemies, dealing 100/200/800 magic damage and stunning them for 1.5 seconds. While in Mega Gnar form, Gnar is melee and gains 750/1250/5000 Health and 100/175/550 Attack Damage.",
+    "descriptionRaw": "Gnar leaps towards his target and transforms into Mega Gnar, throwing nearby enemies, dealing @ModifiedDamage@ magic damage and stunning them for @RCCDuration@ seconds.<br><br>While in Mega Gnar form, Gnar is melee and gains @TransformHealth@ Health and @TransformAD@ Attack Damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 100.0,
+      "star2": 200.0,
+      "star3": 800.0
+     },
+     {
+      "name": "RCCDuration",
+      "star1": 1.5,
+      "star2": 1.5,
+      "star3": 1.5
+     },
+     {
+      "name": "RKnockbackDistance",
+      "star1": 600.0,
+      "star2": 600.0,
+      "star3": 600.0
+     },
+     {
+      "name": "TransformDuration",
+      "star1": 60.0,
+      "star2": 60.0,
+      "star3": 60.0
+     },
+     {
+      "name": "TransformHealth",
+      "star1": 750.0,
+      "star2": 1250.0,
+      "star3": 5000.0
+     },
+     {
+      "name": "TransformAD",
+      "star1": 100.0,
+      "star2": 175.0,
+      "star3": 550.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Irelia",
+   "apiName": "TFT3_Irelia",
+   "cost": 4,
+   "traits": [
+    "Cybernetic",
+    "Mana-Reaver",
+    "Blademaster"
+   ],
+   "stats": {
+    "hp": 900.0,
+    "armor": 50.0,
+    "magicResist": 40.0,
+    "attackDamage": 85.0,
+    "attackSpeed": 0.85,
+    "range": 1.0,
+    "mana": 30.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Bladesurge",
+    "description": "Irelia dashes to her target, Basic Attacking them for 225/250/500 of her Attack Damage. If this kills the target, she Bladesurges again immediately at the enemy with the highest mana. (Total Damage: 225%/250%/500% AD)",
+    "descriptionRaw": "Irelia dashes to her target, Basic Attacking them for @ModifiedPercentAD@ of her Attack Damage. If this kills the target, she Bladesurges again immediately at the enemy with the highest mana. (Total Damage: @TooltipDamage@)",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "PercentADDamage",
+      "star1": 2.25,
+      "star2": 2.5,
+      "star3": 5.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Jhin",
+   "apiName": "TFT3_Jhin",
+   "cost": 4,
+   "traits": [
+    "Dark Star",
+    "Sniper"
+   ],
+   "stats": {
+    "hp": 600.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 85.0,
+    "attackSpeed": 2.0,
+    "range": 6.0,
+    "mana": 4.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Whisper",
+    "description": "Passive: Jhin attacks 0.85/0.9/1.2 times per second, regardless of bonus Attack Speed. Jhin converts each 1% of bonus Attack Speed he has into 0.8 Attack Damage. Passive: Every fourth shot, Jhin deals 344/444/4444 damage. (Total: 344%/444%/4444% AD)",
+    "descriptionRaw": "Passive: Jhin attacks @AttackSpeed@ times per second, regardless of bonus Attack Speed. Jhin converts each 1% of bonus Attack Speed he has into 0.8 Attack Damage.<br><br>Passive: Every fourth shot, Jhin deals @ModifiedPercent@ damage. (Total: @TooltipDamage@)",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "PercentOfAD",
+      "star1": 3.440000057220459,
+      "star2": 4.440000057220459,
+      "star3": 44.439998626708984
+     },
+     {
+      "name": "AttackSpeed",
+      "star1": 0.8500000238418579,
+      "star2": 0.8999999761581421,
+      "star3": 1.2000000476837158
+     }
+    ]
+   }
+  },
+  {
+   "name": "Jinx",
+   "apiName": "TFT3_Jinx",
+   "cost": 4,
+   "traits": [
+    "Rebel",
+    "Blaster"
+   ],
+   "stats": {
+    "hp": 600.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 75.0,
+    "attackSpeed": 0.7,
+    "range": 3.0,
+    "mana": 0.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Get Excited!",
+    "description": "Passive: Jinx gets excited as she helps take down enemy units! After her first takedown, Jinx gains 50/75/125 bonus Attack Speed. After her second takedown, Jinx swaps to her rocket launcher, causing her Basic Attacks to deal 150/250/1000 bonus magic damage to all enemies in a small area around her target.",
+    "descriptionRaw": "Passive: Jinx gets excited as she helps take down enemy units!<br><br>After her first takedown, Jinx gains @PercentAttackSpeed@ bonus Attack Speed.<br><br>After her second takedown, Jinx swaps to her rocket launcher, causing her Basic Attacks to deal @ModifiedDamage@ bonus magic damage to all enemies in a small area around her target.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "HitWindow",
+      "star1": 10.0,
+      "star2": 10.0,
+      "star3": 10.0
+     },
+     {
+      "name": "BuffDuration",
+      "star1": 60.0,
+      "star2": 60.0,
+      "star3": 60.0
+     },
+     {
+      "name": "AttackSpeedBonus",
+      "star1": 0.5,
+      "star2": 0.75,
+      "star3": 1.25
+     },
+     {
+      "name": "RocketDamage",
+      "star1": 150.0,
+      "star2": 250.0,
+      "star3": 1000.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Riven",
+   "apiName": "TFT3_Riven",
+   "cost": 4,
+   "traits": [
+    "Chrono",
+    "Blademaster"
+   ],
+   "stats": {
+    "hp": 850.0,
+    "armor": 35.0,
+    "magicResist": 30.0,
+    "attackDamage": 70.0,
+    "attackSpeed": 0.85,
+    "range": 1.0,
+    "mana": 25.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Energy Slash",
+    "description": "Riven dashes and shields herself for 200/350/1200, then slashes forward dealing 100/150/600 magic damage to nearby enemies. Every third cast, Riven leaps into the air and launches forward a large wave of energy that deals 300/500/1500 magic damage.",
+    "descriptionRaw": "Riven dashes and shields herself for @ModifiedShield@, then slashes forward dealing @ModifiedDamage@ magic damage to nearby enemies. <br><br>Every third cast, Riven leaps into the air and launches forward a large wave of energy that deals @ModifiedDamageFinal@ magic damage.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 100.0,
+      "star2": 150.0,
+      "star3": 600.0
+     },
+     {
+      "name": "SlashHexRadius",
+      "star1": 1.0,
+      "star2": 1.0,
+      "star3": 1.0
+     },
+     {
+      "name": "DamageFinal",
+      "star1": 300.0,
+      "star2": 500.0,
+      "star3": 1500.0
+     },
+     {
+      "name": "Shield",
+      "star1": 200.0,
+      "star2": 350.0,
+      "star3": 1200.0
+     },
+     {
+      "name": "ShieldDuration",
+      "star1": 4.0,
+      "star2": 4.0,
+      "star3": 4.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Soraka",
+   "apiName": "TFT3_Soraka",
+   "cost": 4,
+   "traits": [
+    "Star Guardian",
+    "Mystic"
+   ],
+   "stats": {
+    "hp": 700.0,
+    "armor": 30.0,
+    "magicResist": 20.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.75,
+    "range": 3.0,
+    "mana": 120.0,
+    "initialMana": 50.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Wish",
+    "description": "Soraka heals all of her allies for 325/500/20000.",
+    "descriptionRaw": "Soraka heals all of her allies for @ModifiedHeal@.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "HealAmount",
+      "star1": 325.0,
+      "star2": 500.0,
+      "star3": 20000.0
+     },
+     {
+      "name": "HealTargets",
+      "star1": 15.0,
+      "star2": 15.0,
+      "star3": 15.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Teemo",
+   "apiName": "TFT3_Teemo",
+   "cost": 4,
+   "traits": [
+    "Astro",
+    "Sniper"
+   ],
+   "stats": {
+    "hp": 600.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.95,
+    "range": 6.0,
+    "mana": 70.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Satellite Traps",
+    "description": "Teemo scatters 3 traps around the nearest enemy. When an enemy nears a trap (or after 3 seconds), it explodes on nearby enemies dealing 125/175/550 magic damage, knocking them down, and slowing them for 3 seconds.",
+    "descriptionRaw": "Teemo scatters 3 traps around the nearest enemy. When an enemy nears a trap (or after @DetonationDelay@ seconds), it explodes on nearby enemies dealing @ModifiedDamage@ magic damage, knocking them down, and slowing them for @SlowDuration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 125.0,
+      "star2": 175.0,
+      "star3": 550.0
+     },
+     {
+      "name": "SlowDuration",
+      "star1": 3.0,
+      "star2": 3.0,
+      "star3": 3.0
+     },
+     {
+      "name": "DetonationDelay",
+      "star1": 3.0,
+      "star2": 3.0,
+      "star3": 3.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Viktor",
+   "apiName": "TFT3_Viktor",
+   "cost": 4,
+   "traits": [
+    "Battlecast",
+    "Sorcerer"
+   ],
+   "stats": {
+    "hp": 650.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.75,
+    "range": 3.0,
+    "mana": 60.0,
+    "initialMana": 0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Death Ray",
+    "description": "Viktor burns a path between the two enemies most distant from one another, first dealing 15/20/80% maximum Health in magic damage, then 1 second later dealing 200/325/1500 magic damage in an explosion along the same path.",
+    "descriptionRaw": "Viktor burns a path between the two enemies most distant from one another, first dealing @ModifiedPercentHealthDamage@% maximum Health in magic damage, then 1 second later dealing @ModifiedFlatDamage@ magic damage in an explosion along the same path.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "PercentHealthDamage",
+      "star1": 15.0,
+      "star2": 20.0,
+      "star3": 80.0
+     },
+     {
+      "name": "FlatDamage",
+      "star1": 200.0,
+      "star2": 325.0,
+      "star3": 1500.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Wukong",
+   "apiName": "TFT3_WuKong",
+   "cost": 4,
+   "traits": [
+    "Chrono",
+    "Vanguard"
+   ],
+   "stats": {
+    "hp": 950.0,
+    "armor": 55.0,
+    "magicResist": 40.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.75,
+    "range": 1.0,
+    "mana": 150.0,
+    "initialMana": 50.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Cyclone",
+    "description": "Wukong spins, dealing 300/500/4000 magic damage to nearby enemies over 3 seconds. The first time Wukong hits each enemy, he knocks them into the air and stuns them for 2/2/5 seconds.",
+    "descriptionRaw": "Wukong spins, dealing @ModifiedDamage@ magic damage to nearby enemies over @Duration@ seconds. The first time Wukong hits each enemy, he knocks them into the air and stuns them for @StunDuration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 300.0,
+      "star2": 500.0,
+      "star3": 4000.0
+     },
+     {
+      "name": "Duration",
+      "star1": 3.0,
+      "star2": 3.0,
+      "star3": 3.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 2.0,
+      "star2": 2.0,
+      "star3": 5.0
+     },
+     {
+      "name": "HexRadius",
+      "star1": 1.0,
+      "star2": 1.0,
+      "star3": 1.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Aurelion Sol",
+   "apiName": "TFT3_AurelionSol",
+   "cost": 5,
+   "traits": [
+    "Rebel",
+    "Starship"
+   ],
+   "stats": {
+    "hp": 1100.0,
+    "armor": 55.0,
+    "magicResist": 40.0,
+    "attackDamage": null,
+    "attackSpeed": 0.2,
+    "range": 1.0,
+    "mana": 120.0,
+    "initialMana": 120.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Mobilize the Fleet",
+    "description": "Aurelion Sol launches fighters which fly out to random enemies and blast them, dealing 90/150/1000 magic damage and draining 10/15/50 mana, then return. The first time he casts, Aurelion Sol launches 4 fighters. Subsequent casts launch all returned fighters, plus 2 additional.",
+    "descriptionRaw": "Aurelion Sol launches fighters which fly out to random enemies and blast them, dealing @ModifiedDamage@ magic damage and draining @ManaDrain@ mana, then return. <br><br>The first time he casts, Aurelion Sol launches @InitialFighters@ fighters. Subsequent casts launch all returned fighters, plus @FightersPerCast@ additional.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 90.0,
+      "star2": 150.0,
+      "star3": 1000.0
+     },
+     {
+      "name": "InitialFighters",
+      "star1": 4.0,
+      "star2": 4.0,
+      "star3": 4.0
+     },
+     {
+      "name": "FightersPerCast",
+      "star1": 2.0,
+      "star2": 2.0,
+      "star3": 2.0
+     },
+     {
+      "name": "ManaDrain",
+      "star1": 10.0,
+      "star2": 15.0,
+      "star3": 50.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Ekko",
+   "apiName": "TFT3_Ekko",
+   "cost": 5,
+   "traits": [
+    "Cybernetic",
+    "Infiltrator"
+   ],
+   "stats": {
+    "hp": 850.0,
+    "armor": 30.0,
+    "magicResist": 20.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.9,
+    "range": 1.0,
+    "mana": 150.0,
+    "initialMana": 80.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Chronobreak",
+    "description": "Ekko shatters the timeline, freezing all units in time before attacking 5/7/20 times dealing 100/150/2000 bonus magic damage and applying on-hit effects. Each strike targets the highest attack speed enemy and slows their attack speed by 50% for 7 seconds. Ekko cannot die while he has stopped time.",
+    "descriptionRaw": "Ekko shatters the timeline, freezing all units in time before attacking @NumAttacks@ times dealing @ModifiedDamage@ bonus magic damage and applying on-hit effects. Each strike targets the highest attack speed enemy and slows their attack speed by @ASSlow*100@% for @SlowDuration@ seconds.<br><br>Ekko cannot die while he has stopped time.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "BonusDamage",
+      "star1": 100.0,
+      "star2": 150.0,
+      "star3": 2000.0
+     },
+     {
+      "name": "BaseDelayBetweenAttacks",
+      "star1": 0.4000000059604645,
+      "star2": 0.30000001192092896,
+      "star3": 0.15000000596046448
+     },
+     {
+      "name": "NumAttacks",
+      "star1": 5.0,
+      "star2": 7.0,
+      "star3": 20.0
+     },
+     {
+      "name": "ASSlow",
+      "star1": 0.5,
+      "star2": 0.5,
+      "star3": 0.5
+     },
+     {
+      "name": "SlowDuration",
+      "star1": 7.0,
+      "star2": 7.0,
+      "star3": 7.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Gangplank",
+   "apiName": "TFT3_Gangplank",
+   "cost": 5,
+   "traits": [
+    "Space Pirate",
+    "Mercenary",
+    "Demolitionist"
+   ],
+   "stats": {
+    "hp": 1000.0,
+    "armor": 30.0,
+    "magicResist": 20.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 1.0,
+    "range": 1.0,
+    "mana": 160.0,
+    "initialMana": 70.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Orbital Strike",
+    "description": "Gangplank calls down an orbital strike around his target, dealing 525/675/9001 damage to all enemies in a large area after 2 seconds.",
+    "descriptionRaw": "Gangplank calls down an orbital strike around his target, dealing @ModifiedDamage@ damage to all enemies in a large area after @ImpactDelayTime@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "Damage",
+      "star1": 525.0,
+      "star2": 675.0,
+      "star3": 9001.0
+     },
+     {
+      "name": "ImpactDelayTime",
+      "star1": 2.0,
+      "star2": 2.0,
+      "star3": 2.0
+     },
+     {
+      "name": "UpgradeDelayTime",
+      "star1": 0.30000001192092896,
+      "star2": 0.30000001192092896,
+      "star3": 0.30000001192092896
+     },
+     {
+      "name": "DoubleImpactDamagePercent",
+      "star1": 50.0,
+      "star2": 50.0,
+      "star3": 50.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Janna",
+   "apiName": "TFT3_Janna",
+   "cost": 5,
+   "traits": [
+    "Star Guardian",
+    "Paragon"
+   ],
+   "stats": {
+    "hp": 750.0,
+    "armor": 25.0,
+    "magicResist": 20.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.8,
+    "range": 4.0,
+    "mana": 100,
+    "initialMana": 20.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Howling Gale",
+    "description": "Janna summons five tornados which fly forward in a large cone. Tornados passing through allies grant 80/125/500% Attack Speed for 5 seconds, while knocking up and stunning enemies for 1.5/1.5/8 seconds.",
+    "descriptionRaw": "Janna summons five tornados which fly forward in a large cone. Tornados passing through allies grant @ModifiedPercentAttackSpeed@% Attack Speed for @BuffDuration@ seconds, while knocking up and stunning enemies for @StunDuration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "PercentAttackSpeed",
+      "star1": 80.0,
+      "star2": 125.0,
+      "star3": 500.0
+     },
+     {
+      "name": "BuffDuration",
+      "star1": 5.0,
+      "star2": 5.0,
+      "star3": 5.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 1.5,
+      "star2": 1.5,
+      "star3": 8.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Lulu",
+   "apiName": "TFT3_Lulu",
+   "cost": 5,
+   "traits": [
+    "Celestial",
+    "Mystic"
+   ],
+   "stats": {
+    "hp": 800.0,
+    "armor": 25.0,
+    "magicResist": 20.0,
+    "attackDamage": 45.0,
+    "attackSpeed": 0.8,
+    "range": 3.0,
+    "mana": 150.0,
+    "initialMana": 75.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Mass Polymorph",
+    "description": "Lulu polymorphs the 2/4/12 nearest enemies for 3/3/8 seconds, causing them to hop aimlessly, unable to attack or cast. Polymorphed enemies take 5/10/25 additional damage from all sources.",
+    "descriptionRaw": "Lulu polymorphs the @NumTargets@ nearest enemies for @Duration@ seconds, causing them to hop aimlessly, unable to attack or cast. Polymorphed enemies take @ModifiedBonusDamage@ additional damage from all sources.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "NumTargets",
+      "star1": 2.0,
+      "star2": 4.0,
+      "star3": 12.0
+     },
+     {
+      "name": "Duration",
+      "star1": 3.0,
+      "star2": 3.0,
+      "star3": 8.0
+     },
+     {
+      "name": "BonusDamage",
+      "star1": 0.05000000074505806,
+      "star2": 0.10000000149011612,
+      "star3": 0.25
+     }
+    ]
+   }
+  },
+  {
+   "name": "Thresh",
+   "apiName": "TFT3_Thresh",
+   "cost": 5,
+   "traits": [
+    "Chrono",
+    "Mana-Reaver"
+   ],
+   "stats": {
+    "hp": 950.0,
+    "armor": 55.0,
+    "magicResist": 40.0,
+    "attackDamage": 50.0,
+    "attackSpeed": 0.95,
+    "range": 2.0,
+    "mana": 90.0,
+    "initialMana": 50.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Temporal Passage",
+    "description": "Thresh tosses his lantern towards 1/1/9 random unit(s) on your bench, pulling them into combat and granting them 25/50/200 bonus Mana. Traits are unaffected.",
+    "descriptionRaw": "Thresh tosses his lantern towards @UnitCount@ random unit(s) on your bench, pulling them into combat and granting them @ModifiedMana@ bonus Mana. Traits are unaffected.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "UnitCount",
+      "star1": 1.0,
+      "star2": 1.0,
+      "star3": 9.0
+     },
+     {
+      "name": "ManaBonus",
+      "star1": 25.0,
+      "star2": 50.0,
+      "star3": 200.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Urgot",
+   "apiName": "TFT3_Urgot",
+   "cost": 5,
+   "traits": [
+    "Battlecast",
+    "Protector"
+   ],
+   "stats": {
+    "hp": 950.0,
+    "armor": 40.0,
+    "magicResist": 40.0,
+    "attackDamage": 80.0,
+    "attackSpeed": 0.7,
+    "range": 2.0,
+    "mana": 100,
+    "initialMana": 50.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Fear Beyond Death",
+    "description": "Urgot fires a drill toward the farthest enemy, impacting the first enemy hit and reeling them in over 3/2/1 seconds. Once they reach Urgot, he repeatedly deals 2000 true damage very quickly until they die. After each successful kill, the mana cost of this ability is reduced by 20/30/100.",
+    "descriptionRaw": "Urgot fires a drill toward the farthest enemy, impacting the first enemy hit and reeling them in over @ChannelDuration@ seconds. Once they reach Urgot, he repeatedly deals 2000 true damage very quickly until they die. After each successful kill, the mana cost of this ability is reduced by @ModifiedManaCostReduction@.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "ManaCostReduction",
+      "star1": 20.0,
+      "star2": 30.0,
+      "star3": 100.0
+     },
+     {
+      "name": "ChannelDuration",
+      "star1": 3.0,
+      "star2": 2.0,
+      "star3": 1.0
+     }
+    ]
+   }
+  },
+  {
+   "name": "Xerath",
+   "apiName": "TFT3_Xerath",
+   "cost": 5,
+   "traits": [
+    "Dark Star",
+    "Sorcerer"
+   ],
+   "stats": {
+    "hp": 700.0,
+    "armor": 20.0,
+    "magicResist": 20.0,
+    "attackDamage": 60.0,
+    "attackSpeed": 0.9,
+    "range": 6.0,
+    "mana": 80.0,
+    "initialMana": 20.0,
+    "critChance": 0.25,
+    "critMultiplier": 1.5
+   },
+   "ability": {
+    "name": "Abyssal Bombardment",
+    "description": "Xerath transforms, summoning meteors to strike random foes in place of his normal attacks for 6/8/45 seconds. Meteors deal 320/440/2500 magic damage upon impact and if they kill their target, all adjacent enemies take 80/110/625 magic damage and are stunned for 1.5 seconds.",
+    "descriptionRaw": "Xerath transforms, summoning meteors to strike random foes in place of his normal attacks for @Duration@ seconds. Meteors deal @ModifiedDamage@ magic damage upon impact and if they kill their target, all adjacent enemies take @ModifiedAoEDamage@ magic damage and are stunned for @StunDuration@ seconds.",
+    "unresolvedPlaceholders": [],
+    "variables": [
+     {
+      "name": "BaseDamage",
+      "star1": 320.0,
+      "star2": 440.0,
+      "star3": 2500.0
+     },
+     {
+      "name": "AoEDamage",
+      "star1": 80.0,
+      "star2": 110.0,
+      "star3": 625.0
+     },
+     {
+      "name": "StunDuration",
+      "star1": 1.5,
+      "star2": 1.5,
+      "star3": 1.5
+     },
+     {
+      "name": "Duration",
+      "star1": 6.0,
+      "star2": 8.0,
+      "star3": 45.0
+     }
+    ]
+   }
+  }
+ ],
+ "excludedUnitsWithoutTraits": [
+  "Kayn",
+  "Kayn",
+  "Super-Mech",
+  "Meep"
+ ],
+ "traits": [
+  {
+   "name": "Astro",
+   "apiName": "Astro",
+   "description": "(3) Astro Champions' abilities cost 30 less mana to cast.",
+   "descriptionRaw": "(@MinUnits@) Astro Champions' abilities cost @ManaCostReduction@ less mana to cast.",
+   "breakpoints": [
+    {
+     "minUnits": 3,
+     "maxUnits": null,
+     "effect": "variables: {1f714854}=30",
+     "variables": {
+      "{1f714854}": 30.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Battlecast",
+   "apiName": "Battlecast",
+   "description": "After dealing or taking 10 instances of damage, Battlecast Champions deal magic damage to the nearest enemy. If below half health, they heal instead.",
+   "descriptionRaw": "After dealing or taking 10 instances of damage, Battlecast Champions deal magic damage to the nearest enemy. If below half health, they heal instead.<br><br><expandRow>(@MinUnits@) @HealOrDamageAmount@ Healing or Damage</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "80 Healing or Damage",
+     "variables": {
+      "{d56201a3}": 80.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": 5,
+     "effect": "180 Healing or Damage",
+     "variables": {
+      "{d56201a3}": 180.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": 7,
+     "effect": "480 Healing or Damage",
+     "variables": {
+      "{d56201a3}": 480.0
+     }
+    },
+    {
+     "minUnits": 8,
+     "maxUnits": null,
+     "effect": "1000 Healing or Damage",
+     "variables": {
+      "{d56201a3}": 1000.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Blademaster",
+   "apiName": "Set3_Blademaster",
+   "description": "Blademasters' Basic Attacks have a chance to trigger two additional attacks against their target. These additional attacks deal damage like Basic Attacks and trigger on-hit effects.",
+   "descriptionRaw": "Blademasters' Basic Attacks have a chance to trigger two additional attacks against their target.<br><br>These additional attacks deal damage like Basic Attacks and trigger on-hit effects.<br><br><row>(@MinUnits@) @ProcChance@% Chance to trigger</row><br><row>(@MinUnits@) @ProcChance@% Chance to trigger</row><br><row>(@MinUnits@) @ProcChance@% Chance to trigger</row>",
+   "breakpoints": [
+    {
+     "minUnits": 3,
+     "maxUnits": 5,
+     "effect": "30% Chance to trigger",
+     "variables": {
+      "ExtraAttacks": 2.0,
+      "{b4a90a5d}": 30.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": 8,
+     "effect": "65% Chance to trigger",
+     "variables": {
+      "ExtraAttacks": 2.0,
+      "{b4a90a5d}": 65.0
+     }
+    },
+    {
+     "minUnits": 9,
+     "maxUnits": null,
+     "effect": "100% Chance to trigger",
+     "variables": {
+      "ExtraAttacks": 2.0,
+      "{b4a90a5d}": 100.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Blaster",
+   "apiName": "Blaster",
+   "description": "Every fourth Basic Attack from a Blaster fires additional attacks at random enemies. These additional attacks deal damage like Basic Attacks, trigger on-hit effects, and can critically hit.",
+   "descriptionRaw": "Every fourth Basic Attack from a Blaster fires additional attacks at random enemies.<br><br>These additional attacks deal damage like Basic Attacks, trigger on-hit effects, and can critically hit.<br><br><expandRow>(@MinUnits@) @AdditionalAttacks@ Additional Attacks</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "3 Additional Attacks",
+     "variables": {
+      "{7fd211f1}": 3.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": null,
+     "effect": "6 Additional Attacks",
+     "variables": {
+      "{7fd211f1}": 6.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Brawler",
+   "apiName": "Set3_Brawler",
+   "description": "Brawlers gain bonus Maximum Health.",
+   "descriptionRaw": "Brawlers gain bonus Maximum Health.<br><br><expandRow>(@MinUnits@) @BonusHealth@ Bonus Health</expandRow><br>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "350 Bonus Health",
+     "variables": {
+      "BonusHealth": 350.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": null,
+     "effect": "600 Bonus Health",
+     "variables": {
+      "BonusHealth": 600.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Celestial",
+   "apiName": "Set3_Celestial",
+   "description": "All allies heal for some of the damage they deal with spells and attacks.",
+   "descriptionRaw": "All allies heal for some of the damage they deal with spells and attacks.<br><br><expandRow>(@MinUnits@) @HealPercent@% Healing </expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "15% Healing",
+     "variables": {
+      "HealPercent": 15.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": 5,
+     "effect": "45% Healing",
+     "variables": {
+      "HealPercent": 45.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": null,
+     "effect": "150% Healing",
+     "variables": {
+      "HealPercent": 150.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Chrono",
+   "apiName": "Chrono",
+   "description": "All allies gain 15% Attack Speed every few seconds.",
+   "descriptionRaw": "All allies gain @PercentAttackSpeed@% Attack Speed every few seconds.<br><br><expandRow>(@MinUnits@) @Frequency@ seconds</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "8 seconds",
+     "variables": {
+      "{2fb31c01}": 8.0,
+      "{db1859c9}": 15.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": 5,
+     "effect": "3 seconds",
+     "variables": {
+      "{2fb31c01}": 3.0,
+      "{db1859c9}": 15.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": 7,
+     "effect": "1 seconds",
+     "variables": {
+      "{2fb31c01}": 1.0,
+      "{db1859c9}": 15.0
+     }
+    },
+    {
+     "minUnits": 8,
+     "maxUnits": null,
+     "effect": "0.5 seconds",
+     "variables": {
+      "{2fb31c01}": 0.5,
+      "{db1859c9}": 15.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Cybernetic",
+   "apiName": "Cybernetic",
+   "description": "Cybernetic champions with at least one item (component or full) gain Health and Attack Damage.",
+   "descriptionRaw": "Cybernetic champions with at least one item (component or full) gain Health and Attack Damage.<br><br><expandRow>(@MinUnits@) @HealthAmp@ Health and @ADAmp@ Attack Damage</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 3,
+     "maxUnits": 5,
+     "effect": "300 Health and 35 Attack Damage",
+     "variables": {
+      "{1a46e36f}": 300.0,
+      "{cfaa2ad6}": 35.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": null,
+     "effect": "550 Health and 70 Attack Damage",
+     "variables": {
+      "{1a46e36f}": 550.0,
+      "{cfaa2ad6}": 70.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Dark Star",
+   "apiName": "DarkStar",
+   "description": "Whenever an allied Champion dies, Dark Star Champions gain Attack Damage and Spell Power.",
+   "descriptionRaw": "Whenever an allied Champion dies, Dark Star Champions gain Attack Damage and Spell Power.<br><br><expandRow>(@MinUnits@) +@ADandSP@ Attack Damage and Spell Power</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "+8 Attack Damage and Spell Power",
+     "variables": {
+      "{1485c2a2}": 8.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": 5,
+     "effect": "+18 Attack Damage and Spell Power",
+     "variables": {
+      "{1485c2a2}": 18.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": 7,
+     "effect": "+28 Attack Damage and Spell Power",
+     "variables": {
+      "{1485c2a2}": 28.0
+     }
+    },
+    {
+     "minUnits": 8,
+     "maxUnits": null,
+     "effect": "+48 Attack Damage and Spell Power",
+     "variables": {
+      "{1485c2a2}": 48.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Demolitionist",
+   "apiName": "Demolitionist",
+   "description": "",
+   "descriptionRaw": "<expandRow>(@MinUnits@) Damage from Demolitionists' spellcasts stuns their targets for @StunDuration@ seconds. (Once per spellcast)</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": null,
+     "effect": "Damage from Demolitionists' spellcasts stuns their targets for 1.5 seconds. (Once per spellcast)",
+     "variables": {
+      "StunDuration": 1.5
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Infiltrator",
+   "apiName": "Infiltrator",
+   "description": "Innate: At the start of combat, Infiltrators move to the enemy's backline. Infiltrators gain Attack Speed for 6 seconds at the start of combat, refreshed on takedown.",
+   "descriptionRaw": "Innate: At the start of combat, Infiltrators move to the enemy's backline.<br><br>Infiltrators gain Attack Speed for @Duration@ seconds at the start of combat, refreshed on takedown.<br><br><row>(@MinUnits@) @AttackSpeedPercent@% bonus Attack Speed</row><br><row>(@MinUnits@) @AttackSpeedPercent@% bonus Attack Speed</row><br><row>(@MinUnits@) @AttackSpeedPercent@% bonus Attack Speed</row>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "40% bonus Attack Speed",
+     "variables": {
+      "Duration": 6.0,
+      "{650d33c0}": 1.0,
+      "{a8ca7859}": 40.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": 5,
+     "effect": "80% bonus Attack Speed",
+     "variables": {
+      "Duration": 6.0,
+      "{650d33c0}": 1.0,
+      "{a8ca7859}": 80.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": null,
+     "effect": "150% bonus Attack Speed",
+     "variables": {
+      "Duration": 6.0,
+      "{650d33c0}": 1.0,
+      "{a8ca7859}": 150.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Mana-Reaver",
+   "apiName": "ManaReaver",
+   "description": "",
+   "descriptionRaw": "<expandRow>(@MinUnits@) Mana-Reaver attacks increase the mana cost of their target's next spellcast by @CostIncreasePercent@%.</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": null,
+     "effect": "Mana-Reaver attacks increase the mana cost of their target's next spellcast by 33%.",
+     "variables": {
+      "{4d7069b1}": 33.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Mech-Pilot",
+   "apiName": "MechPilot",
+   "description": "(3) At the start of combat, three random Mech-Pilots are teleported into a Super-Mech. The Super-Mech has the Traits of its pilots, 3 random items from among them, and gains 60% of the combined Pilots' health and attack damage. When the Super-Mech dies the Pilots are ejected with 35% of their maximum health and continue to fight.",
+   "descriptionRaw": "(@MinUnits@) At the start of combat, three random Mech-Pilots are teleported into a Super-Mech.<br><br>The Super-Mech has the Traits of its pilots, 3 random items from among them, and gains 60% of the combined Pilots' health and attack damage.<br><br>When the Super-Mech dies the Pilots are ejected with @EjectedPilotHealthPercent@% of their maximum health and continue to fight.",
+   "breakpoints": [
+    {
+     "minUnits": 3,
+     "maxUnits": null,
+     "effect": "variables: {092d19fb}=1500; {265b60fa}=35; {5dd40675}=0.65; {952c9d9c}=0.65; {d13e2b40}=0.8; {dc3931d7}=null; {ed41c244}=100",
+     "variables": {
+      "{092d19fb}": 1500.0,
+      "{265b60fa}": 35.0,
+      "{5dd40675}": 0.6499999761581421,
+      "{952c9d9c}": 0.6499999761581421,
+      "{d13e2b40}": 0.800000011920929,
+      "{dc3931d7}": "null",
+      "{ed41c244}": 100.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Mercenary",
+   "apiName": "Mercenary",
+   "description": "Innate: Upgrades for Mercenaries' spells have a chance to appear in the shop.",
+   "descriptionRaw": "Innate: Upgrades for Mercenaries' spells have a chance to appear in the shop.",
+   "breakpoints": [
+    {
+     "minUnits": 1,
+     "maxUnits": null,
+     "effect": "active (no extra values)",
+     "variables": {}
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Mystic",
+   "apiName": "Set3_Mystic",
+   "description": "All allies gain Magic Resistance.",
+   "descriptionRaw": "All allies gain Magic Resistance.<br><br><expandRow>(@MinUnits@) @MagicResist@ Magic Resistance</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "50 Magic Resistance",
+     "variables": {
+      "MagicResist": 50.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": null,
+     "effect": "120 Magic Resistance",
+     "variables": {
+      "MagicResist": 120.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Paragon",
+   "apiName": "Paragon",
+   "description": "(1) The basic attacks of all allies are converted to magic damage. If allies are Star Guardians, basic attacks deal true damage instead.",
+   "descriptionRaw": "(@MinUnits@) The basic attacks of all allies are converted to magic damage. If allies are Star Guardians, basic attacks deal true damage instead.",
+   "breakpoints": [
+    {
+     "minUnits": 1,
+     "maxUnits": null,
+     "effect": "active (no extra values)",
+     "variables": {}
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Protector",
+   "apiName": "Protector",
+   "description": "Protectors shield themselves for 4 seconds whenever they cast a spell. This shield doesn't stack.",
+   "descriptionRaw": "Protectors shield themselves for @Duration@ seconds whenever they cast a spell. This shield doesn't stack.<br><br><expandRow> (@MinUnits@) @ShieldPercent@% Maximum Health Shield</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "30% Maximum Health Shield",
+     "variables": {
+      "Duration": 4.0,
+      "ShieldPercent": 30.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": 5,
+     "effect": "40% Maximum Health Shield",
+     "variables": {
+      "Duration": 4.0,
+      "ShieldPercent": 40.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": null,
+     "effect": "50% Maximum Health Shield",
+     "variables": {
+      "Duration": 4.0,
+      "ShieldPercent": 50.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Rebel",
+   "apiName": "Rebel",
+   "description": "At the start of combat, Rebels gain a shield and bonus damage for each adjacent Rebel. The shield lasts for 8 seconds.",
+   "descriptionRaw": "At the start of combat, Rebels gain a shield and bonus damage for each adjacent Rebel. The shield lasts for @ShieldDuration@ seconds.<br><br><expandRow>(@MinUnits@) @ShieldAmount@ Shield & @DamageAmp@% Damage</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 3,
+     "maxUnits": 5,
+     "effect": "150 Shield & 10% Damage",
+     "variables": {
+      "DamageAmp": 10.0,
+      "ShieldAmount": 150.0,
+      "ShieldDuration": 8.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": 8,
+     "effect": "225 Shield & 12% Damage",
+     "variables": {
+      "DamageAmp": 12.0,
+      "ShieldAmount": 225.0,
+      "ShieldDuration": 8.0
+     }
+    },
+    {
+     "minUnits": 9,
+     "maxUnits": null,
+     "effect": "400 Shield & 20% Damage",
+     "variables": {
+      "DamageAmp": 20.0,
+      "ShieldAmount": 400.0,
+      "ShieldDuration": 8.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Sniper",
+   "apiName": "Sniper",
+   "description": "",
+   "descriptionRaw": "<expandRow>(@MinUnits@) Snipers deal @PercentDamageIncrease@% increased damage for each hex between themselves and their target.</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "Snipers deal 9% increased damage for each hex between themselves and their target.",
+     "variables": {
+      "{75994f47}": 9.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": null,
+     "effect": "Snipers deal 16% increased damage for each hex between themselves and their target.",
+     "variables": {
+      "{75994f47}": 16.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Sorcerer",
+   "apiName": "Set3_Sorcerer",
+   "description": "All allies have increased Spell Power.",
+   "descriptionRaw": "All allies have increased Spell Power.<br><br><expandRow>(@MinUnits@) @AP@% Spell Power</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "20% Spell Power",
+     "variables": {
+      "AP": 20.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": 5,
+     "effect": "40% Spell Power",
+     "variables": {
+      "AP": 40.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": null,
+     "effect": "70% Spell Power",
+     "variables": {
+      "AP": 70.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Space Pirate",
+   "apiName": "SpacePirate",
+   "description": "Whenever a Space Pirate lands a killing blow on a Champion there is a chance to drop extra loot.",
+   "descriptionRaw": "Whenever a Space Pirate lands a killing blow on a Champion there is a chance to drop extra loot.<br><br><row>(@MinUnits@) @CoinDropChance@% for 1 gold</row><br><row>(@MinUnits@) @CoinDropChance@% for 1 gold and @ItemDropChance@% for a component item</row>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "50% for 1 gold",
+     "variables": {
+      "{0f4980a5}": 50.0,
+      "{c79d638b}": "null"
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": null,
+     "effect": "50% for 1 gold and 33% for a component item",
+     "variables": {
+      "{0f4980a5}": 50.0,
+      "{c79d638b}": 33.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Star Guardian",
+   "apiName": "StarGuardian",
+   "description": "Star Guardians' spellcasts grant Mana to other Star Guardians, spread among them.",
+   "descriptionRaw": "Star Guardians' spellcasts grant Mana to other Star Guardians, spread among them.<br><br><expandRow>(@MinUnits@) @ManaRestore@ Total Mana</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 3,
+     "maxUnits": 5,
+     "effect": "15 Total Mana",
+     "variables": {
+      "ManaRestore": 15.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": 8,
+     "effect": "25 Total Mana",
+     "variables": {
+      "ManaRestore": 25.0
+     }
+    },
+    {
+     "minUnits": 9,
+     "maxUnits": null,
+     "effect": "60 Total Mana",
+     "variables": {
+      "ManaRestore": 60.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Starship",
+   "apiName": "Starship",
+   "description": "Innate: Starships gain 40 mana per second, maneuver around the board, and are immune to movement impairing effects, but can't make Basic Attacks.",
+   "descriptionRaw": "Innate: Starships gain @ManaPerSecond@ mana per second, maneuver around the board, and are immune to movement impairing effects, but can't make Basic Attacks.",
+   "breakpoints": [
+    {
+     "minUnits": 1,
+     "maxUnits": null,
+     "effect": "variables: {f9f3a081}=40",
+     "variables": {
+      "{f9f3a081}": 40.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Vanguard",
+   "apiName": "Vanguard",
+   "description": "Vanguard champions gain bonus Armor.",
+   "descriptionRaw": "Vanguard champions gain bonus Armor.<br><br><expandRow>(@MinUnits@) @Armor@ Armor</expandRow>",
+   "breakpoints": [
+    {
+     "minUnits": 2,
+     "maxUnits": 3,
+     "effect": "125 Armor",
+     "variables": {
+      "Armor": 125.0
+     }
+    },
+    {
+     "minUnits": 4,
+     "maxUnits": 5,
+     "effect": "300 Armor",
+     "variables": {
+      "Armor": 300.0
+     }
+    },
+    {
+     "minUnits": 6,
+     "maxUnits": null,
+     "effect": "900 Armor",
+     "variables": {
+      "Armor": 900.0
+     }
+    }
+   ],
+   "unresolvedPlaceholders": []
+  }
+ ],
+ "items": [
+  {
+   "name": "B. F. Sword",
+   "apiName": null,
+   "id": 1,
+   "category": "component",
+   "recipe": [],
+   "stats": [
+    "15 AD"
+   ],
+   "description": "+15 Attack Damage",
+   "effects": {
+    "AD": 15.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Chain Vest",
+   "apiName": null,
+   "id": 5,
+   "category": "component",
+   "recipe": [],
+   "stats": [
+    "25 Armor"
+   ],
+   "description": "+25 Armor",
+   "effects": {
+    "Armor": 25.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Giant's Belt",
+   "apiName": null,
+   "id": 7,
+   "category": "component",
+   "recipe": [],
+   "stats": [
+    "200 HP"
+   ],
+   "description": "+200 Health",
+   "effects": {
+    "Health": 200.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Needlessly Large Rod",
+   "apiName": null,
+   "id": 3,
+   "category": "component",
+   "recipe": [],
+   "stats": [
+    "20 AP"
+   ],
+   "description": "+20% Spell Power",
+   "effects": {
+    "AP": 20.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Negatron Cloak",
+   "apiName": null,
+   "id": 6,
+   "category": "component",
+   "recipe": [],
+   "stats": [
+    "25 MR"
+   ],
+   "description": "+25 Magic Resist",
+   "effects": {
+    "MagicResist": 25.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Recurve Bow",
+   "apiName": null,
+   "id": 2,
+   "category": "component",
+   "recipe": [],
+   "stats": [
+    "15 Attack Speed %"
+   ],
+   "description": "+15% Attack Speed",
+   "effects": {
+    "AS": 15.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Sparring Gloves",
+   "apiName": null,
+   "id": 9,
+   "category": "component",
+   "recipe": [],
+   "stats": [
+    "10 Crit %"
+   ],
+   "description": "+10% Critical Strike Chance +10% Dodge Chance",
+   "effects": {
+    "CritChance": 10.0,
+    "{c4b5579c}": 10.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Spatula",
+   "apiName": null,
+   "id": 8,
+   "category": "component",
+   "recipe": [],
+   "stats": [],
+   "description": "It must do something...",
+   "effects": {
+    "{fe9818ef}": 5.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Tear of the Goddess",
+   "apiName": null,
+   "id": 4,
+   "category": "component",
+   "recipe": [],
+   "stats": [
+    "15 Mana"
+   ],
+   "description": "+15 Mana",
+   "effects": {
+    "Mana": 15.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Bloodthirster",
+   "apiName": null,
+   "id": 16,
+   "category": "completed",
+   "recipe": [
+    "B. F. Sword",
+    "Negatron Cloak"
+   ],
+   "stats": [
+    "15 AD",
+    "25 MR"
+   ],
+   "description": "Basic attacks heal the holder for 45% of the damage dealt.",
+   "effects": {
+    "AD": 15.0,
+    "LifeSteal": 45.0,
+    "MagicResist": 25.0,
+    "ShieldMax": 250.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Blue Buff",
+   "apiName": null,
+   "id": 44,
+   "category": "completed",
+   "recipe": [
+    "Tear of the Goddess",
+    "Tear of the Goddess"
+   ],
+   "stats": [
+    "30 Mana"
+   ],
+   "description": "After casting their spell, the wearer's Mana is set to 20. [Unique - Only One Per Champion]",
+   "effects": {
+    "Mana": 30.0,
+    "ManaRestore": 20.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Bramble Vest",
+   "apiName": null,
+   "id": 55,
+   "category": "completed",
+   "recipe": [
+    "Chain Vest",
+    "Chain Vest"
+   ],
+   "stats": [
+    "50 Armor"
+   ],
+   "description": "Negates bonus damage from incoming critical hits. On being hit by a Basic Attack, deal 100/140/200 magic damage to all nearby enemies (once every 2.5 seconds).",
+   "effects": {
+    "Armor": 50.0,
+    "ICD": 2.5,
+    "{156febb8}": 200.0,
+    "{1ee760be}": 100.0,
+    "{6688a0d5}": 100.0,
+    "{a3b999e9}": 140.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Chalice of Power",
+   "apiName": null,
+   "id": 46,
+   "category": "completed",
+   "recipe": [
+    "Negatron Cloak",
+    "Tear of the Goddess"
+   ],
+   "stats": [
+    "25 MR",
+    "15 Mana"
+   ],
+   "description": "When combat begins, the wearer and all allies within 1 hex in the same row gain 30 Spell Power for 20 seconds.",
+   "effects": {
+    "MagicResist": 25.0,
+    "Mana": 15.0,
+    "ManaRestore": 10.0,
+    "{9b1e8f37}": 1.0,
+    "{9fd37c1c}": 20.0,
+    "{d49caf5d}": 30.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Deathblade",
+   "apiName": null,
+   "id": 11,
+   "category": "completed",
+   "recipe": [
+    "B. F. Sword",
+    "B. F. Sword"
+   ],
+   "stats": [
+    "30 AD"
+   ],
+   "description": "Contributing to a kill grants the holder +25 Attack Damage for the rest of combat. This effect can stack any number of times (starting at 1).",
+   "effects": {
+    "AD": 30.0,
+    "ADPerStack": 25.0,
+    "{ad68ce80}": 1.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Dragon's Claw",
+   "apiName": null,
+   "id": 66,
+   "category": "completed",
+   "recipe": [
+    "Negatron Cloak",
+    "Negatron Cloak"
+   ],
+   "stats": [
+    "50 MR"
+   ],
+   "description": "Reduces incoming magic damage by 50%.",
+   "effects": {
+    "MagicReduction": 50.0,
+    "MagicResist": 50.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Frozen Heart",
+   "apiName": null,
+   "id": 45,
+   "category": "completed",
+   "recipe": [
+    "Tear of the Goddess",
+    "Chain Vest"
+   ],
+   "stats": [
+    "25 Armor",
+    "15 Mana"
+   ],
+   "description": "Reduces the Attack Speed of nearby enemies by 50%. Each Frozen Heart a champion carries beyond the first increases the radius of this effect.",
+   "effects": {
+    "Armor": 25.0,
+    "AttackSpeedSlow": 50.0,
+    "Mana": 15.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Giant Slayer",
+   "apiName": null,
+   "id": 12,
+   "category": "completed",
+   "recipe": [
+    "B. F. Sword",
+    "Recurve Bow"
+   ],
+   "stats": [
+    "15 AD",
+    "15 Attack Speed %"
+   ],
+   "description": "The holder's spells and basic attacks do 20% bonus damage. If the target has more than 1750 maximum Health, the bonus increases to 80%.",
+   "effects": {
+    "AD": 15.0,
+    "AS": 15.0,
+    "HealthThreshold": 1750.0,
+    "{a79cf66e}": 18.0,
+    "{b8ae7546}": 80.0,
+    "{deada01e}": 20.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Guardian Angel",
+   "apiName": null,
+   "id": 15,
+   "category": "completed",
+   "recipe": [
+    "B. F. Sword",
+    "Chain Vest"
+   ],
+   "stats": [
+    "15 AD",
+    "25 Armor"
+   ],
+   "description": "Prevents the wearer's first death, placing them in stasis instead. After 2 seconds, they return with 400 Health and shed all negative effects.",
+   "effects": {
+    "AD": 15.0,
+    "Armor": 25.0,
+    "HealthRestore": 400.0,
+    "{c425872e}": 2.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Guinsoo's Rageblade",
+   "apiName": null,
+   "id": 23,
+   "category": "completed",
+   "recipe": [
+    "Recurve Bow",
+    "Needlessly Large Rod"
+   ],
+   "stats": [
+    "20 AP",
+    "15 Attack Speed %"
+   ],
+   "description": "Basic Attacks grant +5% bonus Attack Speed for the rest of combat. This effect can stack any number of times.",
+   "effects": {
+    "AP": 20.0,
+    "AS": 15.0,
+    "AttackSpeedPerStack": 5.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Hand Of Justice",
+   "apiName": null,
+   "id": 49,
+   "category": "completed",
+   "recipe": [
+    "Tear of the Goddess",
+    "Sparring Gloves"
+   ],
+   "stats": [
+    "15 Mana",
+    "10 Crit %"
+   ],
+   "description": "At the beginning of each planning phase, the wearer gains one of the following:Basic attacks and spells deal +45% Damage. Basic attacks and spells heal for 45% of damage dealt.",
+   "effects": {
+    "CritChance": 10.0,
+    "Mana": 15.0,
+    "{a60806db}": 66.66699981689453,
+    "{ae49cc70}": 45.0,
+    "{c4b5579c}": 10.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Hextech Gunblade",
+   "apiName": null,
+   "id": 13,
+   "category": "completed",
+   "recipe": [
+    "B. F. Sword",
+    "Needlessly Large Rod"
+   ],
+   "stats": [
+    "15 AD",
+    "20 AP"
+   ],
+   "description": "The holder's spells heal them for 45% of the damage dealt. Excess healing fuels a shield that protects the holder against up to 400 damage.",
+   "effects": {
+    "AD": 15.0,
+    "AP": 20.0,
+    "ShieldMax": 400.0,
+    "{ad16f688}": 45.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Infinity Edge",
+   "apiName": null,
+   "id": 19,
+   "category": "completed",
+   "recipe": [
+    "B. F. Sword",
+    "Sparring Gloves"
+   ],
+   "stats": [
+    "15 AD",
+    "100 Crit %"
+   ],
+   "description": "The holder gains 20% bonus critical strike damage, and their critical strike chance becomes 100%. [Unique - Only One Per Champion]",
+   "effects": {
+    "AD": 15.0,
+    "CritChance": 100.0,
+    "{eac3d5c4}": 20.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Ionic Spark",
+   "apiName": null,
+   "id": 36,
+   "category": "completed",
+   "recipe": [
+    "Needlessly Large Rod",
+    "Negatron Cloak"
+   ],
+   "stats": [
+    "20 AP",
+    "25 MR"
+   ],
+   "description": "Enemies within 2 hexes have their Magic Resist reduced by 40% (does not stack). When they cast a spell, they are zapped taking magic damage equal to 225% of their max Mana.",
+   "effects": {
+    "AP": 20.0,
+    "Damage": 250.0,
+    "MagicResist": 25.0,
+    "{9b1e8f37}": 2.0,
+    "{df6f64b9}": 225.0,
+    "{fe079f34}": 40.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Jeweled Gauntlet",
+   "apiName": null,
+   "id": 39,
+   "category": "completed",
+   "recipe": [
+    "Needlessly Large Rod",
+    "Sparring Gloves"
+   ],
+   "stats": [
+    "20 AP",
+    "20 Crit %"
+   ],
+   "description": "The holder's spells can cause critical hits, and the holder gains +30% bonus critical strike damage.",
+   "effects": {
+    "AP": 20.0,
+    "CritChance": 20.0,
+    "{353ede36}": 30.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Last Whisper",
+   "apiName": null,
+   "id": 29,
+   "category": "completed",
+   "recipe": [
+    "Recurve Bow",
+    "Sparring Gloves"
+   ],
+   "stats": [
+    "15 Attack Speed %",
+    "20 Crit %"
+   ],
+   "description": "When the wearer inflicts a critical hit, the target's Armor is reduced by 75% for 3 seconds. This effect does not stack. [Unique - Only One Per Champion]",
+   "effects": {
+    "AS": 15.0,
+    "CritChance": 20.0,
+    "{5079c7a2}": 75.0,
+    "{cc9fefa7}": 3.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Locket of the Iron Solari",
+   "apiName": null,
+   "id": 35,
+   "category": "completed",
+   "recipe": [
+    "Needlessly Large Rod",
+    "Chain Vest"
+   ],
+   "stats": [
+    "20 AP",
+    "25 Armor"
+   ],
+   "description": "When combat begins, the wearer and all allies within 2 hexes in the same row gain a shield that blocks 250/300/375 damage for 8 seconds.",
+   "effects": {
+    "AP": 20.0,
+    "Armor": 25.0,
+    "ShieldDuration": 8.0,
+    "{0d46330d}": 300.0,
+    "{6fb9af6a}": 250.0,
+    "{829e6cec}": 375.0,
+    "{9b1e8f37}": 2.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Luden's Echo",
+   "apiName": null,
+   "id": 34,
+   "category": "completed",
+   "recipe": [
+    "Needlessly Large Rod",
+    "Tear of the Goddess"
+   ],
+   "stats": [
+    "20 AP",
+    "15 Mana"
+   ],
+   "description": "When the wearer casts their spell, the first target dealt magic damage and up to 3 nearby enemies are dealt an additional 200 magic damage.",
+   "effects": {
+    "AP": 20.0,
+    "Bounces": 4.0,
+    "Damage": 200.0,
+    "Mana": 15.0,
+    "{93d13af6}": 3.0,
+    "{9b1e8f37}": 2.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Morellonomicon",
+   "apiName": null,
+   "id": 37,
+   "category": "completed",
+   "recipe": [
+    "Needlessly Large Rod",
+    "Giant's Belt"
+   ],
+   "stats": [
+    "20 AP",
+    "200 HP"
+   ],
+   "description": "When the wearer deals damage with their spell, they burn the target, dealing 25% of the target's Maximum Health as true damage over 10 seconds and reducing healing by 50% for the duration of the burn. [Unique - Only One Per Champion]",
+   "effects": {
+    "AP": 20.0,
+    "Health": 200.0,
+    "MonsterCap": 100.0,
+    "TicksPerSecond": 1.0,
+    "{2161bfa2}": 50.0,
+    "{57706a69}": 25.0,
+    "{97e52ce8}": 10.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Quicksilver",
+   "apiName": null,
+   "id": 69,
+   "category": "completed",
+   "recipe": [
+    "Sparring Gloves",
+    "Negatron Cloak"
+   ],
+   "stats": [
+    "25 MR"
+   ],
+   "description": "The wearer is immune to crowd control for the first 10 seconds of combat. [Unique - Only One Per Champion]",
+   "effects": {
+    "MagicResist": 25.0,
+    "{a2b76524}": 10.0,
+    "{c4b5579c}": 20.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Rabadon's Deathcap",
+   "apiName": null,
+   "id": 33,
+   "category": "completed",
+   "recipe": [
+    "Needlessly Large Rod",
+    "Needlessly Large Rod"
+   ],
+   "stats": [
+    "40 AP"
+   ],
+   "description": "Grants +50% Spell Power Amplification. (All sources of Spell Power are 50% more effective)",
+   "effects": {
+    "AP": 40.0,
+    "{ce132611}": 50.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Rapid Firecannon",
+   "apiName": null,
+   "id": 22,
+   "category": "completed",
+   "recipe": [
+    "Recurve Bow",
+    "Recurve Bow"
+   ],
+   "stats": [
+    "30 Attack Speed %"
+   ],
+   "description": "The holder gains 200% Attack Range, and their Basic Attacks can't miss.",
+   "effects": {
+    "AS": 30.0,
+    "{c270990a}": 200.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Red Buff",
+   "apiName": null,
+   "id": 57,
+   "category": "completed",
+   "recipe": [
+    "Chain Vest",
+    "Giant's Belt"
+   ],
+   "stats": [
+    "25 Armor",
+    "200 HP"
+   ],
+   "description": "The holder's Basic Attacks burn the target on-hit, dealing 10% of the target's maximum Health as true damage over 4 seconds, and reducing healing by 50%, for that duration. [Unique - Only One Per Champion]",
+   "effects": {
+    "Armor": 25.0,
+    "Health": 200.0,
+    "MonsterCap": 100.0,
+    "TicksPerSecond": 1.0,
+    "{2161bfa2}": 50.0,
+    "{57706a69}": 10.0,
+    "{8bfdb3fa}": 2.0,
+    "{97e52ce8}": 4.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Redemption",
+   "apiName": null,
+   "id": 47,
+   "category": "completed",
+   "recipe": [
+    "Tear of the Goddess",
+    "Giant's Belt"
+   ],
+   "stats": [
+    "200 HP",
+    "15 Mana"
+   ],
+   "description": "When the wearer dies, allies are healed for 800 Health.",
+   "effects": {
+    "Health": 200.0,
+    "HealthRestore": 800.0,
+    "Mana": 15.0,
+    "{1e0630e9}": 25.0,
+    "{5ffbbd48}": 50.0,
+    "{8f954b18}": 30.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Runaan's Hurricane",
+   "apiName": null,
+   "id": 26,
+   "category": "completed",
+   "recipe": [
+    "Negatron Cloak",
+    "Recurve Bow"
+   ],
+   "stats": [
+    "15 Attack Speed %",
+    "25 MR"
+   ],
+   "description": "Basic Attacks fire a bolt at another nearby enemy, dealing 75% of the wearer's Attack Damage and applying on-hit effects.",
+   "effects": {
+    "AS": 15.0,
+    "AdditionalTargets": 1.0,
+    "MagicResist": 25.0,
+    "{276ba2c8}": 75.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Shroud of Stillness",
+   "apiName": null,
+   "id": 59,
+   "category": "completed",
+   "recipe": [
+    "Chain Vest",
+    "Sparring Gloves"
+   ],
+   "stats": [
+    "25 Armor"
+   ],
+   "description": "When combat begins, shoots a beam straight ahead that delays affected enemies' first spellcast, increasing their max Mana by 33% until they cast. [Unique - Only One Per Champion]",
+   "effects": {
+    "Armor": 25.0,
+    "{4516a18d}": 60.0,
+    "{a861afa0}": 33.0,
+    "{c4b5579c}": 20.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Spear of Shojin",
+   "apiName": null,
+   "id": 14,
+   "category": "completed",
+   "recipe": [
+    "B. F. Sword",
+    "Tear of the Goddess"
+   ],
+   "stats": [
+    "15 AD",
+    "15 Mana"
+   ],
+   "description": "After first casting their spell, the holder's basic attacks restore 18% of their maximum mana on-hit.",
+   "effects": {
+    "AD": 15.0,
+    "Mana": 15.0,
+    "{69fff1ab}": 18.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Statikk Shiv",
+   "apiName": null,
+   "id": 24,
+   "category": "completed",
+   "recipe": [
+    "Recurve Bow",
+    "Tear of the Goddess"
+   ],
+   "stats": [
+    "15 Attack Speed %",
+    "15 Mana"
+   ],
+   "description": "Every third Basic Attack from the wearer deals 85 magic damage to 3/4/5 enemies, and 85 true damage if they are shielded or crowd-controlled.",
+   "effects": {
+    "AS": 15.0,
+    "BonusDamage": 85.0,
+    "Damage": 85.0,
+    "Mana": 15.0,
+    "{12a15e9e}": 4.0,
+    "{440f813d}": 3.0,
+    "{79e2ec7b}": 5.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Sword Breaker",
+   "apiName": null,
+   "id": 56,
+   "category": "completed",
+   "recipe": [
+    "Chain Vest",
+    "Negatron Cloak"
+   ],
+   "stats": [
+    "25 Armor",
+    "25 MR"
+   ],
+   "description": "The holder's basic attacks have a 33% chance to disarm the target for 3 seconds, preventing that enemy from making basic attacks.",
+   "effects": {
+    "Armor": 25.0,
+    "DisarmDuration": 3.0,
+    "ICD": 3.0,
+    "MagicResist": 25.0,
+    "{2426ea7e}": 33.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Thief's Gloves",
+   "apiName": null,
+   "id": 99,
+   "category": "completed",
+   "recipe": [
+    "Sparring Gloves",
+    "Sparring Gloves"
+   ],
+   "stats": [
+    "20 Crit %"
+   ],
+   "description": "At the beginning of each planning phase, the wearer equips 2 temporary items. Temporary items increase in power based on your player level. [Consumes Three Item Slots]",
+   "effects": {
+    "CritChance": 20.0,
+    "{c4b5579c}": 20.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Titan's Resolve",
+   "apiName": null,
+   "id": 25,
+   "category": "completed",
+   "recipe": [
+    "Chain Vest",
+    "Recurve Bow"
+   ],
+   "stats": [
+    "15 Attack Speed %",
+    "25 Armor"
+   ],
+   "description": "When the wearer takes damage or inflicts a critical hit, they gain a 2% stacking damage bonus. Stacks up to 25 times, at which point the wearer gains 25 Armor and Magic Resistance, and increases in size.",
+   "effects": {
+    "AS": 15.0,
+    "Armor": 25.0,
+    "{9396f00d}": 25.0,
+    "{b55019fa}": 25.0,
+    "{d50b4559}": 2.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Trap Claw",
+   "apiName": null,
+   "id": 79,
+   "category": "completed",
+   "recipe": [
+    "Giant's Belt",
+    "Sparring Gloves"
+   ],
+   "stats": [
+    "200 HP"
+   ],
+   "description": "Blocks the first enemy spell that hits the wearer, and stuns the spell's caster for 4 seconds.",
+   "effects": {
+    "Health": 200.0,
+    "StunDuration": 4.0,
+    "{c4b5579c}": 20.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Warmog's Armor",
+   "apiName": null,
+   "id": 77,
+   "category": "completed",
+   "recipe": [
+    "Giant's Belt",
+    "Giant's Belt"
+   ],
+   "stats": [
+    "400 HP"
+   ],
+   "description": "Grants 1000 bonus Health (including components).",
+   "effects": {
+    "BonusHealth": 600.0,
+    "Health": 400.0,
+    "HealthRegen": 5.0,
+    "{0c90f194}": 150.0,
+    "{452fd23c}": 1000.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Zeke's Herald",
+   "apiName": null,
+   "id": 17,
+   "category": "completed",
+   "recipe": [
+    "B. F. Sword",
+    "Giant's Belt"
+   ],
+   "stats": [
+    "15 AD",
+    "200 HP"
+   ],
+   "description": "When combat begins, the wearer and all allies within 1 hexes in the same row gain +30% Attack Speed for the rest of combat.",
+   "effects": {
+    "AD": 15.0,
+    "AttackSpeed": 30.0,
+    "Health": 200.0,
+    "{9b1e8f37}": 1.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Zephyr",
+   "apiName": null,
+   "id": 67,
+   "category": "completed",
+   "recipe": [
+    "Negatron Cloak",
+    "Giant's Belt"
+   ],
+   "stats": [
+    "25 MR",
+    "200 HP"
+   ],
+   "description": "When combat begins, the wearer summons a whirlwind on the opposite side of the arena that removes the closest enemy from combat for 5 seconds. [Unique - Only One Per Champion]",
+   "effects": {
+    "Health": 200.0,
+    "MagicResist": 25.0,
+    "{510fdb6a}": 5.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Zz'Rot Portal",
+   "apiName": null,
+   "id": 27,
+   "category": "completed",
+   "recipe": [
+    "Recurve Bow",
+    "Giant's Belt"
+   ],
+   "stats": [
+    "15 Attack Speed %",
+    "200 HP"
+   ],
+   "description": "When the wearer dies, a Construct with 1500/2250/3000 Health arises to continue the fight.",
+   "effects": {
+    "AS": 15.0,
+    "Health": 200.0,
+    "{0707495a}": 70.0,
+    "{37b0144c}": 1500.0,
+    "{86646c65}": 2250.0,
+    "{f207284b}": 0.75,
+    "{f6edd39e}": 3000.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Battlecast Plating",
+   "apiName": null,
+   "id": 38,
+   "category": "emblem",
+   "recipe": [
+    "Needlessly Large Rod",
+    "Spatula"
+   ],
+   "stats": [
+    "20 AP"
+   ],
+   "description": "The wearer gains the Battlecast trait. [Unique - Only One Per Champion]",
+   "effects": {
+    "AP": 20.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Blade of the Ruined King",
+   "apiName": null,
+   "id": 18,
+   "category": "emblem",
+   "recipe": [
+    "B. F. Sword",
+    "Spatula"
+   ],
+   "stats": [
+    "15 AD"
+   ],
+   "description": "The wearer gains the Blademaster trait. [Unique - Only One Per Champion]",
+   "effects": {
+    "AD": 15.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Celestial Orb",
+   "apiName": null,
+   "id": 68,
+   "category": "emblem",
+   "recipe": [
+    "Spatula",
+    "Negatron Cloak"
+   ],
+   "stats": [
+    "25 MR"
+   ],
+   "description": "The wearer gains the Celestial trait. [Unique - Only One Per Champion]",
+   "effects": {
+    "MagicResist": 25.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Dark Star's Heart",
+   "apiName": null,
+   "id": 89,
+   "category": "emblem",
+   "recipe": [
+    "Sparring Gloves",
+    "Spatula"
+   ],
+   "stats": [
+    "10 Crit %"
+   ],
+   "description": "The wearer gains the Dark Star trait. [Unique - Only One Per Champion]",
+   "effects": {
+    "CritChance": 10.0,
+    "{c4b5579c}": 10.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Force of Nature",
+   "apiName": null,
+   "id": 88,
+   "category": "emblem",
+   "recipe": [
+    "Spatula",
+    "Spatula"
+   ],
+   "stats": [],
+   "description": "Wearer's team gains +1 maximum team size.",
+   "effects": {
+    "{ec9a04d1}": 1.0
+   },
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Infiltrator's Talons",
+   "apiName": null,
+   "id": 28,
+   "category": "emblem",
+   "recipe": [
+    "Recurve Bow",
+    "Spatula"
+   ],
+   "stats": [
+    "15 Attack Speed %"
+   ],
+   "description": "The wearer gains the Infiltrator trait. [Unique - Only One Per Champion]",
+   "effects": {
+    "AS": 15.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Protector's Chestguard",
+   "apiName": null,
+   "id": 78,
+   "category": "emblem",
+   "recipe": [
+    "Spatula",
+    "Giant's Belt"
+   ],
+   "stats": [
+    "200 HP"
+   ],
+   "description": "The wearer gains the Protector trait. [Unique - Only One Per Champion]",
+   "effects": {
+    "Health": 200.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Rebel Medal",
+   "apiName": null,
+   "id": 58,
+   "category": "emblem",
+   "recipe": [
+    "Chain Vest",
+    "Spatula"
+   ],
+   "stats": [
+    "25 Armor"
+   ],
+   "description": "The wearer gains the Rebel trait. [Unique - Only One Per Champion]",
+   "effects": {
+    "Armor": 25.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Star Guardian's Charm",
+   "apiName": null,
+   "id": 48,
+   "category": "emblem",
+   "recipe": [
+    "Tear of the Goddess",
+    "Spatula"
+   ],
+   "stats": [
+    "15 Mana"
+   ],
+   "description": "The wearer gains the Star Guardian trait. [Unique - Only One Per Champion]",
+   "effects": {
+    "Mana": 15.0
+   },
+   "unique": true,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Neeko's Help",
+   "apiName": null,
+   "id": 200,
+   "category": "other",
+   "recipe": [],
+   "stats": [],
+   "description": "Place on a champion to create a one-star copy of them. [CONSUMABLE - This item disappears when used.]",
+   "effects": {},
+   "unique": false,
+   "unresolvedPlaceholders": []
+  },
+  {
+   "name": "Unusable Slot",
+   "apiName": null,
+   "id": 999,
+   "category": "other",
+   "recipe": [],
+   "stats": [],
+   "description": "This slot can't hold an item.",
+   "effects": {},
+   "unique": false,
+   "unresolvedPlaceholders": []
+  }
+ ],
+ "augments": []
+}

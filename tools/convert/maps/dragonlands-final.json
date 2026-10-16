@@ -1,0 +1,10 @@
+{
+ "drg:Vulcanusmon": "NC_Vulcanusmon",
+ "drg:Devidramon": "NC_Devidramon",
+ "drg:GoldVeedramon": "RA_GoldVeedramon",
+ "drg:Crabmon": "TS_Crabmon",
+ "drg:Penguinmon": "TS_Penguinmon",
+ "_form": {
+  "NC_Vulcanusmon": "Vulcanusmon", "NC_Devidramon": "Devidramon", "RA_GoldVeedramon": "GoldVeedramon"
+ }
+}

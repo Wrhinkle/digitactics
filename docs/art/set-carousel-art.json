@@ -1,0 +1,210 @@
+{
+  "created": "2026-10-16",
+  "workflow": "Historical Claude-coordinated Codex CLI Astra image generation, windowsHide true, maximum 3 workers",
+  "model": "gpt-6-astra",
+  "style": "STYLE: official Digimon franchise key art, in the look of the Digimon Story: Cyber Sleuth / Hacker's Memory promotional illustrations and the Digimon Adventure anime key visuals. Clean 2D anime illustration: crisp, confident black line art with varied line weight; flat cel shading with one or two hard-edged shadow tones and small sharp highlights; bright, saturated, clean colors; strong graphic design with clear shapes and plenty of breathing room. The Digimon must be drawn on-model, matching the attached reference renders exactly in anatomy, proportions, markings and colors, translated from 3D into 2D anime line art. AVOID: painterly or oil-painting brushwork, photoreal or hyper-detailed AI rendering, orange-and-teal cinematic color grading, lens flares, heavy fog or volumetric god rays, dark or muddy lighting, generic fantasy castles, generic western dragons, made-up unnamed creatures, extra Digimon not requested, humans. No words, no letters, no readable text, no logos, no watermark; any code decoration is only abstract 0/1 digits and hex-like dashes.",
+  "notes": "Nine new portraits generated using the recovered Claude-to-Astra Codex CLI coordination workflow. Faction Wars, Auto Chess and Chaos retain the previously approved Astra portraits unchanged. Arcane and Underlords received imagegen framing revisions. Source PNGs, labeled reference sheets, exact full prompts, worker logs and runner remain in the local task evidence directory .codex-safety/digitactics-carousel/art. Images are fan-game key art; no affiliation is implied.",
+  "entries": [
+    {
+      "id": "faction-wars",
+      "asset": "assets/client/mode-faction-wars.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 134218,
+      "sha256": "51105f1320efa4aebce4489afd987b4134037d516d0f704822aa944670540e1e",
+      "source": "mode-faction-wars.png",
+      "provenance": "Approved historical Astra portrait reused unchanged",
+      "prompt": "Vertical 2:3 game-mode card, composed like the classic Digimon Adventure evolution key visuals. Draw these exact Digimon from the attached reference sheet(s), on-model (the labels name them; do not draw the labels): the Agumon line stacked as a rising evolution: Agumon (short, chunky, toddler-proportioned yellow dinosaur, very big head, big green eyes, three white claws per hand) small at the bottom front charging forward, Greymon (big orange dinosaur with blue stripes and a brown bony skull helmet with horns) larger behind him, MetalGreymon (orange dinosaur with a steel skull helmet, a metal cyborg left arm and chest armor) largest at the top, arm cannon raised. Background: bright white with a pale cyan digital space, angular glitch slices and offset RGB bars in cyan, magenta and lime green, a moderate number of square data fragments, a thin circular digital-gate ring, faint vertical streams of 0/1 digits, with a cyan-and-white digivolution light spiral rising behind them. Bright, high-key, crisp black outlines.",
+      "revisionPrompt": null,
+      "referenceSheets": [
+        "ref-agumon-line.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "autochess",
+      "asset": "assets/client/mode-autochess.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 123636,
+      "sha256": "765709cd7721df0f87efe56a23fc69c2cc7921ab00269c0a4f00a98abdb5c6d1",
+      "source": "mode-autochess.png",
+      "provenance": "Approved historical Astra portrait reused unchanged",
+      "prompt": "Vertical 2:3 game-mode card, Digimon Story: Cyber Sleuth key art. Draw these exact Digimon from the attached reference sheet(s), on-model (the labels name them; do not draw the labels): Beelzemon (lean humanoid demon biker with a clearly visible pale human-like lower face and grin, a black helmet-mask over the top of his head with three red eyes, long spiky purple hair, black leather biker suit with belts and a fur collar, a sawed-off shotgun) large in the upper half, crouched on top of a giant chess-piece pedestal, shotgun over his shoulder; ExVeemon (tall blue dragon with a white belly, X mark on his chest, small wings), WereGarurumon (blue-white werewolf in torn jeans with a belt) standing on checkerboard squares below him, ready to fight. A clean white-and-cyan checkerboard floor in perspective. Background: bright white with a pale cyan digital space, angular glitch slices and offset RGB bars in cyan, magenta and lime green, a moderate number of square data fragments, a thin circular digital-gate ring, faint vertical streams of 0/1 digits, with a few magenta accents.",
+      "revisionPrompt": null,
+      "referenceSheets": [
+        "ref-ac.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "chaos",
+      "asset": "assets/client/mode-chaos.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 150430,
+      "sha256": "080c86e72b63319d0864f151b654b744f7bb71733dd9279997dcfc5dead9937e",
+      "source": "mode-chaos.png",
+      "provenance": "Approved historical Astra portrait reused unchanged",
+      "prompt": "Vertical 2:3 game-mode card for a \"Chaos\" mode that mixes every set, Digimon Story: Cyber Sleuth key art. Draw these exact Digimon from the attached reference sheet(s), on-model (the labels name them; do not draw the labels): Agumon (short, chunky, toddler-proportioned yellow dinosaur, very big head, big green eyes, three white claws per hand), Gabumon (small and stocky, wearing his white-and-blue striped fur pelt with a yellow horn, yellow body), Guilmon (red bipedal dinosaur with black hazard-symbol markings, white belly, yellow eyes, small ear-wings), Veemon (small blue dragon, white belly, yellow V mark on forehead, big red eyes), Terriermon (small cream-white bunny-dog with very long green-tipped ears and one small horn), Gaomon (small blue dog with red boxing gloves and a red headband), Patamon (round orange hamster-like body, cream belly, two big orange ear-wings, blue eyes), Renamon (slim bipedal yellow fox, white chest fur, purple arm sleeves with yin-yang marks) tumbling and swirling together inside a big spiral vortex of glitching data, at different sizes and angles, all excited, none overlapping faces. The vortex is made of bright glitch slices, offset RGB bars in cyan, magenta and lime green, square data fragments and 0/1 digit streams, on a bright white background.",
+      "revisionPrompt": null,
+      "referenceSheets": [
+        "ref-eight.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "galaxies",
+      "asset": "assets/client/mode-galaxies.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 184404,
+      "sha256": "106df76f75c9301e22b2071ff3c961ace7d787f8d9d35ed953a6d631e7a5f2c4",
+      "source": "mode-galaxies.png",
+      "provenance": "New Astra CLI imagegen output",
+      "prompt": "Use the image generation tool to create a finished raster image, not code or a drawn SVG. Use case: stylized-concept. Portrait 2:3 selection key art for the DigiTactics galaxies set. Reference sheets label the exact characters; use those as identity references only, do not reproduce sheet labels. Draw ONLY these named Digimon: Hawkmon (red-and-white bird with one feather held by a headband), Patamon (round orange flying hamster with large ear-wings and cream belly), Gomamon (white seal with orange mohawk and purple markings). Scene: The three discover a small floating observatory platform above a lavender planet. Hawkmon flies at the top, Patamon glides beside him, Gomamon balances on the platform below. Huge crisp orbital arcs, distant round moons and violet starfield graphic shapes. Lavender, ultramarine and pale yellow; joyful cosmic exploration. Full bodies with generous margin inside all four edges; main group central upper two-thirds, heads below top 10 percent; lower part may contain setting but no text area required. Clearly recognizable faithful character anatomy. No titles, letters, words, logos or watermark.",
+      "revisionPrompt": null,
+      "referenceSheets": [
+        "ref-flyers.png",
+        "ref-adventure.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "fates",
+      "asset": "assets/client/mode-fates.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 248366,
+      "sha256": "6525dcf35536a39aa0517faddfd088d0529915a1b2c36db25dff3ae0017ea0ab",
+      "source": "mode-fates.png",
+      "provenance": "New Astra CLI imagegen output",
+      "prompt": "Use the image generation tool to create a finished raster image, not code or a drawn SVG. Use case: stylized-concept. Portrait 2:3 selection key art for the DigiTactics fates set. Reference sheets label the exact characters; use those as identity references only, do not reproduce sheet labels. Draw ONLY these named Digimon: Renamon (slender yellow bipedal fox, white chest fur, purple sleeves with yin-yang symbols), Gabumon (small yellow creature wearing white and blue striped wolf pelt with one yellow horn), Palmon (small green plant creature, pink flower atop head and vine fingers). Scene: A quiet moonlit forest shrine with hanging paper charms without writing, pink blossom branches and a pale crescent moon. Renamon guards the arch above Gabumon and Palmon following a path of stepping stones. Mint jade, blossom pink and silver; a story of partners and destiny. Full bodies with generous margin inside all four edges; main group central upper two-thirds, heads below top 10 percent; lower part may contain setting but no text area required. Clearly recognizable faithful character anatomy. No titles, letters, words, logos or watermark.",
+      "revisionPrompt": null,
+      "referenceSheets": [
+        "ref-rookies.png",
+        "ref-adventure.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "reckoning",
+      "asset": "assets/client/mode-reckoning.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 228618,
+      "sha256": "309d44051e0131bac87e5532fc3eff33172023c77df39806128fa5bb7cd0dc28",
+      "source": "mode-reckoning.png",
+      "provenance": "New Astra CLI imagegen output",
+      "prompt": "Use the image generation tool to create a finished raster image, not code or a drawn SVG. Use case: stylized-concept. Portrait 2:3 selection key art for the DigiTactics reckoning set. Reference sheets label the exact characters; use those as identity references only, do not reproduce sheet labels. Draw ONLY these named Digimon: Angemon (helmet covering eyes, white bodysuit with purple ribbons, six white feather wings, golden staff), Beelzemon (black three-red-eye helmet, visible pale human lower face, spiky purple hair, black leather biker suit, shotgun). Scene: A dramatic diagonal confrontation between radiant Angemon upper left and Beelzemon lower right on separated pale stone platforms. The background splits into white-gold sunrise and violet thorn-like digital corruption. Distinct silhouettes, neither attacks the viewer; bold light-versus-shadow graphic composition, gold and violet, no atmospheric glow wash. Full bodies with generous margin inside all four edges; main group central upper two-thirds, heads below top 10 percent; lower part may contain setting but no text area required. Clearly recognizable faithful character anatomy. No titles, letters, words, logos or watermark.",
+      "revisionPrompt": null,
+      "referenceSheets": [
+        "ref-champions.png",
+        "ref-ac.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "gizmos",
+      "asset": "assets/client/mode-gizmos.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 200288,
+      "sha256": "a4f57bab5bada830694c9e75f015843cb1ea6b24de616c50a8be4f164da88c50",
+      "source": "mode-gizmos.png",
+      "provenance": "New Astra CLI imagegen output",
+      "prompt": "Use the image generation tool to create a finished raster image, not code or a drawn SVG. Use case: stylized-concept. Portrait 2:3 selection key art for the DigiTactics gizmos set. Reference sheets label the exact characters; use those as identity references only, do not reproduce sheet labels. Draw ONLY these named Digimon: Machinedramon (massive grey mechanical dragon, two immense cylindrical back cannons, red eyes), Terriermon (small cream bunny-dog with very long green-tipped ears and small forehead horn). Scene: A bright mechanical workshop with mustard yellow gantry cranes, giant precise gear shapes, and clean steel-blue workbenches. Machinedramon stands as the imposing completed invention while tiny Terriermon on a foreground stool examines a floating hexagonal upgrade component. Warm yellow, steel grey and royal blue. Playful invention and mechanical scale, all parts framed safely. Full bodies with generous margin inside all four edges; main group central upper two-thirds, heads below top 10 percent; lower part may contain setting but no text area required. Clearly recognizable faithful character anatomy. No titles, letters, words, logos or watermark.",
+      "revisionPrompt": null,
+      "referenceSheets": [
+        "ref-ac.png",
+        "ref-tamers.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "dragonlands",
+      "asset": "assets/client/mode-dragonlands.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 243506,
+      "sha256": "c3ef0c98281e682a70150e89bd3a671408acd9e454cec32864cf9d3c2d701976",
+      "source": "mode-dragonlands.png",
+      "provenance": "New Astra CLI imagegen output",
+      "prompt": "Use the image generation tool to create a finished raster image, not code or a drawn SVG. Use case: stylized-concept. Portrait 2:3 selection key art for the DigiTactics dragonlands set. Reference sheets label the exact characters; use those as identity references only, do not reproduce sheet labels. Draw ONLY these named Digimon: Goldramon (white and gold holy dragon, golden armored arms, broad translucent wings), Slayerdramon (silver-white armored dragon knight, long flexible sword), Coredramon Blue (blue dragon, red spikes, tan wing membranes). Scene: Three dragon Digimon stand together on layered high mountain terraces. Goldramon rears at the top against a clear turquoise sky, Slayerdramon stands at middle left with blade curved safely inward, Coredramon Blue climbs foreground rocks. Cream clouds, jade crags, cobalt and gold. Epic vertical height and adventurous clarity, no generic western dragons. Full bodies with generous margin inside all four edges; main group central upper two-thirds, heads below top 10 percent; lower part may contain setting but no text area required. Clearly recognizable faithful character anatomy. No titles, letters, words, logos or watermark.",
+      "revisionPrompt": null,
+      "referenceSheets": [
+        "ref-drg.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "arcane",
+      "asset": "assets/client/mode-arcane.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 252334,
+      "sha256": "1f40bcb7c17144867defef515cdaea62a6134f05b130c05ee51ea55e4f22c055",
+      "source": "mode-arcane-v2.png",
+      "provenance": "New Astra CLI imagegen output",
+      "prompt": "Use the image generation tool to create a finished raster image, not code or a drawn SVG. Use case: stylized-concept. Portrait 2:3 selection key art for the DigiTactics arcane set. Reference sheets label the exact characters; use those as identity references only, do not reproduce sheet labels. Draw ONLY these named Digimon: Beelzemon (three-red-eye black helmet, visible pale human lower face, purple spiky hair, black leather biker suit and shotgun), Renamon (slender yellow bipedal fox, white chest fur, purple yin-yang arm sleeves), Gaomon (small blue dog with red boxing gloves and red headband). Scene: A layered Kowloon digital city alley with magenta inset windows and turquoise geometric walkways. Beelzemon crouches atop a high ledge, Renamon stands poised on a lower walkway, Gaomon punches a small faceted violet anomaly suspended between them. Strong asymmetrical zigzag composition, plum, pink, turquoise; urban rebellion, no signs or lettering. Full bodies with generous margin inside all four edges; main group central upper two-thirds, heads below top 10 percent; lower part may contain setting but no text area required. Clearly recognizable faithful character anatomy. No titles, letters, words, logos or watermark.",
+      "revisionPrompt": "Edit the attached illustration using imagegen. Keep the exact characters, identities, art style, colors and setting. Zoom the whole group out by 20 percent and expand the scene to ensure every character full silhouette is visible inside the image with at least 6 percent margin. In particular do not crop Renamon tail, Guilmon tail, Terriermon ears, or Gaomon scarf. No words or text. Keep portrait composition and generous outer breathing room. This is a framing correction, not a new design.",
+      "referenceSheets": [
+        "ref-ac.png",
+        "ref-rookies.png",
+        "ref-tamers.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "coliseum",
+      "asset": "assets/client/mode-coliseum.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 190050,
+      "sha256": "dd5013559f8dc2f7e4214223f0a7e95d4c08652ed3aecdc904f21bfdc1f4b894",
+      "source": "mode-coliseum.png",
+      "provenance": "New Astra CLI imagegen output",
+      "prompt": "Use the image generation tool to create a finished raster image, not code or a drawn SVG. Use case: stylized-concept. Portrait 2:3 selection key art for the DigiTactics coliseum set. Reference sheets label the exact characters; use those as identity references only, do not reproduce sheet labels. Draw ONLY these named Digimon: WereGarurumon (blue-white upright muscular wolf, torn jeans and belt), Elecmon (small red mammal with blue stripes, many red blue-striped tails, yellow eyes). Scene: A grand clean stadium in bright afternoon. WereGarurumon and Elecmon face each other across a rounded battle ring in powerful ready stances, full figures separated and readable. Concentric stadium seats arch behind, red and gold pennants without symbols, warm white sky. Scarlets, sun yellow and white; energetic sports poster with clear ink speed-lines at ring edge. Full bodies with generous margin inside all four edges; main group central upper two-thirds, heads below top 10 percent; lower part may contain setting but no text area required. Clearly recognizable faithful character anatomy. No titles, letters, words, logos or watermark.",
+      "revisionPrompt": null,
+      "referenceSheets": [
+        "ref-ac.png",
+        "ref-elecmon.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "underlords",
+      "asset": "assets/client/mode-underlords.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 149004,
+      "sha256": "8ea958304b8c9f007dc209318777ad1f76547da3572b7096f9aae9ee5dd2e066",
+      "source": "mode-underlords-v2.png",
+      "provenance": "New Astra CLI imagegen output",
+      "prompt": "Use the image generation tool to create a finished raster image, not code or a drawn SVG. Use case: stylized-concept. Portrait 2:3 selection key art for the DigiTactics underlords set. Reference sheets label the exact characters; use those as identity references only, do not reproduce sheet labels. Draw ONLY these named Digimon: Renamon (slender yellow bipedal fox, white chest fur, purple yin-yang sleeves), Guilmon (red dinosaur, white belly, black hazard markings, yellow eyes), Terriermon (cream bunny-dog with extremely long green-tipped ears and small horn). Scene: A team of three stands together on the steps of an underground digital guild hall. Renamon above at center, Guilmon at lower left and Terriermon at lower right surveying a geometric battle table. Architectural arches, hanging blank banners, rich burgundy and warm cream with teal stone. Strategic calm and strong triangular group; no humans. Full bodies with generous margin inside all four edges; main group central upper two-thirds, heads below top 10 percent; lower part may contain setting but no text area required. Clearly recognizable faithful character anatomy. No titles, letters, words, logos or watermark.",
+      "revisionPrompt": "Edit the attached illustration using imagegen. Keep the exact characters, identities, art style, colors and setting. Zoom the whole group out by 20 percent and expand the scene to ensure every character full silhouette is visible inside the image with at least 6 percent margin. In particular do not crop Renamon tail, Guilmon tail, Terriermon ears, or Gaomon scarf. No words or text. Keep portrait composition and generous outer breathing room. This is a framing correction, not a new design.",
+      "referenceSheets": [
+        "ref-rookies.png",
+        "ref-tamers.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    },
+    {
+      "id": "underlords_ko",
+      "asset": "assets/client/mode-underlords_ko.webp",
+      "width": 720,
+      "height": 1080,
+      "bytes": 186936,
+      "sha256": "c1421e7c5b4d26625ff80ed4ba7da8c7f33396d4b8441512501ef81b0e6b5b56",
+      "source": "mode-underlords_ko.png",
+      "provenance": "New Astra CLI imagegen output",
+      "prompt": "Use the image generation tool to create a finished raster image, not code or a drawn SVG. Use case: stylized-concept. Portrait 2:3 selection key art for the DigiTactics underlords_ko set. Reference sheets label the exact characters; use those as identity references only, do not reproduce sheet labels. Draw ONLY these named Digimon: Gaomon (small blue boxing dog, red boxing gloves and red headband), Guilmon (red dinosaur, black hazard markings and white belly), Palmon (green plant creature, pink flower head, vine fingers). Scene: A fast knockout crew bursts diagonally through a crisp white circular stadium gate. Gaomon leaps at center with one glove raised, Guilmon runs behind at left and Palmon lunges joyfully at right. Four small unmarked diamond-shaped life crystals float high above the gate. Lime, red and white palette, playful explosive ink speed-lines, clear energetic action, no destruction or violence. Full bodies with generous margin inside all four edges; main group central upper two-thirds, heads below top 10 percent; lower part may contain setting but no text area required. Clearly recognizable faithful character anatomy. No titles, letters, words, logos or watermark.",
+      "revisionPrompt": null,
+      "referenceSheets": [
+        "ref-tamers.png",
+        "ref-adventure.png"
+      ],
+      "visualReview": "Inspected final WebP for recognizable named Digimon, distinct setting, absence of baked titles, and usable portrait framing."
+    }
+  ]
+}

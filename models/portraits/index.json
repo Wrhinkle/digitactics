@@ -1,0 +1,2538 @@
+{
+ "agumon:0": {
+  "file": "agumon_0.a3abb5b9.webp",
+  "src": "models/files/c21da254de374919a7d75804969f9465.glb"
+ },
+ "agumon:1": {
+  "file": "agumon_1.823595e0.webp",
+  "src": "models/files/rip_cs_greymon.glb"
+ },
+ "agumon:2": {
+  "file": "agumon_2.cb976d75.webp",
+  "src": "models/files/rip_metalgreymon.glb"
+ },
+ "gabumon:0": {
+  "file": "gabumon_0.93742ed8.webp",
+  "src": "models/files/e6798b8ea64843f68f6fe1e3fa7928b0.glb"
+ },
+ "gabumon:1": {
+  "file": "gabumon_1.8e7f06f2.webp",
+  "src": "models/files/rip_cs_garurumon.glb"
+ },
+ "gabumon:2": {
+  "file": "gabumon_2.f6d6015e.webp",
+  "src": "models/files/rip_l_weregarurumon.glb"
+ },
+ "tentomon:0": {
+  "file": "tentomon_0.9d5fb8fc.webp",
+  "src": "models/files/463c6dc315cc494f8b7b128b78dd01ef.glb"
+ },
+ "tentomon:1": {
+  "file": "tentomon_1.b1f25fe4.webp",
+  "src": "models/files/rip_kabuterimon.glb"
+ },
+ "tentomon:2": {
+  "file": "tentomon_2.fa3f2bb3.webp",
+  "src": "models/files/rip_megakabuterimon.glb"
+ },
+ "palmon:0": {
+  "file": "palmon_0.c753901c.webp",
+  "src": "models/files/rip_palmon.glb"
+ },
+ "palmon:1": {
+  "file": "palmon_1.e946c163.webp",
+  "src": "models/files/rip_togemon.glb"
+ },
+ "palmon:2": {
+  "file": "palmon_2.7bf14168.webp",
+  "src": "models/files/rip_lillymon.glb"
+ },
+ "gomamon:0": {
+  "file": "gomamon_0.a7dcded1.webp",
+  "src": "models/files/rip_gomamon.glb"
+ },
+ "gomamon:1": {
+  "file": "gomamon_1.857730d4.webp",
+  "src": "models/files/rip_cs_ikkakumon.glb"
+ },
+ "gomamon:2": {
+  "file": "gomamon_2.4bd81022.webp",
+  "src": "models/files/rip_zudomon.glb"
+ },
+ "biyomon:0": {
+  "file": "biyomon_0.dc17b69e.webp",
+  "src": "models/files/889b1324568743f3be36b32ac49c95da.glb"
+ },
+ "biyomon:1": {
+  "file": "biyomon_1.24fc7e38.webp",
+  "src": "models/files/rip_birdramon.glb"
+ },
+ "biyomon:2": {
+  "file": "biyomon_2.35469861.webp",
+  "src": "models/files/rip_garudamon.glb"
+ },
+ "hagurumon:0": {
+  "file": "hagurumon_0.ce1a4390.webp",
+  "src": "models/files/db64891d559b4d0cbcb5633d90779ee3.glb"
+ },
+ "hagurumon:1": {
+  "file": "hagurumon_1.a1968c27.webp",
+  "src": "models/files/71012bd7578d41e2a0341943dc0d5e19.glb"
+ },
+ "hagurumon:2": {
+  "file": "hagurumon_2.4dad79fe.webp",
+  "src": "models/files/6ccfdb5317e14d39b899181ffef0860b.glb"
+ },
+ "demidevimon:0": {
+  "file": "demidevimon_0.5de84340.webp",
+  "src": "models/files/rip_demidevimon.glb"
+ },
+ "demidevimon:1": {
+  "file": "demidevimon_1.46136ffe.webp",
+  "src": "models/files/c2d5bb58d53948a38f8727eaa6878185.glb"
+ },
+ "demidevimon:2": {
+  "file": "demidevimon_2.b84c0f06.webp",
+  "src": "models/files/rip_cs_skullsatamon.glb"
+ },
+ "numemon:0": {
+  "file": "numemon_0.89cd2820.webp",
+  "src": "models/files/rip_numemon.glb"
+ },
+ "numemon:1": {
+  "file": "numemon_1.fd1f90d0.webp",
+  "src": "models/files/rip_blackkingnumemon.glb"
+ },
+ "numemon:2": {
+  "file": "numemon_2.5a533653.webp",
+  "src": "models/files/rip_platinumnumemon.glb"
+ },
+ "otamamon:0": {
+  "file": "otamamon_0.35815b7a.webp",
+  "src": "models/files/rip_otamamon.glb"
+ },
+ "otamamon:1": {
+  "file": "otamamon_1.bc22280d.webp",
+  "src": "models/files/rip_gekomon.glb"
+ },
+ "otamamon:2": {
+  "file": "otamamon_2.16a46bde.webp",
+  "src": "models/files/rip_shogungekomon.glb"
+ },
+ "gotsumon:0": {
+  "file": "gotsumon_0.c127b8b4.webp",
+  "src": "models/files/rip_gotsumon.glb"
+ },
+ "gotsumon:1": {
+  "file": "gotsumon_1.9d5d9d04.webp",
+  "src": "models/files/rip_starmon.glb"
+ },
+ "gotsumon:2": {
+  "file": "gotsumon_2.93ab5763.webp",
+  "src": "models/files/rip_superstarmon.glb"
+ },
+ "falcomon:0": {
+  "file": "falcomon_0.9b7c83c5.webp",
+  "src": "models/files/rip_falcomon.glb"
+ },
+ "falcomon:1": {
+  "file": "falcomon_1.b7209271.webp",
+  "src": "models/files/rip_peckmon.glb"
+ },
+ "falcomon:2": {
+  "file": "falcomon_2.ffb55cbb.webp",
+  "src": "models/files/rip_crowmon.glb"
+ },
+ "guilmon:0": {
+  "file": "guilmon_0.bd0e13a8.webp",
+  "src": "models/files/rip_cs_guilmon.glb"
+ },
+ "guilmon:1": {
+  "file": "guilmon_1.551451f6.webp",
+  "src": "models/files/24a5b2cdf7464673a7238f5376131f32.glb"
+ },
+ "guilmon:2": {
+  "file": "guilmon_2.9249067d.webp",
+  "src": "models/files/rip_wargrowlmon.glb"
+ },
+ "renamon:0": {
+  "file": "renamon_0.6fe8934c.webp",
+  "src": "models/files/rip_renamon.glb"
+ },
+ "renamon:1": {
+  "file": "renamon_1.79fc3135.webp",
+  "src": "models/files/rip_cs_kyubimon.glb"
+ },
+ "renamon:2": {
+  "file": "renamon_2.2337bef9.webp",
+  "src": "models/files/rip_taomon.glb"
+ },
+ "terriermon:0": {
+  "file": "terriermon_0.e490e623.webp",
+  "src": "models/files/rip_terriermon.glb"
+ },
+ "terriermon:1": {
+  "file": "terriermon_1.c6c87d23.webp",
+  "src": "models/files/rip_gargomon.glb"
+ },
+ "terriermon:2": {
+  "file": "terriermon_2.28ae2065.webp",
+  "src": "models/files/rip_rapidmon.glb"
+ },
+ "patamon:0": {
+  "file": "patamon_0.136ec866.webp",
+  "src": "models/files/rip_cs_patamon.glb"
+ },
+ "patamon:1": {
+  "file": "patamon_1.51102daf.webp",
+  "src": "models/files/rip_angemon.glb"
+ },
+ "patamon:2": {
+  "file": "patamon_2.06719ea2.webp",
+  "src": "models/files/781be4c8d1904610907de159624d5749.glb"
+ },
+ "salamon:0": {
+  "file": "salamon_0.29bda756.webp",
+  "src": "models/files/rip_salamon.glb"
+ },
+ "salamon:1": {
+  "file": "salamon_1.7a46bc83.webp",
+  "src": "models/files/4023397564ff4822bf530d3c63edc7ec.glb"
+ },
+ "salamon:2": {
+  "file": "salamon_2.b8594839.webp",
+  "src": "models/files/rip_angewomon.glb"
+ },
+ "betamon:0": {
+  "file": "betamon_0.11c0cedc.webp",
+  "src": "models/files/rip_betamon.glb"
+ },
+ "betamon:1": {
+  "file": "betamon_1.57720f46.webp",
+  "src": "models/files/rip_seadramon.glb"
+ },
+ "betamon:2": {
+  "file": "betamon_2.9701e068.webp",
+  "src": "models/files/rip_megaseadramon.glb"
+ },
+ "wormmon:0": {
+  "file": "wormmon_0.481469cf.webp",
+  "src": "models/files/rip_wormmon.glb"
+ },
+ "wormmon:1": {
+  "file": "wormmon_1.e1042ed4.webp",
+  "src": "models/files/rip_stingmon.glb"
+ },
+ "wormmon:2": {
+  "file": "wormmon_2.73ccf38b.webp",
+  "src": "models/files/rip_dinobeemon.glb"
+ },
+ "lunamon:0": {
+  "file": "lunamon_0.b28c5b15.webp",
+  "src": "models/files/rip_lunamon.glb"
+ },
+ "lunamon:1": {
+  "file": "lunamon_1.5062a80d.webp",
+  "src": "models/files/rip_lekismon.glb"
+ },
+ "lunamon:2": {
+  "file": "lunamon_2.5d1f08a8.webp",
+  "src": "models/files/rip_crescemon.glb"
+ },
+ "armadillomon:0": {
+  "file": "armadillomon_0.16d12b82.webp",
+  "src": "models/files/rip_armadillomon.glb"
+ },
+ "armadillomon:1": {
+  "file": "armadillomon_1.87f7f606.webp",
+  "src": "models/files/rip_ankylomon.glb"
+ },
+ "armadillomon:2": {
+  "file": "armadillomon_2.d55401ad.webp",
+  "src": "models/files/rip_shakkoumon.glb"
+ },
+ "kudamon:0": {
+  "file": "kudamon_0.de73e752.webp",
+  "src": "models/files/rip_kudamon.glb"
+ },
+ "kudamon:1": {
+  "file": "kudamon_1.80268e97.webp",
+  "src": "models/files/rip_reppamon.glb"
+ },
+ "kudamon:2": {
+  "file": "kudamon_2.0a9d92bd.webp",
+  "src": "models/files/rip_chirinmon.glb"
+ },
+ "fanbeemon:0": {
+  "file": "fanbeemon_0.964dac93.webp",
+  "src": "models/files/rip_fanbeemon.glb"
+ },
+ "fanbeemon:1": {
+  "file": "fanbeemon_1.fe91bb7f.webp",
+  "src": "models/files/rip_waspmon.glb"
+ },
+ "fanbeemon:2": {
+  "file": "fanbeemon_2.504728ff.webp",
+  "src": "models/files/rip_cannonbeemon.glb"
+ },
+ "mamemon:0": {
+  "file": "mamemon_0.5050fbc8.webp",
+  "src": "models/files/rip_mamemon.glb"
+ },
+ "mamemon:1": {
+  "file": "mamemon_1.059dae9f.webp",
+  "src": "models/files/rip_metalmamemon.glb"
+ },
+ "mamemon:2": {
+  "file": "mamemon_2.acee563d.webp",
+  "src": "models/files/rip_princemamemon.glb"
+ },
+ "dracmon:0": {
+  "file": "dracmon_0.de530f10.webp",
+  "src": "models/files/rip_dracmon.glb"
+ },
+ "dracmon:1": {
+  "file": "dracmon_1.033ed57d.webp",
+  "src": "models/files/rip_sangloupmon.glb"
+ },
+ "dracmon:2": {
+  "file": "dracmon_2.403cf104.webp",
+  "src": "models/files/rip_matadormon.glb"
+ },
+ "elecmon:0": {
+  "file": "elecmon_0.6971c342.webp",
+  "src": "models/files/rip_cs_elecmon.glb"
+ },
+ "elecmon:1": {
+  "file": "elecmon_1.67aedb31.webp",
+  "src": "models/files/rip_leomon.glb"
+ },
+ "elecmon:2": {
+  "file": "elecmon_2.ac0596a0.webp",
+  "src": "models/files/rip_l_panjyamon.glb"
+ },
+ "hawkmon:0": {
+  "file": "hawkmon_0.e9c6053c.webp",
+  "src": "models/files/rip_cs_hawkmon.glb"
+ },
+ "hawkmon:1": {
+  "file": "hawkmon_1.21919750.webp",
+  "src": "models/files/rip_cs_aquilamon.glb"
+ },
+ "hawkmon:2": {
+  "file": "hawkmon_2.63355a40.webp",
+  "src": "models/files/rip_cs_silphymon.glb"
+ },
+ "keramon:0": {
+  "file": "keramon_0.8ea3f76b.webp",
+  "src": "models/files/rip_cs_keramon.glb"
+ },
+ "keramon:1": {
+  "file": "keramon_1.9894d737.webp",
+  "src": "models/files/rip_chrysalimon.glb"
+ },
+ "keramon:2": {
+  "file": "keramon_2.d3435eb9.webp",
+  "src": "models/files/rip_cs_infermon.glb"
+ },
+ "lopmon:0": {
+  "file": "lopmon_0.7c9cf91e.webp",
+  "src": "models/files/rip_lopmon.glb"
+ },
+ "lopmon:1": {
+  "file": "lopmon_1.af4b1681.webp",
+  "src": "models/files/rip_cs_turuiemon.glb"
+ },
+ "lopmon:2": {
+  "file": "lopmon_2.bce7243d.webp",
+  "src": "models/files/rip_andiramon.glb"
+ },
+ "gizamon:0": {
+  "file": "gizamon_0.16f4f496.webp",
+  "src": "models/files/rip_gizamon.glb"
+ },
+ "gizamon:1": {
+  "file": "gizamon_1.8f614971.webp",
+  "src": "models/files/rip_cs_coelamon.glb"
+ },
+ "gizamon:2": {
+  "file": "gizamon_2.a9113b0f.webp",
+  "src": "models/files/rip_cs_dragomon.glb"
+ },
+ "candlemon:0": {
+  "file": "candlemon_0.0bf2eef1.webp",
+  "src": "models/files/rip_cs_meramon.glb"
+ },
+ "candlemon:1": {
+  "file": "candlemon_1.101e1758.webp",
+  "src": "models/files/bbeb1da28aca459da86b46cba6d57ca8.glb"
+ },
+ "candlemon:2": {
+  "file": "candlemon_2.7b935d3c.webp",
+  "src": "models/files/rip_cs_wisemon.glb"
+ },
+ "agumonsv:0": {
+  "file": "agumonsv_0.20ac6d9f.webp",
+  "src": "models/files/rip_geogreymon.glb"
+ },
+ "agumonsv:1": {
+  "file": "agumonsv_1.1e81acaa.webp",
+  "src": "models/files/rip_rizegreymon.glb"
+ },
+ "agumonsv:2": {
+  "file": "agumonsv_2.dd076d27.webp",
+  "src": "models/files/rip_shinegreymon.glb"
+ },
+ "dracomon:0": {
+  "file": "dracomon_0.94376049.webp",
+  "src": "models/files/rip_dracomon.glb"
+ },
+ "dracomon:1": {
+  "file": "dracomon_1.0238ccc2.webp",
+  "src": "models/files/rip_coredramon_green.glb"
+ },
+ "dracomon:2": {
+  "file": "dracomon_2.12784600.webp",
+  "src": "models/files/rip_wingdramon.glb"
+ },
+ "woodmon:0": {
+  "file": "woodmon_0.1caa82a8.webp",
+  "src": "models/files/rip_woodmon.glb"
+ },
+ "woodmon:1": {
+  "file": "woodmon_1.e9bafac4.webp",
+  "src": "models/files/rip_cherrymon.glb"
+ },
+ "woodmon:2": {
+  "file": "woodmon_2.f99ce9dd.webp",
+  "src": "models/files/rip_puppetmon.glb"
+ },
+ "monodramon:0": {
+  "file": "monodramon_0.f83b69d4.webp",
+  "src": "models/files/rip_monodramon.glb"
+ },
+ "monodramon:1": {
+  "file": "monodramon_1.969bc2a2.webp",
+  "src": "models/files/rip_strikedramon.glb"
+ },
+ "monodramon:2": {
+  "file": "monodramon_2.17aa2645.webp",
+  "src": "models/files/rip_cyberdramon.glb"
+ },
+ "jazamon:0": {
+  "file": "jazamon_0.23c7dd8c.webp",
+  "src": "models/files/rip_jazamon.glb"
+ },
+ "jazamon:1": {
+  "file": "jazamon_1.7b8a1579.webp",
+  "src": "models/files/rip_jazardmon.glb"
+ },
+ "jazamon:2": {
+  "file": "jazamon_2.e800f29a.webp",
+  "src": "models/files/rip_jazarichmon.glb"
+ },
+ "zubamon:0": {
+  "file": "zubamon_0.68aa293c.webp",
+  "src": "models/files/rip_zubamon.glb"
+ },
+ "zubamon:1": {
+  "file": "zubamon_1.ec030422.webp",
+  "src": "models/files/rip_zubaeagermon.glb"
+ },
+ "zubamon:2": {
+  "file": "zubamon_2.4aa58a42.webp",
+  "src": "models/files/rip_durandamon.glb"
+ },
+ "okuwamon:0": {
+  "file": "okuwamon_0.ac7ff952.webp",
+  "src": "models/files/rip_kuwagamon.glb"
+ },
+ "okuwamon:1": {
+  "file": "okuwamon_1.5aeb990c.webp",
+  "src": "models/files/rip_okuwamon.glb"
+ },
+ "okuwamon:2": {
+  "file": "okuwamon_2.0479b017.webp",
+  "src": "models/files/rip_grankuwagamon.glb"
+ },
+ "veemon:0": {
+  "file": "veemon_0.723812ce.webp",
+  "src": "models/files/d06d194aabc340b2ba38a0b8a5d4ed07.glb"
+ },
+ "veemon:1": {
+  "file": "veemon_1.f25d0f9b.webp",
+  "src": "models/files/f42ddfad460e42288f6c7ca6ebddeff4.glb"
+ },
+ "veemon:2": {
+  "file": "veemon_2.d343b475.webp",
+  "src": "models/files/rip_l_paildramon.glb"
+ },
+ "dorumon:0": {
+  "file": "dorumon_0.96044561.webp",
+  "src": "models/files/7059b6386bbd4021a77f162618585d07.glb"
+ },
+ "dorumon:1": {
+  "file": "dorumon_1.870a0641.webp",
+  "src": "models/files/ef72384761d943c48e2890f125b13f0c.glb"
+ },
+ "dorumon:2": {
+  "file": "dorumon_2.ed474166.webp",
+  "src": "models/files/rip_dorugreymon.glb"
+ },
+ "gaomon:0": {
+  "file": "gaomon_0.7f70a5a4.webp",
+  "src": "models/files/rip_cs_gaomon.glb"
+ },
+ "gaomon:1": {
+  "file": "gaomon_1.cb5c6b06.webp",
+  "src": "models/files/rip_gaogamon.glb"
+ },
+ "gaomon:2": {
+  "file": "gaomon_2.071e2d70.webp",
+  "src": "models/files/rip_machgaogamon.glb"
+ },
+ "lalamon:0": {
+  "file": "lalamon_0.a04b9ede.webp",
+  "src": "models/files/rip_lalamon.glb"
+ },
+ "lalamon:1": {
+  "file": "lalamon_1.4dbfae90.webp",
+  "src": "models/files/rip_cs_sunflowmon.glb"
+ },
+ "lalamon:2": {
+  "file": "lalamon_2.edafbd83.webp",
+  "src": "models/files/rip_lilamon.glb"
+ },
+ "commandramon:0": {
+  "file": "commandramon_0.8471e9c6.webp",
+  "src": "models/files/rip_cs_toyagumon.glb"
+ },
+ "commandramon:1": {
+  "file": "commandramon_1.78ce3d7c.webp",
+  "src": "models/files/rip_cs_tankmon.glb"
+ },
+ "commandramon:2": {
+  "file": "commandramon_2.efdda2ef.webp",
+  "src": "models/files/rip_l_metaltyrannomon.glb"
+ },
+ "agunimon:0": {
+  "file": "agunimon_0.439b9585.webp",
+  "src": "models/files/rip_agunimon.glb"
+ },
+ "agunimon:1": {
+  "file": "agunimon_1.0a5951bc.webp",
+  "src": "models/files/rip_burninggreymon.glb"
+ },
+ "agunimon:2": {
+  "file": "agunimon_2.6f9ff686.webp",
+  "src": "models/files/rip_emperorgreymon.glb"
+ },
+ "lobomon:0": {
+  "file": "lobomon_0.08e4f2dc.webp",
+  "src": "models/files/rip_lobomon.glb"
+ },
+ "lobomon:1": {
+  "file": "lobomon_1.35bdf2b2.webp",
+  "src": "models/files/rip_kendogarurumon.glb"
+ },
+ "lobomon:2": {
+  "file": "lobomon_2.233f55e7.webp",
+  "src": "models/files/rip_magnagarurumon.glb"
+ },
+ "hackmon:0": {
+  "file": "hackmon_0.2f916910.webp",
+  "src": "models/files/rip_hackmon.glb"
+ },
+ "hackmon:1": {
+  "file": "hackmon_1.4c56056a.webp",
+  "src": "models/files/rip_baohuckmon.glb"
+ },
+ "hackmon:2": {
+  "file": "hackmon_2.2b1dd21d.webp",
+  "src": "models/files/rip_jesmon.glb"
+ },
+ "blackgatomon:0": {
+  "file": "blackgatomon_0.e7fad363.webp",
+  "src": "models/files/rip_gatomon.glb"
+ },
+ "blackgatomon:1": {
+  "file": "blackgatomon_1.f42acbb1.webp",
+  "src": "models/files/rip_ladydevimon.glb"
+ },
+ "blackgatomon:2": {
+  "file": "blackgatomon_2.8c62cf22.webp",
+  "src": "models/files/rip_lilithmon.glb"
+ },
+ "meicoomon:0": {
+  "file": "meicoomon_0.d305e2fd.webp",
+  "src": "models/files/rip_meicoomon.glb"
+ },
+ "meicoomon:1": {
+  "file": "meicoomon_1.e18bcaf3.webp",
+  "src": "models/files/rip_meicrackmon_vicious_mode.glb"
+ },
+ "meicoomon:2": {
+  "file": "meicoomon_2.7ec00600.webp",
+  "src": "models/files/rip_raguelmon.glb"
+ },
+ "vorvomon:0": {
+  "file": "vorvomon_0.c122eccd.webp",
+  "src": "models/files/rip_vorvomon.glb"
+ },
+ "vorvomon:1": {
+  "file": "vorvomon_1.20d05fe6.webp",
+  "src": "models/files/rip_lavorvomon.glb"
+ },
+ "vorvomon:2": {
+  "file": "vorvomon_2.c8dc41ec.webp",
+  "src": "models/files/rip_lavogaritamon.glb"
+ },
+ "ryudamon:0": {
+  "file": "ryudamon_0.601b4521.webp",
+  "src": "models/files/rip_ryudamon.glb"
+ },
+ "ryudamon:1": {
+  "file": "ryudamon_1.a9d07597.webp",
+  "src": "models/files/rip_ginryumon.glb"
+ },
+ "ryudamon:2": {
+  "file": "ryudamon_2.2a45f9a8.webp",
+  "src": "models/files/rip_hisyaryumon.glb"
+ },
+ "myotismon:0": {
+  "file": "myotismon_0.c8e5e696.webp",
+  "src": "models/files/rip_myotismon.glb"
+ },
+ "myotismon:1": {
+  "file": "myotismon_1.fbe27b1f.webp",
+  "src": "models/files/rip_venommyotismon.glb"
+ },
+ "myotismon:2": {
+  "file": "myotismon_2.76f60f6d.webp",
+  "src": "models/files/rip_cs_grandracmon.glb"
+ },
+ "imperialdramon:0": {
+  "file": "imperialdramon_0.38cd3ced.webp",
+  "src": "models/files/rip_cs_flamedramon.glb"
+ },
+ "imperialdramon:1": {
+  "file": "imperialdramon_1.9e81651b.webp",
+  "src": "models/files/rip_imperialdramon_fm.glb"
+ },
+ "imperialdramon:2": {
+  "file": "imperialdramon_2.f427c030.webp",
+  "src": "models/files/rip_imperialdramon_pm.glb"
+ },
+ "lucemon:0": {
+  "file": "lucemon_0.9f67b24e.webp",
+  "src": "models/files/rip_lucemon.glb"
+ },
+ "lucemon:1": {
+  "file": "lucemon_1.9783b0ef.webp",
+  "src": "models/files/rip_lucemon_fm.glb"
+ },
+ "lucemon:2": {
+  "file": "lucemon_2.f6608d77.webp",
+  "src": "models/files/rip_lucemon_sm.glb"
+ },
+ "beelzemon:0": {
+  "file": "beelzemon_0.0fb13e30.webp",
+  "src": "models/files/rip_impmon.glb"
+ },
+ "beelzemon:1": {
+  "file": "beelzemon_1.53e248fe.webp",
+  "src": "models/files/5916bfad3dd7434eb007a749e5170bd7.glb"
+ },
+ "beelzemon:2": {
+  "file": "beelzemon_2.60aa0e7b.webp",
+  "src": "models/files/rip_l_beelzemon_blast_mode.glb"
+ },
+ "machinedramon:0": {
+  "file": "machinedramon_0.db3739e2.webp",
+  "src": "models/files/rip_megadramon.glb"
+ },
+ "machinedramon:1": {
+  "file": "machinedramon_1.f84ec5dd.webp",
+  "src": "models/files/428e84d9b7cc40aa86cfc6b1d94c4552.glb"
+ },
+ "machinedramon:2": {
+  "file": "machinedramon_2.0f8c7227.webp",
+  "src": "models/files/rip_l_chaosdromon.glb"
+ },
+ "veedramon:0": {
+  "file": "veedramon_0.1315a9dd.webp",
+  "src": "models/files/rip_veedramon.glb"
+ },
+ "veedramon:1": {
+  "file": "veedramon_1.335c9c9c.webp",
+  "src": "models/files/rip_aeroveedramon.glb"
+ },
+ "veedramon:2": {
+  "file": "veedramon_2.5964ce8f.webp",
+  "src": "models/files/rip_ulforceveedramon.glb"
+ },
+ "omnimon:0": {
+  "file": "omnimon_0.907baa18.webp",
+  "src": "models/files/rip_wargreymon.glb"
+ },
+ "omnimon:1": {
+  "file": "omnimon_1.4a24d062.webp",
+  "src": "models/files/rip_omnimon.glb"
+ },
+ "omnimon:2": {
+  "file": "omnimon_2.4a24d062.webp",
+  "src": "models/files/rip_omnimon.glb"
+ },
+ "alphamon:0": {
+  "file": "alphamon_0.3ffa65bf.webp",
+  "src": "models/files/rip_alphamon.glb"
+ },
+ "alphamon:1": {
+  "file": "alphamon_1.3ffa65bf.webp",
+  "src": "models/files/rip_alphamon.glb"
+ },
+ "alphamon:2": {
+  "file": "alphamon_2.3ffa65bf.webp",
+  "src": "models/files/rip_alphamon.glb"
+ },
+ "phoenixmon:0": {
+  "file": "phoenixmon_0.bdd2d893.webp",
+  "src": "models/files/rip_phoenixmon.glb"
+ },
+ "phoenixmon:1": {
+  "file": "phoenixmon_1.bdd2d893.webp",
+  "src": "models/files/rip_phoenixmon.glb"
+ },
+ "phoenixmon:2": {
+  "file": "phoenixmon_2.bdd2d893.webp",
+  "src": "models/files/rip_phoenixmon.glb"
+ },
+ "daemon:0": {
+  "file": "daemon_0.73c029b2.webp",
+  "src": "models/files/rip_daemon.glb"
+ },
+ "daemon:1": {
+  "file": "daemon_1.73c029b2.webp",
+  "src": "models/files/rip_daemon.glb"
+ },
+ "daemon:2": {
+  "file": "daemon_2.73c029b2.webp",
+  "src": "models/files/rip_daemon.glb"
+ },
+ "goblimon:0": {
+  "file": "goblimon_0.28a9e706.webp",
+  "src": "models/files/rip_goblimon.glb"
+ },
+ "goblimon:1": {
+  "file": "goblimon_1.28a9e706.webp",
+  "src": "models/files/rip_goblimon.glb"
+ },
+ "goblimon:2": {
+  "file": "goblimon_2.28a9e706.webp",
+  "src": "models/files/rip_goblimon.glb"
+ },
+ "kuwagamon:0": {
+  "file": "kuwagamon_0.ac7ff952.webp",
+  "src": "models/files/rip_kuwagamon.glb"
+ },
+ "kuwagamon:1": {
+  "file": "kuwagamon_1.ac7ff952.webp",
+  "src": "models/files/rip_kuwagamon.glb"
+ },
+ "kuwagamon:2": {
+  "file": "kuwagamon_2.ac7ff952.webp",
+  "src": "models/files/rip_kuwagamon.glb"
+ },
+ "ogremon:0": {
+  "file": "ogremon_0.fd71ff9a.webp",
+  "src": "models/files/rip_ogremon.glb"
+ },
+ "ogremon:1": {
+  "file": "ogremon_1.fd71ff9a.webp",
+  "src": "models/files/rip_ogremon.glb"
+ },
+ "ogremon:2": {
+  "file": "ogremon_2.fd71ff9a.webp",
+  "src": "models/files/rip_ogremon.glb"
+ },
+ "tyrannomon:0": {
+  "file": "tyrannomon_0.b07b9b5b.webp",
+  "src": "models/files/rip_cs_tyrannomon.glb"
+ },
+ "tyrannomon:1": {
+  "file": "tyrannomon_1.b07b9b5b.webp",
+  "src": "models/files/rip_cs_tyrannomon.glb"
+ },
+ "tyrannomon:2": {
+  "file": "tyrannomon_2.b07b9b5b.webp",
+  "src": "models/files/rip_cs_tyrannomon.glb"
+ },
+ "etemon:0": {
+  "file": "etemon_0.f8ae13a5.webp",
+  "src": "models/files/rip_etemon.glb"
+ },
+ "etemon:1": {
+  "file": "etemon_1.f8ae13a5.webp",
+  "src": "models/files/rip_etemon.glb"
+ },
+ "etemon:2": {
+  "file": "etemon_2.f8ae13a5.webp",
+  "src": "models/files/rip_etemon.glb"
+ },
+ "skullgreymon:0": {
+  "file": "skullgreymon_0.f1261ef9.webp",
+  "src": "models/files/rip_l_skullgreymon.glb"
+ },
+ "skullgreymon:1": {
+  "file": "skullgreymon_1.f1261ef9.webp",
+  "src": "models/files/rip_l_skullgreymon.glb"
+ },
+ "skullgreymon:2": {
+  "file": "skullgreymon_2.f1261ef9.webp",
+  "src": "models/files/rip_l_skullgreymon.glb"
+ },
+ "sukamon:0": {
+  "file": "sukamon_0.e7f684f7.webp",
+  "src": "models/files/rip_sukamon.glb"
+ },
+ "sukamon:1": {
+  "file": "sukamon_1.e7f684f7.webp",
+  "src": "models/files/rip_sukamon.glb"
+ },
+ "sukamon:2": {
+  "file": "sukamon_2.e7f684f7.webp",
+  "src": "models/files/rip_sukamon.glb"
+ },
+ "nanimon:0": {
+  "file": "nanimon_0.0cc31ef3.webp",
+  "src": "models/files/rip_nanimon.glb"
+ },
+ "nanimon:1": {
+  "file": "nanimon_1.0cc31ef3.webp",
+  "src": "models/files/rip_nanimon.glb"
+ },
+ "nanimon:2": {
+  "file": "nanimon_2.0cc31ef3.webp",
+  "src": "models/files/rip_nanimon.glb"
+ },
+ "monzaemon:0": {
+  "file": "monzaemon_0.f407d700.webp",
+  "src": "models/files/rip_monzaemon.glb"
+ },
+ "monzaemon:1": {
+  "file": "monzaemon_1.f407d700.webp",
+  "src": "models/files/rip_monzaemon.glb"
+ },
+ "monzaemon:2": {
+  "file": "monzaemon_2.f407d700.webp",
+  "src": "models/files/rip_monzaemon.glb"
+ },
+ "frigimon:0": {
+  "file": "frigimon_0.c0aa4856.webp",
+  "src": "models/files/rip_frigimon.glb"
+ },
+ "frigimon:1": {
+  "file": "frigimon_1.c0aa4856.webp",
+  "src": "models/files/rip_frigimon.glb"
+ },
+ "frigimon:2": {
+  "file": "frigimon_2.c0aa4856.webp",
+  "src": "models/files/rip_frigimon.glb"
+ },
+ "bakemon:0": {
+  "file": "bakemon_0.8f7cdb54.webp",
+  "src": "models/files/rip_bakemon.glb"
+ },
+ "bakemon:1": {
+  "file": "bakemon_1.8f7cdb54.webp",
+  "src": "models/files/rip_bakemon.glb"
+ },
+ "bakemon:2": {
+  "file": "bakemon_2.8f7cdb54.webp",
+  "src": "models/files/rip_bakemon.glb"
+ },
+ "kimeramon:0": {
+  "file": "kimeramon_0.5c3b24a0.webp",
+  "src": "models/files/rip_kimeramon.glb"
+ },
+ "kimeramon:1": {
+  "file": "kimeramon_1.5c3b24a0.webp",
+  "src": "models/files/rip_kimeramon.glb"
+ },
+ "kimeramon:2": {
+  "file": "kimeramon_2.5c3b24a0.webp",
+  "src": "models/files/rip_kimeramon.glb"
+ },
+ "piedmon:0": {
+  "file": "piedmon_0.5d1dabdb.webp",
+  "src": "models/files/rip_piedmon.glb"
+ },
+ "piedmon:1": {
+  "file": "piedmon_1.5d1dabdb.webp",
+  "src": "models/files/rip_piedmon.glb"
+ },
+ "piedmon:2": {
+  "file": "piedmon_2.5d1dabdb.webp",
+  "src": "models/files/rip_piedmon.glb"
+ },
+ "metalseadramon:0": {
+  "file": "metalseadramon_0.b8e77bd8.webp",
+  "src": "models/files/rip_metalseadramon.glb"
+ },
+ "metalseadramon:1": {
+  "file": "metalseadramon_1.b8e77bd8.webp",
+  "src": "models/files/rip_metalseadramon.glb"
+ },
+ "metalseadramon:2": {
+  "file": "metalseadramon_2.b8e77bd8.webp",
+  "src": "models/files/rip_metalseadramon.glb"
+ },
+ "crusadermon:0": {
+  "file": "crusadermon_0.e30d947b.webp",
+  "src": "models/files/rip_crusadermon.glb"
+ },
+ "crusadermon:1": {
+  "file": "crusadermon_1.e30d947b.webp",
+  "src": "models/files/rip_crusadermon.glb"
+ },
+ "crusadermon:2": {
+  "file": "crusadermon_2.e30d947b.webp",
+  "src": "models/files/rip_crusadermon.glb"
+ },
+ "leopardmon:0": {
+  "file": "leopardmon_0.a779ebde.webp",
+  "src": "models/files/rip_leopardmon_leopard_mode.glb"
+ },
+ "leopardmon:1": {
+  "file": "leopardmon_1.a779ebde.webp",
+  "src": "models/files/rip_leopardmon_leopard_mode.glb"
+ },
+ "leopardmon:2": {
+  "file": "leopardmon_2.a779ebde.webp",
+  "src": "models/files/rip_leopardmon_leopard_mode.glb"
+ },
+ "craniamon:0": {
+  "file": "craniamon_0.f3a87831.webp",
+  "src": "models/files/rip_craniamon.glb"
+ },
+ "craniamon:1": {
+  "file": "craniamon_1.f3a87831.webp",
+  "src": "models/files/rip_craniamon.glb"
+ },
+ "craniamon:2": {
+  "file": "craniamon_2.f3a87831.webp",
+  "src": "models/files/rip_craniamon.glb"
+ },
+ "dynasmon:0": {
+  "file": "dynasmon_0.965c1243.webp",
+  "src": "models/files/rip_dynasmon.glb"
+ },
+ "dynasmon:1": {
+  "file": "dynasmon_1.965c1243.webp",
+  "src": "models/files/rip_dynasmon.glb"
+ },
+ "dynasmon:2": {
+  "file": "dynasmon_2.965c1243.webp",
+  "src": "models/files/rip_dynasmon.glb"
+ },
+ "magnamon:0": {
+  "file": "magnamon_0.1da3714b.webp",
+  "src": "models/files/rip_magnamon.glb"
+ },
+ "magnamon:1": {
+  "file": "magnamon_1.1da3714b.webp",
+  "src": "models/files/rip_magnamon.glb"
+ },
+ "magnamon:2": {
+  "file": "magnamon_2.1da3714b.webp",
+  "src": "models/files/rip_magnamon.glb"
+ },
+ "diaboromon:0": {
+  "file": "diaboromon_0.638b58be.webp",
+  "src": "models/files/rip_diaboromon.glb"
+ },
+ "diaboromon:1": {
+  "file": "diaboromon_1.638b58be.webp",
+  "src": "models/files/rip_diaboromon.glb"
+ },
+ "diaboromon:2": {
+  "file": "diaboromon_2.638b58be.webp",
+  "src": "models/files/rip_diaboromon.glb"
+ },
+ "armageddemon:0": {
+  "file": "armageddemon_0.eae19a3c.webp",
+  "src": "models/files/rip_armageddemon.glb"
+ },
+ "armageddemon:1": {
+  "file": "armageddemon_1.eae19a3c.webp",
+  "src": "models/files/rip_armageddemon.glb"
+ },
+ "armageddemon:2": {
+  "file": "armageddemon_2.eae19a3c.webp",
+  "src": "models/files/rip_armageddemon.glb"
+ },
+ "seraphimon:0": {
+  "file": "seraphimon_0.10372191.webp",
+  "src": "models/files/rip_seraphimon.glb"
+ },
+ "seraphimon:1": {
+  "file": "seraphimon_1.10372191.webp",
+  "src": "models/files/rip_seraphimon.glb"
+ },
+ "seraphimon:2": {
+  "file": "seraphimon_2.10372191.webp",
+  "src": "models/files/rip_seraphimon.glb"
+ },
+ "ophanimon:0": {
+  "file": "ophanimon_0.6e102712.webp",
+  "src": "models/files/rip_ophanimon.glb"
+ },
+ "ophanimon:1": {
+  "file": "ophanimon_1.6e102712.webp",
+  "src": "models/files/rip_ophanimon.glb"
+ },
+ "ophanimon:2": {
+  "file": "ophanimon_2.6e102712.webp",
+  "src": "models/files/rip_ophanimon.glb"
+ },
+ "magnadramon:0": {
+  "file": "magnadramon_0.bd8c8e8a.webp",
+  "src": "models/files/rip_magnadramon.glb"
+ },
+ "magnadramon:1": {
+  "file": "magnadramon_1.bd8c8e8a.webp",
+  "src": "models/files/rip_magnadramon.glb"
+ },
+ "magnadramon:2": {
+  "file": "magnadramon_2.bd8c8e8a.webp",
+  "src": "models/files/rip_magnadramon.glb"
+ },
+ "leviamon:0": {
+  "file": "leviamon_0.7cce16ca.webp",
+  "src": "models/files/rip_leviamon.glb"
+ },
+ "leviamon:1": {
+  "file": "leviamon_1.7cce16ca.webp",
+  "src": "models/files/rip_leviamon.glb"
+ },
+ "leviamon:2": {
+  "file": "leviamon_2.7cce16ca.webp",
+  "src": "models/files/rip_leviamon.glb"
+ },
+ "barbamon:0": {
+  "file": "barbamon_0.92e5e6e6.webp",
+  "src": "models/files/rip_barbamon.glb"
+ },
+ "barbamon:1": {
+  "file": "barbamon_1.92e5e6e6.webp",
+  "src": "models/files/rip_barbamon.glb"
+ },
+ "barbamon:2": {
+  "file": "barbamon_2.92e5e6e6.webp",
+  "src": "models/files/rip_barbamon.glb"
+ },
+ "belphemon:0": {
+  "file": "belphemon_0.953900cc.webp",
+  "src": "models/files/rip_belphemon_rage_mode.glb"
+ },
+ "belphemon:1": {
+  "file": "belphemon_1.953900cc.webp",
+  "src": "models/files/rip_belphemon_rage_mode.glb"
+ },
+ "belphemon:2": {
+  "file": "belphemon_2.953900cc.webp",
+  "src": "models/files/rip_belphemon_rage_mode.glb"
+ },
+ "coronamon:0": {
+  "file": "coronamon_0.b7ea0f8c.webp",
+  "src": "models/files/rip_coronamon.glb"
+ },
+ "coronamon:1": {
+  "file": "coronamon_1.19212a8d.webp",
+  "src": "models/files/rip_firamon.glb"
+ },
+ "coronamon:2": {
+  "file": "coronamon_2.1b218a4a.webp",
+  "src": "models/files/rip_flaremon.glb"
+ },
+ "kazemon:0": {
+  "file": "kazemon_0.a7743339.webp",
+  "src": "models/files/rip_kazemon.glb"
+ },
+ "kazemon:1": {
+  "file": "kazemon_1.1cfae2f1.webp",
+  "src": "models/files/rip_zephyrmon.glb"
+ },
+ "kazemon:2": {
+  "file": "kazemon_2.a7b8379e.webp",
+  "src": "models/files/rip_jetsilphymon.glb"
+ },
+ "bearmon:0": {
+  "file": "bearmon_0.703be19a.webp",
+  "src": "models/files/rip_bearmon.glb"
+ },
+ "bearmon:1": {
+  "file": "bearmon_1.ff89acda.webp",
+  "src": "models/files/rip_grizzlymon.glb"
+ },
+ "bearmon:2": {
+  "file": "bearmon_2.89e0b67c.webp",
+  "src": "models/files/rip_grapleomon.glb"
+ },
+ "floramon:0": {
+  "file": "floramon_0.cbcc4382.webp",
+  "src": "models/files/rip_floramon.glb"
+ },
+ "floramon:1": {
+  "file": "floramon_1.ee43508e.webp",
+  "src": "models/files/rip_kiwimon.glb"
+ },
+ "floramon:2": {
+  "file": "floramon_2.3d4e56a5.webp",
+  "src": "models/files/rip_blossomon.glb"
+ },
+ "chessmon:0": {
+  "file": "chessmon_0.b69d36b7.webp",
+  "src": "models/files/rip_pawnchessmon_black.glb"
+ },
+ "chessmon:1": {
+  "file": "chessmon_1.74147250.webp",
+  "src": "models/files/rip_knightchessmon_black.glb"
+ },
+ "chessmon:2": {
+  "file": "chessmon_2.d1c51fc0.webp",
+  "src": "models/files/rip_kingchessmon.glb"
+ },
+ "shoutmon:0": {
+  "file": "shoutmon_0.e0d9ef61.webp",
+  "src": "models/files/rip_shoutmon.glb"
+ },
+ "shoutmon:1": {
+  "file": "shoutmon_1.7b262c12.webp",
+  "src": "models/files/rip_shoutmon_x3.glb"
+ },
+ "shoutmon:2": {
+  "file": "shoutmon_2.7b262c12.webp",
+  "src": "models/files/rip_shoutmon_x3.glb"
+ },
+ "beetlemon:0": {
+  "file": "beetlemon_0.9c16c92d.webp",
+  "src": "models/files/rip_beetlemon.glb"
+ },
+ "beetlemon:1": {
+  "file": "beetlemon_1.68683d5e.webp",
+  "src": "models/files/rip_metalkabuterimon.glb"
+ },
+ "beetlemon:2": {
+  "file": "beetlemon_2.68683d5e.webp",
+  "src": "models/files/rip_metalkabuterimon.glb"
+ },
+ "extra:Groundramon": {
+  "file": "extra_Groundramon.97c9179b.webp",
+  "src": "models/files/rip_groundramon.glb"
+ },
+ "extra:Breakdramon": {
+  "file": "extra_Breakdramon.4e0ff643.webp",
+  "src": "models/files/rip_breakdramon.glb"
+ },
+ "extra:Durandamon": {
+  "file": "extra_Durandamon.4aa58a42.webp",
+  "src": "models/files/rip_durandamon.glb"
+ },
+ "extra:Lilithmon": {
+  "file": "extra_Lilithmon.8c62cf22.webp",
+  "src": "models/files/rip_lilithmon.glb"
+ },
+ "extra:Koromon": {
+  "file": "extra_Koromon.d3342ce4.webp",
+  "src": "models/files/rip_koromon.glb"
+ },
+ "extra:Gammamon": {
+  "file": "extra_Gammamon.3886db32.webp",
+  "src": "models/files/rip_gammamon.glb"
+ },
+ "extra:Dorulumon": {
+  "file": "extra_Dorulumon.bbd01545.webp",
+  "src": "models/files/rip_dorulumon.glb"
+ },
+ "extra:Ballistamon": {
+  "file": "extra_Ballistamon.c9697170.webp",
+  "src": "models/files/rip_ballistamon.glb"
+ },
+ "extra:Kunemon": {
+  "file": "extra_Kunemon.bac64dd6.webp",
+  "src": "models/files/rip_kunemon.glb"
+ },
+ "extra:DW1_Agumon": {
+  "file": "extra_DW1_Agumon.3d917fb1.webp",
+  "src": "models/files/rip_dw1_agumon.glb"
+ },
+ "extra:DW1_Greymon": {
+  "file": "extra_DW1_Greymon.a5677bb1.webp",
+  "src": "models/files/rip_dw1_greymon.glb"
+ },
+ "extra:DW1_MetalGreymon": {
+  "file": "extra_DW1_MetalGreymon.b34f2742.webp",
+  "src": "models/files/rip_dw1_metalgreymon.glb"
+ },
+ "extra:DW1_Patamon": {
+  "file": "extra_DW1_Patamon.0d228f5d.webp",
+  "src": "models/files/rip_dw1_patamon.glb"
+ },
+ "extra:DW1_Airdramon": {
+  "file": "extra_DW1_Airdramon.73d0d681.webp",
+  "src": "models/files/rip_dw1_airdramon.glb"
+ },
+ "extra:DW1_Bakemon": {
+  "file": "extra_DW1_Bakemon.539a9c24.webp",
+  "src": "models/files/rip_dw1_bakemon.glb"
+ },
+ "extra:DW1_Birdramon": {
+  "file": "extra_DW1_Birdramon.d366ae8f.webp",
+  "src": "models/files/rip_dw1_birdramon.glb"
+ },
+ "extra:DW1_Frigimon": {
+  "file": "extra_DW1_Frigimon.5187ab13.webp",
+  "src": "models/files/rip_dw1_frigimon.glb"
+ },
+ "extra:DW1_Meramon": {
+  "file": "extra_DW1_Meramon.89ab4388.webp",
+  "src": "models/files/rip_dw1_meramon.glb"
+ },
+ "extra:DW1_MudFrigimon": {
+  "file": "extra_DW1_MudFrigimon.71e6b6b1.webp",
+  "src": "models/files/rip_dw1_mudfrigimon.glb"
+ },
+ "extra:DW1_Andromon": {
+  "file": "extra_DW1_Andromon.d8e45d95.webp",
+  "src": "models/files/rip_dw1_andromon.glb"
+ },
+ "extra:DW1_Mamemon": {
+  "file": "extra_DW1_Mamemon.94198319.webp",
+  "src": "models/files/rip_dw1_mamemon.glb"
+ },
+ "extra:DW1_Monzaemon": {
+  "file": "extra_DW1_Monzaemon.273b379c.webp",
+  "src": "models/files/rip_dw1_monzaemon.glb"
+ },
+ "extra:DW1_Mugendramon": {
+  "file": "extra_DW1_Mugendramon.ea005d1b.webp",
+  "src": "models/files/rip_dw1_mugendramon.glb"
+ },
+ "extra:DW1_Vademon": {
+  "file": "extra_DW1_Vademon.099b1ab3.webp",
+  "src": "models/files/rip_dw1_vademon.glb"
+ },
+ "extra:DW1_Akatorimon": {
+  "file": "extra_DW1_Akatorimon.dfe22ddd.webp",
+  "src": "models/files/rip_dw1_akatorimon.glb"
+ },
+ "extra:DW1_BlueMeramon": {
+  "file": "extra_DW1_BlueMeramon.a5a6d28d.webp",
+  "src": "models/files/rip_dw1_bluemeramon.glb"
+ },
+ "extra:DW1_Brachiomon": {
+  "file": "extra_DW1_Brachiomon.25afbc5b.webp",
+  "src": "models/files/rip_dw1_brachiomon.glb"
+ },
+ "extra:DW1_Cherrymon": {
+  "file": "extra_DW1_Cherrymon.4ff4bc06.webp",
+  "src": "models/files/rip_dw1_cherrymon.glb"
+ },
+ "extra:DW1_DemiMeramon": {
+  "file": "extra_DW1_DemiMeramon.603d131e.webp",
+  "src": "models/files/rip_dw1_demimeramon.glb"
+ },
+ "extra:DW1_Gigadramon": {
+  "file": "extra_DW1_Gigadramon.275281fb.webp",
+  "src": "models/files/rip_dw1_gigadramon.glb"
+ },
+ "extra:DW1_Jijimon": {
+  "file": "extra_DW1_Jijimon.2b613c40.webp",
+  "src": "models/files/rip_dw1_jijimon.glb"
+ },
+ "extra:DW1_Tankmon": {
+  "file": "extra_DW1_Tankmon.2f0f6aa2.webp",
+  "src": "models/files/rip_dw1_tankmon.glb"
+ },
+ "extra:DW1_Hagurumon": {
+  "file": "extra_DW1_Hagurumon.e24ebbcc.webp",
+  "src": "models/files/rip_dw1_hagurumon.glb"
+ },
+ "extra:DW1_Botamon": {
+  "file": "extra_DW1_Botamon.c217ba77.webp",
+  "src": "models/files/rip_dw1_botamon.glb"
+ },
+ "extra:DW1_Poyomon": {
+  "file": "extra_DW1_Poyomon.7f657634.webp",
+  "src": "models/files/rip_dw1_poyomon.glb"
+ },
+ "extra:DW1_Punimon": {
+  "file": "extra_DW1_Punimon.dc4f59e3.webp",
+  "src": "models/files/rip_dw1_punimon.glb"
+ },
+ "extra:DW1_Tokomon": {
+  "file": "extra_DW1_Tokomon.9eb45eb9.webp",
+  "src": "models/files/rip_dw1_tokomon.glb"
+ },
+ "extra:DW1_Tsunomon": {
+  "file": "extra_DW1_Tsunomon.83889033.webp",
+  "src": "models/files/rip_dw1_tsunomon.glb"
+ },
+ "extra:Omnimon": {
+  "file": "extra_Omnimon.4a24d062.webp",
+  "src": "models/files/rip_omnimon.glb"
+ },
+ "extra:Alphamon": {
+  "file": "extra_Alphamon.3ffa65bf.webp",
+  "src": "models/files/rip_alphamon.glb"
+ },
+ "extra:Piedmon": {
+  "file": "extra_Piedmon.5d1dabdb.webp",
+  "src": "models/files/rip_piedmon.glb"
+ },
+ "extra:Daemon": {
+  "file": "extra_Daemon.73c029b2.webp",
+  "src": "models/files/rip_daemon.glb"
+ },
+ "extra:Barbamon": {
+  "file": "extra_Barbamon.92e5e6e6.webp",
+  "src": "models/files/rip_barbamon.glb"
+ },
+ "extra:Leviamon": {
+  "file": "extra_Leviamon.7cce16ca.webp",
+  "src": "models/files/rip_leviamon.glb"
+ },
+ "extra:Belphemon_Rage_Mode": {
+  "file": "extra_Belphemon_Rage_Mode.953900cc.webp",
+  "src": "models/files/rip_belphemon_rage_mode.glb"
+ },
+ "extra:MetalSeadramon": {
+  "file": "extra_MetalSeadramon.b8e77bd8.webp",
+  "src": "models/files/rip_metalseadramon.glb"
+ },
+ "extra:Azulongmon": {
+  "file": "extra_Azulongmon.1d178faf.webp",
+  "src": "models/files/rip_azulongmon.glb"
+ },
+ "extra:Zhuqiaomon": {
+  "file": "extra_Zhuqiaomon.05b050ba.webp",
+  "src": "models/files/rip_zhuqiaomon.glb"
+ },
+ "extra:Baihumon": {
+  "file": "extra_Baihumon.3e814369.webp",
+  "src": "models/files/rip_baihumon.glb"
+ },
+ "extra:Ebonwumon": {
+  "file": "extra_Ebonwumon.0d033b67.webp",
+  "src": "models/files/rip_ebonwumon.glb"
+ },
+ "extra:Diaboromon": {
+  "file": "extra_Diaboromon.638b58be.webp",
+  "src": "models/files/rip_diaboromon.glb"
+ },
+ "extra:Kimeramon": {
+  "file": "extra_Kimeramon.5c3b24a0.webp",
+  "src": "models/files/rip_kimeramon.glb"
+ },
+ "extra:Crusadermon": {
+  "file": "extra_Crusadermon.e30d947b.webp",
+  "src": "models/files/rip_crusadermon.glb"
+ },
+ "extra:Leopardmon_Leopard_Mode": {
+  "file": "extra_Leopardmon_Leopard_Mode.a779ebde.webp",
+  "src": "models/files/rip_leopardmon_leopard_mode.glb"
+ },
+ "extra:Craniamon": {
+  "file": "extra_Craniamon.f3a87831.webp",
+  "src": "models/files/rip_craniamon.glb"
+ },
+ "extra:Dynasmon": {
+  "file": "extra_Dynasmon.965c1243.webp",
+  "src": "models/files/rip_dynasmon.glb"
+ },
+ "extra:Magnamon": {
+  "file": "extra_Magnamon.1da3714b.webp",
+  "src": "models/files/rip_magnamon.glb"
+ },
+ "extra:Seraphimon": {
+  "file": "extra_Seraphimon.10372191.webp",
+  "src": "models/files/rip_seraphimon.glb"
+ },
+ "extra:Ophanimon": {
+  "file": "extra_Ophanimon.6e102712.webp",
+  "src": "models/files/rip_ophanimon.glb"
+ },
+ "extra:WarGreymon": {
+  "file": "extra_WarGreymon.907baa18.webp",
+  "src": "models/files/rip_wargreymon.glb"
+ },
+ "extra:MetalGarurumon": {
+  "file": "extra_MetalGarurumon.77dd520f.webp",
+  "src": "models/files/rip_metalgarurumon.glb"
+ },
+ "extra:BanchoLeomon": {
+  "file": "extra_BanchoLeomon.21e15170.webp",
+  "src": "models/files/rip_bancholeomon.glb"
+ },
+ "extra:Sakuyamon": {
+  "file": "extra_Sakuyamon.15ef5ed9.webp",
+  "src": "models/files/rip_sakuyamon.glb"
+ },
+ "extra:HerculesKabuterimon": {
+  "file": "extra_HerculesKabuterimon.962b0f4d.webp",
+  "src": "models/files/rip_herculeskabuterimon.glb"
+ },
+ "extra:Phoenixmon": {
+  "file": "extra_Phoenixmon.bdd2d893.webp",
+  "src": "models/files/rip_phoenixmon.glb"
+ },
+ "extra:Magnadramon": {
+  "file": "extra_Magnadramon.bd8c8e8a.webp",
+  "src": "models/files/rip_magnadramon.glb"
+ },
+ "extra:Plesiomon": {
+  "file": "extra_Plesiomon.b4ddda9b.webp",
+  "src": "models/files/rip_plesiomon.glb"
+ },
+ "extra:SaberLeomon": {
+  "file": "extra_SaberLeomon.0730514b.webp",
+  "src": "models/files/rip_saberleomon.glb"
+ },
+ "extra:Titamon": {
+  "file": "extra_Titamon.e687c53c.webp",
+  "src": "models/files/rip_titamon.glb"
+ },
+ "extra:Boltmon": {
+  "file": "extra_Boltmon.5ed9d3a8.webp",
+  "src": "models/files/rip_boltmon.glb"
+ },
+ "extra:Armageddemon": {
+  "file": "extra_Armageddemon.eae19a3c.webp",
+  "src": "models/files/rip_armageddemon.glb"
+ },
+ "extra:Monzaemon": {
+  "file": "extra_Monzaemon.f407d700.webp",
+  "src": "models/files/rip_monzaemon.glb"
+ },
+ "extra:Vademon": {
+  "file": "extra_Vademon.0d8932db.webp",
+  "src": "models/files/rip_vademon.glb"
+ },
+ "extra:Piximon": {
+  "file": "extra_Piximon.2b5a8375.webp",
+  "src": "models/files/rip_piximon.glb"
+ },
+ "extra:Okuwamon": {
+  "file": "extra_Okuwamon.5aeb990c.webp",
+  "src": "models/files/rip_okuwamon.glb"
+ },
+ "extra:GranKuwagamon": {
+  "file": "extra_GranKuwagamon.0479b017.webp",
+  "src": "models/files/rip_grankuwagamon.glb"
+ },
+ "extra:Frigimon": {
+  "file": "extra_Frigimon.c0aa4856.webp",
+  "src": "models/files/rip_frigimon.glb"
+ },
+ "extra:Vegiemon": {
+  "file": "extra_Vegiemon.c1b822d9.webp",
+  "src": "models/files/rip_vegiemon.glb"
+ },
+ "extra:Nanimon": {
+  "file": "extra_Nanimon.0cc31ef3.webp",
+  "src": "models/files/rip_nanimon.glb"
+ },
+ "extra:Bakemon": {
+  "file": "extra_Bakemon.8f7cdb54.webp",
+  "src": "models/files/rip_bakemon.glb"
+ },
+ "extra:Mojyamon": {
+  "file": "extra_Mojyamon.132b9dc7.webp",
+  "src": "models/files/rip_mojyamon.glb"
+ },
+ "extra:Sukamon": {
+  "file": "extra_Sukamon.e7f684f7.webp",
+  "src": "models/files/rip_sukamon.glb"
+ },
+ "ac:Triceramon": {
+  "file": "ac_Triceramon.31455bfb.webp",
+  "src": "models/files/rip_cs_triceramon.glb"
+ },
+ "ac:Beelzemon": {
+  "file": "ac_Beelzemon.fe33a729.webp",
+  "src": "models/files/rip_cs_beelzemon.glb"
+ },
+ "ac:Beelzemon Blast Mode": {
+  "file": "ac_Beelzemon_Blast_Mode.5c758700.webp",
+  "src": "models/files/rip_cs_beelzemonbm.glb"
+ },
+ "ac:Veemon": {
+  "file": "ac_Veemon.6b1ec787.webp",
+  "src": "models/files/rip_cs_veemon.glb"
+ },
+ "ac:ExVeemon": {
+  "file": "ac_ExVeemon.7a18e6d0.webp",
+  "src": "models/files/rip_cs_exveemon.glb"
+ },
+ "ac:Paildramon": {
+  "file": "ac_Paildramon.d343b475.webp",
+  "src": "models/files/rip_l_paildramon.glb"
+ },
+ "ac:Shamanmon": {
+  "file": "ac_Shamanmon.b4c49383.webp",
+  "src": "models/files/rip_no_shamanmon.glb"
+ },
+ "ac:Sorcermon": {
+  "file": "ac_Sorcermon.974a3a1a.webp",
+  "src": "models/files/rip_l_sorcermon.glb"
+ },
+ "ac:Kotemon": {
+  "file": "ac_Kotemon.a7af7473.webp",
+  "src": "models/files/rip_ts_kotemon.glb"
+ },
+ "ac:Knightmon": {
+  "file": "ac_Knightmon.760526d1.webp",
+  "src": "models/files/rip_cs_knightmon.glb"
+ },
+ "ac:Gaomon": {
+  "file": "ac_Gaomon.7f70a5a4.webp",
+  "src": "models/files/rip_cs_gaomon.glb"
+ },
+ "ac:Kyubimon": {
+  "file": "ac_Kyubimon.79fc3135.webp",
+  "src": "models/files/rip_cs_kyubimon.glb"
+ },
+ "ac:Psychemon": {
+  "file": "ac_Psychemon.f7b638e7.webp",
+  "src": "models/files/rip_no_psychemon.glb"
+ },
+ "ac:MegaGargomon": {
+  "file": "ac_MegaGargomon.81f33e41.webp",
+  "src": "models/files/rip_cs_megagargomon.glb"
+ },
+ "ac:Syakomon": {
+  "file": "ac_Syakomon.a264e6a6.webp",
+  "src": "models/files/rip_cs_syakomon.glb"
+ },
+ "ac:Whamon": {
+  "file": "ac_Whamon.d1ebb8c8.webp",
+  "src": "models/files/rip_l_whamon.glb"
+ },
+ "ac:Elecmon": {
+  "file": "ac_Elecmon.6971c342.webp",
+  "src": "models/files/rip_cs_elecmon.glb"
+ },
+ "ac:Aegiomon": {
+  "file": "ac_Aegiomon.8c0b8eb7.webp",
+  "src": "models/files/rip_ts_aegiomon.glb"
+ },
+ "ac:Tanemon": {
+  "file": "ac_Tanemon.052a39a0.webp",
+  "src": "models/files/rip_cs_tanemon.glb"
+ },
+ "ac:Monochromon": {
+  "file": "ac_Monochromon.f0a37130.webp",
+  "src": "models/files/rip_cs_monochromon.glb"
+ },
+ "ac:Airdramon": {
+  "file": "ac_Airdramon.c5ef7636.webp",
+  "src": "models/files/rip_cs_airdramon.glb"
+ },
+ "ac:Machinedramon": {
+  "file": "ac_Machinedramon.27820f42.webp",
+  "src": "models/files/rip_l_machinedramon.glb"
+ },
+ "ac:Apocalymon": {
+  "file": "ac_Apocalymon.0a134427.webp",
+  "src": "models/files/rip_cs_apocalymon.glb"
+ },
+ "ac:Guardromon (Gold)": {
+  "file": "ac_Guardromon__Gold_.60605d6b.webp",
+  "src": "models/files/rip_cs_guardromongold.glb"
+ },
+ "drg:Knightmon": {
+  "file": "drg_Knightmon.760526d1.webp",
+  "src": "models/files/rip_cs_knightmon.glb"
+ },
+ "drg:Sorcermon": {
+  "file": "drg_Sorcermon.fdc367cb.webp",
+  "src": "models/files/rip_cs_sorcermon.glb"
+ },
+ "drg:Elecmon": {
+  "file": "drg_Elecmon.6971c342.webp",
+  "src": "models/files/rip_cs_elecmon.glb"
+ },
+ "drg:Gaomon": {
+  "file": "drg_Gaomon.7f70a5a4.webp",
+  "src": "models/files/rip_cs_gaomon.glb"
+ },
+ "drg:Syakomon": {
+  "file": "drg_Syakomon.a264e6a6.webp",
+  "src": "models/files/rip_cs_syakomon.glb"
+ },
+ "drg:Monochromon": {
+  "file": "drg_Monochromon.f0a37130.webp",
+  "src": "models/files/rip_cs_monochromon.glb"
+ },
+ "drg:Triceramon": {
+  "file": "drg_Triceramon.31455bfb.webp",
+  "src": "models/files/rip_cs_triceramon.glb"
+ },
+ "drg:Airdramon": {
+  "file": "drg_Airdramon.c5ef7636.webp",
+  "src": "models/files/rip_cs_airdramon.glb"
+ },
+ "drg:Kotemon": {
+  "file": "drg_Kotemon.a7af7473.webp",
+  "src": "models/files/rip_ts_kotemon.glb"
+ },
+ "drg:Whamon": {
+  "file": "drg_Whamon.d1ebb8c8.webp",
+  "src": "models/files/rip_l_whamon.glb"
+ },
+ "drg:Psychemon": {
+  "file": "drg_Psychemon.f7b638e7.webp",
+  "src": "models/files/rip_no_psychemon.glb"
+ },
+ "ac:Tyrannomon": {
+  "file": "ac_Tyrannomon.b07b9b5b.webp",
+  "src": "models/files/rip_cs_tyrannomon.glb"
+ },
+ "ac:MetalTyrannomon": {
+  "file": "ac_MetalTyrannomon.efdda2ef.webp",
+  "src": "models/files/rip_l_metaltyrannomon.glb"
+ },
+ "drg:Varodurumon": {
+  "file": "drg_Varodurumon.0ba75d1c.webp",
+  "src": "models/files/rip_cs_varodurumon.glb"
+ },
+ "drg:Icemon": {
+  "file": "drg_Icemon.7b78bbc7.webp",
+  "src": "models/files/rip_cs_icemon.glb"
+ },
+ "drg:Patamon": {
+  "file": "drg_Patamon.136ec866.webp",
+  "src": "models/files/rip_cs_patamon.glb"
+ },
+ "drg:Unimon": {
+  "file": "drg_Unimon.36c11502.webp",
+  "src": "models/files/rip_cs_unimon.glb"
+ },
+ "drg:Coelamon": {
+  "file": "drg_Coelamon.8f614971.webp",
+  "src": "models/files/rip_cs_coelamon.glb"
+ },
+ "drg:Kamemon": {
+  "file": "drg_Kamemon.539defef.webp",
+  "src": "models/files/rip_ts_kamemon.glb"
+ },
+ "drg:Raptordramon": {
+  "file": "drg_Raptordramon.246bd74f.webp",
+  "src": "models/files/rip_cs_raptordramon.glb"
+ },
+ "drg:CraniamonX": {
+  "file": "drg_CraniamonX.67613726.webp",
+  "src": "models/files/rip_l_craniamon_x.glb"
+ },
+ "drg:BeelzemonX": {
+  "file": "drg_BeelzemonX.31d15e5d.webp",
+  "src": "models/files/rip_l_beelzemon_x.glb"
+ },
+ "drg:TigerVespamon": {
+  "file": "drg_TigerVespamon.45fb0a6c.webp",
+  "src": "models/files/rip_l_tigervespamon.glb"
+ },
+ "drg:Ikkakumon": {
+  "file": "drg_Ikkakumon.857730d4.webp",
+  "src": "models/files/rip_cs_ikkakumon.glb"
+ },
+ "drg:Flamedramon": {
+  "file": "drg_Flamedramon.38cd3ced.webp",
+  "src": "models/files/rip_cs_flamedramon.glb"
+ },
+ "drg:Sunflowmon": {
+  "file": "drg_Sunflowmon.4dbfae90.webp",
+  "src": "models/files/rip_cs_sunflowmon.glb"
+ },
+ "drg:Hawkmon": {
+  "file": "drg_Hawkmon.e9c6053c.webp",
+  "src": "models/files/rip_cs_hawkmon.glb"
+ },
+ "drg:Aquilamon": {
+  "file": "drg_Aquilamon.21919750.webp",
+  "src": "models/files/rip_cs_aquilamon.glb"
+ },
+ "drg:Silphymon": {
+  "file": "drg_Silphymon.63355a40.webp",
+  "src": "models/files/rip_cs_silphymon.glb"
+ },
+ "drg:Meramon": {
+  "file": "drg_Meramon.0bf2eef1.webp",
+  "src": "models/files/rip_cs_meramon.glb"
+ },
+ "drg:Tankmon": {
+  "file": "drg_Tankmon.78ce3d7c.webp",
+  "src": "models/files/rip_cs_tankmon.glb"
+ },
+ "drg:ToyAgumon": {
+  "file": "drg_ToyAgumon.8471e9c6.webp",
+  "src": "models/files/rip_cs_toyagumon.glb"
+ },
+ "drg:Saberdramon": {
+  "file": "drg_Saberdramon.cfcbbde7.webp",
+  "src": "models/files/rip_no_saberdramon.glb"
+ },
+ "drg:GuardromonGold": {
+  "file": "drg_GuardromonGold.60605d6b.webp",
+  "src": "models/files/rip_cs_guardromongold.glb"
+ },
+ "drg:ShellNumemon": {
+  "file": "drg_ShellNumemon.5ca864d5.webp",
+  "src": "models/files/rip_cs_shellnumemon.glb"
+ },
+ "drg:Neptunemon": {
+  "file": "drg_Neptunemon.f136b611.webp",
+  "src": "models/files/rip_cs_neptunemon.glb"
+ },
+ "drg:IceDevimon": {
+  "file": "drg_IceDevimon.662ab239.webp",
+  "src": "models/files/rip_cs_icedevimon.glb"
+ },
+ "drg:Gururumon": {
+  "file": "drg_Gururumon.3a93e431.webp",
+  "src": "models/files/rip_no_gururumon.glb"
+ },
+ "drg:AncientGarurumon": {
+  "file": "drg_AncientGarurumon.ae8c1122.webp",
+  "src": "models/files/rip_l_ancientgarurumon.glb"
+ },
+ "drg:Vikemon": {
+  "file": "drg_Vikemon.fb02a00f.webp",
+  "src": "models/files/rip_l_vikemon.glb"
+ },
+ "drg:AncientGreymon": {
+  "file": "drg_AncientGreymon.1116c268.webp",
+  "src": "models/files/rip_l_ancientgreymon.glb"
+ },
+ "drg:Chuumon": {
+  "file": "drg_Chuumon.74287d5b.webp",
+  "src": "models/files/rip_cs_chuumon.glb"
+ },
+ "drg:PlatinumSukamon": {
+  "file": "drg_PlatinumSukamon.f9409638.webp",
+  "src": "models/files/rip_cs_platinumsukamon.glb"
+ },
+ "drg:Piddomon": {
+  "file": "drg_Piddomon.77ae1d48.webp",
+  "src": "models/files/rip_no_piddomon.glb"
+ },
+ "drg:Valkyrimon": {
+  "file": "drg_Valkyrimon.02277505.webp",
+  "src": "models/files/rip_cs_valkyrimon.glb"
+ },
+ "drg:Gatomon": {
+  "file": "drg_Gatomon.114b5da1.webp",
+  "src": "models/files/rip_cs_gatomon.glb"
+ },
+ "drg:Ravemon": {
+  "file": "drg_Ravemon.28787e15.webp",
+  "src": "models/files/rip_cs_ravemon.glb"
+ },
+ "drg:Cyclonemon": {
+  "file": "drg_Cyclonemon.7e9251de.webp",
+  "src": "models/files/rip_l_cyclonemon.glb"
+ },
+ "drg:GallantmonX": {
+  "file": "drg_GallantmonX.de6beb5b.webp",
+  "src": "models/files/rip_l_gallantmon_x.glb"
+ },
+ "drg:RedVegiemon": {
+  "file": "drg_RedVegiemon.be51e897.webp",
+  "src": "models/files/rip_no_redvegiemon.glb"
+ },
+ "drg:DynasmonX": {
+  "file": "drg_DynasmonX.97254120.webp",
+  "src": "models/files/rip_l_dynasmon_x.glb"
+ },
+ "drg:SistermonCielAwakened": {
+  "file": "drg_SistermonCielAwakened.6d84f3e7.webp",
+  "src": "models/files/rip_cs_sistermon_ciel_awakened.glb"
+ },
+ "drg:JesmonX": {
+  "file": "drg_JesmonX.4d155566.webp",
+  "src": "models/files/rip_l_jesmon_x.glb"
+ },
+ "drg:Aruraumon": {
+  "file": "drg_Aruraumon.49774d3b.webp",
+  "src": "models/files/rip_no_aruraumon.glb"
+ },
+ "drg:WarGreymonX": {
+  "file": "drg_WarGreymonX.5823d93e.webp",
+  "src": "models/files/rip_l_wargreymon_x.glb"
+ },
+ "drg:Lotosmon": {
+  "file": "drg_Lotosmon.0bf509ac.webp",
+  "src": "models/files/rip_cs_lotosmon.glb"
+ },
+ "drg:MudFrigimon": {
+  "file": "drg_MudFrigimon.5baa41f4.webp",
+  "src": "models/files/rip_cs_mudfrigimon.glb"
+ },
+ "drg:BlackGabumon": {
+  "file": "drg_BlackGabumon.ba9f742e.webp",
+  "src": "models/files/rip_ts_blackgabumon.glb"
+ },
+ "drg:BlackGarurumon": {
+  "file": "drg_BlackGarurumon.248ebacb.webp",
+  "src": "models/files/rip_cs_blackgarurumon.glb"
+ },
+ "drg:BlackMetalGarurumon": {
+  "file": "drg_BlackMetalGarurumon.df1ef431.webp",
+  "src": "models/files/rip_l_blackmetalgarurumon.glb"
+ },
+ "drg:MarineAngemon": {
+  "file": "drg_MarineAngemon.62fed716.webp",
+  "src": "models/files/rip_l_marineangemon.glb"
+ },
+ "drg:MagnamonX": {
+  "file": "drg_MagnamonX.776a2262.webp",
+  "src": "models/files/rip_l_magnamon_x.glb"
+ },
+ "drg:HiAndromon": {
+  "file": "drg_HiAndromon.b84bdf00.webp",
+  "src": "models/files/rip_l_hiandromon.glb"
+ },
+ "drg:UlforceVeedramonX": {
+  "file": "drg_UlforceVeedramonX.eb7d6860.webp",
+  "src": "models/files/rip_l_ulforceveedramon_x.glb"
+ },
+ "drg:Gazimon": {
+  "file": "drg_Gazimon.33e083ba.webp",
+  "src": "models/files/rip_cs_gazimon.glb"
+ },
+ "drg:Meteormon": {
+  "file": "drg_Meteormon.2db2acb8.webp",
+  "src": "models/files/rip_cs_meteormon.glb"
+ },
+ "drg:Dianamon": {
+  "file": "drg_Dianamon.ddad70b3.webp",
+  "src": "models/files/rip_cs_dianamon.glb"
+ },
+ "drg:Golemon": {
+  "file": "drg_Golemon.77a59e9e.webp",
+  "src": "models/files/rip_cs_golemon.glb"
+ },
+ "drg:Merukimon": {
+  "file": "drg_Merukimon.b36abba0.webp",
+  "src": "models/files/rip_cs_merukimon.glb"
+ },
+ "drg:BlackAgumon": {
+  "file": "drg_BlackAgumon.0c4a2de8.webp",
+  "src": "models/files/rip_ts_blackagumon.glb"
+ },
+ "drg:BlackGreymon": {
+  "file": "drg_BlackGreymon.051de0f3.webp",
+  "src": "models/files/rip_cs_blackgreymon.glb"
+ },
+ "drg:Mushroomon": {
+  "file": "drg_Mushroomon.d4692c0f.webp",
+  "src": "models/files/rip_cs_mushroomon.glb"
+ },
+ "drg:KyubimonSilver": {
+  "file": "drg_KyubimonSilver.6276d5ab.webp",
+  "src": "models/files/rip_no_kyubimon_silver.glb"
+ },
+ "drg:SnowGoblimon": {
+  "file": "drg_SnowGoblimon.edf102fa.webp",
+  "src": "models/files/rip_no_snowgoblimon.glb"
+ },
+ "drg:SkullMeramon": {
+  "file": "drg_SkullMeramon.5c1bd48c.webp",
+  "src": "models/files/rip_l_skullmeramon.glb"
+ },
+ "drg:Gumdramon": {
+  "file": "drg_Gumdramon.4b3ac453.webp",
+  "src": "models/files/rip_l_gumdramon.glb"
+ },
+ "drg:Kokuwamon": {
+  "file": "drg_Kokuwamon.9a0761cb.webp",
+  "src": "models/files/rip_ts_kokuwamon.glb"
+ },
+ "drg:RedVeedramon": {
+  "file": "drg_RedVeedramon.7d187876.webp",
+  "src": "models/files/rip_no_redveedramon.glb"
+ },
+ "ac:Volcanicdramon": {
+  "file": "ac_Volcanicdramon.238fe08b.webp",
+  "src": "models/files/rip_l_volcanicdramon.glb"
+ },
+ "ac:Gigadramon": {
+  "file": "ac_Gigadramon.f8b04e54.webp",
+  "src": "models/files/rip_l_gigadramon.glb"
+ },
+ "ac:Millenniummon": {
+  "file": "ac_Millenniummon.1eb05b30.webp",
+  "src": "models/files/rip_l_millenniummon.glb"
+ },
+ "drg:SistermonNoir": {
+  "file": "drg_SistermonNoir.9f8d6c8e.webp",
+  "src": "models/files/rip_cs_sistermon_noir.glb"
+ },
+ "drg:Tentomon": {
+  "file": "drg_Tentomon.6c5aca3c.webp",
+  "src": "models/files/rip_cs_tentomon.glb"
+ },
+ "drg:CatchMamemon": {
+  "file": "drg_CatchMamemon.fd6e994e.webp",
+  "src": "models/files/rip_cs_catchmamemon.glb"
+ },
+ "drg:Justimon": {
+  "file": "drg_Justimon.07166ead.webp",
+  "src": "models/files/rip_cs_justimon.glb"
+ },
+ "drg:Guilmon": {
+  "file": "drg_Guilmon.bd0e13a8.webp",
+  "src": "models/files/rip_cs_guilmon.glb"
+ },
+ "drg:Gallantmon": {
+  "file": "drg_Gallantmon.50cfab95.webp",
+  "src": "models/files/rip_cs_gallantmon_nx.glb"
+ },
+ "drg:Gallantmon Crimson Mode": {
+  "file": "drg_Gallantmon_Crimson_Mode.8ffac000.webp",
+  "src": "models/files/rip_cs_gallantmon_crimson_mode.glb"
+ },
+ "drg:Coronamon": {
+  "file": "drg_Coronamon.2749ee90.webp",
+  "src": "models/files/rip_ts_coronamon.glb"
+ },
+ "drg:Goldramon": {
+  "file": "drg_Goldramon.df5b2286.webp",
+  "src": "models/files/rip_cs_goldramon.glb"
+ },
+ "drg:SaviorHuckmon": {
+  "file": "drg_SaviorHuckmon.d9946697.webp",
+  "src": "models/files/rip_cs_saviorhuckmon.glb"
+ },
+ "drg:Leopardmon X": {
+  "file": "drg_Leopardmon_X.ef2ad1fa.webp",
+  "src": "models/files/rip_l_leopardmon_x.glb"
+ },
+ "drg:Dragomon": {
+  "file": "drg_Dragomon.a9113b0f.webp",
+  "src": "models/files/rip_cs_dragomon.glb"
+ },
+ "drg:Duramon": {
+  "file": "drg_Duramon.36dd153b.webp",
+  "src": "models/files/rip_l_duramon.glb"
+ },
+ "drg:Ouryumon": {
+  "file": "drg_Ouryumon.2d6b60b8.webp",
+  "src": "models/files/rip_l_ouryumon.glb"
+ },
+ "drg:Dorugamon": {
+  "file": "drg_Dorugamon.e21af445.webp",
+  "src": "models/files/rip_cs_dorugamon.glb"
+ },
+ "drg:GranDracmon": {
+  "file": "drg_GranDracmon.76f60f6d.webp",
+  "src": "models/files/rip_cs_grandracmon.glb"
+ },
+ "drg:Greymon": {
+  "file": "drg_Greymon.823595e0.webp",
+  "src": "models/files/rip_cs_greymon.glb"
+ },
+ "drg:Tyrannomon": {
+  "file": "drg_Tyrannomon.b07b9b5b.webp",
+  "src": "models/files/rip_cs_tyrannomon.glb"
+ },
+ "drg:MetalTyrannomon": {
+  "file": "drg_MetalTyrannomon.efdda2ef.webp",
+  "src": "models/files/rip_l_metaltyrannomon.glb"
+ },
+ "drg:Chaosdromon": {
+  "file": "drg_Chaosdromon.0f8c7227.webp",
+  "src": "models/files/rip_l_chaosdromon.glb"
+ },
+ "drg:Hyokomon": {
+  "file": "drg_Hyokomon.accce7a7.webp",
+  "src": "models/files/rip_ts_hyokomon.glb"
+ },
+ "drg:Slayerdramon": {
+  "file": "drg_Slayerdramon.5089d790.webp",
+  "src": "models/files/rip_l_slayerdramon.glb"
+ },
+ "drg:Clockmon": {
+  "file": "drg_Clockmon.69c371d6.webp",
+  "src": "models/files/rip_cs_clockmon.glb"
+ },
+ "drg:Datamon": {
+  "file": "drg_Datamon.7792ed4c.webp",
+  "src": "models/files/rip_cs_datamon.glb"
+ },
+ "drg:Dorugoramon": {
+  "file": "drg_Dorugoramon.c648a785.webp",
+  "src": "models/files/rip_cs_dorugoramon.glb"
+ },
+ "drg:HippoGryphonmon": {
+  "file": "drg_HippoGryphonmon.027e5949.webp",
+  "src": "models/files/rip_cs_hippogryphonmon.glb"
+ },
+ "drg:Gryphonmon": {
+  "file": "drg_Gryphonmon.6389959d.webp",
+  "src": "models/files/rip_cs_gryphonmon.glb"
+ },
+ "drg:Metallicdramon": {
+  "file": "drg_Metallicdramon.b329a311.webp",
+  "src": "models/files/rip_l_metallicdramon.glb"
+ },
+ "drg:Growlmon (Yellow)": {
+  "file": "drg_Growlmon__Yellow_.c6345c16.webp",
+  "src": "models/files/rip_no_growlmon_yellow.glb"
+ },
+ "drg:Kentaurosmon": {
+  "file": "drg_Kentaurosmon.8d2739e1.webp",
+  "src": "models/files/rip_cs_kentaurosmon.glb"
+ },
+ "drg:Kentaurosmon X": {
+  "file": "drg_Kentaurosmon_X.2213c435.webp",
+  "src": "models/files/rip_l_kentaurosmon_x.glb"
+ },
+ "drg:Volcanicdramon": {
+  "file": "drg_Volcanicdramon.238fe08b.webp",
+  "src": "models/files/rip_l_volcanicdramon.glb"
+ },
+ "drg:Susanoomon": {
+  "file": "drg_Susanoomon.6f5761b4.webp",
+  "src": "models/files/rip_cs_susanoomon.glb"
+ },
+ "drg:Grademon": {
+  "file": "drg_Grademon.84fdf8c4.webp",
+  "src": "models/files/rip_cs_grademon.glb"
+ },
+ "drg:Samudramon": {
+  "file": "drg_Samudramon.be7b31dd.webp",
+  "src": "models/files/rip_cs_samudramon.glb"
+ },
+ "drg:Millenniummon": {
+  "file": "drg_Millenniummon.8d61a185.webp",
+  "src": "models/files/rip_l_millenniummon.glb"
+ },
+ "drg:Volcamon": {
+  "file": "drg_Volcamon.3042e5a3.webp",
+  "src": "models/files/rip_cs_volcamon.glb"
+ },
+ "drg:PileVolcamon": {
+  "file": "drg_PileVolcamon.bc174b24.webp",
+  "src": "models/files/rip_cs_pilevolcamon.glb"
+ },
+ "drg:Gigadramon": {
+  "file": "drg_Gigadramon.f8b04e54.webp",
+  "src": "models/files/rip_l_gigadramon.glb"
+ },
+ "drg:Megidramon": {
+  "file": "drg_Megidramon.8193a284.webp",
+  "src": "models/files/rip_cs_megidramon.glb"
+ },
+ "drg:Void Larva": {
+  "file": "drg_Void_Larva.009543ff.webp",
+  "src": "models/files/rip_cs_kuramon.glb"
+ },
+ "drg:Stone Guardian": {
+  "file": "drg_Stone_Guardian.f5271068.webp",
+  "src": "models/files/rip_l_garurumon_greymon_statue.glb"
+ },
+ "drg:BlackMetalGreymon": {
+  "file": "drg_BlackMetalGreymon.4dc9a5f5.webp",
+  "src": "models/files/rip_l_blackmetalgreymon.glb"
+ },
+ "drg:BlackWarGreymon": {
+  "file": "drg_BlackWarGreymon.ddbaa8ff.webp",
+  "src": "models/files/rip_l_blackwargreymon.glb"
+ },
+ "drg:DoruGreymon": {
+  "file": "drg_DoruGreymon.ed474166.webp",
+  "src": "models/files/rip_dorugreymon.glb"
+ },
+ "drg:Groundramon": {
+  "file": "drg_Groundramon.97c9179b.webp",
+  "src": "models/files/rip_groundramon.glb"
+ },
+ "drg:Breakdramon": {
+  "file": "drg_Breakdramon.4e0ff643.webp",
+  "src": "models/files/rip_breakdramon.glb"
+ },
+ "drg:Ankylomon": {
+  "file": "drg_Ankylomon.87f7f606.webp",
+  "src": "models/files/rip_ankylomon.glb"
+ },
+ "drg:Lavogaritamon": {
+  "file": "drg_Lavogaritamon.c8dc41ec.webp",
+  "src": "models/files/rip_lavogaritamon.glb"
+ },
+ "drg:BaoHuckmon": {
+  "file": "drg_BaoHuckmon.4c56056a.webp",
+  "src": "models/files/rip_baohuckmon.glb"
+ },
+ "drg:Jazarichmon": {
+  "file": "drg_Jazarichmon.e800f29a.webp",
+  "src": "models/files/rip_jazarichmon.glb"
+ },
+ "drg:Gesomon": {
+  "file": "drg_Gesomon.404f33b3.webp",
+  "src": "models/files/rip_gesomon2.glb"
+ },
+ "drg:Commandramon": {
+  "file": "drg_Commandramon.60dae005.webp",
+  "src": "models/files/rip_commandramon.glb"
+ },
+ "drg:Sealsdramon": {
+  "file": "drg_Sealsdramon.8d60e864.webp",
+  "src": "models/files/rip_sealsdramon.glb"
+ },
+ "drg:Ebonwumon": {
+  "file": "drg_Ebonwumon.0d033b67.webp",
+  "src": "models/files/rip_ebonwumon.glb"
+ },
+ "drg:Azulongmon": {
+  "file": "drg_Azulongmon.1d178faf.webp",
+  "src": "models/files/rip_azulongmon.glb"
+ },
+ "ac:Tapirmon": {
+  "file": "ac_Tapirmon.1f3765ba.webp",
+  "src": "models/files/rip_ts_bakumon.glb"
+ },
+ "ac:BlackGarurumon": {
+  "file": "ac_BlackGarurumon.c8d42e9f.webp",
+  "src": "models/files/rip_cs_blackgarurumon.glb"
+ },
+ "ac:Coronamon": {
+  "file": "ac_Coronamon.2749ee90.webp",
+  "src": "models/files/rip_ts_coronamon.glb"
+ },
+ "ac:SaviorHuckmon": {
+  "file": "ac_SaviorHuckmon.d9946697.webp",
+  "src": "models/files/rip_cs_saviorhuckmon.glb"
+ },
+ "ac:Guilmon": {
+  "file": "ac_Guilmon.bd0e13a8.webp",
+  "src": "models/files/rip_cs_guilmon.glb"
+ },
+ "ac:Turuiemon": {
+  "file": "ac_Turuiemon.af4b1681.webp",
+  "src": "models/files/rip_cs_turuiemon.glb"
+ },
+ "ac:Greymon": {
+  "file": "ac_Greymon.823595e0.webp",
+  "src": "models/files/rip_cs_greymon.glb"
+ },
+ "ac:Keramon": {
+  "file": "ac_Keramon.8ea3f76b.webp",
+  "src": "models/files/rip_cs_keramon.glb"
+ },
+ "ac:Infermon": {
+  "file": "ac_Infermon.d3435eb9.webp",
+  "src": "models/files/rip_cs_infermon.glb"
+ },
+ "ac:Tankmon": {
+  "file": "ac_Tankmon.35d80e87.webp",
+  "src": "models/files/rip_cs_tankmon.glb"
+ },
+ "ac:Wisemon": {
+  "file": "ac_Wisemon.7b935d3c.webp",
+  "src": "models/files/rip_cs_wisemon.glb"
+ },
+ "ac:Sunflowmon": {
+  "file": "ac_Sunflowmon.4dbfae90.webp",
+  "src": "models/files/rip_cs_sunflowmon.glb"
+ },
+ "ac:Meramon": {
+  "file": "ac_Meramon.0bf2eef1.webp",
+  "src": "models/files/rip_cs_meramon.glb"
+ },
+ "ac:Ikkakumon": {
+  "file": "ac_Ikkakumon.857730d4.webp",
+  "src": "models/files/rip_cs_ikkakumon.glb"
+ },
+ "ac:SkullGreymon": {
+  "file": "ac_SkullGreymon.f1261ef9.webp",
+  "src": "models/files/rip_l_skullgreymon.glb"
+ },
+ "ac:Garurumon": {
+  "file": "ac_Garurumon.8e7f06f2.webp",
+  "src": "models/files/rip_cs_garurumon.glb"
+ },
+ "ac:WereGarurumon": {
+  "file": "ac_WereGarurumon.f6d6015e.webp",
+  "src": "models/files/rip_l_weregarurumon.glb"
+ },
+ "ac:Patamon": {
+  "file": "ac_Patamon.136ec866.webp",
+  "src": "models/files/rip_cs_patamon.glb"
+ },
+ "ac:SkullSatamon": {
+  "file": "ac_SkullSatamon.b84c0f06.webp",
+  "src": "models/files/rip_cs_skullsatamon.glb"
+ },
+ "ac:Hawkmon": {
+  "file": "ac_Hawkmon.e9c6053c.webp",
+  "src": "models/files/rip_cs_hawkmon.glb"
+ },
+ "ac:Aquilamon": {
+  "file": "ac_Aquilamon.21919750.webp",
+  "src": "models/files/rip_cs_aquilamon.glb"
+ },
+ "ac:Silphymon": {
+  "file": "ac_Silphymon.63355a40.webp",
+  "src": "models/files/rip_cs_silphymon.glb"
+ },
+ "ac:Kokuwamon": {
+  "file": "ac_Kokuwamon.9a0761cb.webp",
+  "src": "models/files/rip_ts_kokuwamon.glb"
+ },
+ "ac:Golemon": {
+  "file": "ac_Golemon.77a59e9e.webp",
+  "src": "models/files/rip_cs_golemon.glb"
+ },
+ "ac:Meteormon": {
+  "file": "ac_Meteormon.29a3de1f.webp",
+  "src": "models/files/rip_cs_meteormon.glb"
+ },
+ "ac:Bearmon": {
+  "file": "ac_Bearmon.a8f97ddf.webp",
+  "src": "models/files/rip_ts_bearmon.glb"
+ },
+ "ac:Coredramon_Blue": {
+  "file": "ac_Coredramon_Blue.00db822f.webp",
+  "src": "models/files/rip_cs_coredramon_blue.glb"
+ },
+ "ac:BlackAgumon": {
+  "file": "ac_BlackAgumon.0c4a2de8.webp",
+  "src": "models/files/rip_ts_blackagumon.glb"
+ },
+ "ac:BlackGreymon": {
+  "file": "ac_BlackGreymon.051de0f3.webp",
+  "src": "models/files/rip_cs_blackgreymon.glb"
+ },
+ "ac:Hyokomon": {
+  "file": "ac_Hyokomon.accce7a7.webp",
+  "src": "models/files/rip_ts_hyokomon.glb"
+ },
+ "ac:SkullMeramon": {
+  "file": "ac_SkullMeramon.5c1bd48c.webp",
+  "src": "models/files/rip_l_skullmeramon.glb"
+ },
+ "ac:Gumdramon": {
+  "file": "ac_Gumdramon.4b3ac453.webp",
+  "src": "models/files/rip_l_gumdramon.glb"
+ },
+ "ac:Arresterdramon": {
+  "file": "ac_Arresterdramon.6f534860.webp",
+  "src": "models/files/rip_l_arresterdramon_dae.glb"
+ },
+ "ac:Slayerdramon": {
+  "file": "ac_Slayerdramon.5089d790.webp",
+  "src": "models/files/rip_l_slayerdramon.glb"
+ },
+ "ac:Floramon": {
+  "file": "ac_Floramon.967af362.webp",
+  "src": "models/files/rip_ts_floramon.glb"
+ },
+ "ac:Solarmon": {
+  "file": "ac_Solarmon.2244284e.webp",
+  "src": "models/files/rip_cs_solarmon.glb"
+ },
+ "ac:Clockmon": {
+  "file": "ac_Clockmon.69c371d6.webp",
+  "src": "models/files/rip_cs_clockmon.glb"
+ },
+ "ac:Datamon": {
+  "file": "ac_Datamon.7792ed4c.webp",
+  "src": "models/files/rip_cs_datamon.glb"
+ },
+ "ac:Merukimon": {
+  "file": "ac_Merukimon.b36abba0.webp",
+  "src": "models/files/rip_cs_merukimon.glb"
+ },
+ "ac:Dianamon": {
+  "file": "ac_Dianamon.ddad70b3.webp",
+  "src": "models/files/rip_cs_dianamon.glb"
+ },
+ "ac:Raremon": {
+  "file": "ac_Raremon.d5e33f73.webp",
+  "src": "models/files/rip_cs_raremon.glb"
+ },
+ "ac:SnowGoblimon": {
+  "file": "ac_SnowGoblimon.edf102fa.webp",
+  "src": "models/files/rip_no_snowgoblimon.glb"
+ },
+ "ac:Hyogamon": {
+  "file": "ac_Hyogamon.8ae7a6ec.webp",
+  "src": "models/files/rip_no_hyogamon.glb"
+ },
+ "ac:Gazimon": {
+  "file": "ac_Gazimon.33e083ba.webp",
+  "src": "models/files/rip_cs_gazimon.glb"
+ },
+ "ac:Devimon": {
+  "file": "ac_Devimon.0f322ecc.webp",
+  "src": "models/files/rip_cs_devimon.glb"
+ },
+ "ac:Mushroomon": {
+  "file": "ac_Mushroomon.d4692c0f.webp",
+  "src": "models/files/rip_cs_mushroomon.glb"
+ },
+ "ac:Antylamon": {
+  "file": "ac_Antylamon.900f17a6.webp",
+  "src": "models/files/rip_andiramon.glb"
+ },
+ "ac:Firamon": {
+  "file": "ac_Firamon.19212a8d.webp",
+  "src": "models/files/rip_firamon.glb"
+ },
+ "ac:Grizzlymon": {
+  "file": "ac_Grizzlymon.ff89acda.webp",
+  "src": "models/files/rip_grizzlymon.glb"
+ },
+ "ac:Commandramon": {
+  "file": "ac_Commandramon.60dae005.webp",
+  "src": "models/files/rip_commandramon.glb"
+ },
+ "ac:Sealsdramon": {
+  "file": "ac_Sealsdramon.8d60e864.webp",
+  "src": "models/files/rip_sealsdramon.glb"
+ },
+ "ac:BlackWarGreymon": {
+  "file": "ac_BlackWarGreymon.ddbaa8ff.webp",
+  "src": "models/files/rip_l_blackwargreymon.glb"
+ },
+ "ac:Tsukaimon": {
+  "file": "ac_Tsukaimon.0a990051.webp",
+  "src": "models/files/rip_l_tsukaimon.glb"
+ },
+ "ac:IceLeomon": {
+  "file": "ac_IceLeomon.ac0596a0.webp",
+  "src": "models/files/rip_l_iceleomon.glb"
+ },
+ "ac:Candlemon": {
+  "file": "ac_Candlemon.b8740d72.webp",
+  "src": "models/files/9397707877444465ab951890c6ffaeb2.glb"
+ },
+ "ac:Phantomon": {
+  "file": "ac_Phantomon.ad409c08.webp",
+  "src": "models/files/rip_cs_phantomon.glb"
+ },
+ "drg:Phantomon": {
+  "file": "drg_Phantomon.ad409c08.webp",
+  "src": "models/files/rip_cs_phantomon.glb"
+ },
+ "drg:KingSukamon": {
+  "file": "drg_KingSukamon.3cbdc48a.webp",
+  "src": "models/files/rip_no_kingsukamon.glb"
+ },
+ "drg:Arresterdramon": {
+  "file": "drg_Arresterdramon.6f534860.webp",
+  "src": "models/files/rip_l_arresterdramon_dae.glb"
+ },
+ "drg:Hudiemon": {
+  "file": "drg_Hudiemon.989eaf75.webp",
+  "src": "models/files/rip_cs_hudiemon.glb"
+ },
+ "drg:Tsukaimon": {
+  "file": "drg_Tsukaimon.0a990051.webp",
+  "src": "models/files/rip_l_tsukaimon.glb"
+ },
+ "drg:Kuzuhamon": {
+  "file": "drg_Kuzuhamon.10393e13.webp",
+  "src": "models/files/rip_l_kuzuhamon.glb"
+ },
+ "drg:Youkomon": {
+  "file": "drg_Youkomon.61e55b87.webp",
+  "src": "models/files/rip_no_youkomon.glb"
+ },
+ "ac:Mekanorimon": {
+  "file": "ac_Mekanorimon.e610c0a9.webp",
+  "src": "models/files/rip_nc_mekanorimon.glb"
+ },
+ "ac:Asuramon": {
+  "file": "ac_Asuramon.422dcde6.webp",
+  "src": "models/files/rip_nc_asuramon.glb"
+ },
+ "ac:Gladimon": {
+  "file": "ac_Gladimon.5e6185ce.webp",
+  "src": "models/files/rip_nc_gladimon.glb"
+ },
+ "ac:Soulmon": {
+  "file": "ac_Soulmon.8b945fad.webp",
+  "src": "models/files/rip_m_soulmon.glb"
+ },
+ "ac:DoKunemon": {
+  "file": "ac_DoKunemon.91f5a30e.webp",
+  "src": "models/files/rip_m_dokunemon.glb"
+ },
+ "ac:Witchmon": {
+  "file": "ac_Witchmon.f5a55cd9.webp",
+  "src": "models/files/rip_nc_witchmon.glb"
+ },
+ "ac:Astamon": {
+  "file": "ac_Astamon.3c2358b1.webp",
+  "src": "models/files/rip_nc_astamon.glb"
+ },
+ "ac:Jupitermon": {
+  "file": "ac_Jupitermon.53d5f0ab.webp",
+  "src": "models/files/rip_nc_jupitermon.glb"
+ },
+ "ac:DexDorugamon": {
+  "file": "ac_DexDorugamon.4f83e0b8.webp",
+  "src": "models/files/rip_m_dexdorugamon.glb"
+ },
+ "ac:DexDorugreymon": {
+  "file": "ac_DexDorugreymon.20b32923.webp",
+  "src": "models/files/rip_m_dexdorugreymon.glb"
+ },
+ "ac:DexDorugoramon": {
+  "file": "ac_DexDorugoramon.7ba7f24c.webp",
+  "src": "models/files/rip_m_dexdorugoramon.glb"
+ },
+ "ac:Kumamon": {
+  "file": "ac_Kumamon.2e7302bd.webp",
+  "src": "models/files/rip_nc_kumamon.glb"
+ },
+ "ac:Fugamon": {
+  "file": "ac_Fugamon.927777bb.webp",
+  "src": "models/files/rip_ra_fugamon.glb"
+ },
+ "ac:Mammothmon": {
+  "file": "ac_Mammothmon.fe86fe55.webp",
+  "src": "models/files/rip_nc_mammothmon.glb"
+ },
+ "ac:Musyamon": {
+  "file": "ac_Musyamon.7aa64950.webp",
+  "src": "models/files/rip_nc_musyamon.glb"
+ },
+ "ac:Zanbamon": {
+  "file": "ac_Zanbamon.65dccc16.webp",
+  "src": "models/files/rip_nc_zanbamon.glb"
+ },
+ "ac:Flymon": {
+  "file": "ac_Flymon.9a4ccaee.webp",
+  "src": "models/files/rip_nc_flymon.glb"
+ },
+ "ac:Arukenimon": {
+  "file": "ac_Arukenimon.409805bf.webp",
+  "src": "models/files/rip_m_arukenimon.glb"
+ },
+ "ac:Labramon": {
+  "file": "ac_Labramon.ef1f4427.webp",
+  "src": "models/files/rip_m_labramon.glb"
+ },
+ "ac:Dobermon": {
+  "file": "ac_Dobermon.709635de.webp",
+  "src": "models/files/rip_nc_dobermon.glb"
+ },
+ "ac:JewelBeemon": {
+  "file": "ac_JewelBeemon.675ee462.webp",
+  "src": "models/files/rip_nc_jewelbeemon.glb"
+ },
+ "ac:Darkdramon": {
+  "file": "ac_Darkdramon.695fa0e1.webp",
+  "src": "models/files/rip_m_darkdramon.glb"
+ },
+ "drg:Vulcanusmon": {
+  "file": "drg_Vulcanusmon.f3c2392a.webp",
+  "src": "models/files/rip_nc_vulcanusmon.glb"
+ },
+ "drg:Devidramon": {
+  "file": "drg_Devidramon.869c8912.webp",
+  "src": "models/files/rip_nc_devidramon.glb"
+ },
+ "drg:GoldVeedramon": {
+  "file": "drg_GoldVeedramon.ec5a48e2.webp",
+  "src": "models/files/rip_ra_goldveedramon.glb"
+ },
+ "drg:Crabmon": {
+  "file": "drg_Crabmon.689d4b2a.webp",
+  "src": "models/files/rip_ts_crabmon.glb"
+ },
+ "drg:Penguinmon": {
+  "file": "drg_Penguinmon.23711dab.webp",
+  "src": "models/files/rip_ts_penguinmon.glb"
+ },
+ "ac:Apollomon": {
+  "file": "ac_Apollomon.d9efd82c.webp",
+  "src": "models/files/rip_nc_apollomon.glb"
+ },
+ "giz:Tankdramon": {
+  "file": "giz_Tankdramon.152d574f.webp",
+  "src": "models/files/rip_tankdramon.glb"
+ },
+ "giz:Ebemon": {
+  "file": "giz_Ebemon.e985d05a.webp",
+  "src": "models/files/rip_l_ebemon.glb"
+ },
+ "giz:Mastemon": {
+  "file": "giz_Mastemon.d71f3ac2.webp",
+  "src": "models/files/rip_l_mastemon.glb"
+ },
+ "giz:Pumpkinmon": {
+  "file": "giz_Pumpkinmon.c3fe0829.webp",
+  "src": "models/files/rip_cs_pumpkinmon.glb"
+ },
+ "giz:RustTyranomon": {
+  "file": "giz_RustTyranomon.2d928b02.webp",
+  "src": "models/files/rip_l_rusttyranomon.glb"
+ },
+ "giz:TyrantKabuterimon": {
+  "file": "giz_TyrantKabuterimon.c967884d.webp",
+  "src": "models/files/rip_cs_tyrantkabuterimon.glb"
+ },
+ "giz:Rosemon": {
+  "file": "giz_Rosemon.aa5d3f0e.webp",
+  "src": "models/files/rip_l_rosemon.glb"
+ },
+ "giz:SistermonBlanc": {
+  "file": "giz_SistermonBlanc.f9864eec.webp",
+  "src": "models/files/rip_cs_sistermon_blanc.glb"
+ },
+ "giz:SistermonBlancAwakened": {
+  "file": "giz_SistermonBlancAwakened.44cf7c07.webp",
+  "src": "models/files/rip_cs_sistermon_blanc_awakened.glb"
+ },
+ "giz:SistermonNoirAwakened": {
+  "file": "giz_SistermonNoirAwakened.01e74805.webp",
+  "src": "models/files/rip_cs_sistermon_noir_awakened.glb"
+ },
+ "giz:Boltboutamon": {
+  "file": "giz_Boltboutamon.d6c7b21e.webp",
+  "src": "models/files/rip_no_boltboutamon.glb"
+ },
+ "giz:Yggdrasil": {
+  "file": "giz_Yggdrasil.1d7475ff.webp",
+  "src": "models/files/rip_l_yggdrasil_7d6.glb"
+ },
+ "giz:Wizardmon": {
+  "file": "giz_Wizardmon.680d4da2.webp",
+  "src": "models/files/rip_cs_wizardmon.glb"
+ },
+ "giz:Andromon": {
+  "file": "giz_Andromon.fa6e4486.webp",
+  "src": "models/files/rip_l_andromon.glb"
+ },
+ "giz:Guardromon": {
+  "file": "giz_Guardromon.c06ca913.webp",
+  "src": "models/files/rip_cs_guardromon.glb"
+ },
+ "giz:RapidmonArmor": {
+  "file": "giz_RapidmonArmor.306f47cf.webp",
+  "src": "models/files/rip_cs_rapidmon_armor.glb"
+ },
+ "giz:Jijimon": {
+  "file": "giz_Jijimon.484f211a.webp",
+  "src": "models/files/rip_l_jijimon.glb"
+ },
+ "giz:OmniShoutmon": {
+  "file": "giz_OmniShoutmon.e491ac59.webp",
+  "src": "models/files/rip_cs_omnishoutmon.glb"
+ }
+}

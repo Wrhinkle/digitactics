@@ -1,0 +1,80 @@
+{
+ "drg:Tentomon": "CS_Tentomon",
+ "drg:CatchMamemon": "CS_CatchMamemon",
+ "drg:Justimon": "CS_Justimon",
+ "drg:Guilmon": "CS_Guilmon",
+ "drg:Gallantmon": "CS_Gallantmon_NX",
+ "drg:Gallantmon Crimson Mode": "CS_Gallantmon_Crimson_Mode",
+ "drg:Coronamon": "TS_Coronamon",
+ "drg:Goldramon": "CS_Goldramon",
+ "drg:SaviorHuckmon": "CS_SaviorHuckmon",
+ "drg:Leopardmon X": "L_Leopardmon_X",
+ "drg:Dragomon": "CS_Dragomon",
+ "drg:Duramon": "L_Duramon",
+ "drg:Ouryumon": "L_Ouryumon",
+ "drg:Dorugamon": "CS_Dorugamon",
+ "drg:Dorugoramon": "CS_Dorugoramon",
+ "drg:Hyokomon": "TS_Hyokomon",
+ "drg:HippoGryphonmon": "CS_HippoGryphonmon",
+ "drg:Gryphonmon": "CS_Gryphonmon",
+ "drg:Metallicdramon": "L_Metallicdramon",
+ "drg:Growlmon (Yellow)": "NO_Growlmon_Yellow",
+ "drg:Slayerdramon": "L_Slayerdramon",
+ "drg:Kentaurosmon": "CS_Kentaurosmon",
+ "drg:Kentaurosmon X": "L_Kentaurosmon_X",
+ "drg:Phantomon": "CS_Phantomon",
+ "drg:GranDracmon": "CS_GranDracmon",
+ "drg:Greymon": "CS_Greymon",
+ "drg:Volcanicdramon": "L_Volcanicdramon",
+ "drg:Susanoomon": "CS_Susanoomon",
+ "drg:Grademon": "CS_Grademon",
+ "drg:Samudramon": "CS_Samudramon",
+ "drg:Clockmon": "CS_Clockmon",
+ "drg:Datamon": "CS_Datamon",
+ "drg:Millenniummon": "L_Millenniummon",
+ "drg:Volcamon": "CS_Volcamon",
+ "drg:PileVolcamon": "CS_PileVolcamon",
+ "drg:Tyrannomon": "CS_Tyrannomon",
+ "drg:Gigadramon": "L_Gigadramon",
+ "drg:MetalTyrannomon": "L_MetalTyrannomon",
+ "drg:Megidramon": "CS_Megidramon",
+ "drg:Chaosdromon": "L_Chaosdromon",
+ "drg:Stone Guardian": "L_Garurumon_Greymon_Statue",
+ "drg:Void Larva": "CS_Kuramon",
+ "drg:BlackMetalGreymon": "L_BlackMetalGreymon",
+ "drg:BlackWarGreymon": "L_BlackWarGreymon",
+ "_alias": {
+  "L_BlackMetalGreymon": "MetalGreymon",
+  "L_BlackWarGreymon": "WarGreymon"
+ },
+ "_retexture": {
+  "L_BlackMetalGreymon": {
+   "chr302a01.png": "chr327a01.png"
+  },
+  "L_BlackWarGreymon": {
+   "chr027a01.png": "chr175a01.png"
+  }
+ },
+ "_form": {
+  "L_BlackMetalGreymon": "BlackMetalGreymon",
+  "L_BlackWarGreymon": "BlackWarGreymon",
+  "L_Garurumon_Greymon_Statue": "Stone Guardian (Garurumon & Greymon Statue)",
+  "CS_Kuramon": "Kuramon",
+  "Gesomon2": "Gesomon"
+ },
+ "_pick": {
+  "L_Garurumon_Greymon_Statue": "farm_build_evolution_02.dae$"
+ },
+ "drg:DoruGreymon": "DoruGreymon",
+ "drg:Groundramon": "Groundramon",
+ "drg:Breakdramon": "Breakdramon",
+ "drg:Ankylomon": "Ankylomon",
+ "drg:Lavogaritamon": "Lavogaritamon",
+ "drg:BaoHuckmon": "BaoHuckmon",
+ "drg:Jazarichmon": "Jazarichmon",
+ "drg:Gesomon": "Gesomon2",
+ "drg:Commandramon": "Commandramon",
+ "drg:Sealsdramon": "Sealsdramon",
+ "drg:Ebonwumon": "Ebonwumon",
+ "drg:Azulongmon": "Azulongmon"
+}

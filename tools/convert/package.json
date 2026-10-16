@@ -1,0 +1,20 @@
+{
+  "name": "convert",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "fbx2gltf": "^0.9.7-p1",
+    "obj2gltf": "^3.2.0",
+    "sharp": "^0.35.5"
+  }
+}

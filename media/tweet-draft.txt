@@ -1,0 +1,7 @@
+Built a Digimon autobattler for fun: build your team, digivolve, team up in Duos, and finish with a victory dance.
+
+Here's a peek at Digi-Tactics. Free fan project, no monetization. Huge thanks to the original artists and community contributors—full credits in the repo.
+
+#Digimon
+
+Publishing note (not tweet copy): This is a teaser draft, not a claim that a public download is live. Add the public repository URL only after the public-release review is resolved. Do not post automatically.

@@ -1,0 +1,3288 @@
+{
+ "_doc": "Catalog assets that the set plans need and that were not in tools/convert/rips when this was written. Every one of them is from a Cyber Sleuth-family game, and the user approved downloading all remaining Cyber Sleuth CE, Digimon Links, Time Stranger, Next Order (PC + Vita) and Re:Digitize assets on 2026-10-15, so their status is \"downloading\": this file is now a checklist for mapping the new rips (prefixes CS_, L_, TS_, NO_, RD_ in tools/convert/rips/x/) to the set units, not a request to fetch them. Priority is the first set that uses the asset (1 = re-source Set 1). Sizes are estimates per file.",
+ "generated": "2026-10-15",
+ "sizeEstimatesMB": {
+  "links": {
+   "mb": 1.7,
+   "basis": "given average"
+  },
+  "cs": {
+   "mb": 2.4,
+   "basis": "given average"
+  },
+  "ts": {
+   "mb": 4.4,
+   "basis": "one Time Stranger rip so far (Gizamon, 4.4 MB)"
+  },
+  "dwnext": {
+   "mb": 2.4,
+   "basis": "no sample; assumed like Cyber Sleuth"
+  },
+  "redigitize": {
+   "mb": 1,
+   "basis": "no sample; PSP-era guess"
+  }
+ },
+ "totals": {
+  "assets": 177,
+  "estMB": 359.6,
+  "perSet": {
+   "1": {
+    "assets": 43,
+    "estMB": 81.5,
+    "byGame": {
+     "cs": 12,
+     "links": 31
+    }
+   },
+   "2": {
+    "assets": 108,
+    "estMB": 228.3,
+    "byGame": {
+     "cs": 51,
+     "dwnext": 9,
+     "links": 47,
+     "ts": 1
+    }
+   },
+   "3": {
+    "assets": 26,
+    "estMB": 49.8,
+    "byGame": {
+     "cs": 7,
+     "dwnext": 1,
+     "links": 18
+    }
+   }
+  }
+ },
+ "assets": [
+  {
+   "game": "cs",
+   "assetId": "324499",
+   "catalogName": "Tentomon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324499/",
+   "digimon": [
+    "Tentomon"
+   ],
+   "usedBy": [
+    "Set 1: tentomon:0 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324503",
+   "catalogName": "Elecmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324503/",
+   "digimon": [
+    "Elecmon"
+   ],
+   "usedBy": [
+    "Set 1: elecmon:0 (re-source, now ReArise)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324574",
+   "catalogName": "Silphymon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324574/",
+   "digimon": [
+    "Silphymon"
+   ],
+   "usedBy": [
+    "Set 1: hawkmon:2 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324288",
+   "catalogName": "Keramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324288/",
+   "digimon": [
+    "Keramon"
+   ],
+   "usedBy": [
+    "Set 1: keramon:0 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324290",
+   "catalogName": "Infermon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324290/",
+   "digimon": [
+    "Infermon"
+   ],
+   "usedBy": [
+    "Set 1: keramon:2 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324482",
+   "catalogName": "Turuiemon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324482/",
+   "digimon": [
+    "Turuiemon"
+   ],
+   "usedBy": [
+    "Set 1: lopmon:1 (re-source, now ReArise)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324354",
+   "catalogName": "SkullSatamon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324354/",
+   "digimon": [
+    "SkullSatamon"
+   ],
+   "usedBy": [
+    "Set 1: demidevimon:2 (replacement for NeoDevimon)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324280",
+   "catalogName": "Coelamon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324280/",
+   "digimon": [
+    "Coelamon"
+   ],
+   "usedBy": [
+    "Set 1: gizamon:1 (replacement for Gesomon)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324274",
+   "catalogName": "Dragomon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324274/",
+   "digimon": [
+    "Dragomon"
+   ],
+   "usedBy": [
+    "Set 1: gizamon:2 (replacement for MarineDevimon)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324292",
+   "catalogName": "Wisemon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324292/",
+   "digimon": [
+    "Wisemon"
+   ],
+   "usedBy": [
+    "Set 1: candlemon:2 (replacement for Mistymon)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324287",
+   "catalogName": "Tankmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324287/",
+   "digimon": [
+    "Tankmon"
+   ],
+   "usedBy": [
+    "Set 1: commandramon:1 (replacement for Sealsdramon)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324416",
+   "catalogName": "GranDracmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324416/",
+   "digimon": [
+    "GranDracmon"
+   ],
+   "usedBy": [
+    "Set 1: myotismon:2 (replacement for MaloMyotismon)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "302502",
+   "catalogName": "Agumon / BlackAgumon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/302502/",
+   "digimon": [
+    "Agumon",
+    "BlackAgumon"
+   ],
+   "usedBy": [
+    "Set 1: agumon:0 (re-source, now Sketchfab upload)",
+    "Set 3: Aatrox (stage 0)"
+   ],
+   "sets": [
+    1,
+    3
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304043",
+   "catalogName": "Greymon / BlackGreymon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304043/",
+   "digimon": [
+    "Greymon",
+    "BlackGreymon"
+   ],
+   "usedBy": [
+    "Set 1: agumon:1 (re-source, now Sketchfab upload)",
+    "Set 3: Aatrox (stage 1)"
+   ],
+   "sets": [
+    1,
+    3
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304052",
+   "catalogName": "Gabumon / BlackGabumon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304052/",
+   "digimon": [
+    "Gabumon",
+    "BlackGabumon"
+   ],
+   "usedBy": [
+    "Set 1: gabumon:0 (re-source, now Sketchfab upload)",
+    "Set 2: Olaf (stage 0)"
+   ],
+   "sets": [
+    1,
+    2
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304006",
+   "catalogName": "Garurumon / BlackGarurmon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304006/",
+   "digimon": [
+    "Garurumon",
+    "BlackGarurmon"
+   ],
+   "usedBy": [
+    "Set 1: gabumon:1 (re-source, now Sketchfab upload)",
+    "Set 2: Olaf (stage 1)"
+   ],
+   "sets": [
+    1,
+    2
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304078",
+   "catalogName": "WereGarurumon / ShadowWereGarurumon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304078/",
+   "digimon": [
+    "WereGarurumon",
+    "ShadowWereGarurumon"
+   ],
+   "usedBy": [
+    "Set 1: gabumon:2 (re-source, now Sketchfab upload)",
+    "Set 2: Pyke (stage 1)"
+   ],
+   "sets": [
+    1,
+    2
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304106",
+   "catalogName": "Ikkakumon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304106/",
+   "digimon": [
+    "Ikkakumon"
+   ],
+   "usedBy": [
+    "Set 1: gomamon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304046",
+   "catalogName": "Biyomon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304046/",
+   "digimon": [
+    "Biyomon"
+   ],
+   "usedBy": [
+    "Set 1: biyomon:0 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304012",
+   "catalogName": "Hagurumon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304012/",
+   "digimon": [
+    "Hagurumon"
+   ],
+   "usedBy": [
+    "Set 1: hagurumon:0 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304091",
+   "catalogName": "Guardromon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304091/",
+   "digimon": [
+    "Guardromon"
+   ],
+   "usedBy": [
+    "Set 1: hagurumon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "302503",
+   "catalogName": "Andromon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/302503/",
+   "digimon": [
+    "Andromon"
+   ],
+   "usedBy": [
+    "Set 1: hagurumon:2 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304003",
+   "catalogName": "Devimon / IceDevimon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304003/",
+   "digimon": [
+    "Devimon",
+    "IceDevimon"
+   ],
+   "usedBy": [
+    "Set 1: demidevimon:1 (re-source, now Sketchfab upload)",
+    "Set 2: Vladimir (stage 1)"
+   ],
+   "sets": [
+    1,
+    2
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304010",
+   "catalogName": "Guilmon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304010/",
+   "digimon": [
+    "Guilmon"
+   ],
+   "usedBy": [
+    "Set 1: guilmon:0 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304009",
+   "catalogName": "Growlmon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304009/",
+   "digimon": [
+    "Growlmon"
+   ],
+   "usedBy": [
+    "Set 1: guilmon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304108",
+   "catalogName": "Kyubimon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304108/",
+   "digimon": [
+    "Kyubimon"
+   ],
+   "usedBy": [
+    "Set 1: renamon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304072",
+   "catalogName": "Patamon / Tsukaimon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304072/",
+   "digimon": [
+    "Patamon"
+   ],
+   "usedBy": [
+    "Set 1: patamon:0 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304064",
+   "catalogName": "MagnaAngemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304064/",
+   "digimon": [
+    "MagnaAngemon"
+   ],
+   "usedBy": [
+    "Set 1: patamon:2 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304204",
+   "catalogName": "Hawkmon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304204/",
+   "digimon": [
+    "Hawkmon"
+   ],
+   "usedBy": [
+    "Set 1: hawkmon:0 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "303996",
+   "catalogName": "Aquilamon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/303996/",
+   "digimon": [
+    "Aquilamon"
+   ],
+   "usedBy": [
+    "Set 1: hawkmon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304124",
+   "catalogName": "Wizardmon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304124/",
+   "digimon": [
+    "Wizardmon"
+   ],
+   "usedBy": [
+    "Set 1: candlemon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304074",
+   "catalogName": "Veemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304074/",
+   "digimon": [
+    "Veemon"
+   ],
+   "usedBy": [
+    "Set 1: veemon:0 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304103",
+   "catalogName": "ExVeemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304103/",
+   "digimon": [
+    "ExVeemon"
+   ],
+   "usedBy": [
+    "Set 1: veemon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304132",
+   "catalogName": "Paildramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304132/",
+   "digimon": [
+    "Paildramon"
+   ],
+   "usedBy": [
+    "Set 1: veemon:2 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304050",
+   "catalogName": "Dorumon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304050/",
+   "digimon": [
+    "Dorumon"
+   ],
+   "usedBy": [
+    "Set 1: dorumon:0 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304102",
+   "catalogName": "Dorugamon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304102/",
+   "digimon": [
+    "Dorugamon"
+   ],
+   "usedBy": [
+    "Set 1: dorumon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304005",
+   "catalogName": "Gaomon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304005/",
+   "digimon": [
+    "Gaomon"
+   ],
+   "usedBy": [
+    "Set 1: gaomon:0 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304037",
+   "catalogName": "Sunflowmon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304037/",
+   "digimon": [
+    "Sunflowmon"
+   ],
+   "usedBy": [
+    "Set 1: lalamon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304000",
+   "catalogName": "Beelzemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304000/",
+   "digimon": [
+    "Beelzemon"
+   ],
+   "usedBy": [
+    "Set 1: beelzemon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "310678",
+   "catalogName": "Beelzemon Blast Mode",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/310678/",
+   "digimon": [
+    "Beelzemon Blast Mode"
+   ],
+   "usedBy": [
+    "Set 1: beelzemon:2 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304110",
+   "catalogName": "Machinedramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304110/",
+   "digimon": [
+    "Machinedramon"
+   ],
+   "usedBy": [
+    "Set 1: machinedramon:1 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304160",
+   "catalogName": "Chaosdromon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304160/",
+   "digimon": [
+    "Chaosdromon"
+   ],
+   "usedBy": [
+    "Set 1: machinedramon:2 (re-source, now Sketchfab upload)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304111",
+   "catalogName": "MetalTyrannomon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304111/",
+   "digimon": [
+    "MetalTyrannomon"
+   ],
+   "usedBy": [
+    "Set 1: commandramon:2 (replacement for Tankdramon)"
+   ],
+   "sets": [
+    1
+   ],
+   "priority": 1,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324585",
+   "catalogName": "Varodurumon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324585/",
+   "digimon": [
+    "Varodurumon"
+   ],
+   "usedBy": [
+    "Set 2: Ezreal (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324568",
+   "catalogName": "Digitamamon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324568/",
+   "digimon": [
+    "Digitamamon"
+   ],
+   "usedBy": [
+    "Set 2: Heimerdinger (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324505",
+   "catalogName": "Icemon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324505/",
+   "digimon": [
+    "Icemon"
+   ],
+   "usedBy": [
+    "Set 2: Karma (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324571",
+   "catalogName": "Meteormon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324571/",
+   "digimon": [
+    "Meteormon"
+   ],
+   "usedBy": [
+    "Set 2: Karma (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324282",
+   "catalogName": "Unimon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324282/",
+   "digimon": [
+    "Unimon"
+   ],
+   "usedBy": [
+    "Set 2: Leona (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324278",
+   "catalogName": "Dianamon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324278/",
+   "digimon": [
+    "Dianamon"
+   ],
+   "usedBy": [
+    "Set 2: Nidalee (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324414",
+   "catalogName": "Raptordramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324414/",
+   "digimon": [
+    "Raptordramon"
+   ],
+   "usedBy": [
+    "Set 2: Sejuani (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324401",
+   "catalogName": "Sistermon Noir",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324401/",
+   "digimon": [
+    "Sistermon Noir"
+   ],
+   "usedBy": [
+    "Set 2: Senna (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324338",
+   "catalogName": "Golemon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324338/",
+   "digimon": [
+    "Golemon"
+   ],
+   "usedBy": [
+    "Set 2: Sett (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324324",
+   "catalogName": "Hudiemon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324324/",
+   "digimon": [
+    "Hudiemon"
+   ],
+   "usedBy": [
+    "Set 2: Skarner (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324281",
+   "catalogName": "Monochromon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324281/",
+   "digimon": [
+    "Monochromon"
+   ],
+   "usedBy": [
+    "Set 2: Taric (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324322",
+   "catalogName": "Triceramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324322/",
+   "digimon": [
+    "Triceramon"
+   ],
+   "usedBy": [
+    "Set 2: Taric (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324419",
+   "catalogName": "Merukimon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324419/",
+   "digimon": [
+    "Merukimon"
+   ],
+   "usedBy": [
+    "Set 2: Vladimir (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324572",
+   "catalogName": "Pumpkinmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324572/",
+   "digimon": [
+    "Pumpkinmon"
+   ],
+   "usedBy": [
+    "Set 2: Jinx (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324321",
+   "catalogName": "Chuumon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324321/",
+   "digimon": [
+    "Chuumon"
+   ],
+   "usedBy": [
+    "Set 2: Kayn (stage 0)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324584",
+   "catalogName": "Valkyrimon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324584/",
+   "digimon": [
+    "Valkyrimon"
+   ],
+   "usedBy": [
+    "Set 2: Lillia (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324351",
+   "catalogName": "Neptunemon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324351/",
+   "digimon": [
+    "Neptunemon"
+   ],
+   "usedBy": [
+    "Set 2: Nami (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324336",
+   "catalogName": "Airdramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324336/",
+   "digimon": [
+    "Airdramon"
+   ],
+   "usedBy": [
+    "Set 2: Qiyana (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324581",
+   "catalogName": "Ravemon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/",
+   "digimon": [
+    "Ravemon"
+   ],
+   "usedBy": [
+    "Set 2: Qiyana (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324285",
+   "catalogName": "Raremon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324285/",
+   "digimon": [
+    "Raremon"
+   ],
+   "usedBy": [
+    "Set 2: Thresh (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324284",
+   "catalogName": "Phantomon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324284/",
+   "digimon": [
+    "Phantomon"
+   ],
+   "usedBy": [
+    "Set 2: Thresh (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324628",
+   "catalogName": "Guardromon / Guardromon (Gold)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324628/",
+   "digimon": [
+    "Guardromon (Gold)"
+   ],
+   "usedBy": [
+    "Set 2: Tristana (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324286",
+   "catalogName": "Mushroomon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324286/",
+   "digimon": [
+    "Mushroomon"
+   ],
+   "usedBy": [
+    "Set 2: Twitch (stage 0)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324400",
+   "catalogName": "Sistermon Ciel (Awakened)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324400/",
+   "digimon": [
+    "Sistermon Ciel (Awakened)"
+   ],
+   "usedBy": [
+    "Set 2: Yone (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324342",
+   "catalogName": "Arcadiamon (Rookie)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324342/",
+   "digimon": [
+    "Arcadiamon (Rookie)"
+   ],
+   "usedBy": [
+    "Set 2: Elise (stage 0)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324343",
+   "catalogName": "Arcadiamon (Champion)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324343/",
+   "digimon": [
+    "Arcadiamon (Champion)"
+   ],
+   "usedBy": [
+    "Set 2: Elise (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324345",
+   "catalogName": "Arcadiamon (Mega)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324345/",
+   "digimon": [
+    "Arcadiamon (Mega)"
+   ],
+   "usedBy": [
+    "Set 2: Elise (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324397",
+   "catalogName": "Sistermon Blanc",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324397/",
+   "digimon": [
+    "Sistermon Blanc"
+   ],
+   "usedBy": [
+    "Set 2: Illaoi (stage 0)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324399",
+   "catalogName": "Sistermon Ciel",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324399/",
+   "digimon": [
+    "Sistermon Ciel"
+   ],
+   "usedBy": [
+    "Set 2: Illaoi (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324497",
+   "catalogName": "Flamedramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324497/",
+   "digimon": [
+    "Flamedramon"
+   ],
+   "usedBy": [
+    "Set 2: Lee Sin (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324580",
+   "catalogName": "Lotosmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324580/",
+   "digimon": [
+    "Lotosmon"
+   ],
+   "usedBy": [
+    "Set 2: Lulu (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "335815",
+   "catalogName": "Frigimon / MudFrigimon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335815/",
+   "digimon": [
+    "MudFrigimon"
+   ],
+   "usedBy": [
+    "Set 2: Nunu & Willump (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324402",
+   "catalogName": "Sistermon Noir (Awakened)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324402/",
+   "digimon": [
+    "Sistermon Noir (Awakened)"
+   ],
+   "usedBy": [
+    "Set 2: Ryze (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324340",
+   "catalogName": "Megidramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324340/",
+   "digimon": [
+    "Megidramon"
+   ],
+   "usedBy": [
+    "Set 2: Swain (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324279",
+   "catalogName": "Examon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324279/",
+   "digimon": [
+    "Examon"
+   ],
+   "usedBy": [
+    "Set 2: Volibear (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324569",
+   "catalogName": "Knightmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324569/",
+   "digimon": [
+    "Knightmon"
+   ],
+   "usedBy": [
+    "Set 2: Idas (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324339",
+   "catalogName": "Goldramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324339/",
+   "digimon": [
+    "Goldramon"
+   ],
+   "usedBy": [
+    "Set 2: Idas (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324344",
+   "catalogName": "Arcadiamon (Ultimate)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324344/",
+   "digimon": [
+    "Arcadiamon (Ultimate)"
+   ],
+   "usedBy": [
+    "Set 2: Neeko (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324273",
+   "catalogName": "Arcadiamon (Ultra)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324273/",
+   "digimon": [
+    "Arcadiamon (Ultra)"
+   ],
+   "usedBy": [
+    "Set 2: Neeko (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324352",
+   "catalogName": "Volcamon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324352/",
+   "digimon": [
+    "Volcamon"
+   ],
+   "usedBy": [
+    "Set 2: Ornn (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324353",
+   "catalogName": "PileVolcamon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324353/",
+   "digimon": [
+    "PileVolcamon"
+   ],
+   "usedBy": [
+    "Set 2: Ornn (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324393",
+   "catalogName": "Dorugoramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324393/",
+   "digimon": [
+    "Dorugoramon"
+   ],
+   "usedBy": [
+    "Set 2: Sy'fen (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324487",
+   "catalogName": "Leopardmon / Leopard Mode",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324487/",
+   "digimon": [
+    "Leopardmon"
+   ],
+   "usedBy": [
+    "Set 2: Talon (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324411",
+   "catalogName": "HippoGryphonmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324411/",
+   "digimon": [
+    "HippoGryphonmon"
+   ],
+   "usedBy": [
+    "Set 2: Xayah (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324417",
+   "catalogName": "Gryphonmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324417/",
+   "digimon": [
+    "Gryphonmon"
+   ],
+   "usedBy": [
+    "Set 2: Xayah (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324323",
+   "catalogName": "CatchMamemon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324323/",
+   "digimon": [
+    "CatchMamemon"
+   ],
+   "usedBy": [
+    "Set 2: Graves (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324485",
+   "catalogName": "SaviorHuckmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324485/",
+   "digimon": [
+    "SaviorHuckmon"
+   ],
+   "usedBy": [
+    "Set 2: Ao Shin (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324418",
+   "catalogName": "Kentaurosmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324418/",
+   "digimon": [
+    "Kentaurosmon"
+   ],
+   "usedBy": [
+    "Set 2: Bard (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324410",
+   "catalogName": "Grademon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324410/",
+   "digimon": [
+    "Grademon"
+   ],
+   "usedBy": [
+    "Set 2: Yasuo (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324582",
+   "catalogName": "Samudramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324582/",
+   "digimon": [
+    "Samudramon"
+   ],
+   "usedBy": [
+    "Set 2: Yasuo (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324567",
+   "catalogName": "Datamon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324567/",
+   "digimon": [
+    "Datamon"
+   ],
+   "usedBy": [
+    "Set 2: Zoe (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "dwnext",
+   "assetId": "342139",
+   "catalogName": "Saberdramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342139/",
+   "digimon": [
+    "Saberdramon"
+   ],
+   "usedBy": [
+    "Set 2: Ezreal (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "dwnext",
+   "assetId": "342134",
+   "catalogName": "Gururumon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342134/",
+   "digimon": [
+    "Gururumon"
+   ],
+   "usedBy": [
+    "Set 2: Ashe (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "dwnext",
+   "assetId": "342133",
+   "catalogName": "Growlmon (Yellow)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342133/",
+   "digimon": [
+    "Growlmon (Yellow)"
+   ],
+   "usedBy": [
+    "Set 2: Gnar (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "dwnext",
+   "assetId": "342136",
+   "catalogName": "Piddomon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342136/",
+   "digimon": [
+    "Piddomon"
+   ],
+   "usedBy": [
+    "Set 2: Lillia (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "dwnext",
+   "assetId": "342138",
+   "catalogName": "RedVegiemon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342138/",
+   "digimon": [
+    "RedVegiemon"
+   ],
+   "usedBy": [
+    "Set 2: Twitch (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "dwnext",
+   "assetId": "342135",
+   "catalogName": "Hyogamon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342135/",
+   "digimon": [
+    "Hyogamon"
+   ],
+   "usedBy": [
+    "Set 2: Anivia (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "dwnext",
+   "assetId": "342140",
+   "catalogName": "Kyubimon (Silver) / Youkomon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342140/",
+   "digimon": [
+    "Kyubimon (Silver)",
+    "Youkomon"
+   ],
+   "usedBy": [
+    "Set 2: Diana (stage 1)",
+    "Set 2: Varus (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "dwnext",
+   "assetId": "342137",
+   "catalogName": "RedVeedramon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342137/",
+   "digimon": [
+    "RedVeedramon"
+   ],
+   "usedBy": [
+    "Set 2: Zippy (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "dwnext",
+   "assetId": "342142",
+   "catalogName": "WarGrowlmon (Yellow)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342142/",
+   "digimon": [
+    "WarGrowlmon (Yellow)"
+   ],
+   "usedBy": [
+    "Set 2: Sy'fen (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "311329",
+   "catalogName": "Rapidmon (Armor)",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/311329/",
+   "digimon": [
+    "Rapidmon (Armor)"
+   ],
+   "usedBy": [
+    "Set 2: Aatrox (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "305406",
+   "catalogName": "Magnamon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305406/",
+   "digimon": [
+    "Magnamon X"
+   ],
+   "usedBy": [
+    "Set 2: Aatrox (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304202",
+   "catalogName": "Gazimon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304202/",
+   "digimon": [
+    "Gazimon"
+   ],
+   "usedBy": [
+    "Set 2: Ezreal (stage 0)",
+    "Set 2: Jinx (stage 0)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304101",
+   "catalogName": "Clockmon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304101/",
+   "digimon": [
+    "Clockmon"
+   ],
+   "usedBy": [
+    "Set 2: Heimerdinger (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "307595",
+   "catalogName": "Omnimon Merciful Mode",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/307595/",
+   "digimon": [
+    "Omnimon Merciful Mode"
+   ],
+   "usedBy": [
+    "Set 2: Leona (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304221",
+   "catalogName": "Sorcermon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304221/",
+   "digimon": [
+    "Sorcermon"
+   ],
+   "usedBy": [
+    "Set 2: Nidalee (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "310679",
+   "catalogName": "Craniamon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/310679/",
+   "digimon": [
+    "Craniamon X"
+   ],
+   "usedBy": [
+    "Set 2: Sejuani (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "308179",
+   "catalogName": "Beelzemon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308179/",
+   "digimon": [
+    "Beelzemon X"
+   ],
+   "usedBy": [
+    "Set 2: Senna (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304223",
+   "catalogName": "TigerVespamon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304223/",
+   "digimon": [
+    "TigerVespamon"
+   ],
+   "usedBy": [
+    "Set 2: Skarner (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304489",
+   "catalogName": "KingEtemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304489/",
+   "digimon": [
+    "KingEtemon"
+   ],
+   "usedBy": [
+    "Set 2: Tahm Kench (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "308035",
+   "catalogName": "AncientGarurumon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308035/",
+   "digimon": [
+    "AncientGarurumon"
+   ],
+   "usedBy": [
+    "Set 2: Ashe (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304041",
+   "catalogName": "Whamon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304041/",
+   "digimon": [
+    "Whamon"
+   ],
+   "usedBy": [
+    "Set 2: Braum (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304123",
+   "catalogName": "Vikemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304123/",
+   "digimon": [
+    "Vikemon"
+   ],
+   "usedBy": [
+    "Set 2: Braum (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304639",
+   "catalogName": "AncientGreymon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304639/",
+   "digimon": [
+    "AncientGreymon"
+   ],
+   "usedBy": [
+    "Set 2: Gnar (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304056",
+   "catalogName": "GoldNumemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304056/",
+   "digimon": [
+    "GoldNumemon"
+   ],
+   "usedBy": [
+    "Set 2: Jinx (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "337319",
+   "catalogName": "KingSukamon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/337319/",
+   "digimon": [
+    "KingSukamon"
+   ],
+   "usedBy": [
+    "Set 2: Kayn (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304222",
+   "catalogName": "Syakomon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304222/",
+   "digimon": [
+    "Syakomon"
+   ],
+   "usedBy": [
+    "Set 2: Nami (stage 0)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304193",
+   "catalogName": "ShellNumemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304193/",
+   "digimon": [
+    "ShellNumemon"
+   ],
+   "usedBy": [
+    "Set 2: Nami (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304189",
+   "catalogName": "Cyclonemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304189/",
+   "digimon": [
+    "Cyclonemon"
+   ],
+   "usedBy": [
+    "Set 2: Shen (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304490",
+   "catalogName": "Gallantmon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304490/",
+   "digimon": [
+    "Gallantmon X"
+   ],
+   "usedBy": [
+    "Set 2: Shen (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304209",
+   "catalogName": "ToyAgumon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304209/",
+   "digimon": [
+    "ToyAgumon"
+   ],
+   "usedBy": [
+    "Set 2: Tristana (stage 0)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304162",
+   "catalogName": "HiAndromon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304162/",
+   "digimon": [
+    "HiAndromon"
+   ],
+   "usedBy": [
+    "Set 2: Tristana (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "307594",
+   "catalogName": "Dynasmon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/307594/",
+   "digimon": [
+    "Dynasmon X"
+   ],
+   "usedBy": [
+    "Set 2: Twitch (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "311328",
+   "catalogName": "Jesmon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/311328/",
+   "digimon": [
+    "Jesmon X"
+   ],
+   "usedBy": [
+    "Set 2: Yone (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304218",
+   "catalogName": "Minervamon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304218/",
+   "digimon": [
+    "Minervamon"
+   ],
+   "usedBy": [
+    "Set 2: Illaoi (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304076",
+   "catalogName": "WarGreymon X / BlackWarGreymon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304076/",
+   "digimon": [
+    "WarGreymon X",
+    "BlackWarGreymon X"
+   ],
+   "usedBy": [
+    "Set 2: Lee Sin (stage 2)",
+    "Set 3: Riven (stage 2)"
+   ],
+   "sets": [
+    2,
+    3
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "305434",
+   "catalogName": "Omnimon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305434/",
+   "digimon": [
+    "Omnimon X"
+   ],
+   "usedBy": [
+    "Set 2: Ryze (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304023",
+   "catalogName": "Meramon / BlueMeramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304023/",
+   "digimon": [
+    "Meramon",
+    "BlueMeramon"
+   ],
+   "usedBy": [
+    "Set 2: Sylas (stage 1)",
+    "Set 3: Ahri (stage 1)"
+   ],
+   "sets": [
+    2,
+    3
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304135",
+   "catalogName": "SkullMeramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304135/",
+   "digimon": [
+    "SkullMeramon"
+   ],
+   "usedBy": [
+    "Set 2: Sylas (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304011",
+   "catalogName": "Gumdramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304011/",
+   "digimon": [
+    "Gumdramon"
+   ],
+   "usedBy": [
+    "Set 2: Volibear (stage 0)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "324496",
+   "catalogName": "Arresterdramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/324496/",
+   "digimon": [
+    "Arresterdramon"
+   ],
+   "usedBy": [
+    "Set 2: Volibear (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "305922",
+   "catalogName": "UlforceVeedramon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305922/",
+   "digimon": [
+    "UlforceVeedramon X"
+   ],
+   "usedBy": [
+    "Set 2: Zippy (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304129",
+   "catalogName": "Gigadramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304129/",
+   "digimon": [
+    "Gigadramon"
+   ],
+   "usedBy": [
+    "Set 2: Corki (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "308036",
+   "catalogName": "BlitzGreymon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308036/",
+   "digimon": [
+    "BlitzGreymon"
+   ],
+   "usedBy": [
+    "Set 2: Corki (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304054",
+   "catalogName": "Gallantmon / Crimson Mode / ChaosGallantmon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304054/",
+   "digimon": [
+    "Gallantmon",
+    "Gallantmon Crimson Mode",
+    "ChaosGallantmon"
+   ],
+   "usedBy": [
+    "Set 2: Hecarim (stage 1)",
+    "Set 2: Hecarim (stage 2)",
+    "Set 3: Riven (stage 1)"
+   ],
+   "sets": [
+    2,
+    3
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "305408",
+   "catalogName": "Duramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305408/",
+   "digimon": [
+    "Duramon"
+   ],
+   "usedBy": [
+    "Set 2: Shi Oh Yu (stage 1)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "311326",
+   "catalogName": "Ouryumon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/311326/",
+   "digimon": [
+    "Ouryumon"
+   ],
+   "usedBy": [
+    "Set 2: Shi Oh Yu (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304031",
+   "catalogName": "Rosemon / Burst Mode",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304031/",
+   "digimon": [
+    "Rosemon",
+    "Rosemon Burst Mode"
+   ],
+   "usedBy": [
+    "Set 2: Sona (stage 2)",
+    "Set 3: Lillia (stage 1)"
+   ],
+   "sets": [
+    2,
+    3
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "310676",
+   "catalogName": "Leopardmon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/310676/",
+   "digimon": [
+    "Leopardmon X"
+   ],
+   "usedBy": [
+    "Set 2: Talon (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "327641",
+   "catalogName": "Justimon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/327641/",
+   "digimon": [
+    "Justimon"
+   ],
+   "usedBy": [
+    "Set 2: Graves (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "312127",
+   "catalogName": "Metallicdramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/312127/",
+   "digimon": [
+    "Metallicdramon"
+   ],
+   "usedBy": [
+    "Set 2: Ao Shin (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304073",
+   "catalogName": "Slayerdramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304073/",
+   "digimon": [
+    "Slayerdramon"
+   ],
+   "usedBy": [
+    "Set 2: Aurelion Sol (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "310680",
+   "catalogName": "Kentaurosmon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/310680/",
+   "digimon": [
+    "Kentaurosmon X"
+   ],
+   "usedBy": [
+    "Set 2: Bard (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304158",
+   "catalogName": "Belphemon Sleep Mode",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304158/",
+   "digimon": [
+    "Belphemon Sleep Mode"
+   ],
+   "usedBy": [
+    "Set 2: Pyke (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304039",
+   "catalogName": "Volcanicdramon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304039/",
+   "digimon": [
+    "Volcanicdramon"
+   ],
+   "usedBy": [
+    "Set 2: Shyvana (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304225",
+   "catalogName": "Susanoomon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304225/",
+   "digimon": [
+    "Susanoomon"
+   ],
+   "usedBy": [
+    "Set 2: Soraka (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304071",
+   "catalogName": "Millenniummon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304071/",
+   "digimon": [
+    "Millenniummon"
+   ],
+   "usedBy": [
+    "Set 2: Zoe (stage 2)"
+   ],
+   "sets": [
+    2
+   ],
+   "priority": 2,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "ts",
+   "assetId": "605322",
+   "catalogName": "Kotemon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/605322/",
+   "digimon": [
+    "Kotemon"
+   ],
+   "usedBy": [
+    "Set 2: Yone (stage 0)",
+    "Set 3: Shen (stage 0)"
+   ],
+   "sets": [
+    2,
+    3
+   ],
+   "priority": 2,
+   "estMB": 4.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324583",
+   "catalogName": "TyrantKabuterimon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324583/",
+   "digimon": [
+    "TyrantKabuterimon"
+   ],
+   "usedBy": [
+    "Set 3: Ashe (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324562",
+   "catalogName": "MegaGargomon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324562/",
+   "digimon": [
+    "MegaGargomon"
+   ],
+   "usedBy": [
+    "Set 3: Jhin (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324489",
+   "catalogName": "Alphamon / Alphamon NX / Alphamon Ouryuken",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324489/",
+   "digimon": [
+    "Alphamon Ouryuken"
+   ],
+   "usedBy": [
+    "Set 3: Talon (stage 1)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324508",
+   "catalogName": "Chaosmon / Chaosmon Valdur Arm",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324508/",
+   "digimon": [
+    "Chaosmon",
+    "Chaosmon Valdur Arm"
+   ],
+   "usedBy": [
+    "Set 3: Azir (stage 1)",
+    "Set 3: Azir (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324576",
+   "catalogName": "Cherubimon (Good)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324576/",
+   "digimon": [
+    "Cherubimon (Good)"
+   ],
+   "usedBy": [
+    "Set 3: Kayn (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324575",
+   "catalogName": "Cherubimon (Evil)",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324575/",
+   "digimon": [
+    "Cherubimon (Evil)"
+   ],
+   "usedBy": [
+    "Set 3: Kayn (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "cs",
+   "assetId": "324541",
+   "catalogName": "OmniShoutmon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324541/",
+   "digimon": [
+    "OmniShoutmon"
+   ],
+   "usedBy": [
+    "Set 3: Sett (stage 1)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "dwnext",
+   "assetId": "342147",
+   "catalogName": "Boltboutamon",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342147/",
+   "digimon": [
+    "Boltboutamon"
+   ],
+   "usedBy": [
+    "Set 3: Cassiopeia (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 2.4,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "308180",
+   "catalogName": "CresGarurumon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308180/",
+   "digimon": [
+    "CresGarurumon"
+   ],
+   "usedBy": [
+    "Set 3: Kindred (stage 1)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304069",
+   "catalogName": "MetalGarurumon X",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304069/",
+   "digimon": [
+    "MetalGarurumon X"
+   ],
+   "usedBy": [
+    "Set 3: Kindred (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304022",
+   "catalogName": "Mastemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304022/",
+   "digimon": [
+    "Mastemon"
+   ],
+   "usedBy": [
+    "Set 3: Ahri (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304203",
+   "catalogName": "GranLocomon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304203/",
+   "digimon": [
+    "GranLocomon"
+   ],
+   "usedBy": [
+    "Set 3: Jhin (stage 1)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304224",
+   "catalogName": "Jijimon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304224/",
+   "digimon": [
+    "Jijimon"
+   ],
+   "usedBy": [
+    "Set 3: Morgana (stage 1)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "310677",
+   "catalogName": "Apocalymon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/310677/",
+   "digimon": [
+    "Apocalymon"
+   ],
+   "usedBy": [
+    "Set 3: Morgana (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304116",
+   "catalogName": "RustTyranomon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304116/",
+   "digimon": [
+    "RustTyranomon"
+   ],
+   "usedBy": [
+    "Set 3: Sejuani (stage 1)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304226",
+   "catalogName": "Omnimon Alter-B",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304226/",
+   "digimon": [
+    "Omnimon Alter-B"
+   ],
+   "usedBy": [
+    "Set 3: Shen (stage 1)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "308181",
+   "catalogName": "Omnimon Alter-S",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308181/",
+   "digimon": [
+    "Omnimon Alter-S"
+   ],
+   "usedBy": [
+    "Set 3: Shen (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304220",
+   "catalogName": "Ravemon Burst Mode",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304220/",
+   "digimon": [
+    "Ravemon Burst Mode"
+   ],
+   "usedBy": [
+    "Set 3: Talon (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304044",
+   "catalogName": "MirageGaogamon / Burst Mode",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304044/",
+   "digimon": [
+    "MirageGaogamon",
+    "MirageGaogamon Burst Mode"
+   ],
+   "usedBy": [
+    "Set 3: Warwick (stage 1)",
+    "Set 3: Warwick (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304027",
+   "catalogName": "Pandamon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304027/",
+   "digimon": [
+    "Pandamon"
+   ],
+   "usedBy": [
+    "Set 3: Kayn (stage 1)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "305588",
+   "catalogName": "Ophanimon Falldown Mode",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305588/",
+   "digimon": [
+    "Ophanimon Falldown Mode"
+   ],
+   "usedBy": [
+    "Set 3: Lillia (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304201",
+   "catalogName": "Gankoomon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304201/",
+   "digimon": [
+    "Gankoomon"
+   ],
+   "usedBy": [
+    "Set 3: Sett (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304021",
+   "catalogName": "MarineAngemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304021/",
+   "digimon": [
+    "MarineAngemon"
+   ],
+   "usedBy": [
+    "Set 3: Zilean (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304227",
+   "catalogName": "Omnimon Zwart D",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304227/",
+   "digimon": [
+    "Omnimon Zwart D"
+   ],
+   "usedBy": [
+    "Set 3: Yone (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304083",
+   "catalogName": "MetalEtemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304083/",
+   "digimon": [
+    "MetalEtemon"
+   ],
+   "usedBy": [
+    "Set 3: Ornn (stage 1)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  },
+  {
+   "game": "links",
+   "assetId": "304190",
+   "catalogName": "Ebemon",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304190/",
+   "digimon": [
+    "Ebemon"
+   ],
+   "usedBy": [
+    "Set 3: Ornn (stage 2)"
+   ],
+   "sets": [
+    3
+   ],
+   "priority": 3,
+   "estMB": 1.7,
+   "status": "downloading (Cyber Sleuth-family batch approved by the user on 2026-10-15)"
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "agumon:1": "CS_Greymon",
+ "gabumon:1": "CS_Garurumon",
+ "gabumon:2": "L_WereGarurumon",
+ "gomamon:1": "CS_Ikkakumon",
+ "guilmon:0": "CS_Guilmon",
+ "renamon:1": "CS_Kyubimon",
+ "patamon:0": "CS_Patamon",
+ "hawkmon:0": "CS_Hawkmon",
+ "hawkmon:1": "CS_Aquilamon",
+ "hawkmon:2": "CS_Silphymon",
+ "keramon:0": "CS_Keramon",
+ "keramon:2": "CS_Infermon",
+ "veemon:2": "L_Paildramon",
+ "gaomon:0": "CS_Gaomon",
+ "lalamon:1": "CS_Sunflowmon",
+ "myotismon:2": "CS_GranDracmon",
+ "imperialdramon:0": "CS_Flamedramon",
+ "machinedramon:2": "L_Chaosdromon",
+ "beelzemon:2": "L_Beelzemon_Blast_Mode",
+ "elecmon:0": "CS_Elecmon",
+ "elecmon:2": "L_Panjyamon",
+ "lopmon:1": "CS_Turuiemon",
+ "demidevimon:2": "CS_SkullSatamon",
+ "gizamon:1": "CS_Coelamon",
+ "gizamon:2": "CS_Dragomon",
+ "candlemon:0": "CS_Meramon",
+ "candlemon:2": "CS_Wisemon",
+ "commandramon:0": "CS_ToyAgumon",
+ "commandramon:1": "CS_Tankmon",
+ "commandramon:2": "L_MetalTyrannomon",
+ "tyrannomon:0": "CS_Tyrannomon",
+ "tyrannomon:1": "CS_Tyrannomon",
+ "tyrannomon:2": "CS_Tyrannomon",
+ "skullgreymon:0": "L_SkullGreymon",
+ "skullgreymon:1": "L_SkullGreymon",
+ "skullgreymon:2": "L_SkullGreymon",
+ "_retexture": {
+  "L_Panjyamon": {
+   "chr072a01.png": "chr409a01.png"
+  }
+ }
+}

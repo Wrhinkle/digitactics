@@ -1,0 +1,2039 @@
+{
+ "agumon:0": {
+  "form": "Agumon",
+  "best": {
+   "name": "Digimon Linkz - Agumon",
+   "uid": "c21da254de374919a7d75804969f9465",
+   "url": "https://sketchfab.com/3d-models/none-c21da254de374919a7d75804969f9465",
+   "license": "CC Attribution",
+   "faces": 5042,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Agumon",
+    "uid": "9926ba8c8bad4978b2a8b072c6094b4a",
+    "url": "https://sketchfab.com/3d-models/none-9926ba8c8bad4978b2a8b072c6094b4a",
+    "license": "CC Attribution",
+    "faces": 7574,
+    "animated": true,
+    "author": "hdbanks1",
+    "exact": true
+   },
+   {
+    "name": "Agumon (Bond of Bravery)",
+    "uid": "4c7acf3383624e90a73b9397f4ecf780",
+    "url": "https://sketchfab.com/3d-models/none-4c7acf3383624e90a73b9397f4ecf780",
+    "license": "CC Attribution",
+    "faces": 11978,
+    "animated": true,
+    "author": "drewsdigitaldesigns",
+    "exact": true
+   },
+   {
+    "name": "Agumon Low Poly",
+    "uid": "3e08cbc0b04f4903ad77ceba13d3e341",
+    "url": "https://sketchfab.com/3d-models/none-3e08cbc0b04f4903ad77ceba13d3e341",
+    "license": "CC Attribution",
+    "faces": 108,
+    "animated": false,
+    "author": "StevenBlender",
+    "exact": true
+   }
+  ]
+ },
+ "agumon:1": {
+  "form": "Greymon",
+  "best": {
+   "name": "greymon",
+   "uid": "7806e18e09ed4dd4a87c611bde4b96bc",
+   "url": "https://sketchfab.com/3d-models/none-7806e18e09ed4dd4a87c611bde4b96bc",
+   "license": "CC Attribution",
+   "faces": 4812,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Digimon World 1 - Greymon",
+    "uid": "98f6b26faaf44079b3d053569cbb97ae",
+    "url": "https://sketchfab.com/3d-models/none-98f6b26faaf44079b3d053569cbb97ae",
+    "license": "CC Attribution",
+    "faces": 638,
+    "animated": false,
+    "author": "bioandrew91",
+    "exact": true
+   },
+   {
+    "name": "Mobile - Digimon Links - Skull Greymon",
+    "uid": "147efd822da545f8b0a6651455973ed5",
+    "url": "https://sketchfab.com/3d-models/none-147efd822da545f8b0a6651455973ed5",
+    "license": "CC Attribution",
+    "faces": 5704,
+    "animated": true,
+    "author": "4097309",
+    "exact": false
+   },
+   {
+    "name": "War Greymon - Digimon Links",
+    "uid": "b20f20503d684edd8df534d6c1a6b628",
+    "url": "https://sketchfab.com/3d-models/none-b20f20503d684edd8df534d6c1a6b628",
+    "license": "CC Attribution",
+    "faces": 7999,
+    "animated": true,
+    "author": "drewsdigitaldesigns",
+    "exact": false
+   }
+  ]
+ },
+ "agumon:2": {
+  "form": "MetalGreymon",
+  "best": {
+   "name": "Digimon World 2 - Metalgreymon",
+   "uid": "62aaa3e495f9454a8eda4bbe140c2c00",
+   "url": "https://sketchfab.com/3d-models/none-62aaa3e495f9454a8eda4bbe140c2c00",
+   "license": "CC Attribution",
+   "faces": 668,
+   "animated": false,
+   "author": "bioandrew91",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Metal Greymon (Virus) - Digimon World PS1",
+    "uid": "92e7873168ee45708b2e1bc48e99fd47",
+    "url": "https://sketchfab.com/3d-models/none-92e7873168ee45708b2e1bc48e99fd47",
+    "license": "CC Attribution",
+    "faces": 673,
+    "animated": false,
+    "author": "drewsdigitaldesigns",
+    "exact": false
+   },
+   {
+    "name": "MetalGreyMon",
+    "uid": "a94487332fb643c7ba89d930a7606638",
+    "url": "https://sketchfab.com/3d-models/none-a94487332fb643c7ba89d930a7606638",
+    "license": "CC Attribution",
+    "faces": 85312,
+    "animated": false,
+    "author": "hdbanks1",
+    "exact": true
+   },
+   {
+    "name": "MetalGreyMonAlt",
+    "uid": "fc05a763a45c40c2b7760aa50b5540ad",
+    "url": "https://sketchfab.com/3d-models/none-fc05a763a45c40c2b7760aa50b5540ad",
+    "license": "CC Attribution",
+    "faces": 94136,
+    "animated": false,
+    "author": "hdbanks1",
+    "exact": false
+   }
+  ]
+ },
+ "gabumon:0": {
+  "form": "Gabumon",
+  "best": {
+   "name": "Mobile - Digimon Linkz - Gabumon",
+   "uid": "e6798b8ea64843f68f6fe1e3fa7928b0",
+   "url": "https://sketchfab.com/3d-models/none-e6798b8ea64843f68f6fe1e3fa7928b0",
+   "license": "CC Attribution",
+   "faces": 5228,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Digimon Story Cyber Sleuth - Gabumon",
+    "uid": "afc4459eedba4d029b9112ff325d4578",
+    "url": "https://sketchfab.com/3d-models/none-afc4459eedba4d029b9112ff325d4578",
+    "license": "CC Attribution",
+    "faces": 10456,
+    "animated": true,
+    "author": "theamazingdonovan207",
+    "exact": true
+   },
+   {
+    "name": "Digimon Masters - Gabumon",
+    "uid": "2c04be76533b425090fa209832409b6a",
+    "url": "https://sketchfab.com/3d-models/none-2c04be76533b425090fa209832409b6a",
+    "license": "CC Attribution",
+    "faces": 2024,
+    "animated": false,
+    "author": "donmcdonough",
+    "exact": true
+   },
+   {
+    "name": "Gabumon",
+    "uid": "871179a192f74e209b57600737e3c7c1",
+    "url": "https://sketchfab.com/3d-models/none-871179a192f74e209b57600737e3c7c1",
+    "license": "CC Attribution",
+    "faces": 24800,
+    "animated": false,
+    "author": "pseudosacros",
+    "exact": true
+   }
+  ]
+ },
+ "gabumon:1": {
+  "form": "Garurumon",
+  "best": {
+   "name": "Garurumon - gabumon line - digimon",
+   "uid": "5b3a32eb5a1c47a5883fd3db3431b92a",
+   "url": "https://sketchfab.com/3d-models/none-5b3a32eb5a1c47a5883fd3db3431b92a",
+   "license": "CC Attribution",
+   "faces": 4994,
+   "animated": true,
+   "author": "medothegeek",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Garurumon",
+    "uid": "ac0043a0179e4e169ea7be696f845160",
+    "url": "https://sketchfab.com/3d-models/none-ac0043a0179e4e169ea7be696f845160",
+    "license": "CC Attribution",
+    "faces": 9988,
+    "animated": true,
+    "author": "theamazingdonovan207",
+    "exact": true
+   },
+   {
+    "name": "Digimon World 1 - Garurumon",
+    "uid": "a24f05ac13244526a166691863f062c3",
+    "url": "https://sketchfab.com/3d-models/none-a24f05ac13244526a166691863f062c3",
+    "license": "CC Attribution",
+    "faces": 658,
+    "animated": false,
+    "author": "bioandrew91",
+    "exact": true
+   },
+   {
+    "name": "Digimon Masters - Garurumon",
+    "uid": "4345dd772e474a4babefc47c589ecae6",
+    "url": "https://sketchfab.com/3d-models/none-4345dd772e474a4babefc47c589ecae6",
+    "license": "CC Attribution",
+    "faces": 3430,
+    "animated": false,
+    "author": "donmcdonough",
+    "exact": true
+   }
+  ]
+ },
+ "gabumon:2": {
+  "form": "WereGarurumon",
+  "best": {
+   "name": "weregarurumon - gabumon line - digimon",
+   "uid": "ad4b2c7ac55244e2b081e298bcf5c811",
+   "url": "https://sketchfab.com/3d-models/none-ad4b2c7ac55244e2b081e298bcf5c811",
+   "license": "CC Attribution",
+   "faces": 6140,
+   "animated": true,
+   "author": "medothegeek",
+   "exact": true
+  },
+  "others": []
+ },
+ "tentomon:0": {
+  "form": "Tentomon",
+  "best": {
+   "name": "Digimon Story Cyber Sleuth - Tentomon",
+   "uid": "463c6dc315cc494f8b7b128b78dd01ef",
+   "url": "https://sketchfab.com/3d-models/none-463c6dc315cc494f8b7b128b78dd01ef",
+   "license": "CC Attribution",
+   "faces": 6384,
+   "animated": true,
+   "author": "maikssess1",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Tentomon And Motimon",
+    "uid": "221e5ffc67c2471d957f780e7e99095c",
+    "url": "https://sketchfab.com/3d-models/none-221e5ffc67c2471d957f780e7e99095c",
+    "license": "CC Attribution",
+    "faces": 9973,
+    "animated": false,
+    "author": "hdbanks1",
+    "exact": false
+   }
+  ]
+ },
+ "tentomon:1": {
+  "form": "Kabuterimon",
+  "best": {
+   "name": "digimon カブテリモン Kabuterimon",
+   "uid": "810add424320469e807d045425107f05",
+   "url": "https://sketchfab.com/3d-models/none-810add424320469e807d045425107f05",
+   "license": "CC Attribution",
+   "faces": 1357868,
+   "animated": false,
+   "author": "ash.takafumi",
+   "exact": true
+  },
+  "others": []
+ },
+ "tentomon:2": {
+  "form": "MegaKabuterimon",
+  "best": null,
+  "others": []
+ },
+ "palmon:0": {
+  "form": "Palmon",
+  "best": {
+   "name": "Palmon",
+   "uid": "0271701198ea470eabfecda3e2cc9061",
+   "url": "https://sketchfab.com/3d-models/none-0271701198ea470eabfecda3e2cc9061",
+   "license": "CC Attribution",
+   "faces": 4061,
+   "animated": false,
+   "author": "hdbanks1",
+   "exact": true
+  },
+  "others": []
+ },
+ "palmon:1": {
+  "form": "Togemon",
+  "best": null,
+  "others": []
+ },
+ "palmon:2": {
+  "form": "Lillymon",
+  "best": null,
+  "others": []
+ },
+ "gomamon:0": {
+  "form": "Gomamon",
+  "best": {
+   "name": "Gomamon",
+   "uid": "42968d3bd1584eb38a1e754b19e17e9c",
+   "url": "https://sketchfab.com/3d-models/none-42968d3bd1584eb38a1e754b19e17e9c",
+   "license": "CC Attribution",
+   "faces": 234093,
+   "animated": false,
+   "author": "JoeKester",
+   "exact": true
+  },
+  "others": []
+ },
+ "gomamon:1": {
+  "form": "Ikkakumon",
+  "best": {
+   "name": "Ikkakumon",
+   "uid": "67002bc689504c7d817c7ebf4832e355",
+   "url": "https://sketchfab.com/3d-models/none-67002bc689504c7d817c7ebf4832e355",
+   "license": "CC Attribution",
+   "faces": 3547,
+   "animated": true,
+   "author": "parnlogang",
+   "exact": true
+  },
+  "others": []
+ },
+ "gomamon:2": {
+  "form": "Zudomon",
+  "best": {
+   "name": "Zudomon",
+   "uid": "effa87b23ade44f487d57a4701c8d343",
+   "url": "https://sketchfab.com/3d-models/none-effa87b23ade44f487d57a4701c8d343",
+   "license": "CC Attribution",
+   "faces": 3913,
+   "animated": false,
+   "author": "fedazemskov365",
+   "exact": true
+  },
+  "others": []
+ },
+ "biyomon:0": {
+  "form": "Biyomon",
+  "best": {
+   "name": "Mobile - Digimon Linkz - Biyomon",
+   "uid": "889b1324568743f3be36b32ac49c95da",
+   "url": "https://sketchfab.com/3d-models/none-889b1324568743f3be36b32ac49c95da",
+   "license": "CC Attribution",
+   "faces": 3948,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Biyomon",
+    "uid": "d68e0627de524f7085c865310b93465b",
+    "url": "https://sketchfab.com/3d-models/none-d68e0627de524f7085c865310b93465b",
+    "license": "CC Attribution",
+    "faces": 5174,
+    "animated": true,
+    "author": "hdbanks1",
+    "exact": true
+   }
+  ]
+ },
+ "biyomon:1": {
+  "form": "Birdramon",
+  "best": null,
+  "others": []
+ },
+ "biyomon:2": {
+  "form": "Garudamon",
+  "best": {
+   "name": "Digimon World 2 - Garudamon",
+   "uid": "30b874d68ff54ac788ea5c5eeb3fb026",
+   "url": "https://sketchfab.com/3d-models/none-30b874d68ff54ac788ea5c5eeb3fb026",
+   "license": "CC Attribution",
+   "faces": 770,
+   "animated": false,
+   "author": "bioandrew91",
+   "exact": true
+  },
+  "others": []
+ },
+ "hagurumon:0": {
+  "form": "Hagurumon",
+  "best": {
+   "name": "Digimon Links - Hagurumon",
+   "uid": "db64891d559b4d0cbcb5633d90779ee3",
+   "url": "https://sketchfab.com/3d-models/none-db64891d559b4d0cbcb5633d90779ee3",
+   "license": "CC Attribution",
+   "faces": 1780,
+   "animated": true,
+   "author": "maikssess1",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Hagurumon",
+    "uid": "d5044e6df2a54b5c834c7895ae3884de",
+    "url": "https://sketchfab.com/3d-models/none-d5044e6df2a54b5c834c7895ae3884de",
+    "license": "CC Attribution",
+    "faces": 836608,
+    "animated": false,
+    "author": "bobbywatkins",
+    "exact": true
+   }
+  ]
+ },
+ "hagurumon:1": {
+  "form": "Guardromon",
+  "best": {
+   "name": "Digimon Links - Guardromon",
+   "uid": "71012bd7578d41e2a0341943dc0d5e19",
+   "url": "https://sketchfab.com/3d-models/none-71012bd7578d41e2a0341943dc0d5e19",
+   "license": "CC Attribution",
+   "faces": 3705,
+   "animated": true,
+   "author": "maikssess1",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "GuardromonAndGearMon",
+    "uid": "60d96aa7692c4c8a9b47ddeb3bc81a8e",
+    "url": "https://sketchfab.com/3d-models/none-60d96aa7692c4c8a9b47ddeb3bc81a8e",
+    "license": "CC Attribution",
+    "faces": 27332,
+    "animated": false,
+    "author": "hdbanks1",
+    "exact": false
+   }
+  ]
+ },
+ "hagurumon:2": {
+  "form": "Andromon",
+  "best": {
+   "name": "Digimon Links - Andromon",
+   "uid": "6ccfdb5317e14d39b899181ffef0860b",
+   "url": "https://sketchfab.com/3d-models/none-6ccfdb5317e14d39b899181ffef0860b",
+   "license": "CC Attribution",
+   "faces": 4815,
+   "animated": true,
+   "author": "maikssess1",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "PC Computer - Digimon Masters - Hi Andromon",
+    "uid": "e461e11b9b0a48cc8f101c83b3274d25",
+    "url": "https://sketchfab.com/3d-models/none-e461e11b9b0a48cc8f101c83b3274d25",
+    "license": "CC Attribution",
+    "faces": 3292,
+    "animated": false,
+    "author": "deshawnevans2023",
+    "exact": false
+   }
+  ]
+ },
+ "demidevimon:0": {
+  "form": "DemiDevimon",
+  "best": null,
+  "others": []
+ },
+ "demidevimon:1": {
+  "form": "Devimon",
+  "best": {
+   "name": "Devimon - Digimon Links",
+   "uid": "c2d5bb58d53948a38f8727eaa6878185",
+   "url": "https://sketchfab.com/3d-models/none-c2d5bb58d53948a38f8727eaa6878185",
+   "license": "CC Attribution",
+   "faces": 6802,
+   "animated": true,
+   "author": "maikssess1",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Devimon’s Mansion - bathroom",
+    "uid": "d41f0ef0d97f43a2afcdb115793cfbfa",
+    "url": "https://sketchfab.com/3d-models/none-d41f0ef0d97f43a2afcdb115793cfbfa",
+    "license": "CC Attribution",
+    "faces": 973,
+    "animated": false,
+    "author": "donnyroyness",
+    "exact": false
+   },
+   {
+    "name": "Devimon’s mansion - bedroom",
+    "uid": "63f69813fee049f387b5a3a77137ba14",
+    "url": "https://sketchfab.com/3d-models/none-63f69813fee049f387b5a3a77137ba14",
+    "license": "CC Attribution",
+    "faces": 3671,
+    "animated": false,
+    "author": "donnyroyness",
+    "exact": false
+   },
+   {
+    "name": "Devimon's Mansion - Main Hall",
+    "uid": "ad700bef2dc741ccb1f8eb9fe62312d4",
+    "url": "https://sketchfab.com/3d-models/none-ad700bef2dc741ccb1f8eb9fe62312d4",
+    "license": "CC Attribution",
+    "faces": 4706,
+    "animated": false,
+    "author": "donnyroyness",
+    "exact": false
+   }
+  ]
+ },
+ "demidevimon:2": {
+  "form": "NeoDevimon",
+  "best": null,
+  "others": []
+ },
+ "guilmon:0": {
+  "form": "Guilmon",
+  "best": {
+   "name": "Guilmon",
+   "uid": "7e8cc1728cfd455cba6c27354304c851",
+   "url": "https://sketchfab.com/3d-models/none-7e8cc1728cfd455cba6c27354304c851",
+   "license": "CC Attribution",
+   "faces": 4614,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Guilmon",
+    "uid": "23f0714d96a8497da6680815d4c5dc8d",
+    "url": "https://sketchfab.com/3d-models/none-23f0714d96a8497da6680815d4c5dc8d",
+    "license": "CC Attribution",
+    "faces": 1284,
+    "animated": false,
+    "author": "Kampungan",
+    "exact": true
+   },
+   {
+    "name": "Guilmon - Digimon World 4",
+    "uid": "7fd725b0b8a7417b8d7cd0743998045b",
+    "url": "https://sketchfab.com/3d-models/none-7fd725b0b8a7417b8d7cd0743998045b",
+    "license": "CC Attribution",
+    "faces": 1294,
+    "animated": false,
+    "author": "drewsdigitaldesigns",
+    "exact": true
+   },
+   {
+    "name": "Guilmon",
+    "uid": "3ffe2bbff77f42d398803e687d2bd32d",
+    "url": "https://sketchfab.com/3d-models/none-3ffe2bbff77f42d398803e687d2bd32d",
+    "license": "CC Attribution",
+    "faces": 2292,
+    "animated": false,
+    "author": "mike69420",
+    "exact": true
+   }
+  ]
+ },
+ "guilmon:1": {
+  "form": "Growlmon",
+  "best": {
+   "name": "Digimon Linkz - Growlmon",
+   "uid": "24a5b2cdf7464673a7238f5376131f32",
+   "url": "https://sketchfab.com/3d-models/none-24a5b2cdf7464673a7238f5376131f32",
+   "license": "CC Attribution",
+   "faces": 6718,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Mobile - Digimon Linkz - War Growlmon",
+    "uid": "5c9c1e767bd847e1802077e7fc512c05",
+    "url": "https://sketchfab.com/3d-models/none-5c9c1e767bd847e1802077e7fc512c05",
+    "license": "CC Attribution",
+    "faces": 6608,
+    "animated": false,
+    "author": "akennedy007",
+    "exact": false
+   }
+  ]
+ },
+ "guilmon:2": {
+  "form": "WarGrowlmon",
+  "best": null,
+  "others": []
+ },
+ "renamon:0": {
+  "form": "Renamon",
+  "best": {
+   "name": "Renamon Lowpoly (PSX/Dreamcast-style)",
+   "uid": "99760992699049c0aa2b673e932271db",
+   "url": "https://sketchfab.com/3d-models/none-99760992699049c0aa2b673e932271db",
+   "license": "CC Attribution",
+   "faces": 904,
+   "animated": true,
+   "author": "foxdancemedia",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Digimon Story Cyber Sleuth - Renamon",
+    "uid": "8eacfc0fa170498e9192c10028a97560",
+    "url": "https://sketchfab.com/3d-models/none-8eacfc0fa170498e9192c10028a97560",
+    "license": "CC Attribution",
+    "faces": 7164,
+    "animated": true,
+    "author": "theamazingdonovan207",
+    "exact": true
+   },
+   {
+    "name": "Renamon model",
+    "uid": "b37d7dea98d94af0a1e7a0a76d2bccec",
+    "url": "https://sketchfab.com/3d-models/none-b37d7dea98d94af0a1e7a0a76d2bccec",
+    "license": "CC Attribution",
+    "faces": 13113,
+    "animated": true,
+    "author": "Skamiroth",
+    "exact": true
+   },
+   {
+    "name": "Renamon",
+    "uid": "8685eba4fdd04ded938b2b6c460e6410",
+    "url": "https://sketchfab.com/3d-models/none-8685eba4fdd04ded938b2b6c460e6410",
+    "license": "CC Attribution",
+    "faces": 49364,
+    "animated": true,
+    "author": "donmcdonough",
+    "exact": true
+   }
+  ]
+ },
+ "renamon:1": {
+  "form": "Kyubimon",
+  "best": {
+   "name": "Kyubimon",
+   "uid": "8f87b888127c4ea78845fe9625416e16",
+   "url": "https://sketchfab.com/3d-models/none-8f87b888127c4ea78845fe9625416e16",
+   "license": "CC Attribution",
+   "faces": 5650,
+   "animated": true,
+   "author": "NhinyJinromon",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Kyubimon",
+    "uid": "3abe358e57fb42a6bb39c789f4e08b40",
+    "url": "https://sketchfab.com/3d-models/none-3abe358e57fb42a6bb39c789f4e08b40",
+    "license": "CC Attribution",
+    "faces": 5650,
+    "animated": true,
+    "author": "parnlogang",
+    "exact": true
+   },
+   {
+    "name": "Digimon キュウビモン KYUBIMON",
+    "uid": "2617dfbaa2264d7ebce96f40f1c655d7",
+    "url": "https://sketchfab.com/3d-models/none-2617dfbaa2264d7ebce96f40f1c655d7",
+    "license": "CC Attribution",
+    "faces": 1257612,
+    "animated": false,
+    "author": "ash.takafumi",
+    "exact": true
+   }
+  ]
+ },
+ "renamon:2": {
+  "form": "Taomon",
+  "best": null,
+  "others": []
+ },
+ "terriermon:0": {
+  "form": "Terriermon",
+  "best": {
+   "name": "Terriermon",
+   "uid": "b7e085ea1b2c44b9a97d8b127b921ae9",
+   "url": "https://sketchfab.com/3d-models/none-b7e085ea1b2c44b9a97d8b127b921ae9",
+   "license": "CC Attribution",
+   "faces": 11002,
+   "animated": false,
+   "author": "blackalder",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Terriermon",
+    "uid": "a8677ccea2714aa29ad2cf08b4a90fcf",
+    "url": "https://sketchfab.com/3d-models/none-a8677ccea2714aa29ad2cf08b4a90fcf",
+    "license": "CC Attribution",
+    "faces": 71360,
+    "animated": false,
+    "author": "bachtiardwi04",
+    "exact": true
+   }
+  ]
+ },
+ "terriermon:1": {
+  "form": "Gargomon",
+  "best": {
+   "name": "Gargomon",
+   "uid": "724afd5e0ef54099aeb9182bc1408cee",
+   "url": "https://sketchfab.com/3d-models/none-724afd5e0ef54099aeb9182bc1408cee",
+   "license": "CC Attribution-NonCommercial",
+   "faces": 11351,
+   "animated": false,
+   "author": "hdbanks1",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Mega Gargomon WIP",
+    "uid": "1e2fa22053fb437ea78bd2a2371b4b35",
+    "url": "https://sketchfab.com/3d-models/none-1e2fa22053fb437ea78bd2a2371b4b35",
+    "license": "CC Attribution",
+    "faces": 35173,
+    "animated": false,
+    "author": "hdbanks1",
+    "exact": false
+   },
+   {
+    "name": "Gargomon",
+    "uid": "8e845a229f984f47b0463bcc81e09704",
+    "url": "https://sketchfab.com/3d-models/none-8e845a229f984f47b0463bcc81e09704",
+    "license": "CC Attribution",
+    "faces": 499979,
+    "animated": false,
+    "author": "ortegauriel7",
+    "exact": true
+   }
+  ]
+ },
+ "terriermon:2": {
+  "form": "Rapidmon",
+  "best": {
+   "name": "Digimon ラピッドモン Rapidmon",
+   "uid": "6761033b8e2146d880096e3c901f18d4",
+   "url": "https://sketchfab.com/3d-models/none-6761033b8e2146d880096e3c901f18d4",
+   "license": "CC Attribution",
+   "faces": 845256,
+   "animated": false,
+   "author": "ash.takafumi",
+   "exact": true
+  },
+  "others": []
+ },
+ "patamon:0": {
+  "form": "Patamon",
+  "best": {
+   "name": "Patamon",
+   "uid": "43d9a0604df94d149fb4c0b897713181",
+   "url": "https://sketchfab.com/3d-models/none-43d9a0604df94d149fb4c0b897713181",
+   "license": "CC Attribution",
+   "faces": 3906,
+   "animated": true,
+   "author": "theamazingdonovan207",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Patamon sitting smiling",
+    "uid": "a930101c5ba64b639262300fd0b43e7d",
+    "url": "https://sketchfab.com/3d-models/none-a930101c5ba64b639262300fd0b43e7d",
+    "license": "CC Attribution",
+    "faces": 273170,
+    "animated": false,
+    "author": "renoviol",
+    "exact": false
+   }
+  ]
+ },
+ "patamon:1": {
+  "form": "Angemon",
+  "best": {
+   "name": "PC Computer - Digimon Masters - Magna Angemon",
+   "uid": "0c8938851c0b468b9423a5d2a783c2b6",
+   "url": "https://sketchfab.com/3d-models/none-0c8938851c0b468b9423a5d2a783c2b6",
+   "license": "CC Attribution",
+   "faces": 4584,
+   "animated": false,
+   "author": "kevincatssing",
+   "exact": false
+  },
+  "others": [
+   {
+    "name": "Holy Angemon | Magna Angemon",
+    "uid": "023f6b6076bf455aaf2f9cffc06f6af3",
+    "url": "https://sketchfab.com/3d-models/none-023f6b6076bf455aaf2f9cffc06f6af3",
+    "license": "CC Attribution",
+    "faces": 7201,
+    "animated": false,
+    "author": "drewsdigitaldesigns",
+    "exact": false
+   },
+   {
+    "name": "MagnaAngemon helmet ( V1 )",
+    "uid": "95474154976e49b3934e988e49dd3f72",
+    "url": "https://sketchfab.com/3d-models/none-95474154976e49b3934e988e49dd3f72",
+    "license": "CC Attribution",
+    "faces": 725012,
+    "animated": false,
+    "author": "arcticjaycosplay",
+    "exact": false
+   },
+   {
+    "name": "Digimon: MagnaAngemon's helmet (2)",
+    "uid": "d3af0c62cddf44e9ba6f2826487f9073",
+    "url": "https://sketchfab.com/3d-models/none-d3af0c62cddf44e9ba6f2826487f9073",
+    "license": "CC Attribution",
+    "faces": 903530,
+    "animated": false,
+    "author": "arcticjaycosplay",
+    "exact": false
+   }
+  ]
+ },
+ "patamon:2": {
+  "form": "MagnaAngemon",
+  "best": {
+   "name": "MagnaAngemon - Digimon Links",
+   "uid": "781be4c8d1904610907de159624d5749",
+   "url": "https://sketchfab.com/3d-models/none-781be4c8d1904610907de159624d5749",
+   "license": "CC Attribution",
+   "faces": 7201,
+   "animated": true,
+   "author": "maikssess1",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "MagnaAngemon helmet ( V1 )",
+    "uid": "95474154976e49b3934e988e49dd3f72",
+    "url": "https://sketchfab.com/3d-models/none-95474154976e49b3934e988e49dd3f72",
+    "license": "CC Attribution",
+    "faces": 725012,
+    "animated": false,
+    "author": "arcticjaycosplay",
+    "exact": false
+   },
+   {
+    "name": "Digimon: MagnaAngemon's helmet (2)",
+    "uid": "d3af0c62cddf44e9ba6f2826487f9073",
+    "url": "https://sketchfab.com/3d-models/none-d3af0c62cddf44e9ba6f2826487f9073",
+    "license": "CC Attribution",
+    "faces": 903530,
+    "animated": false,
+    "author": "arcticjaycosplay",
+    "exact": false
+   }
+  ]
+ },
+ "salamon:0": {
+  "form": "Salamon",
+  "best": null,
+  "others": []
+ },
+ "salamon:1": {
+  "form": "Gatomon",
+  "best": {
+   "name": "Digimon Linkz - Gatomon",
+   "uid": "4023397564ff4822bf530d3c63edc7ec",
+   "url": "https://sketchfab.com/3d-models/none-4023397564ff4822bf530d3c63edc7ec",
+   "license": "CC Attribution",
+   "faces": 5020,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Gatomon REVAMPED!",
+    "uid": "76e7aa63aa164e06957e4f49f545e730",
+    "url": "https://sketchfab.com/3d-models/none-76e7aa63aa164e06957e4f49f545e730",
+    "license": "CC Attribution",
+    "faces": 10040,
+    "animated": true,
+    "author": "theamazingdonovan207",
+    "exact": false
+   },
+   {
+    "name": "Gatomon Christmas Edition",
+    "uid": "1bb15a1766d84df881e9094ace11f70d",
+    "url": "https://sketchfab.com/3d-models/none-1bb15a1766d84df881e9094ace11f70d",
+    "license": "CC Attribution",
+    "faces": 43862,
+    "animated": false,
+    "author": "dragonights91",
+    "exact": false
+   }
+  ]
+ },
+ "salamon:2": {
+  "form": "Angewomon",
+  "best": {
+   "name": "Angewomon",
+   "uid": "b049af6bb80a4df9ad880084a4a72f70",
+   "url": "https://sketchfab.com/3d-models/none-b049af6bb80a4df9ad880084a4a72f70",
+   "license": "CC Attribution",
+   "faces": 4124,
+   "animated": false,
+   "author": "toxicsquall",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Angewomon TS",
+    "uid": "1aa289007d3e4a8dbbbc81e46f05c7dc",
+    "url": "https://sketchfab.com/3d-models/none-1aa289007d3e4a8dbbbc81e46f05c7dc",
+    "license": "CC Attribution",
+    "faces": 61334,
+    "animated": false,
+    "author": "ansaldotoys2",
+    "exact": false
+   },
+   {
+    "name": "AngeWomon Dancing Archer -AI (WIP)",
+    "uid": "8829c9bbec1a4f8b9ebae2b6a556c369",
+    "url": "https://sketchfab.com/3d-models/none-8829c9bbec1a4f8b9ebae2b6a556c369",
+    "license": "CC Attribution",
+    "faces": 257472,
+    "animated": true,
+    "author": "cho3dman",
+    "exact": false
+   }
+  ]
+ },
+ "betamon:0": {
+  "form": "Betamon",
+  "best": {
+   "name": "Betamon",
+   "uid": "c87ed65b00f24c94892083d1261c73d6",
+   "url": "https://sketchfab.com/3d-models/none-c87ed65b00f24c94892083d1261c73d6",
+   "license": "CC Attribution",
+   "faces": 1896,
+   "animated": false,
+   "author": "hdbanks1",
+   "exact": true
+  },
+  "others": []
+ },
+ "betamon:1": {
+  "form": "Seadramon",
+  "best": {
+   "name": "Digimon World 1 - Seadramon",
+   "uid": "b090726cd92d4128a961bae9e4a5fc96",
+   "url": "https://sketchfab.com/3d-models/none-b090726cd92d4128a961bae9e4a5fc96",
+   "license": "CC Attribution",
+   "faces": 534,
+   "animated": false,
+   "author": "bioandrew91",
+   "exact": true
+  },
+  "others": []
+ },
+ "betamon:2": {
+  "form": "MegaSeadramon",
+  "best": {
+   "name": "Digimon World 1 - Megaseadramon",
+   "uid": "3023979504664b3a9c0d528374c40d58",
+   "url": "https://sketchfab.com/3d-models/none-3023979504664b3a9c0d528374c40d58",
+   "license": "CC Attribution",
+   "faces": 634,
+   "animated": false,
+   "author": "bioandrew91",
+   "exact": true
+  },
+  "others": []
+ },
+ "wormmon:0": {
+  "form": "Wormmon",
+  "best": null,
+  "others": []
+ },
+ "wormmon:1": {
+  "form": "Stingmon",
+  "best": null,
+  "others": []
+ },
+ "wormmon:2": {
+  "form": "Dinobeemon",
+  "best": null,
+  "others": []
+ },
+ "elecmon:0": {
+  "form": "Elecmon",
+  "best": null,
+  "others": []
+ },
+ "elecmon:1": {
+  "form": "Leomon",
+  "best": {
+   "name": "Digimon Leomon",
+   "uid": "e02cb9ee7b9b4797bb8dcd30e252d64b",
+   "url": "https://sketchfab.com/3d-models/none-e02cb9ee7b9b4797bb8dcd30e252d64b",
+   "license": "CC Attribution",
+   "faces": 7401,
+   "animated": false,
+   "author": "ijackprovostjr",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "JagerLoweemon (Kaiser Leomon)",
+    "uid": "b3c98a42032541aab6ee8d10c64b49b0",
+    "url": "https://sketchfab.com/3d-models/none-b3c98a42032541aab6ee8d10c64b49b0",
+    "license": "CC Attribution",
+    "faces": 15586,
+    "animated": true,
+    "author": "drewsdigitaldesigns",
+    "exact": false
+   },
+   {
+    "name": "Armed MadLeomon",
+    "uid": "657276e1d4e34a728ba74077e4d718ce",
+    "url": "https://sketchfab.com/3d-models/none-657276e1d4e34a728ba74077e4d718ce",
+    "license": "CC Attribution",
+    "faces": 5559,
+    "animated": false,
+    "author": "theamazingdonovan207",
+    "exact": false
+   }
+  ]
+ },
+ "elecmon:2": {
+  "form": "Panjyamon",
+  "best": null,
+  "others": []
+ },
+ "hawkmon:0": {
+  "form": "Hawkmon",
+  "best": {
+   "name": "Hawkmon",
+   "uid": "1e8c8d4f432c4610ad9035eafab82003",
+   "url": "https://sketchfab.com/3d-models/none-1e8c8d4f432c4610ad9035eafab82003",
+   "license": "CC Attribution",
+   "faces": 4126,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": []
+ },
+ "hawkmon:1": {
+  "form": "Aquilamon",
+  "best": {
+   "name": "Aquilamon",
+   "uid": "f27b0e20030b467cb047fe1b8a60524c",
+   "url": "https://sketchfab.com/3d-models/none-f27b0e20030b467cb047fe1b8a60524c",
+   "license": "CC Attribution",
+   "faces": 5340,
+   "animated": true,
+   "author": "parnlogang",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Digimon アクィラモン AQUILAMON",
+    "uid": "2a7c5095242247fd99b916f86f7e5490",
+    "url": "https://sketchfab.com/3d-models/none-2a7c5095242247fd99b916f86f7e5490",
+    "license": "CC Attribution",
+    "faces": 945580,
+    "animated": false,
+    "author": "ash.takafumi",
+    "exact": true
+   }
+  ]
+ },
+ "hawkmon:2": {
+  "form": "Silphymon",
+  "best": {
+   "name": "Silphymon",
+   "uid": "60066b501fe947688775214845dca37e",
+   "url": "https://sketchfab.com/3d-models/none-60066b501fe947688775214845dca37e",
+   "license": "CC Attribution",
+   "faces": 13952,
+   "animated": true,
+   "author": "darkengine",
+   "exact": true
+  },
+  "others": []
+ },
+ "keramon:0": {
+  "form": "Keramon",
+  "best": {
+   "name": "Keramon",
+   "uid": "2eb2121147d043cfa0433cfd7eb86079",
+   "url": "https://sketchfab.com/3d-models/none-2eb2121147d043cfa0433cfd7eb86079",
+   "license": "CC Attribution",
+   "faces": 5872,
+   "animated": true,
+   "author": "lorisc93",
+   "exact": true
+  },
+  "others": []
+ },
+ "keramon:1": {
+  "form": "Kurisarimon",
+  "best": null,
+  "others": []
+ },
+ "keramon:2": {
+  "form": "Infermon",
+  "best": {
+   "name": "Infermon",
+   "uid": "3772f1ba36e046efa65dcd63c033e67e",
+   "url": "https://sketchfab.com/3d-models/none-3772f1ba36e046efa65dcd63c033e67e",
+   "license": "CC Attribution",
+   "faces": 3720,
+   "animated": true,
+   "author": "lorisc93",
+   "exact": true
+  },
+  "others": []
+ },
+ "lopmon:0": {
+  "form": "Lopmon",
+  "best": {
+   "name": "lopmon",
+   "uid": "ed5419aac1c04c7a91935e9c9abc1308",
+   "url": "https://sketchfab.com/3d-models/none-ed5419aac1c04c7a91935e9c9abc1308",
+   "license": "CC Attribution",
+   "faces": 17340,
+   "animated": false,
+   "author": "softobunny",
+   "exact": true
+  },
+  "others": []
+ },
+ "lopmon:1": {
+  "form": "Turuiemon",
+  "best": null,
+  "others": []
+ },
+ "lopmon:2": {
+  "form": "Andiramon",
+  "best": null,
+  "others": []
+ },
+ "gizamon:0": {
+  "form": "Gizamon",
+  "best": null,
+  "others": []
+ },
+ "gizamon:1": {
+  "form": "Gesomon",
+  "best": null,
+  "others": []
+ },
+ "gizamon:2": {
+  "form": "MarineDevimon",
+  "best": null,
+  "others": []
+ },
+ "candlemon:0": {
+  "form": "Candlemon",
+  "best": {
+   "name": "Digimon New Century - Candlemon",
+   "uid": "9397707877444465ab951890c6ffaeb2",
+   "url": "https://sketchfab.com/3d-models/none-9397707877444465ab951890c6ffaeb2",
+   "license": "CC Attribution",
+   "faces": 2340,
+   "animated": true,
+   "author": "speeduzumaki31",
+   "exact": true
+  },
+  "others": []
+ },
+ "candlemon:1": {
+  "form": "Wizardmon",
+  "best": {
+   "name": "Digimon Links - Wizardmon",
+   "uid": "bbeb1da28aca459da86b46cba6d57ca8",
+   "url": "https://sketchfab.com/3d-models/none-bbeb1da28aca459da86b46cba6d57ca8",
+   "license": "CC Attribution",
+   "faces": 3806,
+   "animated": true,
+   "author": "maikssess1",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Wizardmon",
+    "uid": "0b598d7db9194c5bb7f1985ebafddef6",
+    "url": "https://sketchfab.com/3d-models/none-0b598d7db9194c5bb7f1985ebafddef6",
+    "license": "CC Attribution",
+    "faces": 4236,
+    "animated": false,
+    "author": "hdbanks1",
+    "exact": true
+   },
+   {
+    "name": "Wizardmon",
+    "uid": "adb937f733894e5bb317252e5b87dc6d",
+    "url": "https://sketchfab.com/3d-models/none-adb937f733894e5bb317252e5b87dc6d",
+    "license": "CC Attribution",
+    "faces": 3447280,
+    "animated": false,
+    "author": "Grypnonix",
+    "exact": true
+   }
+  ]
+ },
+ "candlemon:2": {
+  "form": "Mistymon",
+  "best": null,
+  "others": []
+ },
+ "veemon:0": {
+  "form": "Veemon",
+  "best": {
+   "name": "Digimon Linkz - Veemon",
+   "uid": "d06d194aabc340b2ba38a0b8a5d4ed07",
+   "url": "https://sketchfab.com/3d-models/none-d06d194aabc340b2ba38a0b8a5d4ed07",
+   "license": "CC Attribution",
+   "faces": 4318,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Veemon Animated",
+    "uid": "b530c0fbb53d44e4a9e551c6b3b112b2",
+    "url": "https://sketchfab.com/3d-models/none-b530c0fbb53d44e4a9e551c6b3b112b2",
+    "license": "CC Attribution-NonCommercial",
+    "faces": 17692,
+    "animated": true,
+    "author": "elvandalinq",
+    "exact": true
+   },
+   {
+    "name": "veemon digimon 3D",
+    "uid": "736f6fe590ac473dad1225a98bfd395a",
+    "url": "https://sketchfab.com/3d-models/none-736f6fe590ac473dad1225a98bfd395a",
+    "license": "CC Attribution",
+    "faces": 1794,
+    "animated": false,
+    "author": "giorgoskyriacou2009",
+    "exact": true
+   },
+   {
+    "name": "Veemon",
+    "uid": "d7a5754a36ff4828bbc77e4006dda778",
+    "url": "https://sketchfab.com/3d-models/none-d7a5754a36ff4828bbc77e4006dda778",
+    "license": "CC Attribution",
+    "faces": 2091,
+    "animated": false,
+    "author": "hdbanks1",
+    "exact": true
+   }
+  ]
+ },
+ "veemon:1": {
+  "form": "ExVeemon",
+  "best": {
+   "name": "XV-mon (ExVeemon) - Digimon Story Cyber Sleuth",
+   "uid": "f42ddfad460e42288f6c7ca6ebddeff4",
+   "url": "https://sketchfab.com/3d-models/none-f42ddfad460e42288f6c7ca6ebddeff4",
+   "license": "CC Attribution",
+   "faces": 10468,
+   "animated": true,
+   "author": "drewsdigitaldesigns",
+   "exact": false
+  },
+  "others": [
+   {
+    "name": "ExVeemon",
+    "uid": "14a2692ac1bb48bcb4efa8866486bc71",
+    "url": "https://sketchfab.com/3d-models/none-14a2692ac1bb48bcb4efa8866486bc71",
+    "license": "CC Attribution-NonCommercial",
+    "faces": 179648,
+    "animated": false,
+    "author": "elvandalinq",
+    "exact": true
+   },
+   {
+    "name": "EX Veemon Fan Made",
+    "uid": "62e614c574ec4663a9129d1f23ced3d3",
+    "url": "https://sketchfab.com/3d-models/none-62e614c574ec4663a9129d1f23ced3d3",
+    "license": "CC Attribution",
+    "faces": 716517,
+    "animated": false,
+    "author": "dragonights91",
+    "exact": false
+   }
+  ]
+ },
+ "veemon:2": {
+  "form": "Paildramon",
+  "best": {
+   "name": "Paildramon",
+   "uid": "dfa02a8323a3499da3bc7d3a21c42ba1",
+   "url": "https://sketchfab.com/3d-models/none-dfa02a8323a3499da3bc7d3a21c42ba1",
+   "license": "CC Attribution",
+   "faces": 5596,
+   "animated": true,
+   "author": "darkengine",
+   "exact": true
+  },
+  "others": []
+ },
+ "dorumon:0": {
+  "form": "Dorumon",
+  "best": {
+   "name": "Digimon Linkz - Dorumon",
+   "uid": "7059b6386bbd4021a77f162618585d07",
+   "url": "https://sketchfab.com/3d-models/none-7059b6386bbd4021a77f162618585d07",
+   "license": "CC Attribution",
+   "faces": 2626,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Dorumon - Digimon World 4",
+    "uid": "19f8405f062f4b4c83b3eceb09416936",
+    "url": "https://sketchfab.com/3d-models/none-19f8405f062f4b4c83b3eceb09416936",
+    "license": "CC Attribution",
+    "faces": 1542,
+    "animated": false,
+    "author": "drewsdigitaldesigns",
+    "exact": true
+   },
+   {
+    "name": "Dorumon Digimon Masters rigged 3d model",
+    "uid": "1e22863a063b42db93d5ca9ad4fd9f6a",
+    "url": "https://sketchfab.com/3d-models/none-1e22863a063b42db93d5ca9ad4fd9f6a",
+    "license": "CC Attribution",
+    "faces": 2478,
+    "animated": false,
+    "author": "chosen1wyrd",
+    "exact": true
+   }
+  ]
+ },
+ "dorumon:1": {
+  "form": "Dorugamon",
+  "best": {
+   "name": "Mobile - Digimon Links - Dorugamon",
+   "uid": "ef72384761d943c48e2890f125b13f0c",
+   "url": "https://sketchfab.com/3d-models/none-ef72384761d943c48e2890f125b13f0c",
+   "license": "CC Attribution",
+   "faces": 2602,
+   "animated": true,
+   "author": "4097309",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Dorugamon Digimon Masters 3d rigged model",
+    "uid": "95fbef972e284363b04c40fa24b569da",
+    "url": "https://sketchfab.com/3d-models/none-95fbef972e284363b04c40fa24b569da",
+    "license": "CC Attribution",
+    "faces": 2555,
+    "animated": false,
+    "author": "chosen1wyrd",
+    "exact": true
+   }
+  ]
+ },
+ "dorumon:2": {
+  "form": "DoruGreymon",
+  "best": {
+   "name": "Dorugreymon Digimon Masters 3d rigged model",
+   "uid": "7364e335f44842b4abcf2dc203aa3fa0",
+   "url": "https://sketchfab.com/3d-models/none-7364e335f44842b4abcf2dc203aa3fa0",
+   "license": "CC Attribution",
+   "faces": 5318,
+   "animated": false,
+   "author": "chosen1wyrd",
+   "exact": true
+  },
+  "others": []
+ },
+ "gaomon:0": {
+  "form": "Gaomon",
+  "best": {
+   "name": "Gaomon",
+   "uid": "777acff75e0c41309e8ebaf577f6867d",
+   "url": "https://sketchfab.com/3d-models/none-777acff75e0c41309e8ebaf577f6867d",
+   "license": "CC Attribution",
+   "faces": 3818,
+   "animated": true,
+   "author": "akennedy007",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Digimon Masters - Gaomon",
+    "uid": "00c06d61d608416bb2146d77bcb57348",
+    "url": "https://sketchfab.com/3d-models/none-00c06d61d608416bb2146d77bcb57348",
+    "license": "CC Attribution",
+    "faces": 2550,
+    "animated": false,
+    "author": "donmcdonough",
+    "exact": true
+   },
+   {
+    "name": "digimon Gaomon",
+    "uid": "7eaae497d8b746b19a8f5417db7f9ff6",
+    "url": "https://sketchfab.com/3d-models/none-7eaae497d8b746b19a8f5417db7f9ff6",
+    "license": "CC Attribution",
+    "faces": 703068,
+    "animated": false,
+    "author": "ash.takafumi",
+    "exact": true
+   }
+  ]
+ },
+ "gaomon:1": {
+  "form": "Gaogamon",
+  "best": {
+   "name": "Gaogamon",
+   "uid": "fd61d189638d42a8ae858abe75eff56a",
+   "url": "https://sketchfab.com/3d-models/none-fd61d189638d42a8ae858abe75eff56a",
+   "license": "CC Attribution",
+   "faces": 2278,
+   "animated": false,
+   "author": "NhinyJinromon",
+   "exact": true
+  },
+  "others": []
+ },
+ "gaomon:2": {
+  "form": "MachGaogamon",
+  "best": null,
+  "others": []
+ },
+ "lalamon:0": {
+  "form": "Lalamon",
+  "best": null,
+  "others": []
+ },
+ "lalamon:1": {
+  "form": "Sunflowmon",
+  "best": {
+   "name": "Sunflowmon",
+   "uid": "12032c5ef09c40d09016880bb13316fc",
+   "url": "https://sketchfab.com/3d-models/none-12032c5ef09c40d09016880bb13316fc",
+   "license": "CC Attribution",
+   "faces": 2854,
+   "animated": true,
+   "author": "parnlogang",
+   "exact": true
+  },
+  "others": []
+ },
+ "lalamon:2": {
+  "form": "Lilamon",
+  "best": null,
+  "others": []
+ },
+ "commandramon:0": {
+  "form": "Commandramon",
+  "best": null,
+  "others": []
+ },
+ "commandramon:1": {
+  "form": "Sealsdramon",
+  "best": null,
+  "others": []
+ },
+ "commandramon:2": {
+  "form": "Tankdramon",
+  "best": null,
+  "others": []
+ },
+ "myotismon:0": {
+  "form": "Myotismon",
+  "best": {
+   "name": "Digimon Myotismon's Gateway Home",
+   "uid": "103f585452ff4d47af0e1f2fc39b5af0",
+   "url": "https://sketchfab.com/3d-models/none-103f585452ff4d47af0e1f2fc39b5af0",
+   "license": "CC Attribution",
+   "faces": 2491,
+   "animated": false,
+   "author": "donnyroyness",
+   "exact": false
+  },
+  "others": [
+   {
+    "name": "Myotismon's Castle Trippy Corridor",
+    "uid": "d063137a031d48aab6b4cc37de5b7321",
+    "url": "https://sketchfab.com/3d-models/none-d063137a031d48aab6b4cc37de5b7321",
+    "license": "CC Attribution",
+    "faces": 3579,
+    "animated": false,
+    "author": "donnyroyness",
+    "exact": false
+   },
+   {
+    "name": "Myotismon's Castle",
+    "uid": "3627abb508cd4ba7b95be6a08cd7e1a9",
+    "url": "https://sketchfab.com/3d-models/none-3627abb508cd4ba7b95be6a08cd7e1a9",
+    "license": "CC Attribution",
+    "faces": 5309,
+    "animated": false,
+    "author": "donnyroyness",
+    "exact": false
+   }
+  ]
+ },
+ "myotismon:1": {
+  "form": "VenomMyotismon",
+  "best": null,
+  "others": []
+ },
+ "myotismon:2": {
+  "form": "MaloMyotismon",
+  "best": {
+   "name": "MaloMyotismon",
+   "uid": "c74c0757dec749f9a8e596ea0782e45f",
+   "url": "https://sketchfab.com/3d-models/none-c74c0757dec749f9a8e596ea0782e45f",
+   "license": "CC Attribution",
+   "faces": 9525,
+   "animated": true,
+   "author": "paulchaves133",
+   "exact": true
+  },
+  "others": []
+ },
+ "imperialdramon:0": {
+  "form": "Imperialdramon DM",
+  "best": {
+   "name": "Imperialdramon Fighter Mode",
+   "uid": "374d500e17a242d4990e62034593e58e",
+   "url": "https://sketchfab.com/3d-models/none-374d500e17a242d4990e62034593e58e",
+   "license": "CC Attribution-ShareAlike",
+   "faces": 4269,
+   "animated": false,
+   "author": "pkturtle",
+   "exact": false
+  },
+  "others": [
+   {
+    "name": "Digimon インペリアルドラモン Imperialdramon",
+    "uid": "1b9ee3aaf3ba40e08c19ee60ba2181e4",
+    "url": "https://sketchfab.com/3d-models/none-1b9ee3aaf3ba40e08c19ee60ba2181e4",
+    "license": "CC Attribution",
+    "faces": 969704,
+    "animated": false,
+    "author": "ash.takafumi",
+    "exact": true
+   }
+  ]
+ },
+ "imperialdramon:1": {
+  "form": "Imperialdramon FM",
+  "best": {
+   "name": "Imperialdramon Fighter Mode",
+   "uid": "374d500e17a242d4990e62034593e58e",
+   "url": "https://sketchfab.com/3d-models/none-374d500e17a242d4990e62034593e58e",
+   "license": "CC Attribution-ShareAlike",
+   "faces": 4269,
+   "animated": false,
+   "author": "pkturtle",
+   "exact": false
+  },
+  "others": [
+   {
+    "name": "Digimon インペリアルドラモン Imperialdramon",
+    "uid": "1b9ee3aaf3ba40e08c19ee60ba2181e4",
+    "url": "https://sketchfab.com/3d-models/none-1b9ee3aaf3ba40e08c19ee60ba2181e4",
+    "license": "CC Attribution",
+    "faces": 969704,
+    "animated": false,
+    "author": "ash.takafumi",
+    "exact": true
+   }
+  ]
+ },
+ "imperialdramon:2": {
+  "form": "Imperialdramon PM",
+  "best": {
+   "name": "Imperialdramon Fighter Mode",
+   "uid": "374d500e17a242d4990e62034593e58e",
+   "url": "https://sketchfab.com/3d-models/none-374d500e17a242d4990e62034593e58e",
+   "license": "CC Attribution-ShareAlike",
+   "faces": 4269,
+   "animated": false,
+   "author": "pkturtle",
+   "exact": false
+  },
+  "others": [
+   {
+    "name": "Digimon インペリアルドラモン Imperialdramon",
+    "uid": "1b9ee3aaf3ba40e08c19ee60ba2181e4",
+    "url": "https://sketchfab.com/3d-models/none-1b9ee3aaf3ba40e08c19ee60ba2181e4",
+    "license": "CC Attribution",
+    "faces": 969704,
+    "animated": false,
+    "author": "ash.takafumi",
+    "exact": true
+   }
+  ]
+ },
+ "lucemon:0": {
+  "form": "Lucemon",
+  "best": {
+   "name": "Lucemon",
+   "uid": "c0bcd0d675d3439084b2793928a832f3",
+   "url": "https://sketchfab.com/3d-models/none-c0bcd0d675d3439084b2793928a832f3",
+   "license": "CC Attribution",
+   "faces": 269162,
+   "animated": false,
+   "author": "dartuchiwa",
+   "exact": true
+  },
+  "others": []
+ },
+ "lucemon:1": {
+  "form": "Lucemon FM",
+  "best": {
+   "name": "Lucemon",
+   "uid": "c0bcd0d675d3439084b2793928a832f3",
+   "url": "https://sketchfab.com/3d-models/none-c0bcd0d675d3439084b2793928a832f3",
+   "license": "CC Attribution",
+   "faces": 269162,
+   "animated": false,
+   "author": "dartuchiwa",
+   "exact": true
+  },
+  "others": []
+ },
+ "lucemon:2": {
+  "form": "Lucemon SM",
+  "best": {
+   "name": "Lucemon",
+   "uid": "c0bcd0d675d3439084b2793928a832f3",
+   "url": "https://sketchfab.com/3d-models/none-c0bcd0d675d3439084b2793928a832f3",
+   "license": "CC Attribution",
+   "faces": 269162,
+   "animated": false,
+   "author": "dartuchiwa",
+   "exact": true
+  },
+  "others": []
+ },
+ "beelzemon:0": {
+  "form": "Impmon",
+  "best": {
+   "name": "Impmon - Digimon Masters Online rigged 3d model",
+   "uid": "0657ee50cfd04b3697edbd6749bc1613",
+   "url": "https://sketchfab.com/3d-models/none-0657ee50cfd04b3697edbd6749bc1613",
+   "license": "CC Attribution",
+   "faces": 2233,
+   "animated": false,
+   "author": "chosen1wyrd",
+   "exact": false
+  },
+  "others": [
+   {
+    "name": "Impmon 3d token",
+    "uid": "0825b6120efd46fc9c4e283105e0ac6b",
+    "url": "https://sketchfab.com/3d-models/none-0825b6120efd46fc9c4e283105e0ac6b",
+    "license": "CC Attribution",
+    "faces": 26696,
+    "animated": false,
+    "author": "DanielGut",
+    "exact": false
+   }
+  ]
+ },
+ "beelzemon:1": {
+  "form": "Beelzemon",
+  "best": {
+   "name": "Digimon Links - Beelzemon",
+   "uid": "5916bfad3dd7434eb007a749e5170bd7",
+   "url": "https://sketchfab.com/3d-models/none-5916bfad3dd7434eb007a749e5170bd7",
+   "license": "CC Attribution",
+   "faces": 12920,
+   "animated": true,
+   "author": "maikssess1",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Beelzemon Blast Mode Digimon Masters rigged 3d",
+    "uid": "67228cf1c5154608ba0efe4d77ddd036",
+    "url": "https://sketchfab.com/3d-models/none-67228cf1c5154608ba0efe4d77ddd036",
+    "license": "CC Attribution",
+    "faces": 4130,
+    "animated": false,
+    "author": "chosen1wyrd",
+    "exact": false
+   },
+   {
+    "name": "Beelzemon X Digimon Masters rigged 3d model",
+    "uid": "b7cbfbea5ccd4a79b5654205655110b5",
+    "url": "https://sketchfab.com/3d-models/none-b7cbfbea5ccd4a79b5654205655110b5",
+    "license": "CC Attribution",
+    "faces": 13468,
+    "animated": false,
+    "author": "chosen1wyrd",
+    "exact": false
+   }
+  ]
+ },
+ "beelzemon:2": {
+  "form": "Beelzemon BM",
+  "best": {
+   "name": "Impmon - Digimon Masters Online rigged 3d model",
+   "uid": "0657ee50cfd04b3697edbd6749bc1613",
+   "url": "https://sketchfab.com/3d-models/none-0657ee50cfd04b3697edbd6749bc1613",
+   "license": "CC Attribution",
+   "faces": 2233,
+   "animated": false,
+   "author": "chosen1wyrd",
+   "exact": false
+  },
+  "others": [
+   {
+    "name": "Impmon 3d token",
+    "uid": "0825b6120efd46fc9c4e283105e0ac6b",
+    "url": "https://sketchfab.com/3d-models/none-0825b6120efd46fc9c4e283105e0ac6b",
+    "license": "CC Attribution",
+    "faces": 26696,
+    "animated": false,
+    "author": "DanielGut",
+    "exact": false
+   }
+  ]
+ },
+ "machinedramon:0": {
+  "form": "Megadramon",
+  "best": null,
+  "others": []
+ },
+ "machinedramon:1": {
+  "form": "Machinedramon",
+  "best": {
+   "name": "Digimon Links - Machinedramon",
+   "uid": "428e84d9b7cc40aa86cfc6b1d94c4552",
+   "url": "https://sketchfab.com/3d-models/none-428e84d9b7cc40aa86cfc6b1d94c4552",
+   "license": "CC Attribution",
+   "faces": 5911,
+   "animated": true,
+   "author": "speeduzumaki31",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Machinedramon",
+    "uid": "3cb5da57759f491eb042bc29cbe3767a",
+    "url": "https://sketchfab.com/3d-models/none-3cb5da57759f491eb042bc29cbe3767a",
+    "license": "CC Attribution",
+    "faces": 40800,
+    "animated": false,
+    "author": "DTMBush",
+    "exact": true
+   },
+   {
+    "name": "MachinedraMon WIP",
+    "uid": "ad8f3a841de14ae7ae1792adaeac18d2",
+    "url": "https://sketchfab.com/3d-models/none-ad8f3a841de14ae7ae1792adaeac18d2",
+    "license": "CC Attribution",
+    "faces": 453654,
+    "animated": false,
+    "author": "hdbanks1",
+    "exact": false
+   }
+  ]
+ },
+ "machinedramon:2": {
+  "form": "Chaosdramon",
+  "best": {
+   "name": "mechadragon/chaosdramon (now animated)",
+   "uid": "7eb1ef6913354b80996c594d7b80d221",
+   "url": "https://sketchfab.com/3d-models/none-7eb1ef6913354b80996c594d7b80d221",
+   "license": "CC Attribution",
+   "faces": 9629,
+   "animated": true,
+   "author": "mamacita212",
+   "exact": false
+  },
+  "others": [
+   {
+    "name": "PC Computer - Digimon Masters - Chaosdramon",
+    "uid": "c7ef73b17a2a4da3a7e06f4582396c15",
+    "url": "https://sketchfab.com/3d-models/none-c7ef73b17a2a4da3a7e06f4582396c15",
+    "license": "CC Attribution",
+    "faces": 6548,
+    "animated": false,
+    "author": "kevincatssing",
+    "exact": false
+   }
+  ]
+ },
+ "goblimon:0": {
+  "form": "Goblimon",
+  "best": null,
+  "others": []
+ },
+ "goblimon:1": {
+  "form": "Goblimon",
+  "best": null,
+  "others": []
+ },
+ "goblimon:2": {
+  "form": "Goblimon",
+  "best": null,
+  "others": []
+ },
+ "kuwagamon:0": {
+  "form": "Kuwagamon",
+  "best": null,
+  "others": []
+ },
+ "kuwagamon:1": {
+  "form": "Kuwagamon",
+  "best": null,
+  "others": []
+ },
+ "kuwagamon:2": {
+  "form": "Kuwagamon",
+  "best": null,
+  "others": []
+ },
+ "ogremon:0": {
+  "form": "Ogremon",
+  "best": null,
+  "others": []
+ },
+ "ogremon:1": {
+  "form": "Ogremon",
+  "best": null,
+  "others": []
+ },
+ "ogremon:2": {
+  "form": "Ogremon",
+  "best": null,
+  "others": []
+ },
+ "tyrannomon:0": {
+  "form": "Tyrannomon",
+  "best": {
+   "name": "Tyrannomon",
+   "uid": "40e8b0efb40540faa2bc617894525f00",
+   "url": "https://sketchfab.com/3d-models/none-40e8b0efb40540faa2bc617894525f00",
+   "license": "CC Attribution",
+   "faces": 3022,
+   "animated": true,
+   "author": "theamazingdonovan207",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Mobile - Digimon ReArise - Tyrannomon",
+    "uid": "bb2d336d16254bd48f1cf44b7ea28ad0",
+    "url": "https://sketchfab.com/3d-models/none-bb2d336d16254bd48f1cf44b7ea28ad0",
+    "license": "CC Attribution",
+    "faces": 3022,
+    "animated": true,
+    "author": "medothegeek",
+    "exact": true
+   },
+   {
+    "name": "Tyrannomon",
+    "uid": "6e06a122f820478dab8a1a65e3c873ba",
+    "url": "https://sketchfab.com/3d-models/none-6e06a122f820478dab8a1a65e3c873ba",
+    "license": "CC Attribution",
+    "faces": 7062,
+    "animated": true,
+    "author": "theamazingdonovan207",
+    "exact": true
+   },
+   {
+    "name": "Digimon World 2 - Tyrannomon",
+    "uid": "9f9d9b453ceb45fdb8373e05cdf0feff",
+    "url": "https://sketchfab.com/3d-models/none-9f9d9b453ceb45fdb8373e05cdf0feff",
+    "license": "CC Attribution",
+    "faces": 609,
+    "animated": false,
+    "author": "bioandrew91",
+    "exact": true
+   }
+  ]
+ },
+ "tyrannomon:1": {
+  "form": "Tyrannomon",
+  "best": {
+   "name": "Tyrannomon",
+   "uid": "40e8b0efb40540faa2bc617894525f00",
+   "url": "https://sketchfab.com/3d-models/none-40e8b0efb40540faa2bc617894525f00",
+   "license": "CC Attribution",
+   "faces": 3022,
+   "animated": true,
+   "author": "theamazingdonovan207",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Mobile - Digimon ReArise - Tyrannomon",
+    "uid": "bb2d336d16254bd48f1cf44b7ea28ad0",
+    "url": "https://sketchfab.com/3d-models/none-bb2d336d16254bd48f1cf44b7ea28ad0",
+    "license": "CC Attribution",
+    "faces": 3022,
+    "animated": true,
+    "author": "medothegeek",
+    "exact": true
+   },
+   {
+    "name": "Tyrannomon",
+    "uid": "6e06a122f820478dab8a1a65e3c873ba",
+    "url": "https://sketchfab.com/3d-models/none-6e06a122f820478dab8a1a65e3c873ba",
+    "license": "CC Attribution",
+    "faces": 7062,
+    "animated": true,
+    "author": "theamazingdonovan207",
+    "exact": true
+   },
+   {
+    "name": "Digimon World 2 - Tyrannomon",
+    "uid": "9f9d9b453ceb45fdb8373e05cdf0feff",
+    "url": "https://sketchfab.com/3d-models/none-9f9d9b453ceb45fdb8373e05cdf0feff",
+    "license": "CC Attribution",
+    "faces": 609,
+    "animated": false,
+    "author": "bioandrew91",
+    "exact": true
+   }
+  ]
+ },
+ "tyrannomon:2": {
+  "form": "Tyrannomon",
+  "best": {
+   "name": "Tyrannomon",
+   "uid": "40e8b0efb40540faa2bc617894525f00",
+   "url": "https://sketchfab.com/3d-models/none-40e8b0efb40540faa2bc617894525f00",
+   "license": "CC Attribution",
+   "faces": 3022,
+   "animated": true,
+   "author": "theamazingdonovan207",
+   "exact": true
+  },
+  "others": [
+   {
+    "name": "Mobile - Digimon ReArise - Tyrannomon",
+    "uid": "bb2d336d16254bd48f1cf44b7ea28ad0",
+    "url": "https://sketchfab.com/3d-models/none-bb2d336d16254bd48f1cf44b7ea28ad0",
+    "license": "CC Attribution",
+    "faces": 3022,
+    "animated": true,
+    "author": "medothegeek",
+    "exact": true
+   },
+   {
+    "name": "Tyrannomon",
+    "uid": "6e06a122f820478dab8a1a65e3c873ba",
+    "url": "https://sketchfab.com/3d-models/none-6e06a122f820478dab8a1a65e3c873ba",
+    "license": "CC Attribution",
+    "faces": 7062,
+    "animated": true,
+    "author": "theamazingdonovan207",
+    "exact": true
+   },
+   {
+    "name": "Digimon World 2 - Tyrannomon",
+    "uid": "9f9d9b453ceb45fdb8373e05cdf0feff",
+    "url": "https://sketchfab.com/3d-models/none-9f9d9b453ceb45fdb8373e05cdf0feff",
+    "license": "CC Attribution",
+    "faces": 609,
+    "animated": false,
+    "author": "bioandrew91",
+    "exact": true
+   }
+  ]
+ },
+ "etemon:0": {
+  "form": "Etemon",
+  "best": null,
+  "others": []
+ },
+ "etemon:1": {
+  "form": "Etemon",
+  "best": null,
+  "others": []
+ },
+ "etemon:2": {
+  "form": "Etemon",
+  "best": null,
+  "others": []
+ },
+ "skullgreymon:0": {
+  "form": "SkullGreymon",
+  "best": {
+   "name": "Skullgreymon - agumon line - digimon",
+   "uid": "499c5a71a2ae44f38cbcece0d0ec0541",
+   "url": "https://sketchfab.com/3d-models/none-499c5a71a2ae44f38cbcece0d0ec0541",
+   "license": "CC Attribution",
+   "faces": 5704,
+   "animated": true,
+   "author": "medothegeek",
+   "exact": true
+  },
+  "others": []
+ },
+ "skullgreymon:1": {
+  "form": "SkullGreymon",
+  "best": {
+   "name": "Skullgreymon - agumon line - digimon",
+   "uid": "499c5a71a2ae44f38cbcece0d0ec0541",
+   "url": "https://sketchfab.com/3d-models/none-499c5a71a2ae44f38cbcece0d0ec0541",
+   "license": "CC Attribution",
+   "faces": 5704,
+   "animated": true,
+   "author": "medothegeek",
+   "exact": true
+  },
+  "others": []
+ },
+ "skullgreymon:2": {
+  "form": "SkullGreymon",
+  "best": {
+   "name": "Skullgreymon - agumon line - digimon",
+   "uid": "499c5a71a2ae44f38cbcece0d0ec0541",
+   "url": "https://sketchfab.com/3d-models/none-499c5a71a2ae44f38cbcece0d0ec0541",
+   "license": "CC Attribution",
+   "faces": 5704,
+   "animated": true,
+   "author": "medothegeek",
+   "exact": true
+  },
+  "others": []
+ }
+}

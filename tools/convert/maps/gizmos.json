@@ -1,0 +1,21 @@
+{
+ "giz:Tankdramon": "Tankdramon",
+ "giz:Ebemon": "L_Ebemon",
+ "giz:Mastemon": "L_Mastemon",
+ "giz:Pumpkinmon": "CS_Pumpkinmon",
+ "giz:RustTyranomon": "L_RustTyranomon",
+ "giz:TyrantKabuterimon": "CS_TyrantKabuterimon",
+ "giz:Rosemon": "L_Rosemon",
+ "giz:SistermonBlanc": "CS_Sistermon_Blanc",
+ "giz:SistermonBlancAwakened": "CS_Sistermon_Blanc_Awakened",
+ "giz:SistermonNoirAwakened": "CS_Sistermon_Noir_Awakened",
+ "giz:Boltboutamon": "NO_Boltboutamon",
+ "giz:Yggdrasil": "L_Yggdrasil_7D6",
+ "giz:Wizardmon": "CS_Wizardmon",
+ "giz:Andromon": "L_Andromon",
+ "giz:Guardromon": "CS_Guardromon",
+ "giz:RapidmonArmor": "CS_Rapidmon_Armor",
+ "giz:Jijimon": "L_Jijimon",
+ "giz:OmniShoutmon": "CS_OmniShoutmon",
+ "_form": { "L_Yggdrasil_7D6": "Yggdrasil 7D6", "CS_Rapidmon_Armor": "Rapidmon (Armor)", "CS_Sistermon_Blanc_Awakened": "Sistermon Blanc (Awakened)", "CS_Sistermon_Noir_Awakened": "Sistermon Noir (Awakened)" }
+}

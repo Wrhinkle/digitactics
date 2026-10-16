@@ -1,0 +1,94 @@
+Agumon                 5042 faces anim Digimon Linkz - Agumon
+Greymon                4812 faces anim greymon
+MetalGreymon           668 faces Digimon World 2 - Metalgreymon
+Gabumon                5228 faces anim Mobile - Digimon Linkz - Gabumon
+Garurumon              4994 faces anim Garurumon - gabumon line - digimon
+WereGarurumon          6140 faces anim weregarurumon - gabumon line - digimon
+Tentomon               6384 faces anim Digimon Story Cyber Sleuth - Tentomon
+Kabuterimon            1357868 faces digimon カブテリモン Kabuterimon
+MegaKabuterimon        -
+Palmon                 4061 faces Palmon
+Togemon                -
+Lillymon               -
+Gomamon                234093 faces Gomamon
+Ikkakumon              3547 faces anim Ikkakumon
+Zudomon                3913 faces Zudomon
+Biyomon                3948 faces anim Mobile - Digimon Linkz - Biyomon
+Birdramon              -
+Garudamon              770 faces Digimon World 2 - Garudamon
+Hagurumon              1780 faces anim Digimon Links - Hagurumon
+Guardromon             3705 faces anim Digimon Links - Guardromon
+Andromon               4815 faces anim Digimon Links - Andromon
+DemiDevimon            -
+Devimon                6802 faces anim Devimon - Digimon Links
+NeoDevimon             -
+Guilmon                4614 faces anim Guilmon
+Growlmon               6718 faces anim Digimon Linkz - Growlmon
+WarGrowlmon            -
+Renamon                904 faces anim Renamon Lowpoly (PSX/Dreamcast-style)
+Kyubimon               5650 faces anim Kyubimon
+Taomon                 -
+Terriermon             11002 faces Terriermon
+Gargomon               11351 faces Gargomon
+Rapidmon               845256 faces Digimon ラピッドモン Rapidmon
+Patamon                3906 faces anim Patamon
+Angemon                4584 faces PC Computer - Digimon Masters - Magna Angemon
+MagnaAngemon           7201 faces anim MagnaAngemon - Digimon Links
+Salamon                -
+Gatomon                5020 faces anim Digimon Linkz - Gatomon
+Angewomon              4124 faces Angewomon
+Betamon                1896 faces Betamon
+Seadramon              534 faces Digimon World 1 - Seadramon
+MegaSeadramon          634 faces Digimon World 1 - Megaseadramon
+Wormmon                -
+Stingmon               -
+Dinobeemon             -
+Elecmon                -
+Leomon                 7401 faces Digimon Leomon
+Panjyamon              -
+Hawkmon                4126 faces anim Hawkmon
+Aquilamon              5340 faces anim Aquilamon
+Silphymon              13952 faces anim Silphymon
+Keramon                5872 faces anim Keramon
+Kurisarimon            -
+Infermon               3720 faces anim Infermon
+Lopmon                 17340 faces lopmon
+Turuiemon              -
+Andiramon              -
+Gizamon                -
+Gesomon                -
+MarineDevimon          -
+Candlemon              2340 faces anim Digimon New Century - Candlemon
+Wizardmon              3806 faces anim Digimon Links - Wizardmon
+Mistymon               -
+Veemon                 4318 faces anim Digimon Linkz - Veemon
+ExVeemon               10468 faces anim XV-mon (ExVeemon) - Digimon Story Cyber Sleuth
+Paildramon             5596 faces anim Paildramon
+Dorumon                2626 faces anim Digimon Linkz - Dorumon
+Dorugamon              2602 faces anim Mobile - Digimon Links - Dorugamon
+DoruGreymon            5318 faces Dorugreymon Digimon Masters 3d rigged model
+Gaomon                 3818 faces anim Gaomon
+Gaogamon               2278 faces Gaogamon
+MachGaogamon           -
+Lalamon                -
+Sunflowmon             2854 faces anim Sunflowmon
+Lilamon                -
+Commandramon           -
+Sealsdramon            -
+Tankdramon             -
+Myotismon              2491 faces Digimon Myotismon's Gateway Home
+VenomMyotismon         -
+MaloMyotismon          9525 faces anim MaloMyotismon
+Imperialdramon DM      4269 faces Imperialdramon Fighter Mode
+Lucemon                269162 faces Lucemon
+Impmon                 2233 faces Impmon - Digimon Masters Online rigged 3d model
+Beelzemon              12920 faces anim Digimon Links - Beelzemon
+Megadramon             -
+Machinedramon          5911 faces anim Digimon Links - Machinedramon
+Chaosdramon            9629 faces anim mechadragon/chaosdramon (now animated)
+Goblimon               -
+Kuwagamon              -
+Ogremon                -
+Tyrannomon             3022 faces anim Tyrannomon
+Etemon                 -
+SkullGreymon           5704 faces anim Skullgreymon - agumon line - digimon

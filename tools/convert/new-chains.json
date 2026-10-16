@@ -1,0 +1,3306 @@
+{
+ "_doc": "October 2026 roster expansion, as converted. Written from the optimized files (models/files, models/legends). chains: shop lines with models/index.json keys \"<lineid>:<stage>\". extras: \"extra:<Rip>\" keys for bosses, spare forms, the Digimon World 1 set and misc Digimon Masters models; the roster maps them to line forms by adding index.json keys that point at the same file. legends: Little Legend files (models/legends/<id>.glb, clips named for js/legends.js). clips are the role names optimize.mjs kept (idle, attack, special, win for board models). textureSize is the longest side in px (shop lines 512, extras 256). Pipeline: convert-all.cjs --new, patch-textures.cjs <folders>, optimize.mjs --meshopt high [--size 256], convert-all.cjs --legends / optimize.mjs --legends.",
+ "status": "converted",
+ "chains": [
+  {
+   "id": "agumonsv",
+   "forms": [
+    {
+     "key": "agumonsv:0",
+     "rip": "GeoGreymon",
+     "file": "models/files/rip_geogreymon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 6482,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 158,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304008/"
+    },
+    {
+     "key": "agumonsv:1",
+     "rip": "RizeGreymon",
+     "file": "models/files/rip_rizegreymon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 5222,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 205,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304030/"
+    },
+    {
+     "key": "agumonsv:2",
+     "rip": "ShineGreymon",
+     "file": "models/files/rip_shinegreymon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 8086,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 311,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304032/"
+    }
+   ]
+  },
+  {
+   "id": "falcomon",
+   "forms": [
+    {
+     "key": "falcomon:0",
+     "rip": "Falcomon",
+     "file": "models/files/rip_falcomon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 4314,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 156,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304200/"
+    },
+    {
+     "key": "falcomon:1",
+     "rip": "Peckmon",
+     "file": "models/files/rip_peckmon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 4821,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 226,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304208/"
+    },
+    {
+     "key": "falcomon:2",
+     "rip": "Crowmon",
+     "file": "models/files/rip_crowmon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 13130,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 582,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324565/"
+    }
+   ]
+  },
+  {
+   "id": "kudamon",
+   "forms": [
+    {
+     "key": "kudamon:0",
+     "rip": "Kudamon",
+     "file": "models/files/rip_kudamon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 2442,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 116,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304013/"
+    },
+    {
+     "key": "kudamon:1",
+     "rip": "Reppamon",
+     "file": "models/files/rip_reppamon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 3837,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 178,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304029/"
+    },
+    {
+     "key": "kudamon:2",
+     "rip": "Chirinmon",
+     "file": "models/files/rip_chirinmon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 6122,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 265,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324409/"
+    }
+   ]
+  },
+  {
+   "id": "dracomon",
+   "forms": [
+    {
+     "key": "dracomon:0",
+     "rip": "Dracomon",
+     "file": "models/files/rip_dracomon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 7060,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 221,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304051/"
+    },
+    {
+     "key": "dracomon:1",
+     "rip": "Coredramon_Green",
+     "file": "models/files/rip_coredramon_green.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 6670,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 239,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304048/"
+    },
+    {
+     "key": "dracomon:2",
+     "rip": "Wingdramon",
+     "file": "models/files/rip_wingdramon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 9716,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 237,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304079/"
+    }
+   ]
+  },
+  {
+   "id": "ryudamon",
+   "forms": [
+    {
+     "key": "ryudamon:0",
+     "rip": "Ryudamon",
+     "file": "models/files/rip_ryudamon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 6486,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 187,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/311327/"
+    },
+    {
+     "key": "ryudamon:1",
+     "rip": "Ginryumon",
+     "file": "models/files/rip_ginryumon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 8912,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 283,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/311324/"
+    },
+    {
+     "key": "ryudamon:2",
+     "rip": "Hisyaryumon",
+     "file": "models/files/rip_hisyaryumon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 9509,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 297,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/311325/"
+    }
+   ]
+  },
+  {
+   "id": "zubamon",
+   "forms": [
+    {
+     "key": "zubamon:0",
+     "rip": "Zubamon",
+     "file": "models/files/rip_zubamon.glb",
+     "clips": [
+      "win",
+      "special",
+      "idle",
+      "attack"
+     ],
+     "tris": 6521,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 221,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304211/"
+    },
+    {
+     "key": "zubamon:1",
+     "rip": "ZubaEagermon",
+     "file": "models/files/rip_zubaeagermon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 7214,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 208,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305407/"
+    },
+    {
+     "key": "zubamon:2",
+     "rip": "Durandamon",
+     "file": "models/files/rip_durandamon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 9580,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 187,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305409/"
+    }
+   ]
+  },
+  {
+   "id": "vorvomon",
+   "forms": [
+    {
+     "key": "vorvomon:0",
+     "rip": "Vorvomon",
+     "file": "models/files/rip_vorvomon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 5614,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 146,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304075/"
+    },
+    {
+     "key": "vorvomon:1",
+     "rip": "Lavorvomon",
+     "file": "models/files/rip_lavorvomon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special"
+     ],
+     "tris": 7522,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 192,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304062/"
+    },
+    {
+     "key": "vorvomon:2",
+     "rip": "Lavogaritamon",
+     "file": "models/files/rip_lavogaritamon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special"
+     ],
+     "tris": 8572,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 222,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304063/"
+    }
+   ]
+  },
+  {
+   "id": "jazamon",
+   "forms": [
+    {
+     "key": "jazamon:0",
+     "rip": "Jazamon",
+     "file": "models/files/rip_jazamon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 5906,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 173,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/312124/"
+    },
+    {
+     "key": "jazamon:1",
+     "rip": "Jazardmon",
+     "file": "models/files/rip_jazardmon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 6046,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 173,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/312125/"
+    },
+    {
+     "key": "jazamon:2",
+     "rip": "Jazarichmon",
+     "file": "models/files/rip_jazarichmon.glb",
+     "clips": [
+      "attack",
+      "special",
+      "win",
+      "idle"
+     ],
+     "tris": 8440,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 224,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/312126/"
+    }
+   ]
+  },
+  {
+   "id": "armadillomon",
+   "forms": [
+    {
+     "key": "armadillomon:0",
+     "rip": "Armadillomon",
+     "file": "models/files/rip_armadillomon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 4332,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 143,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304197/"
+    },
+    {
+     "key": "armadillomon:1",
+     "rip": "Ankylomon",
+     "file": "models/files/rip_ankylomon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 10804,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 453,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324557/"
+    },
+    {
+     "key": "armadillomon:2",
+     "rip": "Shakkoumon",
+     "file": "models/files/rip_shakkoumon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 12280,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 452,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324573/"
+    }
+   ]
+  },
+  {
+   "id": "meicoomon",
+   "forms": [
+    {
+     "key": "meicoomon:0",
+     "rip": "Meicoomon",
+     "file": "models/files/rip_meicoomon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 3662,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 182,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/324495/"
+    },
+    {
+     "key": "meicoomon:1",
+     "rip": "Meicrackmon_Vicious_Mode",
+     "file": "models/files/rip_meicrackmon_vicious_mode.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 7108,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 249,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/302507/"
+    },
+    {
+     "key": "meicoomon:2",
+     "rip": "Raguelmon",
+     "file": "models/files/rip_raguelmon.glb",
+     "clips": [
+      "win",
+      "special",
+      "idle",
+      "attack"
+     ],
+     "tris": 12320,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 407,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304618/"
+    }
+   ]
+  },
+  {
+   "id": "numemon",
+   "forms": [
+    {
+     "key": "numemon:0",
+     "rip": "Numemon",
+     "file": "models/files/rip_numemon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 3854,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 154,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304025/"
+    },
+    {
+     "key": "numemon:1",
+     "rip": "BlackKingNumemon",
+     "file": "models/files/rip_blackkingnumemon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 4482,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 118,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304213/"
+    },
+    {
+     "key": "numemon:2",
+     "rip": "PlatinumNumemon",
+     "file": "models/files/rip_platinumnumemon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 8718,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 209,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304028/"
+    }
+   ]
+  },
+  {
+   "id": "mamemon",
+   "forms": [
+    {
+     "key": "mamemon:0",
+     "rip": "Mamemon",
+     "file": "models/files/rip_mamemon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 2782,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 95,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304154/"
+    },
+    {
+     "key": "mamemon:1",
+     "rip": "MetalMamemon",
+     "file": "models/files/rip_metalmamemon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 3268,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 117,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304155/"
+    },
+    {
+     "key": "mamemon:2",
+     "rip": "PrinceMamemon",
+     "file": "models/files/rip_princemamemon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 3862,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 137,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304166/"
+    }
+   ]
+  },
+  {
+   "id": "woodmon",
+   "forms": [
+    {
+     "key": "woodmon:0",
+     "rip": "Woodmon",
+     "file": "models/files/rip_woodmon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 2658,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 148,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304125/"
+    },
+    {
+     "key": "woodmon:1",
+     "rip": "Cherrymon",
+     "file": "models/files/rip_cherrymon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 4434,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 175,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304100/"
+    },
+    {
+     "key": "woodmon:2",
+     "rip": "Puppetmon",
+     "file": "models/files/rip_puppetmon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 5226,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 186,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304168/"
+    }
+   ]
+  },
+  {
+   "id": "gotsumon",
+   "forms": [
+    {
+     "key": "gotsumon:0",
+     "rip": "Gotsumon",
+     "file": "models/files/rip_gotsumon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 4772,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 238,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324502/"
+    },
+    {
+     "key": "gotsumon:1",
+     "rip": "Starmon",
+     "file": "models/files/rip_starmon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 3476,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 152,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304035/"
+    },
+    {
+     "key": "gotsumon:2",
+     "rip": "SuperStarmon",
+     "file": "models/files/rip_superstarmon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 4528,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 155,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304038/"
+    }
+   ]
+  },
+  {
+   "id": "otamamon",
+   "forms": [
+    {
+     "key": "otamamon:0",
+     "rip": "Otamamon",
+     "file": "models/files/rip_otamamon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 4752,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 216,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324500/"
+    },
+    {
+     "key": "otamamon:1",
+     "rip": "Gekomon",
+     "file": "models/files/rip_gekomon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 2856,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 104,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304105/"
+    },
+    {
+     "key": "otamamon:2",
+     "rip": "ShogunGekomon",
+     "file": "models/files/rip_shogungekomon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 4450,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 163,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304119/"
+    }
+   ]
+  },
+  {
+   "id": "blackgatomon",
+   "forms": [
+    {
+     "key": "blackgatomon:0",
+     "rip": "Gatomon",
+     "file": "models/files/rip_gatomon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 5020,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 185,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304007/"
+    },
+    {
+     "key": "blackgatomon:1",
+     "rip": "LadyDevimon",
+     "file": "models/files/rip_ladydevimon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 6798,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 268,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304061/"
+    },
+    {
+     "key": "blackgatomon:2",
+     "rip": "Lilithmon",
+     "file": "models/files/rip_lilithmon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 8966,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 355,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304015/"
+    }
+   ]
+  },
+  {
+   "id": "veedramon",
+   "forms": [
+    {
+     "key": "veedramon:0",
+     "rip": "Veedramon",
+     "file": "models/files/rip_veedramon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 3196,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 144,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304122/"
+    },
+    {
+     "key": "veedramon:1",
+     "rip": "AeroVeedramon",
+     "file": "models/files/rip_aeroveedramon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 5136,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 176,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304098/"
+    },
+    {
+     "key": "veedramon:2",
+     "rip": "UlforceVeedramon",
+     "file": "models/files/rip_ulforceveedramon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 7240,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 227,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304156/"
+    }
+   ]
+  },
+  {
+   "id": "hackmon",
+   "forms": [
+    {
+     "key": "hackmon:0",
+     "rip": "Hackmon",
+     "file": "models/files/rip_hackmon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 4418,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 159,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324483/"
+    },
+    {
+     "key": "hackmon:1",
+     "rip": "BaoHuckmon",
+     "file": "models/files/rip_baohuckmon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 8396,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 277,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324484/"
+    },
+    {
+     "key": "hackmon:2",
+     "rip": "Jesmon",
+     "file": "models/files/rip_jesmon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 14848,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 381,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304215/"
+    }
+   ]
+  },
+  {
+   "id": "lunamon",
+   "forms": [
+    {
+     "key": "lunamon:0",
+     "rip": "Lunamon",
+     "file": "models/files/rip_lunamon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 5690,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 162,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324275/"
+    },
+    {
+     "key": "lunamon:1",
+     "rip": "Lekismon",
+     "file": "models/files/rip_lekismon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 7992,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 289,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324276/"
+    },
+    {
+     "key": "lunamon:2",
+     "rip": "Crescemon",
+     "file": "models/files/rip_crescemon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 8207,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 326,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324277/"
+    }
+   ]
+  },
+  {
+   "id": "coronamon",
+   "forms": [
+    {
+     "key": "coronamon:0",
+     "rip": "Coronamon",
+     "file": "models/files/rip_coronamon.glb",
+     "clips": [
+      "win",
+      "attack",
+      "special",
+      "idle"
+     ],
+     "tris": 6838,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 248,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/327511/"
+    },
+    {
+     "key": "coronamon:1",
+     "rip": "Firamon",
+     "file": "models/files/rip_firamon.glb",
+     "clips": [
+      "idle",
+      "attack",
+      "win",
+      "special"
+     ],
+     "tris": 11834,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 322,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/327524/"
+    },
+    {
+     "key": "coronamon:2",
+     "rip": "Flaremon",
+     "file": "models/files/rip_flaremon.glb",
+     "clips": [
+      "idle",
+      "special",
+      "win",
+      "attack"
+     ],
+     "tris": 17702,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 385,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/331569/"
+    }
+   ]
+  },
+  {
+   "id": "agunimon",
+   "forms": [
+    {
+     "key": "agunimon:0",
+     "rip": "Agunimon",
+     "file": "models/files/rip_agunimon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 6414,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 258,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331596/"
+    },
+    {
+     "key": "agunimon:1",
+     "rip": "BurningGreymon",
+     "file": "models/files/rip_burninggreymon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 9992,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 344,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331595/"
+    },
+    {
+     "key": "agunimon:2",
+     "rip": "EmperorGreymon",
+     "file": "models/files/rip_emperorgreymon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 9483,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 259,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331594/"
+    }
+   ]
+  },
+  {
+   "id": "lobomon",
+   "forms": [
+    {
+     "key": "lobomon:0",
+     "rip": "Lobomon",
+     "file": "models/files/rip_lobomon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 8700,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 302,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331599/"
+    },
+    {
+     "key": "lobomon:1",
+     "rip": "KendoGarurumon",
+     "file": "models/files/rip_kendogarurumon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 8388,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 243,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331598/"
+    },
+    {
+     "key": "lobomon:2",
+     "rip": "MagnaGarurumon",
+     "file": "models/files/rip_magnagarurumon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 11396,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 294,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331597/"
+    }
+   ]
+  },
+  {
+   "id": "kazemon",
+   "forms": [
+    {
+     "key": "kazemon:0",
+     "rip": "Kazemon",
+     "file": "models/files/rip_kazemon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 8328,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 262,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/327562/"
+    },
+    {
+     "key": "kazemon:1",
+     "rip": "Zephyrmon",
+     "file": "models/files/rip_zephyrmon.glb",
+     "clips": [
+      "special",
+      "win",
+      "attack",
+      "idle"
+     ],
+     "tris": 12624,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 323,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/327561/"
+    },
+    {
+     "key": "kazemon:2",
+     "rip": "JetSilphymon",
+     "file": "models/files/rip_jetsilphymon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "special",
+      "attack"
+     ],
+     "tris": 13012,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 291,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/327560/"
+    }
+   ]
+  },
+  {
+   "id": "monodramon",
+   "forms": [
+    {
+     "key": "monodramon:0",
+     "rip": "Monodramon",
+     "file": "models/files/rip_monodramon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 11226,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 451,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324608/"
+    },
+    {
+     "key": "monodramon:1",
+     "rip": "Strikedramon",
+     "file": "models/files/rip_strikedramon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 7794,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 241,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324395/"
+    },
+    {
+     "key": "monodramon:2",
+     "rip": "Cyberdramon",
+     "file": "models/files/rip_cyberdramon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 12602,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 597,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324566/"
+    }
+   ]
+  },
+  {
+   "id": "bearmon",
+   "forms": [
+    {
+     "key": "bearmon:0",
+     "rip": "Bearmon",
+     "file": "models/files/rip_bearmon.glb",
+     "clips": [
+      "win",
+      "attack",
+      "special",
+      "idle"
+     ],
+     "tris": 8060,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 176,
+     "game": "Digimon ReArise",
+     "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327408/"
+    },
+    {
+     "key": "bearmon:1",
+     "rip": "Grizzlymon",
+     "file": "models/files/rip_grizzlymon.glb",
+     "clips": [
+      "attack",
+      "win",
+      "idle",
+      "special"
+     ],
+     "tris": 7488,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 175,
+     "game": "Digimon ReArise",
+     "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327421/"
+    },
+    {
+     "key": "bearmon:2",
+     "rip": "GrapLeomon",
+     "file": "models/files/rip_grapleomon.glb",
+     "clips": [
+      "idle",
+      "win",
+      "attack",
+      "special"
+     ],
+     "tris": 6070,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 157,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304130/"
+    }
+   ]
+  },
+  {
+   "id": "floramon",
+   "forms": [
+    {
+     "key": "floramon:0",
+     "rip": "Floramon",
+     "file": "models/files/rip_floramon.glb",
+     "clips": [
+      "special",
+      "win",
+      "idle",
+      "attack"
+     ],
+     "tris": 3786,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 187,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/327513/"
+    },
+    {
+     "key": "floramon:1",
+     "rip": "Kiwimon",
+     "file": "models/files/rip_kiwimon.glb",
+     "clips": [
+      "win",
+      "attack",
+      "special",
+      "idle"
+     ],
+     "tris": 2254,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 133,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/327528/"
+    },
+    {
+     "key": "floramon:2",
+     "rip": "Blossomon",
+     "file": "models/files/rip_blossomon.glb",
+     "clips": [
+      "win",
+      "special",
+      "idle",
+      "attack"
+     ],
+     "tris": 7488,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 253,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/327538/"
+    }
+   ]
+  },
+  {
+   "id": "dracmon",
+   "forms": [
+    {
+     "key": "dracmon:0",
+     "rip": "Dracmon",
+     "file": "models/files/rip_dracmon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 7242,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 222,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324283/"
+    },
+    {
+     "key": "dracmon:1",
+     "rip": "Sangloupmon",
+     "file": "models/files/rip_sangloupmon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 7442,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 237,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324415/"
+    },
+    {
+     "key": "dracmon:2",
+     "rip": "Matadormon",
+     "file": "models/files/rip_matadormon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 6908,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 272,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324412/"
+    }
+   ]
+  },
+  {
+   "id": "fanbeemon",
+   "forms": [
+    {
+     "key": "fanbeemon:0",
+     "rip": "FanBeemon",
+     "file": "models/files/rip_fanbeemon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 5394,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 168,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324337/"
+    },
+    {
+     "key": "fanbeemon:1",
+     "rip": "Waspmon",
+     "file": "models/files/rip_waspmon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 6490,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 196,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335838/"
+    },
+    {
+     "key": "fanbeemon:2",
+     "rip": "CannonBeemon",
+     "file": "models/files/rip_cannonbeemon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 11294,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 425,
+     "game": "Digimon Story Cyber Sleuth: Complete Edition",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324564/"
+    }
+   ]
+  },
+  {
+   "id": "chessmon",
+   "forms": [
+    {
+     "key": "chessmon:0",
+     "rip": "PawnChessmon_Black",
+     "file": "models/files/rip_pawnchessmon_black.glb",
+     "clips": [
+      "special",
+      "attack",
+      "win",
+      "idle"
+     ],
+     "tris": 7152,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 174,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/335393/"
+    },
+    {
+     "key": "chessmon:1",
+     "rip": "KnightChessmon_Black",
+     "file": "models/files/rip_knightchessmon_black.glb",
+     "clips": [
+      "attack",
+      "win",
+      "idle",
+      "special"
+     ],
+     "tris": 15690,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 265,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/335392/"
+    },
+    {
+     "key": "chessmon:2",
+     "rip": "KingChessmon",
+     "file": "models/files/rip_kingchessmon.glb",
+     "clips": [
+      "special",
+      "win",
+      "attack",
+      "idle"
+     ],
+     "tris": 12522,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 272,
+     "game": "Digimon New Century",
+     "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/335388/"
+    }
+   ]
+  },
+  {
+   "id": "shoutmon",
+   "forms": [
+    {
+     "key": "shoutmon:0",
+     "rip": "Shoutmon",
+     "file": "models/files/rip_shoutmon.glb",
+     "clips": [
+      "attack",
+      "idle",
+      "special",
+      "win"
+     ],
+     "tris": 5666,
+     "textureSize": 512,
+     "animated": true,
+     "kb": 166,
+     "game": "Digimon Links",
+     "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304033/"
+    },
+    {
+     "key": "shoutmon:1",
+     "rip": "Shoutmon_X3",
+     "file": "models/files/rip_shoutmon_x3.glb",
+     "clips": [],
+     "tris": 10494,
+     "textureSize": 512,
+     "animated": false,
+     "kb": 129,
+     "game": "Digimon Masters",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/290043/"
+    },
+    {
+     "key": "shoutmon:2",
+     "rip": "Shoutmon_X3",
+     "file": "models/files/rip_shoutmon_x3.glb",
+     "clips": [],
+     "tris": 10494,
+     "textureSize": 512,
+     "animated": false,
+     "kb": 129,
+     "game": "Digimon Masters",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/290043/"
+    }
+   ]
+  },
+  {
+   "id": "beetlemon",
+   "forms": [
+    {
+     "key": "beetlemon:0",
+     "rip": "Beetlemon",
+     "file": "models/files/rip_beetlemon.glb",
+     "clips": [],
+     "tris": 4068,
+     "textureSize": 512,
+     "animated": false,
+     "kb": 89,
+     "game": "Digimon Masters",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/292663/"
+    },
+    {
+     "key": "beetlemon:1",
+     "rip": "MetalKabuterimon",
+     "file": "models/files/rip_metalkabuterimon.glb",
+     "clips": [],
+     "tris": 5534,
+     "textureSize": 512,
+     "animated": false,
+     "kb": 93,
+     "game": "Digimon Masters",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/292700/"
+    },
+    {
+     "key": "beetlemon:2",
+     "rip": "MetalKabuterimon",
+     "file": "models/files/rip_metalkabuterimon.glb",
+     "clips": [],
+     "tris": 5534,
+     "textureSize": 512,
+     "animated": false,
+     "kb": 93,
+     "game": "Digimon Masters",
+     "page": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/292700/"
+    }
+   ]
+  }
+ ],
+ "extras": [
+  {
+   "key": "extra:Groundramon",
+   "rip": "Groundramon",
+   "file": "models/files/rip_groundramon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 8585,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 206,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304057/"
+  },
+  {
+   "key": "extra:Breakdramon",
+   "rip": "Breakdramon",
+   "file": "models/files/rip_breakdramon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 9368,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 254,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304047/"
+  },
+  {
+   "key": "extra:Durandamon",
+   "rip": "Durandamon",
+   "file": "models/files/rip_durandamon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 9580,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 187,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305409/"
+  },
+  {
+   "key": "extra:Lilithmon",
+   "rip": "Lilithmon",
+   "file": "models/files/rip_lilithmon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 8966,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 355,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304015/"
+  },
+  {
+   "key": "extra:Koromon",
+   "rip": "Koromon",
+   "file": "models/files/rip_koromon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 2764,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 129,
+   "game": "Digimon Story Cyber Sleuth: Complete Edition",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324325/"
+  },
+  {
+   "key": "extra:Gammamon",
+   "rip": "Gammamon",
+   "file": "models/files/rip_gammamon.glb",
+   "clips": [],
+   "tris": 4159,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 48,
+   "game": "Digimon Masters",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/363290/"
+  },
+  {
+   "key": "extra:Dorulumon",
+   "rip": "Dorulumon",
+   "file": "models/files/rip_dorulumon.glb",
+   "clips": [],
+   "tris": 5344,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 54,
+   "game": "Digimon Masters",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/289935/"
+  },
+  {
+   "key": "extra:Ballistamon",
+   "rip": "Ballistamon",
+   "file": "models/files/rip_ballistamon.glb",
+   "clips": [],
+   "tris": 5070,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 56,
+   "game": "Digimon Masters",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/289934/"
+  },
+  {
+   "key": "extra:Kunemon",
+   "rip": "Kunemon",
+   "file": "models/files/rip_kunemon.glb",
+   "clips": [],
+   "tris": 1656,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 23,
+   "game": "Digimon Masters",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/288809/"
+  },
+  {
+   "key": "extra:DW1_Agumon",
+   "rip": "DW1_Agumon",
+   "file": "models/files/rip_dw1_agumon.glb",
+   "clips": [],
+   "tris": 690,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 58,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/336392/"
+  },
+  {
+   "key": "extra:DW1_Greymon",
+   "rip": "DW1_Greymon",
+   "file": "models/files/rip_dw1_greymon.glb",
+   "clips": [],
+   "tris": 638,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 53,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/348645/"
+  },
+  {
+   "key": "extra:DW1_MetalGreymon",
+   "rip": "DW1_MetalGreymon",
+   "file": "models/files/rip_dw1_metalgreymon.glb",
+   "clips": [],
+   "tris": 673,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 68,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/350451/"
+  },
+  {
+   "key": "extra:DW1_Patamon",
+   "rip": "DW1_Patamon",
+   "file": "models/files/rip_dw1_patamon.glb",
+   "clips": [],
+   "tris": 530,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 50,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/576038/"
+  },
+  {
+   "key": "extra:DW1_Airdramon",
+   "rip": "DW1_Airdramon",
+   "file": "models/files/rip_dw1_airdramon.glb",
+   "clips": [],
+   "tris": 512,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 51,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/464301/"
+  },
+  {
+   "key": "extra:DW1_Bakemon",
+   "rip": "DW1_Bakemon",
+   "file": "models/files/rip_dw1_bakemon.glb",
+   "clips": [],
+   "tris": 384,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 27,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/364794/"
+  },
+  {
+   "key": "extra:DW1_Birdramon",
+   "rip": "DW1_Birdramon",
+   "file": "models/files/rip_dw1_birdramon.glb",
+   "clips": [],
+   "tris": 554,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 63,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/575887/"
+  },
+  {
+   "key": "extra:DW1_Frigimon",
+   "rip": "DW1_Frigimon",
+   "file": "models/files/rip_dw1_frigimon.glb",
+   "clips": [],
+   "tris": 562,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 31,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/334145/"
+  },
+  {
+   "key": "extra:DW1_Meramon",
+   "rip": "DW1_Meramon",
+   "file": "models/files/rip_dw1_meramon.glb",
+   "clips": [],
+   "tris": 630,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 47,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/349429/"
+  },
+  {
+   "key": "extra:DW1_MudFrigimon",
+   "rip": "DW1_MudFrigimon",
+   "file": "models/files/rip_dw1_mudfrigimon.glb",
+   "clips": [],
+   "tris": 562,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 31,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/334147/"
+  },
+  {
+   "key": "extra:DW1_Andromon",
+   "rip": "DW1_Andromon",
+   "file": "models/files/rip_dw1_andromon.glb",
+   "clips": [],
+   "tris": 729,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 58,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/464306/"
+  },
+  {
+   "key": "extra:DW1_Mamemon",
+   "rip": "DW1_Mamemon",
+   "file": "models/files/rip_dw1_mamemon.glb",
+   "clips": [],
+   "tris": 596,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 14,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/336246/"
+  },
+  {
+   "key": "extra:DW1_Monzaemon",
+   "rip": "DW1_Monzaemon",
+   "file": "models/files/rip_dw1_monzaemon.glb",
+   "clips": [],
+   "tris": 500,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 19,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/334143/"
+  },
+  {
+   "key": "extra:DW1_Mugendramon",
+   "rip": "DW1_Mugendramon",
+   "file": "models/files/rip_dw1_mugendramon.glb",
+   "clips": [],
+   "tris": 1246,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 99,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/357551/"
+  },
+  {
+   "key": "extra:DW1_Vademon",
+   "rip": "DW1_Vademon",
+   "file": "models/files/rip_dw1_vademon.glb",
+   "clips": [],
+   "tris": 672,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 39,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/348936/"
+  },
+  {
+   "key": "extra:DW1_Akatorimon",
+   "rip": "DW1_Akatorimon",
+   "file": "models/files/rip_dw1_akatorimon.glb",
+   "clips": [],
+   "tris": 632,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 58,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/464303/"
+  },
+  {
+   "key": "extra:DW1_BlueMeramon",
+   "rip": "DW1_BlueMeramon",
+   "file": "models/files/rip_dw1_bluemeramon.glb",
+   "clips": [],
+   "tris": 630,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 47,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/575938/"
+  },
+  {
+   "key": "extra:DW1_Brachiomon",
+   "rip": "DW1_Brachiomon",
+   "file": "models/files/rip_dw1_brachiomon.glb",
+   "clips": [],
+   "tris": 732,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 18,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/336247/"
+  },
+  {
+   "key": "extra:DW1_Cherrymon",
+   "rip": "DW1_Cherrymon",
+   "file": "models/files/rip_dw1_cherrymon.glb",
+   "clips": [],
+   "tris": 646,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 67,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/536293/"
+  },
+  {
+   "key": "extra:DW1_DemiMeramon",
+   "rip": "DW1_DemiMeramon",
+   "file": "models/files/rip_dw1_demimeramon.glb",
+   "clips": [],
+   "tris": 160,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 14,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/336389/"
+  },
+  {
+   "key": "extra:DW1_Gigadramon",
+   "rip": "DW1_Gigadramon",
+   "file": "models/files/rip_dw1_gigadramon.glb",
+   "clips": [],
+   "tris": 599,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 49,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/467036/"
+  },
+  {
+   "key": "extra:DW1_Jijimon",
+   "rip": "DW1_Jijimon",
+   "file": "models/files/rip_dw1_jijimon.glb",
+   "clips": [],
+   "tris": 745,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 44,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/576012/"
+  },
+  {
+   "key": "extra:DW1_Tankmon",
+   "rip": "DW1_Tankmon",
+   "file": "models/files/rip_dw1_tankmon.glb",
+   "clips": [],
+   "tris": 772,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 59,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/464300/"
+  },
+  {
+   "key": "extra:DW1_Hagurumon",
+   "rip": "DW1_Hagurumon",
+   "file": "models/files/rip_dw1_hagurumon.glb",
+   "clips": [],
+   "tris": 568,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 16,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/334144/"
+  },
+  {
+   "key": "extra:DW1_Botamon",
+   "rip": "DW1_Botamon",
+   "file": "models/files/rip_dw1_botamon.glb",
+   "clips": [],
+   "tris": 216,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 8,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/334141/"
+  },
+  {
+   "key": "extra:DW1_Poyomon",
+   "rip": "DW1_Poyomon",
+   "file": "models/files/rip_dw1_poyomon.glb",
+   "clips": [],
+   "tris": 99,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 7,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/334148/"
+  },
+  {
+   "key": "extra:DW1_Punimon",
+   "rip": "DW1_Punimon",
+   "file": "models/files/rip_dw1_punimon.glb",
+   "clips": [],
+   "tris": 234,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 8,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/334146/"
+  },
+  {
+   "key": "extra:DW1_Tokomon",
+   "rip": "DW1_Tokomon",
+   "file": "models/files/rip_dw1_tokomon.glb",
+   "clips": [],
+   "tris": 262,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 10,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/331326/"
+  },
+  {
+   "key": "extra:DW1_Tsunomon",
+   "rip": "DW1_Tsunomon",
+   "file": "models/files/rip_dw1_tsunomon.glb",
+   "clips": [],
+   "tris": 150,
+   "textureSize": null,
+   "animated": false,
+   "kb": 4,
+   "game": "Digimon World",
+   "page": "https://models.spriters-resource.com/playstation/digimonworld/asset/334142/"
+  },
+  {
+   "key": "extra:Omnimon",
+   "rip": "Omnimon",
+   "file": "models/files/rip_omnimon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special"
+   ],
+   "tris": 8622,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 219,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304026/"
+  },
+  {
+   "key": "extra:Alphamon",
+   "rip": "Alphamon",
+   "file": "models/files/rip_alphamon.glb",
+   "clips": [
+    "idle",
+    "attack",
+    "special"
+   ],
+   "tris": 8160,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 184,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304152/"
+  },
+  {
+   "key": "extra:Piedmon",
+   "rip": "Piedmon",
+   "file": "models/files/rip_piedmon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 5868,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 184,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304165/"
+  },
+  {
+   "key": "extra:Daemon",
+   "rip": "Daemon",
+   "file": "models/files/rip_daemon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 7590,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 192,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304002/"
+  },
+  {
+   "key": "extra:Barbamon",
+   "rip": "Barbamon",
+   "file": "models/files/rip_barbamon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 6134,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 214,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/303999/"
+  },
+  {
+   "key": "extra:Leviamon",
+   "rip": "Leviamon",
+   "file": "models/files/rip_leviamon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 7022,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 192,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304017/"
+  },
+  {
+   "key": "extra:Belphemon_Rage_Mode",
+   "rip": "Belphemon_Rage_Mode",
+   "file": "models/files/rip_belphemon_rage_mode.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 8168,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 250,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304001/"
+  },
+  {
+   "key": "extra:MetalSeadramon",
+   "rip": "MetalSeadramon",
+   "file": "models/files/rip_metalseadramon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 6680,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 154,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304163/"
+  },
+  {
+   "key": "extra:Azulongmon",
+   "rip": "Azulongmon",
+   "file": "models/files/rip_azulongmon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 9920,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 268,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327445/"
+  },
+  {
+   "key": "extra:Zhuqiaomon",
+   "rip": "Zhuqiaomon",
+   "file": "models/files/rip_zhuqiaomon.glb",
+   "clips": [
+    "attack",
+    "special",
+    "idle",
+    "win"
+   ],
+   "tris": 11799,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 257,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327463/"
+  },
+  {
+   "key": "extra:Baihumon",
+   "rip": "Baihumon",
+   "file": "models/files/rip_baihumon.glb",
+   "clips": [
+    "special",
+    "idle",
+    "attack",
+    "win"
+   ],
+   "tris": 11836,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 223,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327446/"
+  },
+  {
+   "key": "extra:Ebonwumon",
+   "rip": "Ebonwumon",
+   "file": "models/files/rip_ebonwumon.glb",
+   "clips": [
+    "win",
+    "idle",
+    "attack",
+    "special"
+   ],
+   "tris": 10981,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 268,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327450/"
+  },
+  {
+   "key": "extra:Diaboromon",
+   "rip": "Diaboromon",
+   "file": "models/files/rip_diaboromon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 3678,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 136,
+   "game": "Digimon Story Cyber Sleuth: Complete Edition",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324291/"
+  },
+  {
+   "key": "extra:Kimeramon",
+   "rip": "Kimeramon",
+   "file": "models/files/rip_kimeramon.glb",
+   "clips": [
+    "win",
+    "special",
+    "idle",
+    "attack"
+   ],
+   "tris": 10961,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 310,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304060/"
+  },
+  {
+   "key": "extra:Crusadermon",
+   "rip": "Crusadermon",
+   "file": "models/files/rip_crusadermon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 7284,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 246,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304199/"
+  },
+  {
+   "key": "extra:Leopardmon_Leopard_Mode",
+   "rip": "Leopardmon_Leopard_Mode",
+   "file": "models/files/rip_leopardmon_leopard_mode.glb",
+   "clips": [
+    "idle",
+    "attack",
+    "special",
+    "win"
+   ],
+   "tris": 6418,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 187,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304216/"
+  },
+  {
+   "key": "extra:Craniamon",
+   "rip": "Craniamon",
+   "file": "models/files/rip_craniamon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 14760,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 536,
+   "game": "Digimon Story Cyber Sleuth: Complete Edition",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324577/"
+  },
+  {
+   "key": "extra:Dynasmon",
+   "rip": "Dynasmon",
+   "file": "models/files/rip_dynasmon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 17680,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 658,
+   "game": "Digimon Story Cyber Sleuth: Complete Edition",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324578/"
+  },
+  {
+   "key": "extra:Magnamon",
+   "rip": "Magnamon",
+   "file": "models/files/rip_magnamon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 6482,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 184,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304228/"
+  },
+  {
+   "key": "extra:Seraphimon",
+   "rip": "Seraphimon",
+   "file": "models/files/rip_seraphimon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 5445,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 201,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304085/"
+  },
+  {
+   "key": "extra:Ophanimon",
+   "rip": "Ophanimon",
+   "file": "models/files/rip_ophanimon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 6016,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 230,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304164/"
+  },
+  {
+   "key": "extra:WarGreymon",
+   "rip": "WarGreymon",
+   "file": "models/files/rip_wargreymon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 7999,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 182,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304040/"
+  },
+  {
+   "key": "extra:MetalGarurumon",
+   "rip": "MetalGarurumon",
+   "file": "models/files/rip_metalgarurumon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 6290,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 182,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304068/"
+  },
+  {
+   "key": "extra:BanchoLeomon",
+   "rip": "BanchoLeomon",
+   "file": "models/files/rip_bancholeomon.glb",
+   "clips": [
+    "idle",
+    "attack",
+    "special"
+   ],
+   "tris": 7431,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 175,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/303998/"
+  },
+  {
+   "key": "extra:Sakuyamon",
+   "rip": "Sakuyamon",
+   "file": "models/files/rip_sakuyamon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 5014,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 183,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304170/"
+  },
+  {
+   "key": "extra:HerculesKabuterimon",
+   "rip": "HerculesKabuterimon",
+   "file": "models/files/rip_herculeskabuterimon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 4035,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 144,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304058/"
+  },
+  {
+   "key": "extra:Phoenixmon",
+   "rip": "Phoenixmon",
+   "file": "models/files/rip_phoenixmon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 6440,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 195,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304059/"
+  },
+  {
+   "key": "extra:Magnadramon",
+   "rip": "Magnadramon",
+   "file": "models/files/rip_magnadramon.glb",
+   "clips": [
+    "idle",
+    "attack",
+    "special"
+   ],
+   "tris": 6174,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 183,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304191/"
+  },
+  {
+   "key": "extra:Plesiomon",
+   "rip": "Plesiomon",
+   "file": "models/files/rip_plesiomon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 4631,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 157,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304192/"
+  },
+  {
+   "key": "extra:SaberLeomon",
+   "rip": "SaberLeomon",
+   "file": "models/files/rip_saberleomon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 5440,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 169,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304169/"
+  },
+  {
+   "key": "extra:Titamon",
+   "rip": "Titamon",
+   "file": "models/files/rip_titamon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 8540,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 256,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304171/"
+  },
+  {
+   "key": "extra:Boltmon",
+   "rip": "Boltmon",
+   "file": "models/files/rip_boltmon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 6765,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 155,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304159/"
+  },
+  {
+   "key": "extra:Armageddemon",
+   "rip": "Armageddemon",
+   "file": "models/files/rip_armageddemon.glb",
+   "clips": [
+    "attack",
+    "idle",
+    "special",
+    "win"
+   ],
+   "tris": 7974,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 180,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/307372/"
+  },
+  {
+   "key": "extra:Monzaemon",
+   "rip": "Monzaemon",
+   "file": "models/files/rip_monzaemon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 2144,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 76,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304024/"
+  },
+  {
+   "key": "extra:Vademon",
+   "rip": "Vademon",
+   "file": "models/files/rip_vademon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 2276,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 130,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304157/"
+  },
+  {
+   "key": "extra:Piximon",
+   "rip": "Piximon",
+   "file": "models/files/rip_piximon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 4408,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 98,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304133/"
+  },
+  {
+   "key": "extra:Okuwamon",
+   "rip": "Okuwamon",
+   "file": "models/files/rip_okuwamon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 3680,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 142,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304131/"
+  },
+  {
+   "key": "extra:GranKuwagamon",
+   "rip": "GranKuwagamon",
+   "file": "models/files/rip_grankuwagamon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 3944,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 145,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304161/"
+  },
+  {
+   "key": "extra:Frigimon",
+   "rip": "Frigimon",
+   "file": "models/files/rip_frigimon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 3346,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 82,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304104/"
+  },
+  {
+   "key": "extra:Vegiemon",
+   "rip": "Vegiemon",
+   "file": "models/files/rip_vegiemon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 1962,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 96,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304088/"
+  },
+  {
+   "key": "extra:Nanimon",
+   "rip": "Nanimon",
+   "file": "models/files/rip_nanimon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 2552,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 103,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304113/"
+  },
+  {
+   "key": "extra:Bakemon",
+   "rip": "Bakemon",
+   "file": "models/files/rip_bakemon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 2006,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 56,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/303997/"
+  },
+  {
+   "key": "extra:Mojyamon",
+   "rip": "Mojyamon",
+   "file": "models/files/rip_mojyamon.glb",
+   "clips": [
+    "win",
+    "idle",
+    "attack",
+    "special"
+   ],
+   "tris": 4731,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 171,
+   "game": "Digimon New Century",
+   "page": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/327532/"
+  },
+  {
+   "key": "extra:Sukamon",
+   "rip": "Sukamon",
+   "file": "models/files/rip_sukamon.glb",
+   "clips": [
+    "idle",
+    "win",
+    "attack",
+    "special"
+   ],
+   "tris": 2604,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 116,
+   "game": "Digimon Links",
+   "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304086/"
+  }
+ ],
+ "legends": [
+  {
+   "id": "koromon",
+   "rip": "Koromon",
+   "file": "models/legends/koromon.glb",
+   "clips": [
+    "attack",
+    "hit",
+    "sad",
+    "guard",
+    "idle",
+    "run",
+    "taunt",
+    "win",
+    "happy"
+   ],
+   "tris": 2764,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 204,
+   "game": "Digimon Story Cyber Sleuth: Complete Edition",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324325/"
+  },
+  {
+   "id": "chibomon",
+   "rip": "Chibomon",
+   "file": "models/legends/chibomon.glb",
+   "clips": [
+    "guard",
+    "happy",
+    "hit",
+    "attack",
+    "sad",
+    "taunt",
+    "idle",
+    "win",
+    "run"
+   ],
+   "tris": 1466,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 70,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327392/"
+  },
+  {
+   "id": "conomon",
+   "rip": "Conomon",
+   "file": "models/legends/conomon.glb",
+   "clips": [
+    "happy",
+    "guard",
+    "sad",
+    "hit",
+    "idle",
+    "win",
+    "run",
+    "taunt",
+    "attack"
+   ],
+   "tris": 1360,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 91,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327393/"
+  },
+  {
+   "id": "dodomon",
+   "rip": "Dodomon",
+   "file": "models/legends/dodomon.glb",
+   "clips": [
+    "guard",
+    "run",
+    "sad",
+    "taunt",
+    "win",
+    "happy",
+    "idle",
+    "hit",
+    "attack"
+   ],
+   "tris": 2486,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 84,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327394/"
+  },
+  {
+   "id": "jyarimon",
+   "rip": "Jyarimon",
+   "file": "models/legends/jyarimon.glb",
+   "clips": [
+    "happy",
+    "run",
+    "sad",
+    "hit",
+    "taunt",
+    "attack",
+    "win",
+    "guard",
+    "idle"
+   ],
+   "tris": 440,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 78,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327395/"
+  },
+  {
+   "id": "pichimon",
+   "rip": "Pichimon",
+   "file": "models/legends/pichimon.glb",
+   "clips": [
+    "attack",
+    "taunt",
+    "happy",
+    "win",
+    "guard",
+    "run",
+    "sad",
+    "idle",
+    "hit"
+   ],
+   "tris": 1600,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 146,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327396/"
+  },
+  {
+   "id": "pusumon",
+   "rip": "Pusumon",
+   "file": "models/legends/pusumon.glb",
+   "clips": [
+    "run",
+    "idle",
+    "win",
+    "hit",
+    "sad",
+    "taunt",
+    "attack",
+    "guard",
+    "happy"
+   ],
+   "tris": 2474,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 180,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327397/"
+  },
+  {
+   "id": "yukimibotamon",
+   "rip": "YukimiBotamon",
+   "file": "models/legends/yukimibotamon.glb",
+   "clips": [
+    "hit",
+    "idle",
+    "attack",
+    "happy",
+    "win",
+    "guard",
+    "run",
+    "sad"
+   ],
+   "tris": 648,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 55,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327398/"
+  },
+  {
+   "id": "yuramon",
+   "rip": "Yuramon",
+   "file": "models/legends/yuramon.glb",
+   "clips": [
+    "happy",
+    "sad",
+    "taunt",
+    "run",
+    "guard",
+    "idle",
+    "hit",
+    "attack",
+    "win"
+   ],
+   "tris": 650,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 69,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327399/"
+  },
+  {
+   "id": "zerimon",
+   "rip": "Zerimon",
+   "file": "models/legends/zerimon.glb",
+   "clips": [
+    "taunt",
+    "hit",
+    "happy",
+    "sad",
+    "attack",
+    "win",
+    "idle",
+    "guard",
+    "run"
+   ],
+   "tris": 1316,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 92,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327400/"
+  },
+  {
+   "id": "demiveemon",
+   "rip": "DemiVeemon",
+   "file": "models/legends/demiveemon.glb",
+   "clips": [
+    "win",
+    "hit",
+    "attack",
+    "idle",
+    "run",
+    "taunt",
+    "sad",
+    "guard",
+    "happy"
+   ],
+   "tris": 3738,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 208,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327401/"
+  },
+  {
+   "id": "dorimon",
+   "rip": "Dorimon",
+   "file": "models/legends/dorimon.glb",
+   "clips": [
+    "sad",
+    "guard",
+    "idle",
+    "run",
+    "happy",
+    "hit",
+    "taunt",
+    "attack"
+   ],
+   "tris": 2478,
+   "textureSize": 256,
+   "animated": true,
+   "kb": 113,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327402/"
+  },
+  {
+   "id": "gigimon",
+   "rip": "Gigimon",
+   "file": "models/legends/gigimon.glb",
+   "clips": [
+    "hit",
+    "attack",
+    "sad",
+    "guard",
+    "run",
+    "idle",
+    "taunt",
+    "win",
+    "happy"
+   ],
+   "tris": 752,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 154,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327403/"
+  },
+  {
+   "id": "gummymon",
+   "rip": "Gummymon",
+   "file": "models/legends/gummymon.glb",
+   "clips": [
+    "guard",
+    "idle",
+    "taunt",
+    "run",
+    "win",
+    "happy",
+    "attack",
+    "hit",
+    "sad"
+   ],
+   "tris": 1714,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 105,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327404/"
+  },
+  {
+   "id": "kokomon",
+   "rip": "Kokomon",
+   "file": "models/legends/kokomon.glb",
+   "clips": [
+    "win",
+    "taunt",
+    "run",
+    "guard",
+    "sad",
+    "hit",
+    "happy",
+    "attack",
+    "idle"
+   ],
+   "tris": 2142,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 111,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327405/"
+  },
+  {
+   "id": "pusurimon",
+   "rip": "Pusurimon",
+   "file": "models/legends/pusurimon.glb",
+   "clips": [
+    "guard",
+    "attack",
+    "idle",
+    "hit",
+    "taunt",
+    "run",
+    "win",
+    "sad",
+    "happy"
+   ],
+   "tris": 3478,
+   "textureSize": 512,
+   "animated": true,
+   "kb": 182,
+   "game": "Digimon ReArise",
+   "page": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327406/"
+  },
+  {
+   "id": "upamon",
+   "rip": "Upamon",
+   "file": "models/legends/upamon.glb",
+   "clips": [],
+   "tris": 804,
+   "textureSize": 256,
+   "animated": false,
+   "kb": 12,
+   "game": "Digimon Masters",
+   "page": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/287804/"
+  }
+ ]
+}

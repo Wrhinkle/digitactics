@@ -1,0 +1,737 @@
+{
+ "_doc": "Per-file upright corrections for fix-upright.mjs (rot: XYZ degrees on the UprightFix root node) and reviewed audit flags for tests/upright.cjs (ok: flags a person checked on the contact sheet and accepted). Cyber Sleuth rips are fixed automatically and need no entry.",
+ "dfa02a8323a3499da3bc7d3a21c42ba1.glb": {
+  "rot": [
+   0,
+   90,
+   0
+  ],
+  "note": "Paildramon (Sketchfab) faced -x"
+ },
+ "rip_birdramon.glb": {
+  "ok": [
+   "float",
+   "idleTilt"
+  ],
+  "note": "wing flap swings 0.57 below the feet, so js/models.js lifts it with yOffset 0.3; it hovers"
+ },
+ "rip_venommyotismon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z after the Cyber Sleuth fix; wings pull the top centroid back"
+ },
+ "rip_lucemon_sm.glb": {
+  "ok": [
+   "tiny"
+  ],
+  "note": "upright after the Cyber Sleuth fix; wingspan"
+ },
+ "rip_metalgreymon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; the wings on its back pull the top centroid back"
+ },
+ "71012bd7578d41e2a0341943dc0d5e19.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Guardromon faces +z; backpack"
+ },
+ "43d9a0604df94d149fb4c0b897713181.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Patamon faces +z; ear wings"
+ },
+ "2eb2121147d043cfa0433cfd7eb86079.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Keramon faces +z; head tendrils"
+ },
+ "d06d194aabc340b2ba38a0b8a5d4ed07.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Veemon faces +z; ears"
+ },
+ "rip_kuwagamon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; flying pose with the wings raised behind"
+ },
+ "rip_goblimon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces +z; head bone sits off-center"
+ },
+ "rip_seadramon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "serpent, faces +z; head swings sideways in the idle"
+ },
+ "rip_wormmon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "caterpillar, faces +z"
+ },
+ "5b3a32eb5a1c47a5883fd3db3431b92a.glb": {
+  "ok": [
+   "tiny",
+   "idleTilt"
+  ],
+  "note": "Garurumon stands upright; long tail makes the footprint clamp shrink it"
+ },
+ "rip_garudamon.glb": {
+  "ok": [
+   "tiny"
+  ],
+  "note": "upright; wingspan"
+ },
+ "rip_dorugreymon.glb": {
+  "ok": [
+   "tiny"
+  ],
+  "note": "upright; wings and tail"
+ },
+ "3772f1ba36e046efa65dcd63c033e67e.glb": {
+  "ok": [
+   "tiny"
+  ],
+  "note": "Infermon upright; spider legs"
+ },
+ "rip_imperialdramon_pm.glb": {
+  "ok": [
+   "tiny",
+   "back"
+  ],
+  "note": "upright, faces +z; long sword"
+ },
+ "463c6dc315cc494f8b7b128b78dd01ef.glb": {
+  "ok": [
+   "float"
+  ],
+  "note": "Tentomon hovers"
+ },
+ "f27b0e20030b467cb047fe1b8a60524c.glb": {
+  "ok": [
+   "float",
+   "idleTilt"
+  ],
+  "note": "Aquilamon flying idle"
+ },
+ "rip_machgaogamon.glb": {
+  "ok": [
+   "float"
+  ],
+  "note": "jetpack hover"
+ },
+ "rip_dw1_greymon.glb": {
+  "rot": [
+   0,
+   -90,
+   0
+  ],
+  "note": "Digimon World 1 OBJ faced -x"
+ },
+ "rip_dw1_bakemon.glb": {
+  "rot": [
+   0,
+   -90,
+   0
+  ],
+  "note": "Digimon World 1 OBJ faced +x"
+ },
+ "rip_dw1_meramon.glb": {
+  "rot": [
+   0,
+   -90,
+   0
+  ],
+  "note": "Digimon World 1 OBJ faced +x; Digimon World 1, faces +z (checked on the contact sheet)",
+  "ok": [
+   "back"
+  ]
+ },
+ "rip_dw1_vademon.glb": {
+  "rot": [
+   0,
+   90,
+   0
+  ],
+  "note": "Digimon World 1 OBJ faced -x"
+ },
+ "rip_dracomon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces +z; head turned in the idle"
+ },
+ "rip_lavorvomon.glb": {
+  "ok": [
+   "flat"
+  ],
+  "note": "crouching quadruped, faces +z"
+ },
+ "rip_blackkingnumemon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; crown and shell behind"
+ },
+ "rip_metalmamemon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; backpack"
+ },
+ "rip_woodmon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; branches"
+ },
+ "rip_puppetmon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; cross on its back"
+ },
+ "rip_starmon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; scarf"
+ },
+ "rip_superstarmon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; scarf"
+ },
+ "rip_baohuckmon.glb": {
+  "ok": [
+   "flat"
+  ],
+  "note": "low quadruped, faces +z"
+ },
+ "rip_crescemon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces +z; shield on one arm"
+ },
+ "rip_emperorgreymon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; sword and armor"
+ },
+ "rip_magnagarurumon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; rifle on its back"
+ },
+ "rip_jetsilphymon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces +z; one wing forward"
+ },
+ "rip_kiwimon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; head crest"
+ },
+ "rip_pawnchessmon_black.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; helmet"
+ },
+ "rip_shoutmon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces +z; sits on its microphone"
+ },
+ "rip_breakdramon.glb": {
+  "ok": [
+   "flat"
+  ],
+  "note": "tank-like body, faces +z"
+ },
+ "rip_koromon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; ears"
+ },
+ "rip_kunemon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "caterpillar, faces +z"
+ },
+ "rip_dw1_metalgreymon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Digimon World 1, faces +z (checked on the contact sheet)"
+ },
+ "rip_dw1_patamon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Digimon World 1, faces +z (checked on the contact sheet)"
+ },
+ "rip_dw1_birdramon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Digimon World 1, faces +z (checked on the contact sheet)"
+ },
+ "rip_dw1_andromon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Digimon World 1, faces +z (checked on the contact sheet)"
+ },
+ "rip_dw1_mugendramon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Digimon World 1, faces +z (checked on the contact sheet)"
+ },
+ "rip_dw1_cherrymon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Digimon World 1, faces +z (checked on the contact sheet)"
+ },
+ "rip_dw1_tokomon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Digimon World 1, faces +z (checked on the contact sheet)"
+ },
+ "rip_leviamon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "long crocodile, faces +z"
+ },
+ "rip_metalseadramon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "serpent, faces +z"
+ },
+ "rip_zhuqiaomon.glb": {
+  "ok": [
+   "sink",
+   "idleTilt",
+   "float"
+  ],
+  "note": "wing beat swings below the feet; js/models.js lifts extra:Zhuqiaomon with yOffset 0.22"
+ },
+ "rip_phoenixmon.glb": {
+  "ok": [
+   "sink",
+   "idleTilt",
+   "float"
+  ],
+  "note": "wing beat swings below the feet; js/models.js lifts extra:Phoenixmon with yOffset 0.3"
+ },
+ "rip_sakuyamon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; staff"
+ },
+ "rip_plesiomon.glb": {
+  "ok": [
+   "flat",
+   "tiny"
+  ],
+  "note": "long plesiosaur, faces +z"
+ },
+ "rip_saberleomon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; mane"
+ },
+ "rip_vademon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; big brain"
+ },
+ "rip_piximon.glb": {
+  "ok": [
+   "idleTilt",
+   "side"
+  ],
+  "note": "faces +z; spear held out"
+ },
+ "rip_okuwamon.glb": {
+  "ok": [
+   "float"
+  ],
+  "note": "hovers"
+ },
+ "rip_vegiemon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces +z; arms"
+ },
+ "rip_nanimon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces +z; arm raised"
+ },
+ "rip_sukamon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z"
+ },
+ "rip_magnadramon.glb": {
+  "ok": [
+   "float"
+  ],
+  "note": "hovers; reviewed on the magnadramon:* roster keys"
+ },
+ "rip_seraphimon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; the wings fool the head check at the larger stage scale"
+ },
+ "rip_cs_patamon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Patamon faces +z; ear wings pull the top centroid back"
+ },
+ "rip_cs_keramon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Keramon faces +z; head tendrils"
+ },
+ "rip_cs_garurumon.glb": {
+  "ok": [
+   "idleTilt"
+  ],
+  "note": "quadruped, faces +z; the idle clip lifts the head above the bind pose; maxFootprint 3 in js/models.js"
+ },
+ "rip_cs_infermon.glb": {
+  "ok": [
+   "tiny"
+  ],
+  "note": "spider legs spread wide; maxFootprint 3 in js/models.js"
+ },
+ "rip_cs_aquilamon.glb": {
+  "ok": [
+   "float",
+   "idleTilt"
+  ],
+  "note": "flyer, hovers in its idle wing beat"
+ },
+ "rip_l_beelzemon_blast_mode.glb": {
+  "ok": [
+   "float",
+   "sink"
+  ],
+  "note": "only an idle clip, which swings it around; js/models.js sets anim: false for beelzemon:2"
+ },
+ "rip_cs_beelzemon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "Beelzemon faces +z; the shotgun arm pulls the head centroid sideways"
+ },
+ "rip_no_shamanmon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z (front view checked); hunched with the club in front"
+ },
+ "rip_cs_veemon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z (front view checked); big head leans back"
+ },
+ "rip_ts_kotemon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z (front view checked); static Time Stranger rip, shinai pulls the centroid"
+ },
+ "rip_cs_syakomon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z, shell opening to the front; the shell top sits behind"
+ },
+ "rip_cs_tanemon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z (front view checked); leaves sit behind"
+ },
+ "rip_cs_monochromon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z (front view checked); quadruped, shell crest behind the head"
+ },
+ "rip_cs_guardromongold.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z (front view checked); backpack"
+ },
+ "rip_l_whamon.glb": {
+  "ok": [
+   "flat",
+   "tiny"
+  ],
+  "note": "a whale: long and low by design; js/models.js gives ac:Whamon maxFootprint 3"
+ },
+ "rip_ts_hyokomon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z on the contact sheet; the top crest pulls the centroid back; faces +z on the contact sheet; the crest pulls the top centroid back"
+ },
+ "rip_cs_clockmon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; the clock body and hammer pull the head marker back; faces +z on the contact sheet; the back key pulls the head estimate back"
+ },
+ "rip_cs_datamon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; the glass dome pulls the top centroid back; faces +z on the contact sheet; the dome sits slightly back"
+ },
+ "rip_cs_samudramon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces +z; the long blade sits to one side"
+ },
+ "rip_l_blackmetalgreymon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; wings pull the top centroid back (same mesh as rip_metalgreymon)"
+ },
+ "rip_l_garurumon_greymon_statue.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "decor statue on a plinth, used for the Dragonlands Stone Guardian summon"
+ },
+ "rip_cs_phantomon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z after the Cyber Sleuth fix (robe opening to the front, red hood behind); the raised scythe and hood pull the head estimate back"
+ },
+ "rip_no_snowgoblimon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z on the contact sheet; hunched head; faces +z on the contact sheet; hunched head; faces +z on the contact sheet; hunched head"
+ },
+ "rip_cs_mushroomon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z on the contact sheet; cap centroid sits back; faces +z on the contact sheet; cap centroid sits back; faces +z on the contact sheet; cap centroid sits back"
+ },
+ "rip_l_leopardmon_x.glb": {
+  "ok": [
+   "idleTilt",
+   "sink"
+  ],
+  "note": "idle clip crouches low and dips slightly; stands upright at rest (contact sheet)"
+ },
+ "rip_l_arresterdramon_dae.glb": {
+  "rot": [
+   90,
+   0,
+   0
+  ],
+  "note": "static DAE (the animated FBX measures 3.6x too tall in the idle pose and shows tiny); Z-up"
+ },
+ "rip_cs_blackgarurumon.glb": {
+  "ok": [
+   "idleTilt"
+  ],
+  "note": "quadruped, upright on the contact sheet; idle raises the head"
+ },
+ "rip_l_tsukaimon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z on the contact sheet; the ears pull the top centroid back"
+ },
+ "rip_l_craniamon_x.glb": {
+  "ok": [
+   "sink",
+   "idleTilt",
+   "back"
+  ],
+  "note": "faces +z; anim off (single Noesis reel), lance pulls the top back"
+ },
+ "rip_l_tigervespamon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; wings and lance pull the top centroid back"
+ },
+ "rip_no_saberdramon.glb": {
+  "ok": [
+   "sink",
+   "idleTilt",
+   "float"
+  ],
+  "note": "flapping bird; yOffset 0.25 in js/models.js"
+ },
+ "rip_l_ancientgarurumon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; tail and back blades"
+ },
+ "rip_cs_platinumsukamon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "same mesh as Sukamon"
+ },
+ "rip_no_kingsukamon.glb": {
+  "ok": [
+   "flat",
+   "tiny",
+   "back"
+  ],
+  "note": "wide low blob with long arms; maxFootprint 2.6"
+ },
+ "rip_cs_valkyrimon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces +z; wings and sword off-centre"
+ },
+ "rip_no_redvegiemon.glb": {
+  "ok": [
+   "idleTilt",
+   "back"
+  ],
+  "note": "faces +z; vine arms swing in idle"
+ },
+ "rip_l_dynasmon_x.glb": {
+  "ok": [
+   "float"
+  ],
+  "note": "anim off in js/models.js (the only clip is a reel that flies away)"
+ },
+ "rip_l_marineangemon.glb": {
+  "ok": [
+   "float"
+  ],
+  "note": "hovers"
+ },
+ "rip_l_hiandromon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; back thrusters"
+ },
+ "rip_l_kuzuhamon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "same mesh as Sakuyamon (accepted back)"
+ },
+ "rip_nc_gladimon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; the head plume pulls the head bone back"
+ },
+ "rip_m_soulmon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "static Masters model, faces +z; the hat brim leans back"
+ },
+ "rip_m_dokunemon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "static Masters model, rears up facing +z; antennae curve back"
+ },
+ "rip_nc_witchmon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces +z; broom and cape behind the body"
+ },
+ "rip_m_dexdorugreymon.glb": {
+  "ok": [
+   "flat"
+  ],
+  "note": "static Masters model, long quadruped dragon facing +z; maxFootprint 3.4 in js/models.js"
+ },
+ "rip_m_dexdorugoramon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "static Masters model, faces +z; wings pull the top centroid back"
+ },
+ "rip_nc_vulcanusmon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces +z; the hammer arm and back furnace shift the head bone sideways"
+ },
+ "rip_ts_crabmon.glb": {
+  "ok": [
+   "flat",
+   "tiny",
+   "back"
+  ],
+  "note": "Time Stranger static bind pose, faces +z; low crab with claws spread wide; maxFootprint 3.2 in js/models.js"
+ },
+ "rip_cs_guardromon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "faces front in the contact sheet; the head bone sits low in the round body"
+ },
+ "rip_l_jijimon.glb": {
+  "ok": [
+   "side"
+  ],
+  "note": "faces front; the staff held to one side pulls the top-of-mesh centroid sideways"
+ }
+}

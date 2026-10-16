@@ -1,0 +1,6341 @@
+{
+ "set": 1,
+ "name": "File Island",
+ "slug": "file-island",
+ "corpus": "TFT Set 1: Faction Wars (56 of its 57 champions) plus 4 Dota Auto Chess pieces that are not in Underlords",
+ "theme": "The current game. The original Digi-Destined partners, Tamers, Savers, Frontier and Xros Wars lines with the Royal Knights and Demon Lords at 5 cost. TFT Set 1 was the base game with Runeterra factions and classes; this set is the base game with Digimon families and roles.",
+ "mechanic": {
+  "name": "Data Wisps",
+  "adapts": "Wisps (TFT Set 18); TFT Set 1 had no set mechanic beyond the core loop",
+  "rules": [
+   "Already built (see README.md \"Rules\"): every other round from stage 2 a one-use Wisp sits in the sixth shop slot; 7 categories; unbought Wisps leave at the end of the round."
+  ],
+  "engineWork": "None. Later sets switch Wisps off and use their own mechanic."
+ },
+ "unitCount": 60,
+ "unitsByCost": {
+  "1": 12,
+  "2": 13,
+  "3": 13,
+  "4": 12,
+  "5": 10
+ },
+ "animatedUnits": 54,
+ "traits": [
+  {
+   "id": "DR",
+   "name": "Dragon's Roar",
+   "kind": "family",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+200 HP",
+    "+450 HP",
+    "+800 HP"
+   ],
+   "desc": "Dragon's Roar Digimon gain max HP.",
+   "adapts": "Dragon (75% MR) -> here max HP",
+   "count": 9,
+   "units": [
+    "MetalGreymon (1)",
+    "WarGrowlmon (2)",
+    "ShineGreymon (3)",
+    "Wingdramon (3)",
+    "Cyberdramon (3)",
+    "Paildramon (4)",
+    "DoruGreymon (4)",
+    "Imperialdramon PM (5)",
+    "UlforceVeedramon (5)"
+   ]
+  },
+  {
+   "id": "NSp",
+   "name": "Nature Spirits",
+   "kind": "family",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+30% AS",
+    "+55% AS",
+    "+90% AS"
+   ],
+   "desc": "Nature Spirits gain attack speed.",
+   "adapts": "Wild (attack speed)",
+   "count": 7,
+   "units": [
+    "WereGarurumon (1)",
+    "Taomon (2)",
+    "Rapidmon (2)",
+    "Panjyamon (3)",
+    "Jazarichmon (3)",
+    "MachGaogamon (4)",
+    "MagnaGarurumon (4)"
+   ]
+  },
+  {
+   "id": "JT",
+   "name": "Jungle Troopers",
+   "kind": "family",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "2.5% HP/s",
+    "5% HP/s"
+   ],
+   "desc": "Jungle Troopers regenerate max HP every second.",
+   "adapts": "none in Set 1 (regeneration; closest is Set 4 Elderwood)",
+   "count": 5,
+   "units": [
+    "MegaKabuterimon (1)",
+    "Lillymon (1)",
+    "Dinobeemon (2)",
+    "Puppetmon (3)",
+    "Lilamon (4)"
+   ]
+  },
+  {
+   "id": "WG",
+   "name": "Wind Guardians",
+   "kind": "family",
+   "bp": [
+    2,
+    3
+   ],
+   "effect": [
+    "15% dodge",
+    "28% dodge"
+   ],
+   "desc": "All allies gain a chance to dodge basic attacks.",
+   "adapts": "Yordle (dodge)",
+   "count": 3,
+   "units": [
+    "Garudamon (1)",
+    "Crowmon (1)",
+    "Silphymon (3)"
+   ]
+  },
+  {
+   "id": "DS",
+   "name": "Deep Savers",
+   "kind": "family",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "35% HP shield",
+    "60% HP shield"
+   ],
+   "desc": "Deep Savers start combat with a shield.",
+   "adapts": "none in Set 1 (shield; closest is Set 4 Keeper)",
+   "count": 4,
+   "units": [
+    "Zudomon (1)",
+    "MegaSeadramon (2)",
+    "Crescemon (2)",
+    "MarineDevimon (3)"
+   ]
+  },
+  {
+   "id": "ME",
+   "name": "Metal Empire",
+   "kind": "family",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "-18% dmg taken",
+    "-32% dmg taken"
+   ],
+   "desc": "Metal Empire Digimon take less damage.",
+   "adapts": "Knight (damage block) / Robot",
+   "count": 5,
+   "units": [
+    "Andromon (1)",
+    "PrinceMamemon (2)",
+    "Infermon (3)",
+    "Tankdramon (4)",
+    "Chaosdramon (5)"
+   ]
+  },
+  {
+   "id": "NSo",
+   "name": "Nightmare Soldiers",
+   "kind": "family",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "15% omnivamp",
+    "25% omnivamp"
+   ],
+   "desc": "Nightmare Soldiers heal for a share of all damage they deal.",
+   "adapts": "none in Set 1 (omnivamp; closest is Set 7 Ragewing)",
+   "count": 6,
+   "units": [
+    "NeoDevimon (1)",
+    "Matadormon (2)",
+    "Mistymon (3)",
+    "Raguelmon (4)",
+    "MaloMyotismon (5)",
+    "Beelzemon BM (5)"
+   ]
+  },
+  {
+   "id": "VB",
+   "name": "Virus Busters",
+   "kind": "family",
+   "bp": [
+    2,
+    3
+   ],
+   "effect": [
+    "+8 mana",
+    "+20 mana"
+   ],
+   "desc": "All allies start combat with bonus mana.",
+   "adapts": "Robot (start with mana)",
+   "count": 3,
+   "units": [
+    "MagnaAngemon (2)",
+    "Angewomon (2)",
+    "Andiramon (3)"
+   ]
+  },
+  {
+   "id": "DL",
+   "name": "Demon Lords",
+   "kind": "family",
+   "bp": [
+    1,
+    2,
+    3
+   ],
+   "effect": [
+    "+25 AP",
+    "+50 AP, +15% dmg",
+    "+80 AP, +30% dmg, burn"
+   ],
+   "desc": "Demon Lords gain ability power. With 2 they deal more damage, and with 3 their abilities also burn.",
+   "adapts": "Demon",
+   "count": 4,
+   "units": [
+    "Lilithmon (4)",
+    "Lucemon SM (5)",
+    "Beelzemon BM (5)",
+    "Daemon (5)"
+   ]
+  },
+  {
+   "id": "RK",
+   "name": "Royal Knights",
+   "kind": "family",
+   "bp": [
+    1,
+    2,
+    3
+   ],
+   "effect": [
+    "+5% dmg & HP per trait",
+    "+7% dmg & HP per trait",
+    "+9% dmg & HP per trait"
+   ],
+   "desc": "Royal Knights gain damage and max HP for every active trait on your team, this one included.",
+   "adapts": "Noble / Imperial",
+   "count": 5,
+   "units": [
+    "Jesmon (4)",
+    "Imperialdramon PM (5)",
+    "UlforceVeedramon (5)",
+    "Omnimon (5)",
+    "Alphamon (5)"
+   ]
+  },
+  {
+   "id": "DATS",
+   "name": "DATS",
+   "kind": "family",
+   "bp": [
+    2,
+    3,
+    4
+   ],
+   "effect": [
+    "DigiSoul: +12% AD, +12 AP",
+    "DigiSoul: +25% AD, +25 AP",
+    "DigiSoul: +45% AD, +45 AP"
+   ],
+   "desc": "DigiSoul Charge: the first time an ally is knocked out, or after 10 seconds, DATS Digimon heal and gain attack damage and ability power.",
+   "adapts": "none in Set 1 (Digimon-native)",
+   "count": 5,
+   "units": [
+    "Crowmon (1)",
+    "Chirinmon (2)",
+    "ShineGreymon (3)",
+    "MachGaogamon (4)",
+    "Lilamon (4)"
+   ]
+  },
+  {
+   "id": "LW",
+   "name": "Legendary Warriors",
+   "kind": "family",
+   "bp": [
+    2
+   ],
+   "effect": [
+    "+30% heal & AS at 50% HP"
+   ],
+   "desc": "Spirit Evolution (Agunimon and Lobomon): the first time a Legendary Warrior drops below 50% HP, it heals and fights harder for the rest of combat.",
+   "adapts": "Shapeshifter (transform for HP)",
+   "count": 2,
+   "units": [
+    "EmperorGreymon (4)",
+    "MagnaGarurumon (4)"
+   ]
+  },
+  {
+   "id": "XF",
+   "name": "Xros Fusion",
+   "kind": "family",
+   "bp": [
+    2,
+    3,
+    4
+   ],
+   "effect": [
+    "+12% of others' HP & AD",
+    "+14% of others' HP & AD",
+    "+15% of others' HP & AD"
+   ],
+   "desc": "DigiXros: at the start of combat, each Xros Fusion Digimon adds a share of the other Xros Fusion Digimon's max HP and attack damage to its own.",
+   "adapts": "none in Set 1 (Digimon-native; closest is Set 7 Guild)",
+   "count": 4,
+   "units": [
+    "Shakkoumon (2)",
+    "Silphymon (3)",
+    "Paildramon (4)",
+    "Omnimon (5)"
+   ]
+  },
+  {
+   "id": "INS",
+   "name": "Insectoid",
+   "kind": "family",
+   "bp": [
+    2,
+    3,
+    4
+   ],
+   "effect": [
+    "1 bite for 30 every 2s",
+    "2 bites for 45 every 2s",
+    "3 bites for 60 every 2s"
+   ],
+   "desc": "Every 2 seconds a swarm bites random enemies for magic damage. A bitten enemy misses its next basic attack.",
+   "adapts": "Void (Set 1) / Insect (Underlords)",
+   "count": 4,
+   "units": [
+    "MegaKabuterimon (1)",
+    "Dinobeemon (2)",
+    "CannonBeemon (2)",
+    "GranKuwagamon (3)"
+   ]
+  },
+  {
+   "id": "FUN",
+   "name": "Pranksters",
+   "kind": "family",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "muck -45%, +1 gold/round",
+    "muck -60%, +2 gold/round"
+   ],
+   "desc": "Every second basic attack of a Prankster throws muck: the target deals less damage for 3 seconds. You also gain gold after every combat.",
+   "adapts": "Pirate (gold after combat)",
+   "count": 4,
+   "units": [
+    "PlatinumNumemon (1)",
+    "ShogunGekomon (1)",
+    "SuperStarmon (1)",
+    "PrinceMamemon (2)"
+   ]
+  },
+  {
+   "id": "KN",
+   "name": "Knight Order",
+   "kind": "family",
+   "bp": [
+    2,
+    3
+   ],
+   "effect": [
+    "-12% dmg, x2 beside a Knight",
+    "-17% dmg, x2 beside a Knight"
+   ],
+   "desc": "Knights take less damage. A Knight standing next to another Knight takes that much less again.",
+   "adapts": "Knight",
+   "count": 3,
+   "units": [
+    "Wingdramon (3)",
+    "Durandamon (3)",
+    "Hisyaryumon (4)"
+   ]
+  },
+  {
+   "id": "FL",
+   "name": "Flame",
+   "kind": "family",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "burn, +15% vs burning",
+    "burn, +30% vs burning"
+   ],
+   "desc": "Flame Digimon's abilities burn their targets for 1.5% max HP per second and cut their healing by a third for 5 seconds. Flame Digimon deal more damage to burning enemies.",
+   "adapts": "Elementalist / Set 2 Inferno",
+   "count": 6,
+   "units": [
+    "Garudamon (1)",
+    "WarGrowlmon (2)",
+    "EmperorGreymon (4)",
+    "Lavogaritamon (4)",
+    "Phoenixmon (5)",
+    "Daemon (5)"
+   ]
+  },
+  {
+   "id": "FR",
+   "name": "Frost",
+   "kind": "family",
+   "bp": [
+    2,
+    3
+   ],
+   "effect": [
+    "30% freeze chance",
+    "50% freeze chance"
+   ],
+   "desc": "Frost Digimon's basic attacks have a chance to freeze the target for 1 second.",
+   "adapts": "Glacial (stun chance)",
+   "count": 4,
+   "units": [
+    "WereGarurumon (1)",
+    "Zudomon (1)",
+    "MegaSeadramon (2)",
+    "Crescemon (2)"
+   ]
+  },
+  {
+   "id": "UND",
+   "name": "Undead",
+   "kind": "family",
+   "bp": [
+    2,
+    3
+   ],
+   "effect": [
+    "cheat death, heal 5%",
+    "cheat death, heal 10%"
+   ],
+   "desc": "The first time an Undead Digimon would be knocked out, it stays at 1 HP and can't be hurt for 1 second, then heals.",
+   "adapts": "Phantom",
+   "count": 3,
+   "units": [
+    "Matadormon (2)",
+    "Mistymon (3)",
+    "MaloMyotismon (5)"
+   ]
+  },
+  {
+   "id": "HB",
+   "name": "Holy Beasts",
+   "kind": "family",
+   "bp": [
+    2,
+    3
+   ],
+   "effect": [
+    "+4 armor/MR/AP (x2 own)",
+    "+10 armor/MR/AP (x2 own)"
+   ],
+   "desc": "All allies gain armor, magic resist and ability power. Holy Beasts gain double.",
+   "adapts": "Guardian (armor to allies)",
+   "count": 3,
+   "units": [
+    "Chirinmon (2)",
+    "Andiramon (3)",
+    "Phoenixmon (5)"
+   ]
+  },
+  {
+   "id": "FA",
+   "name": "Fallen Angels",
+   "kind": "family",
+   "bp": [
+    2,
+    3,
+    4
+   ],
+   "effect": [
+    "enemies -6 armor/MR",
+    "enemies -12 armor/MR",
+    "enemies -20 armor/MR"
+   ],
+   "desc": "All enemies lose armor and magic resist.",
+   "adapts": "Hextech (disable) / Underlords Heartless (armor shred)",
+   "count": 4,
+   "units": [
+    "NeoDevimon (1)",
+    "Lilithmon (4)",
+    "Raguelmon (4)",
+    "Lucemon SM (5)"
+   ]
+  },
+  {
+   "id": "Guardian",
+   "name": "Guardian",
+   "kind": "role",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+25 armor/MR",
+    "+50 armor/MR",
+    "+90 armor/MR"
+   ],
+   "desc": "Guardians gain armor and magic resist.",
+   "adapts": "Guardian",
+   "count": 9,
+   "units": [
+    "Zudomon (1)",
+    "Andromon (1)",
+    "SuperStarmon (1)",
+    "Shakkoumon (2)",
+    "Panjyamon (3)",
+    "Andiramon (3)",
+    "Lavogaritamon (4)",
+    "Chaosdramon (5)",
+    "Alphamon (5)"
+   ]
+  },
+  {
+   "id": "Striker",
+   "name": "Striker",
+   "kind": "role",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+25% AD",
+    "+45% AD",
+    "+75% AD"
+   ],
+   "desc": "Strikers gain attack damage.",
+   "adapts": "none (flat AD; closest is Set 7 Warrior)",
+   "count": 8,
+   "units": [
+    "MetalGreymon (1)",
+    "WereGarurumon (1)",
+    "WarGrowlmon (2)",
+    "Silphymon (3)",
+    "MarineDevimon (3)",
+    "ShineGreymon (3)",
+    "Paildramon (4)",
+    "Omnimon (5)"
+   ]
+  },
+  {
+   "id": "Sniper",
+   "name": "Sniper",
+   "kind": "role",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+5%/hex",
+    "+9%/hex",
+    "+13%/hex"
+   ],
+   "desc": "Snipers deal more damage for each hex between them and their target.",
+   "adapts": "Ranger",
+   "count": 9,
+   "units": [
+    "MegaKabuterimon (1)",
+    "Garudamon (1)",
+    "Rapidmon (2)",
+    "Crescemon (2)",
+    "CannonBeemon (2)",
+    "Infermon (3)",
+    "Tankdramon (4)",
+    "Imperialdramon PM (5)",
+    "Beelzemon BM (5)"
+   ]
+  },
+  {
+   "id": "Mystic",
+   "name": "Mystic",
+   "kind": "role",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+20 AP",
+    "+40 AP",
+    "+70 AP"
+   ],
+   "desc": "Mystics gain ability power.",
+   "adapts": "Sorcerer",
+   "count": 10,
+   "units": [
+    "Lillymon (1)",
+    "ShogunGekomon (1)",
+    "MagnaAngemon (2)",
+    "MegaSeadramon (2)",
+    "Mistymon (3)",
+    "DoruGreymon (4)",
+    "Lilithmon (4)",
+    "MaloMyotismon (5)",
+    "Lucemon SM (5)",
+    "Phoenixmon (5)"
+   ]
+  },
+  {
+   "id": "Assassin",
+   "name": "Assassin",
+   "kind": "role",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "25% crit",
+    "50% crit"
+   ],
+   "desc": "Assassins always leap to the enemy backline when combat starts. The trait grants critical strike chance (160% damage).",
+   "adapts": "Assassin",
+   "count": 6,
+   "units": [
+    "NeoDevimon (1)",
+    "Crowmon (1)",
+    "Taomon (2)",
+    "Dinobeemon (2)",
+    "Matadormon (2)",
+    "Cyberdramon (3)"
+   ]
+  },
+  {
+   "id": "Bruiser",
+   "name": "Bruiser",
+   "kind": "role",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "+20% max HP",
+    "+40% max HP"
+   ],
+   "desc": "Bruisers gain max HP.",
+   "adapts": "Brawler",
+   "count": 6,
+   "units": [
+    "PlatinumNumemon (1)",
+    "Wingdramon (3)",
+    "GranKuwagamon (3)",
+    "EmperorGreymon (4)",
+    "Raguelmon (4)",
+    "Daemon (5)"
+   ]
+  },
+  {
+   "id": "Duelist",
+   "name": "Duelist",
+   "kind": "role",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+6% AS per attack",
+    "+9% AS per attack",
+    "+13% AS per attack"
+   ],
+   "desc": "Each basic attack gives a Duelist attack speed, stacking up to 12 times.",
+   "adapts": "Blademaster / Set 4 Duelist",
+   "count": 8,
+   "units": [
+    "PrinceMamemon (2)",
+    "Jazarichmon (3)",
+    "Durandamon (3)",
+    "MachGaogamon (4)",
+    "MagnaGarurumon (4)",
+    "Jesmon (4)",
+    "Hisyaryumon (4)",
+    "UlforceVeedramon (5)"
+   ]
+  },
+  {
+   "id": "Support",
+   "name": "Support",
+   "kind": "role",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "+10% healing, 2.5% heal/4s",
+    "+25% healing, 5% heal/4s"
+   ],
+   "desc": "Your team's healing is stronger. Every 4 seconds, each Support heals the lowest-health ally.",
+   "adapts": "none in Set 1 (healer)",
+   "count": 4,
+   "units": [
+    "Angewomon (2)",
+    "Chirinmon (2)",
+    "Puppetmon (3)",
+    "Lilamon (4)"
+   ]
+  }
+ ],
+ "units": [
+  {
+   "lineId": "agumon",
+   "adapts": {
+    "champion": "Darius",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Imperial",
+     "Knight"
+    ],
+    "ability": "Decimate"
+   },
+   "cost": 1,
+   "traits": [
+    "Dragon's Roar",
+    "Striker"
+   ],
+   "role": "Striker",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 620,
+    "ad": 60,
+    "as": 0.7,
+    "range": 1,
+    "armor": 30,
+    "mr": 30,
+    "mana": 70,
+    "startMana": 10,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "nuke",
+    "stageMoves": [
+     "Pepper Breath",
+     "Nova Blast",
+     "Giga Destroyer"
+    ],
+    "text": "Deals 260 magic damage to the target."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Agumon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Agumon",
+     "model": "models/files/c21da254de374919a7d75804969f9465.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Pepper Breath"
+    },
+    {
+     "stage": 1,
+     "name": "Greymon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Greymon",
+     "model": "models/files/7806e18e09ed4dd4a87c611bde4b96bc.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Nova Blast"
+    },
+    {
+     "stage": 2,
+     "name": "MetalGreymon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Metal Greymon",
+     "model": "models/files/rip_metalgreymon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Giga Destroyer"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "gabumon",
+   "adapts": {
+    "champion": "Warwick",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Wild",
+     "Brawler"
+    ],
+    "ability": "Infinite Duress"
+   },
+   "cost": 1,
+   "traits": [
+    "Nature Spirits",
+    "Frost",
+    "Striker"
+   ],
+   "role": "Striker",
+   "attribute": "Data",
+   "stats": {
+    "hp": 713,
+    "ad": 69,
+    "as": 0.7,
+    "range": 1,
+    "armor": 30,
+    "mr": 30,
+    "mana": 70,
+    "startMana": 10,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "stun",
+    "stageMoves": [
+     "Blue Blaster",
+     "Howling Blaster",
+     "Wolf Claw"
+    ],
+    "text": "Deals 165 magic damage and stuns the target for 1.5s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Gabumon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Gabumon",
+     "model": "models/files/e6798b8ea64843f68f6fe1e3fa7928b0.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Blue Blaster"
+    },
+    {
+     "stage": 1,
+     "name": "Garurumon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Garurumon",
+     "model": "models/files/5b3a32eb5a1c47a5883fd3db3431b92a.glb",
+     "clips": 2,
+     "animated": true,
+     "move": "Howling Blaster"
+    },
+    {
+     "stage": 2,
+     "name": "WereGarurumon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Were Garurumon",
+     "model": "models/files/ad4b2c7ac55244e2b081e298bcf5c811.glb",
+     "clips": 1,
+     "animated": true,
+     "move": "Wolf Claw"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "tentomon",
+   "adapts": {
+    "champion": "Elise",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Demon",
+     "Shapeshifter"
+    ],
+    "ability": "Spider Form"
+   },
+   "cost": 1,
+   "traits": [
+    "Jungle Troopers",
+    "Insectoid",
+    "Sniper"
+   ],
+   "role": "Sniper",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 480,
+    "ad": 55,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "aoe",
+    "stageMoves": [
+     "Super Shocker",
+     "Electro Shocker",
+     "Horn Buster"
+    ],
+    "text": "Deals 160 magic damage to the target and enemies within 1 hex."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Tentomon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Tentomon",
+     "model": "models/files/463c6dc315cc494f8b7b128b78dd01ef.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Super Shocker"
+    },
+    {
+     "stage": 1,
+     "name": "Kabuterimon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Kabuterimon",
+     "model": "models/files/rip_kabuterimon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Electro Shocker"
+    },
+    {
+     "stage": 2,
+     "name": "MegaKabuterimon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Atlur Kabuterimon (Red)",
+     "model": "models/files/rip_megakabuterimon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Horn Buster"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "palmon",
+   "adapts": {
+    "champion": "Tristana",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Yordle",
+     "Gunslinger"
+    ],
+    "ability": "Explosive Charge"
+   },
+   "cost": 1,
+   "traits": [
+    "Jungle Troopers",
+    "Mystic"
+   ],
+   "role": "Mystic",
+   "attribute": "Data",
+   "stats": {
+    "hp": 480,
+    "ad": 40,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "stun",
+    "stageMoves": [
+     "Poison Ivy",
+     "Needle Spray",
+     "Flower Cannon"
+    ],
+    "text": "Deals 165 magic damage and stuns the target for 1.5s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Palmon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Palmon",
+     "model": "models/files/rip_palmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Poison Ivy"
+    },
+    {
+     "stage": 1,
+     "name": "Togemon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "Togemon",
+     "model": "models/files/rip_togemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Needle Spray"
+    },
+    {
+     "stage": 2,
+     "name": "Lillymon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Lilimon",
+     "model": "models/files/rip_lillymon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Flower Cannon"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "gomamon",
+   "adapts": {
+    "champion": "Mordekaiser",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Phantom",
+     "Knight"
+    ],
+    "ability": "Obliterate"
+   },
+   "cost": 1,
+   "traits": [
+    "Deep Savers",
+    "Frost",
+    "Guardian"
+   ],
+   "role": "Guardian",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 720,
+    "ad": 45,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "slam",
+    "stageMoves": [
+     "Marching Fishes",
+     "Harpoon Torpedo",
+     "Vulcan's Hammer"
+    ],
+    "text": "Slams the ground, dealing 120 magic damage to enemies within 1 hex and stunning them for 1s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Gomamon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Gomamon",
+     "model": "models/files/rip_gomamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Marching Fishes"
+    },
+    {
+     "stage": 1,
+     "name": "Ikkakumon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Ikkakumon",
+     "model": "models/files/67002bc689504c7d817c7ebf4832e355.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Harpoon Torpedo"
+    },
+    {
+     "stage": 2,
+     "name": "Zudomon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Zudomon",
+     "model": "models/files/rip_zudomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Vulcan's Hammer"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "biyomon",
+   "adapts": {
+    "champion": "Vayne",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Noble",
+     "Ranger"
+    ],
+    "ability": "Silver Bolts"
+   },
+   "cost": 1,
+   "traits": [
+    "Wind Guardians",
+    "Flame",
+    "Sniper"
+   ],
+   "role": "Sniper",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 480,
+    "ad": 55,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "barrage",
+    "stageMoves": [
+     "Spiral Twister",
+     "Meteor Wing",
+     "Wing Blade"
+    ],
+    "text": "Fires 4 shots at random enemies, each dealing 68 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Biyomon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Piyomon",
+     "model": "models/files/889b1324568743f3be36b32ac49c95da.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Spiral Twister"
+    },
+    {
+     "stage": 1,
+     "name": "Birdramon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Birdramon",
+     "model": "models/files/rip_birdramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Meteor Wing"
+    },
+    {
+     "stage": 2,
+     "name": "Garudamon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Garudamon",
+     "model": "models/files/rip_garudamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Wing Blade"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "hagurumon",
+   "adapts": {
+    "champion": "Garen",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Noble",
+     "Knight"
+    ],
+    "ability": "Judgement"
+   },
+   "cost": 1,
+   "traits": [
+    "Metal Empire",
+    "Guardian"
+   ],
+   "role": "Guardian",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 720,
+    "ad": 45,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "shield",
+    "stageMoves": [
+     "Darkness Gear",
+     "Guardian Barrage",
+     "Gatling Attack"
+    ],
+    "text": "Gains a 300 shield and taunts nearby enemies."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Hagurumon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Hagurumon",
+     "model": "models/files/db64891d559b4d0cbcb5633d90779ee3.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Darkness Gear"
+    },
+    {
+     "stage": 1,
+     "name": "Guardromon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Guardromon",
+     "model": "models/files/71012bd7578d41e2a0341943dc0d5e19.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Guardian Barrage"
+    },
+    {
+     "stage": 2,
+     "name": "Andromon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Andromon",
+     "model": "models/files/6ccfdb5317e14d39b899181ffef0860b.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Gatling Attack"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "demidevimon",
+   "adapts": {
+    "champion": "Kha'Zix",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Void",
+     "Assassin"
+    ],
+    "ability": "Taste their Fear"
+   },
+   "cost": 1,
+   "traits": [
+    "Nightmare Soldiers",
+    "Fallen Angels",
+    "Assassin"
+   ],
+   "role": "Assassin",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 520,
+    "ad": 65,
+    "as": 0.8,
+    "range": 1,
+    "armor": 25,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "dash",
+    "stageMoves": [
+     "Demi Dart",
+     "Death Claw",
+     "Neo Inferno"
+    ],
+    "text": "Dashes to the lowest-health enemy and strikes for 210 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "DemiDevimon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Pico Devimon",
+     "model": "models/files/rip_demidevimon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Demi Dart"
+    },
+    {
+     "stage": 1,
+     "name": "Devimon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Devimon",
+     "model": "models/files/c2d5bb58d53948a38f8727eaa6878185.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Death Claw"
+    },
+    {
+     "stage": 2,
+     "name": "NeoDevimon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Neo Devimon",
+     "model": "models/files/rip_neodevimon.glb",
+     "clips": 0,
+     "animated": false,
+     "move": "Neo Inferno"
+    }
+   ],
+   "animated": false,
+   "flags": []
+  },
+  {
+   "lineId": "numemon",
+   "adapts": {
+    "champion": "Graves",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Pirate",
+     "Gunslinger"
+    ],
+    "ability": "Buckshot"
+   },
+   "cost": 1,
+   "traits": [
+    "Pranksters",
+    "Bruiser"
+   ],
+   "role": "Bruiser",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 760,
+    "ad": 50,
+    "as": 0.6,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 80,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "weaken",
+    "stageMoves": [
+     "Nume-Sludge",
+     "Kingly Sludge",
+     "Platinum Sludge"
+    ],
+    "text": "Deals 190 magic damage and makes the target deal 30% less damage for 4s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Numemon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Numemon",
+     "model": "models/files/rip_numemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Nume-Sludge"
+    },
+    {
+     "stage": 1,
+     "name": "BlackKingNumemon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Black King Numemon",
+     "model": "models/files/rip_blackkingnumemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Kingly Sludge"
+    },
+    {
+     "stage": 2,
+     "name": "PlatinumNumemon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Platinum Numemon",
+     "model": "models/files/rip_platinumnumemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Platinum Sludge"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "otamamon",
+   "adapts": {
+    "champion": "Kassadin",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Void",
+     "Sorcerer"
+    ],
+    "ability": "Nether Blade"
+   },
+   "cost": 1,
+   "traits": [
+    "Pranksters",
+    "Mystic"
+   ],
+   "role": "Mystic",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 480,
+    "ad": 40,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "stun",
+    "stageMoves": [
+     "Lullaby Bubble",
+     "Symphony Crusher",
+     "Musical Fist"
+    ],
+    "text": "Deals 165 magic damage and stuns the target for 1.5s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Otamamon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Otamamon",
+     "model": "models/files/rip_otamamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Lullaby Bubble"
+    },
+    {
+     "stage": 1,
+     "name": "Gekomon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Gekomon",
+     "model": "models/files/rip_gekomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Symphony Crusher"
+    },
+    {
+     "stage": 2,
+     "name": "ShogunGekomon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Tonosama Gekomon",
+     "model": "models/files/rip_shogungekomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Musical Fist"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "gotsumon",
+   "adapts": {
+    "champion": "Fiora",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Noble",
+     "Blademaster"
+    ],
+    "ability": "Riposte"
+   },
+   "cost": 1,
+   "traits": [
+    "Pranksters",
+    "Guardian"
+   ],
+   "role": "Guardian",
+   "attribute": "Data",
+   "stats": {
+    "hp": 720,
+    "ad": 45,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "shield",
+    "stageMoves": [
+     "Rock Fist",
+     "Meteor Squall",
+     "Cosmic Ray"
+    ],
+    "text": "Gains a 300 shield and taunts nearby enemies."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Gotsumon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Gottsumon",
+     "model": "models/files/rip_gotsumon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Rock Fist"
+    },
+    {
+     "stage": 1,
+     "name": "Starmon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "Starmon",
+     "model": "models/files/rip_starmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Meteor Squall"
+    },
+    {
+     "stage": 2,
+     "name": "SuperStarmon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Superstarmon",
+     "model": "models/files/rip_superstarmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Cosmic Ray"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "falcomon",
+   "adapts": {
+    "champion": "Camille",
+    "source": "TFT Set 1",
+    "cost": 1,
+    "traits": [
+     "Hextech",
+     "Blademaster"
+    ],
+    "ability": "The Hextech Ultimatum"
+   },
+   "cost": 1,
+   "traits": [
+    "DATS",
+    "Wind Guardians",
+    "Assassin"
+   ],
+   "role": "Assassin",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 520,
+    "ad": 72,
+    "as": 0.8,
+    "range": 1,
+    "armor": 25,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "dash",
+    "stageMoves": [
+     "Ninja Shuriken",
+     "Kunai Wing",
+     "Ether Burst"
+    ],
+    "text": "Dashes to the lowest-health enemy and strikes for 210 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Falcomon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Falcomon",
+     "model": "models/files/rip_falcomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Ninja Shuriken"
+    },
+    {
+     "stage": 1,
+     "name": "Peckmon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Peckmon",
+     "model": "models/files/rip_peckmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Kunai Wing"
+    },
+    {
+     "stage": 2,
+     "name": "Crowmon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Yatagaramon (2006 Anime Version)",
+     "model": "models/files/rip_crowmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Ether Burst"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "guilmon",
+   "adapts": {
+    "champion": "Jayce",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Hextech",
+     "Shapeshifter"
+    ],
+    "ability": "Transform Mercury Cannon"
+   },
+   "cost": 2,
+   "traits": [
+    "Dragon's Roar",
+    "Flame",
+    "Striker"
+   ],
+   "role": "Striker",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 732,
+    "ad": 71,
+    "as": 0.7,
+    "range": 1,
+    "armor": 30,
+    "mr": 30,
+    "mana": 70,
+    "startMana": 10,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "aoe",
+    "stageMoves": [
+     "Pyro Sphere",
+     "Pyro Blaster",
+     "Atomic Blaster"
+    ],
+    "text": "Deals 200 magic damage to the target and enemies within 1 hex."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Guilmon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Guilmon",
+     "model": "models/files/7e8cc1728cfd455cba6c27354304c851.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Pyro Sphere"
+    },
+    {
+     "stage": 1,
+     "name": "Growlmon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Growmon",
+     "model": "models/files/24a5b2cdf7464673a7238f5376131f32.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Pyro Blaster"
+    },
+    {
+     "stage": 2,
+     "name": "WarGrowlmon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Megalo Growmon",
+     "model": "models/files/rip_wargrowlmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Atomic Blaster"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "renamon",
+   "adapts": {
+    "champion": "Ahri",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Wild",
+     "Sorcerer"
+    ],
+    "ability": "Orb of Deception"
+   },
+   "cost": 2,
+   "traits": [
+    "Nature Spirits",
+    "Assassin"
+   ],
+   "role": "Assassin",
+   "attribute": "Data",
+   "stats": {
+    "hp": 614,
+    "ad": 84,
+    "as": 0.8,
+    "range": 1,
+    "armor": 25,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "dash",
+    "stageMoves": [
+     "Diamond Storm",
+     "Dragon Wheel",
+     "Talisman of Light"
+    ],
+    "text": "Dashes to the lowest-health enemy and strikes for 263 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Renamon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Renamon",
+     "model": "models/files/rip_renamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Diamond Storm"
+    },
+    {
+     "stage": 1,
+     "name": "Kyubimon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "Kyubimon",
+     "model": "models/files/8f87b888127c4ea78845fe9625416e16.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Dragon Wheel"
+    },
+    {
+     "stage": 2,
+     "name": "Taomon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Taomon",
+     "model": "models/files/rip_taomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Talisman of Light"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "terriermon",
+   "adapts": {
+    "champion": "Lucian",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Noble",
+     "Gunslinger"
+    ],
+    "ability": "Relentless Pursuit"
+   },
+   "cost": 2,
+   "traits": [
+    "Nature Spirits",
+    "Sniper"
+   ],
+   "role": "Sniper",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 566,
+    "ad": 65,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "barrage",
+    "stageMoves": [
+     "Bunny Blast",
+     "Gargo Laser",
+     "Tri-Beam"
+    ],
+    "text": "Fires 4 shots at random enemies, each dealing 85 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Terriermon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Terriermon",
+     "model": "models/files/rip_terriermon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Bunny Blast"
+    },
+    {
+     "stage": 1,
+     "name": "Gargomon",
+     "level": "Champion",
+     "attribute": "Free",
+     "wikimonTitle": "Gargomon",
+     "model": "models/files/rip_gargomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Gargo Laser"
+    },
+    {
+     "stage": 2,
+     "name": "Rapidmon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Rapidmon Perfect",
+     "model": "models/files/rip_rapidmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Tri-Beam"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "patamon",
+   "adapts": {
+    "champion": "Blitzcrank",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Robot",
+     "Brawler"
+    ],
+    "ability": "Rocket Grab"
+   },
+   "cost": 2,
+   "traits": [
+    "Virus Busters",
+    "Mystic"
+   ],
+   "role": "Mystic",
+   "attribute": "Data",
+   "stats": {
+    "hp": 566,
+    "ad": 47,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "nuke",
+    "stageMoves": [
+     "Boom Bubble",
+     "Hand of Fate",
+     "Gate of Destiny"
+    ],
+    "text": "Deals 325 magic damage to the target."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Patamon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Patamon",
+     "model": "models/files/43d9a0604df94d149fb4c0b897713181.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Boom Bubble"
+    },
+    {
+     "stage": 1,
+     "name": "Angemon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Angemon",
+     "model": "models/files/rip_angemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Hand of Fate"
+    },
+    {
+     "stage": 2,
+     "name": "MagnaAngemon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Holy Angemon",
+     "model": "models/files/781be4c8d1904610907de159624d5749.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Gate of Destiny"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "salamon",
+   "adapts": {
+    "champion": "Shen",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Ninja",
+     "Blademaster"
+    ],
+    "ability": "Spirit's Refuge"
+   },
+   "cost": 2,
+   "traits": [
+    "Virus Busters",
+    "Support"
+   ],
+   "role": "Support",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 614,
+    "ad": 41,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 70,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "heal",
+    "stageMoves": [
+     "Puppy Howl",
+     "Lightning Paw",
+     "Heaven's Charm"
+    ],
+    "text": "Heals the 1 lowest-health allies for 213."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Salamon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Plotmon",
+     "model": "models/files/rip_salamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Puppy Howl"
+    },
+    {
+     "stage": 1,
+     "name": "Gatomon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Tailmon",
+     "model": "models/files/4023397564ff4822bf530d3c63edc7ec.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Lightning Paw"
+    },
+    {
+     "stage": 2,
+     "name": "Angewomon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Angewomon",
+     "model": "models/files/rip_angewomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Heaven's Charm"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "betamon",
+   "adapts": {
+    "champion": "Lissandra",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Glacial",
+     "Elementalist"
+    ],
+    "ability": "Frozen Tomb"
+   },
+   "cost": 2,
+   "traits": [
+    "Deep Savers",
+    "Frost",
+    "Mystic"
+   ],
+   "role": "Mystic",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 566,
+    "ad": 47,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "stun",
+    "stageMoves": [
+     "Electric Shock",
+     "Ice Blast",
+     "Thunder Javelin"
+    ],
+    "text": "Deals 206 magic damage and stuns the target for 1.5s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Betamon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Betamon",
+     "model": "models/files/rip_betamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Electric Shock"
+    },
+    {
+     "stage": 1,
+     "name": "Seadramon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "Seadramon",
+     "model": "models/files/rip_seadramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Ice Blast"
+    },
+    {
+     "stage": 2,
+     "name": "MegaSeadramon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Mega Seadramon",
+     "model": "models/files/rip_megaseadramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Thunder Javelin"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "wormmon",
+   "adapts": {
+    "champion": "Zed",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Ninja",
+     "Assassin"
+    ],
+    "ability": "Razor Shuriken"
+   },
+   "cost": 2,
+   "traits": [
+    "Jungle Troopers",
+    "Insectoid",
+    "Assassin"
+   ],
+   "role": "Assassin",
+   "attribute": "Free",
+   "stats": {
+    "hp": 614,
+    "ad": 77,
+    "as": 0.8,
+    "range": 1,
+    "armor": 25,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "dash",
+    "stageMoves": [
+     "Sticky Net",
+     "Spiking Strike",
+     "Hell Masquerade"
+    ],
+    "text": "Dashes to the lowest-health enemy and strikes for 263 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Wormmon",
+     "level": "Rookie",
+     "attribute": "Free",
+     "wikimonTitle": "Wormmon",
+     "model": "models/files/rip_wormmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Sticky Net"
+    },
+    {
+     "stage": 1,
+     "name": "Stingmon",
+     "level": "Champion",
+     "attribute": "Free",
+     "wikimonTitle": "Stingmon",
+     "model": "models/files/rip_stingmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Spiking Strike"
+    },
+    {
+     "stage": 2,
+     "name": "Dinobeemon",
+     "level": "Ultimate",
+     "attribute": "Free",
+     "wikimonTitle": "Dinobeemon",
+     "model": "models/files/rip_dinobeemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Hell Masquerade"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "lunamon",
+   "adapts": {
+    "champion": "Varus",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Demon",
+     "Ranger"
+    ],
+    "ability": "Piercing Arrow"
+   },
+   "cost": 2,
+   "traits": [
+    "Deep Savers",
+    "Frost",
+    "Sniper"
+   ],
+   "role": "Sniper",
+   "attribute": "Data",
+   "stats": {
+    "hp": 566,
+    "ad": 65,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "line",
+    "stageMoves": [
+     "Lunar Claw",
+     "Tear Arrow",
+     "Lunatic Dance"
+    ],
+    "text": "Fires through the target, dealing 238 magic damage to every enemy in a line."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Lunamon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Lunamon",
+     "model": "models/files/rip_lunamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Lunar Claw"
+    },
+    {
+     "stage": 1,
+     "name": "Lekismon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "Lekismon",
+     "model": "models/files/rip_lekismon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Tear Arrow"
+    },
+    {
+     "stage": 2,
+     "name": "Crescemon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Crescemon",
+     "model": "models/files/rip_crescemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Lunatic Dance"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "armadillomon",
+   "adapts": {
+    "champion": "Braum",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Glacial",
+     "Guardian"
+    ],
+    "ability": "Unbreakable"
+   },
+   "cost": 2,
+   "traits": [
+    "Xros Fusion",
+    "Guardian"
+   ],
+   "role": "Guardian",
+   "attribute": "Free",
+   "stats": {
+    "hp": 782,
+    "ad": 53,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "shield",
+    "stageMoves": [
+     "Diamond Shell",
+     "Tail Hammer",
+     "Justice Beam"
+    ],
+    "text": "Gains a 375 shield and taunts nearby enemies."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Armadillomon",
+     "level": "Rookie",
+     "attribute": "Free",
+     "wikimonTitle": "Armadimon",
+     "model": "models/files/rip_armadillomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Diamond Shell"
+    },
+    {
+     "stage": 1,
+     "name": "Ankylomon",
+     "level": "Champion",
+     "attribute": "Free",
+     "wikimonTitle": "Ankylomon",
+     "model": "models/files/rip_ankylomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Tail Hammer"
+    },
+    {
+     "stage": 2,
+     "name": "Shakkoumon",
+     "level": "Ultimate",
+     "attribute": "Free",
+     "wikimonTitle": "Shakkoumon",
+     "model": "models/files/rip_shakkoumon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Justice Beam"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "kudamon",
+   "adapts": {
+    "champion": "Lulu",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Yordle",
+     "Sorcerer"
+    ],
+    "ability": "Wild Growth"
+   },
+   "cost": 2,
+   "traits": [
+    "DATS",
+    "Holy Beasts",
+    "Support"
+   ],
+   "role": "Support",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 614,
+    "ad": 41,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 70,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "rally",
+    "stageMoves": [
+     "Holy Shot",
+     "Kamaitachi",
+     "Holy Breath"
+    ],
+    "text": "Shields the 2 lowest-health allies for 88 and gives them 30% attack speed for 4s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Kudamon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Kudamon",
+     "model": "models/files/rip_kudamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Holy Shot"
+    },
+    {
+     "stage": 1,
+     "name": "Reppamon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Reppamon",
+     "model": "models/files/rip_reppamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Kamaitachi"
+    },
+    {
+     "stage": 2,
+     "name": "Chirinmon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Tyilinmon",
+     "model": "models/files/rip_chirinmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Holy Breath"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "fanbeemon",
+   "adapts": {
+    "champion": "Rek'Sai",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Void",
+     "Brawler"
+    ],
+    "ability": "Burrow"
+   },
+   "cost": 2,
+   "traits": [
+    "Insectoid",
+    "Sniper"
+   ],
+   "role": "Sniper",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 566,
+    "ad": 65,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "barrage",
+    "stageMoves": [
+     "Bee Shot",
+     "Turbo Stinger",
+     "Royal Smasher"
+    ],
+    "text": "Fires 4 shots at random enemies, each dealing 85 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "FanBeemon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Funbeemon",
+     "model": "models/files/rip_fanbeemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Bee Shot"
+    },
+    {
+     "stage": 1,
+     "name": "Waspmon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Waspmon",
+     "model": "models/files/rip_waspmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Turbo Stinger"
+    },
+    {
+     "stage": 2,
+     "name": "CannonBeemon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Cannonbeemon",
+     "model": "models/files/rip_cannonbeemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Royal Smasher"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "mamemon",
+   "adapts": {
+    "champion": "Twisted Fate",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Pirate",
+     "Sorcerer"
+    ],
+    "ability": "Pick a Card"
+   },
+   "cost": 2,
+   "traits": [
+    "Pranksters",
+    "Metal Empire",
+    "Duelist"
+   ],
+   "role": "Duelist",
+   "attribute": "Data",
+   "stats": {
+    "hp": 802,
+    "ad": 65,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "aoe",
+    "stageMoves": [
+     "Smiley Bomb",
+     "Energy Bomb",
+     "Smiley Warhead"
+    ],
+    "text": "Deals 200 magic damage to the target and enemies within 1 hex."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Mamemon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Mamemon",
+     "model": "models/files/rip_mamemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Smiley Bomb"
+    },
+    {
+     "stage": 1,
+     "name": "MetalMamemon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Metal Mamemon",
+     "model": "models/files/rip_metalmamemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Energy Bomb"
+    },
+    {
+     "stage": 2,
+     "name": "PrinceMamemon",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Prince Mamemon",
+     "model": "models/files/rip_princemamemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Smiley Warhead"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "dracmon",
+   "adapts": {
+    "champion": "Pyke",
+    "source": "TFT Set 1",
+    "cost": 2,
+    "traits": [
+     "Pirate",
+     "Assassin"
+    ],
+    "ability": "Phantom Undertow"
+   },
+   "cost": 2,
+   "traits": [
+    "Undead",
+    "Nightmare Soldiers",
+    "Assassin"
+   ],
+   "role": "Assassin",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 614,
+    "ad": 77,
+    "as": 0.8,
+    "range": 1,
+    "armor": 25,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "execute",
+    "stageMoves": [
+     "Zombie Claw",
+     "Snipe Steal",
+     "Fuerza Mortal"
+    ],
+    "text": "Strikes the target for 263 magic damage, doubled if it is below 50% HP."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Dracmon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Dracumon",
+     "model": "models/files/rip_dracmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Zombie Claw"
+    },
+    {
+     "stage": 1,
+     "name": "Sangloupmon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Sangloupmon",
+     "model": "models/files/rip_sangloupmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Snipe Steal"
+    },
+    {
+     "stage": 2,
+     "name": "Matadormon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Matadrmon",
+     "model": "models/files/rip_matadormon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Fuerza Mortal"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "elecmon",
+   "adapts": {
+    "champion": "Vi",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Hextech",
+     "Brawler"
+    ],
+    "ability": "Assault and Battery"
+   },
+   "cost": 3,
+   "traits": [
+    "Nature Spirits",
+    "Guardian"
+   ],
+   "role": "Guardian",
+   "attribute": "Data",
+   "stats": {
+    "hp": 979,
+    "ad": 61,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "slam",
+    "stageMoves": [
+     "Super Thunder Strike",
+     "Fist of the Beast King",
+     "Ice Fist"
+    ],
+    "text": "Slams the ground, dealing 180 magic damage to enemies within 1 hex and stunning them for 1s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Elecmon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Elecmon",
+     "model": "models/files/rip_elecmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Super Thunder Strike"
+    },
+    {
+     "stage": 1,
+     "name": "Leomon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Leomon",
+     "model": "models/files/rip_leomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Fist of the Beast King"
+    },
+    {
+     "stage": 2,
+     "name": "Panjyamon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Panjyamon",
+     "model": "models/files/rip_panjyamon.glb",
+     "clips": 0,
+     "animated": false,
+     "move": "Ice Fist"
+    }
+   ],
+   "animated": false,
+   "flags": []
+  },
+  {
+   "lineId": "hawkmon",
+   "adapts": {
+    "champion": "Katarina",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Imperial",
+     "Assassin"
+    ],
+    "ability": "Death Lotus"
+   },
+   "cost": 3,
+   "traits": [
+    "Wind Guardians",
+    "Xros Fusion",
+    "Striker"
+   ],
+   "role": "Striker",
+   "attribute": "Free",
+   "stats": {
+    "hp": 843,
+    "ad": 82,
+    "as": 0.7,
+    "range": 1,
+    "armor": 30,
+    "mr": 30,
+    "mana": 70,
+    "startMana": 10,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "aoe",
+    "stageMoves": [
+     "Beak Pummel",
+     "Blast Rings",
+     "Static Force"
+    ],
+    "text": "Deals 240 magic damage to the target and enemies within 1 hex."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Hawkmon",
+     "level": "Rookie",
+     "attribute": "Free",
+     "wikimonTitle": "Hawkmon",
+     "model": "models/files/1e8c8d4f432c4610ad9035eafab82003.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Beak Pummel"
+    },
+    {
+     "stage": 1,
+     "name": "Aquilamon",
+     "level": "Champion",
+     "attribute": "Free",
+     "wikimonTitle": "Aquilamon",
+     "model": "models/files/f27b0e20030b467cb047fe1b8a60524c.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Blast Rings"
+    },
+    {
+     "stage": 2,
+     "name": "Silphymon",
+     "level": "Ultimate",
+     "attribute": "Free",
+     "wikimonTitle": "Silphymon",
+     "model": "models/files/60066b501fe947688775214845dca37e.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Static Force"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "keramon",
+   "adapts": {
+    "champion": "Gangplank",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Pirate",
+     "Gunslinger",
+     "Blademaster"
+    ],
+    "ability": "Powder Kegs"
+   },
+   "cost": 3,
+   "traits": [
+    "Metal Empire",
+    "Sniper"
+   ],
+   "role": "Sniper",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 653,
+    "ad": 75,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "barrage",
+    "stageMoves": [
+     "Crazy Giggle",
+     "Data Crusher",
+     "Spider Shooter"
+    ],
+    "text": "Fires 4 shots at random enemies, each dealing 102 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Keramon",
+     "level": "Rookie",
+     "attribute": "Unknown",
+     "wikimonTitle": "Keramon",
+     "model": "models/files/2eb2121147d043cfa0433cfd7eb86079.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Crazy Giggle"
+    },
+    {
+     "stage": 1,
+     "name": "Kurisarimon",
+     "level": "Champion",
+     "attribute": null,
+     "wikimonTitle": null,
+     "model": "models/files/rip_chrysalimon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Data Crusher"
+    },
+    {
+     "stage": 2,
+     "name": "Infermon",
+     "level": "Ultimate",
+     "attribute": "Unknown",
+     "wikimonTitle": "Infermon",
+     "model": "models/files/3772f1ba36e046efa65dcd63c033e67e.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Spider Shooter"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "lopmon",
+   "adapts": {
+    "champion": "Ashe",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Glacial",
+     "Ranger"
+    ],
+    "ability": "Enchanted Crystal Arrow"
+   },
+   "cost": 3,
+   "traits": [
+    "Virus Busters",
+    "Holy Beasts",
+    "Guardian"
+   ],
+   "role": "Guardian",
+   "attribute": "Data",
+   "stats": {
+    "hp": 901,
+    "ad": 61,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "shield",
+    "stageMoves": [
+     "Blazing Ice",
+     "Kongou Kick",
+     "Deva Spear"
+    ],
+    "text": "Gains a 450 shield and taunts nearby enemies."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Lopmon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Lopmon",
+     "model": "models/files/rip_lopmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Blazing Ice"
+    },
+    {
+     "stage": 1,
+     "name": "Turuiemon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "Turuiemon",
+     "model": "models/files/rip_turuiemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Kongou Kick"
+    },
+    {
+     "stage": 2,
+     "name": "Andiramon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Andiramon",
+     "model": "models/files/rip_andiramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Deva Spear"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "gizamon",
+   "adapts": {
+    "champion": "Aatrox",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Demon",
+     "Blademaster"
+    ],
+    "ability": "The Darkin Blade"
+   },
+   "cost": 3,
+   "traits": [
+    "Deep Savers",
+    "Striker"
+   ],
+   "role": "Striker",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 843,
+    "ad": 82,
+    "as": 0.7,
+    "range": 1,
+    "armor": 30,
+    "mr": 30,
+    "mana": 70,
+    "startMana": 10,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "drain",
+    "stageMoves": [
+     "Spiral Saw",
+     "Coral Crusher",
+     "Evil Wing"
+    ],
+    "text": "Deals 270 magic damage to the target, healing for 60% of damage dealt."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Gizamon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Gizamon",
+     "model": "models/files/rip_gizamon.glb",
+     "clips": 0,
+     "animated": false,
+     "move": "Spiral Saw"
+    },
+    {
+     "stage": 1,
+     "name": "Gesomon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Gesomon",
+     "model": "models/files/rip_gesomon2.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Coral Crusher"
+    },
+    {
+     "stage": 2,
+     "name": "MarineDevimon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Marin Devimon",
+     "model": "models/files/rip_marinedevimon2.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Evil Wing"
+    }
+   ],
+   "animated": false,
+   "flags": []
+  },
+  {
+   "lineId": "candlemon",
+   "adapts": {
+    "champion": "Morgana",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Demon",
+     "Sorcerer"
+    ],
+    "ability": "Soul Shackles"
+   },
+   "cost": 3,
+   "traits": [
+    "Nightmare Soldiers",
+    "Undead",
+    "Mystic"
+   ],
+   "role": "Mystic",
+   "attribute": "Data",
+   "stats": {
+    "hp": 653,
+    "ad": 54,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "aoe",
+    "stageMoves": [
+     "Wax Flame",
+     "Thunder Ball",
+     "Phantom Fire"
+    ],
+    "text": "Deals 240 magic damage to the target and enemies within 1 hex."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Candlemon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Candmon",
+     "model": "models/files/9397707877444465ab951890c6ffaeb2.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Wax Flame"
+    },
+    {
+     "stage": 1,
+     "name": "Wizardmon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "Wizarmon",
+     "model": "models/files/bbeb1da28aca459da86b46cba6d57ca8.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Thunder Ball"
+    },
+    {
+     "stage": 2,
+     "name": "Mistymon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Mistymon",
+     "model": "models/files/rip_mistymon.glb",
+     "clips": 0,
+     "animated": false,
+     "move": "Phantom Fire"
+    }
+   ],
+   "animated": false,
+   "flags": []
+  },
+  {
+   "lineId": "agumonsv",
+   "adapts": {
+    "champion": "Veigar",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Yordle",
+     "Sorcerer"
+    ],
+    "ability": "Primordial Burst"
+   },
+   "cost": 3,
+   "traits": [
+    "DATS",
+    "Dragon's Roar",
+    "Striker"
+   ],
+   "role": "Striker",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 843,
+    "ad": 82,
+    "as": 0.7,
+    "range": 1,
+    "armor": 30,
+    "mr": 30,
+    "mana": 70,
+    "startMana": 10,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "nuke",
+    "stageMoves": [
+     "Mega Burst",
+     "Trident Revolver",
+     "Glorious Burst"
+    ],
+    "text": "Deals 390 magic damage to the target."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "GeoGreymon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Geo Greymon",
+     "model": "models/files/rip_geogreymon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Mega Burst"
+    },
+    {
+     "stage": 1,
+     "name": "RizeGreymon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Rize Greymon",
+     "model": "models/files/rip_rizegreymon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Trident Revolver"
+    },
+    {
+     "stage": 2,
+     "name": "ShineGreymon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Shine Greymon",
+     "model": "models/files/rip_shinegreymon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Glorious Burst"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "dracomon",
+   "adapts": {
+    "champion": "Shyvana",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Dragon",
+     "Shapeshifter"
+    ],
+    "ability": "Dragon's Descent"
+   },
+   "cost": 3,
+   "traits": [
+    "Dragon's Roar",
+    "Knight Order",
+    "Bruiser"
+   ],
+   "role": "Bruiser",
+   "attribute": "Data",
+   "stats": {
+    "hp": 1034,
+    "ad": 68,
+    "as": 0.6,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 80,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "aoe",
+    "stageMoves": [
+     "Baby Breath",
+     "Green Flare Breath",
+     "Sonic Blast"
+    ],
+    "text": "Deals 240 magic damage to the target and enemies within 1 hex."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Dracomon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Dracomon",
+     "model": "models/files/rip_dracomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Baby Breath"
+    },
+    {
+     "stage": 1,
+     "name": "Coredramon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Coredramon (Green)",
+     "model": "models/files/rip_coredramon_green.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Green Flare Breath"
+    },
+    {
+     "stage": 2,
+     "name": "Wingdramon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Wingdramon",
+     "model": "models/files/rip_wingdramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Sonic Blast"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "woodmon",
+   "adapts": {
+    "champion": "Kennen",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Ninja",
+     "Yordle",
+     "Elementalist"
+    ],
+    "ability": "Slicing Maelstrom"
+   },
+   "cost": 3,
+   "traits": [
+    "Jungle Troopers",
+    "Support"
+   ],
+   "role": "Support",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 707,
+    "ad": 48,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 70,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "weaken",
+    "stageMoves": [
+     "Branch Drill",
+     "Pit Pelter",
+     "Puppet Pummel"
+    ],
+    "text": "Deals 285 magic damage and makes the target deal 30% less damage for 4s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Woodmon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Woodmon",
+     "model": "models/files/rip_woodmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Branch Drill"
+    },
+    {
+     "stage": 1,
+     "name": "Cherrymon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Jyureimon",
+     "model": "models/files/rip_cherrymon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Pit Pelter"
+    },
+    {
+     "stage": 2,
+     "name": "Puppetmon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Pinochimon",
+     "model": "models/files/rip_puppetmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Puppet Pummel"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "monodramon",
+   "adapts": {
+    "champion": "Evelynn",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Demon",
+     "Assassin"
+    ],
+    "ability": "Last Caress"
+   },
+   "cost": 3,
+   "traits": [
+    "Dragon's Roar",
+    "Assassin"
+   ],
+   "role": "Assassin",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 707,
+    "ad": 88,
+    "as": 0.8,
+    "range": 1,
+    "armor": 25,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "execute",
+    "stageMoves": [
+     "Beat Knuckle",
+     "Strike Fang",
+     "Desolation Claw"
+    ],
+    "text": "Strikes the target for 315 magic damage, doubled if it is below 50% HP."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Monodramon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Monodramon",
+     "model": "models/files/rip_monodramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Beat Knuckle"
+    },
+    {
+     "stage": 1,
+     "name": "Strikedramon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Strikedramon",
+     "model": "models/files/rip_strikedramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Strike Fang"
+    },
+    {
+     "stage": 2,
+     "name": "Cyberdramon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Cyberdramon",
+     "model": "models/files/rip_cyberdramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Desolation Claw"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "jazamon",
+   "adapts": {
+    "champion": "Rengar",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Wild",
+     "Assassin"
+    ],
+    "ability": "Savagery"
+   },
+   "cost": 3,
+   "traits": [
+    "Nature Spirits",
+    "Duelist"
+   ],
+   "role": "Duelist",
+   "attribute": "Data",
+   "stats": {
+    "hp": 925,
+    "ad": 75,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "dash",
+    "stageMoves": [
+     "Jaza Claw",
+     "Jazard Fang",
+     "Jazarich Strike"
+    ],
+    "text": "Dashes to the lowest-health enemy and strikes for 315 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Jazamon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Jazamon",
+     "model": "models/files/rip_jazamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Jaza Claw"
+    },
+    {
+     "stage": 1,
+     "name": "Jazardmon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Jazardmon",
+     "model": "models/files/rip_jazardmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Jazard Fang"
+    },
+    {
+     "stage": 2,
+     "name": "Jazarichmon",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Jazarichmon",
+     "model": "models/files/rip_jazarichmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Jazarich Strike"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "zubamon",
+   "adapts": {
+    "champion": "Poppy",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Yordle",
+     "Knight"
+    ],
+    "ability": "Keeper's Verdict"
+   },
+   "cost": 3,
+   "traits": [
+    "Knight Order",
+    "Duelist"
+   ],
+   "role": "Duelist",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 925,
+    "ad": 75,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "line",
+    "stageMoves": [
+     "Zuba Saber",
+     "Eager Slash",
+     "Durandal"
+    ],
+    "text": "Fires through the target, dealing 285 magic damage to every enemy in a line."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Zubamon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Zubamon",
+     "model": "models/files/rip_zubamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Zuba Saber"
+    },
+    {
+     "stage": 1,
+     "name": "ZubaEagermon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Zubaeagermon",
+     "model": "models/files/rip_zubaeagermon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Eager Slash"
+    },
+    {
+     "stage": 2,
+     "name": "Durandamon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Durandamon",
+     "model": "models/files/rip_durandamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Durandal"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "okuwamon",
+   "adapts": {
+    "champion": "Volibear",
+    "source": "TFT Set 1",
+    "cost": 3,
+    "traits": [
+     "Glacial",
+     "Brawler"
+    ],
+    "ability": "Thunder Claws"
+   },
+   "cost": 3,
+   "traits": [
+    "Insectoid",
+    "Bruiser"
+   ],
+   "role": "Bruiser",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 1034,
+    "ad": 68,
+    "as": 0.6,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 80,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "execute",
+    "stageMoves": [
+     "Scissor Claw",
+     "Double Scissor Claw",
+     "Dimension Scissor"
+    ],
+    "text": "Strikes the target for 315 magic damage, doubled if it is below 50% HP."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Kuwagamon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Kuwagamon",
+     "model": "models/files/rip_kuwagamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Scissor Claw"
+    },
+    {
+     "stage": 1,
+     "name": "Okuwamon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Okuwamon",
+     "model": "models/files/rip_okuwamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Double Scissor Claw"
+    },
+    {
+     "stage": 2,
+     "name": "GranKuwagamon",
+     "level": "Mega",
+     "attribute": "Free",
+     "wikimonTitle": "Gran Kuwagamon",
+     "model": "models/files/rip_grankuwagamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Dimension Scissor"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "veemon",
+   "adapts": {
+    "champion": "Sejuani",
+    "source": "TFT Set 1",
+    "cost": 4,
+    "traits": [
+     "Glacial",
+     "Knight"
+    ],
+    "ability": "Glacial Prison"
+   },
+   "cost": 4,
+   "traits": [
+    "Dragon's Roar",
+    "Xros Fusion",
+    "Striker"
+   ],
+   "role": "Striker",
+   "attribute": "Free",
+   "stats": {
+    "hp": 955,
+    "ad": 92,
+    "as": 0.7,
+    "range": 1,
+    "armor": 30,
+    "mr": 30,
+    "mana": 70,
+    "startMana": 10,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "stun",
+    "stageMoves": [
+     "Vee Headbutt",
+     "Vee Laser",
+     "Desperado Blaster"
+    ],
+    "text": "Deals 289 magic damage and stuns the target for 1.5s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Veemon",
+     "level": "Rookie",
+     "attribute": "Free",
+     "wikimonTitle": "V-mon",
+     "model": "models/files/d06d194aabc340b2ba38a0b8a5d4ed07.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Vee Headbutt"
+    },
+    {
+     "stage": 1,
+     "name": "ExVeemon",
+     "level": "Champion",
+     "attribute": "Free",
+     "wikimonTitle": "XV-mon",
+     "model": "models/files/f42ddfad460e42288f6c7ca6ebddeff4.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Vee Laser"
+    },
+    {
+     "stage": 2,
+     "name": "Paildramon",
+     "level": "Ultimate",
+     "attribute": "Free",
+     "wikimonTitle": "Paildramon",
+     "model": "models/files/dfa02a8323a3499da3bc7d3a21c42ba1.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Desperado Blaster"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "dorumon",
+   "adapts": {
+    "champion": "Aurelion Sol",
+    "source": "TFT Set 1",
+    "cost": 4,
+    "traits": [
+     "Dragon",
+     "Sorcerer"
+    ],
+    "ability": "Voice of Light"
+   },
+   "cost": 4,
+   "traits": [
+    "Dragon's Roar",
+    "Mystic"
+   ],
+   "role": "Mystic",
+   "attribute": "Data",
+   "stats": {
+    "hp": 739,
+    "ad": 62,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "nuke",
+    "stageMoves": [
+     "Metal Cannon",
+     "Power Metal",
+     "Brave Metal"
+    ],
+    "text": "Deals 455 magic damage to the target."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Dorumon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "DORUmon",
+     "model": "models/files/7059b6386bbd4021a77f162618585d07.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Metal Cannon"
+    },
+    {
+     "stage": 1,
+     "name": "Dorugamon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "DORUgamon",
+     "model": "models/files/ef72384761d943c48e2890f125b13f0c.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Power Metal"
+    },
+    {
+     "stage": 2,
+     "name": "DoruGreymon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "DORUguremon",
+     "model": "models/files/rip_dorugreymon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Brave Metal"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "gaomon",
+   "adapts": {
+    "champion": "Cho'Gath",
+    "source": "TFT Set 1",
+    "cost": 4,
+    "traits": [
+     "Void",
+     "Brawler"
+    ],
+    "ability": "Rupture"
+   },
+   "cost": 4,
+   "traits": [
+    "DATS",
+    "Nature Spirits",
+    "Duelist"
+   ],
+   "role": "Duelist",
+   "attribute": "Data",
+   "stats": {
+    "hp": 1047,
+    "ad": 85,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "drain",
+    "stageMoves": [
+     "Rolling Upper",
+     "Dash Double Claw",
+     "Winning Knuckle"
+    ],
+    "text": "Deals 315 magic damage to the target, healing for 60% of damage dealt."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Gaomon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Gaomon",
+     "model": "models/files/777acff75e0c41309e8ebaf577f6867d.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Rolling Upper"
+    },
+    {
+     "stage": 1,
+     "name": "Gaogamon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "Gaogamon",
+     "model": "models/files/rip_gaogamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Dash Double Claw"
+    },
+    {
+     "stage": 2,
+     "name": "MachGaogamon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Mach Gaogamon",
+     "model": "models/files/rip_machgaogamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Winning Knuckle"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "lalamon",
+   "adapts": {
+    "champion": "Kindred",
+    "source": "TFT Set 1",
+    "cost": 4,
+    "traits": [
+     "Phantom",
+     "Ranger"
+    ],
+    "ability": "Lamb's Respite"
+   },
+   "cost": 4,
+   "traits": [
+    "DATS",
+    "Jungle Troopers",
+    "Support"
+   ],
+   "role": "Support",
+   "attribute": "Data",
+   "stats": {
+    "hp": 801,
+    "ad": 54,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 70,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "heal",
+    "stageMoves": [
+     "Seed Blast",
+     "Sunshine Beam",
+     "Lila Shower"
+    ],
+    "text": "Heals the 1 lowest-health allies for 298."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Lalamon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Lalamon",
+     "model": "models/files/rip_lalamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Seed Blast"
+    },
+    {
+     "stage": 1,
+     "name": "Sunflowmon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "Sunflowmon",
+     "model": "models/files/12032c5ef09c40d09016880bb13316fc.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Sunshine Beam"
+    },
+    {
+     "stage": 2,
+     "name": "Lilamon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Lilamon",
+     "model": "models/files/rip_lilamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Lila Shower"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "commandramon",
+   "adapts": {
+    "champion": "Jinx",
+    "source": "TFT Set 1",
+    "cost": 4,
+    "traits": [
+     "Hextech",
+     "Gunslinger"
+    ],
+    "ability": "Get Excited!"
+   },
+   "cost": 4,
+   "traits": [
+    "Metal Empire",
+    "Sniper"
+   ],
+   "role": "Sniper",
+   "attribute": "Data",
+   "stats": {
+    "hp": 739,
+    "ad": 85,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "barrage",
+    "stageMoves": [
+     "M16 Assassin",
+     "Death Behind",
+     "Hyper Cannon"
+    ],
+    "text": "Fires 4 shots at random enemies, each dealing 119 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Commandramon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Commandramon",
+     "model": "models/files/rip_commandramon.glb",
+     "clips": 0,
+     "animated": false,
+     "move": "M16 Assassin"
+    },
+    {
+     "stage": 1,
+     "name": "Sealsdramon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Sealsdramon",
+     "model": "models/files/rip_sealsdramon.glb",
+     "clips": 0,
+     "animated": false,
+     "move": "Death Behind"
+    },
+    {
+     "stage": 2,
+     "name": "Tankdramon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Tankdramon",
+     "model": "models/files/rip_tankdramon.glb",
+     "clips": 0,
+     "animated": false,
+     "move": "Hyper Cannon"
+    }
+   ],
+   "animated": false,
+   "flags": []
+  },
+  {
+   "lineId": "agunimon",
+   "adapts": {
+    "champion": "Brand",
+    "source": "TFT Set 1",
+    "cost": 4,
+    "traits": [
+     "Demon",
+     "Elementalist"
+    ],
+    "ability": "Pyroclasm"
+   },
+   "cost": 4,
+   "traits": [
+    "Legendary Warriors",
+    "Flame",
+    "Bruiser"
+   ],
+   "role": "Bruiser",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 1170,
+    "ad": 77,
+    "as": 0.6,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 80,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "slam",
+    "stageMoves": [
+     "Pyro Tornado",
+     "Wildfire Tsunami",
+     "Pyro Dragons"
+    ],
+    "text": "Slams the ground, dealing 210 magic damage to enemies within 1 hex and stunning them for 1s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Agunimon",
+     "level": "Human Spirit",
+     "attribute": "Variable",
+     "wikimonTitle": "Agnimon",
+     "model": "models/files/rip_agunimon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Pyro Tornado"
+    },
+    {
+     "stage": 1,
+     "name": "BurningGreymon",
+     "level": "Beast Spirit",
+     "attribute": "Variable",
+     "wikimonTitle": "Vritramon",
+     "model": "models/files/rip_burninggreymon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Wildfire Tsunami"
+    },
+    {
+     "stage": 2,
+     "name": "EmperorGreymon",
+     "level": "Fused Spirit",
+     "attribute": "Variable",
+     "wikimonTitle": "Kaiser Greymon",
+     "model": "models/files/rip_emperorgreymon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Pyro Dragons"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "lobomon",
+   "adapts": {
+    "champion": "Monkey King",
+    "source": "Dota Auto Chess (2023-04-10 snapshot)",
+    "cost": 4,
+    "traits": [
+     "beast",
+     "monk"
+    ],
+    "ability": "Jingu Mastery"
+   },
+   "cost": 4,
+   "traits": [
+    "Legendary Warriors",
+    "Nature Spirits",
+    "Duelist"
+   ],
+   "role": "Duelist",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 1152,
+    "ad": 93,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "line",
+    "stageMoves": [
+     "Lobo Kendo",
+     "Solar Laser",
+     "Magna Missile"
+    ],
+    "text": "Fires through the target, dealing 333 magic damage to every enemy in a line."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Lobomon",
+     "level": "Human Spirit",
+     "attribute": "Variable",
+     "wikimonTitle": "Wolfmon",
+     "model": "models/files/rip_lobomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Lobo Kendo"
+    },
+    {
+     "stage": 1,
+     "name": "KendoGarurumon",
+     "level": "Beast Spirit",
+     "attribute": "Variable",
+     "wikimonTitle": "Garummon",
+     "model": "models/files/rip_kendogarurumon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Solar Laser"
+    },
+    {
+     "stage": 2,
+     "name": "MagnaGarurumon",
+     "level": "Fused Spirit",
+     "attribute": "Variable",
+     "wikimonTitle": "Magna Garurumon",
+     "model": "models/files/rip_magnagarurumon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Magna Missile"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "hackmon",
+   "adapts": {
+    "champion": "Akali",
+    "source": "TFT Set 1",
+    "cost": 4,
+    "traits": [
+     "Ninja",
+     "Assassin"
+    ],
+    "ability": "Five Point Strike"
+   },
+   "cost": 4,
+   "traits": [
+    "Royal Knights",
+    "Duelist"
+   ],
+   "role": "Duelist",
+   "attribute": "Data",
+   "stats": {
+    "hp": 1047,
+    "ad": 85,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "dash",
+    "stageMoves": [
+     "Fifth Crow",
+     "Cyclone Hunter",
+     "Schwertgeist"
+    ],
+    "text": "Dashes to the lowest-health enemy and strikes for 368 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Hackmon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Huckmon",
+     "model": "models/files/rip_hackmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Fifth Crow"
+    },
+    {
+     "stage": 1,
+     "name": "BaoHuckmon",
+     "level": "Champion",
+     "attribute": "Data",
+     "wikimonTitle": "Bao Huckmon",
+     "model": "models/files/rip_baohuckmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Cyclone Hunter"
+    },
+    {
+     "stage": 2,
+     "name": "Jesmon",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "JESmon",
+     "model": "models/files/rip_jesmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Schwertgeist"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "blackgatomon",
+   "adapts": {
+    "champion": "Chen",
+    "source": "Dota Auto Chess (2023-04-10 snapshot)",
+    "cost": 4,
+    "traits": [
+     "orc",
+     "priest"
+    ],
+    "ability": "Holy Persuasion"
+   },
+   "cost": 4,
+   "traits": [
+    "Demon Lords",
+    "Fallen Angels",
+    "Mystic"
+   ],
+   "role": "Mystic",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 739,
+    "ad": 62,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "drain",
+    "stageMoves": [
+     "Cat's Eye",
+     "Darkness Wave",
+     "Phantom Pain"
+    ],
+    "text": "Deals 315 magic damage to the target, healing for 60% of damage dealt."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "BlackGatomon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Black Tailmon",
+     "model": "models/files/rip_gatomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Cat's Eye"
+    },
+    {
+     "stage": 1,
+     "name": "LadyDevimon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Lady Devimon",
+     "model": "models/files/rip_ladydevimon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Darkness Wave"
+    },
+    {
+     "stage": 2,
+     "name": "Lilithmon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Lilithmon",
+     "model": "models/files/rip_lilithmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Phantom Pain"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "meicoomon",
+   "adapts": {
+    "champion": "Gnar",
+    "source": "TFT Set 1",
+    "cost": 4,
+    "traits": [
+     "Wild",
+     "Yordle",
+     "Shapeshifter"
+    ],
+    "ability": "GNAR!"
+   },
+   "cost": 4,
+   "traits": [
+    "Fallen Angels",
+    "Nightmare Soldiers",
+    "Bruiser"
+   ],
+   "role": "Bruiser",
+   "attribute": "Free",
+   "stats": {
+    "hp": 1170,
+    "ad": 77,
+    "as": 0.6,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 80,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "drain",
+    "stageMoves": [
+     "Meicoo Crack",
+     "Berserk Thinking",
+     "Darkness Zone"
+    ],
+    "text": "Deals 315 magic damage to the target, healing for 60% of damage dealt."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Meicoomon",
+     "level": "Rookie",
+     "attribute": "Unknown",
+     "wikimonTitle": "Meicoomon",
+     "model": "models/files/rip_meicoomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Meicoo Crack"
+    },
+    {
+     "stage": 1,
+     "name": "Meicrackmon VM",
+     "level": "Ultimate",
+     "attribute": "Unknown",
+     "wikimonTitle": "Meicrackmon: Vicious Mode",
+     "model": "models/files/rip_meicrackmon_vicious_mode.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Berserk Thinking"
+    },
+    {
+     "stage": 2,
+     "name": "Raguelmon",
+     "level": "Mega",
+     "attribute": "Unknown",
+     "wikimonTitle": "Raguelmon",
+     "model": "models/files/rip_raguelmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Darkness Zone"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "vorvomon",
+   "adapts": {
+    "champion": "Leona",
+    "source": "TFT Set 1",
+    "cost": 4,
+    "traits": [
+     "Noble",
+     "Guardian"
+    ],
+    "ability": "Solar Flare"
+   },
+   "cost": 4,
+   "traits": [
+    "Flame",
+    "Guardian"
+   ],
+   "role": "Guardian",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 1109,
+    "ad": 69,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "slam",
+    "stageMoves": [
+     "Vorvo Flame",
+     "Lava Burst",
+     "Volcanic Howl"
+    ],
+    "text": "Slams the ground, dealing 210 magic damage to enemies within 1 hex and stunning them for 1s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Vorvomon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Vorvomon",
+     "model": "models/files/rip_vorvomon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Vorvo Flame"
+    },
+    {
+     "stage": 1,
+     "name": "Lavorvomon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Lavorvomon",
+     "model": "models/files/rip_lavorvomon.glb",
+     "clips": 3,
+     "animated": true,
+     "move": "Lava Burst"
+    },
+    {
+     "stage": 2,
+     "name": "Lavogaritamon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Lavogaritamon",
+     "model": "models/files/rip_lavogaritamon.glb",
+     "clips": 3,
+     "animated": true,
+     "move": "Volcanic Howl"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "ryudamon",
+   "adapts": {
+    "champion": "Draven",
+    "source": "TFT Set 1",
+    "cost": 4,
+    "traits": [
+     "Imperial",
+     "Blademaster"
+    ],
+    "ability": "Spinning Axes"
+   },
+   "cost": 4,
+   "traits": [
+    "Knight Order",
+    "Duelist"
+   ],
+   "role": "Duelist",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 1047,
+    "ad": 85,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "execute",
+    "stageMoves": [
+     "Battojutsu",
+     "Tetsuzan",
+     "Hisho Ryuuha"
+    ],
+    "text": "Strikes the target for 368 magic damage, doubled if it is below 50% HP."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Ryudamon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Ryudamon",
+     "model": "models/files/rip_ryudamon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Battojutsu"
+    },
+    {
+     "stage": 1,
+     "name": "Ginryumon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Ginryumon",
+     "model": "models/files/rip_ginryumon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Tetsuzan"
+    },
+    {
+     "stage": 2,
+     "name": "Hisyaryumon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Hisyaryumon",
+     "model": "models/files/rip_hisyaryumon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Hisho Ryuuha"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "myotismon",
+   "adapts": {
+    "champion": "Swain",
+    "source": "TFT Set 1",
+    "cost": 5,
+    "traits": [
+     "Imperial",
+     "Demon",
+     "Shapeshifter"
+    ],
+    "ability": "Demonflare"
+   },
+   "cost": 5,
+   "traits": [
+    "Nightmare Soldiers",
+    "Undead",
+    "Mystic"
+   ],
+   "role": "Mystic",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 826,
+    "ad": 69,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "drain",
+    "stageMoves": [
+     "Crimson Lightning",
+     "Venom Infuse",
+     "Pandemonium Lost"
+    ],
+    "text": "Deals 360 magic damage to the target and adjacent enemies, healing for 60% of damage dealt."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Myotismon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Vamdemon",
+     "model": "models/files/rip_myotismon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Crimson Lightning"
+    },
+    {
+     "stage": 1,
+     "name": "VenomMyotismon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Venom Vamdemon",
+     "model": "models/files/rip_venommyotismon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Venom Infuse"
+    },
+    {
+     "stage": 2,
+     "name": "MaloMyotismon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Belial Vamdemon",
+     "model": "models/files/c74c0757dec749f9a8e596ea0782e45f.glb",
+     "clips": 3,
+     "animated": true,
+     "move": "Pandemonium Lost"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "imperialdramon",
+   "adapts": {
+    "champion": "Pantheon",
+    "source": "TFT Set 1",
+    "cost": 5,
+    "traits": [
+     "Dragon",
+     "Guardian"
+    ],
+    "ability": "Grand Starfall"
+   },
+   "cost": 5,
+   "traits": [
+    "Dragon's Roar",
+    "Royal Knights",
+    "Sniper"
+   ],
+   "role": "Sniper",
+   "attribute": "Free",
+   "stats": {
+    "hp": 826,
+    "ad": 95,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "aoe",
+    "stageMoves": [
+     "Positron Laser",
+     "Giga Crusher",
+     "Omni Sword"
+    ],
+    "text": "Deals 320 magic damage to the target and enemies within 2 hex."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Imperialdramon DM",
+     "level": "Mega",
+     "attribute": "Free",
+     "wikimonTitle": "Imperialdramon: Dragon Mode",
+     "model": "models/files/374d500e17a242d4990e62034593e58e.glb",
+     "clips": 0,
+     "animated": false,
+     "move": "Positron Laser"
+    },
+    {
+     "stage": 1,
+     "name": "Imperialdramon FM",
+     "level": "Mega",
+     "attribute": "Free",
+     "wikimonTitle": "Imperialdramon: Fighter Mode",
+     "model": "models/files/rip_imperialdramon_fm.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Giga Crusher"
+    },
+    {
+     "stage": 2,
+     "name": "Imperialdramon PM",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Imperialdramon: Paladin Mode",
+     "model": "models/files/rip_imperialdramon_pm.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Omni Sword"
+    }
+   ],
+   "animated": false,
+   "flags": []
+  },
+  {
+   "lineId": "lucemon",
+   "adapts": {
+    "champion": "Karthus",
+    "source": "TFT Set 1",
+    "cost": 5,
+    "traits": [
+     "Phantom",
+     "Sorcerer"
+    ],
+    "ability": "Requiem"
+   },
+   "cost": 5,
+   "traits": [
+    "Demon Lords",
+    "Fallen Angels",
+    "Mystic"
+   ],
+   "role": "Mystic",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 826,
+    "ad": 69,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "aoe",
+    "stageMoves": [
+     "Grand Cross",
+     "Paradise Lost",
+     "Divine Atonement"
+    ],
+    "text": "Deals 320 magic damage to the target and enemies within 2 hex."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Lucemon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Lucemon",
+     "model": "models/files/rip_lucemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Grand Cross"
+    },
+    {
+     "stage": 1,
+     "name": "Lucemon FM",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Lucemon: Falldown Mode",
+     "model": "models/files/rip_lucemon_fm.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Paradise Lost"
+    },
+    {
+     "stage": 2,
+     "name": "Lucemon SM",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Lucemon: Satan Mode",
+     "model": "models/files/rip_lucemon_sm.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Divine Atonement"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "beelzemon",
+   "adapts": {
+    "champion": "Miss Fortune",
+    "source": "TFT Set 1",
+    "cost": 5,
+    "traits": [
+     "Pirate",
+     "Gunslinger"
+    ],
+    "ability": "Bullet Time"
+   },
+   "cost": 5,
+   "traits": [
+    "Demon Lords",
+    "Nightmare Soldiers",
+    "Sniper"
+   ],
+   "role": "Sniper",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 826,
+    "ad": 95,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "barrage",
+    "stageMoves": [
+     "Bada Boom",
+     "Double Impact",
+     "Corona Destroyer"
+    ],
+    "text": "Fires 6 shots at random enemies, each dealing 136 magic damage."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Impmon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Impmon",
+     "model": "models/files/rip_impmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Bada Boom"
+    },
+    {
+     "stage": 1,
+     "name": "Beelzemon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Beelzebumon",
+     "model": "models/files/5916bfad3dd7434eb007a749e5170bd7.glb",
+     "clips": 3,
+     "animated": true,
+     "move": "Double Impact"
+    },
+    {
+     "stage": 2,
+     "name": "Beelzemon BM",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Beelzebumon: Blast Mode",
+     "model": "models/files/5916bfad3dd7434eb007a749e5170bd7.glb",
+     "clips": 3,
+     "animated": true,
+     "move": "Corona Destroyer"
+    }
+   ],
+   "animated": true,
+   "flags": [
+    "stage 2 reuses the model of an earlier stage (Beelzemon BM)"
+   ]
+  },
+  {
+   "lineId": "machinedramon",
+   "adapts": {
+    "champion": "Elder Titan",
+    "source": "Dota Auto Chess (2023-04-10 snapshot)",
+    "cost": 5,
+    "traits": [
+     "god",
+     "tauren",
+     "druid"
+    ],
+    "ability": "Earth Splitter"
+   },
+   "cost": 5,
+   "traits": [
+    "Metal Empire",
+    "Guardian"
+   ],
+   "role": "Guardian",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 1424,
+    "ad": 77,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "slam",
+    "stageMoves": [
+     "Dark Side Attack",
+     "Giga Cannon",
+     "Hyper Mugen Cannon"
+    ],
+    "text": "Slams the ground, dealing 240 magic damage to enemies within 2 hex and stunning them for 1s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Megadramon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Megadramon",
+     "model": "models/files/rip_megadramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Dark Side Attack"
+    },
+    {
+     "stage": 1,
+     "name": "Machinedramon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Mugendramon",
+     "model": "models/files/428e84d9b7cc40aa86cfc6b1d94c4552.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Giga Cannon"
+    },
+    {
+     "stage": 2,
+     "name": "Chaosdramon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Chaosdramon",
+     "model": "models/files/7eb1ef6913354b80996c594d7b80d221.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Hyper Mugen Cannon"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "veedramon",
+   "adapts": {
+    "champion": "Yasuo",
+    "source": "TFT Set 1",
+    "cost": 5,
+    "traits": [
+     "Exile",
+     "Blademaster"
+    ],
+    "ability": "Steel Tempest"
+   },
+   "cost": 5,
+   "traits": [
+    "Royal Knights",
+    "Dragon's Roar",
+    "Duelist"
+   ],
+   "role": "Duelist",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 1345,
+    "ad": 114,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "line",
+    "stageMoves": [
+     "V-Breath Arrow",
+     "Magnum Crusher",
+     "Shining V Force"
+    ],
+    "text": "Fires through the target, dealing 380 magic damage to every enemy in a line."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Veedramon",
+     "level": "Champion",
+     "attribute": "Vaccine",
+     "wikimonTitle": "V-dramon",
+     "model": "models/files/rip_veedramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "V-Breath Arrow"
+    },
+    {
+     "stage": 1,
+     "name": "AeroVeedramon",
+     "level": "Ultimate",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Aero V-dramon",
+     "model": "models/files/rip_aeroveedramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Magnum Crusher"
+    },
+    {
+     "stage": 2,
+     "name": "UlforceVeedramon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Ulforce V-dramon",
+     "model": "models/files/rip_ulforceveedramon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Shining V Force"
+    }
+   ],
+   "animated": true,
+   "flags": []
+  },
+  {
+   "lineId": "omnimon",
+   "adapts": {
+    "champion": "Kai'Sa",
+    "source": "TFT Set 1",
+    "cost": 5,
+    "traits": [
+     "Void",
+     "Ranger",
+     "Assassin"
+    ],
+    "ability": "Killer Instinct"
+   },
+   "cost": 5,
+   "traits": [
+    "Royal Knights",
+    "Xros Fusion",
+    "Striker"
+   ],
+   "role": "Striker",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 1066,
+    "ad": 103,
+    "as": 0.7,
+    "range": 1,
+    "armor": 30,
+    "mr": 30,
+    "mana": 70,
+    "startMana": 10,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "execute",
+    "stageMoves": [
+     "Great Tornado",
+     "Transcendent Sword",
+     "Supreme Cannon"
+    ],
+    "text": "Strikes the target for 420 magic damage, doubled if it is below 50% HP."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "WarGreymon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "War Greymon",
+     "model": "models/files/rip_wargreymon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Great Tornado"
+    },
+    {
+     "stage": 1,
+     "name": "Omnimon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Omegamon",
+     "model": "models/files/rip_omnimon.glb",
+     "clips": 3,
+     "animated": true,
+     "move": "Transcendent Sword"
+    },
+    {
+     "stage": 2,
+     "name": "Omnimon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Omegamon",
+     "model": "models/files/rip_omnimon.glb",
+     "clips": 3,
+     "animated": true,
+     "move": "Supreme Cannon"
+    }
+   ],
+   "animated": true,
+   "flags": [
+    "stage 2 reuses the model of an earlier stage (Omnimon)",
+    "stages 1 and 2 are the same Digimon (Omnimon)"
+   ]
+  },
+  {
+   "lineId": "alphamon",
+   "adapts": {
+    "champion": "Kayle",
+    "source": "TFT Set 1",
+    "cost": 5,
+    "traits": [
+     "Noble",
+     "Knight"
+    ],
+    "ability": "Divine Judgement"
+   },
+   "cost": 5,
+   "traits": [
+    "Royal Knights",
+    "Guardian"
+   ],
+   "role": "Guardian",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 1238,
+    "ad": 77,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "slam",
+    "stageMoves": [
+     "Digitalize of Soul",
+     "Alpha Inforce",
+     "Ouryuken"
+    ],
+    "text": "Slams the ground, dealing 240 magic damage to enemies within 2 hex and stunning them for 1s."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Alphamon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Alphamon",
+     "model": "models/files/rip_alphamon.glb",
+     "clips": 3,
+     "animated": true,
+     "move": "Digitalize of Soul"
+    },
+    {
+     "stage": 1,
+     "name": "Alphamon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Alphamon",
+     "model": "models/files/rip_alphamon.glb",
+     "clips": 3,
+     "animated": true,
+     "move": "Alpha Inforce"
+    },
+    {
+     "stage": 2,
+     "name": "Alphamon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Alphamon",
+     "model": "models/files/rip_alphamon.glb",
+     "clips": 3,
+     "animated": true,
+     "move": "Ouryuken"
+    }
+   ],
+   "animated": true,
+   "flags": [
+    "stage 1 reuses the model of an earlier stage (Alphamon)",
+    "stage 2 reuses the model of an earlier stage (Alphamon)",
+    "stages 1 and 2 are the same Digimon (Alphamon)",
+    "stages 0 and 1 are the same Digimon (Alphamon)"
+   ]
+  },
+  {
+   "lineId": "phoenixmon",
+   "adapts": {
+    "champion": "Anivia",
+    "source": "TFT Set 1",
+    "cost": 5,
+    "traits": [
+     "Glacial",
+     "Elementalist"
+    ],
+    "ability": "Glacial Storm"
+   },
+   "cost": 5,
+   "traits": [
+    "Holy Beasts",
+    "Flame",
+    "Mystic"
+   ],
+   "role": "Mystic",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 826,
+    "ad": 69,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "aoe",
+    "stageMoves": [
+     "Crimson Flame",
+     "Phoenix Wing",
+     "Starlight Explosion"
+    ],
+    "text": "Deals 320 magic damage to the target and enemies within 2 hex."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Phoenixmon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Hououmon",
+     "model": "models/files/rip_phoenixmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Crimson Flame"
+    },
+    {
+     "stage": 1,
+     "name": "Phoenixmon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Hououmon",
+     "model": "models/files/rip_phoenixmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Phoenix Wing"
+    },
+    {
+     "stage": 2,
+     "name": "Phoenixmon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Hououmon",
+     "model": "models/files/rip_phoenixmon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Starlight Explosion"
+    }
+   ],
+   "animated": true,
+   "flags": [
+    "stage 1 reuses the model of an earlier stage (Phoenixmon)",
+    "stage 2 reuses the model of an earlier stage (Phoenixmon)",
+    "stages 1 and 2 are the same Digimon (Phoenixmon)",
+    "stages 0 and 1 are the same Digimon (Phoenixmon)"
+   ]
+  },
+  {
+   "lineId": "daemon",
+   "adapts": {
+    "champion": "Jakiro",
+    "source": "Dota Auto Chess (2023-04-10 snapshot)",
+    "cost": 5,
+    "traits": [
+     "dragon",
+     "mage"
+    ],
+    "ability": null
+   },
+   "cost": 5,
+   "traits": [
+    "Demon Lords",
+    "Flame",
+    "Bruiser"
+   ],
+   "role": "Bruiser",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 1307,
+    "ad": 86,
+    "as": 0.6,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 80,
+    "startMana": 20,
+    "note": "Stage 0 values from DT.unitStats."
+   },
+   "ability": {
+    "type": "aoe",
+    "stageMoves": [
+     "Evil Inferno",
+     "Flame Inferno",
+     "Chaos Flare"
+    ],
+    "text": "Deals 320 magic damage to the target and enemies within 2 hex."
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Daemon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Demon",
+     "model": "models/files/rip_daemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Evil Inferno"
+    },
+    {
+     "stage": 1,
+     "name": "Daemon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Demon",
+     "model": "models/files/rip_daemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Flame Inferno"
+    },
+    {
+     "stage": 2,
+     "name": "Daemon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Demon",
+     "model": "models/files/rip_daemon.glb",
+     "clips": 4,
+     "animated": true,
+     "move": "Chaos Flare"
+    }
+   ],
+   "animated": true,
+   "flags": [
+    "stage 1 reuses the model of an earlier stage (Daemon)",
+    "stage 2 reuses the model of an earlier stage (Daemon)",
+    "stages 1 and 2 are the same Digimon (Daemon)",
+    "stages 0 and 1 are the same Digimon (Daemon)"
+   ]
+  }
+ ],
+ "wildUnits": [
+  {
+   "lineId": "goblimon",
+   "forms": [
+    "Goblimon",
+    "Goblimon",
+    "Goblimon"
+   ],
+   "tier": 1,
+   "traits": [
+    "Nightmare Soldiers",
+    "Striker"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "kuwagamon",
+   "forms": [
+    "Kuwagamon",
+    "Kuwagamon",
+    "Kuwagamon"
+   ],
+   "tier": 2,
+   "traits": [
+    "Jungle Troopers",
+    "Striker"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "ogremon",
+   "forms": [
+    "Ogremon",
+    "Ogremon",
+    "Ogremon"
+   ],
+   "tier": 2,
+   "traits": [
+    "Nightmare Soldiers",
+    "Guardian"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "tyrannomon",
+   "forms": [
+    "Tyrannomon",
+    "Tyrannomon",
+    "Tyrannomon"
+   ],
+   "tier": 3,
+   "traits": [
+    "Dragon's Roar",
+    "Striker"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "etemon",
+   "forms": [
+    "Etemon",
+    "Etemon",
+    "Etemon"
+   ],
+   "tier": 3,
+   "traits": [
+    "Nightmare Soldiers",
+    "Mystic"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "skullgreymon",
+   "forms": [
+    "SkullGreymon",
+    "SkullGreymon",
+    "SkullGreymon"
+   ],
+   "tier": 4,
+   "traits": [
+    "Nightmare Soldiers",
+    "Striker"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "sukamon",
+   "forms": [
+    "Sukamon",
+    "Sukamon",
+    "Sukamon"
+   ],
+   "tier": 2,
+   "traits": [
+    "Pranksters",
+    "Bruiser"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "nanimon",
+   "forms": [
+    "Nanimon",
+    "Nanimon",
+    "Nanimon"
+   ],
+   "tier": 3,
+   "traits": [
+    "Pranksters",
+    "Striker"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "monzaemon",
+   "forms": [
+    "Monzaemon",
+    "Monzaemon",
+    "Monzaemon"
+   ],
+   "tier": 4,
+   "traits": [
+    "Pranksters",
+    "Guardian"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "frigimon",
+   "forms": [
+    "Frigimon",
+    "Frigimon",
+    "Frigimon"
+   ],
+   "tier": 2,
+   "traits": [
+    "Frost",
+    "Guardian"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "bakemon",
+   "forms": [
+    "Bakemon",
+    "Bakemon",
+    "Bakemon"
+   ],
+   "tier": 2,
+   "traits": [
+    "Undead",
+    "Assassin"
+   ],
+   "boss": false,
+   "retro": false
+  },
+  {
+   "lineId": "kimeramon",
+   "forms": [
+    "Kimeramon",
+    "Kimeramon",
+    "Kimeramon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Nightmare Soldiers",
+    "Striker"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "piedmon",
+   "forms": [
+    "Piedmon",
+    "Piedmon",
+    "Piedmon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Nightmare Soldiers",
+    "Assassin"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "metalseadramon",
+   "forms": [
+    "MetalSeadramon",
+    "MetalSeadramon",
+    "MetalSeadramon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Deep Savers",
+    "Sniper"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "crusadermon",
+   "forms": [
+    "Crusadermon",
+    "Crusadermon",
+    "Crusadermon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Royal Knights",
+    "Assassin"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "leopardmon",
+   "forms": [
+    "Leopardmon",
+    "Leopardmon",
+    "Leopardmon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Royal Knights",
+    "Duelist"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "craniamon",
+   "forms": [
+    "Craniamon",
+    "Craniamon",
+    "Craniamon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Royal Knights",
+    "Guardian"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "dynasmon",
+   "forms": [
+    "Dynasmon",
+    "Dynasmon",
+    "Dynasmon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Royal Knights",
+    "Bruiser"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "magnamon",
+   "forms": [
+    "Magnamon",
+    "Magnamon",
+    "Magnamon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Royal Knights",
+    "Guardian"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "diaboromon",
+   "forms": [
+    "Diaboromon",
+    "Diaboromon",
+    "Diaboromon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Nightmare Soldiers",
+    "Assassin"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "armageddemon",
+   "forms": [
+    "Armageddemon",
+    "Armageddemon",
+    "Armageddemon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Nightmare Soldiers",
+    "Mystic"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "seraphimon",
+   "forms": [
+    "Seraphimon",
+    "Seraphimon",
+    "Seraphimon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Virus Busters",
+    "Mystic"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "ophanimon",
+   "forms": [
+    "Ophanimon",
+    "Ophanimon",
+    "Ophanimon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Virus Busters",
+    "Support"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "magnadramon",
+   "forms": [
+    "Magnadramon",
+    "Magnadramon",
+    "Magnadramon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Holy Beasts",
+    "Mystic"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "leviamon",
+   "forms": [
+    "Leviamon",
+    "Leviamon",
+    "Leviamon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Demon Lords",
+    "Bruiser"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "barbamon",
+   "forms": [
+    "Barbamon",
+    "Barbamon",
+    "Barbamon"
+   ],
+   "tier": 5,
+   "traits": [
+    "Demon Lords",
+    "Mystic"
+   ],
+   "boss": true,
+   "retro": false
+  },
+  {
+   "lineId": "belphemon",
+   "forms": [
+    "Belphemon RM",
+    "Belphemon RM",
+    "Belphemon RM"
+   ],
+   "tier": 5,
+   "traits": [
+    "Demon Lords",
+    "Striker"
+   ],
+   "boss": true,
+   "retro": false
+  }
+ ],
+ "tftSet1Unmapped": [
+  "Nidalee"
+ ],
+ "cyberSleuthFamilyCheck": {
+  "reSource": [
+   {
+    "key": "agumon:0",
+    "form": "Agumon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:302502",
+     "cs:324396",
+     "ts:602390 (second texture/mesh in the file)"
+    ]
+   },
+   {
+    "key": "agumon:1",
+    "form": "Greymon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304043",
+     "cs:335818"
+    ]
+   },
+   {
+    "key": "gabumon:0",
+    "form": "Gabumon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304052",
+     "cs:324615",
+     "ts:605069 (second texture/mesh in the file)"
+    ]
+   },
+   {
+    "key": "gabumon:1",
+    "form": "Garurumon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304006",
+     "cs:326174"
+    ]
+   },
+   {
+    "key": "gabumon:2",
+    "form": "WereGarurumon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304078"
+    ]
+   },
+   {
+    "key": "tentomon:0",
+    "form": "Tentomon",
+    "now": "Sketchfab upload",
+    "use": [
+     "cs:324499",
+     "ts:603374"
+    ]
+   },
+   {
+    "key": "gomamon:1",
+    "form": "Ikkakumon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304106",
+     "cs:335820"
+    ]
+   },
+   {
+    "key": "biyomon:0",
+    "form": "Biyomon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304046",
+     "cs:324595",
+     "ts:603472"
+    ]
+   },
+   {
+    "key": "hagurumon:0",
+    "form": "Hagurumon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304012",
+     "cs:324621",
+     "ts:603333"
+    ]
+   },
+   {
+    "key": "hagurumon:1",
+    "form": "Guardromon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304091",
+     "cs:324628"
+    ]
+   },
+   {
+    "key": "hagurumon:2",
+    "form": "Andromon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:302503"
+    ]
+   },
+   {
+    "key": "demidevimon:1",
+    "form": "Devimon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304003",
+     "cs:326172"
+    ]
+   },
+   {
+    "key": "guilmon:0",
+    "form": "Guilmon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304010",
+     "cs:324620",
+     "ts:607376"
+    ]
+   },
+   {
+    "key": "guilmon:1",
+    "form": "Growlmon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304009",
+     "cs:335819"
+    ]
+   },
+   {
+    "key": "renamon:1",
+    "form": "Kyubimon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304108",
+     "cs:335821"
+    ]
+   },
+   {
+    "key": "patamon:0",
+    "form": "Patamon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304072",
+     "cs:324600",
+     "ts:606167"
+    ]
+   },
+   {
+    "key": "patamon:2",
+    "form": "MagnaAngemon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304064"
+    ]
+   },
+   {
+    "key": "salamon:1",
+    "form": "Gatomon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304007",
+     "cs:326175"
+    ]
+   },
+   {
+    "key": "elecmon:0",
+    "form": "Elecmon",
+    "now": "ReArise",
+    "use": [
+     "cs:324503",
+     "ts:604898 (second texture/mesh in the file)"
+    ]
+   },
+   {
+    "key": "elecmon:2",
+    "form": "Panjyamon",
+    "now": "Masters",
+    "use": [
+     "links:304016 (second texture/mesh in the file)"
+    ]
+   },
+   {
+    "key": "hawkmon:0",
+    "form": "Hawkmon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304204",
+     "cs:324609",
+     "ts:608447"
+    ]
+   },
+   {
+    "key": "hawkmon:1",
+    "form": "Aquilamon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:303996",
+     "cs:326168"
+    ]
+   },
+   {
+    "key": "hawkmon:2",
+    "form": "Silphymon",
+    "now": "Sketchfab upload",
+    "use": [
+     "cs:324574"
+    ]
+   },
+   {
+    "key": "keramon:0",
+    "form": "Keramon",
+    "now": "Sketchfab upload",
+    "use": [
+     "cs:324288",
+     "ts:608482"
+    ]
+   },
+   {
+    "key": "keramon:2",
+    "form": "Infermon",
+    "now": "Sketchfab upload",
+    "use": [
+     "cs:324290"
+    ]
+   },
+   {
+    "key": "lopmon:1",
+    "form": "Turuiemon",
+    "now": "ReArise",
+    "use": [
+     "cs:324482"
+    ]
+   },
+   {
+    "key": "gizamon:0",
+    "form": "Gizamon",
+    "now": "TimeStranger",
+    "use": [
+     "ts:607154"
+    ]
+   },
+   {
+    "key": "candlemon:1",
+    "form": "Wizardmon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304124",
+     "cs:335839"
+    ]
+   },
+   {
+    "key": "veemon:0",
+    "form": "Veemon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304074",
+     "cs:324605",
+     "ts:608297"
+    ]
+   },
+   {
+    "key": "veemon:1",
+    "form": "ExVeemon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304103",
+     "cs:335814"
+    ]
+   },
+   {
+    "key": "veemon:2",
+    "form": "Paildramon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304132"
+    ]
+   },
+   {
+    "key": "dorumon:0",
+    "form": "Dorumon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304050",
+     "cs:324597",
+     "ts:605583"
+    ]
+   },
+   {
+    "key": "dorumon:1",
+    "form": "Dorugamon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304102",
+     "cs:335813"
+    ]
+   },
+   {
+    "key": "gaomon:0",
+    "form": "Gaomon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304005",
+     "cs:324616",
+     "ts:604925"
+    ]
+   },
+   {
+    "key": "lalamon:1",
+    "form": "Sunflowmon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304037",
+     "cs:335833"
+    ]
+   },
+   {
+    "key": "imperialdramon:1",
+    "form": "Imperialdramon FM",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304153"
+    ]
+   },
+   {
+    "key": "imperialdramon:2",
+    "form": "Imperialdramon PM",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304153 (second texture/mesh in the file)",
+     "cs:324590"
+    ]
+   },
+   {
+    "key": "beelzemon:1",
+    "form": "Beelzemon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304000",
+     "cs:324633",
+     "redigitize"
+    ]
+   },
+   {
+    "key": "beelzemon:2",
+    "form": "Beelzemon BM",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:310678"
+    ]
+   },
+   {
+    "key": "machinedramon:1",
+    "form": "Machinedramon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304110"
+    ]
+   },
+   {
+    "key": "machinedramon:2",
+    "form": "Chaosdramon",
+    "now": "Sketchfab upload",
+    "use": [
+     "links:304160"
+    ]
+   }
+  ],
+  "missing": [
+   {
+    "key": "demidevimon:2",
+    "form": "NeoDevimon",
+    "now": "Masters",
+    "band": "ultimate",
+    "proposal": "SkullSatamon (Cyber Sleuth)"
+   },
+   {
+    "key": "gizamon:1",
+    "form": "Gesomon",
+    "now": "digimonnewcentury",
+    "band": "champion",
+    "proposal": "Coelamon (Cyber Sleuth)"
+   },
+   {
+    "key": "gizamon:2",
+    "form": "MarineDevimon",
+    "now": "digimonnewcentury",
+    "band": "ultimate",
+    "proposal": "Dragomon (Cyber Sleuth)"
+   },
+   {
+    "key": "candlemon:0",
+    "form": "Candlemon",
+    "now": "Sketchfab upload",
+    "band": "rookie",
+    "proposal": "Impmon (shared Rookie; Cyber Sleuth)"
+   },
+   {
+    "key": "candlemon:2",
+    "form": "Mistymon",
+    "now": "Masters",
+    "band": "ultimate",
+    "proposal": "Wisemon (Cyber Sleuth)"
+   },
+   {
+    "key": "commandramon:0",
+    "form": "Commandramon",
+    "now": "Masters",
+    "band": "rookie",
+    "proposal": "ToyAgumon (shared Rookie; Links / Cyber Sleuth)"
+   },
+   {
+    "key": "commandramon:1",
+    "form": "Sealsdramon",
+    "now": "Masters",
+    "band": "champion",
+    "proposal": "Tankmon (Cyber Sleuth, already downloaded)"
+   },
+   {
+    "key": "commandramon:2",
+    "form": "Tankdramon",
+    "now": "Masters",
+    "band": "ultimate",
+    "proposal": "MetalTyrannomon (Links)"
+   },
+   {
+    "key": "myotismon:2",
+    "form": "MaloMyotismon",
+    "now": "Sketchfab upload",
+    "band": "mega",
+    "proposal": "GranDracmon (Cyber Sleuth)"
+   },
+   {
+    "key": "imperialdramon:0",
+    "form": "Imperialdramon DM",
+    "now": "Sketchfab upload",
+    "band": "mega",
+    "proposal": "Veemon (shared Rookie; the line becomes Rookie > Mega > Mega like the Impmon line)"
+   }
+  ]
+ },
+ "items": [
+  {
+   "name": "Crests (8)",
+   "adapts": "Spatula items (Set 1)",
+   "effect": "Already in the game: Digi-Egg + component gives a trait Crest."
+  },
+  {
+   "name": "Golden Digi-Egg",
+   "adapts": "Force of Nature (Spatula + Spatula)",
+   "effect": "Already in the game: +1 team size."
+  },
+  {
+   "name": "Worth adding: Yuumi Chip",
+   "adapts": "Yuumi (Spatula + Tear, Set 1)",
+   "effect": "Holder gains the Mystic role trait."
+  },
+  {
+   "name": "Worth adding: Runaan's Feather",
+   "adapts": "Runaan's Hurricane (Set 1)",
+   "effect": "Attacks hit one extra enemy for 50% damage."
+  },
+  {
+   "name": "Worth adding: Frozen Mallet",
+   "adapts": "Frozen Mallet (Set 1, Glacial)",
+   "effect": "Holder gains Frost."
+  }
+ ],
+ "augments": [
+  {
+   "name": "None in TFT Set 1",
+   "adapts": "-",
+   "effect": "The game's 27 augments come from later sets and stay as they are."
+  }
+ ],
+ "reuse": [
+  {
+   "unit": "beelzemon",
+   "why": [
+    "stage 2 reuses the model of an earlier stage (Beelzemon BM)"
+   ]
+  },
+  {
+   "unit": "omnimon",
+   "why": [
+    "stage 2 reuses the model of an earlier stage (Omnimon)",
+    "stages 1 and 2 are the same Digimon (Omnimon)"
+   ]
+  },
+  {
+   "unit": "alphamon",
+   "why": [
+    "stage 1 reuses the model of an earlier stage (Alphamon)",
+    "stage 2 reuses the model of an earlier stage (Alphamon)",
+    "stages 1 and 2 are the same Digimon (Alphamon)",
+    "stages 0 and 1 are the same Digimon (Alphamon)"
+   ]
+  },
+  {
+   "unit": "phoenixmon",
+   "why": [
+    "stage 1 reuses the model of an earlier stage (Phoenixmon)",
+    "stage 2 reuses the model of an earlier stage (Phoenixmon)",
+    "stages 1 and 2 are the same Digimon (Phoenixmon)",
+    "stages 0 and 1 are the same Digimon (Phoenixmon)"
+   ]
+  },
+  {
+   "unit": "daemon",
+   "why": [
+    "stage 1 reuses the model of an earlier stage (Daemon)",
+    "stage 2 reuses the model of an earlier stage (Daemon)",
+    "stages 1 and 2 are the same Digimon (Daemon)",
+    "stages 0 and 1 are the same Digimon (Daemon)"
+   ]
+  }
+ ],
+ "checks": [],
+ "snapshot": {
+  "dataJsModified": "2026-10-15T16:27:18.473Z",
+  "modelsIndexModified": "2026-10-15T16:19:55.274Z"
+ },
+ "generated": "2026-10-15"
+}

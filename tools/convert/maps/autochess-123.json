@@ -1,0 +1,100 @@
+{
+ "ac:Turuiemon": "CS_Turuiemon",
+ "ac:Greymon": "CS_Greymon",
+ "ac:Keramon": "CS_Keramon",
+ "ac:Infermon": "CS_Infermon",
+ "ac:Coronamon": "TS_Coronamon",
+ "ac:Kokuwamon": "TS_Kokuwamon",
+ "ac:Tankmon": "CS_Tankmon",
+ "ac:Golemon": "CS_Golemon",
+ "ac:Meteormon": "CS_Meteormon",
+ "ac:Bearmon": "TS_Bearmon",
+ "ac:Coredramon_Blue": "CS_Coredramon_Blue",
+ "ac:Wisemon": "CS_Wisemon",
+ "ac:SaviorHuckmon": "CS_SaviorHuckmon",
+ "ac:BlackAgumon": "TS_BlackAgumon",
+ "ac:BlackGreymon": "CS_BlackGreymon",
+ "ac:Phantomon": "CS_Phantomon",
+ "ac:Sunflowmon": "CS_Sunflowmon",
+ "ac:Hyokomon": "TS_Hyokomon",
+ "ac:Meramon": "CS_Meramon",
+ "ac:SkullMeramon": "L_SkullMeramon",
+ "ac:Gumdramon": "L_Gumdramon",
+ "ac:Arresterdramon": "L_Arresterdramon_DAE",
+ "ac:Slayerdramon": "L_Slayerdramon",
+ "ac:Floramon": "TS_Floramon",
+ "ac:Ikkakumon": "CS_Ikkakumon",
+ "ac:Solarmon": "CS_Solarmon",
+ "ac:Clockmon": "CS_Clockmon",
+ "ac:Datamon": "CS_Datamon",
+ "ac:Merukimon": "CS_Merukimon",
+ "ac:Dianamon": "CS_Dianamon",
+ "ac:Raremon": "CS_Raremon",
+ "ac:SkullGreymon": "L_SkullGreymon",
+ "ac:Garurumon": "CS_Garurumon",
+ "ac:WereGarurumon": "L_WereGarurumon",
+ "ac:Patamon": "CS_Patamon",
+ "ac:SnowGoblimon": "NO_SnowGoblimon",
+ "ac:Hyogamon": "NO_Hyogamon",
+ "ac:Gazimon": "CS_Gazimon",
+ "ac:Devimon": "CS_Devimon",
+ "ac:SkullSatamon": "CS_SkullSatamon",
+ "ac:Hawkmon": "CS_Hawkmon",
+ "ac:Aquilamon": "CS_Aquilamon",
+ "ac:Silphymon": "CS_Silphymon",
+ "ac:Mushroomon": "CS_Mushroomon",
+ "ac:Guilmon": "CS_Guilmon",
+ "_alias": {
+  "CS_Coredramon_Blue": "CS_Coredramon_Green",
+  "TS_BlackAgumon": "TS_Agumon_BlackAgumon",
+  "CS_BlackGreymon": "CS_Greymon",
+  "L_Arresterdramon_DAE": "L_Arresterdramon",
+  "L_BlackWarGreymon": "WarGreymon",
+  "L_Tsukaimon": "L_Patamon",
+  "L_IceLeomon": "Leomon"
+ },
+ "_pick": {
+  "CS_Greymon": "chr326.fbx$",
+  "CS_BlackGreymon": "chr712.fbx$",
+  "CS_Coredramon_Blue": "chr209.fbx$",
+  "L_Arresterdramon_DAE": "chr063.dae$"
+ },
+ "_retexture": {
+  "CS_Coredramon_Blue": {
+   "chr209a01.png": "chr218a01.png",
+   "chr209b01.png": "chr218b01.png"
+  },
+  "TS_BlackAgumon": {
+   "chr050a01.png": "chr143a01.png",
+   "chr050b01.png": "chr143b01.png"
+  },
+  "CS_BlackGreymon": {
+   "chr326a01.png": "chr712a01.png",
+   "chr326b01.png": "chr712b01.png"
+  },
+  "L_BlackWarGreymon": {
+   "chr027a01.png": "chr175a01.png"
+  },
+  "L_Tsukaimon": {
+   "chr096a01.png": "chr255_m.png"
+  },
+  "L_IceLeomon": {
+   "chr072a01.png": "chr409a01.png"
+  }
+ },
+ "_form": {
+  "CS_Coredramon_Blue": "Coredramon (Blue)",
+  "L_Arresterdramon_DAE": "Arresterdramon",
+  "L_BlackWarGreymon": "BlackWarGreymon",
+  "L_Tsukaimon": "Tsukaimon",
+  "L_IceLeomon": "IceLeomon"
+ },
+ "ac:Antylamon": "Andiramon",
+ "ac:Firamon": "Firamon",
+ "ac:Grizzlymon": "Grizzlymon",
+ "ac:Commandramon": "Commandramon",
+ "ac:Sealsdramon": "Sealsdramon",
+ "ac:BlackWarGreymon": "L_BlackWarGreymon",
+ "ac:Tsukaimon": "L_Tsukaimon",
+ "ac:IceLeomon": "L_IceLeomon"
+}

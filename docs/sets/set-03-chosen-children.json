@@ -1,0 +1,3530 @@
+{
+ "set": 3,
+ "name": "Chosen Children (partial)",
+ "slug": "chosen-children",
+ "corpus": "TFT Set 4: Fates. Only 19 of its 58 champions plus Ornn from Set 4.5 are covered: the Cyber Sleuth-family models ran out after Set 2",
+ "theme": "Planned as the Digi-Destined partner set (TFT Set 4 Chosen). After Sets 1 and 2 only 1 Champion-level, 3 Ultimate-level and 38 Mega-level Cyber Sleuth-family models are left, so this file covers 4- and 5-cost slots with Mega-to-Mega lines and stops. The 1- to 3-cost slots wait for more Time Stranger rips.",
+ "mechanic": {
+  "name": "Partner Digimon",
+  "adapts": "Chosen (TFT Set 4)",
+  "rules": [
+   "From level 4 the shop can offer one Partner: a Digimon that is already at its Champion form (stage 1, the same as a 2-star) and costs 3x its base cost.",
+   "One of its origin traits is marked and counts as 2. The Partner gets +200 max HP and one bonus picked at random when it is offered: +30 AP, +30% AD, or 25% lower mana cost.",
+   "Only one Partner at a time. While you own one, no more are offered; selling it turns offers back on.",
+   "Partner cost-tier odds by level (from TFT 10.19): L4 40/60/0/0/0, L5 20/50/30/0/0, L6 10/45/45/0/0, L7 0/30/40/30/0, L8 0/20/40/40/0, L9 0/0/30/40/30. A Partner is shown at least once by round 2-2.",
+   "Three copies still digivolve: a Partner plus three Champion-form copies of the same line make its final form."
+  ],
+  "engineWork": "Shop flag for a stage-1 offer, a per-unit marked trait that counts double, and the bonus roll. The Data Wisps from the current game are switched off in this set."
+ },
+ "unitCount": 20,
+ "unitsByCost": {
+  "3": 1,
+  "4": 11,
+  "5": 8
+ },
+ "animatedUnits": 18,
+ "traits": [
+  {
+   "id": "DOC",
+   "name": "Dark Ocean",
+   "kind": "origin",
+   "adapts": "Cultist",
+   "bp": [
+    3,
+    5,
+    7
+   ],
+   "effect": [
+    "Summon Dragomon's Shadow (1500 HP, slam 200 magic damage)",
+    "Shadow 3000 HP, slam 400",
+    "Shadow 5000 HP, slam 800"
+   ],
+   "desc": "The first time your team has lost 50% of its total HP in a fight, Dragomon's Shadow rises under the largest group of enemies, deals its slam damage and knocks them up for 1.5s, then fights for you. It gains 10% HP and damage per form stage of your Dark Ocean units (Rookie 0, Champion 1, final 2).",
+   "units": [
+    "BlackWarGreymon (4)",
+    "MegaGargomon (4)",
+    "MarineAngemon (5)"
+   ],
+   "count": 3
+  },
+  {
+   "id": "CEL",
+   "name": "Celestial",
+   "kind": "origin",
+   "adapts": "Divine",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "Ascend for 3s",
+    "Ascend for 6s",
+    "Ascend for 9s"
+   ],
+   "desc": "After 6 basic attacks or when it first drops below 50% HP, a Celestial unit cleanses all crowd control and ascends: it takes 45% less damage and deals 45% bonus true damage for the duration.",
+   "units": [
+    "MirageGaogamon Burst Mode (4)",
+    "ShineGreymon Ruin Mode (5)"
+   ],
+   "count": 2
+  },
+  {
+   "id": "WIT",
+   "name": "Witchelny",
+   "kind": "origin",
+   "adapts": "Dusk",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "All allies +20 AP",
+    "All allies +20 AP; Witchelny units +50 more"
+   ],
+   "desc": "Witches and wizards of the Witchelny realm power up every ability on the team.",
+   "units": [
+    "Boltboutamon (4)",
+    "BlackWarGreymon X (4)",
+    "Ophanimon Falldown Mode (5)"
+   ],
+   "count": 3
+  },
+  {
+   "id": "FOR",
+   "name": "Ancient Forest",
+   "kind": "origin",
+   "adapts": "Elderwood",
+   "bp": [
+    3,
+    5,
+    7
+   ],
+   "effect": [
+    "+20 armor/MR and +5 AD/AP per stack",
+    "+30 armor/MR and +10 AD/AP per stack",
+    "+40 armor/MR and +20 AD/AP per stack"
+   ],
+   "desc": "Every 2 seconds Ancient Forest units grow and gain the listed stats, stacking up to 5 times.",
+   "units": [
+    "TyrantKabuterimon (4)",
+    "Ebemon (5)"
+   ],
+   "count": 2
+  },
+  {
+   "id": "SAI",
+   "name": "Pilgrims",
+   "kind": "origin",
+   "adapts": "Enlightened",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+40% mana gained",
+    "+70% mana gained",
+    "+100% mana gained"
+   ],
+   "desc": "Wandering monks and sages gain more mana from every source.",
+   "units": [
+    "Apocalymon (4)",
+    "Ravemon Burst Mode (4)"
+   ],
+   "count": 2
+  },
+  {
+   "id": "RON",
+   "name": "Ronin",
+   "kind": "origin",
+   "adapts": "Exile",
+   "bp": [
+    1,
+    2
+   ],
+   "effect": [
+    "Shield equal to 50% max HP",
+    "Shield, and 80% lifesteal"
+   ],
+   "desc": "A Ronin with no adjacent ally when combat starts gains the bonus.",
+   "units": [
+    "Omnimon Zwart D (5)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "ZOD",
+   "name": "Zodiac Armor",
+   "kind": "origin",
+   "adapts": "Fortune",
+   "bp": [
+    3,
+    5
+   ],
+   "effect": [
+    "Lucky Orb payout",
+    "Lucky Orb payout plus a rare orb"
+   ],
+   "desc": "Each PvP loss with Zodiac Armor active adds a lucky token (max 8). Your next PvP win pays a loot orb worth 2 gold plus 1 gold per token; at 4+ tokens it also holds a component, at 7+ a completed item. With 5 Zodiac Armor every win also drops a rare orb (Digi-Egg or 4 gold).",
+   "units": [
+    "Titamon (4)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "LUN",
+   "name": "Lunar",
+   "kind": "origin",
+   "adapts": "Moonlight",
+   "bp": [
+    3
+   ],
+   "effect": [
+    "The lowest-stage Lunar unit digivolves one stage for the combat (two units with 4 Lunar from a Crest)"
+   ],
+   "desc": "Under the full moon, Lunar Digimon grow. Ties go to the unit with the most items.",
+   "units": [],
+   "count": 0
+  },
+  {
+   "id": "TOH",
+   "name": "Toho Braves",
+   "kind": "origin",
+   "adapts": "Ninja",
+   "bp": [
+    1,
+    4
+   ],
+   "exact": true,
+   "effect": [
+    "The Toho Brave gains +40% AD and +40 AP",
+    "All Toho Braves gain +100% AD and +100 AP"
+   ],
+   "desc": "Japanese folklore warriors. Only active with exactly 1 or exactly 4 different Toho Braves.",
+   "units": [
+    "Omnimon Alter-S (4)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "ONM",
+   "name": "Onmyo Spirits",
+   "kind": "origin",
+   "adapts": "Spirit",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "Allies gain attack speed equal to 35% of the caster's max mana",
+    "Equal to 70% of the caster's max mana"
+   ],
+   "desc": "The first time an Onmyo Spirit casts in a fight, all allies gain that much attack speed (a 70-mana spirit gives +24.5% / +49%).",
+   "units": [
+    "MetalGarurumon X (3)",
+    "Mastemon (4)"
+   ],
+   "count": 2
+  },
+  {
+   "id": "DEV",
+   "name": "Deva Generals",
+   "kind": "origin",
+   "adapts": "Warlord",
+   "bp": [
+    3,
+    5,
+    7
+   ],
+   "effect": [
+    "+200 HP and +20 AP",
+    "+450 HP and +40 AP",
+    "+700 HP and +70 AP"
+   ],
+   "desc": "Generals of the Holy Beasts. The bonus grows by 10% for each PvP fight they win this game (up to 5 wins).",
+   "units": [
+    "Chaosmon Valdur Arm (5)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "YEL",
+   "name": "Yellow Dragon",
+   "kind": "unique",
+   "adapts": "Emperor",
+   "bp": [
+    1
+   ],
+   "effect": [
+    "Deploys with two Deva Statues"
+   ],
+   "desc": "Chaosmon's line places two statues anywhere on your side. Statues do not move or attack, have 30% of its max HP and taunt adjacent enemies. They break when it is knocked out.",
+   "units": [
+    "Chaosmon Valdur Arm (5)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "BAN",
+   "name": "Bancho",
+   "kind": "unique",
+   "adapts": "The Boss",
+   "bp": [
+    1
+   ],
+   "effect": [
+    "Push-up break"
+   ],
+   "desc": "The first time the Bancho drops below 40% HP it leaves the fight to do push-ups: each one heals 15% max HP and gives +40% attack speed. At full HP it jumps back in. If its team loses first, it is defeated.",
+   "units": [
+    "Gankoomon (5)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "FAL",
+   "name": "Fallen Choice",
+   "kind": "unique",
+   "adapts": "Tormented",
+   "bp": [
+    1
+   ],
+   "effect": [
+    "Pick a final form after 3 fights"
+   ],
+   "desc": "After it has fought 3 combats, this line asks you to pick its final form: Cherubimon (Good) heals and shields allies with its ability; Cherubimon (Evil) drains HP and its ability hits twice.",
+   "units": [
+    "Cherubimon (Good) (5)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "FRG",
+   "name": "Digi-Forge",
+   "kind": "unique",
+   "adapts": "Blacksmith (Set 4.5)",
+   "bp": [
+    1
+   ],
+   "effect": [
+    "Forges an artifact"
+   ],
+   "desc": "After each PvP fight it survives, the Digi-Forge line adds 1 forge point; at 3 points it forges a random artifact item (the Set 4.5 Ornn item list, renamed) onto the unit with the most components. One artifact per game.",
+   "units": [
+    "Ebemon (5)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "SAG",
+   "name": "Sage",
+   "kind": "class",
+   "adapts": "Adept",
+   "statRole": "Duelist",
+   "bp": [
+    2,
+    3
+   ],
+   "effect": [
+    "Enemies -50% attack speed for 2s at the start of combat",
+    "For 3.5s"
+   ],
+   "desc": "Sages calm the start of every fight.",
+   "units": [
+    "Omnimon Alter-S (4)",
+    "Omnimon Zwart D (5)"
+   ],
+   "count": 2
+  },
+  {
+   "id": "ASN",
+   "name": "Assassin",
+   "kind": "class",
+   "adapts": "Assassin",
+   "statRole": "Assassin",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "+10% crit chance, +30% crit damage; abilities can crit",
+    "+25% crit chance, +60% crit damage"
+   ],
+   "desc": "Assassins leap to the enemy backline when combat starts.",
+   "units": [
+    "Ravemon Burst Mode (4)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "BRW",
+   "name": "Brawler",
+   "kind": "class",
+   "adapts": "Brawler",
+   "statRole": "Bruiser",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+250 max HP",
+    "+500 max HP",
+    "+800 max HP"
+   ],
+   "desc": "Brawlers gain max HP.",
+   "units": [
+    "MirageGaogamon Burst Mode (4)",
+    "Gankoomon (5)"
+   ],
+   "count": 2
+  },
+  {
+   "id": "CHA",
+   "name": "Charmer",
+   "kind": "class",
+   "adapts": "Dazzler",
+   "statRole": "Mystic",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "Enemies hit by an ability deal 40% less AD for 8s",
+    "80% less AD"
+   ],
+   "desc": "Charmers' abilities weaken attackers.",
+   "units": [
+    "Apocalymon (4)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "DUE",
+   "name": "Duelist",
+   "kind": "class",
+   "adapts": "Duelist",
+   "statRole": "Duelist",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+8% attack speed per attack (8 stacks)",
+    "+12% per attack",
+    "+18% per attack"
+   ],
+   "desc": "Each basic attack gives a Duelist attack speed.",
+   "units": [
+    "ShineGreymon Ruin Mode (5)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "HUN",
+   "name": "Hunter",
+   "kind": "class",
+   "adapts": "Hunter",
+   "statRole": "Sniper",
+   "bp": [
+    2,
+    3,
+    4
+   ],
+   "effect": [
+    "Every 3.5s, 125% bonus damage",
+    "Every 3s, 150%",
+    "Every 2.5s, 175%"
+   ],
+   "desc": "On the timer, every Hunter attacks the enemy with the lowest % HP for bonus damage.",
+   "units": [
+    "MetalGarurumon X (3)",
+    "TyrantKabuterimon (4)",
+    "MirageGaogamon Burst Mode (4)"
+   ],
+   "count": 3
+  },
+  {
+   "id": "KEE",
+   "name": "Keeper",
+   "kind": "class",
+   "adapts": "Keeper",
+   "statRole": "Guardian",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "150 shield for 8s",
+    "225 shield for 10s"
+   ],
+   "desc": "At the start of combat Keepers shield themselves and adjacent allies. Keepers get 50% more.",
+   "units": [
+    "BlackWarGreymon X (4)",
+    "Chaosmon Valdur Arm (5)"
+   ],
+   "count": 2
+  },
+  {
+   "id": "SOR",
+   "name": "Sorcerer",
+   "kind": "class",
+   "adapts": "Mage",
+   "statRole": "Mystic",
+   "bp": [
+    3,
+    5,
+    7
+   ],
+   "effect": [
+    "Cast twice at 70% power",
+    "Twice at 100%",
+    "Twice at 130%"
+   ],
+   "desc": "Sorcerers cast their ability twice in a row with modified power.",
+   "units": [
+    "Mastemon (4)",
+    "Ophanimon Falldown Mode (5)"
+   ],
+   "count": 2
+  },
+  {
+   "id": "WAR",
+   "name": "Warder",
+   "kind": "class",
+   "adapts": "Mystic",
+   "statRole": "Support",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "All allies +40 MR",
+    "All allies +100 MR"
+   ],
+   "desc": "Warders ward the team against abilities.",
+   "units": [
+    "Boltboutamon (4)",
+    "Omnimon Alter-S (4)",
+    "MarineAngemon (5)"
+   ],
+   "count": 3
+  },
+  {
+   "id": "SHA",
+   "name": "Shade",
+   "kind": "class",
+   "adapts": "Shade",
+   "statRole": "Assassin",
+   "bp": [
+    2,
+    3
+   ],
+   "effect": [
+    "+125 bonus magic damage",
+    "+400 bonus magic damage"
+   ],
+   "desc": "Shades teleport to the enemy backline when combat starts. Every third attack they stealth and their next attack deals the bonus.",
+   "units": [
+    "Cherubimon (Good) (5)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "SHP",
+   "name": "Sharpshooter",
+   "kind": "class",
+   "adapts": "Sharpshooter",
+   "statRole": "Sniper",
+   "bp": [
+    2,
+    4
+   ],
+   "effect": [
+    "Attacks and abilities bounce once for 45% damage",
+    "Bounce twice for 50% damage"
+   ],
+   "desc": "Sharpshooter shots ricochet to nearby enemies.",
+   "units": [
+    "MegaGargomon (4)"
+   ],
+   "count": 1
+  },
+  {
+   "id": "VAN",
+   "name": "Vanguard",
+   "kind": "class",
+   "adapts": "Vanguard",
+   "statRole": "Guardian",
+   "bp": [
+    2,
+    4,
+    6
+   ],
+   "effect": [
+    "+60 armor",
+    "+150 armor",
+    "+300 armor"
+   ],
+   "desc": "Vanguards gain armor.",
+   "units": [
+    "BlackWarGreymon (4)",
+    "Titamon (4)",
+    "Ebemon (5)"
+   ],
+   "count": 3
+  }
+ ],
+ "units": [
+  {
+   "id": "gabumon_metalgarur",
+   "adapts": {
+    "champion": "Kindred",
+    "source": "TFT Set 4",
+    "cost": 3,
+    "traits": [
+     "Spirit",
+     "Hunter"
+    ],
+    "ability": "Dance of Dread"
+   },
+   "cost": 3,
+   "traits": [
+    "Onmyo Spirits",
+    "Hunter"
+   ],
+   "role": "Sniper",
+   "attribute": "Data",
+   "stats": {
+    "hp": 653,
+    "ad": 86,
+    "as": 0.75,
+    "range": 3,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "hpMul": 1,
+    "adMul": 1.15,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "execute",
+    "name": "Metal Storm",
+    "concept": "Metal Storm: the wolf mauls the target and cuts its healing by 50% while the lamb leaps away.",
+    "stageMoves": [
+     "Blue Blaster",
+     "Yellow Beast Crescent Blade",
+     "Metal Storm"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Gabumon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Gabumon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "gabumon:0"
+      ],
+      "csFamilySources": [
+       "links:304052",
+       "cs:324615",
+       "ts:605069 (second texture/mesh in the file)"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Blue Blaster"
+    },
+    {
+     "stage": 1,
+     "name": "CresGarurumon",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Cres Garurumon",
+     "model": {
+      "game": "links",
+      "assetId": "308180",
+      "catalogName": "CresGarurumon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308180/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Yellow Beast Crescent Blade"
+    },
+    {
+     "stage": 2,
+     "name": "MetalGarurumon X",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Metal Garurumon (X-Antibody)",
+     "model": {
+      "game": "links",
+      "assetId": "304069",
+      "catalogName": "MetalGarurumon X",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304069/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Metal Storm"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "main",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "middle form CresGarurumon is Mega",
+    "Level-shifted at 3-cost: no Champion-level Cyber Sleuth-family model is left."
+   ]
+  },
+  {
+   "id": "blackagumon_blackwargr",
+   "adapts": {
+    "champion": "Aatrox",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Cultist",
+     "Vanguard"
+    ],
+    "ability": "Infernal Chains"
+   },
+   "cost": 4,
+   "traits": [
+    "Dark Ocean",
+    "Vanguard"
+   ],
+   "role": "Guardian",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 1109,
+    "ad": 59,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "hpMul": 1,
+    "adMul": 0.85,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "slam",
+    "name": "Dark Terra Force",
+    "concept": "Dark Terra Force: pulls the 2 farthest enemies in, then slams the ground in front.",
+    "stageMoves": [
+     "Pepper Breath",
+     "Mega Flame",
+     "Dark Terra Force"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "BlackAgumon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Agumon (Black)",
+     "model": {
+      "game": "links",
+      "assetId": "302502",
+      "catalogName": "Agumon / BlackAgumon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/302502/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "Agumon"
+      ]
+     },
+     "animated": true,
+     "move": "Pepper Breath"
+    },
+    {
+     "stage": 1,
+     "name": "BlackGreymon",
+     "level": "Champion",
+     "attribute": "Virus",
+     "wikimonTitle": "Greymon (Blue)",
+     "model": {
+      "game": "links",
+      "assetId": "304043",
+      "catalogName": "Greymon / BlackGreymon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304043/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "Greymon"
+      ]
+     },
+     "animated": true,
+     "move": "Mega Flame"
+    },
+    {
+     "stage": 2,
+     "name": "BlackWarGreymon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Black War Greymon",
+     "model": {
+      "game": "links",
+      "assetId": "304040",
+      "catalogName": "WarGreymon / BlackWarGreymon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304040/",
+      "downloaded": true,
+      "rip": "WarGreymon",
+      "sharedFileWith": [
+       "War Greymon"
+      ]
+     },
+     "animated": true,
+     "move": "Dark Terra Force"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "main",
+    "championToFinal": "main"
+   },
+   "flags": [
+    "BlackAgumon > BlackGreymon > BlackWarGreymon was the BlackAgumon chain in the roster plan. Champion and final are black second textures of in-game models."
+   ]
+  },
+  {
+   "id": "renamon_mastemon",
+   "adapts": {
+    "champion": "Ahri",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Spirit",
+     "Mage"
+    ],
+    "ability": "Spirit Bomb"
+   },
+   "cost": 4,
+   "traits": [
+    "Onmyo Spirits",
+    "Sorcerer"
+   ],
+   "role": "Mystic",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 628,
+    "ad": 52,
+    "as": 0.65,
+    "range": 4,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "hpMul": 0.85,
+    "adMul": 0.85,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "aoe",
+    "name": "Holy Desire",
+    "concept": "Holy Desire: charges a spirit orb for 1.5s and lobs it at a random enemy for large area damage.",
+    "stageMoves": [
+     "Kohenkyo",
+     "Cold Flame",
+     "Holy Desire"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Renamon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Renamon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "renamon:0"
+      ],
+      "csFamilySources": [
+       "links:301612",
+       "cs:324601",
+       "ts:606695"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Kohenkyo"
+    },
+    {
+     "stage": 1,
+     "name": "BlueMeramon",
+     "level": "Ultimate",
+     "attribute": "Virus",
+     "wikimonTitle": "Blue Meramon",
+     "model": {
+      "game": "links",
+      "assetId": "304023",
+      "catalogName": "Meramon / BlueMeramon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304023/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "Meramon"
+      ]
+     },
+     "animated": true,
+     "move": "Cold Flame"
+    },
+    {
+     "stage": 2,
+     "name": "Mastemon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Mastemon",
+     "model": {
+      "game": "links",
+      "assetId": "304022",
+      "catalogName": "Mastemon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304022/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Holy Desire"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "two-step",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form BlueMeramon is Ultimate",
+    "Level-shifted. BlueMeramon is a second texture in the Links Meramon file. No canon link."
+   ]
+  },
+  {
+   "id": "wormmon_tyrantkabu",
+   "adapts": {
+    "champion": "Ashe",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Elderwood",
+     "Hunter"
+    ],
+    "ability": "Hunter's Focus"
+   },
+   "cost": 4,
+   "traits": [
+    "Ancient Forest",
+    "Hunter"
+   ],
+   "role": "Sniper",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 628,
+    "ad": 97,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "hpMul": 0.85,
+    "adMul": 1.15,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "barrage",
+    "name": "Shine of Bee",
+    "concept": "Shine of Bee: for 5s gains attack speed and every attack fires a flurry of stingers.",
+    "stageMoves": [
+     "Sticky Net",
+     "Giga Blaster",
+     "Shine of Bee"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Wormmon",
+     "level": "Rookie",
+     "attribute": "Free",
+     "wikimonTitle": "Wormmon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "wormmon:0"
+      ],
+      "csFamilySources": [
+       "links:304126",
+       "cs:324606",
+       "ts:608453"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Sticky Net"
+    },
+    {
+     "stage": 1,
+     "name": "HerculesKabuterimon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Herakle Kabuterimon",
+     "model": {
+      "game": "links",
+      "assetId": "304058",
+      "catalogName": "HerculesKabuterimon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304058/",
+      "downloaded": true,
+      "rip": "HerculesKabuterimon",
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Giga Blaster"
+    },
+    {
+     "stage": 2,
+     "name": "TyrantKabuterimon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Tyrant Kabuterimon",
+     "model": {
+      "game": "cs",
+      "assetId": "324583",
+      "catalogName": "TyrantKabuterimon",
+      "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324583/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Shine of Bee"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "two-step",
+    "championToFinal": "listed"
+   },
+   "flags": [
+    "level-shifted: middle form HerculesKabuterimon is Mega",
+    "Mega to Mega line. HerculesKabuterimon (Links) is already downloaded."
+   ]
+  },
+  {
+   "id": "demidevimon_boltboutam",
+   "adapts": {
+    "champion": "Cassiopeia",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Dusk",
+     "Mystic"
+    ],
+    "ability": "Petrifying Gaze"
+   },
+   "cost": 4,
+   "traits": [
+    "Witchelny",
+    "Warder"
+   ],
+   "role": "Support",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 761,
+    "ad": 46,
+    "as": 0.65,
+    "range": 2,
+    "armor": 20,
+    "mr": 25,
+    "mana": 70,
+    "startMana": 30,
+    "hpMul": 0.95,
+    "adMul": 0.85,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "stun",
+    "name": "Pernicious Waltz",
+    "concept": "Pernicious Waltz: a cone that stuns for 2.5s; stunned enemies take 20% more damage.",
+    "stageMoves": [
+     "Demi Darts",
+     "Tomahawk Stinger",
+     "Pernicious Waltz"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "DemiDevimon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Pico Devimon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "demidevimon:0"
+      ],
+      "csFamilySources": [
+       "links:304049",
+       "cs:324596",
+       "ts:608094"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Demi Darts"
+    },
+    {
+     "stage": 1,
+     "name": "Boltmon",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Boltmon",
+     "model": {
+      "game": "links",
+      "assetId": "304159",
+      "catalogName": "Boltmon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304159/",
+      "downloaded": true,
+      "rip": "Boltmon",
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Tomahawk Stinger"
+    },
+    {
+     "stage": 2,
+     "name": "Boltboutamon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Voltobautamon",
+     "model": {
+      "game": "dwnext",
+      "assetId": "342147",
+      "catalogName": "Boltboutamon",
+      "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342147/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": null,
+     "move": "Pernicious Waltz"
+    }
+   ],
+   "animated": false,
+   "canon": {
+    "rookieToChampion": "two-step",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form Boltmon is Mega",
+    "Mega to Mega line (no canon link; both are patchwork-monster Digimon). Boltboutamon is a Next Order model."
+   ]
+  },
+  {
+   "id": "terriermon_megagargom",
+   "adapts": {
+    "champion": "Jhin",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Cultist",
+     "Sharpshooter"
+    ],
+    "ability": "Whisper"
+   },
+   "cost": 4,
+   "traits": [
+    "Dark Ocean",
+    "Sharpshooter"
+   ],
+   "role": "Sniper",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 628,
+    "ad": 97,
+    "as": 0.75,
+    "range": 4,
+    "armor": 20,
+    "mr": 20,
+    "mana": 0,
+    "startMana": 0,
+    "hpMul": 0.85,
+    "adMul": 1.15,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats). Passive ability: no mana bar."
+   },
+   "ability": {
+    "type": "passive",
+    "name": "Burst Shot",
+    "concept": "Burst Shot: attacks at a fixed rate; every fourth shot deals 444% AD.",
+    "stageMoves": [
+     "Terrier Tornado",
+     "Destruction Crush",
+     "Burst Shot"
+    ],
+    "newType": true
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Terriermon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Terriermon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "terriermon:0"
+      ],
+      "csFamilySources": [
+       "cs:324559",
+       "ts:603357 (second texture/mesh in the file)"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Terrier Tornado"
+    },
+    {
+     "stage": 1,
+     "name": "GranLocomon",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Grand Locomon",
+     "model": {
+      "game": "links",
+      "assetId": "304203",
+      "catalogName": "GranLocomon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304203/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Destruction Crush"
+    },
+    {
+     "stage": 2,
+     "name": "MegaGargomon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Saint Galgomon",
+     "model": {
+      "game": "cs",
+      "assetId": "324562",
+      "catalogName": "MegaGargomon",
+      "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324562/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Burst Shot"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "none",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form GranLocomon is Mega",
+    "Mega to Mega line with no canon or theme link (filler)."
+   ]
+  },
+  {
+   "id": "patamon_apocalymon",
+   "adapts": {
+    "champion": "Morgana",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Enlightened",
+     "Dazzler"
+    ],
+    "ability": "Hallowed Ground"
+   },
+   "cost": 4,
+   "traits": [
+    "Pilgrims",
+    "Charmer"
+   ],
+   "role": "Mystic",
+   "attribute": "Unknown",
+   "stats": {
+    "hp": 702,
+    "ad": 52,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "hpMul": 0.95,
+    "adMul": 0.85,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "drain",
+    "name": "Darkness-Zone",
+    "concept": "Darkness-Zone: curses the ground under a random enemy for 5s, shredding 40% MR; heals for part of the damage.",
+    "stageMoves": [
+     "Air Shot",
+     "Death Hang",
+     "Darkness-Zone"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Patamon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Patamon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "patamon:0"
+      ],
+      "csFamilySources": [
+       "links:304072",
+       "cs:324600",
+       "ts:606167"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Air Shot"
+    },
+    {
+     "stage": 1,
+     "name": "Jijimon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Jijimon",
+     "model": {
+      "game": "links",
+      "assetId": "304224",
+      "catalogName": "Jijimon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304224/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Death Hang"
+    },
+    {
+     "stage": 2,
+     "name": "Apocalymon",
+     "level": "Mega",
+     "attribute": "Unknown",
+     "wikimonTitle": "Apocalymon",
+     "model": {
+      "game": "links",
+      "assetId": "310677",
+      "catalogName": "Apocalymon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/310677/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Darkness-Zone"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "two-step",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form Jijimon is Mega",
+    "Mega to Mega line with no canon or theme link (filler). Apocalymon was a boss candidate in the roster plan."
+   ]
+  },
+  {
+   "id": "guilmon_blackwargr",
+   "adapts": {
+    "champion": "Riven",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Dusk",
+     "Keeper"
+    ],
+    "ability": "Sweeping Strikes"
+   },
+   "cost": 4,
+   "traits": [
+    "Witchelny",
+    "Keeper"
+   ],
+   "role": "Guardian",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 1109,
+    "ad": 69,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "hpMul": 1,
+    "adMul": 1,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "line",
+    "name": "Dark Terra Force",
+    "concept": "Dark Terra Force: dashes and shields, then slashes forward; every third cast sends a wave across the board.",
+    "stageMoves": [
+     "Rock Breaker",
+     "Demonic Disaster",
+     "Dark Terra Force"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Guilmon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Guilmon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "guilmon:0"
+      ],
+      "csFamilySources": [
+       "links:304010",
+       "cs:324620",
+       "ts:607376"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Rock Breaker"
+    },
+    {
+     "stage": 1,
+     "name": "ChaosGallantmon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Chaos Dukemon",
+     "model": {
+      "game": "links",
+      "assetId": "304054",
+      "catalogName": "Gallantmon / Crimson Mode / ChaosGallantmon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304054/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "Dukemon",
+       "Dukemon: Crimson Mode"
+      ]
+     },
+     "animated": true,
+     "move": "Demonic Disaster"
+    },
+    {
+     "stage": 2,
+     "name": "BlackWarGreymon X",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Black War Greymon (X-Antibody)",
+     "model": {
+      "game": "links",
+      "assetId": "304076",
+      "catalogName": "WarGreymon X / BlackWarGreymon X",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304076/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "War Greymon (X-Antibody)"
+      ]
+     },
+     "animated": true,
+     "move": "Dark Terra Force"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "two-step",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form ChaosGallantmon is Mega",
+    "Mega to Mega line. Both forms are second textures (ChaosGallantmon in the Gallantmon file, BlackWarGreymon X in the WarGreymon X file)."
+   ]
+  },
+  {
+   "id": "armadillomon_titamon",
+   "adapts": {
+    "champion": "Sejuani",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Fortune",
+     "Vanguard"
+    ],
+    "ability": "Firecracker"
+   },
+   "cost": 4,
+   "traits": [
+    "Zodiac Armor",
+    "Vanguard"
+   ],
+   "role": "Guardian",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 1275,
+    "ad": 59,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "hpMul": 1.15,
+    "adMul": 0.85,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "stun",
+    "name": "Soul Core Attack",
+    "concept": "Soul Core Attack: throws a giant firecracker at the closest enemy; after 2s it explodes and stuns.",
+    "stageMoves": [
+     "Scratch Beat",
+     "Terrors Cluster/Terror Cluster",
+     "Soul Core Attack"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Armadillomon",
+     "level": "Rookie",
+     "attribute": "Free",
+     "wikimonTitle": "Armadimon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "armadillomon:0"
+      ],
+      "csFamilySources": [
+       "links:304197",
+       "cs:324593",
+       "ts:608284"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Scratch Beat"
+    },
+    {
+     "stage": 1,
+     "name": "RustTyranomon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Rust Tyranomon",
+     "model": {
+      "game": "links",
+      "assetId": "304116",
+      "catalogName": "RustTyranomon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304116/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Terrors Cluster/Terror Cluster"
+    },
+    {
+     "stage": 2,
+     "name": "Titamon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Titamon",
+     "model": {
+      "game": "links",
+      "assetId": "304171",
+      "catalogName": "Titamon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304171/",
+      "downloaded": true,
+      "rip": "Titamon",
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Soul Core Attack"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "two-step",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form RustTyranomon is Mega",
+    "Mega to Mega line with no canon link (filler). Titamon is already downloaded."
+   ]
+  },
+  {
+   "id": "kotemon_omnimonalt",
+   "adapts": {
+    "champion": "Shen",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Ninja",
+     "Adept",
+     "Mystic"
+    ],
+    "ability": "Shadow Dash"
+   },
+   "cost": 4,
+   "traits": [
+    "Toho Braves",
+    "Sage",
+    "Warder"
+   ],
+   "role": "Duelist",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 1204,
+    "ad": 72,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "hpMul": 1.15,
+    "adMul": 0.85,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "shield",
+    "name": "Supreme Sword",
+    "concept": "Supreme Sword: dashes past the target, shields itself and taunts adjacent enemies for 4s.",
+    "stageMoves": [
+     "Hot Head",
+     "Supreme Sword",
+     "Supreme Sword"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Kotemon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Kotemon",
+     "model": {
+      "game": "ts",
+      "assetId": "605322",
+      "catalogName": "Kotemon",
+      "page": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/605322/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": false,
+     "move": "Hot Head"
+    },
+    {
+     "stage": 1,
+     "name": "Omnimon Alter-B",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Omegamon Alter-B",
+     "model": {
+      "game": "links",
+      "assetId": "304226",
+      "catalogName": "Omnimon Alter-B",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304226/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Supreme Sword"
+    },
+    {
+     "stage": 2,
+     "name": "Omnimon Alter-S",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Omegamon Alter-S",
+     "model": {
+      "game": "links",
+      "assetId": "308181",
+      "catalogName": "Omnimon Alter-S",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308181/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Supreme Sword"
+    }
+   ],
+   "animated": false,
+   "canon": {
+    "rookieToChampion": "none",
+    "championToFinal": "listed"
+   },
+   "flags": [
+    "level-shifted: middle form Omnimon Alter-B is Mega",
+    "Mega to Mega pair (Omnimon Alter-B and Alter-S)."
+   ]
+  },
+  {
+   "id": "falcomon_ravemonbur",
+   "adapts": {
+    "champion": "Talon",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Enlightened",
+     "Assassin"
+    ],
+    "ability": "Truestrike"
+   },
+   "cost": 4,
+   "traits": [
+    "Pilgrims",
+    "Assassin"
+   ],
+   "role": "Assassin",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 801,
+    "ad": 115,
+    "as": 0.8,
+    "range": 1,
+    "armor": 25,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 0,
+    "hpMul": 1,
+    "adMul": 1.15,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "execute",
+    "name": "Crimson Formation",
+    "concept": "Crimson Formation: stabs for 250% AD; a kill makes it untargetable for 1s.",
+    "stageMoves": [
+     "Scratch Smash",
+     "Ultimate Ouryuken",
+     "Crimson Formation"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Falcomon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Falcomon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "falcomon:0"
+      ],
+      "csFamilySources": [
+       "links:304200",
+       "cs:324614",
+       "ts:603627"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Scratch Smash"
+    },
+    {
+     "stage": 1,
+     "name": "Alphamon Ouryuken",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Alphamon: Ouryuken",
+     "model": {
+      "game": "cs",
+      "assetId": "324489",
+      "catalogName": "Alphamon / Alphamon NX / Alphamon Ouryuken",
+      "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324489/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "Alphamon"
+      ]
+     },
+     "animated": true,
+     "move": "Ultimate Ouryuken"
+    },
+    {
+     "stage": 2,
+     "name": "Ravemon Burst Mode",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Ravmon: Burst Mode",
+     "model": {
+      "game": "links",
+      "assetId": "304220",
+      "catalogName": "Ravemon Burst Mode",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304220/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Crimson Formation"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "none",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form Alphamon Ouryuken is Mega",
+    "Mega to Mega line. Alphamon Ouryuken is a second mesh in the Cyber Sleuth Alphamon file."
+   ]
+  },
+  {
+   "id": "gaomon_miragegaog",
+   "adapts": {
+    "champion": "Warwick",
+    "source": "TFT Set 4",
+    "cost": 4,
+    "traits": [
+     "Divine",
+     "Hunter",
+     "Brawler"
+    ],
+    "ability": "Primal Hunger"
+   },
+   "cost": 4,
+   "traits": [
+    "Celestial",
+    "Hunter",
+    "Brawler"
+   ],
+   "role": "Sniper",
+   "attribute": "Data",
+   "stats": {
+    "hp": 850,
+    "ad": 97,
+    "as": 0.75,
+    "range": 1,
+    "armor": 20,
+    "mr": 20,
+    "mana": 70,
+    "startMana": 0,
+    "hpMul": 1.15,
+    "adMul": 1.15,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "drain",
+    "name": "Full Moon Meteor Impact",
+    "concept": "Full Moon Meteor Impact: gains attack speed and 40% lifesteal for the rest of combat; takedowns speed up allies who share a trait.",
+    "stageMoves": [
+     "Rolling Upper",
+     "Double Crescent Mirage",
+     "Full Moon Meteor Impact"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Gaomon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Gaomon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "gaomon:0"
+      ],
+      "csFamilySources": [
+       "links:304005",
+       "cs:324616",
+       "ts:604925"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Rolling Upper"
+    },
+    {
+     "stage": 1,
+     "name": "MirageGaogamon",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Mirage Gaogamon",
+     "model": {
+      "game": "links",
+      "assetId": "304044",
+      "catalogName": "MirageGaogamon / Burst Mode",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304044/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "Mirage Gaogamon: Burst Mode"
+      ]
+     },
+     "animated": true,
+     "move": "Double Crescent Mirage"
+    },
+    {
+     "stage": 2,
+     "name": "MirageGaogamon Burst Mode",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Mirage Gaogamon: Burst Mode",
+     "model": {
+      "game": "links",
+      "assetId": "304044",
+      "catalogName": "MirageGaogamon / Burst Mode",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304044/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "Mirage Gaogamon"
+      ]
+     },
+     "animated": true,
+     "move": "Full Moon Meteor Impact"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "main",
+    "championToFinal": "main"
+   },
+   "flags": [
+    "level-shifted: middle form MirageGaogamon is Mega",
+    "Mega to Mega mode change."
+   ]
+  },
+  {
+   "id": "dracomon_chaosmonva",
+   "adapts": {
+    "champion": "Azir",
+    "source": "TFT Set 4",
+    "cost": 5,
+    "traits": [
+     "Warlord",
+     "Keeper",
+     "Emperor"
+    ],
+    "ability": "Emperor's Divide"
+   },
+   "cost": 5,
+   "traits": [
+    "Deva Generals",
+    "Keeper",
+    "Yellow Dragon"
+   ],
+   "role": "Mystic",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 826,
+    "ad": 72,
+    "as": 0.65,
+    "range": 4,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "hpMul": 1,
+    "adMul": 1.05,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "line",
+    "name": "Bancho Blade",
+    "concept": "Bancho Blade: a wall of soldiers charges forward from behind it, damaging and slowing every enemy it passes.",
+    "stageMoves": [
+     "Baby Breath",
+     "Bancho Blade",
+     "Bancho Blade"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Dracomon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Dracomon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "dracomon:0"
+      ],
+      "csFamilySources": [
+       "links:304051",
+       "cs:324598",
+       "ts:605576"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Baby Breath"
+    },
+    {
+     "stage": 1,
+     "name": "Chaosmon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Chaosmon",
+     "model": {
+      "game": "cs",
+      "assetId": "324508",
+      "catalogName": "Chaosmon / Chaosmon Valdur Arm",
+      "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324508/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "Chaosmon: Valdur Arm"
+      ]
+     },
+     "animated": true,
+     "move": "Bancho Blade"
+    },
+    {
+     "stage": 2,
+     "name": "Chaosmon Valdur Arm",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Chaosmon: Valdur Arm",
+     "model": {
+      "game": "cs",
+      "assetId": "324508",
+      "catalogName": "Chaosmon / Chaosmon Valdur Arm",
+      "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324508/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "Chaosmon"
+      ]
+     },
+     "animated": true,
+     "move": "Bancho Blade"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "none",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form Chaosmon is Mega",
+    "Mega to Mega mode change."
+   ]
+  },
+  {
+   "id": "lopmon_cherubimon",
+   "adapts": {
+    "champion": "Kayn",
+    "source": "TFT Set 4",
+    "cost": 5,
+    "traits": [
+     "Tormented",
+     "Shade"
+    ],
+    "ability": "Reaping Slash"
+   },
+   "cost": 5,
+   "traits": [
+    "Fallen Choice",
+    "Shade"
+   ],
+   "role": "Assassin",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 850,
+    "ad": 129,
+    "as": 0.8,
+    "range": 1,
+    "armor": 25,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 0,
+    "hpMul": 0.95,
+    "adMul": 1.15,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "dash",
+    "name": "Lightning Spear",
+    "concept": "Lightning Spear: dashes to the target and slashes adjacent enemies, raising their next mana cost by 33%; recasts if it hits one enemy. Final form is chosen (Fallen Choice).",
+    "stageMoves": [
+     "Terrier Tornado",
+     "Animal Nail",
+     "Lightning Spear"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Lopmon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Lopmon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "lopmon:0"
+      ],
+      "csFamilySources": [
+       "links:304217",
+       "cs:324612",
+       "ts:603357"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Terrier Tornado"
+    },
+    {
+     "stage": 1,
+     "name": "Pandamon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Pandamon",
+     "model": {
+      "game": "links",
+      "assetId": "304027",
+      "catalogName": "Pandamon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304027/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Animal Nail"
+    },
+    {
+     "stage": 2,
+     "name": "Cherubimon (Good)",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Cherubimon (Virtue)",
+     "model": {
+      "game": "cs",
+      "assetId": "324576",
+      "catalogName": "Cherubimon (Good)",
+      "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324576/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Lightning Spear"
+    }
+   ],
+   "alternateFinals": [
+    {
+     "stage": 2,
+     "name": "Cherubimon (Evil)",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "model": {
+      "game": "cs",
+      "assetId": "324575",
+      "catalogName": "Cherubimon (Evil)",
+      "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324575/",
+      "downloaded": false
+     },
+     "animated": true,
+     "alternateFinal": true
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "two-step",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form Pandamon is Ultimate",
+    "Uses two finals: Cherubimon (Good) and Cherubimon (Evil)."
+   ]
+  },
+  {
+   "id": "agumon_shinegreym",
+   "adapts": {
+    "champion": "Lee Sin",
+    "source": "TFT Set 4",
+    "cost": 5,
+    "traits": [
+     "Divine",
+     "Duelist"
+    ],
+    "ability": "God Fist"
+   },
+   "cost": 5,
+   "traits": [
+    "Celestial",
+    "Duelist"
+   ],
+   "role": "Duelist",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 1228,
+    "ad": 85,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "hpMul": 1.05,
+    "adMul": 0.9,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "stun",
+    "name": "Corona Blaze Sword",
+    "concept": "Corona Blaze Sword: punches the target to the edge of the board, stunning it and everyone it hits.",
+    "stageMoves": [
+     "Pepper Breath",
+     "Corona Blaze Sword",
+     "Corona Blaze Sword"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Agumon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Agumon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "agumon:0"
+      ],
+      "csFamilySources": [
+       "links:302502",
+       "cs:324396",
+       "ts:602390 (second texture/mesh in the file)"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Pepper Breath"
+    },
+    {
+     "stage": 1,
+     "name": "ShineGreymon Burst Mode",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Shine Greymon: Burst Mode",
+     "model": {
+      "game": "links",
+      "assetId": "304032",
+      "catalogName": "ShineGreymon / Ruin Mode / Burst Mode",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304032/",
+      "downloaded": true,
+      "rip": "ShineGreymon",
+      "sharedFileWith": [
+       "Shine Greymon",
+       "Shine Greymon: Ruin Mode"
+      ]
+     },
+     "animated": true,
+     "move": "Corona Blaze Sword"
+    },
+    {
+     "stage": 2,
+     "name": "ShineGreymon Ruin Mode",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Shine Greymon: Ruin Mode",
+     "model": {
+      "game": "links",
+      "assetId": "304032",
+      "catalogName": "ShineGreymon / Ruin Mode / Burst Mode",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304032/",
+      "downloaded": true,
+      "rip": "ShineGreymon",
+      "sharedFileWith": [
+       "Shine Greymon",
+       "Shine Greymon: Burst Mode"
+      ]
+     },
+     "animated": true,
+     "move": "Corona Blaze Sword"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "two-step",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form ShineGreymon Burst Mode is Mega",
+    "Mega to Mega mode change. Both are extra meshes or textures in the Links ShineGreymon file (ShineGreymon itself is in the game)."
+   ]
+  },
+  {
+   "id": "salamon_ophanimonf",
+   "adapts": {
+    "champion": "Lillia",
+    "source": "TFT Set 4",
+    "cost": 5,
+    "traits": [
+     "Dusk",
+     "Mage"
+    ],
+    "ability": "Lilting Lullaby"
+   },
+   "cost": 5,
+   "traits": [
+    "Witchelny",
+    "Sorcerer"
+   ],
+   "role": "Mystic",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 826,
+    "ad": 58,
+    "as": 0.65,
+    "range": 2,
+    "armor": 20,
+    "mr": 25,
+    "mana": 60,
+    "startMana": 20,
+    "hpMul": 1,
+    "adMul": 0.85,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "stun",
+    "name": "Flame Hellscythe",
+    "concept": "Flame Hellscythe: puts the 2 healthiest awake enemies to sleep for 3s; damage wakes them with a burst.",
+    "stageMoves": [
+     "Puppy Howl",
+     "Charité",
+     "Flame Hellscythe"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Salamon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Plotmon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "salamon:0"
+      ],
+      "csFamilySources": [
+       "links:304117",
+       "cs:324602",
+       "ts:603644"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Puppy Howl"
+    },
+    {
+     "stage": 1,
+     "name": "Rosemon Burst Mode",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Rosemon: Burst Mode",
+     "model": {
+      "game": "links",
+      "assetId": "304031",
+      "catalogName": "Rosemon / Burst Mode",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304031/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": [
+       "Rosemon"
+      ]
+     },
+     "animated": true,
+     "move": "Charité"
+    },
+    {
+     "stage": 2,
+     "name": "Ophanimon Falldown Mode",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Ofanimon: Falldown Mode",
+     "model": {
+      "game": "links",
+      "assetId": "305588",
+      "catalogName": "Ophanimon Falldown Mode",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305588/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Flame Hellscythe"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "none",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form Rosemon Burst Mode is Mega",
+    "Mega to Mega line with no canon link. Rosemon Burst Mode is a second mesh in the Links Rosemon file."
+   ]
+  },
+  {
+   "id": "shoutmon_gankoomon",
+   "adapts": {
+    "champion": "Sett",
+    "source": "TFT Set 4",
+    "cost": 5,
+    "traits": [
+     "The Boss",
+     "Brawler"
+    ],
+    "ability": "Showstopper"
+   },
+   "cost": 5,
+   "traits": [
+    "Bancho",
+    "Brawler"
+   ],
+   "role": "Bruiser",
+   "attribute": "Data",
+   "stats": {
+    "hp": 1503,
+    "ad": 77,
+    "as": 0.6,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 80,
+    "startMana": 20,
+    "hpMul": 1.15,
+    "adMul": 0.9,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "slam",
+    "name": "Tekken Seisai",
+    "concept": "Tekken Seisai: grabs the target and slams it forward for 40% of its max HP, splashing 20% nearby.",
+    "stageMoves": [
+     "Bellow Blaster",
+     "Flame Cannon",
+     "Tekken Seisai"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Shoutmon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Shoutmon",
+     "model": {
+      "game": "links",
+      "assetId": "304033",
+      "catalogName": "Shoutmon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304033/",
+      "downloaded": true,
+      "rip": "Shoutmon",
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Bellow Blaster"
+    },
+    {
+     "stage": 1,
+     "name": "OmniShoutmon",
+     "level": "Ultimate",
+     "attribute": "Data",
+     "wikimonTitle": "Omega Shoutmon",
+     "model": {
+      "game": "cs",
+      "assetId": "324541",
+      "catalogName": "OmniShoutmon",
+      "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324541/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Flame Cannon"
+    },
+    {
+     "stage": 2,
+     "name": "Gankoomon",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Gankoomon",
+     "model": {
+      "game": "links",
+      "assetId": "304201",
+      "catalogName": "Gankoomon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304201/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Tekken Seisai"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "main",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form OmniShoutmon is Ultimate",
+    "Level-shifted."
+   ]
+  },
+  {
+   "id": "gomamon_marineange",
+   "adapts": {
+    "champion": "Zilean",
+    "source": "TFT Set 4",
+    "cost": 5,
+    "traits": [
+     "Cultist",
+     "Mystic"
+    ],
+    "ability": "Rewind Fate"
+   },
+   "cost": 5,
+   "traits": [
+    "Dark Ocean",
+    "Warder"
+   ],
+   "role": "Support",
+   "attribute": "Vaccine",
+   "stats": {
+    "hp": 760,
+    "ad": 51,
+    "as": 0.65,
+    "range": 3,
+    "armor": 20,
+    "mr": 25,
+    "mana": 70,
+    "startMana": 30,
+    "hpMul": 0.85,
+    "adMul": 0.85,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "rally",
+    "name": "Ocean Love",
+    "concept": "Ocean Love: places a revive bubble on the 2 lowest-HP allies; one that would die revives after 3.5s with 350 HP.",
+    "stageMoves": [
+     "Marching Fishes",
+     "Sorrow Blue",
+     "Ocean Love"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Gomamon",
+     "level": "Rookie",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Gomamon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "gomamon:0"
+      ],
+      "csFamilySources": [
+       "links:304090",
+       "cs:324619",
+       "ts:602600"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Marching Fishes"
+    },
+    {
+     "stage": 1,
+     "name": "Plesiomon",
+     "level": "Mega",
+     "attribute": "Data",
+     "wikimonTitle": "Plesiomon",
+     "model": {
+      "game": "links",
+      "assetId": "304192",
+      "catalogName": "Plesiomon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304192/",
+      "downloaded": true,
+      "rip": "Plesiomon",
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Sorrow Blue"
+    },
+    {
+     "stage": 2,
+     "name": "MarineAngemon",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Marin Angemon",
+     "model": {
+      "game": "links",
+      "assetId": "304021",
+      "catalogName": "MarineAngemon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304021/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Ocean Love"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "main",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form Plesiomon is Mega",
+    "Mega to Mega line. Plesiomon is already downloaded."
+   ]
+  },
+  {
+   "id": "gabumon_omnimonzwa",
+   "adapts": {
+    "champion": "Yone",
+    "source": "TFT Set 4",
+    "cost": 5,
+    "traits": [
+     "Exile",
+     "Adept"
+    ],
+    "ability": "Seal Fate"
+   },
+   "cost": 5,
+   "traits": [
+    "Ronin",
+    "Sage"
+   ],
+   "role": "Duelist",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 1170,
+    "ad": 109,
+    "as": 0.75,
+    "range": 1,
+    "armor": 35,
+    "mr": 35,
+    "mana": 70,
+    "startMana": 0,
+    "hpMul": 1,
+    "adMul": 1.15,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "line",
+    "name": "Supreme Cannon",
+    "concept": "Supreme Cannon: strikes along a path, splitting damage between all enemies hit and cutting armor and MR by 60%.",
+    "stageMoves": [
+     "Blue Blaster",
+     "Supreme Cannon",
+     "Supreme Cannon"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Gabumon",
+     "level": "Rookie",
+     "attribute": "Data",
+     "wikimonTitle": "Gabumon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "gabumon:0"
+      ],
+      "csFamilySources": [
+       "links:304052",
+       "cs:324615",
+       "ts:605069 (second texture/mesh in the file)"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Blue Blaster"
+    },
+    {
+     "stage": 1,
+     "name": "Omnimon Zwart",
+     "level": "Mega",
+     "attribute": "Vaccine",
+     "wikimonTitle": "Omegamon Zwart",
+     "model": {
+      "game": "links",
+      "assetId": "304026",
+      "catalogName": "Omnimon / Omnimon Zwart",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304026/",
+      "downloaded": true,
+      "rip": "Omnimon",
+      "sharedFileWith": [
+       "Omegamon"
+      ]
+     },
+     "animated": true,
+     "move": "Supreme Cannon"
+    },
+    {
+     "stage": 2,
+     "name": "Omnimon Zwart D",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Omegamon Zwart Defeat",
+     "model": {
+      "game": "links",
+      "assetId": "304227",
+      "catalogName": "Omnimon Zwart D",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304227/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Supreme Cannon"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "two-step",
+    "championToFinal": "main"
+   },
+   "flags": [
+    "level-shifted: middle form Omnimon Zwart is Mega",
+    "Mega to Mega pair. Omnimon Zwart is a second texture in the Omnimon file."
+   ]
+  },
+  {
+   "id": "hagurumon_ebemon",
+   "adapts": {
+    "champion": "Ornn",
+    "source": "TFT Set 4.5",
+    "cost": 5,
+    "traits": [
+     "Elderwood",
+     "Vanguard",
+     "Blacksmith"
+    ],
+    "ability": "Stampede"
+   },
+   "cost": 5,
+   "traits": [
+    "Ancient Forest",
+    "Vanguard",
+    "Digi-Forge"
+   ],
+   "role": "Guardian",
+   "attribute": "Virus",
+   "stats": {
+    "hp": 1176,
+    "ad": 89,
+    "as": 0.6,
+    "range": 1,
+    "armor": 45,
+    "mr": 45,
+    "mana": 90,
+    "startMana": 30,
+    "hpMul": 0.95,
+    "adMul": 1.15,
+    "note": "Stage 0 (Rookie) values. Champion form x1.8, final form x3.24 HP and AD (DT.unitStats)."
+   },
+   "ability": {
+    "type": "line",
+    "name": "Crusher Bone",
+    "concept": "Crusher Bone: an elemental charges from behind the farthest enemy back to it, slowing everything it passes; hits knock up.",
+    "stageMoves": [
+     "Cog Crusher",
+     "Banana Slip",
+     "Crusher Bone"
+    ],
+    "newType": false
+   },
+   "forms": [
+    {
+     "stage": 0,
+     "name": "Hagurumon",
+     "level": "Rookie",
+     "attribute": "Virus",
+     "wikimonTitle": "Hagurumon",
+     "model": {
+      "inGame": true,
+      "lines": [
+       "hagurumon:0"
+      ],
+      "csFamilySources": [
+       "links:304012",
+       "cs:324621",
+       "ts:603333"
+      ],
+      "note": "Shared Rookie: reuse the in-game line model (re-sourced from a Cyber Sleuth-family rip if Set 1 still uses another source)."
+     },
+     "animated": true,
+     "move": "Cog Crusher"
+    },
+    {
+     "stage": 1,
+     "name": "MetalEtemon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "Metal Etemon",
+     "model": {
+      "game": "links",
+      "assetId": "304083",
+      "catalogName": "MetalEtemon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304083/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Banana Slip"
+    },
+    {
+     "stage": 2,
+     "name": "Ebemon",
+     "level": "Mega",
+     "attribute": "Virus",
+     "wikimonTitle": "EBEmon",
+     "model": {
+      "game": "links",
+      "assetId": "304190",
+      "catalogName": "Ebemon",
+      "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304190/",
+      "downloaded": false,
+      "rip": null,
+      "sharedFileWith": []
+     },
+     "animated": true,
+     "move": "Crusher Bone"
+    }
+   ],
+   "animated": true,
+   "canon": {
+    "rookieToChampion": "none",
+    "championToFinal": "none"
+   },
+   "flags": [
+    "level-shifted: middle form MetalEtemon is Mega",
+    "Set 4.5 slot. Mega to Mega line with no canon link (filler)."
+   ]
+  }
+ ],
+ "items": [
+  {
+   "name": "Digivice of Fate",
+   "adapts": "Chosen (mechanic)",
+   "effect": "Holder becomes your Partner if you have none: one of its origin traits counts double and it gains +200 HP. Consumed."
+  },
+  {
+   "name": "Deva Banner",
+   "adapts": "Warlord's Banner (Set 4)",
+   "effect": "Holder gains the Deva Generals trait."
+  },
+  {
+   "name": "Moon Stone",
+   "adapts": "Moonlight / Aspect of Dusk",
+   "effect": "Holder gains the Witchelny trait."
+  },
+  {
+   "name": "Forest Sprout",
+   "adapts": "Elderwood Sprout",
+   "effect": "Holder gains the Ancient Forest trait."
+  },
+  {
+   "name": "Monk's Bead",
+   "adapts": "Mage's Hat / Enlightened",
+   "effect": "Holder gains the Saiyu Pilgrims trait."
+  },
+  {
+   "name": "Vanguard Plate",
+   "adapts": "Vanguard's Cuirass",
+   "effect": "Holder gains the Vanguard trait."
+  },
+  {
+   "name": "Dueling Saber",
+   "adapts": "Duelist's Zeal",
+   "effect": "Holder gains the Duelist trait."
+  },
+  {
+   "name": "Halo of Light",
+   "adapts": "Sword of the Divine",
+   "effect": "Holder gains the Celestial trait."
+  },
+  {
+   "name": "Jogress Pair: Holy / Fallen",
+   "adapts": "Kayn's Liberation / Rhaast's Embrace",
+   "effect": "Given to the Fallen Choice line after 3 fights; equipping one picks Cherubimon (Good) or Cherubimon (Evil)."
+  },
+  {
+   "name": "Artifacts (Digi-Forge)",
+   "adapts": "Ornn artifacts (Set 4.5)",
+   "effect": "the forge: Vulcan's Hammer (+40% AD; abilities hit twice in a cone), Mjolnir Gauntlet (attacks chain lightning to 3 enemies), Gold Collector (kills give 1 gold), Zhonya's Mirror (once at 30% HP: 2s invulnerable), Obsidian Fang (each attack -3 armor and MR on target, stacking 10)."
+  }
+ ],
+ "augments": [
+  {
+   "name": "Crest of Courage",
+   "adapts": "Set 4 had no augments; adapted from the Chosen bonus",
+   "effect": "Your next Partner offer is guaranteed and costs 2x instead of 3x."
+  },
+  {
+   "name": "Lucky Streak",
+   "adapts": "Fortune trait",
+   "effect": "Gain 2 lucky tokens now; Zodiac Armor payouts +1 gold per token."
+  },
+  {
+   "name": "Dark Ocean Tide",
+   "adapts": "Cultist (Galio)",
+   "effect": "Dragomon's Shadow rises at 30% team HP lost instead of 50%."
+  },
+  {
+   "name": "Deva Oath",
+   "adapts": "Warlord",
+   "effect": "Deva Generals start the game with 2 win stacks."
+  },
+  {
+   "name": "Full Moon",
+   "adapts": "Moonlight",
+   "effect": "Lunar triggers on 2 units with 3 Lunar."
+  }
+ ],
+ "reuse": [
+  {
+   "digimon": "BlackGreymon",
+   "stage": 1,
+   "unit": "Aatrox",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of Greymon"
+   ]
+  },
+  {
+   "digimon": "BlackWarGreymon",
+   "stage": 2,
+   "unit": "Aatrox",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of War Greymon"
+   ]
+  },
+  {
+   "digimon": "BlueMeramon",
+   "stage": 1,
+   "unit": "Ahri",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of Meramon"
+   ]
+  },
+  {
+   "digimon": "ChaosGallantmon",
+   "stage": 1,
+   "unit": "Riven",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of Dukemon"
+   ]
+  },
+  {
+   "digimon": "BlackWarGreymon X",
+   "stage": 2,
+   "unit": "Riven",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of War Greymon (X-Antibody)"
+   ]
+  },
+  {
+   "digimon": "Alphamon Ouryuken",
+   "stage": 1,
+   "unit": "Talon",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of Alphamon"
+   ]
+  },
+  {
+   "digimon": "MirageGaogamon Burst Mode",
+   "stage": 2,
+   "unit": "Warwick",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of Mirage Gaogamon"
+   ]
+  },
+  {
+   "digimon": "Chaosmon Valdur Arm",
+   "stage": 2,
+   "unit": "Azir",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of Chaosmon"
+   ]
+  },
+  {
+   "digimon": "ShineGreymon Burst Mode",
+   "stage": 1,
+   "unit": "Lee Sin",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of Shine Greymon"
+   ]
+  },
+  {
+   "digimon": "ShineGreymon Ruin Mode",
+   "stage": 2,
+   "unit": "Lee Sin",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of Shine Greymon"
+   ]
+  },
+  {
+   "digimon": "Rosemon Burst Mode",
+   "stage": 1,
+   "unit": "Lillia",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of Rosemon"
+   ]
+  },
+  {
+   "digimon": "Omnimon Zwart",
+   "stage": 1,
+   "unit": "Yone",
+   "why": [
+    "only exists (in Cyber Sleuth-family games) as a second texture or mesh inside the file of Omegamon"
+   ]
+  }
+ ],
+ "downloads": {
+  "assets": 33,
+  "estMB": 64.4,
+  "status": "All are Cyber Sleuth-family assets; the user approved downloading every remaining one on 2026-10-15, so they are downloading. See download-plan.json.",
+  "list": [
+   {
+    "game": "links",
+    "assetId": "308180",
+    "catalogName": "CresGarurumon",
+    "digimon": "CresGarurumon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308180/",
+    "set": 3,
+    "unit": "Kindred",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "CresGarurumon (Kindred, stage 1)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304069",
+    "catalogName": "MetalGarurumon X",
+    "digimon": "MetalGarurumon X",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304069/",
+    "set": 3,
+    "unit": "Kindred",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "MetalGarurumon X (Kindred, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "302502",
+    "catalogName": "Agumon / BlackAgumon",
+    "digimon": "BlackAgumon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/302502/",
+    "set": 3,
+    "unit": "Aatrox",
+    "stage": 0,
+    "estMB": 1.7,
+    "usedBy": [
+     "BlackAgumon (Aatrox, stage 0)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304043",
+    "catalogName": "Greymon / BlackGreymon",
+    "digimon": "BlackGreymon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304043/",
+    "set": 3,
+    "unit": "Aatrox",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "BlackGreymon (Aatrox, stage 1)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304023",
+    "catalogName": "Meramon / BlueMeramon",
+    "digimon": "BlueMeramon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304023/",
+    "set": 3,
+    "unit": "Ahri",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "BlueMeramon (Ahri, stage 1)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304022",
+    "catalogName": "Mastemon",
+    "digimon": "Mastemon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304022/",
+    "set": 3,
+    "unit": "Ahri",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "Mastemon (Ahri, stage 2)"
+    ]
+   },
+   {
+    "game": "cs",
+    "assetId": "324583",
+    "catalogName": "TyrantKabuterimon",
+    "digimon": "TyrantKabuterimon",
+    "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324583/",
+    "set": 3,
+    "unit": "Ashe",
+    "stage": 2,
+    "estMB": 2.4,
+    "usedBy": [
+     "TyrantKabuterimon (Ashe, stage 2)"
+    ]
+   },
+   {
+    "game": "dwnext",
+    "assetId": "342147",
+    "catalogName": "Boltboutamon",
+    "digimon": "Boltboutamon",
+    "page": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342147/",
+    "set": 3,
+    "unit": "Cassiopeia",
+    "stage": 2,
+    "estMB": 2.4,
+    "usedBy": [
+     "Boltboutamon (Cassiopeia, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304203",
+    "catalogName": "GranLocomon",
+    "digimon": "GranLocomon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304203/",
+    "set": 3,
+    "unit": "Jhin",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "GranLocomon (Jhin, stage 1)"
+    ]
+   },
+   {
+    "game": "cs",
+    "assetId": "324562",
+    "catalogName": "MegaGargomon",
+    "digimon": "MegaGargomon",
+    "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324562/",
+    "set": 3,
+    "unit": "Jhin",
+    "stage": 2,
+    "estMB": 2.4,
+    "usedBy": [
+     "MegaGargomon (Jhin, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304224",
+    "catalogName": "Jijimon",
+    "digimon": "Jijimon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304224/",
+    "set": 3,
+    "unit": "Morgana",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "Jijimon (Morgana, stage 1)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "310677",
+    "catalogName": "Apocalymon",
+    "digimon": "Apocalymon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/310677/",
+    "set": 3,
+    "unit": "Morgana",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "Apocalymon (Morgana, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304054",
+    "catalogName": "Gallantmon / Crimson Mode / ChaosGallantmon",
+    "digimon": "ChaosGallantmon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304054/",
+    "set": 3,
+    "unit": "Riven",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "ChaosGallantmon (Riven, stage 1)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304076",
+    "catalogName": "WarGreymon X / BlackWarGreymon X",
+    "digimon": "BlackWarGreymon X",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304076/",
+    "set": 3,
+    "unit": "Riven",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "BlackWarGreymon X (Riven, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304116",
+    "catalogName": "RustTyranomon",
+    "digimon": "RustTyranomon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304116/",
+    "set": 3,
+    "unit": "Sejuani",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "RustTyranomon (Sejuani, stage 1)"
+    ]
+   },
+   {
+    "game": "ts",
+    "assetId": "605322",
+    "catalogName": "Kotemon",
+    "digimon": "Kotemon",
+    "page": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/605322/",
+    "set": 3,
+    "unit": "Shen",
+    "stage": 0,
+    "estMB": 4.4,
+    "usedBy": [
+     "Kotemon (Shen, stage 0)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304226",
+    "catalogName": "Omnimon Alter-B",
+    "digimon": "Omnimon Alter-B",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304226/",
+    "set": 3,
+    "unit": "Shen",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "Omnimon Alter-B (Shen, stage 1)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "308181",
+    "catalogName": "Omnimon Alter-S",
+    "digimon": "Omnimon Alter-S",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308181/",
+    "set": 3,
+    "unit": "Shen",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "Omnimon Alter-S (Shen, stage 2)"
+    ]
+   },
+   {
+    "game": "cs",
+    "assetId": "324489",
+    "catalogName": "Alphamon / Alphamon NX / Alphamon Ouryuken",
+    "digimon": "Alphamon Ouryuken",
+    "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324489/",
+    "set": 3,
+    "unit": "Talon",
+    "stage": 1,
+    "estMB": 2.4,
+    "usedBy": [
+     "Alphamon Ouryuken (Talon, stage 1)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304220",
+    "catalogName": "Ravemon Burst Mode",
+    "digimon": "Ravemon Burst Mode",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304220/",
+    "set": 3,
+    "unit": "Talon",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "Ravemon Burst Mode (Talon, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304044",
+    "catalogName": "MirageGaogamon / Burst Mode",
+    "digimon": "MirageGaogamon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304044/",
+    "set": 3,
+    "unit": "Warwick",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "MirageGaogamon (Warwick, stage 1)",
+     "MirageGaogamon Burst Mode (Warwick, stage 2)"
+    ]
+   },
+   {
+    "game": "cs",
+    "assetId": "324508",
+    "catalogName": "Chaosmon / Chaosmon Valdur Arm",
+    "digimon": "Chaosmon",
+    "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324508/",
+    "set": 3,
+    "unit": "Azir",
+    "stage": 1,
+    "estMB": 2.4,
+    "usedBy": [
+     "Chaosmon (Azir, stage 1)",
+     "Chaosmon Valdur Arm (Azir, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304027",
+    "catalogName": "Pandamon",
+    "digimon": "Pandamon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304027/",
+    "set": 3,
+    "unit": "Kayn",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "Pandamon (Kayn, stage 1)"
+    ]
+   },
+   {
+    "game": "cs",
+    "assetId": "324576",
+    "catalogName": "Cherubimon (Good)",
+    "digimon": "Cherubimon (Good)",
+    "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324576/",
+    "set": 3,
+    "unit": "Kayn",
+    "stage": 2,
+    "estMB": 2.4,
+    "usedBy": [
+     "Cherubimon (Good) (Kayn, stage 2)"
+    ]
+   },
+   {
+    "game": "cs",
+    "assetId": "324575",
+    "catalogName": "Cherubimon (Evil)",
+    "digimon": "Cherubimon (Evil)",
+    "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324575/",
+    "set": 3,
+    "unit": "Kayn",
+    "stage": 2,
+    "estMB": 2.4,
+    "usedBy": [
+     "Cherubimon (Evil) (Kayn, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304031",
+    "catalogName": "Rosemon / Burst Mode",
+    "digimon": "Rosemon Burst Mode",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304031/",
+    "set": 3,
+    "unit": "Lillia",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "Rosemon Burst Mode (Lillia, stage 1)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "305588",
+    "catalogName": "Ophanimon Falldown Mode",
+    "digimon": "Ophanimon Falldown Mode",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305588/",
+    "set": 3,
+    "unit": "Lillia",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "Ophanimon Falldown Mode (Lillia, stage 2)"
+    ]
+   },
+   {
+    "game": "cs",
+    "assetId": "324541",
+    "catalogName": "OmniShoutmon",
+    "digimon": "OmniShoutmon",
+    "page": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324541/",
+    "set": 3,
+    "unit": "Sett",
+    "stage": 1,
+    "estMB": 2.4,
+    "usedBy": [
+     "OmniShoutmon (Sett, stage 1)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304201",
+    "catalogName": "Gankoomon",
+    "digimon": "Gankoomon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304201/",
+    "set": 3,
+    "unit": "Sett",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "Gankoomon (Sett, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304021",
+    "catalogName": "MarineAngemon",
+    "digimon": "MarineAngemon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304021/",
+    "set": 3,
+    "unit": "Zilean",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "MarineAngemon (Zilean, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304227",
+    "catalogName": "Omnimon Zwart D",
+    "digimon": "Omnimon Zwart D",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304227/",
+    "set": 3,
+    "unit": "Yone",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "Omnimon Zwart D (Yone, stage 2)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304083",
+    "catalogName": "MetalEtemon",
+    "digimon": "MetalEtemon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304083/",
+    "set": 3,
+    "unit": "Ornn",
+    "stage": 1,
+    "estMB": 1.7,
+    "usedBy": [
+     "MetalEtemon (Ornn, stage 1)"
+    ]
+   },
+   {
+    "game": "links",
+    "assetId": "304190",
+    "catalogName": "Ebemon",
+    "digimon": "Ebemon",
+    "page": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304190/",
+    "set": 3,
+    "unit": "Ornn",
+    "stage": 2,
+    "estMB": 1.7,
+    "usedBy": [
+     "Ebemon (Ornn, stage 2)"
+    ]
+   }
+  ]
+ },
+ "checks": [
+  "trait Ancient Forest: 2 units, first breakpoint 3",
+  "trait Zodiac Armor: 1 units, first breakpoint 3",
+  "trait Lunar: 0 units, first breakpoint 3",
+  "trait Deva Generals: 1 units, first breakpoint 3",
+  "trait Assassin: 1 units, first breakpoint 2",
+  "trait Charmer: 1 units, first breakpoint 2",
+  "trait Duelist: 1 units, first breakpoint 2",
+  "trait Sorcerer: 2 units, first breakpoint 3",
+  "trait Shade: 1 units, first breakpoint 2",
+  "trait Sharpshooter: 1 units, first breakpoint 2"
+ ],
+ "generated": "2026-10-15"
+}

@@ -1,0 +1,35 @@
+{
+ "ac:Mekanorimon": "NC_Mekanorimon",
+ "ac:Asuramon": "NC_Asuramon",
+ "ac:Gladimon": "NC_Gladimon",
+ "ac:Soulmon": "M_Soulmon",
+ "ac:DoKunemon": "M_DoKunemon",
+ "ac:Witchmon": "NC_Witchmon",
+ "ac:Astamon": "NC_Astamon",
+ "ac:Jupitermon": "NC_Jupitermon",
+ "ac:DexDorugamon": "M_DexDorugamon",
+ "ac:DexDorugreymon": "M_DexDorugreymon",
+ "ac:DexDorugoramon": "M_DexDorugoramon",
+ "ac:Kumamon": "NC_Kumamon",
+ "ac:Fugamon": "RA_Fugamon",
+ "ac:Mammothmon": "NC_Mammothmon",
+ "ac:Apollomon": "NC_Apollomon",
+ "ac:Musyamon": "NC_Musyamon",
+ "ac:Zanbamon": "NC_Zanbamon",
+ "ac:Flymon": "NC_Flymon",
+ "ac:Arukenimon": "M_Arukenimon",
+ "ac:Labramon": "M_Labramon",
+ "ac:Dobermon": "NC_Dobermon",
+ "ac:JewelBeemon": "NC_JewelBeemon",
+ "ac:Darkdramon": "M_Darkdramon",
+ "_pick": {
+  "NC_Apollomon": "u135_m[.]fbx$"
+ },
+ "_form": {
+  "NC_Mekanorimon": "Mekanorimon", "NC_Asuramon": "Asuramon", "NC_Gladimon": "Gladimon", "M_Soulmon": "Soulmon", "M_DoKunemon": "DoKunemon",
+  "NC_Witchmon": "Witchmon", "NC_Astamon": "Astamon", "NC_Jupitermon": "Jupitermon", "M_DexDorugamon": "DexDorugamon",
+  "M_DexDorugreymon": "DexDorugreymon", "M_DexDorugoramon": "DexDorugoramon", "NC_Kumamon": "Kumamon", "RA_Fugamon": "Fugamon",
+  "NC_Mammothmon": "Mammothmon", "NC_Apollomon": "Apollomon", "NC_Musyamon": "Musyamon", "NC_Zanbamon": "Zanbamon", "NC_Flymon": "Flymon",
+  "M_Arukenimon": "Arukenimon", "M_Labramon": "Labramon", "NC_Dobermon": "Dobermon", "NC_JewelBeemon": "JewelBeemon", "M_Darkdramon": "Darkdramon"
+ }
+}

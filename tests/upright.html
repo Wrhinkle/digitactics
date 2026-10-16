@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Upright audit</title>
+<style>body { margin: 0; background: #222; color: #eee; font: 12px sans-serif; } canvas { display: block; }</style>
+<script type="importmap">
+{ "imports": { "three": "../vendor/three/build/three.module.js", "three/addons/": "../vendor/three/addons/" } }
+</script>
+<script src="../js/data.js"></script>
+<script src="../js/models.js"></script>
+</head>
+<body>
+<script type="module">
+// Upright audit page, driven by tests/upright.cjs. For each model file it does what render3d.js prepareTemplate does
+// (idle pose at t=0, bounding box, auto-scale), then measures the idle clip over time and renders front and side views.
+// window.audit(key, file) -> { metrics, img } where img is a data URL of one contact-sheet tile.
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+
+const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);
+loader.register((parser) => ({
+  name: 'KHR_materials_pbrSpecularGlossiness',
+  getMaterialType(i) { return parser.json.materials[i].extensions?.KHR_materials_pbrSpecularGlossiness ? THREE.MeshBasicMaterial : null; },
+  extendMaterialParams(i, params) {
+    const ext = parser.json.materials[i].extensions?.KHR_materials_pbrSpecularGlossiness;
+    if (!ext) return Promise.resolve();
+    delete params.metalness; delete params.roughness;
+    return ext.diffuseTexture ? parser.assignTexture(params, 'map', ext.diffuseTexture, THREE.SRGBColorSpace) : Promise.resolve();
+  },
+}));
+const STAGE_HEIGHT = [1.3, 1.65, 2.0];
+const MAX_FOOTPRINT = 1.9;
+const IDLE_RE = [/idle|wait|stand/i, /_bn01/i];
+const pickIdle = (clips) => { for (const re of IDLE_RE) { const c = clips.find((x) => re.test(x.name)); if (c) return c; } return clips[0] || null; };
+
+const T = 200; // tile view size
+const canvas = document.createElement('canvas');
+const r = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+r.setPixelRatio(1);
+r.setSize(T, T, false);
+r.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#3a4252');
+scene.add(new THREE.HemisphereLight('#ffffff', '#3a4660', 2.2));
+const key = new THREE.DirectionalLight('#fff6e8', 2.2); key.position.set(1.5, 3, 4); scene.add(key);
+// ground: a hex-sized disc and a line at y = 0, plus a front marker (+z) so facing is visible from the side
+const ground = new THREE.Mesh(new THREE.CircleGeometry(0.95, 6), new THREE.MeshBasicMaterial({ color: '#5d6b80' }));
+ground.rotation.x = -Math.PI / 2; scene.add(ground);
+const front = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.02, 0.4), new THREE.MeshBasicMaterial({ color: '#ff5050' }));
+front.position.set(0, 0.01, 1.1); scene.add(front);
+const cam = new THREE.OrthographicCamera(-1.3, 1.3, 2.45, -0.15, 0.1, 50);
+
+function box(obj, precise) { obj.updateMatrixWorld(true); return new THREE.Box3().setFromObject(obj, precise); }
+
+// trial: optional { rot: [x, y, z] degrees on the scene root } to preview a correction before baking it
+window.audit = async (k, file, trial) => {
+  const gltf = await loader.loadAsync('../' + file);
+  const src = DT.MODEL_SOURCES[k] || {};
+  const stage = Number(k.split(':')[1]);
+  const sceneG = gltf.scene;
+  if (trial && trial.rot) sceneG.rotation.set(...trial.rot.map((d) => (d * Math.PI) / 180));
+  const clips = gltf.animations || [];
+  const bind = box(sceneG, true).getSize(new THREE.Vector3());
+  const idle = trial && trial.clip ? clips.find((x) => x.name === trial.clip) : src.anim === false ? null : pickIdle(clips);
+  let mixer = null;
+  if (idle) { mixer = new THREE.AnimationMixer(sceneG); mixer.clipAction(idle).play(); mixer.update(0); }
+  // the renderer's own measurement (non-precise box)
+  const b0 = box(sceneG, false);
+  const size = b0.getSize(new THREE.Vector3());
+  const h = Math.max(size.y, 1e-3);
+  const wrapper = new THREE.Group(); const inner = new THREE.Group();
+  inner.add(sceneG); inner.scale.setScalar(1 / h);
+  const c = b0.getCenter(new THREE.Vector3());
+  inner.position.set(-c.x / h, -b0.min.y / h, -c.z / h);
+  wrapper.add(inner);
+  if (src.rotY) wrapper.rotation.y = src.rotY;
+  const footprint = Math.max(size.x, size.z) / h;
+  const height = STAGE_HEIGHT[stage] || 1.3;
+  const scale = Math.min(height, (src.maxFootprint || MAX_FOOTPRINT) / Math.max(footprint, 0.01)); // same as render3d.js
+  wrapper.scale.setScalar(scale);
+  if (src.yOffset) wrapper.position.y = src.yOffset * scale; // same as render3d.js
+  // precise box at t=0 and over the idle clip, in board units
+  const p0 = box(wrapper, true);
+  const samples = [];
+  const dur = idle ? idle.duration : 0;
+  for (let i = 0; i <= 8; i++) {
+    if (mixer) { mixer.setTime((dur * i) / 8); }
+    const b = box(wrapper, true);
+    samples.push({ minY: b.min.y, maxY: b.max.y, sx: b.max.x - b.min.x, sz: b.max.z - b.min.z });
+  }
+  if (mixer) mixer.setTime(0);
+  // head bone or top-of-mesh centroid, to guess facing (+z is forward on the board)
+  let head = null;
+  wrapper.updateMatrixWorld(true);
+  wrapper.traverse((o) => { if (!head && o.isBone && /head/i.test(o.name) && !/end|top|nub/i.test(o.name)) head = o; });
+  const hp = head ? head.getWorldPosition(new THREE.Vector3()) : null;
+  // centroid of the top 30% of vertices vs the overall centroid
+  const top = new THREE.Vector3(); let nt = 0; const all = new THREE.Vector3(); let na = 0;
+  const v = new THREE.Vector3();
+  const cut = p0.min.y + (p0.max.y - p0.min.y) * 0.7;
+  wrapper.traverse((o) => {
+    if (!o.isMesh) return;
+    const pos = o.geometry.attributes.position;
+    const step = Math.max(1, Math.floor(pos.count / 1500));
+    for (let i = 0; i < pos.count; i += step) {
+      o.getVertexPosition(i, v); v.applyMatrix4(o.matrixWorld);
+      all.add(v); na++;
+      if (v.y > cut) { top.add(v); nt++; }
+    }
+  });
+  if (na) all.divideScalar(na);
+  if (nt) top.divideScalar(nt);
+  const metrics = {
+    key: k, file, clips: clips.map((x) => x.name), idle: idle ? idle.name : null, rotY: src.rotY || 0,
+    bind: [bind.x, bind.y, bind.z].map((x) => +x.toFixed(3)),
+    aspect: +(size.y / Math.max(size.x, size.z)).toFixed(2), // height / longest horizontal side
+    footprint: +footprint.toFixed(2), scale: +scale.toFixed(2), wantHeight: height, shown: +(p0.max.y - p0.min.y).toFixed(2),
+    minY0: +p0.min.y.toFixed(3),
+    idleMinY: [Math.min(...samples.map((s) => s.minY)), Math.max(...samples.map((s) => s.minY))].map((x) => +x.toFixed(3)),
+    idleH: [Math.min(...samples.map((s) => s.maxY - s.minY)), Math.max(...samples.map((s) => s.maxY - s.minY))].map((x) => +x.toFixed(3)),
+    head: hp ? { name: head.name, x: +hp.x.toFixed(2), y: +hp.y.toFixed(2), z: +hp.z.toFixed(2) } : null,
+    topDz: +(top.z - all.z).toFixed(3), topDx: +(top.x - all.x).toFixed(3),
+  };
+  // tile: front (camera on +z), side (camera on +x, front marker to the right), side at mid-idle
+  const out = document.createElement('canvas'); out.width = T * 3; out.height = T + 18;
+  const g = out.getContext('2d');
+  g.fillStyle = '#111'; g.fillRect(0, 0, out.width, out.height);
+  scene.add(wrapper);
+  const views = [[0, 1, 0], [1, 0, 0], [1, 0, trial && trial.t != null ? trial.t : 0.5]];
+  views.forEach(([x, z, t], i) => {
+    if (mixer) mixer.setTime(dur * t);
+    wrapper.updateMatrixWorld(true);
+    cam.position.set(x * 10, 0, z * 10); cam.lookAt(0, 0, 0);
+    r.render(scene, cam);
+    g.drawImage(canvas, i * T, 18);
+  });
+  scene.remove(wrapper);
+  g.fillStyle = '#fff'; g.font = '12px sans-serif';
+  g.fillText(`${k}  ${file.split('/').pop().slice(0, 28)}`, 4, 13);
+  g.strokeStyle = '#ffd24a'; g.beginPath();
+  for (let i = 0; i < 3; i++) { const y = 18 + T * (2.45 - height) / 2.6; g.moveTo(i * T, y); g.lineTo(i * T + 12, y); }
+  g.stroke();
+  sceneG.traverse((o) => { if (o.isMesh) { o.geometry.dispose(); [].concat(o.material).forEach((m) => { if (m.map) m.map.dispose(); m.dispose(); }); } });
+  return { metrics, img: out.toDataURL('image/png') };
+};
+window.THREE = THREE; window.gltfLoader = loader; // for ad-hoc checks from the test script
+window.auditReady = true;
+</script>
+</body>
+</html>

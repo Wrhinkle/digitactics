@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digi-Tactics</title>
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="icons/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <div id="roundBox">
+        <div id="stageLabel">1-1</div>
+        <div id="stageTrack"></div>
+      </div>
+      <div id="phaseBox"><div id="phaseLabel">Planning</div><div id="phaseSub"></div></div>
+      <div id="opponentLabel"></div>
+      <div class="spacer"></div>
+      <div id="timerBox" class="off"><div id="timerLabel" title="Planning time left"></div><div id="timerBar"><i></i></div></div>
+      <div class="spacer"></div>
+      <div class="tbtns">
+        <button id="gameMenuBtn" title="Game menu (Esc)" aria-haspopup="dialog">Menu</button>
+        <button id="storeBtn" data-shop-open title="Store">Store</button>
+        <button id="lockerBtn" data-locker-open title="Equip your cosmetics">Locker</button>
+        <button id="emoteBtn" title="Emotes (T)">Emote</button>
+        <button id="legendBtn" title="Choose your Little Legend"><span class="lf">Little </span>Legend</button>
+        <button id="timerBtn" title="Auto-start combat when the planning timer runs out">Timer on</button>
+        <button id="speedBtn" title="Combat speed">1x</button>
+        <button id="soundBtn" title="Sound: music and effects / effects only / off">Sound</button>
+        <button id="skipBtn" title="Resolve combat instantly">Skip</button>
+        <button id="readyBtn" class="primary" title="Space">Fight!</button>
+      </div>
+    </header>
+
+    <aside id="traits"><div id="augs"></div><div id="traitList"></div></aside>
+
+    <main id="arena">
+      <canvas id="board"></canvas>
+      <div id="castFeed"></div>
+      <div id="modal" class="hidden"></div>
+      <div id="banner" class="hidden"></div>
+      <div id="toast"></div>
+    </main>
+
+    <aside id="right">
+      <div id="players"></div>
+      <div id="history"></div>
+      <div id="dmgChart" class="hidden"></div>
+    </aside>
+
+    <footer id="shopbar">
+      <div id="econ">
+        <div id="levelBox">
+          <div id="levelLabel">Lv 3</div>
+          <div id="xpLabel"></div>
+        </div>
+        <div id="boardBox" title="Digimon on the board / team size"><b id="boardCount">0/3</b><span>on board</span></div>
+        <div id="goldBox"><i class="coin"></i><span id="gold">0</span><span id="income"></span></div>
+        <div id="capLabel"></div>
+      </div>
+      <div id="shopBtns">
+        <button id="rollBtn" title="D">Reroll <span class="cost">1g</span></button>
+        <button id="lockBtn" title="Keep this shop for next round">Lock shop</button>
+      </div>
+      <div id="shop"></div>
+      <div id="sellZone" class="hidden">Drop here to sell</div>
+    </footer>
+
+    <div id="tooltip" class="hidden"></div>
+    <div id="picker" class="hidden"></div>
+
+    <!-- Client shell (js/client.js, styles in js/theme.js). #overlay is the shell's page area; it hides while a game runs. -->
+    <div id="overlay">
+      <div class="cpages">
+        <section class="cpage on" id="pgHome" data-page="home" aria-label="Home">
+          <div class="home">
+            <div id="homeResults" class="hidden"></div>
+            <nav class="subnav" id="homeTabs" role="tablist" aria-label="Home">
+              <button class="on" data-htab="overview" role="tab">Overview</button>
+              <button data-htab="patch" role="tab">Patch notes</button>
+              <button data-htab="events" role="tab">Events</button>
+            </nav>
+            <div class="home-view" id="homeOverview">
+              <div class="home-top">
+                <div id="homeHero" class="hero"></div>
+                <aside class="legend-card" id="homeLegend">
+                  <div class="stage-host" id="homeStage"></div>
+                  <div id="homeLegendInfo" class="legend-info"></div>
+                  <div class="qp-btns">
+                    <button id="startBtn" class="btn btn-play">Play solo</button>
+                    <button id="mpBtn" class="btn btn-secondary">Multiplayer</button>
+                  </div>
+                </aside>
+              </div>
+              <div class="home-tiles">
+                <div class="tile-card" id="homeSetNews"></div>
+                <div class="tile-card" id="homeFeatured"></div>
+                <div class="tile-card missions" id="homeMissions"></div>
+                <div class="tile-card patch" id="homePatch"></div>
+              </div>
+            </div>
+            <div class="home-view hidden" id="homePatchNotes"></div>
+            <div class="home-view hidden" id="homeEvents"></div>
+          </div>
+        </section>
+
+        <section class="cpage" id="pgPlay" data-page="play" aria-label="Play">
+          <div class="play">
+            <div class="play-select" id="playSelect">
+              <div class="ps-head">
+                <div><div class="eyebrow">Choose a mode</div><h1 class="page-title">Play</h1></div>
+                <div class="play-status" id="playStatus"></div>
+              </div>
+              <div class="play-sets" id="playSets"></div>
+              <div class="ps-foot">
+                <div class="play-modes" role="tablist" aria-label="Queue">
+                  <button class="mode-card on" data-mode-pick="solo" role="tab">
+                    <span class="mode-art solo"></span>
+                    <span class="mode-txt"><b>Solo vs AI</b><small>You and 7 AI Tamers. No account needed.</small></span>
+                  </button>
+                  <button class="mode-card" data-mode-pick="mp" role="tab">
+                    <span class="mode-art mp"></span>
+                    <span class="mode-txt"><b>Multiplayer</b><small>Lobbies of 8. Friends take seats, the AI plays the rest.</small></span>
+                  </button>
+                </div>
+                <div class="ps-confirm">
+                  <div class="ps-pick" id="playPick"></div>
+                  <button id="playConfirm" class="btn lc-confirm">Confirm</button>
+                </div>
+              </div>
+            </div>
+            <div class="play-party hidden" id="playParty">
+              <div class="play-solo" id="playSolo">
+                <div class="play-solo-body">
+                  <div class="party-head">
+                    <button class="btn btn-ghost party-back" data-play-back title="Back to modes">&#8249; Modes</button>
+                    <div><div class="eyebrow">Solo vs AI · Party</div><h2 class="page-title" id="partyTitle">Hyper Roll</h2><p class="party-sub" id="partySub"></p></div>
+                  </div>
+                  <div class="party-slots" id="partySlots"></div>
+                  <ul class="howto">
+                    <li>Buy Digimon from the shop and drag them onto your half of the board. Your level is how many Digimon you can field.</li>
+                    <li><b>Three copies digivolve.</b> 3 Agumon become a Greymon, 3 Greymon become a MetalGreymon.</li>
+                    <li>Items sit on the pedestals left of the board. Drag one onto a Digimon. Two components make a completed item.</li>
+                    <li>Your Little Legend walks where you right-click. Walk it into loot orbs to open them.</li>
+                  </ul>
+                </div>
+                <div class="play-foot">
+                  <div class="play-keys"><kbd>D</kbd> reroll <kbd>E</kbd> sell <kbd>Space</kbd> fight <kbd>T</kbd> emotes <kbd>C</kbd> codex</div>
+                  <button id="playSoloBtn" class="btn btn-play btn-xl">Start</button>
+                </div>
+              </div>
+              <div class="play-mp hidden" id="playMp">
+                <div id="lobbyPanel" class="panel"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="cpage" id="pgCollection" data-page="collection" aria-label="Collection"></section>
+        <section class="cpage" id="pgLoot" data-page="loot" aria-label="Loot"></section>
+        <section class="cpage" id="pgProfile" data-page="profile" aria-label="Profile"></section>
+        <section class="cpage" id="pgSettings" data-page="settings" aria-label="Settings">
+          <div class="settings">
+            <div id="settingsBody" class="set-body"></div>
+            <div class="box set-about">
+              <h3 class="card-h">About</h3>
+              <p class="muted">Digi-Tactics is an unofficial, non-commercial fan project. See Credits for asset sources and acknowledgements.</p>
+              <p><a href="#" id="creditsBtn">Credits &amp; acknowledgements</a></p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <header id="cnav" aria-label="Main menu">
+    <button class="cn-play" id="cnPlay" data-page="play" title="Play"><img class="cn-mark" src="icons/favicon.svg" alt=""><span class="cn-play-t">Play</span></button>
+    <nav class="cn-tabs">
+      <button class="cn-tab on" data-page="home">Home</button>
+      <button class="cn-tab" data-page="play">Modes</button>
+      <button class="cn-tab" data-page="collection">Collection</button>
+      <button class="cn-tab" data-page="loot">Loot</button>
+      <button class="cn-tab" data-page="store" id="storeTitleBtn" data-shop-open>Store</button>
+      <button class="cn-tab" data-page="farm" id="farmTitleBtn" data-farm-open>Digi-Farm</button>
+      <button class="cn-tab" data-page="codex" id="codexTitleBtn" data-codex-open>Codex</button>
+    </nav>
+    <div class="cn-right">
+      <button class="cn-status" id="cnStatus" data-page="play" data-play-mode="mp" title="Multiplayer lobbies"><i class="dot"></i><span>Solo</span></button>
+      <button class="chip-bits" id="cnBits" data-page="store" data-shop-open title="Bits: earned by playing games"><i class="bit"></i><b>0</b></button>
+      <button class="cn-icon" id="cnStoreIc" data-page="store" data-shop-open title="Store" aria-label="Store"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path fill="currentColor" d="M7 7V6a5 5 0 0 1 10 0v1h3l-1 14H5L4 7h3Zm2 0h6V6a3 3 0 0 0-6 0v1Zm-1 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg></button>
+      <button class="cn-icon" id="cnLootIc" data-page="loot" title="Loot" aria-label="Loot"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path fill="currentColor" d="M12 2c4 0 7 4.6 7 9.5S16 21 12 21s-7-4.6-7-9.5S8 2 12 2Zm0 4.5-2 3.5 2 3.5 2-3.5-2-3.5Zm-4.4 8.4c1 .8 2.6 1.3 4.4 1.3s3.4-.5 4.4-1.3l-.6-1.6c-.9.6-2.2 1-3.8 1s-2.9-.4-3.8-1l-.6 1.6Z"/></svg></button>
+    </div>
+    <button class="cn-profile" id="cnProfile" data-page="profile" title="Profile">
+      <span class="cn-ring"><svg class="cn-ring-svg" viewBox="0 0 48 48" aria-hidden="true"><circle class="rg-bg" cx="24" cy="24" r="22"/><circle class="rg-fg" cx="24" cy="24" r="22"/></svg><span class="cn-av"></span><b class="cn-lv">1</b></span>
+      <span class="cn-who"><span class="cn-pn">Tamer</span><span class="cn-st"><i class="dot"></i><span>Online</span></span></span>
+    </button>
+    <div class="cn-win">
+      <button class="cn-wb" id="cnSettings" data-page="settings" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.4-2.5 1a7.4 7.4 0 0 0-1.7-1L14.9 3.3h-4l-.4 2.7a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.4L6.4 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.4 2.5-1a7.4 7.4 0 0 0 1.7 1l.4 2.7h4l.4-2.7a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.4L19.4 13ZM12.9 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"/></svg></button>
+      <button class="cn-wb" id="cnMin" title="Hide the friends list" aria-label="Hide the friends list"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M5 11h14v2H5z"/></svg></button>
+    </div>
+  </header>
+  <aside id="csocial" aria-label="Friends and party">
+    <div class="cs-head"><span>Social</span><span class="cs-acts"><button class="cs-btn" id="csInvite" title="Invite to your party" aria-label="Invite to your party"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M10 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-7 2-7 4.5V20h14v-1.5C17 16 14 14 10 14Zm9-6V5h-2v3h-3v2h3v3h2v-3h3V8h-3Z"/></svg></button></span></div>
+    <div class="cs-body" id="csBody"></div>
+    <div class="cs-foot" id="csFoot"></div>
+  </aside>
+  <div id="cmodal" class="hidden" role="dialog" aria-modal="true"></div>
+  <div id="ctoasts" aria-live="polite"></div>
+  <div id="boot" role="status" aria-label="Loading">
+    <div class="boot-in">
+      <img class="boot-mark" src="icons/favicon.svg" alt="">
+      <div class="boot-title">Digi-Tactics</div>
+      <div class="boot-bar"><i></i></div>
+      <div class="boot-step">Starting up</div>
+    </div>
+  </div>
+  <script src="js/data.js"></script>
+  <script src="js/items.js"></script>
+  <script src="js/sets.js"></script>
+  <!-- one ruleset per match: js/sets/<id>.js (data), <id>-mech.js (hooks), <id>-art.js (item art, move looks); docs/sets/FORMAT.md -->
+  <script src="js/sets/faction-wars.js"></script><script src="js/sets/faction-wars-mech.js"></script><script src="js/sets/faction-wars-art.js"></script>
+  <script src="js/sets/galaxies.js"></script><script src="js/sets/galaxies-mech.js"></script><script src="js/sets/galaxies-art.js"></script><script src="js/sets/galaxies-models.js"></script>
+  <script src="js/sets/fates.js"></script><script src="js/sets/fates-mech.js"></script><script src="js/sets/fates-art.js"></script><script src="js/sets/fates-models.js"></script>
+  <script src="js/sets/reckoning.js"></script><script src="js/sets/reckoning-mech.js"></script><script src="js/sets/reckoning-art.js"></script><script src="js/sets/reckoning-models.js"></script>
+  <script src="js/sets/gizmos.js"></script><script src="js/sets/gizmos-mech.js"></script><script src="js/sets/gizmos-art.js"></script><script src="js/sets/gizmos-models.js"></script>
+  <script src="js/sets/dragonlands.js"></script><script src="js/sets/dragonlands-mech.js"></script><script src="js/sets/dragonlands-art.js"></script><script src="js/sets/dragonlands-models.js"></script>
+  <script src="js/sets/arcane.js"></script><script src="js/sets/arcane-mech.js"></script><script src="js/sets/arcane-art.js"></script><script src="js/sets/arcane-models.js"></script>
+  <script src="js/sets/coliseum.js"></script><script src="js/sets/coliseum-mech.js"></script><script src="js/sets/coliseum-art.js"></script><script src="js/sets/coliseum-models.js"></script>
+  <script src="js/sets/underlords.js"></script><script src="js/sets/underlords-mech.js"></script><script src="js/sets/underlords-art.js"></script><script src="js/sets/underlords-models.js"></script>
+  <script src="js/sets/autochess.js"></script><script src="js/sets/autochess-mech.js"></script><script src="js/sets/autochess-art.js"></script><script src="js/sets/autochess-models.js"></script>
+  <script src="js/sets/_template.js"></script><script src="js/sets/_template-mech.js"></script><script src="js/sets/_template-art.js"></script>
+  <script src="js/combat.js"></script>
+  <script src="js/duos.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/lockstep.js"></script>
+  <script src="js/models.js"></script><script src="js/credits-data.js"></script>
+  <script src="js/cosmetics.js"></script>
+  <!-- three.js + render3d.js + ui.js, built by tools/build.cjs so the page works from file:// -->
+  <script src="js/bundle.js"></script>
+</body>
+</html>

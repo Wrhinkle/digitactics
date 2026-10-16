@@ -1,0 +1,55 @@
+{
+ "ac:Triceramon": "CS_Triceramon",
+ "ac:Beelzemon": "CS_Beelzemon",
+ "ac:Beelzemon Blast Mode": "CS_BeelzemonBM",
+ "ac:Veemon": "CS_Veemon",
+ "ac:ExVeemon": "CS_ExVeemon",
+ "ac:Paildramon": "L_Paildramon",
+ "ac:Shamanmon": "NO_Shamanmon",
+ "ac:Sorcermon": "L_Sorcermon",
+ "ac:Kotemon": "TS_Kotemon",
+ "ac:Knightmon": "CS_Knightmon",
+ "ac:Gaomon": "CS_Gaomon",
+ "ac:Kyubimon": "CS_Kyubimon",
+ "ac:Psychemon": "NO_Psychemon",
+ "ac:MegaGargomon": "CS_MegaGargomon",
+ "ac:Syakomon": "CS_Syakomon",
+ "ac:Whamon": "L_Whamon",
+ "ac:Elecmon": "CS_Elecmon",
+ "ac:Aegiomon": "TS_Aegiomon",
+ "ac:Volcanicdramon": "L_Volcanicdramon",
+ "ac:Tanemon": "CS_Tanemon",
+ "ac:Monochromon": "CS_Monochromon",
+ "ac:Airdramon": "CS_Airdramon",
+ "ac:Machinedramon": "L_Machinedramon",
+ "ac:Apocalymon": "CS_Apocalymon",
+ "ac:Tyrannomon": "CS_Tyrannomon",
+ "ac:MetalTyrannomon": "L_MetalTyrannomon",
+ "ac:Gigadramon": "L_Gigadramon",
+ "ac:Millenniummon": "L_Millenniummon",
+ "ac:Guardromon (Gold)": "CS_GuardromonGold",
+ "_alias": {
+  "TS_Aegiomon": "TS_Elecmon_Elecmon_Aegiomon",
+  "CS_GuardromonGold": "CS_Guardromon",
+  "CS_BeelzemonBM": "CS_Beelzemon"
+ },
+ "_pick": {
+  "TS_Aegiomon": "chr563[.]fbx$",
+  "CS_Beelzemon": "chr035[.]fbx$",
+  "CS_BeelzemonBM": "chr775[.]fbx$"
+ },
+ "_form": {
+  "TS_Aegiomon": "Aegiomon",
+  "CS_GuardromonGold": "Guardromon (Gold)",
+  "CS_BeelzemonBM": "Beelzemon Blast Mode",
+  "TS_Bakumon": "Tapirmon"
+ },
+ "_retexture": {
+  "CS_GuardromonGold": {
+   "chr341a01.png": "chr760a01.png",
+   "chr341a01s.png": "chr760a01s.png"
+  }
+ },
+ "ac:Tapirmon": "TS_Bakumon",
+ "ac:BlackGarurumon": "CS_BlackGarurumon"
+}

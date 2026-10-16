@@ -1,0 +1,114 @@
+{
+  "recipe": "Super Video Maker: screencast-demo adapted for an in-engine game trailer",
+  "spine": {
+    "viewer": "Digimon fans who enjoy building teams and auto chess",
+    "promise": "Build a team, fight solo or in pairs, and care for Digimon between matches",
+    "mechanism": "Buy three matching copies to evolve, then position the team for automatic battles",
+    "nextStep": "GET ON GITHUB NOW"
+  },
+  "angle": "Follow Agumon from rookie to evolved fighter, then reveal the combined Double Up battlefield",
+  "format": {
+    "seconds": 25,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "audio": "Tamer's Morning WIP - mikl_pls",
+    "voiceover": false
+  },
+  "design": {
+    "accent": "#51e6ff",
+    "ink": "#061323",
+    "type": "Arial Bold",
+    "safeMargin": 90,
+    "captions": "Short animated editorial labels, no full-width bars"
+  },
+  "shots": [
+    {
+      "id": "rookie",
+      "duration": 1.8,
+      "job": "proof",
+      "camera": "Low three-quarter orbit facing Agumon",
+      "text": "BUILD YOUR TEAM"
+    },
+    {
+      "id": "buy",
+      "duration": 3.6,
+      "job": "mechanism",
+      "camera": "Full UI into shop and bench detail; purchase cursor and click pulses",
+      "text": "BUY"
+    },
+    {
+      "id": "evolve",
+      "duration": 2.4,
+      "job": "consequence",
+      "camera": "Match cut to the purchased evolution, close low-angle orbit",
+      "text": "DIGIVOLVE",
+      "detail": "AGUMON > GREYMON"
+    },
+    {
+      "id": "solo-ui",
+      "duration": 2,
+      "job": "proof",
+      "camera": "Normal solo combat with visible HUD",
+      "text": "SOLO"
+    },
+    {
+      "id": "solo-orbit",
+      "duration": 2,
+      "job": "consequence",
+      "camera": "Continue the same fight from a tighter moving three-quarter camera",
+      "text": ""
+    },
+    {
+      "id": "duos-ui",
+      "duration": 1.5,
+      "job": "proof",
+      "camera": "Show partner, team health and combined battlefield HUD",
+      "text": "DOUBLE UP"
+    },
+    {
+      "id": "duos-orbit",
+      "duration": 2.2,
+      "job": "consequence",
+      "camera": "Sweep across the two allied teams, then pull back to show the larger battle",
+      "text": "FIGHT TOGETHER"
+    },
+    {
+      "id": "final-attack",
+      "duration": 1.5,
+      "job": "consequence",
+      "camera": "Actual final-hit cinematic",
+      "text": ""
+    },
+    {
+      "id": "victory-dance",
+      "duration": 1.5,
+      "job": "consequence",
+      "camera": "Actual ground-aligned victory lineup",
+      "text": ""
+    },
+    {
+      "id": "farm",
+      "duration": 3.5,
+      "job": "mechanism",
+      "camera": "Real DigiFarm care: feed meat, then praise Tokomon; keep care controls and stat changes visible",
+      "text": "CARE FOR YOUR DIGIMON"
+    },
+    {
+      "id": "cta",
+      "duration": 3,
+      "job": "action",
+      "camera": "Hold the corrected cover while the CTA rises and fades in",
+      "text": "GET ON GITHUB NOW"
+    }
+  ],
+  "copyGate": {
+    "pointableClaims": true,
+    "oneCTA": true,
+    "companyNamesInGameCopy": false,
+    "creditsInRepository": true,
+    "noNarrationRequested": true
+  },
+  "capture": "Real models and combat in isolated staged local matches. Camera and HUD changes are capture-only. No fabricated gameplay, multiplayer session or public availability verification.",
+  "recipeAdaptations": "Retain music-only game-trailer format, use actual 3D camera paths instead of a laptop mockup, and use existing deterministic capture to prevent dropped frames. No paid external generation required. Apply skill-local layout and FFmpeg QC."
+}

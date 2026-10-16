@@ -1,0 +1,62 @@
+{
+  "name": "digitactics-steam",
+  "productName": "Digi-Tactics",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Digi-Tactics desktop build with Steam multiplayer (App ID 480, Spacewar)",
+  "main": "boot.js",
+  "scripts": {
+    "stage": "node stage.cjs",
+    "start": "node stage.cjs && electron .",
+    "dist": "node stage.cjs && electron-builder --win dir portable && node finish-build.cjs",
+    "smoke": "node smoke.cjs",
+    "publish-update": "node publish-update.cjs"
+  },
+  "dependencies": {
+    "koffi": "^3.3.3",
+    "steamworks.js": "^0.4.0"
+  },
+  "devDependencies": {
+    "electron": "^44.7.2",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "io.digitactics.steam",
+    "productName": "Digi-Tactics",
+    "executableName": "Digi-Tactics",
+    "copyright": "Personal, non-commercial fan project",
+    "directories": {
+      "output": "out",
+      "buildResources": "build"
+    },
+    "files": [
+      "boot.js",
+      "package.json",
+      "node_modules/**/*",
+      "!node_modules/koffi/{doc,vendor}/**",
+      "!node_modules/steamworks.js/dist/{linux64,osx}/**",
+      "!node_modules/steamworks.js/dist/win64/*.lib"
+    ],
+    "asarUnpack": [
+      "node_modules/steamworks.js/dist/win64/**",
+      "node_modules/@koromix/**"
+    ],
+    "extraResources": [
+      { "from": "payload", "to": "payload" }
+    ],
+    "extraFiles": [
+      { "from": "steam_appid.txt", "to": "steam_appid.txt" },
+      { "from": "node_modules/steamworks.js/dist/win64/steam_api64.dll", "to": "steam_api64.dll" }
+    ],
+    "npmRebuild": false,
+    "compression": "normal",
+    "electronLanguages": ["en-US"],
+    "win": {
+      "icon": "payload/game/icons/icon-512.png",
+      "target": ["dir", "portable"]
+    },
+    "portable": {
+      "artifactName": "DigiTactics-Steam.exe"
+    }
+  }
+}
