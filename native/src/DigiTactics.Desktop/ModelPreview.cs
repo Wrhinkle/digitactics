@@ -16,7 +16,10 @@ internal sealed class ModelPreview : IDisposable
     private RigPose? pose;
     private GltfMesh? mesh;
     private GltfMaterial[] materials = [];
-    private RigAnimation? idle;
+    private ModelAnimator? animator;
+    private double? lastTime;
+    public bool Play(string role) => animator?.Play(role) ?? false;
+    public void EndAction() => animator?.EndAction();
     private ModelSource? source;
     private Matrix4D normalization;
     private Matrix4D[] palette = [];
@@ -43,10 +46,7 @@ internal sealed class ModelPreview : IDisposable
         {
             using var asset = catalog.Open(Path.Combine(AppContext.BaseDirectory, "assets"), next.Asset);
             rig = GltfRig.Load(asset).Prepare(next, Path.Combine(AppContext.BaseDirectory, "assets"));
-            pose = new RigPose(rig); mesh = GltfMesh.Load(asset);
-            idle = rig.Animations.FirstOrDefault(a => System.Text.RegularExpressions.Regex.IsMatch(a.Name, "idle|wait|stand", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
-                ?? rig.Animations.FirstOrDefault(a => a.Name.Contains("_bn01", StringComparison.OrdinalIgnoreCase)) ?? rig.Animations.FirstOrDefault();
-            pose.Sample(idle, 0);
+            animator = new ModelAnimator(rig); pose = animator.Pose; mesh = GltfMesh.Load(asset);
             var (min, max) = mesh.Bounds(rig, pose);
             double scale = 2 / Math.Max(.001, Math.Max(max.Y - min.Y, Math.Max(max.X - min.X, max.Z - min.Z)));
             normalization = Matrix4D.Compose(new(-(min.X + max.X) * .5 * scale, -min.Y * scale, -(min.Z + max.Z) * .5 * scale), new(0,0,0,1), new(scale,scale,scale));
@@ -70,7 +70,7 @@ internal sealed class ModelPreview : IDisposable
     {
         DrawCalls = 0;
         if (rig is null || pose is null || mesh is null || width <= 0 || height <= 0) return;
-        pose.Sample(idle, time, loop: true);
+        animator!.Update(lastTime is { } previous ? Math.Max(0, time - previous) : 0); lastTime = time;
         OpenGl.Viewport(0, 0, width, height);
         OpenGl.Native.glEnable((GlCapability)OpenGl.GL_DEPTH_TEST);
         OpenGl.Native.glDisable((GlCapability)OpenGl.GL_SCISSOR_TEST);
@@ -152,7 +152,7 @@ internal sealed class ModelPreview : IDisposable
     {
         foreach (var primitive in primitives) primitive.Dispose(); primitives.Clear();
         foreach (var texture in textures.Values) texture.Dispose(); textures.Clear();
-        rig = null; pose = null; mesh = null;
+        rig = null; pose = null; mesh = null; animator = null; lastTime = null;
     }
     public void Dispose() { ClearModel(); OpenGl.DeleteBuffers(new[] { bones }); bones = default; program.Dispose(); }
 

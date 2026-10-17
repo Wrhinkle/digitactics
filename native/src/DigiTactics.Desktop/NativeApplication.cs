@@ -67,6 +67,14 @@ public static class NativeApplication
                     ImGui.NewFrame();
                     screen.Draw(window.Size);
                     if (screen.Preview is { } selected) preview.Select(selected.Variant, selected.Line, selected.Stage);
+                    if (screen.RequestedAction == "idle") preview.EndAction();
+                    else if (screen.RequestedAction is { } action) preview.Play(action);
+                    if (smoke)
+                    {
+                        if (frames == 5 && !preview.Play("attack") || frames == 6 && !preview.Play("special") || frames == 8 && !preview.Play("win"))
+                            throw new InvalidOperationException("Native model action smoke failed.");
+                        if (frames is 7 or 9 && preview.Play("attack")) throw new InvalidOperationException("Attack interrupted a protected action.");
+                    }
                     ImGui.Render();
                     var size = window.FramebufferSize;
                     OpenGl.Viewport(0, 0, size.X, size.Y);

@@ -366,9 +366,22 @@ The workbench uses prepared rigs, and packaged smoke prepares all 905 sources.
 Original nonfinite tracks remain covered by the existing repair checks instead of
 reference equality. This does not establish rendering parity: production material
 shaders (including normal/roughness/specular maps), transparent depth sorting,
-action priorities/blending and arena normalization/lighting remain unfinished.
+combat-to-animation integration and arena normalization/lighting remain unfinished.
 
-Latest verification: the native test suite passes 122,426,723 assertions.
+Native ModelAnimator now implements UnitView action priorities, the 60% attack
+retrigger gate, .55-second attack and 1.1-second special speed limits, repeating
+victory clips, .08-second fades and .15-second idle recovery. Per-property normal
+weight blending preserves partial-track rest values and quaternion interpolation.
+Fading matches Three.js float32 control timestamps/results with double arithmetic,
+including the finished-event ordering that restarts idle after its current update.
+Reference traces invoke the original play/endOneShot methods and AnimationMixer:
+2,399,704 state/pose checks cover 873 sources with valid animated reference clips.
+Goblimon's sensitive blend case additionally compares every local transform.
+Static sources and original nonfinite clips are excluded from this reference suite;
+the separate rig repair tests still cover corrupt authored data. The workbench
+exposes action buttons and packaged smoke exercises action protection while drawing.
+
+Latest verification: the native test suite passes 124,826,427 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

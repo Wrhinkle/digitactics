@@ -201,6 +201,10 @@ public sealed class RigPose
                 };
             }
         }
+        UpdateWorld();
+    }
+    public void UpdateWorld()
+    {
         foreach (int node in order) World[node] = rig.Nodes[node].Parent < 0 ? Local[node].Matrix : Local[node].Matrix * World[rig.Nodes[node].Parent];
     }
     private static Vector4D Linear(Vector4 a, Vector4 b, double t) => new(
@@ -209,6 +213,9 @@ public sealed class RigPose
 
     // Preserve the original interpolant's endpoint and nearly parallel behavior for quantized quaternions.
     private static QuaternionD Slerp(Vector4 a, Vector4 b, double t)
+        => Blend(new(a.X,a.Y,a.Z,a.W), new(b.X,b.Y,b.Z,b.W), t);
+
+    internal static QuaternionD Blend(QuaternionD a, QuaternionD b, double t)
     {
         if (t == 0 || a == b) return new(a.X, a.Y, a.Z, a.W);
         if (t == 1) return new(b.X, b.Y, b.Z, b.W);

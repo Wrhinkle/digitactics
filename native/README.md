@@ -28,6 +28,10 @@ Selling uses the original star/tier discount rules, including Dragonlands price 
 Below the shop, an animated native model preview shows the most recently owned unit
 (or the first shop offer when the roster is empty). It uses authored or fallback idle clips,
 GPU skinning and original textures with provisional preview lighting.
+Attack, Special, Victory and Idle buttons exercise the native action controller.
+It preserves action priorities, attack retrigger limits, clip speed limits and
+weighted transitions, checked against the original renderer/mixer in 2,399,704
+comparisons across 873 animated model sources.
 
 The shared combat presentation stream is checked against 156 original-engine battles
 (42,626 ordered cues), including cast names, projectiles, bursts, critical damage,
@@ -71,8 +75,8 @@ The build also compiles the original motion preparation for all 905 model source
 459 fallback clips, adjusted rest poses and six weapon-parenting changes. Native
 sampling passes 1,266,912 reference checks against those prepared scenes. The 667
 deduplicated motion payloads add about 1.6 MB; no JavaScript runs in the app.
-Production material shaders, arena sizing/lighting, action priorities/animation
-blending and production screens remain unfinished.
+Production material shaders, arena sizing/lighting, combat-to-animation integration
+and production screens remain unfinished.
 
 ## Boundaries
 

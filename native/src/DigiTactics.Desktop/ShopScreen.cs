@@ -10,6 +10,7 @@ internal sealed class ShopScreen
     private ShopSession session;
     private string status = "Choose a ruleset to explore the native shop and roster.";
     internal int OwnedCount => session.Roster.Units.Count;
+    internal string? RequestedAction { get; private set; }
     internal (string Variant, string Line, int Stage)? Preview
     {
         get
@@ -28,6 +29,7 @@ internal sealed class ShopScreen
 
     public void Draw(int2 size)
     {
+        RequestedAction = null;
         ImGui.SetNextWindowPos(new float2(20, 20));
         ImGui.SetNextWindowSize(new float2(size.X - 40, Math.Max(300, size.Y * .53f)));
         ImGui.Begin("Digi-Tactics - native migration"u8, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
@@ -65,6 +67,10 @@ internal sealed class ShopScreen
         }
         ImGui.Separator();
         ImGui.Text(status);
+        if (ImGui.SmallButton("Preview attack"u8)) RequestedAction = "attack";
+        ImGui.SameLine(); if (ImGui.SmallButton("Special"u8)) RequestedAction = "special";
+        ImGui.SameLine(); if (ImGui.SmallButton("Victory"u8)) RequestedAction = "win";
+        ImGui.SameLine(); if (ImGui.SmallButton("Idle"u8)) RequestedAction = "idle";
         ImGui.Text("Owned three-star lines are excluded from this player's shop. Other players keep their own eligibility."u8);
         ImGui.Separator();
         ImGui.Text("BRUTAL Copyright (c) 2024 Ahwoo Limited. Digi-Tactics is an unofficial, non-commercial fan project."u8);

@@ -1,6 +1,7 @@
 // Compile the original fallback/rest-pose preparation into native data, never runtime JS.
 const fs=require('node:fs'),path=require('node:path'),zlib=require('node:zlib'),crypto=require('node:crypto');
 const {pathToFileURL}=require('node:url');
+const vm=require('node:vm');
 const root=path.resolve(__dirname,'../..'), content=path.join(root,'native/artifacts/model-content');
 async function main(){
   const {THREE,GLTFParser,GLTFMaterialsUnlitExtension}=await require('./three-loader.cjs')();
@@ -8,7 +9,12 @@ async function main(){
   const {modelClips}=await import('data:text/javascript;base64,'+Buffer.from(motionSource).toString('base64'));
   const manifest=path.join(root,'native/content/models.json'), catalog=JSON.parse(fs.readFileSync(manifest));
   fs.mkdirSync(path.join(content,'motions'),{recursive:true});
-  const fixtures=[]; let generated=0,reparented=0;
+  const fixtures=[],actionFixtures=[]; let generated=0,reparented=0;
+  const renderer=fs.readFileSync(path.join(root,'js/render3d.js'),'utf8');
+  const methods=renderer.slice(renderer.indexOf('  play(role) {'),renderer.indexOf('  applyAlpha(force) {'));
+  const operations=[{delta:.01},{role:'attack'},{delta:0},{delta:.04},{role:'attack'},{delta:.05},{role:'special'},
+    {delta:.04},{role:'attack'},{delta:.12},{role:'win'},{delta:2.3},{role:'attack'},{end:true},{delta:.03},{delta:.15},
+    {role:'attack'},{delta:.34},{role:'attack'},{delta:.9},{role:'missing'},{role:'special'},{delta:.04},{role:'special'},{delta:1.2},{delta:.2}];
   for(const [key,source] of Object.entries(catalog.sources)){
     const entry=catalog.assets[source.asset], bytes=zlib.gunzipSync(fs.readFileSync(path.join(content,entry.file)));
     const length=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+length)),binary=bytes.subarray(28+length);
@@ -55,9 +61,31 @@ async function main(){
       mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);
     }
     fixtures.push({key,samples});
+    const idle=clips.find(c=>/idle|wait|stand/i.test(c.name))||clips.find(c=>/_bn01/i.test(c.name))||clips[0];
+    if(idle && clips.every(c=>c.tracks.every(t=>Array.from(t.values).every(Number.isFinite)))){
+      const template=new THREE.AnimationMixer(gltf.scene);template.clipAction(idle).play();template.update(0);
+      const view=vm.runInNewContext('new (class {'+methods+'})()',{THREE,ATTACK_MAX:.55,SPECIAL_MAX:1.1});
+      view.mixer=new THREE.AnimationMixer(gltf.scene);view.idleAction=view.mixer.clipAction(idle);view.idleAction.time=idle.duration*.17;view.idleAction.play();
+      view.clips=Object.fromEntries(['attack','special','win'].map(role=>[role,clips.find(c=>c.name===role)]));
+      view.mixer.addEventListener('finished',e=>{if(e.action===view.oneShot)view.endOneShot();});
+      const steps=[];
+      for(const operation of operations){
+        let accepted=null;
+        if(operation.role)accepted=view.play(operation.role);
+        else if(operation.end)view.endOneShot();
+        else view.mixer.update(operation.delta);
+        gltf.scene.updateMatrixWorld(true);
+        steps.push({...operation,request:operation.role??null,accepted,role:view.oneShotRole??null,time:view.mixer.time,
+          actions:view.mixer._actions.map(a=>({name:a.getClip().name,time:a.time,weight:a.getEffectiveWeight(),enabled:a.enabled,speed:a.timeScale})),
+          locals:key.includes('CS_Goblimon')?nodes.map(n=>[...n.position.toArray(),...n.quaternion.toArray(),...n.scale.toArray()]):undefined,
+          world:[...selected].map(node=>({node,matrix:nodes[node].matrixWorld.toArray()})).filter(x=>x.matrix.every(Number.isFinite))});
+      }
+      actionFixtures.push({key,idleOffset:idle.duration*.17,steps});
+    }
   }
   fs.writeFileSync(manifest,JSON.stringify(catalog)+'\n');
   fs.writeFileSync(path.join(root,'native/tests/fixtures/motions.json.gz'),zlib.gzipSync(JSON.stringify(fixtures)));
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/actions.json.gz'),zlib.gzipSync(JSON.stringify(actionFixtures)));
   const directory=path.resolve(content,'motions'),keep=new Set(Object.values(catalog.sources).map(s=>path.basename(s.motion.file)));
   for(const name of fs.readdirSync(directory)){
     if(!/^[0-9a-f]{64}\.json\.gz$/.test(name)||keep.has(name))continue;

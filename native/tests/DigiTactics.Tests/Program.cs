@@ -2,6 +2,7 @@ using System.Text.Json;
 using DigiTactics.Rules;
 
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");
+if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
 using var fixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests/fixtures/parity.json")));
 int assertions = 0;
@@ -115,6 +116,7 @@ foreach (var trace in damageFixtures.RootElement.EnumerateArray())
 assertions += ModelAssetParity.Run(root);
 assertions += TextureParity.Run(root);
 assertions += MaterialParity.Run(root);
+assertions += ActionParity.Run(root);
 assertions += MotionParity.Run(root);
 assertions += MeshParity.Run(root);
 assertions += RigParity.Run(root);
