@@ -76,6 +76,7 @@ public sealed class MatchState
     public bool Duos { get; }
     public bool Over { get; private set; }
     public bool PlayOut { get; set; }
+    public int[]? GizmosGates { get; set; }
     public string? TreasureVariant { get; set; }
     public PlanningUnit CreateUnit(string line, int stage) => new(AllocateId(), line, stage, []);
     internal int AllocateId() => ++uid;

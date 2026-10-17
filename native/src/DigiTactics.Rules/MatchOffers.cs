@@ -93,6 +93,24 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             case "drg_treasure":
                 modeRewards.ChooseTreasure(player, id, boardLocked);
                 break;
+            case "upgrade":
+                if (!state.Rules.OfferAi!.ContainsKey("augment:" + id)) break;
+                player.Augments.Add(id);
+                hooks.AugmentPicked(player, id);
+                Combine(player, boardLocked);
+                break;
+            case "ac_relic":
+                var relics = state.Rules.Items.Where(i => i.Relic).Select(i => i.Id).ToHashSet();
+                player.Globals.RemoveAll(relics.Contains);
+                player.Globals.Add(id);
+                switch (id)
+                {
+                    case "ac_r_forge": player.GiveItem(loot.RandomCompleted()!); break;
+                    case "ac_r_eggnest": player.GiveItem("ac_digiegg"); player.GiveItem("ac_digiegg"); break;
+                    case "ac_r_card": player.Shop.FreeRolls++; break;
+                }
+                Combine(player, boardLocked);
+                break;
             case "ac_loot":
                 player.GiveItem(id);
                 player.Mechanics.AutoChessLoot = null;
@@ -123,10 +141,21 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             "col_form" => coliseum.FormOptions(player),
             "col_gambit" => coliseum.GambitOptions(player),
             "drg_treasure" => modeRewards.TreasureOptions(player, exclude),
+            "upgrade" => UpgradeOptions(player, round.Stage, exclude),
+            "ac_relic" => Shuffle(state.Rules.Items.Where(i => i.Relic && !player.Globals.Contains(i.Id) && !exclude.Contains(i.Id)).Select(i => i.Id)).Take(3).ToArray(),
             "ac_loot" => player.Mechanics.AutoChessLoot?.ToArray() ?? [],
             _ => hooks.CustomOptions(player, round, definition, exclude),
         };
     }
+    private string[] UpgradeOptions(MatchPlayer player, int stage, IReadOnlyList<string> exclude)
+    {
+        int gate = Array.FindIndex(Rules.Schedule, o => o.Kind == "upgrade" && o.Stage == stage);
+        int tier = state.GizmosGates is { } gates && gate >= 0 && gate < gates.Length && gates[gate] != 0 ? gates[gate] : 2;
+        var eligible = Rules.Augments.Where(a => !player.Augments.Contains(a.Id) && !exclude.Contains(a.Id)).ToArray();
+        var pool = eligible.Where(a => a.Tier == tier).ToArray();
+        return Shuffle(pool.Length < 3 ? eligible : pool).Take(3).Select(a => a.Id).ToArray();
+    }
+
     private string[] Augments(MatchPlayer player, int stage, IReadOnlyList<string> exclude)
     {
         if (tierStage != stage)

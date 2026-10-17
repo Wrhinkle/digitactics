@@ -766,3 +766,28 @@ need integration.
 
 Validation: 147,477,071 full-suite checks and packaged BRUTAL smoke tests pass
 with schema 29.
+
+## Auto Chess relic and Gizmos upgrade offers
+
+Schema 30 marks relic items explicitly. `MatchOffers` now generates Auto Chess
+relic choices, excludes held/rerolled relics, replaces only relic globals and
+applies Forge, Egg Nest and Card acquisition rewards before combining. Unrelated
+globals survive replacement; item-cap behavior and free-roll grants match the
+original. Persistent relic income/shop/team-size/sale hooks remain separate work.
+
+Gizmos upgrade choices read the match's `GizmosGates` and scheduled gate index,
+default to Gold when the gate is absent, and fall back to all eligible upgrades
+when fewer than three remain in the tier. Choosing a valid upgrade adds it,
+dispatches the required augment-pick handler and combines. Game-start gate rolls
+and remaining concrete augment-pick effects still need integration.
+
+Eight focused traces cover both paces, human/AI players, gate tiers, exhausted
+choices, exclusions, full inventory, unrelated globals, free-roll grants and
+board-lock-sensitive merges: 120,948 checks. Generic offer and round-flow fixtures
+now use the original relic/upgrade handlers instead of mock custom choices.
+The focused suite isolates augment-pick effects while verifying their dispatch;
+run it with `--relic-upgrades-only`. Full match and desktop integration remain
+pending.
+
+Validation: 147,597,875 full-suite checks and packaged BRUTAL smoke tests pass
+with schema 30.
