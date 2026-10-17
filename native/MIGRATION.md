@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 132,139,281 assertions.
+Latest verification: the native test suite passes 132,424,485 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -522,7 +522,23 @@ silent defaults.
 `MatchRounds` wires round progression, per-player XP/income, locked shops, offer
 creation, power ranks, round-start callbacks, AI/pairing or carousel dispatch,
 shared health synchronization and settlement phase transitions. Reference traces
-verify 530,070 offer checks and 559,864 round-flow checks across all 22 variants
+verify 530,022 offer checks and 559,864 round-flow checks across all 22 variants
 in Solo/Duos. These traces instrument game hooks and AI/carousel callbacks to test
 ordering; they do not establish completion of those concrete systems or desktop
 match integration.
+
+## Custom armories and Treasure Dragon
+
+The native offer engine now runs Arcane's artifact armory and Reckoning's shadow
+armory directly. Treasure Dragon offers support classic/order/chaos variants,
+won/lost treasure outcomes, Treasure Hoard option counts, duplicate/exclusion
+retries, preferred emblems, and every bundle reward. Unit bundles preserve pool
+reservations, bench/full-pool gold fallbacks, merges and max-star shop cleanup.
+Preferred-emblem selection is shared with the PvE reward generator.
+
+36 original-handler traces cover 4,320 generation/selection cycles across both
+paces, three seeds and full/available benches (285,156 comparisons). General
+offer and round-flow traces now execute the real Treasure Dragon handler too.
+Other custom offer kinds, concrete game-start/round hooks (including Treasure
+variant initialization), item editing, AI, carousel and desktop match integration
+remain pending.

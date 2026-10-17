@@ -20,6 +20,7 @@ public interface IMatchOfferHooks
 public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
 {
     private readonly MatchLoot loot = new(state);
+    private readonly ModeOfferRewards modeRewards = new(state);
     private OfferRules Rules => state.Rules.Offers!;
     private int tierStage = -1, tier;
 
@@ -73,6 +74,9 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
                 hooks.PowerPicked(player, id);
                 Combine(player, boardLocked);
                 break;
+            case "drg_treasure":
+                modeRewards.ChooseTreasure(player, id, boardLocked);
+                break;
             case "ac_loot":
                 player.GiveItem(id);
                 player.Mechanics.AutoChessLoot = null;
@@ -96,6 +100,7 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             "power" => Shuffle(Rules.Powers.Where(id => !exclude.Contains(id))).Take(count).ToArray(),
             "itemTier" => Shuffle(state.Rules.Items.Where(i => i.Tier == definition.Tier && !i.Component && !i.NoDrop && !exclude.Contains(i.Id))
                 .Select(i => i.Id)).Take(count).ToArray(),
+            "drg_treasure" => modeRewards.TreasureOptions(player, exclude),
             "ac_loot" => player.Mechanics.AutoChessLoot?.ToArray() ?? [],
             _ => hooks.CustomOptions(player, round, definition, exclude),
         };
@@ -126,7 +131,7 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
     }
     private string[] Armory(MatchPlayer player, RoundPosition round)
     {
-        if (Rules.CustomArmory) return hooks.Armory(player, round);
+        if (Rules.CustomArmory) return modeRewards.Armory(player, round) ?? hooks.Armory(player, round);
         List<string?> items = [];
         for (int guard = 0; items.Count < 3 && guard < 60; guard++)
         {

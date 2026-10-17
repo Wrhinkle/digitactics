@@ -15,6 +15,22 @@ public sealed class MatchLoot(MatchState state)
     public string? RandomCompleted() => Pick(state.Rules.CoreItems);
     public string? RandomEmblem() => Pick(Rules.Emblems);
 
+    public string? RandomEmblem(MatchPlayer player)
+    {
+        var emblems = state.Rules.Loot!.Emblems;
+        if (emblems.Length == 0) return null;
+        var board = player.Roster.Board.Select(e => new CombatEntry(e.Unit.Line, e.Unit.Stage, e.Spot.Column,
+            e.Spot.Row, e.Unit.Id, Items: e.Unit.Items, BonusTraits: e.Unit.BonusTraits));
+        var counts = TraitRules.Count(state.Rules, board);
+        var preferred = emblems.Where(id =>
+        {
+            string? trait = state.Rules.Items.Single(i => i.Id == id).Emblem;
+            return trait is not null && counts.GetValueOrDefault(trait) > 0 &&
+                state.Rules.Traits.Single(t => t.Id == trait).Kind is not ("role" or "class");
+        }).ToArray();
+        return Pick(preferred.Length > 0 ? preferred : emblems);
+    }
+
     public PveRewardSummary Reward(MatchPlayer player, RoundPosition round, bool won,
         Func<MatchPlayer, bool, IEnumerable<LootSpec>>? custom = null)
     {
