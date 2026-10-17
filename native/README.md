@@ -55,8 +55,13 @@ verifies every model payload and rig. Native skeletal sampling now handles node
 hierarchies, linear/step tracks, quaternion interpolation and skin matrices, with
 2,609,044 reference/repair checks across 718 rigs. The build converts 1,142 textures
 with Pillow; the C# PNG decoder matches every decoded pixel hash, including alpha.
-Python and Pillow are build dependencies only. GPU rendering,
-animation blending/fallback motions and production screens remain unfinished.
+Python and Pillow are build dependencies only. Material decoding now matches 1,200
+materials from the original loader, including the game's cutout/unlit corrections,
+texture color spaces, UV channels, filtering and wrapping (26,052 checks).
+The packaged GPU smoke uploads all 1,142 textures, checks exact pixel readback,
+sampler settings, storage color formats and complete mip chains through BRUTAL OpenGL.
+Model drawing/shaders, animation blending/fallback motions and production screens
+remain unfinished.
 
 ## Boundaries
 

@@ -1,0 +1,61 @@
+using System.Text.Json;
+using DigiTactics.Assets;
+
+internal static class MaterialParity
+{
+    public static int Run(string root)
+    {
+        var catalog = ModelCatalog.Load(Path.Combine(root, "content/models.json"));
+        using var fixture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root, "tests/fixtures/materials.json")));
+        int checks = 0, materials = 0;
+        foreach (var trace in fixture.RootElement.EnumerateArray())
+        {
+            string id = trace.GetProperty("asset").GetString()!;
+            using var asset = catalog.Open(Path.Combine(root, "artifacts/model-content"), id);
+            int index = 0;
+            void Check(bool condition, string field)
+            {
+                checks++;
+                if (!condition) throw new InvalidOperationException($"Material differs from original loader: {id}/{index}/{field}.");
+            }
+            foreach (var expected in trace.GetProperty("materials").EnumerateArray())
+            {
+                var actual = GltfMaterial.Load(asset, index);
+                double[] color = [actual.Color.R, actual.Color.G, actual.Color.B, actual.Color.A];
+                for (int c = 0; c < 4; c++) Check(Math.Abs(color[c] - expected.GetProperty("color")[c].GetDouble()) < 1e-10, "color");
+                Check(actual.Unlit == expected.GetProperty("unlit").GetBoolean(), "unlit");
+                Check(actual.DoubleSided == expected.GetProperty("doubleSided").GetBoolean(), "doubleSided");
+                Check(!GltfMaterial.Load(asset, index, frontOnly: true).DoubleSided, "frontOnly");
+                Check(actual.Transparent == expected.GetProperty("transparent").GetBoolean(), "transparent");
+                Check(actual.DepthWrite == expected.GetProperty("depthWrite").GetBoolean(), "depthWrite");
+                Check(actual.AlphaCutoff == expected.GetProperty("alphaCutoff").GetDouble(), "alphaCutoff");
+                Check(actual.Roughness == expected.GetProperty("roughness").GetDouble(), "roughness");
+                Check(actual.SpecularIntensity == expected.GetProperty("specularIntensity").GetDouble(), "specularIntensity");
+                void Binding(TextureBinding? binding, string field)
+                {
+                    var value = expected.GetProperty(field);
+                    if (value.ValueKind == JsonValueKind.Null) { Check(binding is null, field); return; }
+                    Check(binding is not null && binding.Texture == value.GetProperty("texture").GetInt32() &&
+                        binding.TexCoord == value.GetProperty("texCoord").GetInt32() && binding.Srgb == value.GetProperty("srgb").GetBoolean(), field);
+                }
+                Binding(actual.ColorMap, "colorMap"); Binding(actual.RoughnessMap, "roughnessMap");
+                Binding(actual.NormalMap, "normalMap"); Binding(actual.SpecularMap, "specularMap");
+                index++; materials++;
+            }
+            index = 0;
+            foreach (var expected in trace.GetProperty("textures").EnumerateArray())
+            {
+                var actual = GltfTexture.Load(asset, index);
+                Check(actual.Image == expected.GetProperty("image").GetInt32(), "image");
+                Check(actual.Sampler.MagFilter == expected.GetProperty("magFilter").GetInt32(), "magFilter");
+                Check(actual.Sampler.MinFilter == expected.GetProperty("minFilter").GetInt32(), "minFilter");
+                Check(actual.Sampler.WrapS == expected.GetProperty("wrapS").GetInt32(), "wrapS");
+                Check(actual.Sampler.WrapT == expected.GetProperty("wrapT").GetInt32(), "wrapT");
+                Check(actual.Sampler.Mipmaps == expected.GetProperty("mipmaps").GetBoolean(), "mipmaps");
+                index++;
+            }
+        }
+        Console.WriteLine($"Passed {checks} original-loader material checks across {materials} materials.");
+        return checks;
+    }
+}

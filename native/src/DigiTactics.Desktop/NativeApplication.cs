@@ -37,6 +37,7 @@ public static class NativeApplication
             window.MakeContextCurrent();
             if (!Glad.Initialize(name => Glfw.PInvoke.GetProcAddress(name))) throw new InvalidOperationException("BRUTAL OpenGL initialization failed.");
             Glfw.SwapInterval(1);
+            if (smoke) TextureSmoke.Run();
             var context = ImGui.CreateContext();
             try
             {

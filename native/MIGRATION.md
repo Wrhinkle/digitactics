@@ -332,11 +332,21 @@ The texture pipeline now converts all 1,142 embedded images to RGBA8 PNG at buil
 time. Native C# decoding verifies PNG checksums, reverses scanline filters and
 checks the decoded dimensions and pixel hashes against Pillow's source decoding.
 The packaged smoke also decodes every image. Python/Pillow are not runtime dependencies.
-This does not establish rendering parity: GPU texture upload, material handling, animation
-blending, authored fallback motions, normalization and GPU drawing remain unfinished.
+Material decoding now matches the original GLTFLoader plus the actual material
+correction block in render3d.js. All 1,200 materials and 1,142 texture samplers pass
+26,052 checks for color/opacity, cutouts, sidedness, depth writing, unlit rendering,
+roughness/specular values and map bindings. Native textures use SRGB8_ALPHA8 for
+color and RGBA8 for data maps, retain glTF row orientation and generate mipmaps
+only when the sampler requires them. GPU resources are context-thread-owned and
+disposed explicitly; transfers preserve the caller's pixel-store/PBO state.
+Packaged smoke uploads every texture and checks exact pixel readback, actual sampler
+parameters, internal formats and mip dimensions. A non-default pixel-store probe
+also checks transfer isolation and restoration.
+This does not establish rendering parity: material shaders, animation blending,
+authored fallback motions, normalization and GPU model drawing remain unfinished.
 
-Latest verification: the native test suite passes 121,067,531 assertions.
-`./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
+Latest verification: the native test suite passes 121,093,583 assertions.
+The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
