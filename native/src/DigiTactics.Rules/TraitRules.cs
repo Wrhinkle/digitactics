@@ -81,12 +81,19 @@ public static class TraitRules
         foreach (var traits in lines.Values) foreach (string trait in traits) counts[trait] = counts.GetValueOrDefault(trait) + 1;
         foreach (var pair in bonus) counts[pair.Key] = counts.GetValueOrDefault(pair.Key) + pair.Value;
         foreach (string augment in augments ?? [])
+        {
             if (augment == "crest" && rules.Id.StartsWith("faction-wars/", StringComparison.Ordinal))
                 foreach (var trait in counts.Keys.ToArray())
                 {
                     var definition = rules.Traits.Single(t => t.Id == trait);
                     if (definition.Kind == "family" && counts[trait] >= definition.Breakpoints[0]) counts[trait]++;
                 }
+            if (rules.Id.StartsWith("fates/", StringComparison.Ordinal) && augment is "fat_twin" or "fat_soulmates")
+            {
+                var partner = units.FirstOrDefault(u => u.Partner is not null);
+                if (partner?.Partner?.Trait is { } trait && counts.GetValueOrDefault(trait) != 0) counts[trait]++;
+            }
+        }
         if (rules.Id.StartsWith("fates/", StringComparison.Ordinal) && counts.TryGetValue("NINJA", out int ninja) && ninja != 1 && ninja != 4)
             counts["NINJA"] = 0;
         return counts;

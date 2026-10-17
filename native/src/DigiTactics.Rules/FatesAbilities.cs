@@ -55,9 +55,6 @@ internal static class FatesCombat
 {
     internal static void Bind(CombatSimulation combat, Ruleset rules, CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
-        foreach (var side in new[] { setup.SideA, setup.SideB })
-            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
-                throw new NotSupportedException("Fates production augments have not been migrated yet.");
         FatesTraits.Bind(combat, rules, sideA, sideB, setup);
         combat.BindSummonedItems = unit => FatesItems.Bind(combat, rules, unit);
         foreach (var unit in combat.Units) FatesItems.Bind(combat, rules, unit);

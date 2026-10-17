@@ -10,9 +10,8 @@ internal static class FatesTraits
         for (int team = 0; team < 2; team++)
         {
             var side = team == 0 ? setup.SideA : setup.SideB;
-            if (side.NoTraits) continue;
             var entries = team == 0 ? sideA : sideB;
-            var counts = side.Counts ?? (side.Parts is { } parts ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries));
+            var counts = side.NoTraits ? [] : side.Counts ?? (side.Parts is { } parts ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries, side.Augments));
             foreach (var (id, count) in counts)
             {
                 var trait = rules.Traits.FirstOrDefault(t => t.Id == id);
@@ -154,6 +153,10 @@ internal static class FatesTraits
                     default: throw new NotSupportedException($"Fates trait {id} has not been migrated.");
                 }
             }
+            int active = counts.Count(pair => rules.Traits.Any(t => t.Id == pair.Key && TraitRules.Level(t, pair.Value) > 0));
+            if (side.Parts is { } partners)
+                foreach (var partner in partners) FatesAugments.Bind(combat, team, partner.Augments ?? [], active, partner.Owner, partner.PartnerTop);
+            else FatesAugments.Bind(combat, team, side.Augments ?? [], active, partnerTop: side.PartnerTop);
         }
     }
 }

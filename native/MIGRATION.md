@@ -63,7 +63,7 @@ The current executable is a migration workbench. It must not replace the public 
   both Fallen paths; persisted Deva/Blossom inputs; Partner HP/AP/AD/mana modifiers;
   time-rune recovery and summon-based traits. 105 additional production-reference
   fights compare counts, runtime stages, summons, rune state, kill counters and
-  combat state. Partner shop generation, planning rewards, Fates augment hooks
+  combat state. Partner shop generation, planning rewards
   and Duos mechanic-state merging remain pending.
 - All 21 Fates held-item hook definitions are bound once per item ID per holder,
   including artifacts, deferred damage, lethal protection, execute gold and death
@@ -73,7 +73,13 @@ The current executable is a migration workbench. It must not replace the public 
 - Combat reference traces use deterministic gzip storage to avoid checking in an
   increasingly large plaintext file. Tests decompress and compare the full data.
 
-Latest verification: `./native/build.ps1 -Publish` passes 4,114,088 assertions, compiles
+- Fates augment combat binding: all 11 combat augments, Twin/Soulmates count
+  modifiers, Partner-only bonuses, Lunar Crown priority, and Duos owner scoping.
+  Forty-eight additional Solo/Duos fights include production traits, items and
+  Partner forms. Shared Duos combat augments now have a set-independent binder.
+  Augment selection, instant grants and round/economy hooks remain unported.
+
+Latest verification: `./native/build.ps1 -Publish` passes 5,165,347 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

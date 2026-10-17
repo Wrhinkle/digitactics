@@ -7,6 +7,7 @@ internal static class FactionWarsAugments
         foreach (string id in ids)
         {
             var context = combat.Hooks.Context(CombatHookSource.Augment, id, team, owner: owner);
+            if (DuosCombatAugments.TryBind(combat.Hooks, context, partnerTop)) continue;
             void Start(Action<CombatUnit> action) => combat.Hooks.Add(context, CombatHook.CombatStart,
                 (c, _) => { foreach (var unit in c.Mine) action(unit); });
             switch (id)
@@ -29,16 +30,6 @@ internal static class FactionWarsAugments
                         done = true;
                         foreach (var u in combat.Units.Where(u => u.Alive && u.Team == c.Team)) c.Heal(u, (u.MaxHealth - u.Health) * 0.35);
                     }, -1); break;
-                case "duo_ace": Start(u => { double n = Math.Min(10, partnerTop); u.AttackDamage += u.BaseAttackDamage * 0.03 * n; u.AbilityPower += 3 * n; }); break;
-                case "duo_sync": Start(u => u.Equipment.Amp += 0.08); break;
-                case "duo_tag":
-                    combat.Hooks.Add(context, CombatHook.AnyDeath, (c, e) => {
-                        var dead = e.Unit!;
-                        if (dead.Team != c.Team || dead.Entry.Owner is null || dead.Entry.Owner == c.Owner || c.Owner is null) return;
-                        foreach (var u in c.Mine.Where(u => u.Alive)) { c.Heal(u, u.MaxHealth * 0.1); c.Buff(u, CombatStat.AttackSpeed, 0.15, 4); }
-                    }); break;
-                case "duo_crest_link": case "duo_wide_portal": case "duo_proud": case "duo_gear": case "duo_interest":
-                case "duo_care": case "duo_guard": case "duo_trove": break;
                 // These affect planning/economy or trait counts, not the combat hook table.
                 case "crest": case "pocket": case "bank": case "jackpot": case "cache": case "trove": case "armory":
                 case "egg": case "goldenEgg": case "heart": case "rolls": case "rolls2": case "income": case "evolve": case "megaEvolve": break;

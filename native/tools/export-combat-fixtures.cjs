@@ -272,6 +272,36 @@ for (let variant = 0; variant < 18; variant++) {
     sideA: entries(a), sideB: entries(b), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
     setup: { sideA: effects(a), sideB: effects(b) }, traitCounts: cb.traitCounts });
 }
+DT.Sets.activate('fates', 'hyper');
+const fatesAugments = Object.entries(DT.AUGMENT).filter(([id, a]) => id.startsWith('fat_') && Object.keys(a.hooks || {}).some(k => DT.Sets.COMBAT_HOOKS.includes(k) || k === 'onCountTraits')).map(([id]) => id);
+for (const augment of fatesAugments) for (const duos of [false, true]) for (const stage of [0, 1]) {
+  const pace = duos ? 'normal' : 'hyper'; DT.Sets.activate('fates', pace);
+  const cols = duos ? 14 : 7, seed = 23000 + fixtures.length, pick = DT.makeRng(seed);
+  const lunar = DT.SHOP_LINES.filter(l => l.traits.includes('LUNAR')).slice(0, 3);
+  const lineup = lunar.concat(DT.SHOP_LINES.filter(l => !lunar.includes(l)).slice(0, 3));
+  function side(team) {
+    const parts = Array.from({ length: duos ? 2 : 1 }, (_, partner) => {
+      const owner = team * 2 + partner + 3;
+      const augs = partner === 0 ? [augment] : ['fat_crowns', 'fat_soulmates', 'duo_tag'];
+      const units = lineup.map((line, i) => ({ line: line.id, stage, c: (duos ? partner * 7 : 0) + i, r: 4 + i % 3, owner,
+        items: i % 2 ? [] : [DT.CORE_ITEMS[Math.floor(pick() * DT.CORE_ITEMS.length)]] }));
+      units[0].mods = { partner: true, trait: lineup[0].traits[0], bonus: ['hp', 'ap', 'ad', 'mana'][fixtures.length % 4] };
+      units[0].bonusTraits = { [units[0].mods.trait]: 1 };
+      return { owner, augs, units };
+    });
+    return { units: parts.flatMap(p => p.units), cols, ...(duos ? { parts, counts: DT.Duos.teamCounts(parts) } : { augs: parts[0].augs }) };
+  }
+  const a = side(0), b = side(1);
+  const cb = new DT.Combat(a, b, { seed });
+  const samples = [{ tick: 0, units: snapshots(cb) }]; let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.units.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items, owner: u.owner,
+    bonusTraits: u.bonusTraits, partner: u.mods?.partner ? { bonus: u.mods.bonus, trait: u.mods.trait } : null }));
+  const effects = a => duos ? { parts: a.parts.map(p => ({ owner: p.owner, augments: p.augs })) } : { augments: a.augs };
+  fixtures.push({ name: `fates-augment/${augment}/${duos}/${stage}`, variant: `fates/${pace}`, seed, cols,
+    sideA: convert(a), sideB: convert(b), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
+    traitCounts: cb.traitCounts, setup: { sideA: effects(a), sideB: effects(b) } });
+}
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

@@ -1,6 +1,6 @@
 namespace DigiTactics.Rules;
 
-public sealed record PartnerModifier(string? Bonus);
+public sealed record PartnerModifier(string? Bonus, string? Trait = null);
 public sealed record CombatEntry(string Line, int Stage, int Column, int Row, int Uid = 0, int? Owner = null, string[]? Items = null, Dictionary<string, int>? BonusTraits = null, PartnerModifier? Partner = null);
 public readonly record struct CombatEvent(double Time, string Type, int Unit, int? Target = null, double Amount = 0);
 public readonly record struct AttackSpeedBuff(double Value, double Until);
@@ -17,6 +17,7 @@ public sealed class CombatUnit
     public int BlossomKills { get; internal set; }
     public double TimeRune { get; internal set; }
     internal bool FrenzyActive;
+    internal bool FatesGrace;
     public int CombatGold { get; internal set; }
     internal FatesItemState FatesItems { get; } = new();
     public IReadOnlyList<string> Traits { get; internal set; } = Array.Empty<string>();
