@@ -17,12 +17,19 @@ for(const set of DT.Sets.pickable())for(const pace of ['normal','hyper']){
   g.maxTier=Math.max(...DT.SHOP_LINES.map(l=>l.tier));g.duo=true;g.aiPartnerWants=()=>partnerCopies;
   const partner={alive:n%3!==0,boardUnits:()=>p.boardUnits().slice(0,n%8)};g.partnerOf=()=>partner;
   const counts=g.aiCounts(p,p.allUnits());
+  g.stage=n%8;
+  const scores=lines.map(l=>({id:l.id,value:g.aiTraitValue(l.id,counts,g.stage)}));
+  const unitScores=p.allUnits().map(u=>({uid:u.uid,value:g.aiScore(p,u,counts)}));
   const wants=lines.map(l=>({id:l.id,value:g.aiWants(p,l.id)}));
   let worst=null;g.sell=(_p,uid)=>{worst=uid;return true;};g.aiSellWorst(p);
   g.canPlace=(_p,_u,c,r)=>(c+r+n)%4!==0;
   const cells=lines.map(l=>({id:l.id,cell:g.freeCellFor(p,{line:l.id})}));
 
-  cases.push({setup,capacity,partnerCopies,gold:p.gold,partnerAlive:partner.alive,partnerCount:n%8,counts,wants,worst,cells});
+  const partnerBoard=partner.boardUnits().slice();partner.boardUnits=()=>partnerBoard;
+  const returned=[];g.returnToPool=u=>returned.push(u.uid);p.items=[];p.teamBonus=0;p.level=capacity;
+  g.R={...R,teamSize:()=>capacity};g.aiArrange(p);
+  const arranged={board:Object.entries(p.board).map(([cell,u])=>({cell,uid:u.uid})),bench:p.bench.map(u=>u?.uid??null),gold:p.gold,items:p.items,returned};
+  cases.push({setup,capacity,partnerCopies,gold:n%16,arranged,partnerAlive:partner.alive,partnerCount:n%8,counts,scores,unitScores,wants,worst,cells});
  }
  traces.push({variant:`${set.id}/${pace}`,cases});
 }

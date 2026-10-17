@@ -121,6 +121,13 @@ public sealed class PlanningRoster
         return evolved;
     }
 
+    internal void PlaceDetachedOnBoard(PlanningUnit unit, UnitSpot spot)
+    {
+        if (!spot.Valid || !spot.IsBoard || At(spot) is not null || !lines.ContainsKey(unit.Line) || Entries.Any(e => e.Unit.Id == unit.Id))
+            throw new InvalidOperationException("Invalid detached board placement.");
+        Set(spot, unit);
+    }
+
     private int TeamSizeItems(PlanningUnit unit) => unit.Items.Sum(id => items.TryGetValue(id, out var item) &&
         item.Passives.TryGetValue("teamSize", out var size) ? size.GetInt32() : 0);
 

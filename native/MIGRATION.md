@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 142,488,000 assertions.
+Latest verification: the native test suite passes 144,522,592 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -792,3 +792,29 @@ availability and capacity are explicit inputs here; portal orchestration, purcha
 execution, trait scoring, whole-board arrangement and full AI turns remain pending.
 The full native suite passes 142,488,000 checks. The packaged Windows application
 passes the BRUTAL rendering and purchase smoke.
+
+## AI trait scoring and roster arrangement
+
+`PlanningAi.TraitValue` and `Score` implement breakpoint progress, active-trait
+bonuses, stage-dependent preferences and every current mode-specific trait bonus.
+This includes Reckoning rivals and Auto Chess Demon, Olympos, Druid and Wizard
+rules. Trait definitions are cached by the planner rather than rebuilt per score.
+
+`Arrange` rebuilds board and bench in original stable order, prioritizes team-size
+item holders, accounts for multi-slot units, places front-line units first and
+preserves unsellable units on the bench before selling overflow. Overflow refunds
+gold and items without normal sale hooks, and requires a pool-return callback.
+The caller supplies base capacity, stage, partner and placement validation.
+Detached board placement stays internal to the rules assembly and validates cell
+occupancy and unit uniqueness.
+
+The expanded 19,800-scenario AI suite passes 5,213,392 comparisons across all 22
+variants. In addition to earlier purchase and placement checks, it compares every
+line's trait score, owned-unit scores, ordered final board and bench, refund gold,
+returned items and ordered pool-return requests. Full AI turn orchestration,
+leveling, portal transfers, purchase execution and desktop integration remain
+pending; these APIs do not claim a complete playable match.
+
+Validation: the full native suite passes 144,522,592 checks, including 5,699
+reference battles. The self-contained Windows package passes the BRUTAL asset,
+texture, purchase UI and battle-rendering smoke tests.

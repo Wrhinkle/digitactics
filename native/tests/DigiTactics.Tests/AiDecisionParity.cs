@@ -39,6 +39,13 @@ internal static class AiDecisionParity
                 }
                 var counts = ai.Counts(p.Roster.Entries.Select(e => e.Unit), sample.GetProperty("partnerAlive").GetBoolean() ? partner : null);
                 Check(counts.Count == expectedCounts.Count && counts.All(x => expectedCounts.GetValueOrDefault(x.Key) == x.Value), context + " counts");
+                foreach (var score in sample.GetProperty("scores").EnumerateArray())
+                    Check(ai.TraitValue(score.GetProperty("id").GetString()!, counts, n % 8) == score.GetProperty("value").GetDouble(), context + " trait score " + score.GetProperty("id"));
+                foreach (var score in sample.GetProperty("unitScores").EnumerateArray())
+                {
+                    var unit = p.Roster.Entries.Single(e => e.Unit.Id == score.GetProperty("uid").GetInt32()).Unit;
+                    Check(ai.Score(unit, counts, n % 8) == score.GetProperty("value").GetDouble(), context + " unit score");
+                }
                 foreach (var want in sample.GetProperty("wants").EnumerateArray())
                     Check(ai.Wants(p, want.GetProperty("id").GetString()!, sample.GetProperty("capacity").GetInt32(), sample.GetProperty("partnerCopies").GetInt32()) == want.GetProperty("value").GetBoolean(), context + " wants " + want.GetProperty("id"));
                 var worst = sample.GetProperty("worst");
@@ -49,6 +56,15 @@ internal static class AiDecisionParity
                     var expected = query.GetProperty("cell");
                     Check(expected.ValueKind == JsonValueKind.Null ? cell is null : cell == UnitSpot.Board(expected.GetProperty("c").GetInt32(), expected.GetProperty("r").GetInt32()), context + " cell");
                 }
+                p.Items.Clear(); var returned = new List<int>();
+                ai.Arrange(p, sample.GetProperty("capacity").GetInt32(), n % 8, sample.GetProperty("partnerAlive").GetBoolean() ? partner : null,
+                    (_, spot) => (spot.Column + spot.Row + n) % 4 != 0, u => returned.Add(u.Id));
+                var arranged = sample.GetProperty("arranged");
+                Check(p.Roster.Board.Select(e => $"{e.Spot.Column},{e.Spot.Row}:{e.Unit.Id}").SequenceEqual(arranged.GetProperty("board").EnumerateArray().Select(e => e.GetProperty("cell").GetString() + ":" + e.GetProperty("uid").GetInt32())), context + " arranged board");
+                Check(p.Roster.Bench.Select(u => u?.Id).SequenceEqual(arranged.GetProperty("bench").EnumerateArray().Select(e => e.ValueKind == JsonValueKind.Null ? (int?)null : e.GetInt32())), context + " arranged bench");
+                Check(p.Economy.Gold == arranged.GetProperty("gold").GetInt32(), context + " refund gold");
+                Check(p.Items.SequenceEqual(Strings(arranged.GetProperty("items"))), context + " returned items");
+                Check(returned.SequenceEqual(arranged.GetProperty("returned").EnumerateArray().Select(e => e.GetInt32())), context + " returned units");
             }
         }
         Console.WriteLine($"AI decision parity: {checks:N0} checks across 22 variants.");

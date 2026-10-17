@@ -7,6 +7,9 @@ public sealed record AiItemHolder(PlanningUnit Unit, string Kind);
 public sealed class PlanningAi(Ruleset rules)
 {
     private readonly Dictionary<string, UnitLine> lines = rules.Lines.Concat(rules.ExtraLines).ToDictionary(l => l.Id);
+    private readonly Dictionary<string, TraitDefinition> definitions = rules.Traits.ToDictionary(t => t.Id);
+    private readonly Dictionary<string, ItemDefinition> items = rules.Items.ToDictionary(i => i.Id);
+    private readonly string mode = rules.Id.Split('/')[0];
     private readonly HashSet<string> components = rules.Items.Where(i => i.Component).Select(i => i.Id).ToHashSet();
 
     // These counts deliberately omit augments, matching the AI's original roster view.
@@ -34,6 +37,72 @@ public sealed class PlanningAi(Ruleset rules)
         if (line.Tier == rules.Lines.Max(l => l.Tier) && player.Economy.Gold >= 8) return true;
         if ((line.Ai?.Value ?? 0) >= 6 || partnerCopies >= 2) return true;
         return owned.Length < capacity + 2;
+    }
+
+    public double TraitValue(string lineId, IReadOnlyDictionary<string, int> counts, int stage)
+    {
+        int active = counts.Count(c => definitions.TryGetValue(c.Key, out var t) && TraitRules.Level(t, c.Value) > 0);
+        double score = 0;
+        foreach (string id in lines[lineId].Traits)
+        {
+            if (!definitions.TryGetValue(id, out var trait)) continue;
+            int n = counts.GetValueOrDefault(id);
+            score += n * 3;
+            if (trait.Breakpoints.Contains(n)) score += 3;
+            if (n > 0 && trait.Breakpoints.Contains(n + 1)) score += 2;
+            score += (mode, id) switch
+            {
+                ("faction-wars", "RK") => active,
+                ("faction-wars", "FUN") => stage <= 3 ? 2 : 0,
+                ("fates", "TREASURE") or ("galaxies", "PI") or ("gizmos", "PIR") or ("arcane", "SYN") => stage <= 4 ? 1 : 0,
+                ("gizmos", "PET") => 1,
+                ("reckoning", "DRK") or ("coliseum", "CG") => stage <= 4 ? 2 : 0,
+                ("reckoning", "RIV") => n >= 1 ? -12 : 0,
+                ("underlords" or "underlords_ko", "BEAST") => stage >= 4 ? 1 : 0,
+                ("underlords" or "underlords_ko", "LEGEND") => active * 0.5,
+                ("autochess", "DEMON") => n >= 1 && counts.GetValueOrDefault("DH") < 2 ? -8 : 2,
+                ("autochess", "OLYMPOS") => counts.Any(c => c.Key != "OLYMPOS" && definitions.TryGetValue(c.Key, out var t) && t.Kind == "race" && TraitRules.Level(t, c.Value) > 0) ? -6 : 1,
+                ("autochess", "DRUID") => n >= 1 && n < 4 ? 4 : 0,
+                ("autochess", "WIZARD") => counts.Any(c => c.Key != "WIZARD" && definitions.TryGetValue(c.Key, out var t) && t.Breakpoints.Any(b => b >= 4 && c.Value == b - 2)) ? 2 : 0,
+                _ => 0
+            };
+        }
+        return score + (lines[lineId].Ai?.Value ?? 0);
+    }
+
+    public double Score(PlanningUnit unit, IReadOnlyDictionary<string, int> counts, int stage) =>
+        UnitValues.Value(lines[unit.Line], unit.Stage) * 10 + unit.Items.Length * 6 + TraitValue(unit.Line, counts, stage);
+
+    // Overflow follows the original arrangement path: refunds bypass normal sale hooks.
+    public void Arrange(MatchPlayer player, int baseCapacity, int stage, MatchPlayer? partner,
+        Func<PlanningUnit, UnitSpot, bool> canPlace, Action<PlanningUnit> returnToPool)
+    {
+        var units = player.Roster.Entries.Select(e => e.Unit).ToArray();
+        foreach (var unit in units) player.Roster.Remove(unit.Id, false);
+        var counts = Counts(units, partner);
+        int Bonus(PlanningUnit unit) => unit.Items.Sum(id => items.TryGetValue(id, out var item) &&
+            item.Passives.TryGetValue("teamSize", out var size) ? size.GetInt32() : 0);
+        var sorted = units.OrderByDescending(u => Score(u, counts, stage)).OrderByDescending(u => Bonus(u) > 0).ToArray();
+        int capacity = baseCapacity + sorted.Take(baseCapacity).Sum(Bonus), used = 0;
+        var field = new List<PlanningUnit>(); var rest = new List<PlanningUnit>();
+        foreach (var unit in sorted)
+        {
+            int slots = lines[unit.Line].Slots;
+            if (used + slots <= capacity && (slots == 1 || used < capacity)) { field.Add(unit); used += slots; }
+            else rest.Add(unit);
+        }
+        foreach (var unit in field.OrderByDescending(u => lines[u.Line].Ai?.Place == "front"))
+        {
+            var spot = FreeCell(player, unit, canPlace);
+            if (spot is { } cell) player.Roster.PlaceDetachedOnBoard(unit, cell); else rest.Add(unit);
+        }
+        foreach (var unit in rest.OrderByDescending(u => u.NoSell || lines[u.Line].NoSell))
+        {
+            if (player.Roster.AddToBench(unit)) continue;
+            player.Economy.Credit(UnitValues.SellValue(lines[unit.Line], unit.Stage));
+            foreach (string item in unit.Items) player.GiveItem(item);
+            returnToPool(unit);
+        }
     }
 
     public PlanningUnit? WorstBench(MatchPlayer player)
