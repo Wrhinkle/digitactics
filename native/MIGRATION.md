@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 125,445,589 assertions.
+Latest verification: the native test suite passes 125,545,055 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -433,3 +433,17 @@ Maintain pure rules with no renderer/network dependency. The build-time JavaScri
 exporters are reference adapters, not a JavaScript runtime inside the native app.
 Preserve source attribution and existing player profiles. Keep work on
 `feature/brutal-port` until production acceptance criteria are satisfied.
+
+## Match economy foundation
+
+Native player economy now implements starting balances, XP purchases and caps,
+round XP, stage-based leveling, base income, interest, streaks and win rewards.
+Income exposes an explicit hook boundary for future set and augment integration.
+Declarative round schedules preserve opening stages, recurring PvE/carousel rounds
+and Reckoning's extra carousel without a finite stage limit. Export refuses unknown
+income/schedule formulas instead of silently approximating them.
+
+The original game generates 300 economy transitions and 200 stages per variant;
+99,466 assertions cover all 22 mode/pace combinations. These components are not yet
+wired into the desktop workbench or a complete match coordinator. Planning, shared
+pool ownership, set hooks, AI, rewards, settlement and multiplayer remain pending.

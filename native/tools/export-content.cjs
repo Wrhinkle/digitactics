@@ -9,6 +9,39 @@ const unitStats = [];
 for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   DT.Sets.activate(set.id, pace);
   const rules = DT.HYPER;
+  const standardIncome = '(stage, round) => (stage === 1 ? (round <= 3 ? 2 : 3) : stage === 2 && round === 1 ? 4 : 5)';
+  if (typeof rules.baseIncome === 'function' && String(rules.baseIncome) !== standardIncome)
+    throw new Error(`Unmapped income formula: ${set.id}/${pace}`);
+  // Audited schedules repeat after stage one, except Reckoning's stage 3 carousel.
+  // Refuse unknown source formulas rather than silently extrapolating sampled stages.
+  const knownLengths = [
+    '(stage) => (stage === 1 ? 4 : 7)', '(stage) => (stage === 1 ? 3 : 4)', '() => 5', '() => 2',
+  ];
+  const knownTypes = [
+    "(stage, round) => (stage === 1 ? (round === 1 ? 'carousel' : 'pve') : round === 4 ? 'carousel' : round === 7 ? 'pve' : 'pvp')",
+    "(stage, round) => (stage === 1 ? (round === 1 ? 'carousel' : 'pve') : round === 4 ? 'pve' : 'pvp')",
+    "(stage, round) => (stage === 1 ? (round === 1 ? 'carousel' : 'pve') : stage === 3 && round === 1 ? 'carousel' : round === 4 ? 'pve' : 'pvp')",
+    "(stage, round) => (isCreep(roundNo(stage, round)) ? 'pve' : 'pvp')",
+    "(stage, round) => (stage === 1 ? (round <= 3 ? 'pve' : 'pvp') : round === 5 ? 'pve' : 'pvp')",
+    "(stage, round) => (stage === 1 || round === 4 ? 'pve' : 'pvp')",
+    "() => 'pvp'",
+  ];
+  if (!knownLengths.includes(String(rules.roundsInStage)) || !knownTypes.includes(String(rules.roundType)))
+    throw new Error(`Unmapped round schedule: ${set.id}/${pace}`);
+  const roundTypes = stage => Array.from({ length: rules.roundsInStage(stage) }, (_, i) => rules.roundType(stage, i + 1));
+  const schedule = { opening: roundTypes(1), repeating: roundTypes(2),
+    overrides: String(rules.roundType) === knownTypes[2] ? { '3-1': 'carousel' } : {} };
+  const economy = {
+    startHp: rules.startHp, startGold: rules.startGold ?? 3,
+    levelByStage: rules.levelByStage, incomeByStage: rules.incomeByStage,
+    standardIncome: typeof rules.baseIncome === 'function',
+    baseIncome: typeof rules.baseIncome === 'number' ? rules.baseIncome : 0,
+    interest: rules.interest ? { per: rules.interest.per || 10, max: rules.interest.max || 5 } : null,
+    streak: rules.streak || [], winGold: rules.winGold, winGoldPve: rules.winGoldPvE || 0,
+    xp: rules.xp ? { table: DT.XP_NEXT, perRound: rules.xp.perRound ?? 2,
+      buyCost: rules.xp.buyCost || 4, buyXp: rules.xp.buyXp || 4,
+      startLevel: rules.xp.startLevel || 1, maxLevel: rules.xp.maxLevel || 9 } : null,
+  };
   const exportLine = l => {
     const role = DT.ROLES[DT.roleOf(l)] || DT.BASE_ROLES.Striker;
     return {
@@ -27,7 +60,7 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const lines = DT.SHOP_LINES.map(exportLine);
   const extraLines = Object.values(DT.LINE).filter(l => !l.shop).map(exportLine);
   const id = `${set.id}/${pace}`;
-  variants.push({ id, name: set.name, pace, lines, extraLines, partner: DT.Sets.def(set.id).partner || null, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
+  variants.push({ id, economy, schedule, name: set.name, pace, lines, extraLines, partner: DT.Sets.def(set.id).partner || null, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
     tamers: DT.Sets.def(set.id).ulTamers || {},
     forms: Object.fromEntries(Object.entries(DT.Sets.def(set.id).forms || {}).map(([line, forms]) => [line, forms.map(f => ({ id:f.id, name:f.name, description:f.desc, trait:f.trait || null }))])),
     dragonTraitLimits: Object.fromEntries(['normal','hyper','default'].map(p => [p, DT.Sets.rulesFor(set.id, p === 'default' ? undefined : p).drgTraitMax || 0])), pveMultipliers: rules.pveMul || [], rerollCost: rules.rerollCost, shopSize: rules.shopSize || 5,
@@ -77,7 +110,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 15, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 16, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');

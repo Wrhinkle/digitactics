@@ -261,3 +261,17 @@ The existing JavaScript application remains the reference implementation during 
 BRUTAL is Copyright (c) 2024 Ahwoo Limited. Distributed builds preserve BRUTAL's
 NOTICE and package licenses. Digi-Tactics remains unofficial, non-commercial fan work;
 the existing project credits and third-party notices still apply.
+
+## Match economy foundation
+
+Native player economy now implements starting balances, XP purchases and caps,
+round XP, stage-based leveling, base income, interest, streaks and win rewards.
+Income exposes an explicit hook boundary for future set and augment integration.
+Declarative round schedules preserve opening stages, recurring PvE/carousel rounds
+and Reckoning's extra carousel without a finite stage limit. Export refuses unknown
+income/schedule formulas instead of silently approximating them.
+
+The original game generates 300 economy transitions and 200 stages per variant;
+99,466 assertions cover all 22 mode/pace combinations. These components are not yet
+wired into the desktop workbench or a complete match coordinator. Planning, shared
+pool ownership, set hooks, AI, rewards, settlement and multiplayer remain pending.
