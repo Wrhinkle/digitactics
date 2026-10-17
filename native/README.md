@@ -1001,3 +1001,27 @@ Run with `--match-shop-rolls-only`. The full production match controller, game-s
 mechanics and the remaining non-shop dispatcher hooks still need integration.
 
 Validation: 153,375,892 full-suite checks and all packaged BRUTAL smoke checks passed.
+
+## Native game-start mechanics
+
+`MatchStart.Create` initializes native mode selections and opening rewards, installs
+shop dispatch, then allows `MatchState` to roll initial shops. The match stores its
+seed, Galaxy, Gizmos gates/mutation, Dragonlands Mirage/Treasure and Arcane
+portal/sponsor. Schema 33 exports gate pools, ordered weighted Galaxies and Arcane
+portal IDs. The factory accepts the live round accessor used by Partner shops.
+
+Galaxy selection uses the original unsigned seed-string hash without advancing
+match RNG. Armory components are rolled once and shared across players; Shrine
+items go to every seat. Gizmos and Dragonlands preserve their two initial RNG
+choices. Arcane shuffles sponsors before choosing the portal, then grants gold,
+items or reserved Champion units in player order before any shop rolls.
+
+5,808 original-constructor references across every mode/pace, Solo/Duos and 132
+seeds pass 1,350,848 checks. Seeds include unsigned boundary values and cover all
+15 Galaxies, seven mutations, four Mirages, three Treasures and ten Arcane portals.
+Comparisons include teams/health, economy, inventories, unit IDs, first shops,
+metadata, shared pool and RNG. `--match-start-only` runs this coverage.
+These references intentionally stop before first-round offers/hooks, carousel or
+AI planning; those still need connection in the full match controller.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.

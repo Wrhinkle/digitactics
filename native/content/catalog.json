@@ -1,8 +1,19 @@
 {
-  "schemaVersion": 32,
+  "schemaVersion": 33,
   "variants": [
     {
       "id": "faction-wars/normal",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -8291,6 +8302,17 @@
     },
     {
       "id": "faction-wars/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -16565,6 +16587,17 @@
     },
     {
       "id": "fates/normal",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -24845,6 +24878,17 @@
     },
     {
       "id": "fates/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -33112,6 +33156,78 @@
     },
     {
       "id": "galaxies/normal",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [
+          {
+            "id": "normal",
+            "weight": 2
+          },
+          {
+            "id": "treasure",
+            "weight": 1
+          },
+          {
+            "id": "armory",
+            "weight": 1
+          },
+          {
+            "id": "cluster",
+            "weight": 1
+          },
+          {
+            "id": "mirror",
+            "weight": 1
+          },
+          {
+            "id": "bigger",
+            "weight": 1
+          },
+          {
+            "id": "trade",
+            "weight": 1
+          },
+          {
+            "id": "superdense",
+            "weight": 1
+          },
+          {
+            "id": "salvage",
+            "weight": 1
+          },
+          {
+            "id": "plunder",
+            "weight": 1
+          },
+          {
+            "id": "shrine",
+            "weight": 1
+          },
+          {
+            "id": "bigbang",
+            "weight": 2
+          },
+          {
+            "id": "darkocean",
+            "weight": 1
+          },
+          {
+            "id": "datastream",
+            "weight": 1
+          },
+          {
+            "id": "server",
+            "weight": 1
+          }
+        ],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -40530,6 +40646,78 @@
     },
     {
       "id": "galaxies/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [
+          {
+            "id": "normal",
+            "weight": 2
+          },
+          {
+            "id": "treasure",
+            "weight": 1
+          },
+          {
+            "id": "armory",
+            "weight": 1
+          },
+          {
+            "id": "cluster",
+            "weight": 1
+          },
+          {
+            "id": "mirror",
+            "weight": 1
+          },
+          {
+            "id": "bigger",
+            "weight": 1
+          },
+          {
+            "id": "trade",
+            "weight": 1
+          },
+          {
+            "id": "superdense",
+            "weight": 1
+          },
+          {
+            "id": "salvage",
+            "weight": 1
+          },
+          {
+            "id": "plunder",
+            "weight": 1
+          },
+          {
+            "id": "shrine",
+            "weight": 1
+          },
+          {
+            "id": "bigbang",
+            "weight": 2
+          },
+          {
+            "id": "darkocean",
+            "weight": 1
+          },
+          {
+            "id": "datastream",
+            "weight": 1
+          },
+          {
+            "id": "server",
+            "weight": 1
+          }
+        ],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -47944,6 +48132,72 @@
     },
     {
       "id": "gizmos/normal",
+      "gameStart": {
+        "gates": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            2
+          ],
+          [
+            2,
+            3,
+            2
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            2,
+            3,
+            3
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            1
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -56669,6 +56923,72 @@
     },
     {
       "id": "gizmos/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            2
+          ],
+          [
+            2,
+            3,
+            2
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            2,
+            3,
+            3
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            1
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -65373,6 +65693,17 @@
     },
     {
       "id": "reckoning/normal",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -76342,6 +76673,17 @@
     },
     {
       "id": "reckoning/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -87298,6 +87640,17 @@
     },
     {
       "id": "dragonlands/normal",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": {
         "level": 8,
         "chance": 0.6
@@ -95626,6 +95979,17 @@
     },
     {
       "id": "dragonlands/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -103928,6 +104292,28 @@
     },
     {
       "id": "arcane/normal",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": [
+          "gold",
+          "anvils",
+          "tag",
+          "device",
+          "copier",
+          "upgraded",
+          "golden",
+          "prismatic",
+          "rolls",
+          "none"
+        ]
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -112562,6 +112948,28 @@
     },
     {
       "id": "arcane/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": [
+          "gold",
+          "anvils",
+          "tag",
+          "device",
+          "copier",
+          "upgraded",
+          "golden",
+          "prismatic",
+          "rolls",
+          "none"
+        ]
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -121182,6 +121590,17 @@
     },
     {
       "id": "coliseum/normal",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -129819,6 +130238,17 @@
     },
     {
       "id": "coliseum/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -138435,6 +138865,17 @@
     },
     {
       "id": "underlords/normal",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -146247,6 +146688,17 @@
     },
     {
       "id": "underlords/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -154055,6 +154507,17 @@
     },
     {
       "id": "autochess/normal",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -161511,6 +161974,17 @@
     },
     {
       "id": "autochess/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -168945,6 +169419,17 @@
     },
     {
       "id": "underlords_ko/normal",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
@@ -176819,6 +177304,17 @@
     },
     {
       "id": "underlords_ko/hyper",
+      "gameStart": {
+        "gates": [
+          [
+            2,
+            2,
+            2
+          ]
+        ],
+        "galaxies": [],
+        "portals": []
+      },
       "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [

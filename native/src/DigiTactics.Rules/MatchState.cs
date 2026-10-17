@@ -60,7 +60,7 @@ public sealed class MatchState
         Action<MatchState>? initialize = null)
     {
         if (seats.Count == 0) throw new ArgumentException("A match needs players.", nameof(seats));
-        Rules = rules; Random = new(seed); Pool = new(rules, Random);
+        Rules = rules; Seed = seed; Random = new(seed); Pool = new(rules, Random);
         shopLines = rules.Lines.ToDictionary(l => l.Id);
         Players = Array.AsReadOnly(seats.Select((s, i) => new MatchPlayer(i, s, rules, Pool, CreateUnit)).ToArray());
         Duos = duos && seats.Count == 8;
@@ -71,6 +71,7 @@ public sealed class MatchState
         foreach (var player in Players) player.Shop.Refresh();
     }
     public Ruleset Rules { get; }
+    public uint Seed { get; }
     public DeterministicRandom Random { get; }
     public ShopPool Pool { get; }
     public IReadOnlyList<MatchPlayer> Players { get; }
@@ -81,6 +82,10 @@ public sealed class MatchState
     public int[]? GizmosGates { get; set; }
     public string? TreasureVariant { get; set; }
     public string? Galaxy { get; set; }
+    public string? GizmosMutation { get; set; }
+    public string? DragonMirage { get; set; }
+    public string? ArcanePortal { get; set; }
+    public string[] ArcaneSponsor { get; set; } = [];
     public PlanningUnit CreateUnit(string line, int stage) => new(AllocateId(), line, stage, []);
     internal int AllocateId() => ++uid;
 
