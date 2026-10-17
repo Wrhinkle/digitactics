@@ -21,6 +21,7 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
 {
     private readonly MatchLoot loot = new(state);
     private readonly ModeOfferRewards modeRewards = new(state);
+    private readonly ArcanePlanning arcane = new(state);
     private readonly ColiseumPlanning coliseum = new(state);
     private OfferRules Rules => state.Rules.Offers!;
     private int tierStage = -1, tier;
@@ -93,6 +94,9 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             case "drg_treasure":
                 modeRewards.ChooseTreasure(player, id, boardLocked);
                 break;
+            case "arcAnomaly": arcane.ChooseAnomaly(player, id); break;
+            case "arcMarket": arcane.ChooseMarket(player, id); break;
+            case "arcJunk": arcane.ChooseJunk(player, id); break;
             case "ul_tamer":
                 if (player.Power is not null || !Rules.Powers.Contains(id)) break;
                 player.Power = new(id);
@@ -161,6 +165,9 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             "col_form" => coliseum.FormOptions(player),
             "col_gambit" => coliseum.GambitOptions(player),
             "drg_treasure" => modeRewards.TreasureOptions(player, exclude),
+            "arcAnomaly" => arcane.AnomalyOptions(player, exclude),
+            "arcMarket" => arcane.MarketOptions(player, exclude),
+            "arcJunk" => new[] { "spare" }.Where(id => !exclude.Contains(id)).ToArray(),
             "ul_tamer" => new[] { new[] { "ul_anessa_dark", "ul_anessa_heal" }, new[] { "ul_hob_fire", "ul_hob_crazy" },
                 new[] { "ul_jules_brawl", "ul_jules_bar" }, new[] { "ul_enno_balm", "ul_enno_rabid" } }.Select(builds => builds[(int)(state.Random.Next() * 2)]).ToArray(),
             "ul_crew" => CrewOptions(exclude),

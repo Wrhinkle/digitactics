@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text.Json;
 
 namespace DigiTactics.Rules;
 
@@ -80,12 +79,7 @@ public sealed partial class AiOffers
                 if (id.StartsWith("arc_pass:", StringComparison.Ordinal)) return syn.Length > 0 ? 2 : 8;
                 return 4 + syn.Count(u => (items[id].Tags ?? []).Contains(UnitKind(u))) * 1.5;
             case "arcAnomaly":
-                bool Free(PlanningUnit? u) => u is not null && !(u.Mods is { } mods && mods.TryGetProperty("arcAnom", out var a) && a.ValueKind == JsonValueKind.String && !string.IsNullOrEmpty(a.GetString()));
-                var target = !player.IsHuman ? holders.FirstOrDefault(h => Free(h.Unit))?.Unit : null;
-                var center = player.Roster.At(UnitSpot.Board(3, 5));
-                target ??= Free(center) ? center : player.Roster.Board.Select(e => e.Unit).Where(Free)
-                    .OrderByDescending(u => UnitValues.Value(state.Rules.Lines.Concat(state.Rules.ExtraLines).First(l => l.Id == u.Line), u.Stage))
-                    .ThenByDescending(u => u.Items.Length).ThenBy(u => u.Id).FirstOrDefault() ?? player.Roster.Bench.FirstOrDefault(Free);
+                var target = new ArcanePlanning(state).AnomalyTarget(player);
                 if (target is null) return 0;
                 string role = UnitKind(target), tag = state.Rules.AnomalyTags![id];
                 return tag == role ? 5 : tag == "dmg" && role != "tank" ? 4 : tag == "any" ? 3 : 0;

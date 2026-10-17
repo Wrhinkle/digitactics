@@ -9,6 +9,7 @@ for(const set of DT.Sets.pickable())for(const pace of ['normal','hyper'])for(con
  if(set.id==='dragonlands')kinds.drg_treasure=DT.SET.mechanic.offerKinds.drg_treasure;
  if(set.id==='autochess')for(const k of ['ac_loot','ac_relic'])kinds[k]=DT.SET.mechanic.offerKinds[k];
  if(set.id==='underlords'||set.id==='underlords_ko')for(const k of ['ul_tamer','ul_crew'])kinds[k]=DT.SET.mechanic.offerKinds[k];
+ if(set.id==='arcane')for(const k of ['arcAnomaly','arcMarket','arcJunk'])kinds[k]=DT.SET.mechanic.offerKinds[k];
  if(set.id==='gizmos')kinds.upgrade=DT.SET.mechanic.offerKinds.upgrade;
  Object.assign(g,{R,mech:{},uid:0,rng:DT.makeRng(143),duo,phase:'planning',hasHook:()=>false,pool:Object.fromEntries(DT.SHOP_LINES.map(l=>[l.id,DT.POOL_SIZE[l.tier]])),set:{...DT.SET,def:{...DT.SET.def,items:{...DT.SET.def.items,armory:null}},mechanic:{...DT.SET.mechanic,offerKinds:kinds}}});
  g.players=Array.from({length:8},(_,i)=>({id:i,isHuman:i===0,gold:R.startGold??3,freeRolls:0,level:R.xp?R.xp.startLevel||1:R.levelByStage[1],board:{},bench:Array(9).fill(null),shop:Array(R.shopSize||5).fill(null),orbs:[],items:[],augs:[],globals:[],mech:{},power:null,offer:null,boardUnits(){return Object.values(this.board);},allUnits(){return Object.values(this.board).concat(this.bench.filter(Boolean));},freeBenchSlot(){return this.bench.indexOf(null);}}));

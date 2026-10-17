@@ -813,3 +813,28 @@ required hook interface; full match/desktop integration is still pending. Run th
 focused suite with `--underlords-offers-only`.
 
 Validation: 147,845,355 full-suite checks and packaged BRUTAL smoke tests pass.
+
+## Arcane offers and persistent choice state
+
+`ArcanePlanning` now implements Black Market, Junk King Workshop and Anomaly
+choices through `MatchOffers`. Market options shuffle the correct contraband tier,
+respect the extra-option flag and Syndicate level, then apply exclusions. Passing
+adds permanent Syndicate health and increments skips; valid item choices obey the
+inventory cap. Workshop choices append valid upgrades, including stacking Spares.
+
+Anomaly options charge for rerolls, preserve the old options when unaffordable,
+track seen options and reset that history when fewer than three remain. Choices
+preserve unrelated unit modifiers, record anomaly history and extra-pick state,
+and grant 8 gold when no eligible target exists. Crest Copy and Dual Wielding use
+the original trait-gap and preferred-item logic. AI scoring and choice application
+now share the target selector, including human center-hex preference and AI holder
+preference.
+
+Eight focused traces cover both paces, human/AI seats and two seeds: 136,808 checks
+of offers, gold, inventory, modifiers, histories, extra picks, market/workshop state
+and RNG. All 27 Anomalies are selected, including both immediate utility rewards.
+Generic offer/round fixtures now use Arcane's actual handlers. Run the focused
+suite with `--arcane-offers-only`. Production round hooks, combat setup from this
+persistent state and full match/desktop integration remain pending.
+
+Validation: 147,982,115 full-suite checks and packaged BRUTAL smoke tests pass.
