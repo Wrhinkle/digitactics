@@ -25,7 +25,7 @@ internal static class MatchStateParity
                 var unit = match.CreateUnit(line, player.Id % 3);
                 player.Roster.AddToBench(unit);
                 match.Pool.Take(line, UnitValues.Copies(rules.Lines.Single(l => l.Id == line), unit.Stage));
-                player.OrbUnits.Add(line); match.Pool.Take(line); player.Items.Add(rules.CoreItems.FirstOrDefault() ?? "test_inventory");
+                player.Orbs.Add(new(0, "blue", 0, 0, 0, [], line)); match.Pool.Take(line); player.Items.Add(rules.CoreItems.FirstOrDefault() ?? "test_inventory");
                 if (player.Id == 2) player.Augments.Add("duo_guard");
             }
             void State(JsonElement state)
@@ -42,7 +42,7 @@ internal static class MatchStateParity
                     Check(player.Team == expected.GetProperty("team").Deserialize<int?>(), variant + " team assignment");
                     Check(player.Roster.Entries.Select(e => e.Unit.Id).SequenceEqual(expected.GetProperty("units").EnumerateArray().Select(e => e.GetInt32())), variant + " units");
                     Check(player.Shop.Slots.SequenceEqual(expected.GetProperty("shop").EnumerateArray().Select(e => e.GetString())), variant + " shop");
-                    Check(player.OrbUnits.Count == expected.GetProperty("orbs").GetInt32() && player.Items.Count == expected.GetProperty("items").GetInt32(), variant + " eliminated inventory");
+                    Check(player.Orbs.Count == expected.GetProperty("orbs").GetInt32() && player.Items.Count == expected.GetProperty("items").GetInt32(), variant + " eliminated inventory");
                 }
                 for (int i = 0; i < match.Teams.Count; i++)
                 {

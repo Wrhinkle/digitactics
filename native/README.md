@@ -303,3 +303,22 @@ Original-engine fixtures cover 132 seeded match-state sequences and every unit
 form's loss values at selected stages including 1000 (796,076 comparisons). Match settlement
 hooks, rewards, round orchestration, offers, AI and desktop integration remain
 unfinished; this does not yet establish playable full-match parity.
+
+## Settlement and loot
+
+`MatchSettlement` connects resolved native battles to gold, streaks, opponents,
+Solo health, shared Duos damage, post-combat merges and elimination. Required
+reward/round-end callbacks preserve ordering and partner-owned unit views; each
+settlement instance rejects a second application. Native combat objects remain
+available to mechanic hooks through the resolved battle and unit records.
+
+`MatchLoot` implements generic PvE drops, explicit custom drop specs, shared IDs
+and RNG, unit reservations, orb positions, AI auto-collection, item-cap handling,
+bench overflow refunds and three-star offer cleanup. Modes with custom PvE rules
+require their own reward handler; those handlers are still pending. MatchPlayer
+now stores complete loot orbs instead of only reserved unit names.
+
+Reference checks cover 396 settlement rounds with instrumented hook effects
+(88,754 comparisons), plus 44 generic/custom-spec loot traces (275,848 comparisons).
+These verify orchestration and base loot behavior, not the remaining per-set game
+hooks, real reward policies, offers, AI or full desktop match integration.

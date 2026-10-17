@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 18,
+  "schemaVersion": 19,
   "variants": [
     {
       "id": "faction-wars/normal",
@@ -86,6 +86,48 @@
         "pveOverrides": {
           "1": 0
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "sword",
+          "bow",
+          "rod",
+          "tear",
+          "vest",
+          "cloak",
+          "belt",
+          "glove"
+        ],
+        "specialComponents": [
+          "egg"
+        ],
+        "emblems": [
+          "emblem_striker",
+          "emblem_sniper",
+          "emblem_mystic",
+          "emblem_vb",
+          "emblem_guardian",
+          "emblem_nso",
+          "emblem_dr",
+          "emblem_assassin",
+          "emblem_dats",
+          "emblem_lw",
+          "emblem_xf",
+          "emblem_ins",
+          "emblem_fun",
+          "emblem_kn",
+          "emblem_fl",
+          "emblem_fr",
+          "emblem_und",
+          "emblem_hb",
+          "emblem_fa"
+        ],
+        "consumables": [
+          "remover",
+          "reforger"
+        ],
+        "customPve": false
       },
       "duo": {
         "teamHp": 100,
@@ -6856,6 +6898,48 @@
         "pveOverrides": {
           "1": 1
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "sword",
+          "bow",
+          "rod",
+          "tear",
+          "vest",
+          "cloak",
+          "belt",
+          "glove"
+        ],
+        "specialComponents": [
+          "egg"
+        ],
+        "emblems": [
+          "emblem_striker",
+          "emblem_sniper",
+          "emblem_mystic",
+          "emblem_vb",
+          "emblem_guardian",
+          "emblem_nso",
+          "emblem_dr",
+          "emblem_assassin",
+          "emblem_dats",
+          "emblem_lw",
+          "emblem_xf",
+          "emblem_ins",
+          "emblem_fun",
+          "emblem_kn",
+          "emblem_fl",
+          "emblem_fr",
+          "emblem_und",
+          "emblem_hb",
+          "emblem_fa"
+        ],
+        "consumables": [
+          "remover",
+          "reforger"
+        ],
+        "customPve": false
       },
       "duo": {
         "teamHp": 20,
@@ -13646,6 +13730,51 @@
           "1": 0
         }
       },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "fat_sword",
+          "fat_bow",
+          "fat_rod",
+          "fat_tear",
+          "fat_vest",
+          "fat_cloak",
+          "fat_belt",
+          "fat_glove"
+        ],
+        "specialComponents": [
+          "fat_egg"
+        ],
+        "emblems": [
+          "fat_emblem_celes",
+          "fat_emblem_duelist",
+          "fat_emblem_night",
+          "fat_emblem_mage",
+          "fat_emblem_vanguard",
+          "fat_emblem_forest",
+          "fat_emblem_deva",
+          "fat_emblem_assassin",
+          "fat_emblem_ocean",
+          "fat_emblem_pilgrim",
+          "fat_emblem_treasure",
+          "fat_emblem_lunar",
+          "fat_emblem_ninja",
+          "fat_emblem_spirit",
+          "fat_emblem_brawler",
+          "fat_emblem_keeper",
+          "fat_emblem_warder",
+          "fat_emblem_sharp",
+          "fat_emblem_hunter",
+          "fat_emblem_charmer"
+        ],
+        "consumables": [
+          "fat_remover",
+          "fat_reforger",
+          "fat_dice",
+          "fat_copy"
+        ],
+        "customPve": true
+      },
       "duo": {
         "teamHp": 100,
         "sends": 2,
@@ -20231,6 +20360,51 @@
         "pveOverrides": {
           "1": 1
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "fat_sword",
+          "fat_bow",
+          "fat_rod",
+          "fat_tear",
+          "fat_vest",
+          "fat_cloak",
+          "fat_belt",
+          "fat_glove"
+        ],
+        "specialComponents": [
+          "fat_egg"
+        ],
+        "emblems": [
+          "fat_emblem_celes",
+          "fat_emblem_duelist",
+          "fat_emblem_night",
+          "fat_emblem_mage",
+          "fat_emblem_vanguard",
+          "fat_emblem_forest",
+          "fat_emblem_deva",
+          "fat_emblem_assassin",
+          "fat_emblem_ocean",
+          "fat_emblem_pilgrim",
+          "fat_emblem_treasure",
+          "fat_emblem_lunar",
+          "fat_emblem_ninja",
+          "fat_emblem_spirit",
+          "fat_emblem_brawler",
+          "fat_emblem_keeper",
+          "fat_emblem_warder",
+          "fat_emblem_sharp",
+          "fat_emblem_hunter",
+          "fat_emblem_charmer"
+        ],
+        "consumables": [
+          "fat_remover",
+          "fat_reforger",
+          "fat_dice",
+          "fat_copy"
+        ],
+        "customPve": true
       },
       "duo": {
         "teamHp": 20,
@@ -26838,6 +27012,48 @@
           "1": 0
         }
       },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "gal_sword",
+          "gal_bow",
+          "gal_rod",
+          "gal_tear",
+          "gal_vest",
+          "gal_cloak",
+          "gal_belt",
+          "gal_glove"
+        ],
+        "specialComponents": [
+          "gal_mental"
+        ],
+        "emblems": [
+          "emblem_bm",
+          "emblem_in",
+          "emblem_ov",
+          "emblem_dd",
+          "emblem_re",
+          "emblem_ce",
+          "emblem_pr",
+          "emblem_da",
+          "emblem_cy",
+          "emblem_tk",
+          "emblem_pi",
+          "emblem_as",
+          "emblem_so",
+          "emblem_gu",
+          "emblem_br",
+          "emblem_vg",
+          "emblem_my",
+          "emblem_sn"
+        ],
+        "consumables": [
+          "gal_copier",
+          "gal_remover",
+          "gal_reforger"
+        ],
+        "customPve": false
+      },
       "duo": {
         "teamHp": 100,
         "sends": 2,
@@ -32814,6 +33030,48 @@
           "1": 1,
           "4": 1
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "gal_sword",
+          "gal_bow",
+          "gal_rod",
+          "gal_tear",
+          "gal_vest",
+          "gal_cloak",
+          "gal_belt",
+          "gal_glove"
+        ],
+        "specialComponents": [
+          "gal_mental"
+        ],
+        "emblems": [
+          "emblem_bm",
+          "emblem_in",
+          "emblem_ov",
+          "emblem_dd",
+          "emblem_re",
+          "emblem_ce",
+          "emblem_pr",
+          "emblem_da",
+          "emblem_cy",
+          "emblem_tk",
+          "emblem_pi",
+          "emblem_as",
+          "emblem_so",
+          "emblem_gu",
+          "emblem_br",
+          "emblem_vg",
+          "emblem_my",
+          "emblem_sn"
+        ],
+        "consumables": [
+          "gal_copier",
+          "gal_remover",
+          "gal_reforger"
+        ],
+        "customPve": false
       },
       "duo": {
         "teamHp": 20,
@@ -38801,6 +39059,52 @@
         "pveOverrides": {
           "1": 0
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "giz_sword",
+          "giz_bow",
+          "giz_rod",
+          "giz_tear",
+          "giz_vest",
+          "giz_cloak",
+          "giz_belt",
+          "giz_glove"
+        ],
+        "specialComponents": [
+          "giz_chip"
+        ],
+        "emblems": [
+          "giz_emblem_str",
+          "giz_emblem_chal",
+          "giz_emblem_arc",
+          "giz_emblem_cd",
+          "giz_emblem_masq",
+          "giz_emblem_dm",
+          "giz_emblem_xa",
+          "giz_emblem_asn",
+          "giz_emblem_bg",
+          "giz_emblem_bru",
+          "giz_emblem_clock",
+          "giz_emblem_db",
+          "giz_emblem_inno",
+          "giz_emblem_junk",
+          "giz_emblem_pir",
+          "giz_emblem_mut",
+          "giz_emblem_pet",
+          "giz_emblem_sch",
+          "giz_emblem_sni",
+          "giz_emblem_ench",
+          "giz_emblem_twin"
+        ],
+        "consumables": [
+          "giz_remover",
+          "giz_reforger",
+          "giz_copy",
+          "giz_ockit"
+        ],
+        "customPve": true
       },
       "duo": {
         "teamHp": 100,
@@ -45372,6 +45676,52 @@
         "pveOverrides": {
           "1": 1
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "giz_sword",
+          "giz_bow",
+          "giz_rod",
+          "giz_tear",
+          "giz_vest",
+          "giz_cloak",
+          "giz_belt",
+          "giz_glove"
+        ],
+        "specialComponents": [
+          "giz_chip"
+        ],
+        "emblems": [
+          "giz_emblem_str",
+          "giz_emblem_chal",
+          "giz_emblem_arc",
+          "giz_emblem_cd",
+          "giz_emblem_masq",
+          "giz_emblem_dm",
+          "giz_emblem_xa",
+          "giz_emblem_asn",
+          "giz_emblem_bg",
+          "giz_emblem_bru",
+          "giz_emblem_clock",
+          "giz_emblem_db",
+          "giz_emblem_inno",
+          "giz_emblem_junk",
+          "giz_emblem_pir",
+          "giz_emblem_mut",
+          "giz_emblem_pet",
+          "giz_emblem_sch",
+          "giz_emblem_sni",
+          "giz_emblem_ench",
+          "giz_emblem_twin"
+        ],
+        "consumables": [
+          "giz_remover",
+          "giz_reforger",
+          "giz_copy",
+          "giz_ockit"
+        ],
+        "customPve": true
       },
       "duo": {
         "teamHp": 20,
@@ -51956,6 +52306,61 @@
         "pveOverrides": {
           "1": 0
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "rec_blade",
+          "rec_bow",
+          "rec_rod",
+          "rec_tear",
+          "rec_vest",
+          "rec_cloak",
+          "rec_belt",
+          "rec_glove"
+        ],
+        "specialComponents": [
+          "rec_sblade",
+          "rec_sbow",
+          "rec_srod",
+          "rec_stear",
+          "rec_svest",
+          "rec_scloak",
+          "rec_sbelt",
+          "rec_sglove",
+          "rec_egg"
+        ],
+        "emblems": [
+          "emblem_skr",
+          "emblem_leg",
+          "emblem_spw",
+          "emblem_ren",
+          "emblem_irn",
+          "emblem_ser",
+          "emblem_day",
+          "emblem_asn",
+          "emblem_dsp",
+          "emblem_trk",
+          "emblem_hnt",
+          "emblem_wit",
+          "emblem_cav",
+          "emblem_pha",
+          "emblem_ngt",
+          "emblem_chi",
+          "emblem_sen",
+          "emblem_drk",
+          "emblem_knt",
+          "emblem_mys",
+          "emblem_rng",
+          "emblem_brw",
+          "emblem_inv",
+          "emblem_can"
+        ],
+        "consumables": [
+          "rec_remover",
+          "rec_tome"
+        ],
+        "customPve": true
       },
       "duo": {
         "teamHp": 100,
@@ -60404,6 +60809,61 @@
         "pveOverrides": {
           "1": 1
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "rec_blade",
+          "rec_bow",
+          "rec_rod",
+          "rec_tear",
+          "rec_vest",
+          "rec_cloak",
+          "rec_belt",
+          "rec_glove"
+        ],
+        "specialComponents": [
+          "rec_sblade",
+          "rec_sbow",
+          "rec_srod",
+          "rec_stear",
+          "rec_svest",
+          "rec_scloak",
+          "rec_sbelt",
+          "rec_sglove",
+          "rec_egg"
+        ],
+        "emblems": [
+          "emblem_skr",
+          "emblem_leg",
+          "emblem_spw",
+          "emblem_ren",
+          "emblem_irn",
+          "emblem_ser",
+          "emblem_day",
+          "emblem_asn",
+          "emblem_dsp",
+          "emblem_trk",
+          "emblem_hnt",
+          "emblem_wit",
+          "emblem_cav",
+          "emblem_pha",
+          "emblem_ngt",
+          "emblem_chi",
+          "emblem_sen",
+          "emblem_drk",
+          "emblem_knt",
+          "emblem_mys",
+          "emblem_rng",
+          "emblem_brw",
+          "emblem_inv",
+          "emblem_can"
+        ],
+        "consumables": [
+          "rec_remover",
+          "rec_tome"
+        ],
+        "customPve": true
       },
       "duo": {
         "teamHp": 20,
@@ -68872,6 +69332,52 @@
           "4": 0
         }
       },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "sword",
+          "bow",
+          "rod",
+          "tear",
+          "vest",
+          "cloak",
+          "belt",
+          "glove"
+        ],
+        "specialComponents": [
+          "egg"
+        ],
+        "emblems": [
+          "drg_emblem_gold",
+          "drg_emblem_rage",
+          "drg_emblem_tamer",
+          "drg_emblem_mage",
+          "drg_emblem_rider",
+          "drg_emblem_mirage",
+          "drg_emblem_guard",
+          "drg_emblem_assn",
+          "drg_emblem_star",
+          "drg_emblem_xab",
+          "drg_emblem_stone",
+          "drg_emblem_slayer",
+          "drg_emblem_thunder",
+          "drg_emblem_whisper",
+          "drg_emblem_lagoon",
+          "drg_emblem_bruiser",
+          "drg_emblem_cannon",
+          "drg_emblem_evoker",
+          "drg_emblem_mystic",
+          "drg_emblem_mode",
+          "drg_emblem_swift",
+          "drg_emblem_warrior"
+        ],
+        "consumables": [
+          "drg_remover",
+          "drg_reforger",
+          "drg_dup_lesser"
+        ],
+        "customPve": true
+      },
       "duo": {
         "teamHp": 100,
         "sends": 2,
@@ -75419,6 +75925,52 @@
           "1": 1,
           "4": 0
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "sword",
+          "bow",
+          "rod",
+          "tear",
+          "vest",
+          "cloak",
+          "belt",
+          "glove"
+        ],
+        "specialComponents": [
+          "egg"
+        ],
+        "emblems": [
+          "drg_emblem_gold",
+          "drg_emblem_rage",
+          "drg_emblem_tamer",
+          "drg_emblem_mage",
+          "drg_emblem_rider",
+          "drg_emblem_mirage",
+          "drg_emblem_guard",
+          "drg_emblem_assn",
+          "drg_emblem_star",
+          "drg_emblem_xab",
+          "drg_emblem_stone",
+          "drg_emblem_slayer",
+          "drg_emblem_thunder",
+          "drg_emblem_whisper",
+          "drg_emblem_lagoon",
+          "drg_emblem_bruiser",
+          "drg_emblem_cannon",
+          "drg_emblem_evoker",
+          "drg_emblem_mystic",
+          "drg_emblem_mode",
+          "drg_emblem_swift",
+          "drg_emblem_warrior"
+        ],
+        "consumables": [
+          "drg_remover",
+          "drg_reforger",
+          "drg_dup_lesser"
+        ],
+        "customPve": true
       },
       "duo": {
         "teamHp": 20,
@@ -81979,6 +82531,31 @@
         "pveOverrides": {
           "1": 0
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "arc_sword",
+          "arc_bow",
+          "arc_rod",
+          "arc_tear",
+          "arc_vest",
+          "arc_cloak",
+          "arc_belt",
+          "arc_glove"
+        ],
+        "specialComponents": [
+          "arc_spat",
+          "arc_pan"
+        ],
+        "emblems": [],
+        "consumables": [
+          "arc_remover",
+          "arc_reforger",
+          "arc_copier",
+          "arc_copier_small"
+        ],
+        "customPve": true
       },
       "duo": {
         "teamHp": 100,
@@ -88770,6 +89347,31 @@
         "pveOverrides": {
           "1": 1
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "arc_sword",
+          "arc_bow",
+          "arc_rod",
+          "arc_tear",
+          "arc_vest",
+          "arc_cloak",
+          "arc_belt",
+          "arc_glove"
+        ],
+        "specialComponents": [
+          "arc_spat",
+          "arc_pan"
+        ],
+        "emblems": [],
+        "consumables": [
+          "arc_remover",
+          "arc_reforger",
+          "arc_copier",
+          "arc_copier_small"
+        ],
+        "customPve": true
       },
       "duo": {
         "teamHp": 20,
@@ -95582,6 +96184,29 @@
           "1": 0
         }
       },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "col_sword",
+          "col_bow",
+          "col_rod",
+          "col_tear",
+          "col_vest",
+          "col_cloak",
+          "col_belt",
+          "col_glove"
+        ],
+        "specialComponents": [
+          "col_egg",
+          "col_tag"
+        ],
+        "emblems": [],
+        "consumables": [
+          "col_remover",
+          "col_reforger"
+        ],
+        "customPve": false
+      },
       "duo": {
         "teamHp": 100,
         "sends": 2,
@@ -102378,6 +103003,29 @@
         "pveOverrides": {
           "1": 1
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "col_sword",
+          "col_bow",
+          "col_rod",
+          "col_tear",
+          "col_vest",
+          "col_cloak",
+          "col_belt",
+          "col_glove"
+        ],
+        "specialComponents": [
+          "col_egg",
+          "col_tag"
+        ],
+        "emblems": [],
+        "consumables": [
+          "col_remover",
+          "col_reforger"
+        ],
+        "customPve": false
       },
       "duo": {
         "teamHp": 20,
@@ -109180,6 +109828,14 @@
         "pveDamage": null,
         "pveOverrides": {}
       },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [],
+        "specialComponents": [],
+        "emblems": [],
+        "consumables": [],
+        "customPve": true
+      },
       "duo": {
         "teamHp": 100,
         "sends": 2,
@@ -115559,6 +116215,14 @@
         "pveOverrides": {
           "1": 1
         }
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [],
+        "specialComponents": [],
+        "emblems": [],
+        "consumables": [],
+        "customPve": true
       },
       "duo": {
         "teamHp": 20,
@@ -121949,6 +122613,30 @@
           "4": 0
         }
       },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "ac_attack_chip",
+          "ac_defense_chip",
+          "ac_speed_chip",
+          "ac_recovery_disk",
+          "ac_vampire_fang",
+          "ac_resist_cape",
+          "ac_mp_chip",
+          "ac_hp_chip",
+          "ac_brain_chip",
+          "ac_power_claw",
+          "ac_hyper_chip",
+          "ac_dark_edge",
+          "ac_holy_ring"
+        ],
+        "specialComponents": [],
+        "emblems": [],
+        "consumables": [
+          "ac_digiegg"
+        ],
+        "customPve": true
+      },
       "duo": {
         "teamHp": 100,
         "sends": 2,
@@ -128100,6 +128788,30 @@
           "4": 1
         }
       },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [
+          "ac_attack_chip",
+          "ac_defense_chip",
+          "ac_speed_chip",
+          "ac_recovery_disk",
+          "ac_vampire_fang",
+          "ac_resist_cape",
+          "ac_mp_chip",
+          "ac_hp_chip",
+          "ac_brain_chip",
+          "ac_power_claw",
+          "ac_hyper_chip",
+          "ac_dark_edge",
+          "ac_holy_ring"
+        ],
+        "specialComponents": [],
+        "emblems": [],
+        "consumables": [
+          "ac_digiegg"
+        ],
+        "customPve": true
+      },
       "duo": {
         "teamHp": 20,
         "sends": 1,
@@ -134243,6 +134955,14 @@
         "unitDamage": "none",
         "pveDamage": null,
         "pveOverrides": {}
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [],
+        "specialComponents": [],
+        "emblems": [],
+        "consumables": [],
+        "customPve": true
       },
       "duo": {
         "teamHp": 4,
@@ -140607,6 +141327,14 @@
         "unitDamage": "none",
         "pveDamage": null,
         "pveOverrides": {}
+      },
+      "loot": {
+        "itemCap": 10,
+        "statComponents": [],
+        "specialComponents": [],
+        "emblems": [],
+        "consumables": [],
+        "customPve": true
       },
       "duo": {
         "teamHp": 4,

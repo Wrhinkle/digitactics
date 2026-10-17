@@ -8,10 +8,13 @@ public sealed class MatchPlayer
 {
     internal MatchPlayer(int id, MatchSeat seat, Ruleset rules, ShopPool pool, Func<string, int, PlanningUnit> create)
     {
+        itemCap = rules.Loot!.ItemCap;
         Id = id; Name = seat.Name; IsHuman = seat.Human; Health = rules.Economy!.StartHp;
         Economy = new(rules.Economy); Roster = new(rules, create);
-        Shop = new(rules, pool, Economy, Roster, create, Items.Add);
+        Shop = new(rules, pool, Economy, Roster, create, GiveItem);
     }
+    private readonly int itemCap;
+    public void GiveItem(string id) { if (!string.IsNullOrEmpty(id) && Items.Count < itemCap) Items.Add(id); }
     public int Id { get; }
     public string Name { get; }
     public bool IsHuman { get; }
@@ -26,7 +29,7 @@ public sealed class MatchPlayer
     public List<string> Items { get; } = [];
     public HashSet<string> Augments { get; } = [];
     // Reserved unit drops return to the pool when the owner is eliminated.
-    public List<string> OrbUnits { get; } = [];
+    public List<LootOrb> Orbs { get; } = [];
 }
 
 public sealed class MatchTeam(int id, MatchPlayer[] members, int health)
@@ -64,7 +67,8 @@ public sealed class MatchState
     public bool Duos { get; }
     public bool Over { get; private set; }
     public bool PlayOut { get; set; }
-    public PlanningUnit CreateUnit(string line, int stage) => new(++uid, line, stage, []);
+    public PlanningUnit CreateUnit(string line, int stage) => new(AllocateId(), line, stage, []);
+    internal int AllocateId() => ++uid;
 
     public IReadOnlyList<MatchPair> MakePairs(string roundType)
     {
@@ -149,8 +153,8 @@ public sealed class MatchState
             player.Roster.Remove(entry.Unit.Id, false);
         }
         player.Shop.ReleaseOffers();
-        foreach (var line in player.OrbUnits) Pool.Return(line);
-        player.OrbUnits.Clear(); player.Items.Clear();
+        foreach (var orb in player.Orbs) if (orb.Unit is { } line) Pool.Return(line);
+        player.Orbs.Clear(); player.Items.Clear();
         onEliminate?.Invoke(player);
     }
     private static int[][] ValidTeams(int[][]? teams)
