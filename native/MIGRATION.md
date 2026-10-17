@@ -127,10 +127,13 @@ The current executable is a migration workbench. It must not replace the public 
   including duplicate/mixed equipment and X-Antibody's HP bonus/reduced drawbacks.
   Summons bind inherited item hooks. Feather/Phantom revival clears burn accumulation
   as well as its source. Non-finite cooldowns from stacked slows are explicitly
-  encoded and compared, rather than silently converted to JSON null. Other augments
-  and planning/economy rules remain pending.
+  encoded and compared, rather than silently converted to JSON null. All ten
+  combat augments and shared Duos augments now pass forty additional fights with
+  production traits and items. A targeted summon-during-cast test verifies appended
+  item observers execute in the same event without invalidating dispatch iteration.
+  Offer grants and planning/economy rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 22,804,653 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 23,540,363 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

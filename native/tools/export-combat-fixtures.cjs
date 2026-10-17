@@ -622,6 +622,57 @@ for (const { item, stage } of reckoningItemCases) {
 }
 
 
+DT.Sets.activate('reckoning', 'hyper');
+const reckoningAugments = Object.entries(DT.AUGMENT).filter(([id,a]) => id.startsWith('rec_') && Object.keys(a.hooks || {}).some(k=>DT.Sets.COMBAT_HOOKS.includes(k) || k === 'onCountTraits')).map(([id])=>id);
+for (const augment of reckoningAugments) for (const duos of [false,true]) for (const stage of [0,2]) {
+  const pace = duos ? 'normal' : 'hyper', cols = duos ? 14 : 7;
+  DT.Sets.activate('reckoning',pace);
+  const seed=380000+fixtures.length,pick=DT.makeRng(seed);
+  function side(team) {
+    const parts=[0,1].map(part=>{
+      const owner=team*2+part;
+      const chosen=DT.SHOP_LINES.filter(l=>l.traits.includes('CHI')).slice(0,3);
+      chosen.push(DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)]);
+      return {owner,augs:part===0?[augment,'duo_tag']:[augment,'duo_sync'],units:chosen.map((l,i)=>({line:l.id,stage,c:part*7+i,r:4+i%3,owner,
+        items:Array.from({length:2},()=>reckoningHookItems[Math.floor(pick()*reckoningHookItems.length)])}))};
+    });
+    return duos ? {parts,augs:parts.flatMap(p=>p.augs),units:parts.flatMap(p=>p.units),cols,counts:DT.Duos.teamCounts(parts)} : {units:parts[0].units,augs:[augment],cols};
+  }
+  const a=side(0),b=side(1),cb=new DT.Combat(a,b,{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,owner:u.owner,items:u.items}));
+  const effects=a=>duos?{augments:a.augs,parts:a.parts.map(p=>({owner:p.owner,augments:p.augs}))}:{augments:a.augs};
+  fixtures.push({name:`reckoning-augment/${augment}/${duos}/${stage}`,variant:`reckoning/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    setup:{sideA:effects(a),sideB:effects(b)}});
+}
+
+
+// A summoned item can append an observer while a cast is being dispatched.
+DT.Sets.activate('reckoning','hyper');
+{
+  const previous=DT.SET.hooks.onAnyCast;
+  let added=false;
+  DT.SET.hooks.onAnyCast=c=>{
+    if(added)return;added=true;
+    const source=c.units[0],cell=c.freeCellNear(source);
+    if(!cell)throw new Error('Missing observer probe spawn cell');
+    c.summon(source.team,source.line.id,0,cell.c,cell.r,{items:['rec_s_mana_zap']});
+  };
+  const line=DT.SHOP_LINES.find(l=>l.type==='nuke').id;
+  const entries=()=>[0,1,2].map(i=>({line,stage:0,c:i+1,r:4,items:[]}));
+  const a=entries(),b=entries(),seed=412343;
+  const cb=new DT.Combat({units:a,noTraits:true},{units:b,noTraits:true},{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  if(!added||cb.units.length!==7)throw new Error('Observer probe did not summon');
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items}));
+  fixtures.push({name:'reckoning-observer-summon',variant:'reckoning/hyper',seed,cols:7,sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,
+    observerSummonProbe:true,setup:{sideA:{noTraits:true},sideB:{noTraits:true}}});
+  if(previous)DT.SET.hooks.onAnyCast=previous;else delete DT.SET.hooks.onAnyCast;
+}
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

@@ -68,22 +68,14 @@ public sealed partial class CombatSimulation
 
     private void BindReckoning(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
-        foreach (var side in new[] { setup.SideA, setup.SideB })
-            if ((side.Augments?.Any(id => id != "rec_a_xanti") ?? false) || (side.Parts?.Any(p => (p.Augments?.Any(id => id != "rec_a_xanti") ?? false)) ?? false))
-                throw new NotSupportedException("Reckoning augments have not been migrated yet.");
         for (int team = 0; team < 2; team++)
         {
             var side = team == 0 ? setup.SideA : setup.SideB;
-            void BindAntibody(string[] ids, int? owner = null) {
-                foreach (string id in ids) if (id == "rec_a_xanti") {
-                    var augment = Hooks.Context(CombatHookSource.Augment, id, team, owner: owner);
-                    Hooks.Add(augment, CombatHook.CombatStart, (c, _) => {
-                        foreach (var u in c.Mine) if (u.Items.Any(item => items.TryGetValue(item, out var definition) && definition.Category == "shadow")) u.MaxHealth += 150;
-                    });
-                }
-            }
-            if (side.Parts is { } parts) foreach (var part in parts) BindAntibody(part.Augments ?? [], part.Owner);
-            else BindAntibody(side.Augments ?? []);
+            var entries = team == 0 ? sideA : sideB;
+            var counts = side.NoTraits ? [] : side.Counts ?? (side.Parts is { } parts ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries, side.Augments));
+            int active = counts.Count(p => rules.Traits.Any(t => t.Id == p.Key && TraitRules.Level(t, p.Value) > 0));
+            if (side.Parts is { } partners) foreach (var part in partners) BindReckoningAugments(team, part.Augments ?? [], active, part.Owner, part.PartnerTop);
+            else BindReckoningAugments(team, side.Augments ?? [], active, partnerTop: side.PartnerTop);
         }
         BindReckoningTraits(sideA, sideB, setup);
         double Drawback(CombatUnit u) => ((u.Team == 0 ? setup.SideA : setup.SideB).Augments ?? []).Contains("rec_a_xanti") ? 0.5 : 1;

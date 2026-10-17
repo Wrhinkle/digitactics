@@ -77,6 +77,7 @@ public sealed class CombatHookRegistry
     private readonly CombatSimulation combat;
     private readonly bool duos;
     private int sequence, depth;
+    private bool dispatchStarted;
     internal CombatHookRegistry(CombatSimulation combat, bool duos) { this.combat = combat; this.duos = duos; }
 
     public CombatHookContext Context(CombatHookSource kind, string id, int? team = null, CombatUnit? holder = null, int? owner = null, int count = 1)
@@ -96,6 +97,8 @@ public sealed class CombatHookRegistry
         else if (context.Kind == CombatHookSource.Mechanic) list = Bucket(global, hook);
         else list = Bucket(teams, (context.Team!.Value, hook));
         list.Add(new(context, order, sequence++, callback));
+        // Legacy summoned observer hooks append after initial sorting, even during dispatch.
+        if (dispatchStarted && hook >= CombatHook.AnyAttack) return;
         list.Sort((a, b) => a.Order != b.Order ? a.Order.CompareTo(b.Order) : a.Context.Kind != b.Context.Kind
             ? a.Context.Kind.CompareTo(b.Context.Kind) : a.Sequence.CompareTo(b.Sequence));
     }
@@ -105,13 +108,17 @@ public sealed class CombatHookRegistry
 
     private void Run(List<Listener>? list, CombatHookEvent e, CombatUnit? subject = null)
     {
+        dispatchStarted = true;
         if (list is null || depth > 8) return;
         depth++;
         try
         {
-            foreach (var listener in list)
+            for (int i = 0; i < list.Count; i++)
+            {
+                var listener = list[i];
                 if (subject is null || !duos || listener.Context.Owner is null || listener.Context.Owner == subject.Entry.Owner)
                     listener.Invoke(listener.Context, e);
+            }
         }
         finally { depth--; }
     }

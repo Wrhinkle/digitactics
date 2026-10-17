@@ -51,6 +51,17 @@ internal static class CombatParity
                     });
                 };
             }
+            if (trace.TryGetProperty("observerSummonProbe", out var observerProbe) && observerProbe.GetBoolean())
+                configure = registry => {
+                    bool added = false;
+                    var context = registry.Context(CombatHookSource.Mechanic, "observer-summon");
+                    registry.Add(context, CombatHook.AnyCast, (c, _) => {
+                        if (added) return; added = true;
+                        var source = c.Combat.Units[0];
+                        var cell = c.FreeCellNear(source) ?? throw new InvalidOperationException("Missing observer probe spawn cell");
+                        c.Summon(source.Team, source.Line.Id, 0, cell, new(Items: ["rec_s_mana_zap"]));
+                    });
+                };
             var combat = new CombatSimulation(rules, entriesA, entriesB, trace.GetProperty("seed").GetUInt32(), trace.GetProperty("cols").GetInt32(),
                 trace.TryGetProperty("overtime", out var ot) ? ot.GetDouble() : 30,
                 trace.TryGetProperty("timeLimit", out var limit) ? limit.GetDouble() : 45, configure, duos, setup);

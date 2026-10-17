@@ -107,7 +107,9 @@ to be a Vulkan renderer or the final game UI.
   Sentinel, Chimera inheritance, revival and Royal Rival activation/deactivation.
   All 60 held-item hook definitions and X-Antibody pass 192 further reference
   fights with duplicate/mixed equipment, inherited items and Shadow drawbacks.
-  Other augments and planning/economy rules remain pending.
+  All ten combat augments and shared Duos augments pass forty more fights;
+  a dedicated test covers item listeners registered by summons during a cast.
+  Offer grants and planning/economy rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.
