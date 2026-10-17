@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 138,517,978 assertions.
+Latest verification: the native test suite passes 139,309,200 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -749,6 +749,27 @@ choice list and shared match RNG without opening a human offer.
 comparisons. They exercise line/unit no-item flags, stable ties, component versus
 completed equipment, overlapping holder roles, existing modifiers, core counts,
 fallback selection and the four-assignment bound. Existing core/form/shop suites
-also verify the shared-hint migration. General AI inventory allocation, shopping,
+also verify the shared-hint migration. General AI shopping,
 positioning, the composed hook dispatcher and full desktop match integration are
 still pending.
+
+## AI crafting and equipment
+
+Catalog schema 27 exports each mode's item role preferences. `AiInventory.Assign`
+ports the five original passes: finished items and globals, preferred recipes,
+special-component recipes and emblems, leftover components, and the final pass
+for modes with equip hooks. It preserves holder order, trait thresholds, recipe
+order, recursive special recipes, inventory limits and Underlords restrictions.
+Because native roster records are immutable, each equipment decision resolves
+the holder's current record before inspecting its items or traits.
+
+`PlanningItems` now provides shared recipe lookup, crafting and direct bench-item
+assignment. AI and future command integration can use these native operations
+without duplicating ingredient removal or equipment eligibility.
+
+26,400 original-game scenarios across all 22 variants provide 791,222 comparisons
+of recipe indices, inventory, globals, equipment, craft/give results and RNG.
+The full suite passes 139,309,200 checks; the self-contained Windows package also
+passes the BRUTAL asset, texture, UI and battle-rendering smoke checks. General AI
+shopping, positioning, the composed hook dispatcher and production match
+integration remain pending.

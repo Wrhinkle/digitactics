@@ -577,6 +577,27 @@ choice list and shared match RNG without opening a human offer.
 comparisons. They exercise line/unit no-item flags, stable ties, component versus
 completed equipment, overlapping holder roles, existing modifiers, core counts,
 fallback selection and the four-assignment bound. Existing core/form/shop suites
-also verify the shared-hint migration. General AI inventory allocation, shopping,
+also verify the shared-hint migration. General AI shopping,
 positioning, the composed hook dispatcher and full desktop match integration are
 still pending.
+
+## AI crafting and equipment
+
+Catalog schema 27 exports each mode's item role preferences. `AiInventory.Assign`
+ports the five original passes: finished items and globals, preferred recipes,
+special-component recipes and emblems, leftover components, and the final pass
+for modes with equip hooks. It preserves holder order, trait thresholds, recipe
+order, recursive special recipes, inventory limits and Underlords restrictions.
+Because native roster records are immutable, each equipment decision resolves
+the holder's current record before inspecting its items or traits.
+
+`PlanningItems` now provides shared recipe lookup, crafting and direct bench-item
+assignment. AI and future command integration can use these native operations
+without duplicating ingredient removal or equipment eligibility.
+
+26,400 original-game scenarios across all 22 variants provide 791,222 comparisons
+of recipe indices, inventory, globals, equipment, craft/give results and RNG.
+The full suite passes 139,309,200 checks; the self-contained Windows package also
+passes the BRUTAL asset, texture, UI and battle-rendering smoke checks. General AI
+shopping, positioning, the composed hook dispatcher and production match
+integration remain pending.

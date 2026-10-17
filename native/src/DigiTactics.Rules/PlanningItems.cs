@@ -16,6 +16,35 @@ public sealed class PlanningItems(Ruleset rules, IMatchItemHooks hooks, ModeItem
 
     public string? Combine(string a, string b) => rules.Recipes!.GetValueOrDefault(
         string.CompareOrdinal(a, b) <= 0 ? $"{a}+{b}" : $"{b}+{a}");
+
+    public (int First, int Second)? RecipeFrom(IReadOnlyList<string> inventory, string id)
+    {
+        if (!items.TryGetValue(id, out var item) || item.Ingredients is not { Length: 2 } ingredients) return null;
+        int first = -1, second = -1;
+        for (int i = 0; i < inventory.Count; i++) if (inventory[i] == ingredients[0]) { first = i; break; }
+        if (first < 0) return null;
+        for (int i = 0; i < inventory.Count; i++) if (i != first && inventory[i] == ingredients[1]) { second = i; break; }
+        return second < 0 ? null : (first, second);
+    }
+
+    public bool Craft(MatchPlayer player, string id)
+    {
+        if (RecipeFrom(player.Items, id) is not { } recipe) return false;
+        player.Items.RemoveAt(Math.Max(recipe.First, recipe.Second));
+        player.Items.RemoveAt(Math.Min(recipe.First, recipe.Second));
+        player.Items.Add(id);
+        return true;
+    }
+
+    public bool GiveFromBench(MatchPlayer player, string id, int uid)
+    {
+        int index = player.Items.IndexOf(id);
+        var unit = player.Roster.Entries.FirstOrDefault(e => e.Unit.Id == uid)?.Unit;
+        if (index < 0 || unit is null || !CanHold(player, unit, id)) return false;
+        player.Items.RemoveAt(index);
+        player.Roster.UpdateUnit(unit with { Items = [..unit.Items, id] });
+        return true;
+    }
     public bool Swap(MatchPlayer player, int a, int b)
     {
         if (a == b || (uint)a >= player.Items.Count || (uint)b >= player.Items.Count) return false;
