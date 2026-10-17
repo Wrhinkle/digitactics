@@ -19,6 +19,8 @@ public interface IMatchOfferHooks
 /// <summary>Offer scheduling and shared augment tier rolls; mode effects are dispatched through the match hook layer.</summary>
 public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
 {
+    public MatchOffers(MatchState state, MatchUnitLifecycle units, Func<MatchPhase> phase)
+        : this(state, new MatchOfferEffects(state, units, phase)) { }
     private readonly MatchLoot loot = new(state);
     private readonly ModeOfferRewards modeRewards = new(state);
     private readonly ArcanePlanning arcane = new(state);

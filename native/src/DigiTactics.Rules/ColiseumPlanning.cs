@@ -15,6 +15,34 @@ public sealed class ColiseumPlanning(MatchState state) : IMatchShopHooks
     private readonly Dictionary<string, UnitLine> lines = state.Rules.Lines.Concat(state.Rules.ExtraLines).ToDictionary(l => l.Id);
     private readonly HashSet<string> shopLines = state.Rules.Lines.Select(l => l.Id).ToHashSet();
 
+    public IncomeBreakdown Income(MatchPlayer player, IncomeBreakdown income) =>
+        player.Augments.Contains("col_a_sponsor") ? income with { Augment = income.Augment + 2 } : income;
+
+    public void AugmentPicked(MatchPlayer player, string id)
+    {
+        switch (id)
+        {
+            case "col_a_coins": player.Economy.Credit(8); break;
+            case "col_a_band": player.GiveItem("col_thief_glove"); break;
+            case "col_a_cache": player.GiveItem(loot.RandomComponent()!); player.GiveItem(loot.RandomComponent()!); break;
+            case "col_a_rolls": player.Shop.FreeRolls++; break;
+            case "col_a_heart": player.Health += 5; break;
+            case "col_a_snack": GiveCore(player); player.GiveItem(loot.RandomComponent()!); break;
+            case "col_a_prize": player.Economy.Credit(18); break;
+            case "col_a_trove": player.GiveItem(loot.RandomCompleted()!); player.GiveItem(loot.RandomComponent()!); break;
+            case "col_a_crest": player.GiveItem(loot.RandomEmblem(player)!); break;
+            case "col_a_tags": player.GiveItem("col_tag"); player.GiveItem("col_egg"); break;
+            case "col_a_snacktime": GiveCore(player); player.Economy.Credit(6); break;
+            case "col_a_evolve": loot.GiveUnit(player, [2, 3], 1); break;
+            case "col_a_artifact": player.GiveItem(loot.Pick(state.Rules.Loot!.Mode!.Artifacts)!); break;
+            case "col_a_jackpot": player.Economy.Credit(35); break;
+            case "col_a_armory": player.GiveItem(loot.RandomCompleted()!); player.GiveItem(loot.RandomCompleted()!); break;
+            case "col_a_golden": player.GiveItem("col_golden_egg"); break;
+            case "col_a_mega": loot.GiveUnit(player, [4], 1); break;
+            case "col_a_feast": GiveCore(player); GiveCore(player); player.GiveItem(loot.RandomCompleted()!); break;
+        }
+    }
+
     public void AiTurn(MatchPlayer player)
     {
         bool Free(PlanningUnit unit) => shopLines.Contains(unit.Line) &&

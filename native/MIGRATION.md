@@ -1645,3 +1645,26 @@ The production controller still needs to register the handlers and expose the
 Wisp action in the native planning UI; combat projection must consume NextBuffs.
 
 Validation: the full native regression suite passed, including all 5,699 reference battles. The expanded full-bench Faction Wars fixture independently passed all 2,536,556 checks. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+### Composed augment and Tamer choice effects
+
+`MatchOffers(state, units, phase)` now supplies `MatchOfferEffects`, dispatching
+mode and Duos pick rewards through the shared unit lifecycle. Immediate merges
+inside Fates/Dragonlands/Arcane rewards retain their original timing, followed
+by the offer's final merge and player-specific max-star shop cleanup. Unknown
+custom offer kinds fail explicitly instead of silently discarding a choice.
+
+Coliseum now implements its remaining augment pick rewards and sponsor income,
+including preferred Crests, artifact selection, upgraded-unit grants, and Digi-Core
+overflow banking. All other pick handlers use the existing tested mode modules;
+Underlords powers create their persistent Tamer unit through the same path.
+
+17,280 original-engine choice scenarios pass 4,173,072 checks
+(`--offer-effects-only`) across all 22 variants and Solo/Duos. Each test calls the
+composed `MatchOffers.Choose`, checking rewards, mechanic state, partner payouts,
+unit flags/modifiers/order, health, capacity, inventory, shared pool, shop cleanup,
+IDs and RNG. Cases include full benches/inventories, depleted pools, human combat
+locks and both augment/upgrade and Tamer offers. Production round/AI/settlement
+composition, battle projection and native match UI integration remain outstanding.
+
+Validation: **167,714,256 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.

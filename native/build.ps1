@@ -72,6 +72,7 @@ try {
     Invoke-Checked 'node' @('tools/export-reckoning-ai.cjs')
     Invoke-Checked 'node' @('tools/export-unit-lifecycle.cjs')
     Invoke-Checked 'node' @('tools/export-faction-planning.cjs')
+    Invoke-Checked 'node' @('tools/export-offer-effects.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
