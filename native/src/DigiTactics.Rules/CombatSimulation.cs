@@ -28,7 +28,7 @@ public sealed partial class CombatSimulation
         grid = new(columns, 8); occupancy = new CombatUnit?[grid.Count]; occupied = new bool[grid.Count];
         random = new(seed); this.overtimeStart = overtimeStart; this.timeLimit = timeLimit;
         Units = units.AsReadOnly(); Events = events.AsReadOnly();
-        Hooks = new(this, duos);
+        Hooks = new(this, duos || setup?.SideA.Parts is not null || setup?.SideB.Parts is not null);
         var lines = rules.Lines.ToDictionary(l => l.Id);
         var items = rules.Items.ToDictionary(i => i.Id);
         var thiefPool = rules.CoreItems.Where(id => !items[id].Passives.TryGetValue("thief", out var flag) || !flag.GetBoolean()).ToArray();
@@ -47,7 +47,13 @@ public sealed partial class CombatSimulation
         }
         if (setup is not null) FactionWarsCombat.Bind(this, rules, sideA, sideB, setup);
         configureHooks?.Invoke(Hooks);
-        for (int team = 0; team < 2; team++) Hooks.FireTeam(CombatHook.CombatStart, team, new());
+        for (int team = 0; team < 2; team++)
+        {
+            Hooks.FireTeam(CombatHook.CombatStart, team, new());
+            var side = team == 0 ? setup?.SideA : setup?.SideB;
+            if (side?.Parts is { } parts) foreach (var part in parts) ApplyCombatBuffs(team, part.Buffs, part.Owner);
+            else ApplyCombatBuffs(team, side?.Buffs, null);
+        }
         Hooks.FireGlobal(CombatHook.CombatStart, new());
         for (int team = 0; team < 2; team++) Hooks.FireTeam(CombatHook.CombatReady, team, new());
         Hooks.FireGlobal(CombatHook.CombatReady, new());

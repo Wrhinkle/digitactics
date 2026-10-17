@@ -71,8 +71,10 @@ to be a Vulkan renderer or the final game UI.
 - Faction Wars: 84 production-hook fights cover all 29 traits at all 70 breakpoints,
   12 combat augments, Crest and counting edge cases (duplicate lines, repeated
   emblems and bonus traits). These compare the actual production hooks with native
-  implementations. Other sets, powers, planning effects and Duos partner setup remain
-  pending.
+  implementations. Other sets, powers and planning effects remain pending.
+- Eighteen production Duos fights verify partner-owned combat augments, temporary
+  buffs and combined trait counts, including Crest Link, Sync Bond, Partner's Ace
+  and Tag Team. Shared team health, portal commands and round flow remain pending.
 - 15,680 Solo/Duos hex-distance comparisons and 200 movement/target-selection
   traces, including occupied cells and deterministic tie-breaking.
 - Headless native renderer smoke mode and self-contained Windows packaging.

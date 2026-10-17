@@ -10,7 +10,9 @@ internal static class FactionWarsCombat
         for (int team = 0; team < 2; team++)
         {
             var side = team == 0 ? setup.SideA : setup.SideB;
-            var counts = side.NoTraits ? [] : side.Counts ?? TraitRules.Count(rules, team == 0 ? sideA : sideB, side.Augments);
+            var entries = team == 0 ? sideA : sideB;
+            var counts = side.NoTraits ? [] : side.Counts ?? (side.Parts is { } parts
+                ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries, side.Augments));
             int active = counts.Count(p => rules.Traits.Any(t => t.Id == p.Key && TraitRules.Level(t, p.Value) > 0));
             foreach (var (id, count) in counts)
             {
@@ -112,7 +114,9 @@ internal static class FactionWarsCombat
                     default: throw new NotSupportedException($"Faction Wars trait {id} has not been migrated.");
                 }
             }
-            FactionWarsAugments.Bind(combat, team, side.Augments ?? [], active);
+            if (side.Parts is { } partners)
+                foreach (var partner in partners) FactionWarsAugments.Bind(combat, team, partner.Augments ?? [], active, partner.Owner, partner.PartnerTop);
+            else FactionWarsAugments.Bind(combat, team, side.Augments ?? [], active, partnerTop: side.PartnerTop);
         }
     }
 }

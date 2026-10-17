@@ -19,10 +19,14 @@ internal static class CombatParity
             string[] augsB = trace.TryGetProperty("augsB", out var ab) ? ab.Deserialize<string[]>()! : [];
             var entriesA = trace.GetProperty("sideA").Deserialize<CombatEntry[]>(options)!;
             var entriesB = trace.GetProperty("sideB").Deserialize<CombatEntry[]>(options)!;
+            CombatSetup? setup = trace.TryGetProperty("setup", out var suppliedSetup) ? suppliedSetup.Deserialize<CombatSetup>(options)
+                : production ? new(new(Augments: augsA), new(Augments: augsB)) : null;
             if (production)
                 for (int team = 0; team < 2; team++)
                 {
-                    var counts = TraitRules.Count(rules, team == 0 ? entriesA : entriesB, team == 0 ? augsA : augsB);
+                    var side = team == 0 ? setup!.SideA : setup!.SideB;
+                    var entries = team == 0 ? entriesA : entriesB;
+                    var counts = side.Parts is { } parts ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries, side.Augments);
                     var expectedCounts = trace.GetProperty("traitCounts")[team].Deserialize<Dictionary<string, int>>()!;
                     count++;
                     if (!counts.SequenceEqual(expectedCounts)) throw new InvalidOperationException($"Trait counts/order mismatch {name}/{team}");
@@ -30,7 +34,7 @@ internal static class CombatParity
             var hookLog = new List<string>();
             var combat = new CombatSimulation(rules, entriesA, entriesB, trace.GetProperty("seed").GetUInt32(), trace.GetProperty("cols").GetInt32(),
                 trace.TryGetProperty("overtime", out var ot) ? ot.GetDouble() : 30,
-                trace.TryGetProperty("timeLimit", out var limit) ? limit.GetDouble() : 45, hookProbe ? registry => HookProbe.Configure(registry, duos, hookLog) : null, duos, production ? new(new(Augments: augsA), new(Augments: augsB)) : null);
+                trace.TryGetProperty("timeLimit", out var limit) ? limit.GetDouble() : 45, hookProbe ? registry => HookProbe.Configure(registry, duos, hookLog) : null, duos, setup);
             int tick = 0;
             foreach (var sample in trace.GetProperty("samples").EnumerateArray())
             {

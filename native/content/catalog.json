@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "variants": [
     {
       "id": "faction-wars/normal",
@@ -3408,6 +3408,7 @@
         {
           "id": "DR",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -3423,6 +3424,7 @@
         {
           "id": "NSp",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -3438,6 +3440,7 @@
         {
           "id": "JT",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -3451,6 +3454,7 @@
         {
           "id": "WG",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -3464,6 +3468,7 @@
         {
           "id": "DS",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -3477,6 +3482,7 @@
         {
           "id": "ME",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -3490,6 +3496,7 @@
         {
           "id": "NSo",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -3503,6 +3510,7 @@
         {
           "id": "VB",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -3516,6 +3524,7 @@
         {
           "id": "DL",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             1,
             2,
@@ -3531,6 +3540,7 @@
         {
           "id": "RK",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             1,
             2,
@@ -3546,6 +3556,7 @@
         {
           "id": "DATS",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -3567,6 +3578,7 @@
         {
           "id": "LW",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -3582,6 +3594,7 @@
         {
           "id": "XF",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -3597,6 +3610,7 @@
         {
           "id": "INS",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -3612,6 +3626,7 @@
         {
           "id": "FUN",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -3630,6 +3645,7 @@
         {
           "id": "KN",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -3643,6 +3659,7 @@
         {
           "id": "FL",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -3656,6 +3673,7 @@
         {
           "id": "FR",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -3669,6 +3687,7 @@
         {
           "id": "UND",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -3682,6 +3701,7 @@
         {
           "id": "HB",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -3695,6 +3715,7 @@
         {
           "id": "FA",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -3710,6 +3731,7 @@
         {
           "id": "Guardian",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -3725,6 +3747,7 @@
         {
           "id": "Striker",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -3740,6 +3763,7 @@
         {
           "id": "Sniper",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -3755,6 +3779,7 @@
         {
           "id": "Mystic",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -3770,6 +3795,7 @@
         {
           "id": "Assassin",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -3783,6 +3809,7 @@
         {
           "id": "Bruiser",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -3796,6 +3823,7 @@
         {
           "id": "Duelist",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -3811,6 +3839,7 @@
         {
           "id": "Support",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -7235,6 +7264,7 @@
         {
           "id": "DR",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -7250,6 +7280,7 @@
         {
           "id": "NSp",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -7265,6 +7296,7 @@
         {
           "id": "JT",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -7278,6 +7310,7 @@
         {
           "id": "WG",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -7291,6 +7324,7 @@
         {
           "id": "DS",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -7304,6 +7338,7 @@
         {
           "id": "ME",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -7317,6 +7352,7 @@
         {
           "id": "NSo",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -7330,6 +7366,7 @@
         {
           "id": "VB",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -7343,6 +7380,7 @@
         {
           "id": "DL",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             1,
             2,
@@ -7358,6 +7396,7 @@
         {
           "id": "RK",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             1,
             2,
@@ -7373,6 +7412,7 @@
         {
           "id": "DATS",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -7394,6 +7434,7 @@
         {
           "id": "LW",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -7409,6 +7450,7 @@
         {
           "id": "XF",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -7424,6 +7466,7 @@
         {
           "id": "INS",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -7439,6 +7482,7 @@
         {
           "id": "FUN",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -7457,6 +7501,7 @@
         {
           "id": "KN",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -7470,6 +7515,7 @@
         {
           "id": "FL",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -7483,6 +7529,7 @@
         {
           "id": "FR",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -7496,6 +7543,7 @@
         {
           "id": "UND",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -7509,6 +7557,7 @@
         {
           "id": "HB",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -7522,6 +7571,7 @@
         {
           "id": "FA",
           "kind": "family",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -7537,6 +7587,7 @@
         {
           "id": "Guardian",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -7552,6 +7603,7 @@
         {
           "id": "Striker",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -7567,6 +7619,7 @@
         {
           "id": "Sniper",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -7582,6 +7635,7 @@
         {
           "id": "Mystic",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -7597,6 +7651,7 @@
         {
           "id": "Assassin",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -7610,6 +7665,7 @@
         {
           "id": "Bruiser",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -7623,6 +7679,7 @@
         {
           "id": "Duelist",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -7638,6 +7695,7 @@
         {
           "id": "Support",
           "kind": "role",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -11204,6 +11262,7 @@
         {
           "id": "OCEAN",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6,
@@ -11225,6 +11284,7 @@
         {
           "id": "CELES",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -11246,6 +11306,7 @@
         {
           "id": "NIGHT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -11264,6 +11325,7 @@
         {
           "id": "FOREST",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6,
@@ -11285,6 +11347,7 @@
         {
           "id": "PILGRIM",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -11300,6 +11363,7 @@
         {
           "id": "RONIN",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1,
             2
@@ -11318,6 +11382,7 @@
         {
           "id": "TREASURE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -11331,6 +11396,7 @@
         {
           "id": "LUNAR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -11344,6 +11410,7 @@
         {
           "id": "NINJA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1,
             4
@@ -11357,6 +11424,7 @@
         {
           "id": "SPIRIT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -11370,6 +11438,7 @@
         {
           "id": "DEVA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6,
@@ -11391,6 +11460,7 @@
         {
           "id": "SOVEREIGN",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -11402,6 +11472,7 @@
         {
           "id": "BANCHO",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -11413,6 +11484,7 @@
         {
           "id": "FALLEN",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -11424,6 +11496,7 @@
         {
           "id": "FORGE",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -11435,6 +11508,7 @@
         {
           "id": "STYLE",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -11446,6 +11520,7 @@
         {
           "id": "ADEPT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -11459,6 +11534,7 @@
         {
           "id": "ASSASSIN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -11477,6 +11553,7 @@
         {
           "id": "BRAWLER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -11492,6 +11569,7 @@
         {
           "id": "CHARMER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -11505,6 +11583,7 @@
         {
           "id": "DUELIST",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -11520,6 +11599,7 @@
         {
           "id": "HUNTER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -11541,6 +11621,7 @@
         {
           "id": "KEEPER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -11559,6 +11640,7 @@
         {
           "id": "MAGE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -11574,6 +11656,7 @@
         {
           "id": "WARDER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -11587,6 +11670,7 @@
         {
           "id": "SHADE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -11600,6 +11684,7 @@
         {
           "id": "SHARP",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -11621,6 +11706,7 @@
         {
           "id": "VANGUARD",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -15184,6 +15270,7 @@
         {
           "id": "OCEAN",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6,
@@ -15205,6 +15292,7 @@
         {
           "id": "CELES",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -15226,6 +15314,7 @@
         {
           "id": "NIGHT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -15244,6 +15333,7 @@
         {
           "id": "FOREST",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6,
@@ -15265,6 +15355,7 @@
         {
           "id": "PILGRIM",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -15280,6 +15371,7 @@
         {
           "id": "RONIN",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1,
             2
@@ -15298,6 +15390,7 @@
         {
           "id": "TREASURE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -15311,6 +15404,7 @@
         {
           "id": "LUNAR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -15324,6 +15418,7 @@
         {
           "id": "NINJA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1,
             4
@@ -15337,6 +15432,7 @@
         {
           "id": "SPIRIT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -15350,6 +15446,7 @@
         {
           "id": "DEVA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6,
@@ -15371,6 +15468,7 @@
         {
           "id": "SOVEREIGN",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -15382,6 +15480,7 @@
         {
           "id": "BANCHO",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -15393,6 +15492,7 @@
         {
           "id": "FALLEN",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -15404,6 +15504,7 @@
         {
           "id": "FORGE",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -15415,6 +15516,7 @@
         {
           "id": "STYLE",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -15426,6 +15528,7 @@
         {
           "id": "ADEPT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -15439,6 +15542,7 @@
         {
           "id": "ASSASSIN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -15457,6 +15561,7 @@
         {
           "id": "BRAWLER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -15472,6 +15577,7 @@
         {
           "id": "CHARMER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -15485,6 +15591,7 @@
         {
           "id": "DUELIST",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -15500,6 +15607,7 @@
         {
           "id": "HUNTER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -15521,6 +15629,7 @@
         {
           "id": "KEEPER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -15539,6 +15648,7 @@
         {
           "id": "MAGE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -15554,6 +15664,7 @@
         {
           "id": "WARDER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -15567,6 +15678,7 @@
         {
           "id": "SHADE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -15580,6 +15692,7 @@
         {
           "id": "SHARP",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -15601,6 +15714,7 @@
         {
           "id": "VANGUARD",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -18997,6 +19111,7 @@
         {
           "id": "DD",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -19010,6 +19125,7 @@
         {
           "id": "DA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -19025,6 +19141,7 @@
         {
           "id": "XR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -19036,6 +19153,7 @@
         {
           "id": "PI",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -19054,6 +19172,7 @@
         {
           "id": "CE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -19067,6 +19186,7 @@
         {
           "id": "TK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -19082,6 +19202,7 @@
         {
           "id": "CY",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -19100,6 +19221,7 @@
         {
           "id": "RE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -19118,6 +19240,7 @@
         {
           "id": "AB",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -19129,6 +19252,7 @@
         {
           "id": "VA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -19144,6 +19268,7 @@
         {
           "id": "AS",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -19155,6 +19280,7 @@
         {
           "id": "OV",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -19170,6 +19296,7 @@
         {
           "id": "ARK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -19181,6 +19308,7 @@
         {
           "id": "SV",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -19192,6 +19320,7 @@
         {
           "id": "BH",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -19203,6 +19332,7 @@
         {
           "id": "BM",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -19216,6 +19346,7 @@
         {
           "id": "GU",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -19229,6 +19360,7 @@
         {
           "id": "BR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -19242,6 +19374,7 @@
         {
           "id": "BO",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -19253,6 +19386,7 @@
         {
           "id": "IN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -19268,6 +19402,7 @@
         {
           "id": "HA",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -19279,6 +19414,7 @@
         {
           "id": "MY",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -19292,6 +19428,7 @@
         {
           "id": "PR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -19305,6 +19442,7 @@
         {
           "id": "SN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -19318,6 +19456,7 @@
         {
           "id": "SO",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -19333,6 +19472,7 @@
         {
           "id": "VG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -22727,6 +22867,7 @@
         {
           "id": "DD",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -22740,6 +22881,7 @@
         {
           "id": "DA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -22755,6 +22897,7 @@
         {
           "id": "XR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -22766,6 +22909,7 @@
         {
           "id": "PI",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -22784,6 +22928,7 @@
         {
           "id": "CE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -22797,6 +22942,7 @@
         {
           "id": "TK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -22812,6 +22958,7 @@
         {
           "id": "CY",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -22830,6 +22977,7 @@
         {
           "id": "RE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -22848,6 +22996,7 @@
         {
           "id": "AB",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -22859,6 +23008,7 @@
         {
           "id": "VA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -22874,6 +23024,7 @@
         {
           "id": "AS",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -22885,6 +23036,7 @@
         {
           "id": "OV",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -22900,6 +23052,7 @@
         {
           "id": "ARK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -22911,6 +23064,7 @@
         {
           "id": "SV",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -22922,6 +23076,7 @@
         {
           "id": "BH",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -22933,6 +23088,7 @@
         {
           "id": "BM",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -22946,6 +23102,7 @@
         {
           "id": "GU",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -22959,6 +23116,7 @@
         {
           "id": "BR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -22972,6 +23130,7 @@
         {
           "id": "BO",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -22983,6 +23142,7 @@
         {
           "id": "IN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -22998,6 +23158,7 @@
         {
           "id": "HA",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -23009,6 +23170,7 @@
         {
           "id": "MY",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -23022,6 +23184,7 @@
         {
           "id": "PR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -23035,6 +23198,7 @@
         {
           "id": "SN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -23048,6 +23212,7 @@
         {
           "id": "SO",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -23063,6 +23228,7 @@
         {
           "id": "VG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -26938,6 +27104,7 @@
         {
           "id": "MASQ",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -26959,6 +27126,7 @@
         {
           "id": "DB",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -26981,6 +27149,7 @@
         {
           "id": "CLOCK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -26999,6 +27168,7 @@
         {
           "id": "DM",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -27020,6 +27190,7 @@
         {
           "id": "JUNK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -27046,6 +27217,7 @@
         {
           "id": "PIR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -27059,6 +27231,7 @@
         {
           "id": "CD",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -27080,6 +27253,7 @@
         {
           "id": "MUT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -27093,6 +27267,7 @@
         {
           "id": "PET",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -27106,6 +27281,7 @@
         {
           "id": "XA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -27127,6 +27303,7 @@
         {
           "id": "SIS",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1,
             2
@@ -27140,6 +27317,7 @@
         {
           "id": "IDOL",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1,
             2,
@@ -27166,6 +27344,7 @@
         {
           "id": "GLUT",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -27177,6 +27356,7 @@
         {
           "id": "TRANS",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -27188,6 +27368,7 @@
         {
           "id": "MIND",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -27199,6 +27380,7 @@
         {
           "id": "ARC",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -27220,6 +27402,7 @@
         {
           "id": "ASN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -27241,6 +27424,7 @@
         {
           "id": "BG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -27259,6 +27443,7 @@
         {
           "id": "BRU",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -27274,6 +27459,7 @@
         {
           "id": "CHAL",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -27289,6 +27475,7 @@
         {
           "id": "COL",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -27307,6 +27494,7 @@
         {
           "id": "ENCH",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -27333,6 +27521,7 @@
         {
           "id": "INNO",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -27348,6 +27537,7 @@
         {
           "id": "SCH",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -27361,6 +27551,7 @@
         {
           "id": "SNI",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -27374,6 +27565,7 @@
         {
           "id": "STR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -27387,6 +27579,7 @@
         {
           "id": "TWIN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -31260,6 +31453,7 @@
         {
           "id": "MASQ",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -31281,6 +31475,7 @@
         {
           "id": "DB",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -31303,6 +31498,7 @@
         {
           "id": "CLOCK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -31321,6 +31517,7 @@
         {
           "id": "DM",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -31342,6 +31539,7 @@
         {
           "id": "JUNK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -31368,6 +31566,7 @@
         {
           "id": "PIR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -31381,6 +31580,7 @@
         {
           "id": "CD",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -31402,6 +31602,7 @@
         {
           "id": "MUT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -31415,6 +31616,7 @@
         {
           "id": "PET",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -31428,6 +31630,7 @@
         {
           "id": "XA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -31449,6 +31652,7 @@
         {
           "id": "SIS",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1,
             2
@@ -31462,6 +31666,7 @@
         {
           "id": "IDOL",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1,
             2,
@@ -31488,6 +31693,7 @@
         {
           "id": "GLUT",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -31499,6 +31705,7 @@
         {
           "id": "TRANS",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -31510,6 +31717,7 @@
         {
           "id": "MIND",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -31521,6 +31729,7 @@
         {
           "id": "ARC",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -31542,6 +31751,7 @@
         {
           "id": "ASN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -31563,6 +31773,7 @@
         {
           "id": "BG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -31581,6 +31792,7 @@
         {
           "id": "BRU",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -31596,6 +31808,7 @@
         {
           "id": "CHAL",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -31611,6 +31824,7 @@
         {
           "id": "COL",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -31629,6 +31843,7 @@
         {
           "id": "ENCH",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -31655,6 +31870,7 @@
         {
           "id": "INNO",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -31670,6 +31886,7 @@
         {
           "id": "SCH",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -31683,6 +31900,7 @@
         {
           "id": "SNI",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -31696,6 +31914,7 @@
         {
           "id": "STR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -31709,6 +31928,7 @@
         {
           "id": "TWIN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -36177,6 +36397,7 @@
         {
           "id": "DSP",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -36192,6 +36413,7 @@
         {
           "id": "TRK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -36207,6 +36429,7 @@
         {
           "id": "SER",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -36222,6 +36445,7 @@
         {
           "id": "NGT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -36243,6 +36467,7 @@
         {
           "id": "DAY",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -36258,6 +36483,7 @@
         {
           "id": "CHI",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             4,
@@ -36279,6 +36505,7 @@
         {
           "id": "WIT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -36290,6 +36517,7 @@
         {
           "id": "DRK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -36308,6 +36536,7 @@
         {
           "id": "HNT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -36326,6 +36555,7 @@
         {
           "id": "IRN",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -36339,6 +36569,7 @@
         {
           "id": "PHA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -36354,6 +36585,7 @@
         {
           "id": "SEN",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -36376,6 +36608,7 @@
         {
           "id": "RIV",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -36387,6 +36620,7 @@
         {
           "id": "ETR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -36398,6 +36632,7 @@
         {
           "id": "INA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -36409,6 +36644,7 @@
         {
           "id": "ASN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -36427,6 +36663,7 @@
         {
           "id": "BRW",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -36440,6 +36677,7 @@
         {
           "id": "CAV",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -36455,6 +36693,7 @@
         {
           "id": "INV",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -36468,6 +36707,7 @@
         {
           "id": "KNT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -36483,6 +36723,7 @@
         {
           "id": "LEG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -36498,6 +36739,7 @@
         {
           "id": "MYS",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -36513,6 +36755,7 @@
         {
           "id": "RNG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -36526,6 +36769,7 @@
         {
           "id": "REN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -36539,6 +36783,7 @@
         {
           "id": "SKR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -36557,6 +36802,7 @@
         {
           "id": "SPW",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -36575,6 +36821,7 @@
         {
           "id": "CAN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -41038,6 +41285,7 @@
         {
           "id": "DSP",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -41053,6 +41301,7 @@
         {
           "id": "TRK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -41068,6 +41317,7 @@
         {
           "id": "SER",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -41083,6 +41333,7 @@
         {
           "id": "NGT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -41104,6 +41355,7 @@
         {
           "id": "DAY",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -41119,6 +41371,7 @@
         {
           "id": "CHI",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             4,
@@ -41140,6 +41393,7 @@
         {
           "id": "WIT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -41151,6 +41405,7 @@
         {
           "id": "DRK",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -41169,6 +41424,7 @@
         {
           "id": "HNT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -41187,6 +41443,7 @@
         {
           "id": "IRN",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -41200,6 +41457,7 @@
         {
           "id": "PHA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -41215,6 +41473,7 @@
         {
           "id": "SEN",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -41237,6 +41496,7 @@
         {
           "id": "RIV",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -41248,6 +41508,7 @@
         {
           "id": "ETR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -41259,6 +41520,7 @@
         {
           "id": "INA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -41270,6 +41532,7 @@
         {
           "id": "ASN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -41288,6 +41551,7 @@
         {
           "id": "BRW",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -41301,6 +41565,7 @@
         {
           "id": "CAV",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -41316,6 +41581,7 @@
         {
           "id": "INV",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -41329,6 +41595,7 @@
         {
           "id": "KNT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -41344,6 +41611,7 @@
         {
           "id": "LEG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -41359,6 +41627,7 @@
         {
           "id": "MYS",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -41374,6 +41643,7 @@
         {
           "id": "RNG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -41387,6 +41657,7 @@
         {
           "id": "REN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -41400,6 +41671,7 @@
         {
           "id": "SKR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -41418,6 +41690,7 @@
         {
           "id": "SPW",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -41436,6 +41709,7 @@
         {
           "id": "CAN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -45077,6 +45351,7 @@
         {
           "id": "STAR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -45098,6 +45373,7 @@
         {
           "id": "XAB",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1,
             2,
@@ -45119,6 +45395,7 @@
         {
           "id": "STONE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -45145,6 +45422,7 @@
         {
           "id": "MIRAGE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -45186,6 +45464,7 @@
         {
           "id": "RAGE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -45207,6 +45486,7 @@
         {
           "id": "SLAYER",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -45220,6 +45500,7 @@
         {
           "id": "GOLD",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -45241,6 +45522,7 @@
         {
           "id": "THUNDER",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -45262,6 +45544,7 @@
         {
           "id": "WHISPER",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -45277,6 +45560,7 @@
         {
           "id": "LAGOON",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -45303,6 +45587,7 @@
         {
           "id": "ASSN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -45325,6 +45610,7 @@
         {
           "id": "BRUISER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -45340,6 +45626,7 @@
         {
           "id": "CANNON",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -45361,6 +45648,7 @@
         {
           "id": "RIDER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -45376,6 +45664,7 @@
         {
           "id": "TAMER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -45397,6 +45686,7 @@
         {
           "id": "EVOKER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -45412,6 +45702,7 @@
         {
           "id": "GUARD",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -45427,6 +45718,7 @@
         {
           "id": "MAGE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -45442,6 +45734,7 @@
         {
           "id": "MYSTIC",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -45457,6 +45750,7 @@
         {
           "id": "MODE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -45470,6 +45764,7 @@
         {
           "id": "SWIFT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -45483,6 +45778,7 @@
         {
           "id": "WARRIOR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -45498,6 +45794,7 @@
         {
           "id": "DRAGON",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             1,
             2,
@@ -45524,6 +45821,7 @@
         {
           "id": "STARCALL",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -45535,6 +45833,7 @@
         {
           "id": "COPYCAT",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -45546,6 +45845,7 @@
         {
           "id": "CORE",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -45557,6 +45857,7 @@
         {
           "id": "MONO",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -49189,6 +49490,7 @@
         {
           "id": "STAR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -49210,6 +49512,7 @@
         {
           "id": "XAB",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1,
             2,
@@ -49231,6 +49534,7 @@
         {
           "id": "STONE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -49257,6 +49561,7 @@
         {
           "id": "MIRAGE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -49298,6 +49603,7 @@
         {
           "id": "RAGE",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -49319,6 +49625,7 @@
         {
           "id": "SLAYER",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -49332,6 +49639,7 @@
         {
           "id": "GOLD",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -49353,6 +49661,7 @@
         {
           "id": "THUNDER",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -49374,6 +49683,7 @@
         {
           "id": "WHISPER",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -49389,6 +49699,7 @@
         {
           "id": "LAGOON",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -49415,6 +49726,7 @@
         {
           "id": "ASSN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -49437,6 +49749,7 @@
         {
           "id": "BRUISER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -49452,6 +49765,7 @@
         {
           "id": "CANNON",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -49473,6 +49787,7 @@
         {
           "id": "RIDER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -49488,6 +49803,7 @@
         {
           "id": "TAMER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -49509,6 +49825,7 @@
         {
           "id": "EVOKER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -49524,6 +49841,7 @@
         {
           "id": "GUARD",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -49539,6 +49857,7 @@
         {
           "id": "MAGE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -49554,6 +49873,7 @@
         {
           "id": "MYSTIC",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -49569,6 +49889,7 @@
         {
           "id": "MODE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -49582,6 +49903,7 @@
         {
           "id": "SWIFT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -49595,6 +49917,7 @@
         {
           "id": "WARRIOR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -49610,6 +49933,7 @@
         {
           "id": "DRAGON",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             1,
             2,
@@ -49636,6 +49960,7 @@
         {
           "id": "STARCALL",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -49647,6 +49972,7 @@
         {
           "id": "COPYCAT",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -49658,6 +49984,7 @@
         {
           "id": "CORE",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -49669,6 +49996,7 @@
         {
           "id": "MONO",
           "kind": "unique",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -53463,6 +53791,7 @@
         {
           "id": "ACA",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             3,
             4,
@@ -53484,6 +53813,7 @@
         {
           "id": "AUT",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -53502,6 +53832,7 @@
         {
           "id": "BR",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             3,
             4,
@@ -53517,6 +53848,7 @@
         {
           "id": "SYN",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             3,
             4,
@@ -53559,6 +53891,7 @@
         {
           "id": "CON",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -53580,6 +53913,7 @@
         {
           "id": "EMI",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             1,
             4
@@ -53593,6 +53927,7 @@
         {
           "id": "ENF",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -53619,6 +53954,7 @@
         {
           "id": "EXP",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -53637,6 +53973,7 @@
         {
           "id": "FAM",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -53650,6 +53987,7 @@
         {
           "id": "FIRE",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -53663,6 +54001,7 @@
         {
           "id": "MODE",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -53684,6 +54023,7 @@
         {
           "id": "REB",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -53705,6 +54045,7 @@
         {
           "id": "SCR",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -53731,6 +54072,7 @@
         {
           "id": "HR",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -53742,6 +54084,7 @@
         {
           "id": "JUNK",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -53753,6 +54096,7 @@
         {
           "id": "AMB",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -53777,6 +54121,7 @@
         {
           "id": "ART",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -53790,6 +54135,7 @@
         {
           "id": "BRU",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -53805,6 +54151,7 @@
         {
           "id": "DOM",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -53826,6 +54173,7 @@
         {
           "id": "PIT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -53847,6 +54195,7 @@
         {
           "id": "QS",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -53868,6 +54217,7 @@
         {
           "id": "SEN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -53883,6 +54233,7 @@
         {
           "id": "SNI",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -53901,6 +54252,7 @@
         {
           "id": "SOR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -53916,6 +54268,7 @@
         {
           "id": "VIS",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -53931,6 +54284,7 @@
         {
           "id": "WAT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -57735,6 +58089,7 @@
         {
           "id": "ACA",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             3,
             4,
@@ -57756,6 +58111,7 @@
         {
           "id": "AUT",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -57774,6 +58130,7 @@
         {
           "id": "BR",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             3,
             4,
@@ -57789,6 +58146,7 @@
         {
           "id": "SYN",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             3,
             4,
@@ -57831,6 +58189,7 @@
         {
           "id": "CON",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -57852,6 +58211,7 @@
         {
           "id": "EMI",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             1,
             4
@@ -57865,6 +58225,7 @@
         {
           "id": "ENF",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -57891,6 +58252,7 @@
         {
           "id": "EXP",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             3,
             5
@@ -57909,6 +58271,7 @@
         {
           "id": "FAM",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -57922,6 +58285,7 @@
         {
           "id": "FIRE",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             3
@@ -57935,6 +58299,7 @@
         {
           "id": "MODE",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -57956,6 +58321,7 @@
         {
           "id": "REB",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -57977,6 +58343,7 @@
         {
           "id": "SCR",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -58003,6 +58370,7 @@
         {
           "id": "HR",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -58014,6 +58382,7 @@
         {
           "id": "JUNK",
           "kind": "faction",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -58025,6 +58394,7 @@
         {
           "id": "AMB",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -58049,6 +58419,7 @@
         {
           "id": "ART",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -58062,6 +58433,7 @@
         {
           "id": "BRU",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -58077,6 +58449,7 @@
         {
           "id": "DOM",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -58098,6 +58471,7 @@
         {
           "id": "PIT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -58119,6 +58493,7 @@
         {
           "id": "QS",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -58140,6 +58515,7 @@
         {
           "id": "SEN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -58155,6 +58531,7 @@
         {
           "id": "SNI",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -58173,6 +58550,7 @@
         {
           "id": "SOR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -58188,6 +58566,7 @@
         {
           "id": "VIS",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -58203,6 +58582,7 @@
         {
           "id": "WAT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -61789,6 +62169,7 @@
         {
           "id": "BA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -61804,6 +62185,7 @@
         {
           "id": "CG",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -61830,6 +62212,7 @@
         {
           "id": "MEN",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1,
             4
@@ -61843,6 +62226,7 @@
         {
           "id": "MECH",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -61858,6 +62242,7 @@
         {
           "id": "MT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -61869,6 +62254,7 @@
         {
           "id": "RC",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -61880,6 +62266,7 @@
         {
           "id": "RM",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -61891,6 +62278,7 @@
         {
           "id": "SF",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -61917,6 +62305,7 @@
         {
           "id": "SM",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -61928,6 +62317,7 @@
         {
           "id": "SG",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -61951,6 +62341,7 @@
         {
           "id": "SC",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -61972,6 +62363,7 @@
         {
           "id": "CH",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -61983,6 +62375,7 @@
         {
           "id": "CREW",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -62000,6 +62393,7 @@
         {
           "id": "WR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -62015,6 +62409,7 @@
         {
           "id": "LU",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -62033,6 +62428,7 @@
         {
           "id": "BAS",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -62048,6 +62444,7 @@
         {
           "id": "DUE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -62063,6 +62460,7 @@
         {
           "id": "EDG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -62084,6 +62482,7 @@
         {
           "id": "EXE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -62108,6 +62507,7 @@
         {
           "id": "HEV",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -62129,6 +62529,7 @@
         {
           "id": "JUG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -62144,6 +62545,7 @@
         {
           "id": "PRO",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -62161,6 +62563,7 @@
         {
           "id": "PRT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -62176,6 +62579,7 @@
         {
           "id": "SNI",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -62200,6 +62604,7 @@
         {
           "id": "SOR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -62221,6 +62626,7 @@
         {
           "id": "STR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -65803,6 +66209,7 @@
         {
           "id": "BA",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -65818,6 +66225,7 @@
         {
           "id": "CG",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -65844,6 +66252,7 @@
         {
           "id": "MEN",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1,
             4
@@ -65857,6 +66266,7 @@
         {
           "id": "MECH",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             3,
             5,
@@ -65872,6 +66282,7 @@
         {
           "id": "MT",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -65883,6 +66294,7 @@
         {
           "id": "RC",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -65894,6 +66306,7 @@
         {
           "id": "RM",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -65905,6 +66318,7 @@
         {
           "id": "SF",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -65931,6 +66345,7 @@
         {
           "id": "SM",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -65942,6 +66357,7 @@
         {
           "id": "SG",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -65965,6 +66381,7 @@
         {
           "id": "SC",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -65986,6 +66403,7 @@
         {
           "id": "CH",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -65997,6 +66415,7 @@
         {
           "id": "CREW",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -66014,6 +66433,7 @@
         {
           "id": "WR",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -66029,6 +66449,7 @@
         {
           "id": "LU",
           "kind": "origin",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -66047,6 +66468,7 @@
         {
           "id": "BAS",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -66062,6 +66484,7 @@
         {
           "id": "DUE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -66077,6 +66500,7 @@
         {
           "id": "EDG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -66098,6 +66522,7 @@
         {
           "id": "EXE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -66122,6 +66547,7 @@
         {
           "id": "HEV",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -66143,6 +66569,7 @@
         {
           "id": "JUG",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -66158,6 +66585,7 @@
         {
           "id": "PRO",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -66175,6 +66603,7 @@
         {
           "id": "PRT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -66190,6 +66619,7 @@
         {
           "id": "SNI",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -66214,6 +66644,7 @@
         {
           "id": "SOR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -66235,6 +66666,7 @@
         {
           "id": "STR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             3,
@@ -69680,6 +70112,7 @@
         {
           "id": "SHINOBI",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -69698,6 +70131,7 @@
         {
           "id": "BEAST",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -69716,6 +70150,7 @@
         {
           "id": "ONI",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -69734,6 +70169,7 @@
         {
           "id": "LEGEND",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -69749,6 +70185,7 @@
         {
           "id": "DEMON",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -69760,6 +70197,7 @@
         {
           "id": "DRAGON",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -69771,6 +70209,7 @@
         {
           "id": "UNDEAD",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -69784,6 +70223,7 @@
         {
           "id": "HOLY",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -69797,6 +70237,7 @@
         {
           "id": "NIGHT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -69812,6 +70253,7 @@
         {
           "id": "PARTNER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -69827,6 +70269,7 @@
         {
           "id": "HUNTER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -69840,6 +70283,7 @@
         {
           "id": "KNIGHT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -69855,6 +70299,7 @@
         {
           "id": "WIZARD",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -69868,6 +70313,7 @@
         {
           "id": "SAGE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -69879,6 +70325,7 @@
         {
           "id": "TOXIC",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -69890,6 +70337,7 @@
         {
           "id": "ROGUE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -69908,6 +70356,7 @@
         {
           "id": "NATURE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -69923,6 +70372,7 @@
         {
           "id": "DEEP",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -69936,6 +70386,7 @@
         {
           "id": "SHAMAN",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -69951,6 +70402,7 @@
         {
           "id": "SPIRIT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -69962,6 +70414,7 @@
         {
           "id": "SUMMONER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -69975,6 +70428,7 @@
         {
           "id": "BLADE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -69988,6 +70442,7 @@
         {
           "id": "JUNGLE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -70006,6 +70461,7 @@
         {
           "id": "WIND",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -70019,6 +70475,7 @@
         {
           "id": "DARK",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -70030,6 +70487,7 @@
         {
           "id": "METAL",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -73464,6 +73922,7 @@
         {
           "id": "SHINOBI",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -73482,6 +73941,7 @@
         {
           "id": "BEAST",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -73500,6 +73960,7 @@
         {
           "id": "ONI",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -73518,6 +73979,7 @@
         {
           "id": "LEGEND",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -73533,6 +73995,7 @@
         {
           "id": "DEMON",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -73544,6 +74007,7 @@
         {
           "id": "DRAGON",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -73555,6 +74019,7 @@
         {
           "id": "UNDEAD",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -73568,6 +74033,7 @@
         {
           "id": "HOLY",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -73581,6 +74047,7 @@
         {
           "id": "NIGHT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -73596,6 +74063,7 @@
         {
           "id": "PARTNER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -73611,6 +74079,7 @@
         {
           "id": "HUNTER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -73624,6 +74093,7 @@
         {
           "id": "KNIGHT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -73639,6 +74109,7 @@
         {
           "id": "WIZARD",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -73652,6 +74123,7 @@
         {
           "id": "SAGE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -73663,6 +74135,7 @@
         {
           "id": "TOXIC",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -73674,6 +74147,7 @@
         {
           "id": "ROGUE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -73692,6 +74166,7 @@
         {
           "id": "NATURE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -73707,6 +74182,7 @@
         {
           "id": "DEEP",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -73720,6 +74196,7 @@
         {
           "id": "SHAMAN",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -73735,6 +74212,7 @@
         {
           "id": "SPIRIT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -73746,6 +74224,7 @@
         {
           "id": "SUMMONER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -73759,6 +74238,7 @@
         {
           "id": "BLADE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -73772,6 +74252,7 @@
         {
           "id": "JUNGLE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -73790,6 +74271,7 @@
         {
           "id": "WIND",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -73803,6 +74285,7 @@
         {
           "id": "DARK",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -73814,6 +74297,7 @@
         {
           "id": "METAL",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -77163,6 +77647,7 @@
         {
           "id": "BEAST",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -77178,6 +77663,7 @@
         {
           "id": "DRAGON",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -77189,6 +77675,7 @@
         {
           "id": "UNDEAD",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -77204,6 +77691,7 @@
         {
           "id": "DEMON",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -77215,6 +77703,7 @@
         {
           "id": "FAIRY",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             3,
             6,
@@ -77230,6 +77719,7 @@
         {
           "id": "HUMAN",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -77245,6 +77735,7 @@
         {
           "id": "MACHINE",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -77263,6 +77754,7 @@
         {
           "id": "DINO",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -77276,6 +77768,7 @@
         {
           "id": "INSECT",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -77294,6 +77787,7 @@
         {
           "id": "ELEMENTAL",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -77312,6 +77806,7 @@
         {
           "id": "AQUAN",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -77325,6 +77820,7 @@
         {
           "id": "CYBORG",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -77336,6 +77832,7 @@
         {
           "id": "OLYMPOS",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             1,
             2
@@ -77354,6 +77851,7 @@
         {
           "id": "WARRIOR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6,
@@ -77369,6 +77867,7 @@
         {
           "id": "MAGE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -77382,6 +77881,7 @@
         {
           "id": "HUNTER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -77395,6 +77895,7 @@
         {
           "id": "ASSASSIN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -77413,6 +77914,7 @@
         {
           "id": "KNIGHT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -77428,6 +77930,7 @@
         {
           "id": "DRUID",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -77441,6 +77944,7 @@
         {
           "id": "MECH",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -77454,6 +77958,7 @@
         {
           "id": "SHAMAN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -77465,6 +77970,7 @@
         {
           "id": "WARLOCK",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -77478,6 +77984,7 @@
         {
           "id": "DH",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             1,
             2
@@ -77496,6 +78003,7 @@
         {
           "id": "PRIEST",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             1,
             2
@@ -77514,6 +78022,7 @@
         {
           "id": "WIZARD",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -80861,6 +81370,7 @@
         {
           "id": "BEAST",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -80876,6 +81386,7 @@
         {
           "id": "DRAGON",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -80887,6 +81398,7 @@
         {
           "id": "UNDEAD",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -80902,6 +81414,7 @@
         {
           "id": "DEMON",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -80913,6 +81426,7 @@
         {
           "id": "FAIRY",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             3,
             6,
@@ -80928,6 +81442,7 @@
         {
           "id": "HUMAN",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -80943,6 +81458,7 @@
         {
           "id": "MACHINE",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -80961,6 +81477,7 @@
         {
           "id": "DINO",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -80974,6 +81491,7 @@
         {
           "id": "INSECT",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -80992,6 +81510,7 @@
         {
           "id": "ELEMENTAL",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -81010,6 +81529,7 @@
         {
           "id": "AQUAN",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -81023,6 +81543,7 @@
         {
           "id": "CYBORG",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -81034,6 +81555,7 @@
         {
           "id": "OLYMPOS",
           "kind": "race",
+          "duo": "sum",
           "breakpoints": [
             1,
             2
@@ -81052,6 +81574,7 @@
         {
           "id": "WARRIOR",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6,
@@ -81067,6 +81590,7 @@
         {
           "id": "MAGE",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -81080,6 +81604,7 @@
         {
           "id": "HUNTER",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -81093,6 +81618,7 @@
         {
           "id": "ASSASSIN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -81111,6 +81637,7 @@
         {
           "id": "KNIGHT",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -81126,6 +81653,7 @@
         {
           "id": "DRUID",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -81139,6 +81667,7 @@
         {
           "id": "MECH",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -81152,6 +81681,7 @@
         {
           "id": "SHAMAN",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -81163,6 +81693,7 @@
         {
           "id": "WARLOCK",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -81176,6 +81707,7 @@
         {
           "id": "DH",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             1,
             2
@@ -81194,6 +81726,7 @@
         {
           "id": "PRIEST",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             1,
             2
@@ -81212,6 +81745,7 @@
         {
           "id": "WIZARD",
           "kind": "class",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -84644,6 +85178,7 @@
         {
           "id": "SHINOBI",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -84662,6 +85197,7 @@
         {
           "id": "BEAST",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -84680,6 +85216,7 @@
         {
           "id": "ONI",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -84698,6 +85235,7 @@
         {
           "id": "LEGEND",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -84713,6 +85251,7 @@
         {
           "id": "DEMON",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -84724,6 +85263,7 @@
         {
           "id": "DRAGON",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -84735,6 +85275,7 @@
         {
           "id": "UNDEAD",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -84748,6 +85289,7 @@
         {
           "id": "HOLY",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -84761,6 +85303,7 @@
         {
           "id": "NIGHT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -84776,6 +85319,7 @@
         {
           "id": "PARTNER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -84791,6 +85335,7 @@
         {
           "id": "HUNTER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -84804,6 +85349,7 @@
         {
           "id": "KNIGHT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -84819,6 +85365,7 @@
         {
           "id": "WIZARD",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -84832,6 +85379,7 @@
         {
           "id": "SAGE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -84843,6 +85391,7 @@
         {
           "id": "TOXIC",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -84854,6 +85403,7 @@
         {
           "id": "ROGUE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -84872,6 +85422,7 @@
         {
           "id": "NATURE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -84887,6 +85438,7 @@
         {
           "id": "DEEP",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -84900,6 +85452,7 @@
         {
           "id": "SHAMAN",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -84915,6 +85468,7 @@
         {
           "id": "SPIRIT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -84926,6 +85480,7 @@
         {
           "id": "SUMMONER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -84939,6 +85494,7 @@
         {
           "id": "BLADE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -84952,6 +85508,7 @@
         {
           "id": "JUNGLE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -84970,6 +85527,7 @@
         {
           "id": "WIND",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -84983,6 +85541,7 @@
         {
           "id": "DARK",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -84994,6 +85553,7 @@
         {
           "id": "METAL",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -88428,6 +88988,7 @@
         {
           "id": "SHINOBI",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -88446,6 +89007,7 @@
         {
           "id": "BEAST",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -88464,6 +89026,7 @@
         {
           "id": "ONI",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -88482,6 +89045,7 @@
         {
           "id": "LEGEND",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -88497,6 +89061,7 @@
         {
           "id": "DEMON",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -88508,6 +89073,7 @@
         {
           "id": "DRAGON",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2
           ],
@@ -88519,6 +89085,7 @@
         {
           "id": "UNDEAD",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -88532,6 +89099,7 @@
         {
           "id": "HOLY",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -88545,6 +89113,7 @@
         {
           "id": "NIGHT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -88560,6 +89129,7 @@
         {
           "id": "PARTNER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -88575,6 +89145,7 @@
         {
           "id": "HUNTER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -88588,6 +89159,7 @@
         {
           "id": "KNIGHT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -88603,6 +89175,7 @@
         {
           "id": "WIZARD",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -88616,6 +89189,7 @@
         {
           "id": "SAGE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             1
           ],
@@ -88627,6 +89201,7 @@
         {
           "id": "TOXIC",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -88638,6 +89213,7 @@
         {
           "id": "ROGUE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -88656,6 +89232,7 @@
         {
           "id": "NATURE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -88671,6 +89248,7 @@
         {
           "id": "DEEP",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -88684,6 +89262,7 @@
         {
           "id": "SHAMAN",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4,
@@ -88699,6 +89278,7 @@
         {
           "id": "SPIRIT",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -88710,6 +89290,7 @@
         {
           "id": "SUMMONER",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -88723,6 +89304,7 @@
         {
           "id": "BLADE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6
@@ -88736,6 +89318,7 @@
         {
           "id": "JUNGLE",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -88754,6 +89337,7 @@
         {
           "id": "WIND",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             2,
             4
@@ -88767,6 +89351,7 @@
         {
           "id": "DARK",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3
           ],
@@ -88778,6 +89363,7 @@
         {
           "id": "METAL",
           "kind": "alliance",
+          "duo": "sum",
           "breakpoints": [
             3,
             6

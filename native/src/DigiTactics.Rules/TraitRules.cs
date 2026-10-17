@@ -1,6 +1,9 @@
 namespace DigiTactics.Rules;
 
-public sealed record CombatSideEffects(bool NoTraits = false, Dictionary<string, int>? Counts = null, string[]? Augments = null);
+public sealed record CombatBuffs(double AttackSpeed = 0, double Armor = 0, double Mana = 0);
+public sealed record CombatPartner(int Owner, string[]? Augments = null, CombatBuffs? Buffs = null, double PartnerTop = 0);
+public sealed record CombatSideEffects(bool NoTraits = false, Dictionary<string, int>? Counts = null, string[]? Augments = null,
+    CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0);
 public sealed record CombatSetup(CombatSideEffects SideA, CombatSideEffects SideB);
 
 public static class TraitRules
@@ -14,6 +17,44 @@ public static class TraitRules
             if (emblem is not null && !traits.Contains(emblem)) traits.Add(emblem);
         }
         return traits.ToArray();
+    }
+
+    public static Dictionary<string, int> TeamCount(Ruleset rules, CombatEntry[] units, CombatPartner[] parts)
+    {
+        var per = parts.Select(p => Count(rules, units.Where(u => u.Owner == p.Owner), p.Augments)).ToArray();
+        var result = new Dictionary<string, int>();
+        foreach (var counts in per) foreach (var key in counts.Keys) result.TryAdd(key, 0);
+        foreach (var key in result.Keys.ToArray())
+        {
+            int high = per.Max(c => c.GetValueOrDefault(key));
+            int rest = per.Sum(c => c.GetValueOrDefault(key)) - high;
+            var trait = rules.Traits.FirstOrDefault(t => t.Id == key);
+            var mode = trait?.Duo ?? default;
+            result[key] = mode.ValueKind == System.Text.Json.JsonValueKind.Number ? high + (int)Math.Floor(rest * mode.GetDouble())
+                : mode.ValueKind == System.Text.Json.JsonValueKind.String && mode.GetString() == "max" ? high : high + rest;
+        }
+        foreach (var part in parts)
+            if ((part.Augments ?? []).Contains("duo_crest_link"))
+                foreach (var unit in units.Where(u => u.Owner == part.Owner))
+                    foreach (string item in unit.Items ?? [])
+                    {
+                        string? trait = rules.Items.FirstOrDefault(i => i.Id == item)?.Emblem;
+                        if (trait is not null && !rules.Lines.Single(l => l.Id == unit.Line).Traits.Contains(trait))
+                            result[trait] = result.GetValueOrDefault(trait) + 1;
+                    }
+        if (per.Length == 2 && parts.Any(p => (p.Augments ?? []).Contains("duo_sync")))
+            foreach (var key in per[0].Keys)
+            {
+                var trait = rules.Traits.FirstOrDefault(t => t.Id == key);
+                if (trait is not null && Level(trait, per[0][key]) > 0 && Level(trait, per[1].GetValueOrDefault(key)) > 0) result[key]++;
+            }
+        foreach (var key in result.Keys.ToArray())
+        {
+            var trait = rules.Traits.FirstOrDefault(t => t.Id == key);
+            if (trait is not null && trait.Breakpoints.Length > 0)
+                result[key] = Math.Min(result[key], Math.Max(trait.Breakpoints[^1], per.Max(c => c.GetValueOrDefault(key))));
+        }
+        return result;
     }
 
     public static int Level(TraitDefinition definition, int count)

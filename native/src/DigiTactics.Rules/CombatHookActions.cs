@@ -8,6 +8,17 @@ public sealed partial class CombatSimulation
 {
     private readonly List<ScheduledCombatAction> timers = [];
 
+    private void ApplyCombatBuffs(int team, CombatBuffs? buffs, int? owner)
+    {
+        if (buffs is null) return;
+        foreach (var unit in units)
+        {
+            if (unit.Team != team || (owner is not null && unit.Entry.Owner != owner)) continue;
+            unit.AttackSpeed *= 1 + buffs.AttackSpeed;
+            unit.Armor += buffs.Armor; unit.MagicResist += buffs.Armor; unit.Mana += buffs.Mana;
+        }
+    }
+
     internal void Schedule(double delay, Action action, CombatUnit? unit)
     {
         (unit?.Scheduled ?? timers).Add(new(Time + delay, action));

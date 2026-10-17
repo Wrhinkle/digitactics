@@ -42,10 +42,16 @@ The current executable is a migration workbench. It must not replace the public 
   Twelve combat augments plus Crest's count modifier are implemented. Another 84
   reference fights use the real production hooks and compare throughout each fight;
   trait count values and insertion order are checked separately. Shared equipment is
-  enabled. Faction Wars planning rewards, Tamer powers and Duos partner side effects
-  remain pending; this is not a whole-set or whole-match completion claim.
+  enabled. Faction Wars planning rewards and Tamer powers remain pending; this is
+  not a whole-set or whole-match completion claim.
+- Duos combat setup: per-partner augment ownership, temporary AS/defense/mana buffs
+  at the original initialization stage, combined trait counts/caps, Crest Link and
+  Sync Bond counting, Partner's Ace and Tag Team. Eighteen production Faction Wars
+  team fights compare both paces and all star levels, with two owners per side and
+  shared items. Duos match flow, portals, shared health and networking are pending.
+  Other sets' count-changing hooks are not yet implemented.
 
-Latest verification: `./native/build.ps1 -Publish` passes 1,803,899 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 2,014,835 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

@@ -147,6 +147,36 @@ for (const augment of [...combatAugments, 'crest', 'counting-edge']) {
     sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
     augsA: augs, augsB: [], traitCounts: cb.traitCounts });
 }
+// Production Duos sides: owner-scoped augments, per-partner buffs and independently counted boards.
+for (let variant = 0; variant < 18; variant++) {
+  const pace = variant % 2 ? 'normal' : 'hyper';
+  DT.Sets.activate('faction-wars', pace);
+  const seed = 10001 + variant, pick = DT.makeRng(seed);
+  const choices = ['training', 'lotus', 'thrill', 'secondWind', 'unity', 'frontline', 'backline', 'implants', 'duo_ace', 'duo_tag', 'duo_sync', 'duo_crest_link', 'crest'];
+  const names = ['agumon', 'guilmon', 'hackmon', 'salamon'];
+  function side(team) {
+    const parts = [0, 1].map(part => {
+      const owner = team * 2 + part + 2;
+      const augs = [choices[(variant + part * 3 + team) % choices.length], 'duo_tag'];
+      const units = names.map((line, i) => ({ line, stage: variant % 3, c: part * 7 + i, r: 4 + i % 3, owner,
+        items: i === 0 ? ['emblem_ins', 'emblem_ins'] : i === 1 ? ['thief_glove'] : [] }));
+      return { owner, augs, units, partnerTop: variant + part * 5,
+        buffs: { as: 0.05 * (part + 1), armor: 3 + team, mana: 11 + part } };
+    });
+    return { units: parts.flatMap(p => p.units), parts, cols: 14, counts: DT.Duos.teamCounts(parts) };
+  }
+  const a = side(0), b = side(1);
+  const cb = new DT.Combat(a, b, { seed });
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const entries = a => a.units.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, owner: u.owner, items: u.items }));
+  const effects = a => ({ parts: a.parts.map(p => ({ owner: p.owner, augments: p.augs, partnerTop: p.partnerTop,
+    buffs: { attackSpeed: p.buffs.as, armor: p.buffs.armor, mana: p.buffs.mana } })) });
+  fixtures.push({ name: `faction-duos/${variant}`, variant: `faction-wars/${pace}`, seed, cols: 14,
+    sideA: entries(a), sideB: entries(b), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
+    setup: { sideA: effects(a), sideB: effects(b) }, traitCounts: cb.traitCounts });
+}
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
