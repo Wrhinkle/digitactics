@@ -41,6 +41,7 @@ try {
     Invoke-Checked 'node' @('tools/export-ai-turns.cjs')
     Invoke-Checked 'node' @('tools/export-carousels.cjs')
     Invoke-Checked 'node' @('tools/export-autochess-planning.cjs')
+    Invoke-Checked 'node' @('tools/export-shop-rolls.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')

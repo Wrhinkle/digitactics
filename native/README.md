@@ -904,3 +904,30 @@ RNG. Custom offer regression passes another 122,400 checks. Run the new coverage
 with `--autochess-planning-only`. Production mode dispatcher wiring remains pending.
 
 Validation: the self-contained Windows package builds and all BRUTAL smoke checks pass.
+
+## Shop roll policies and special offers
+
+`PlayerShop` now exposes `IShopRollHooks` for pre-roll level, odds and size changes
+and post-roll special offers. Refreshes return existing reservations before hooks,
+clear metadata, clamp hook-driven sizes to 1–8, roll with optional fractional odds,
+run post-roll effects and clear owned three-star offers. Paid and free rerolls use
+that same path. Replacement offers keep pool reservation ownership in the shop.
+
+Per-slot metadata supplies prices, display tags and purchase-time stage, trait and
+modifier overrides. Purchases copy mutable metadata before buy/combine hooks and
+clear the consumed entry. Full-bench post-hook overflow follows the original
+combine behavior. Loaded Dice bypasses normal roll hooks and clears old special
+metadata; release and max-star cleanup clear it too.
+
+Controlled original-engine hooks exercise resized shops, fractional odds, level
+boosts, zero-cost offers, replacement reservations, special units, merges, full
+benches, free/paid rerolls and max-star exclusions across all 22 variants. Fates
+traces also run the actual Loaded Dice implementation after a special roll. These
+verify the shared shop extension contract; concrete Fates/Dragonlands special-roll
+handlers and production dispatcher registration remain pending.
+
+Validation: the full regression passed 149,797,814 checks. After the final metadata
+cleanup and allocation-free odds lookup, 184,724 shop-roll comparisons and
+9,345,774 planning/AI/shop regressions passed. The self-contained Windows package
+was rebuilt for the final changes.
+All final packaged BRUTAL smoke checks passed.

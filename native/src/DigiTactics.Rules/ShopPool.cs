@@ -26,17 +26,18 @@ public sealed class ShopPool
         remaining[id] = checked(remaining[id] + count);
     }
 
-    public string? Roll(int level, IReadOnlySet<string> excluded)
+    public string? Roll(int level, IReadOnlySet<string> excluded, double[]? customOdds = null)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(level, 1);
-        var odds = rules.Odds[Math.Min(rules.Odds.Length - 1, level)]
-            ?? throw new InvalidDataException("Missing shop odds.");
+        var standardOdds = customOdds is null ? rules.Odds[Math.Min(rules.Odds.Length - 1, level)]
+            ?? throw new InvalidDataException("Missing shop odds.") : [];
         double roll = random.Next() * 100;
         int tier = 1;
-        for (int i = 0; i < odds.Length; i++)
+        for (int i = 0; i < (customOdds?.Length ?? standardOdds.Length); i++)
         {
-            if (roll < odds[i]) { tier = i + 1; break; }
-            roll -= odds[i];
+            double chance = customOdds is null ? standardOdds[i] : customOdds[i];
+            if (roll < chance) { tier = i + 1; break; }
+            roll -= chance;
         }
         for (int cost = tier; cost >= 1; cost--)
         {
