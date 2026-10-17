@@ -136,6 +136,12 @@ to be a Vulkan renderer or the final game UI.
   augments and Arena's trait modifier pass 222 more Solo/Duos fights, including
   duplicate equipment, cores, summons and partner ownership. Offers, consumables,
   pick grants and planning/settlement remain pending.
+- Underlords/Knockout: the first 29 active casts and passive no-op are implemented.
+  348 isolated battles cover both sets, star stages and board widths, requiring
+  each primary caster to cast. These verify movement, chaining, timed buffs,
+  delayed Purge damage and Metamorphosis HP swaps. Hero/alliance/item hooks are
+  disabled in these reference cases; full set combat remains pending and rejects
+  production setup until its binder is implemented.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner one battle at a time; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

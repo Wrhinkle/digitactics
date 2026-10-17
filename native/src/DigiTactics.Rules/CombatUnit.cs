@@ -19,6 +19,7 @@ public sealed class CombatUnit
     public double TimeRune { get; internal set; }
     internal DragonlandsUnitState Dragonlands { get; } = new();
     internal ReckoningUnitState Reckoning { get; } = new();
+    internal UnderlordsUnitState Underlords { get; } = new();
     internal ColiseumUnitState Coliseum { get; } = new();
     internal ArcaneUnitState Arcane { get; } = new();
     internal GizmosUnitState Gizmos { get; } = new();

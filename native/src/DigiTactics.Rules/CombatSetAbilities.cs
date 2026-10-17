@@ -9,7 +9,8 @@ public sealed partial class CombatSimulation
         (rules.Id.StartsWith("reckoning/", StringComparison.Ordinal) && ReckoningAbilities.Contains(kind)) ||
         (rules.Id.StartsWith("dragonlands/", StringComparison.Ordinal) && kind == "copy") ||
         (rules.Id.StartsWith("arcane/", StringComparison.Ordinal) && ArcaneAbilities.Contains(kind)) ||
-        (rules.Id.StartsWith("coliseum/", StringComparison.Ordinal) && ColiseumAbilities.Contains(kind));
+        (rules.Id.StartsWith("coliseum/", StringComparison.Ordinal) && ColiseumAbilities.Contains(kind)) ||
+        (IsUnderlords && UnderlordsAbilities.Contains(kind));
 
     private bool CastSetAbility(CombatUnit unit, CombatUnit target, double value)
     {
@@ -20,6 +21,7 @@ public sealed partial class CombatSimulation
         if (rules.Id.StartsWith("dragonlands/", StringComparison.Ordinal)) return CastDragonlandsAbility(unit, target, value);
         if (rules.Id.StartsWith("arcane/", StringComparison.Ordinal)) return CastArcaneAbility(unit, target, value);
         if (rules.Id.StartsWith("coliseum/", StringComparison.Ordinal)) return CastColiseumAbility(unit, target, value);
+        if (IsUnderlords) return CastUnderlordsAbility(unit, target, value);
         return false;
     }
 }

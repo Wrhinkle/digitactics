@@ -60,6 +60,7 @@ public sealed partial class CombatSimulation
             else if (rules.Id.StartsWith("dragonlands/", StringComparison.Ordinal)) BindDragonlands(sideA, sideB, setup);
             else if (rules.Id.StartsWith("arcane/", StringComparison.Ordinal)) BindArcane(sideA, sideB, setup);
             else if (rules.Id.StartsWith("coliseum/", StringComparison.Ordinal)) BindColiseum(sideA, sideB, setup);
+            else if (IsUnderlords) throw new NotSupportedException("Underlords casts are available in isolation; production hero, alliance and item hooks are still being migrated.");
             else FactionWarsCombat.Bind(this, rules, sideA, sideB, setup);
         }
         configureHooks?.Invoke(Hooks);

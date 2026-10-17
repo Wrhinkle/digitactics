@@ -195,12 +195,23 @@ The current executable is a migration workbench. It must not replace the public 
   and Doom execution have coverage guards. Doom preserves its distinct immediate
   first two ticks; Second Wind retains normal callback priority. Offers, consumable
   use, pick grants and planning/settlement remain pending.
+- Underlords and Knockout share a native cast dispatcher. The first 29 active
+  ability types (plus the passive no-op identity) pass 348 isolated reference
+  battles: both sets, all three star stages and both board widths. These include
+  deterministic teleport/hook/charge targeting, chained bolts, nonstacking slows
+  and armor cuts, delayed Purge damage, Empower expiry, and Metamorphosis HP swaps.
+  Every retained battle requires its primary caster to cast. The reference uses
+  the actual ability registry and timing API with hero/alliance/item hooks disabled;
+  this establishes cast parity only. Remaining abilities, timed mechanic effects,
+  hero passives, alliances, Tamers, items and settlement are still pending.
+  Production setup explicitly rejects these sets until their hook binder is ready,
+  preventing accidental fallback to Faction Wars behavior.
 - Reference fixture export now streams individual battles into a temporary gzip
   file and replaces the previous fixture only on success. The native runner reads
   one battle at a time. This removes the V8 single-string limit without dropping
   recorded samples or reducing comparison coverage.
 
-Latest verification: `./native/build.ps1 -Publish` passes 51,347,831 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 55,852,363 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

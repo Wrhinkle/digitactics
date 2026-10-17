@@ -1234,6 +1234,37 @@ for(const test of colEffectCases)for(const stage of [0,1,2])for(const duos of [f
 for(const flag of ['nc','vow','zh','doom0','voidUntil','flail'])if(!colEffectCoverage.has(flag))throw new Error(`Coliseum effect not exercised: ${flag}`);
 
 
+
+// Underlords cast kernel, independently of the still-pending hero/alliance/item hooks.
+// Retain the real ability registry and engine timing; only hook dispatch is disabled.
+for (const name of ['fireTeam', 'fireGlobal']) DT.Combat.prototype[name] = function () {};
+DT.Combat.prototype.has = () => false;
+const ulCastKinds=['ul_shuriken','ul_shadowwave','ul_empower','ul_purge','ul_haze','ul_scatter','ul_punch','ul_terror',
+  'ul_chaosbolt','ul_grip','ul_ghostship','ul_poof','ul_hook','ul_scream','ul_charge','ul_sleight','ul_purify',
+  'ul_dagger','ul_metamorph','ul_laguna','ul_arrow','ul_shieldcrash','ul_fadebolt','ul_godstrength','ul_ravage',
+  'ul_dissimilate','ul_breathefire','ul_chrono','ul_illuminate'];
+for(const set of ['underlords','underlords_ko'])for(const kind of ulCastKinds)for(const stage of [0,1,2])for(const cols of [7,14]){
+  const pace=cols===7?'hyper':'normal';DT.Sets.activate(set,pace);
+  const primary=DT.SHOP_LINES.find(l=>l.type===kind);if(!primary)throw new Error(`Missing Underlords cast ${set}/${kind}`);
+  const pool=DT.SHOP_LINES.filter(l=>kinds.includes(l.type)||ulCastKinds.includes(l.type));
+  let accepted=false;
+  for(let attempt=0;attempt<30&&!accepted;attempt++){
+    const seed=1400000+fixtures.length+attempt*10000,pick=DT.makeRng(seed);
+    const entries=main=>Array.from({length:6},(_,i)=>({line:main&&i===0?primary.id:pool[Math.floor(pick()*pool.length)].id,
+      stage,c:i,r:4+i%3,items:[]}));
+    const a=entries(true),b=entries(false),cb=new DT.Combat({units:a,cols,noTraits:true},{units:b,cols,noTraits:true},{seed});
+    const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+    while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+    if(!cb.events.some(e=>e.type==='cast'&&e.at===0))continue;
+    const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items}));
+    fixtures.push({name:`underlords-cast/${set}/${kind}/${stage}/${cols}`,variant:`${set}/${pace}`,seed,cols,
+      sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t});accepted=true;
+  }
+  if(!accepted)throw new Error(`Underlords cast not exercised: ${set}/${kind}/${stage}/${cols}`);
+}
+Object.assign(DT.Combat.prototype,originalHooks);
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
