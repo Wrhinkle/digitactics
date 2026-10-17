@@ -4,6 +4,7 @@ using Brutal.ImGuiApi.Backends;
 using Brutal.Numerics;
 using Brutal.OpenGlApi;
 using DigiTactics.Rules;
+using DigiTactics.Assets;
 
 namespace DigiTactics.Desktop;
 
@@ -11,6 +12,17 @@ public static class NativeApplication
 {
     public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture = null)
     {
+        if (smoke)
+        {
+            var models = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
+            foreach (string asset in models.Assets.Keys)
+            {
+                using var model = models.Open(Path.Combine(AppContext.BaseDirectory, "assets"), asset);
+                if (model.Root.GetProperty("asset"u8).GetProperty("version"u8).GetString() != "2.0")
+                    throw new InvalidDataException($"Unsupported packaged model: {asset}");
+            }
+            Console.WriteLine($"Native asset smoke passed: {models.Assets.Count} verified model payloads.");
+        }
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
         {

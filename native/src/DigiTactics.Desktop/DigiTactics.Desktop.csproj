@@ -4,12 +4,14 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../DigiTactics.Assets/DigiTactics.Assets.csproj" />
     <ProjectReference Include="../DigiTactics.Presentation/DigiTactics.Presentation.csproj" />
     <ProjectReference Include="../DigiTactics.Rules/DigiTactics.Rules.csproj" />
     <PackageReference Include="Ahwoo.Brutal.Glfw" Version="2026.10.4" />
     <PackageReference Include="Ahwoo.Brutal.ImGui.Backends" Version="2026.10.2" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="../../artifacts/model-content/**" Link="assets/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../content/**" Link="content/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

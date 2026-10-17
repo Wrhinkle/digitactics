@@ -2,6 +2,9 @@
   "version": 1,
   "dependencies": {
     "net10.0": {
+      "digitactics.assets": {
+        "type": "Project"
+      },
       "digitactics.presentation": {
         "type": "Project",
         "dependencies": {

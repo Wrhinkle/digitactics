@@ -45,10 +45,18 @@ simulation now retains movement origins, elapsed time and durations, checked in
 all 5,699 gameplay reference battles. A separate presentation module projects
 world positions, target-facing angles, viewer mirroring and death visibility;
 282,124 checks compare it with the original renderer across 22 scene traces.
-GPU rendering, model animation and production screens remain unfinished.
+The asset exporter decodes meshopt at build time and packs 718 embedded GLB models
+(about 136 MB), preserving textures, skins, animations, per-model options and credits.
+All 5,232 unit forms resolve through the original model mappings. Native loading is
+checked against 992,532 sampled Three.js accessor values, and the packaged executable
+verifies every model payload. WebP decoding, GPU rendering, animation playback and
+production screens remain unfinished.
 
 ## Boundaries
 
+- `src/DigiTactics.Assets`: model catalog, integrity checks and embedded GLB reading.
+  Meshopt decoding stays in the build tools; the native loader reads quantized
+  geometry, skin and animation accessors without executing JavaScript.
 - `src/DigiTactics.Presentation`: arena geometry and per-battle visible unit state.
   Reads the simulation and consumes presentation cues without changing gameplay;
   contains no graphics or window APIs.

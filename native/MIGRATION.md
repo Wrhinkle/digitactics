@@ -305,7 +305,22 @@ GPU/DOM work stubbed, checking 282,124 outputs across 22 seven-/fourteen-column 
 traces. This is scene projection only: GPU drawing, model animation, effects and
 production screens remain pending.
 
-Latest verification: the native test suite passes 117,122,309 assertions.
+Native asset ingestion now exports all 718 indexed model files (905 keys), resolves
+all 5,232 unit forms and retains model metadata/attribution. The build-time converter
+uses the existing vendored meshopt decoder, reconstructs embedded GLB buffers and
+packs them with gzip (135,924,220 bytes). The C# Assets assembly verifies SHA-256,
+reads GLB chunks and quantized/interleaved accessors, including skin matrices and
+animation channels. First/last elements of every accessor are checked using the
+vendored Three.js BufferAttribute implementation: 992,532 component values and
+1,335,036 total model checks. Packaged smoke loads and verifies all 718 payloads.
+This does not establish rendering parity: WebP upload, material handling, skeletal
+playback, authored fallback motions and model normalization remain unfinished.
+The source Andiramon and ShineGreymon imports contain nonfinite animation values
+(201 sampled components); conversion preserves these explicitly. The animation
+player must handle them before production acceptance, rather than feeding them
+into bone transforms.
+
+Latest verification: the native test suite passes 118,457,345 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
