@@ -104,6 +104,12 @@ public static class TraitRules
                 }
                 if (augment == "giz_a_burst") foreach (var key in counts.Keys.ToArray()) if (counts[key] >= 2) counts[key]++;
             }
+            if (augment == "col_a_arena" && rules.Id.StartsWith("coliseum/", StringComparison.Ordinal))
+                foreach (var trait in counts.Keys.ToArray())
+                {
+                    var definition = rules.Traits.Single(t => t.Id == trait);
+                    if (trait != "MEN" && definition.Kind == "origin" && definition.Breakpoints.Length > 1 && counts[trait] >= definition.Breakpoints[0]) counts[trait]++;
+                }
             if (augment == "gal_a_stars" && rules.Id.StartsWith("galaxies/", StringComparison.Ordinal))
                 foreach (var trait in counts.Keys.ToArray())
                 {

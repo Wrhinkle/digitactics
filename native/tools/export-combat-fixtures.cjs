@@ -1200,6 +1200,40 @@ for(const gap of [false,true]){
 }
 
 
+
+DT.Sets.activate('coliseum','hyper');
+const colHookItems=Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].hooks);
+const colCombatAugments=Object.entries(DT.AUGMENT).filter(([id,a])=>id.startsWith('col_')&&Object.keys(a.hooks||{}).some(k=>DT.Sets.COMBAT_HOOKS.includes(k)||k==='onCountTraits')).map(([id])=>id);
+const colEffectCases=[...colHookItems.map(item=>({name:item,item})),...colCombatAugments.map(augment=>({name:augment,augment})),...Array.from({length:12},(_,i)=>({name:`mixed-${i}`,mixed:true}))];
+const colEffectCoverage=new Set();
+for(const test of colEffectCases)for(const stage of [0,1,2])for(const duos of [false,true]){
+  const pace=duos?'normal':'hyper',cols=duos?14:7;DT.Sets.activate('coliseum',pace);
+  const seed=1100000+fixtures.length,pick=DT.makeRng(seed),roundStage=stage===0?0:stage===1?1:6;
+  function side(team){
+    const parts=[0,1].map(part=>{
+      const owner=team*2+part;
+      const chosen=DT.SHOP_LINES.filter(l=>l.traits.includes(part?'MEN':'MECH')).slice(0,4);
+      while(chosen.length<6)chosen.push(DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)]);
+      const augs=test.augment?[test.augment]:test.mixed?['col_a_second','col_a_ascension','col_a_arena','col_a_unity','col_a_lotus']:[];
+      return {owner,augs:[...augs,...(duos?[part?'duo_sync':'duo_tag']:[])],units:chosen.map((l,i)=>({line:l.id,stage,c:part*7+i,r:4+i%4,owner,
+        items:test.item?(i%2?[test.item]:[test.item,test.item]):Array.from({length:2},()=>colHookItems[Math.floor(pick()*colHookItems.length)]),
+        mods:{pu:['atomic','matrix','burst','inferno','spirit','xanti'][i]}}))};
+    });
+    return duos?{parts,units:parts.flatMap(p=>p.units),augs:parts.flatMap(p=>p.augs),counts:DT.Duos.teamCounts(parts),cols}:{units:parts[0].units,augs:parts[0].augs,cols};
+  }
+  const a=side(0),b=side(1),cb=new DT.Combat(a,b,{seed,info:{stage:roundStage}});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  for(const u of cb.units)for(const flag of ['nc','vow','zh','doom0','voidUntil','flail'])if(u.state[flag])colEffectCoverage.add(flag);
+  const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,owner:u.owner,coliseum:{powerUp:u.mods.pu}}));
+  const effects=a=>({augments:a.augs,...(duos?{parts:a.parts.map(p=>({owner:p.owner,augments:p.augs}))}:{})});
+  fixtures.push({name:`coliseum-effects/${test.name}/${stage}/${duos}`,variant:`coliseum/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    setup:{sideA:effects(a),sideB:effects(b),roundStage}});
+}
+for(const flag of ['nc','vow','zh','doom0','voidUntil','flail'])if(!colEffectCoverage.has(flag))throw new Error(`Coliseum effect not exercised: ${flag}`);
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

@@ -132,8 +132,10 @@ to be a Vulkan renderer or the final game UI.
   spread/expiration after caster death, All Out recovery, mixed cores and both
   board widths. All 26 traits at 75 breakpoints pass 150 more fights, with 60
   targeted cases for Sensei subsets, stance priority, plant regrowth, Supreme
-  selection and crowded Mech spawning. Item hooks, augments and planning/settlement
-  remain pending.
+  selection and crowded Mech spawning. All 14 item-hook definitions, ten combat
+  augments and Arena's trait modifier pass 222 more Solo/Duos fights, including
+  duplicate equipment, cores, summons and partner ownership. Offers, consumables,
+  pick grants and planning/settlement remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner one battle at a time; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

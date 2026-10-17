@@ -2,6 +2,7 @@ namespace DigiTactics.Rules;
 
 internal sealed class ColiseumUnitState
 {
+    internal ColiseumItemState Items { get; } = new();
     internal double Academy, StarAp, StarHit, StarMana, StarHeal, Luchador, EdgeUntil, Prodigy, Protector;
     internal bool Supreme, StarHealed, LuchadorUsed, Edge, Juggernaut, ProtectorUsed;
     internal int Sorcerer;
@@ -82,12 +83,17 @@ public sealed partial class CombatSimulation
 
     private void BindColiseum(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
-        foreach (var side in new[] { setup.SideA, setup.SideB }) {
-            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false)) throw new NotSupportedException("Coliseum augments have not been migrated yet.");
+        for (int team = 0; team < 2; team++) {
+            var side = team == 0 ? setup.SideA : setup.SideB;
+            var entries = team == 0 ? sideA : sideB;
+            var counts = side.NoTraits ? [] : side.Counts ?? (side.Parts is { } parts ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries, side.Augments));
+            int active = counts.Count(p => rules.Traits.Any(t => t.Id == p.Key && TraitRules.Level(t, p.Value) > 0));
+            if (side.Parts is { } partners) foreach (var part in partners) BindColiseumAugments(team, part.Augments ?? [], active, part.Owner, part.PartnerTop);
+            else BindColiseumAugments(team, side.Augments ?? [], active, partnerTop: side.PartnerTop);
         }
-        foreach (var u in units) foreach (var id in u.Items)
-            if (items.TryGetValue(id, out var item) && item.Hooks.Length > 0) throw new NotSupportedException($"Coliseum item hooks {id} have not been migrated yet.");
         BindColiseumTraits(sideA, sideB, setup);
+        foreach (var u in units) BindColiseumItems(u, setup.RoundStage);
+        BindSummonedItems = u => BindColiseumItems(u, setup.RoundStage);
         var context = Hooks.Context(CombatHookSource.Mechanic, "digicore");
         Hooks.Add(context, CombatHook.CombatStart, (c, _) => {
             foreach (var u in units.Where(u => !u.Summoned)) {
