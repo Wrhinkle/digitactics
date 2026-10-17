@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 131,049,443 assertions.
+Latest verification: the native test suite passes 132,139,281 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -507,6 +507,22 @@ planning offers. Generic modes retain the base generator.
 132 original-handler traces exercise 15,840 reward calls across all 22 variants,
 three seeds, AI/human collection, occupied boards and full/available benches.
 2,884,584 comparisons verify rewards, orbs, inventories, shops, pool reservations,
-mechanic state and RNG consumption. Selection of Auto Chess reward offers, the
-Treasure Dragon offer, other planning hooks and full round orchestration remain
-pending. The desktop still uses its migration workbench.
+mechanic state and RNG consumption. Auto Chess reward selection is implemented in the offer engine; its UI, the
+Treasure Dragon offer and other concrete planning hooks remain pending. The desktop still uses its migration workbench.
+
+## Offers and round transitions
+
+`MatchOffers` implements schedule precedence, lobby-wide augment tiers, owned and
+rerolled exclusions, the Duos augment slot, power/item-tier selection, generic
+armories and choice side effects. It consumes Auto Chess loot choices directly.
+Custom armories, custom offers, augment effects and power effects dispatch through
+required hook interfaces; their remaining concrete handlers are not replaced by
+silent defaults.
+
+`MatchRounds` wires round progression, per-player XP/income, locked shops, offer
+creation, power ranks, round-start callbacks, AI/pairing or carousel dispatch,
+shared health synchronization and settlement phase transitions. Reference traces
+verify 530,070 offer checks and 559,864 round-flow checks across all 22 variants
+in Solo/Duos. These traces instrument game hooks and AI/carousel callbacks to test
+ordering; they do not establish completion of those concrete systems or desktop
+match integration.

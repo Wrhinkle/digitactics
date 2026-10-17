@@ -5,6 +5,8 @@ string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("na
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
 if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
+if (args.Contains("--rounds-only")) { RoundFlowParity.Run(root, catalog); return; }
+if (args.Contains("--offers-only")) { OfferParity.Run(root, catalog); return; }
 if (args.Contains("--mode-loot-only")) { LootParity.Run(root, catalog, true); return; }
 if (args.Contains("--loot-only")) { LootParity.Run(root, catalog); return; }
 if (args.Contains("--settlement-only")) { SettlementParity.Run(root, catalog); return; }
@@ -13,7 +15,7 @@ if (args.Contains("--planning-only")) { PlanningParity.Run(root, catalog); Plann
 if (args.Contains("--economy-only")) { EconomyParity.Run(root, catalog); return; }
 if (args.Contains("--choreography-only")) { ChoreographyParity.Run(root, catalog); return; }
 using var fixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests/fixtures/parity.json")));
-int assertions = LootParity.Run(root, catalog, true) + LootParity.Run(root, catalog) + SettlementParity.Run(root, catalog) + MatchStateParity.Run(root, catalog) + EconomyParity.Run(root, catalog) + PlanningParity.Run(root, catalog) + PlanningShopParity.Run(root, catalog);
+int assertions = RoundFlowParity.Run(root, catalog) + OfferParity.Run(root, catalog) + LootParity.Run(root, catalog, true) + LootParity.Run(root, catalog) + SettlementParity.Run(root, catalog) + MatchStateParity.Run(root, catalog) + EconomyParity.Run(root, catalog) + PlanningParity.Run(root, catalog) + PlanningShopParity.Run(root, catalog);
 void Check(bool condition, string message)
 {
     assertions++;

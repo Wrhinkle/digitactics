@@ -4,14 +4,14 @@ namespace DigiTactics.Rules;
 
 public sealed record UnitLine(string Id, int Tier, int Price, int Copies, string[] Forms, string[] Traits,
     string Attribute, int Slots, int SellPremium, CombatTemplate Combat, AbilityTemplate Ability, string? Summon = null, string[]? Rivals = null, string? Mark = null, bool Swap = false, string? Envoy = null, string? Experiment = null, string? Tamer = null, int[]? SummonCount = null, TransformationDefinition? Transformation = null, bool NoSell = false, bool NoItems = false);
-public sealed record ItemDefinition(string Id, Dictionary<string, double> Stats, Dictionary<string, JsonElement> Passives, string[] Hooks, string? Emblem, bool Component = false, bool Special = false, string? Category = null, string[]? CompletedFrom = null, string[]? Ingredients = null, string? SelfUpgrade = null, int Tier = 0, bool Hat = false);
+public sealed record ItemDefinition(string Id, Dictionary<string, double> Stats, Dictionary<string, JsonElement> Passives, string[] Hooks, string? Emblem, bool Component = false, bool Special = false, string? Category = null, string[]? CompletedFrom = null, string[]? Ingredients = null, string? SelfUpgrade = null, int Tier = 0, bool Hat = false, bool NoDrop = false);
 public sealed record TraitDefinition(string Id, string Kind, int[] Breakpoints, double[] Values, Dictionary<string, double[]> Parameters, JsonElement Duo);
 public sealed record TransformationDefinition(double? Ad = null, double As = 0, double Armor = 0, double Range = 0);
 public sealed record TamerDefinition(string Line, double[] Hp, double[] Ad, double[] Armor, double Mr);
 public sealed record FormDefinition(string Id, string Name, string Description, string? Trait = null);
 public sealed record PartnerStats(double Hp, double BonusHp, double BonusAp, double BonusAd, double BonusMana);
 public sealed record Ruleset(string Id, string Name, string Pace, UnitLine[] Lines, int[] PoolSizes, int[]?[] Odds, int RerollCost, int ShopSize,
-    ItemDefinition[] Items, string[] CoreItems, TraitDefinition[] Traits, UnitLine[] ExtraLines, PartnerStats? Partner = null, double[]? PveMultipliers = null, Dictionary<string, int>? DragonTraitLimits = null, Dictionary<string, FormDefinition[]>? Forms = null, Dictionary<string, TamerDefinition>? Tamers = null, EconomyRules? Economy = null, RoundSchedule? Schedule = null, DuoRules? Duo = null, MatchLossRules? Loss = null, LootRules? Loot = null);
+    ItemDefinition[] Items, string[] CoreItems, TraitDefinition[] Traits, UnitLine[] ExtraLines, PartnerStats? Partner = null, double[]? PveMultipliers = null, Dictionary<string, int>? DragonTraitLimits = null, Dictionary<string, FormDefinition[]>? Forms = null, Dictionary<string, TamerDefinition>? Tamers = null, EconomyRules? Economy = null, RoundSchedule? Schedule = null, DuoRules? Duo = null, MatchLossRules? Loss = null, LootRules? Loot = null, OfferRules? Offers = null);
 public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
 {
     public static ContentCatalog Load(string path)
@@ -19,11 +19,11 @@ public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
         var catalog = JsonSerializer.Deserialize<ContentCatalog>(File.ReadAllText(path),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
             ?? throw new InvalidDataException("Missing content catalog.");
-        if (catalog.SchemaVersion != 20 || catalog.Variants.Length == 0)
+        if (catalog.SchemaVersion != 21 || catalog.Variants.Length == 0)
             throw new InvalidDataException("Unsupported or empty content catalog.");
         foreach (var rules in catalog.Variants)
         {
-            if (rules.Loot is null || rules.Loot.CustomPve && rules.Loot.Mode is null || rules.Duo is null || rules.Loss is null || rules.Economy is not { } economy || rules.Schedule is not { } schedule ||
+            if (rules.Offers is null || rules.Loot is null || rules.Loot.CustomPve && rules.Loot.Mode is null || rules.Duo is null || rules.Loss is null || rules.Economy is not { } economy || rules.Schedule is not { } schedule ||
                 schedule.Opening.Length == 0 || schedule.Repeating.Length == 0 ||
                 schedule.Opening.Concat(schedule.Repeating).Concat(schedule.Overrides.Values).Any(t => t is not ("pvp" or "pve" or "carousel")) ||
                 economy.Xp is null && (economy.LevelByStage is null || economy.LevelByStage.Length < 2) ||

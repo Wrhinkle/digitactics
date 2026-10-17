@@ -31,6 +31,9 @@ public sealed class MatchPlayer
     // Reserved unit drops return to the pool when the owner is eliminated.
     public List<LootOrb> Orbs { get; } = [];
     public PlayerMechanics Mechanics { get; } = new();
+    public PlayerOffer? Offer { get; internal set; }
+    public CombatPower? Power { get; set; }
+    public List<string> Globals { get; } = [];
 }
 
 public sealed class MatchTeam(int id, MatchPlayer[] members, int health)
@@ -155,7 +158,7 @@ public sealed class MatchState
         }
         player.Shop.ReleaseOffers();
         foreach (var orb in player.Orbs) if (orb.Unit is { } line) Pool.Return(line);
-        player.Orbs.Clear(); player.Items.Clear();
+        player.Orbs.Clear(); player.Items.Clear(); player.Offer = null;
         onEliminate?.Invoke(player);
     }
     private static int[][] ValidTeams(int[][]? teams)
