@@ -5,6 +5,16 @@ public sealed class AutoChessPlanning(MatchState state)
 {
     private readonly Dictionary<string, UnitLine> lines = state.Rules.Lines.ToDictionary(l => l.Id);
 
+    public void RoundEnd(RoundEndContext context, int stage)
+    {
+        if (context.Won || context.Match.Combat is null) return;
+        var priest = state.Rules.Traits.Single(t => t.Id == "PRIEST");
+        int level = TraitRules.Level(priest, context.Traits.GetValueOrDefault("PRIEST"));
+        if (level == 0) return;
+        int damage = state.Rules.Loss!.Loss(stage, 1 - context.Team, context.Pve, context.Units.Select(u => u.Survivor));
+        context.Player.Health += (int)Math.Floor(damage * priest.Values[level - 1]);
+    }
+
     public IncomeBreakdown Income(MatchPlayer player, RoundPosition round, IncomeBreakdown income)
     {
         foreach (string relic in player.Globals)

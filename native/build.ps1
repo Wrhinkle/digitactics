@@ -62,6 +62,8 @@ try {
     Invoke-Checked 'node' @('tools/export-fates-augments.cjs')
     Invoke-Checked 'node' @('tools/export-gizmos-planning.cjs')
     Invoke-Checked 'node' @('tools/export-gizmos-augments.cjs')
+    Invoke-Checked 'node' @('tools/export-galaxy-augments.cjs')
+    Invoke-Checked 'node' @('tools/export-autochess-priest.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')

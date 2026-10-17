@@ -1479,3 +1479,21 @@ pool state, IDs and RNG. Full production match-controller registration and comba
 projection remain pending.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+
+### Galaxies augment planning and Auto Chess Priest
+
+`GalaxiesPlanning` now grants all augment-pick rewards, including the reserved
+Champion-form tier-four unit, and applies augment income and recurring free rolls
+before Galaxy mechanic effects. 1,680 cases across both paces and all galaxies
+pass 144,368 checks (`--galaxy-augments-only`), covering full inventories/benches,
+depleted pools, board locks, combine behavior, pool refunds, IDs and RNG.
+
+`AutoChessPlanning.RoundEnd` implements Priest's loss-damage refund before damage
+is applied. It uses the current round's loss rules and surviving non-summoned enemy
+units, floors the trait-scaled amount, and leaves wins or missing-combat results
+untouched. 2,048 original-engine cases pass (`--autochess-priest-only`), spanning
+both paces, trait tiers, PvE/PvP, both sides, stages, unit tiers/forms and summons.
+Both handlers still require production match-controller registration.
+
+Validation: **159,453,608 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.

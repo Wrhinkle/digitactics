@@ -7,6 +7,26 @@ public sealed class GalaxiesPlanning(MatchState state) : IMatchShopHooks
     private readonly Dictionary<string, ItemDefinition> items = state.Rules.Items.ToDictionary(i => i.Id);
     private readonly MatchLoot loot = new(state);
 
+    public IncomeBreakdown Income(MatchPlayer player, IncomeBreakdown income) =>
+        player.Augments.Contains("gal_a_income") ? income with { Augment = income.Augment + 2 } : income;
+
+    public void AugmentPicked(MatchPlayer player, string id)
+    {
+        switch (id)
+        {
+            case "gal_a_cash": player.Economy.Credit(8); break;
+            case "gal_a_cache": player.GiveItem(loot.RandomComponent()!); player.GiveItem(loot.RandomComponent()!); break;
+            case "gal_a_rolls": player.Shop.FreeRolls++; break;
+            case "gal_a_bank": player.Economy.Credit(18); break;
+            case "gal_a_trove": player.GiveItem(loot.RandomCompleted()!); player.GiveItem(loot.RandomComponent()!); break;
+            case "gal_a_mental": player.GiveItem("gal_mental"); break;
+            case "gal_a_jackpot": player.Economy.Credit(35); break;
+            case "gal_a_armory": player.GiveItem(loot.RandomCompleted()!); player.GiveItem(loot.RandomCompleted()!); break;
+            case "gal_a_golden": player.GiveItem("gal_golden"); break;
+            case "gal_a_megaEvolve": loot.GiveUnit(player, [4], 1); break;
+        }
+    }
+
     public int RoundEnd(RoundEndContext context, int stage)
     {
         int gold = 0; var combat = context.Match.Combat;
@@ -37,6 +57,7 @@ public sealed class GalaxiesPlanning(MatchState state) : IMatchShopHooks
 
     public void RoundStart(MatchPlayer player, RoundPosition round)
     {
+        if (player.Augments.Contains("gal_a_rolls")) player.Shop.FreeRolls++;
         if (state.Galaxy is "trade" or "bigbang") player.Shop.FreeRolls++;
         if (state.Galaxy == "cluster" && round == new RoundPosition(1, 2))
         {
