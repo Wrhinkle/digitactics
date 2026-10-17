@@ -276,10 +276,15 @@ items/contraband, augments and anomalies. Replay carries sponsor items, stored
 side state, anomaly selections and 119/120-mana boundary overrides. Guards require
 every anomaly label and named trigger to occur; Devour emits its consumption cue
 only when an ally exists. The suite now covers 2,630 battles and 963,380 cues.
-The remaining sets' presentation callbacks
-and complete replay coverage remain pending; this is not a renderer.
+Coliseum adds 672 battles and 283,616 cues across its six custom abilities, six
+forms, 24 Digi-Cores, traits and items. Named-effect guards include Mega Mech,
+Supreme, Luchador, Bulk Up, Spirit Evolution, Overdrive, Ascension, All Out,
+Vanish and Stasis. Form/core selections, stored Royal Court AP, Supreme selection
+and round state are retained in replay. The suite totals 3,302 battles and
+1,246,996 cues. Galaxies and Underlords presentation callbacks and complete replay
+coverage remain pending; this is not a renderer.
 
-Latest verification: the native test suite passes 101,727,019 assertions.
+Latest verification: the native test suite passes 102,011,307 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

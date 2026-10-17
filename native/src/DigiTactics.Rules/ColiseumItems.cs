@@ -27,7 +27,7 @@ public sealed partial class CombatSimulation
                 }); break;
                 case "col_night_cloak": On(CombatHook.DamageTaken, (_, _) => {
                     if (state.Cloak || u.Health >= u.MaxHealth * 0.6) return;
-                    state.Cloak = true; u.InvulnerableUntil = Time + 1; u.Stun = 0;
+                    state.Cloak = true; u.InvulnerableUntil = Time + 1; u.Stun = 0; Emit("text", u, text: "Vanish");
                 }); break;
                 case "col_void_staff": On(CombatHook.DamageDealt, (c, e) => {
                     var t = e.Target!; if (!t.Alive || t.Coliseum.Items.VoidUntil > Time) return;
@@ -53,7 +53,7 @@ public sealed partial class CombatSimulation
                     // The first tick bypasses Every; the second tick starts its 13-second timer.
                     if (state.Doom && !c.Every(u, "doom", 13)) return;
                     state.Doom = true; var t = TargetByDistance(u);
-                    if (t is not null) c.Damage(u, t, t.MaxHealth * 0.25);
+                    if (t is not null) { c.Effect("beam", u, t); c.Damage(u, t, t.MaxHealth * 0.25); }
                 }); break;
                 case "col_ar_collector": On(CombatHook.DamageDealt, (c, e) => {
                     var t = e.Target!;
@@ -71,7 +71,7 @@ public sealed partial class CombatSimulation
                 }); break;
                 case "col_ar_zhonya": On(CombatHook.DamageTaken, (_, _) => {
                     if (state.Zhonya || u.Health >= u.MaxHealth * 0.4) return;
-                    state.Zhonya = true; u.InvulnerableUntil = Time + 2.5;
+                    state.Zhonya = true; u.InvulnerableUntil = Time + 2.5; Emit("text", u, text: "Stasis");
                 }); break;
                 default: throw new NotSupportedException($"Coliseum item {id} has not been migrated.");
             }

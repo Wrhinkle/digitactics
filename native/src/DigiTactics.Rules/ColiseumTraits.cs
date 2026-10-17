@@ -69,7 +69,7 @@ public sealed partial class CombatSimulation
                             double late = 1 + 0.1 * Math.Max(0, stage - 2);
                             mech.MaxHealth = mech.Health = UnitValues.Round((400 + 145 * stars) * late);
                             mech.AttackDamage = mech.BaseAttackDamage = (35 + 10 * stars) * late;
-                            if (level >= 2) { mech.AttackDamage *= 1.15; mech.Equipment.Split = 0.3; }
+                            if (level >= 2) { mech.AttackDamage *= 1.15; mech.Equipment.Split = 0.3; } c.Text(mech, "Mega Mech");
                             if (level >= 3) { mech.Omnivamp += 0.25; mech.Equipment.Reduction += 0.2; }
                         });
                         On(CombatHook.DamageDealt, (c, e) => { if (mech is { Alive: true } && e.Unit != mech && Member(e.Unit!)) c.Heal(mech, e.Amount * 0.12, true); }); break;
@@ -101,7 +101,7 @@ public sealed partial class CombatSimulation
                         Each(u => u.MaxHealth += value);
                         On(CombatHook.Tick, (c, _) => {
                             if (stacks >= 8 || Time < nextStack) return; nextStack++; stacks++;
-                            foreach (var u in Members(c)) { u.AttackDamage += u.BaseAttackDamage * P("sps"); u.AbilityPower += P("sps") * 100; }
+                            foreach (var u in Members(c)) { u.AttackDamage += u.BaseAttackDamage * P("sps"); u.AbilityPower += P("sps") * 100; if (stacks == 8) c.Text(u, "Max Spirit"); }
                         });
                         On(CombatHook.DamageDealt, (c, e) => { if (stacks >= 8 && e.Kind != DamageKind.True && !e.IsBurn && Member(e.Unit!) && e.Target!.Alive) c.Damage(e.Unit!, e.Target, e.Amount * P("td"), DamageKind.True); }); break;
                     case "SM": Hooks.Add(context, CombatHook.CombatStart, (c, _) => {
@@ -130,7 +130,7 @@ public sealed partial class CombatSimulation
                         On(CombatHook.DamageTaken, (c, e) => { var u = e.Unit!; var s = u.Coliseum; if (s.StarHeal != 0 && !s.StarHealed && u.Health < u.MaxHealth * 0.4) { s.StarHealed = true; c.Heal(u, u.MaxHealth * s.StarHeal); } }); break;
                     case "SC":
                         double supremeBonus = P("sup") - value;
-                        void Supreme(CombatUnit u) { u.Coliseum.Supreme = true; u.Equipment.Amp += supremeBonus; }
+                        void Supreme(CombatUnit u) { u.Coliseum.Supreme = true; u.Equipment.Amp += supremeBonus; Emit("text", u, text: "Supreme"); }
                         Start(c => {
                             var members = Members(c); foreach (var u in members) u.Equipment.Amp += value;
                             foreach (var u in members.OrderByDescending(u => u.Line.Id == side.Coliseum?.Supreme).ThenByDescending(u => u.Line.Tier).ThenByDescending(u => u.Stage).ThenBy(u => u.Id).Take(level >= 3 ? 2 : 1)) Supreme(u);
@@ -147,7 +147,7 @@ public sealed partial class CombatSimulation
                             accumulated += e.Amount;
                             while (accumulated >= 400) {
                                 accumulated -= 400; var pool = units.Where(u => u.Alive && u.Team != c.Team).ToArray(); if (pool.Length == 0) break;
-                                var t = pool[(int)(c.Random() * pool.Length)]; firing = true; c.Damage(e.Unit!, t, 50 + 25 * stage); firing = false;
+                                var t = pool[(int)(c.Random() * pool.Length)]; firing = true; c.Effect("shot", e.Unit!, t, big: true); c.Damage(e.Unit!, t, 50 + 25 * stage); firing = false;
                             }
                         }); break;
                     case "WR":
@@ -156,14 +156,14 @@ public sealed partial class CombatSimulation
                         On(CombatHook.Tick, (c, _) => {
                             if (Time < nextRealm) return; nextRealm += 4; var ms = Members(c); if (ms.Length == 0 || phantomPool <= 0) return;
                             double amount = phantomPool * value, healing = phantomPool * 0.18; phantomPool = 0; realm = true;
-                            foreach (var e in EnemiesOf(ms[0]).OrderBy(e => e.Cell.DistanceTo(ms[0].Cell) * 10000 + e.Id).Take(3).ToArray()) c.Damage(ms[0], e, amount * 0.6);
+                            foreach (var e in EnemiesOf(ms[0]).OrderBy(e => e.Cell.DistanceTo(ms[0].Cell) * 10000 + e.Id).Take(3).ToArray()) { c.Effect("beam", ms[0], e); c.Damage(ms[0], e, amount * 0.6); }
                             realm = false; var low = ms.Where(u => u.Alive).OrderBy(u => u.Health / u.MaxHealth).ThenBy(u => u.Id).FirstOrDefault(); if (low is not null) c.Heal(low, healing);
                         }); break;
                     case "LU":
                         Each(u => { u.AttackDamage += u.BaseAttackDamage * value; u.Coliseum.Luchador = P("heal"); });
                         On(CombatHook.DamageTaken, (c, e) => { var u = e.Unit!; var s = u.Coliseum;
                             if (s.Luchador == 0 || s.LuchadorUsed || u.Health >= u.MaxHealth * 0.5) return;
-                            s.LuchadorUsed = true; u.Stun = 0; c.Heal(u, u.MaxHealth * s.Luchador); foreach (var a in c.Adjacent(u)) if (a.Alive && a.Team != u.Team) c.Stun(a, 1);
+                            s.LuchadorUsed = true; u.Stun = 0; c.Heal(u, u.MaxHealth * s.Luchador); foreach (var a in c.Adjacent(u)) if (a.Alive && a.Team != u.Team) c.Stun(a, 1); c.Text(u, "Luchador!"); c.Burst(u.Cell, 1, u.Team);
                         }); break;
                     case "BAS": Start(c => { foreach (var u in c.Mine) {
                         double k = Member(u) ? value : 6 + (level >= 3 ? 25 : 0); u.Armor += k; u.MagicResist += k;
@@ -202,7 +202,7 @@ public sealed partial class CombatSimulation
                         On(CombatHook.AnyDeath, (c, e) => {
                             var v = e.Unit!; if (v.Team == c.Team || v.Coliseum.Sorcerer != c.Team + 1 || v.Summoned) return;
                             var src = Members(c).FirstOrDefault(); if (src is null) return; var pool = EnemiesOf(src).ToList();
-                            for (int k = 0; k < (level >= 3 ? 2 : 1) && pool.Count > 0; k++) { int index = (int)(c.Random() * pool.Count); var t = pool[index]; pool.RemoveAt(index); c.Damage(src, t, v.MaxHealth * P("burst")); }
+                            for (int k = 0; k < (level >= 3 ? 2 : 1) && pool.Count > 0; k++) { int index = (int)(c.Random() * pool.Count); var t = pool[index]; pool.RemoveAt(index); c.Effect("beam", src, t); c.Damage(src, t, v.MaxHealth * P("burst")); }
                         }); break;
                     case "STR": Start(c => { foreach (var u in c.Mine) { int k = Member(u) ? 3 : 1; if (u.Entry.Row <= 5) u.Shield += value * k; else u.Equipment.Amp += P("amp") * k; } }); break;
                     default: throw new NotSupportedException($"Coliseum trait {id} has not been migrated.");

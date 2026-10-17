@@ -40,7 +40,7 @@ public sealed partial class CombatSimulation
             case "biomerge": if (s.Biomerge < 30 && c.Every(u, "pu_bio", 1)) { s.Biomerge++; u.AttackDamage += u.BaseAttackDamage * 0.03; u.AbilityPower += 3; } break;
             case "overdrive": if (!s.Overdrive && Time >= 10) KillDigiCore(c, u); break;
             case "atomic": if (c.Every(u, "pu_atom", 1)) s.Atomic += 0.02; break;
-            case "ascend": if (!s.Ascended && Time >= 6) { s.Ascended = true; u.Equipment.Amp += 0.4; } break;
+            case "ascend": if (!s.Ascended && Time >= 6) { s.Ascended = true; u.Equipment.Amp += 0.4; c.Text(u, "Ascension"); } break;
         }
     }
 
@@ -51,6 +51,7 @@ public sealed partial class CombatSimulation
         if (u.Entry.Coliseum?.PowerUp != "overdrive" || s.Overdrive) return;
         s.Overdrive = true; u.Equipment.Amp += 0.2;
         foreach (var e in EnemiesNear(u, u.Cell, 2)) c.Stun(e, 1.5);
+        c.Burst(u.Cell, 2, u.Team); c.Text(u, "Overdrive");
     }
 
     private void TakenDigiCore(CombatHookContext c, CombatHookEvent e)
@@ -64,7 +65,7 @@ public sealed partial class CombatSimulation
                 break;
             case "spirit":
                 if (s.Spirit || u.Health >= u.MaxHealth * 0.4) return;
-                s.Spirit = true; c.Heal(u, u.MaxHealth * 0.25); c.Buff(u, CombatStat.AttackSpeed, 0.25); break;
+                s.Spirit = true; c.Heal(u, u.MaxHealth * 0.25); c.Buff(u, CombatStat.AttackSpeed, 0.25); c.Text(u, "Spirit Evolution"); break;
             case "thorn":
                 if (e.Kind != DamageKind.Physical || e.Source is null || u.Cell.DistanceTo(e.Source.Cell) > 1 || s.ThornCooldown > Time) return;
                 s.ThornCooldown = Time + 1; foreach (var a in EnemiesNear(u, u.Cell, 1)) c.Damage(u, a, 50 + u.MaxHealth * 0.05); break;

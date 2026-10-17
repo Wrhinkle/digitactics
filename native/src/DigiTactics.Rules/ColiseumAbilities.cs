@@ -34,11 +34,12 @@ public sealed partial class CombatSimulation
                 if (u.Line.Tier >= 5) Buff(u, CombatStat.Omnivamp, 0.15, 6);
                 foreach (var a in units.Where(a => a.Alive && a.Team == u.Team && a != u).OrderBy(a => a.Cell.DistanceTo(u.Cell) * 1000 + a.Id).Take(2).ToArray())
                     Buff(a, CombatStat.AttackDamage, a.BaseAttackDamage * f / 3, 6);
-                if (target.Alive) AbilityDamage(u, target, value * 1.5);
+                if (target.Alive) { Emit("hit", u, target, big: true); AbilityDamage(u, target, value * 1.5); }
+                Emit("shield", u);
                 break;
-            case "col_bulk": u.MaxHealth += value; Heal(u, value); u.Coliseum.Bulk = u.MaxHealth * 0.08; break;
+            case "col_bulk": u.MaxHealth += value; Heal(u, value); u.Coliseum.Bulk = u.MaxHealth * 0.08; Emit("text", u, text: "Bulk Up"); break;
             case "col_aegis":
-                AddShield(u, value); foreach (var e in EnemiesNear(u, u.Cell, 2)) AbilityDamage(u, e, value * 0.35); break;
+                AddShield(u, value); Burst(u.Cell, 2, u.Team); foreach (var e in EnemiesNear(u, u.Cell, 2)) AbilityDamage(u, e, value * 0.35); break;
             case "col_infect":
                 var victim = EnemiesOf(u).Where(e => e.Coliseum.Infection is null).OrderBy(e => e.Cell.DistanceTo(u.Cell) * 10000 + e.Id).FirstOrDefault() ?? target;
                 var infection = new ColiseumInfection(u, victim, value / 6); victim.Coliseum.Infection = infection;
@@ -52,14 +53,14 @@ public sealed partial class CombatSimulation
             case "col_stance":
                 string stance = u.Entry.Coliseum?.Form ?? "blitz";
                 if (stance == "blitz") foreach (var e in EnemiesOf(u).OrderBy(e => e.Cell.DistanceTo(u.Cell) * 10000 + e.Id).Take(2).ToArray()) {
-                    AbilityDamage(u, e, value * 0.8); Buff(e, CombatStat.Armor, -15, 5);
+                    Emit("hit", u, e, big: true); AbilityDamage(u, e, value * 0.8); Buff(e, CombatStat.Armor, -15, 5);
                 }
                 else if (stance == "critical") {
                     var t = EnemiesOf(u).Where(e => e.Cell.DistanceTo(u.Cell) <= 3).OrderBy(e => e.Health).ThenBy(e => e.Id).FirstOrDefault() ?? target;
-                    AbilityDamage(u, t, value * 1.6); if (t.Alive) StunUnit(t, 1.5);
+                    Emit("beam", u, t); AbilityDamage(u, t, value * 1.6); if (t.Alive) StunUnit(t, 1.5);
                     foreach (var e in EnemiesNear(u, t.Cell, 1)) if (e != t) AbilityDamage(u, e, value * 0.5);
                 } else {
-                    Buff(u, CombatStat.DamageReduction, 0.5, 2); AbilityDamage(u, target, value * 1.3);
+                    Buff(u, CombatStat.DamageReduction, 0.5, 2); Burst(u.Cell, 2, u.Team); AbilityDamage(u, target, value * 1.3);
                     foreach (var e in EnemiesNear(u, u.Cell, 2)) if (e != target) AbilityDamage(u, e, value * 0.5);
                 }
                 break;
@@ -70,10 +71,10 @@ public sealed partial class CombatSimulation
                     foreach (var e in EnemiesNear(u, u.Cell, 2)) { e.Target = u; StunUnit(e, 0.75); AbilityDamage(u, e, value * 0.3); }
                 } else if (form == "dorulu") {
                     var t = EnemiesOf(u).OrderBy(e => e.Health).FirstOrDefault() ?? target;
-                    AbilityDamage(u, t, value * 1.2 * (t.Health < t.MaxHealth * 0.5 ? 2 : 1));
+                    Emit("hit", u, t, big: true); AbilityDamage(u, t, value * 1.2 * (t.Health < t.MaxHealth * 0.5 ? 2 : 1));
                 } else {
                     Buff(u, CombatStat.AttackSpeed, 0.5, 5); var pool = EnemiesOf(u).ToList();
-                    for (int k = 0; k < 3 && pool.Count > 0; k++) { int index = (int)(random.Next() * pool.Count); var e = pool[index]; pool.RemoveAt(index); AbilityDamage(u, e, value * 0.5); }
+                    for (int k = 0; k < 3 && pool.Count > 0; k++) { int index = (int)(random.Next() * pool.Count); var e = pool[index]; pool.RemoveAt(index); Emit("shot", u, e, big: true); AbilityDamage(u, e, value * 0.5); }
                 }
                 break;
             default: return false;
@@ -126,7 +127,7 @@ public sealed partial class CombatSimulation
         Hooks.Add(context, CombatHook.Death, (c, e) => {
             var u = e.Unit!;
             if (u.Entry.Coliseum?.PowerUp == "atomic") {
-                double damage = u.MaxHealth * (u.Coliseum.Atomic == 0 ? 0.1 : u.Coliseum.Atomic);
+                double damage = u.MaxHealth * (u.Coliseum.Atomic == 0 ? 0.1 : u.Coliseum.Atomic); c.Burst(u.Cell, 2, u.Team);
                 foreach (var t in EnemiesNear(u, u.Cell, 2)) c.Damage(u, t, damage);
             }
             var inf = u.Coliseum.Infection;
@@ -138,7 +139,7 @@ public sealed partial class CombatSimulation
         Hooks.Add(context, CombatHook.Lethal, (_, e) => {
             var u = e.Unit!; if (u.Line.Id != "col_bakemon" || u.Coliseum.AllOutUsed || u.Summoned) return;
             u.Coliseum.AllOutUsed = u.Coliseum.AllOut = true; u.Health = u.MaxHealth * 0.25;
-            Buff(u, CombatStat.AttackSpeed, 0.4, double.PositiveInfinity); u.AttackDamage += (u.Armor + u.MagicResist) * 0.3; u.InvulnerableUntil = Time + 0.5;
+            Buff(u, CombatStat.AttackSpeed, 0.4, double.PositiveInfinity); u.AttackDamage += (u.Armor + u.MagicResist) * 0.3; u.InvulnerableUntil = Time + 0.5; Emit("text", u, text: "All Out");
         });
     }
 }

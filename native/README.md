@@ -36,8 +36,9 @@ revival, PvE scaling, shadow/radiant item effects and Duos. Dragonlands adds 374
 battles and 137,414 cues covering all Copycat outcomes, traits, items, executes,
 Mirage and Duos. Arcane adds 673 battles and 271,670 cues across abilities,
 traits, contraband, augments and anomalies, including mana-boundary and lone
-Devour cases. The remaining sets' visual cues and the production renderer remain
-unfinished.
+Devour cases. Coliseum adds 672 battles and 283,616 cues across abilities,
+forms, Digi-Cores, traits and items. Galaxies/Underlords visual cues and the
+production renderer remain unfinished.
 
 ## Boundaries
 
