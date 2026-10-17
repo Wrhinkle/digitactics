@@ -673,6 +673,61 @@ DT.Sets.activate('reckoning','hyper');
   if(previous)DT.SET.hooks.onAnyCast=previous;else delete DT.SET.hooks.onAnyCast;
 }
 
+// Every Dragonlands custom ability with production mechanic callbacks and no traits/items hooks.
+DT.Sets.activate('dragonlands', 'hyper');
+const copyOutcomes = new Set();
+const dragonlandsKinds = [...new Set(DT.SHOP_LINES.map(l => l.type))].filter(kind => !kinds.includes(kind));
+for (const kind of dragonlandsKinds) for (const stage of [0, 1, 2]) for (const cols of [7, 14]) for (const variation of [0,1,2]) {
+  const pace = cols === 7 ? 'normal' : 'hyper'; DT.Sets.activate('dragonlands', pace);
+  const primary = DT.SHOP_LINES.find(l => l.type === kind);
+  const galaxy = null;
+  const critItem = Object.keys(DT.ITEMS).find(id => DT.ITEMS[id].component && DT.ITEMS[id].stats.crit);
+  let accepted = false;
+  for (let attempt = 0; attempt < 12 && !accepted; attempt++) {
+    const seed = 450000 + dragonlandsKinds.indexOf(kind) * 6 + stage * 2 + (cols === 14 ? 1 : 0) + variation * 50000 + attempt * 100000, pick = DT.makeRng(seed);
+    const entries = main => Array.from({ length: 5 }, (_, i) => ({ line: main && i === 0 ? primary.id : DT.SHOP_LINES[Math.floor(pick() * DT.SHOP_LINES.length)].id,
+      stage, c: i + 1, r: i === 0 ? 6 : 4 + i % 2, items: i === 0 && critItem ? [critItem] : [] }));
+    const sideA = entries(true), sideB = entries(false);
+    const cb = new DT.Combat({ units: sideA, noTraits: true, cols }, { units: sideB, noTraits: true, cols }, { seed, info: { mech: { galaxy } } });
+    const samples = [{ tick: 0, units: snapshots(cb) }]; let tick = 0;
+    while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+    if (!cb.events.some(e => e.type === 'cast' && e.at === 0)) continue;
+    for (const event of cb.events) if (event.type === 'text' && ['Blast','Explosion','Time Stop','Barrage','Restore'].includes(event.text)) copyOutcomes.add(event.text);
+    accepted = true;
+    const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+    fixtures.push({ name: `dragonlands-ability/${kind}/${stage}/${cols}/${variation}`, variant: `dragonlands/${pace}`, seed, cols,
+      sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, meeps: cb.teamFx.map(fx => fx.meep || 0),
+      setup: { sideA: { noTraits: true }, sideB: { noTraits: true }, galaxy } });
+  }
+  if (!accepted) throw new Error(`Unable to exercise Dragonlands ability ${kind}/${stage}/${cols}/${variation}`);
+}
+
+if(copyOutcomes.size!==5)throw new Error('Copycat fixtures must exercise all five random abilities');
+DT.Sets.activate('dragonlands', 'hyper');
+const dragonlandsHookItems = Object.keys(DT.ITEMS).filter(id => DT.ITEMS[id].hooks);
+const dragonItemCases = dragonlandsHookItems.flatMap(item => [0, 1, 2].map(stage => ({ item, stage }))).concat(Array.from({ length: 8 }, (_, n) => ({ item: null, stage: n % 3 })));
+for (const { item, stage } of dragonItemCases) {
+  const pace = stage === 0 ? 'normal' : 'hyper';
+  DT.Sets.activate('dragonlands', pace);
+  const cols = stage === 2 ? 14 : 7, seed = 490000 + fixtures.length, pick = DT.makeRng(seed);
+  const candidates = DT.SHOP_LINES;
+  const entries = () => Array.from({ length: 6 }, (_, i) => ({ line: candidates[Math.floor(pick() * candidates.length)].id,
+    stage, c: i, r: 4 + i % 2,
+    items: item ? (i === 0 ? [item, item] : [item]) : Array.from({ length: 3 }, () => dragonlandsHookItems[Math.floor(pick() * dragonlandsHookItems.length)]) }));
+  const sideA = entries(), sideB = entries();
+  const bank = stage === 0 ? 0 : stage === 1 ? 7 : 30;
+  const cb = new DT.Combat({ units: sideA, cols, noTraits:true, mech:{bank} }, { units: sideB, cols, noTraits:true, mech:{bank} }, { seed });
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+  fixtures.push({ name: `dragonlands-item/${item || 'mixed'}/${stage}/${seed}`, variant: `dragonlands/${pace}`, seed, cols,
+    sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, dragonRewards:cb.teamFx.map(f=>({gold:f.gold||0,axe:f.axe||0,investor:f.investor||0})),
+    setup:{sideA:{noTraits:true,dragonlands:{bank}},sideB:{noTraits:true,dragonlands:{bank}}},
+    traitCounts: cb.traitCounts });
+}
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

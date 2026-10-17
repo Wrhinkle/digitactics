@@ -130,6 +130,12 @@ internal static class CombatParity
             if (trace.TryGetProperty("pirateKills", out var pirateKills))
                 for (int team = 0; team < 2; team++)
                 { count++; if (combat.PirateKillCount(team) != pirateKills[team].GetInt32()) throw new InvalidOperationException($"Pirate count mismatch {name}"); }
+            if (trace.TryGetProperty("dragonRewards", out var dragonRewards))
+                for (int team = 0; team < 2; team++) {
+                    var actual = combat.DragonlandsRewards(team); var expected = dragonRewards[team]; count += 3;
+                    if (actual.Gold != expected.GetProperty("gold").GetInt32() || actual.Axe != expected.GetProperty("axe").GetInt32() || actual.Investor != expected.GetProperty("investor").GetInt32())
+                        throw new InvalidOperationException($"Dragonlands rewards mismatch {name}/{team}");
+                }
             double completedTime = combat.Time;
             combat.Step();
             count++;

@@ -110,6 +110,9 @@ to be a Vulkan renderer or the final game UI.
   All ten combat augments and shared Duos augments pass forty more fights;
   a dedicated test covers item listeners registered by summons during a cast.
   Offer grants and planning/economy rules remain pending.
+- Dragonlands: Copycat's five outcomes and all 20 held-item hook definitions pass
+  86 reference battles, including Golden Armor bank bonuses and reward counters.
+  Traits, Dragon trait counting, augments and planning rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

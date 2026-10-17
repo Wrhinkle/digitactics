@@ -133,7 +133,15 @@ The current executable is a migration workbench. It must not replace the public 
   item observers execute in the same event without invalidating dispatch iteration.
   Offer grants and planning/economy rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 23,540,363 assertions, compiles
+- Dragonlands: Copycat's five random outcomes and all 20 held-item hook
+  definitions are implemented, including Golden Armor's capped bank bonuses,
+  per-holder reward limits, axe stacks and investor deaths. Eighteen ability
+  fights require all five outcomes; 68 item fights cover all stages, duplicates,
+  mixed gear and bank values of 0, 7 and 30 (capped to 15 in combat). Team reward
+  counters are compared independently from unit state. Summoned items rebind hooks.
+  Traits, Dragon marked-trait counting, augments and planning rules remain pending.
+
+Latest verification: `./native/build.ps1 -Publish` passes 24,850,366 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
