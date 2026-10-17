@@ -61,19 +61,21 @@ public sealed class PlayerShop
         if (economy.Gold < Cost(slot)) return PurchaseStatus.Gold;
         return roster.CanAcceptPurchase(line, boardLocked) ? PurchaseStatus.Ready : PurchaseStatus.Bench;
     }
-    public bool Buy(int slot, bool boardLocked)
+    public bool Buy(int slot, bool boardLocked, Func<PlanningUnit, PlanningUnit>? onBuy = null,
+        Action<PlanningUnit, IReadOnlyList<PlanningUnit>>? onCombine = null)
     {
         if (CanBuy(slot, boardLocked) != PurchaseStatus.Ready) return false;
         string line = slots[slot]!;
         economy.Spend(Cost(slot));
         slots[slot] = null;
         var unit = create(line, 0);
+        if (onBuy is not null) unit = onBuy(unit);
         var extra = roster.AddToBench(unit) ? null : unit;
-        roster.Combine(boardLocked, giveItem, extra);
+        roster.Combine(boardLocked, giveItem, extra, onCombine: onCombine);
         ClearMaxed();
         return true;
     }
-    public bool Sell(int uid, bool boardLocked)
+    public bool Sell(int uid, bool boardLocked, Action<PlanningUnit>? onSell = null)
     {
         var entry = roster.Entries.FirstOrDefault(e => e.Unit.Id == uid);
         if (entry is null || entry.Unit.NoSell || boardLocked && entry.Spot.IsBoard) return false;
@@ -83,6 +85,7 @@ public sealed class PlayerShop
         economy.Credit(UnitValues.SellValue(line, entry.Unit.Stage));
         foreach (var item in entry.Unit.Items) giveItem(item);
         if (lines.ContainsKey(line.Id)) pool.Return(line.Id, UnitValues.Copies(line, entry.Unit.Stage));
+        onSell?.Invoke(entry.Unit);
         return true;
     }
     public void ClearMaxed()

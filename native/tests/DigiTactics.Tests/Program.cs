@@ -13,11 +13,11 @@ if (args.Contains("--mode-loot-only")) { LootParity.Run(root, catalog, true); re
 if (args.Contains("--loot-only")) { LootParity.Run(root, catalog); return; }
 if (args.Contains("--settlement-only")) { SettlementParity.Run(root, catalog); return; }
 if (args.Contains("--match-only")) { MatchStateParity.Run(root, catalog); return; }
-if (args.Contains("--planning-only")) { PlanningParity.Run(root, catalog); PlanningShopParity.Run(root, catalog); return; }
+if (args.Contains("--planning-only")) { ColiseumShopParity.Run(root, catalog); PlanningParity.Run(root, catalog); PlanningShopParity.Run(root, catalog); return; }
 if (args.Contains("--economy-only")) { EconomyParity.Run(root, catalog); return; }
 if (args.Contains("--choreography-only")) { ChoreographyParity.Run(root, catalog); return; }
 using var fixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests/fixtures/parity.json")));
-int assertions = ColiseumChoiceParity.Run(root, catalog) + ColiseumCoreParity.Run(root, catalog) + SpecialConsumableParity.Run(root, catalog) + CopyConsumableParity.Run(root, catalog) + ConsumableParity.Run(root, catalog) + RadiantOfferParity.Run(root, catalog) + PlanningItemParity.Run(root, catalog) + CustomOfferParity.Run(root, catalog) + RoundFlowParity.Run(root, catalog) + OfferParity.Run(root, catalog) + LootParity.Run(root, catalog, true) + LootParity.Run(root, catalog) + SettlementParity.Run(root, catalog) + MatchStateParity.Run(root, catalog) + EconomyParity.Run(root, catalog) + PlanningParity.Run(root, catalog) + PlanningShopParity.Run(root, catalog);
+int assertions = ColiseumShopParity.Run(root, catalog) + ColiseumChoiceParity.Run(root, catalog) + ColiseumCoreParity.Run(root, catalog) + SpecialConsumableParity.Run(root, catalog) + CopyConsumableParity.Run(root, catalog) + ConsumableParity.Run(root, catalog) + RadiantOfferParity.Run(root, catalog) + PlanningItemParity.Run(root, catalog) + CustomOfferParity.Run(root, catalog) + RoundFlowParity.Run(root, catalog) + OfferParity.Run(root, catalog) + LootParity.Run(root, catalog, true) + LootParity.Run(root, catalog) + SettlementParity.Run(root, catalog) + MatchStateParity.Run(root, catalog) + EconomyParity.Run(root, catalog) + PlanningParity.Run(root, catalog) + PlanningShopParity.Run(root, catalog);
 void Check(bool condition, string message)
 {
     assertions++;

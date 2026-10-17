@@ -4,13 +4,81 @@ using System.Globalization;
 namespace DigiTactics.Rules;
 
 public sealed record ColiseumPowerUp(string Id, string[] Tags);
-public sealed record ColiseumPlanningRules(ColiseumPowerUp[] PowerUps, Dictionary<string, string> UnitKinds);
+public sealed record ColiseumPlanningRules(ColiseumPowerUp[] PowerUps, Dictionary<string, string> UnitKinds, string[] Frontliners);
 
 /// <summary>Digi-Core inventory and choices share the same pending target and refund rules.</summary>
-public sealed class ColiseumPlanning(MatchState state)
+public sealed class ColiseumPlanning(MatchState state) : IMatchShopHooks
 {
     private ColiseumPlanningRules Rules => state.Rules.Coliseum!;
     private readonly MatchLoot loot = new(state);
+
+    public PlanningUnit Bought(MatchPlayer player, PlanningUnit unit, int slot, MatchPhase phase)
+    {
+        if (!state.Rules.Forms!.TryGetValue(unit.Line, out var forms) ||
+            unit.Mods is { } mods && mods.TryGetProperty("form", out var current) && Truthy(current)) return unit;
+        if (!player.IsHuman) return ApplyForm(unit, AiForm(player, forms));
+        if (player.Offer is null && phase == MatchPhase.Planning)
+        {
+            player.Mechanics.ColiseumFormUnitId = unit.Id;
+            player.Offer = new("col_form", forms.Select(f => f.Id).ToArray(), 0, null);
+        }
+        return unit;
+    }
+
+    public void Sold(MatchPlayer player, PlanningUnit unit)
+    {
+        if (unit.Mods is { } mods && mods.TryGetProperty("pu", out var power) && Truthy(power)) GiveCore(player);
+    }
+
+    public void Combined(MatchPlayer player, PlanningUnit unit, IReadOnlyList<PlanningUnit> sources)
+    {
+        var mods = new Dictionary<string, JsonElement>();
+        int powers = 0;
+        foreach (var source in sources)
+        {
+            if (source.Mods is not { } sourceMods) continue;
+            if (sourceMods.TryGetProperty("pu", out var power) && Truthy(power))
+            {
+                powers++;
+                mods.TryAdd("pu", power);
+            }
+            if (sourceMods.TryGetProperty("form", out var form) && Truthy(form)) mods.TryAdd("form", form);
+        }
+        var forms = state.Rules.Forms!.GetValueOrDefault(unit.Line);
+        var selected = mods.TryGetValue("form", out var choice) && choice.ValueKind == JsonValueKind.String
+            ? forms?.FirstOrDefault(f => f.Id == choice.GetString()) : null;
+        player.Roster.UpdateUnit(unit with { Mods = mods.Count == 0 ? null : JsonSerializer.SerializeToElement(mods),
+            BonusTraits = selected?.Trait is { } trait ? new() { [trait] = 1 } : forms is not null ? null : unit.BonusTraits });
+        for (int i = 1; i < powers; i++) GiveCore(player);
+    }
+
+    private FormDefinition AiForm(MatchPlayer player, FormDefinition[] forms)
+    {
+        var counts = TraitRules.Count(state.Rules, player.Roster.Board.Select(e => new CombatEntry(e.Unit.Line,
+            e.Unit.Stage, e.Spot.Column, e.Spot.Row, Items: e.Unit.Items, BonusTraits: e.Unit.BonusTraits)), player.Augments.ToArray());
+        FormDefinition? best = null;
+        double bestScore = double.NegativeInfinity;
+        foreach (var form in forms)
+        {
+            double score = state.Random.Next();
+            if (form.Trait is { } trait)
+            {
+                int count = counts.GetValueOrDefault(trait);
+                score += count + (state.Rules.Traits.Single(t => t.Id == trait).Breakpoints.Contains(count + 1) ? 3 : 0);
+            }
+            if (form.Id == "ballista" && player.Roster.Board.Count(e => Rules.Frontliners.Contains(e.Unit.Line)) < 2) score += 2;
+            if (score > bestScore) { bestScore = score; best = form; }
+        }
+        return best ?? throw new InvalidDataException("A form-bearing unit has no forms.");
+    }
+
+    private static PlanningUnit ApplyForm(PlanningUnit unit, FormDefinition form)
+    {
+        var mods = unit.Mods?.EnumerateObject().ToDictionary(p => p.Name, p => p.Value) ?? [];
+        mods["form"] = JsonSerializer.SerializeToElement(form.Id);
+        return unit with { Mods = JsonSerializer.SerializeToElement(mods),
+            BonusTraits = form.Trait is null ? unit.BonusTraits : new() { [form.Trait] = 1 } };
+    }
 
     public string[] FormOptions(MatchPlayer player)
     {
@@ -24,10 +92,7 @@ public sealed class ColiseumPlanning(MatchState state)
         player.Mechanics.ColiseumFormUnitId = null;
         var form = unit is null ? null : state.Rules.Forms!.GetValueOrDefault(unit.Line)?.FirstOrDefault(f => f.Id == id);
         if (unit is null || form is null) return;
-        var mods = unit.Mods?.EnumerateObject().ToDictionary(p => p.Name, p => p.Value) ?? [];
-        mods["form"] = JsonSerializer.SerializeToElement(id);
-        player.Roster.UpdateUnit(unit with { Mods = JsonSerializer.SerializeToElement(mods),
-            BonusTraits = form.Trait is null ? unit.BonusTraits : new() { [form.Trait] = 1 } });
+        player.Roster.UpdateUnit(ApplyForm(unit, form));
     }
 
     public string[] GambitOptions(MatchPlayer player)

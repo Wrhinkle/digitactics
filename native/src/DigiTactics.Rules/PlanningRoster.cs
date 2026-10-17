@@ -114,8 +114,8 @@ public sealed class PlanningRoster
             foreach (var copy in copies)
                 if (copy.Spot.Valid) Set(copy.Spot, null); else extra = null;
             Set(anchor.Spot.Valid ? anchor.Spot : UnitSpot.Bench(FreeBenchSlot), up);
-            evolved.Add(up);
             onCombine?.Invoke(up, copies.Select(e => e.Unit).ToArray());
+            evolved.Add(Entries.FirstOrDefault(e => e.Unit.Id == up.Id)?.Unit ?? up);
         }
         if (extra is not null && !AddToBench(extra) && !discardOverflow) throw new InvalidOperationException("Unplaceable merge overflow.");
         return evolved;

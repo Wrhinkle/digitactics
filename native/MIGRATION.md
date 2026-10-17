@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 135,632,637 assertions.
+Latest verification: the native test suite passes 137,447,009 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -660,5 +660,29 @@ includes all Coliseum unit lines, invalid and removed targets, trait replacement
 modifier preservation, rerolls, fractional thresholds, full inventories, invalid
 indices, direct handler fallbacks, complete state after choices and RNG. Original
 Coliseum form/gambit handlers also replace mocks in the general offer exporters.
-The purchase/round/combat hooks that create and evolve these choices, AI selection,
+The round/combat hooks that create and evolve these choices, broader AI behavior,
 other mode offers and production match integration remain pending.
+
+## Coliseum roster hooks
+
+`PlanningShopCommands` now routes match purchases, sales and purchase-triggered
+merges through required `IMatchShopHooks`. Purchase hooks run before bench placement
+and can return a modified unit. Sale hooks run after gold, item and pool returns.
+Merge results now include hook-updated unit records.
+
+`ColiseumPlanning` implements these hooks. Human purchases open form choices only
+during planning when no offer is active. AI purchases score each form against the
+current board's trait counts and breakpoints, with Labramon's front-line preference.
+Catalog schema 24 exports that front-line classification. Merges preserve the first
+truthy power-up and form, discard unrelated modifiers, restore stance traits and
+refund extra cores. Sales return a held core, including inventory-full storage.
+The Arena count modifier now skips unknown bonus-trait keys like the original.
+
+Eight 1,200-command reference traces use the original shop, offer, movement and
+mechanic handlers for human/AI players in both paces. Their 1,814,372 checks cover
+purchases, refusals, phases, form selection, swaps, merges, item overflow, sales,
+core refunds/storage, ordered rosters, pending offers, pool reservations and RNG.
+The match command layer is ready for a composed hook dispatcher; low-level shop
+methods remain available for isolated economy fixtures. Round/combat hooks, other
+mode shop mechanics, the global dispatcher and production desktop integration are
+still pending.

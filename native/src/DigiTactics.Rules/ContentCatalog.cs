@@ -19,7 +19,7 @@ public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
         var catalog = JsonSerializer.Deserialize<ContentCatalog>(File.ReadAllText(path),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
             ?? throw new InvalidDataException("Missing content catalog.");
-        if (catalog.SchemaVersion != 23 || catalog.Variants.Length == 0)
+        if (catalog.SchemaVersion != 24 || catalog.Variants.Length == 0)
             throw new InvalidDataException("Unsupported or empty content catalog.");
         foreach (var rules in catalog.Variants)
         {
