@@ -1265,6 +1265,40 @@ for(const set of ['underlords','underlords_ko'])for(const kind of ulCastKinds)fo
 Object.assign(DT.Combat.prototype,originalHooks);
 
 
+
+const ulMechanicCoverage=new Set();
+for(const set of ['underlords','underlords_ko']){
+  DT.Sets.activate(set,'hyper');const heroes=DT.SHOP_LINES.map(l=>l.id);
+  for(const hero of heroes)for(const stage of [0,1,2])for(const cols of [7,14]){
+    const pace=cols===7?'hyper':'normal';DT.Sets.activate(set,pace);
+    let accepted=false;
+    for(let attempt=0;attempt<30&&!accepted;attempt++){
+      const seed=1700000+fixtures.length+attempt*10000,pick=DT.makeRng(seed);
+      const entries=main=>Array.from({length:6},(_,i)=>({line:main&&i===0?hero:heroes[Math.floor(pick()*heroes.length)],stage,c:i,r:4+i%3,items:[]}));
+      const a=entries(true),b=entries(false),mech={ulDuel:stage*15};
+      const cb=new DT.Combat({units:a,cols,noTraits:true,mech},{units:b,cols,noTraits:true,mech},{seed});
+      const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+      while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+      const mustCast=DT.LINE[hero].type!=='ul_passive'&&!(hero==='ul_lifestealer'&&stage<2);
+      if(mustCast&&!cb.events.some(e=>e.type==='cast'&&e.at===0))continue;
+      for(const u of cb.units){
+        for(const key of ['ulGraveDone','ulEclipse','ulLivingArmor','ulStone','ulMeta','ulShifted','ulPois'])if(u.state[key])ulMechanicCoverage.add(key);
+        if(u.summoned)ulMechanicCoverage.add(u.line.id);
+      }
+      const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items}));
+      fixtures.push({name:`underlords-mechanic/${set}/${hero}/${stage}/${cols}`,variant:`${set}/${pace}`,seed,cols,
+        sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+        underlordsRewards:[0,1].map(team=>({kills:cb.units.filter(u=>u.team===team&&!u.summoned&&u.traits.includes('BEAST')).reduce((n,u)=>n+(u.state.ulKills||0),0),
+          gold:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.ulGold||0),0),duel:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.ulDuelWin||0),0)})),
+        setup:{sideA:{noTraits:true,underlords:mech},sideB:{noTraits:true,underlords:mech}}});accepted=true;
+    }
+    if(!accepted)throw new Error(`Underlords hero not exercised: ${set}/${hero}/${stage}/${cols}`);
+  }
+}
+for(const key of ['ulGraveDone','ulEclipse','ulLivingArmor','ulStone','ulMeta','ulShifted','ulPois','ul_s_ward','ul_s_bear','ul_s_treant','ul_s_serpent','ul_s_wolf','ul_meepo'])
+  if(!ulMechanicCoverage.has(key))throw new Error(`Underlords mechanic not exercised: ${key}`);
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

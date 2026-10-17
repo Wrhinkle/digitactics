@@ -163,6 +163,13 @@ internal static class CombatParity
                         count++; if (actual.BountyGold != bounty.GetInt32()) throw new InvalidOperationException($"Arcane bounty mismatch {name}/{team}");
                     }
                 }
+            if (trace.TryGetProperty("underlordsRewards", out var underlordsRewards))
+                for (int team = 0; team < 2; team++) {
+                    count += 3;
+                    var actual = combat.UnderlordsRewards(team); var expected = underlordsRewards[team];
+                    if (actual.Kills != expected.GetProperty("kills").GetDouble() || actual.Gold != expected.GetProperty("gold").GetDouble() || actual.Duel != expected.GetProperty("duel").GetDouble())
+                        throw new InvalidOperationException($"Underlords rewards mismatch {name}/{team}");
+                }
             double completedTime = combat.Time;
             combat.Step();
             count++;

@@ -1,16 +1,10 @@
 namespace DigiTactics.Rules;
 
-internal sealed class UnderlordsUnitState
-{
-    internal Dictionary<string, double> EffectUntil { get; } = [];
-    internal bool Metamorphosed;
-    internal double EmpowerUntil;
-}
-
 public sealed partial class CombatSimulation
 {
     private bool IsUnderlords => rules.Id.StartsWith("underlords/", StringComparison.Ordinal) || rules.Id.StartsWith("underlords_ko/", StringComparison.Ordinal);
     private static readonly HashSet<string> UnderlordsAbilities = [
+        "ul_napalm", "ul_frostbite", "ul_attendants", "ul_frostshield", "ul_summon", "ul_quill", "ul_bladefury", "ul_duel", "ul_aphotic", "ul_acid", "ul_axes", "ul_rage", "ul_shapeshift", "ul_wards", "ul_leech", "ul_exorcism", "ul_doom", "ul_refraction", "ul_nethertoxin", "ul_gaze", "ul_wraithfire",
         "ul_passive", "ul_shuriken", "ul_shadowwave", "ul_empower", "ul_purge", "ul_haze", "ul_scatter", "ul_punch", "ul_terror",
         "ul_chaosbolt", "ul_grip", "ul_ghostship", "ul_poof", "ul_hook", "ul_scream", "ul_charge", "ul_sleight", "ul_purify",
         "ul_dagger", "ul_metamorph", "ul_laguna", "ul_arrow", "ul_shieldcrash", "ul_fadebolt", "ul_godstrength", "ul_ravage",
@@ -152,7 +146,7 @@ public sealed partial class CombatSimulation
                 var illuminated = LineTargets(u, target).ToList();
                 foreach (var e in EnemiesNear(u, target.Cell, 1)) if (!illuminated.Contains(e)) illuminated.Add(e);
                 foreach (var e in illuminated) AbilityDamage(u, e, value); break;
-            default: return false;
+            default: return CastUnderlordsTimedAbility(u, target, value);
         }
         return true;
     }
