@@ -376,8 +376,8 @@ remain pending.
 `PlanningItems` now equips and combines items using the complete exported recipe
 map, preserves rejection order and combat board locks, handles globals and
 inventory swaps, and enforces duplicate-trait, no-item and Underlords slot rules.
-Consumables dispatch through a required handler; concrete consumable effects are
-still pending. Roster updates retain unit IDs and ordered positions.
+Consumables use native transformations where implemented and delegate remaining
+mechanics through a required handler. Roster updates retain unit IDs and ordered positions.
 
 Reckoning's Radiant Blessing, Radiant Armory and Tome now use native options and
 choice effects. Radiant options prefer held base items; upgrades replace the first
@@ -389,3 +389,19 @@ across all 22 variants. Six original-handler Radiant/Tome traces add 6,486 check
 for selection, exclusions, upgrade order, inventory limits and RNG. The item trace
 instruments consumable/veto callbacks to verify dispatch, not consumable effects.
 Other custom offers, concrete match hooks and desktop integration remain pending.
+
+## Inventory consumable transformations
+
+`ModeItemConsumables` implements every mode's remover and reforger, plus the
+Gizmos Overclock Kit. The match-backed `PlanningItems` constructor runs these
+handlers before delegating remaining consumables. Inventory capacity is checked
+before consumption; item returns retain order. Reforging preserves each mode's
+component, emblem, artifact, radiant, contraband-tier and special-item rules,
+including random-stream advancement and empty candidate lists.
+
+48 traces execute the original consumable handlers with three seeds across both
+paces of all eight affected sets. The 132,768 checks cover all eligible held item
+IDs, empty equipment, multiple equipped items, full inventories, result codes,
+returned items and RNG. Export also checks that Gizmos radiant flags still match
+the catalog's radiant category. Copy consumables and other mode mechanics remain
+pending, as does complete desktop match integration.

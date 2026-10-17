@@ -7,8 +7,9 @@ public interface IMatchItemHooks
 }
 
 /// <summary>Inventory commands preserve rejection order and only combine components on a unit.</summary>
-public sealed class PlanningItems(Ruleset rules, IMatchItemHooks hooks)
+public sealed class PlanningItems(Ruleset rules, IMatchItemHooks hooks, ModeItemConsumables? consumables = null)
 {
+    public PlanningItems(MatchState state, IMatchItemHooks hooks) : this(state.Rules, hooks, new(state)) { }
     private readonly Dictionary<string, ItemDefinition> items = rules.Items.ToDictionary(i => i.Id);
     private readonly Dictionary<string, UnitLine> lines = rules.Lines.Concat(rules.ExtraLines).ToDictionary(l => l.Id);
 
@@ -32,7 +33,7 @@ public sealed class PlanningItems(Ruleset rules, IMatchItemHooks hooks)
         string id = player.Items[itemIndex];
         if (!items.TryGetValue(id, out var item)) return "none";
         var unit = entry.Unit;
-        if (item.Consumable) return hooks.UseConsumable(player, itemIndex, unit);
+        if (item.Consumable) return consumables?.TryUse(player, itemIndex, unit) ?? hooks.UseConsumable(player, itemIndex, unit);
         if (item.Category == "global") { player.Items.RemoveAt(itemIndex); player.Globals.Add(id); return id; }
         if (item.Emblem is { } trait && Traits(unit).Contains(trait)) return "hasTrait";
         if (!HoldsItems(unit)) return "cantHold";
