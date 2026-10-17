@@ -24,6 +24,7 @@ public sealed class MatchPlayer
     public int? LastOpponent { get; set; }
     public int? Team { get; internal set; }
     public PlayerEconomy Economy { get; }
+    public int TeamBonus { get; set; }
     public PlanningRoster Roster { get; }
     public PlayerShop Shop { get; }
     public List<string> Items { get; } = [];

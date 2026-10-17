@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 153,375,892 assertions.
+Latest verification: the native test suite passes 156,820,580 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -1289,3 +1289,27 @@ item returns and shop metadata. Twenty real battles and 2,400 reward scenarios a
 also pass after the direct-use API change.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+## Shared match capacity and movement
+
+`MatchPlacement` computes live team capacity from level, persistent `TeamBonus`,
+board equipment, Gizmos New Recruit, Underlords Tamer presence and roster globals,
+Auto Chess Master Key and Bigger Galaxy. Power-derived Tamer capacity requires a
+valid selected Tamer power and an on-board Tamer. Duplicate global items stack.
+Movement delegates to the existing roster command using this live capacity, so
+swaps and removal of size-bonus holders trigger the correct excess-unit handling.
+Human combat board locks remain enforced. Current modes define no extra canPlace
+listeners. The AI arrangement base intentionally excludes equipment and capacity
+listeners, matching the original arrangement algorithm's separate selection pass.
+
+2,112 reference traces execute 50,688 moves across all 22 variants and pass
+1,350,706 comparisons. They cover persistent bonuses, team-size equipment, Tamers,
+Dragon slot costs, full benches, swaps, capacity loss, ordered eviction and human
+combat locks. Run with `--match-placement-only`.
+
+The shop dispatcher also now applies Higher Class of Criminal in Underlords
+Knockout. The expanded 44-trace shop fixture includes Knockout's global ownership
+changes/duplicates and passes all 582,288 comparisons. Production controller
+registration and the hooks that award persistent team bonuses remain pending.
+
+Validation: all 156,820,580 full-suite checks and packaged BRUTAL smoke checks passed.

@@ -2,7 +2,7 @@ const fs=require('node:fs'),path=require('node:path'),zlib=require('node:zlib'),
 for(const set of DT.Sets.pickable())for(const pace of ['normal','hyper'])for(const seed of [17,91]){
  DT.Sets.activate(set.id,pace);const R=DT.HYPER,g=Object.create(DT.Game.prototype);
  Object.assign(g,{R,set:DT.SET,uid:0,rng:DT.makeRng(seed),phase:'planning',stage:1,round:1,mech:{galaxy:'server'},pool:Object.fromEntries(DT.SHOP_LINES.map(l=>[l.id,DT.POOL_SIZE[l.tier]]))});
- const setup=(p,n)=>{p.augs=set.id==='gizmos'?(n%3===0?['giz_a_highend','giz_a_ticket']:n%3===1?['giz_a_ticket']:[]):[];p.globals=set.id==='autochess'?Array(n%3).fill('ac_r_recruiter'):set.id==='underlords'?Array(n%3).fill('ul_g_criminal'):[];p.mech.doots=n%5*5;p.mech.starShop=n%4===0;};
+ const setup=(p,n)=>{p.augs=set.id==='gizmos'?(n%3===0?['giz_a_highend','giz_a_ticket']:n%3===1?['giz_a_ticket']:[]):[];p.globals=set.id==='autochess'?Array(n%3).fill('ac_r_recruiter'):(set.id==='underlords'||set.id==='underlords_ko')?Array(n%3).fill('ul_g_criminal'):[];p.mech.doots=n%5*5;p.mech.starShop=n%4===0;};
  const players=g.players=Array.from({length:2},(_,id)=>({id,isHuman:id===0,gold:500,level:R.xp?R.xp.startLevel||1:R.levelByStage[1],xp:0,freeRolls:0,board:{},bench:Array(9).fill(null),shop:Array(R.shopSize||5).fill(null),items:[],globals:[],mech:{},augs:[],boardUnits(){return Object.values(this.board);},allUnits(){return this.boardUnits().concat(this.bench.filter(Boolean));},freeBenchSlot(){return this.bench.indexOf(null);}}));
  for(const p of players)setup(p,p.id+3);for(const p of players)g.refreshShop(p);
  const snap=()=>structuredClone({pool:g.pool,players:players.map(p=>({gold:p.gold,rolls:p.freeRolls,shop:p.shop,meta:p.shopMeta,seen:!!p.mech.partnerSeen,star:!!p.mech.starShop}))});

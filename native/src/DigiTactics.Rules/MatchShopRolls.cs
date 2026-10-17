@@ -26,7 +26,7 @@ public sealed class MatchShopRolls
         {
             if (owner.mode == "gizmos" && player.Augments.Contains("giz_a_highend")) request = request with { Level = request.Level + 1 };
             foreach (var id in player.Globals)
-                if (owner.mode == "autochess" && id == "ac_r_recruiter" || owner.mode == "underlords" && id == "ul_g_criminal")
+                if (owner.mode == "autochess" && id == "ac_r_recruiter" || owner.mode is "underlords" or "underlords_ko" && id == "ul_g_criminal")
                     request = request with { Level = Math.Min(10, request.Level + 1) };
             if (owner.mode == "galaxies" && owner.state.Galaxy == "server") request = request with { Size = 6 };
             return dragons?.BeforeRoll(request) ?? request;

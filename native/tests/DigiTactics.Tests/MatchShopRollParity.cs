@@ -13,7 +13,7 @@ internal static class MatchShopRollParity
             void Setup(MatchPlayer p,int n)
             {
                 p.Augments.Clear();if(mode=="gizmos"){if(n%3==0)p.Augments.Add("giz_a_highend");if(n%3<2)p.Augments.Add("giz_a_ticket");}
-                p.Globals.Clear();if(mode is "autochess" or "underlords")p.Globals.AddRange(Enumerable.Repeat(mode=="autochess"?"ac_r_recruiter":"ul_g_criminal",n%3));
+                p.Globals.Clear();if(mode is "autochess" or "underlords" or "underlords_ko")p.Globals.AddRange(Enumerable.Repeat(mode=="autochess"?"ac_r_recruiter":"ul_g_criminal",n%3));
                 p.Mechanics.DragonDoots=n%5*5;p.Mechanics.DragonStarShop=n%4==0;
             }
             var state=new MatchState(rules,trace.GetProperty("seed").GetUInt32(),[new("Player",true),new("AI",false)],initialize:s=>
