@@ -36,6 +36,11 @@ internal static class CombatParity
                     Compare("atkCd", unit.AttackCooldown); Compare("moveCd", unit.MoveCooldown);
                     Compare("stun", unit.Stun); Compare("lock", unit.CastLock);
                     Compare("dealt", unit.Dealt); Compare("taken", unit.Taken); Compare("healed", unit.Healed); Compare("nAtk", unit.Attacks);
+                    Compare("maxHp", unit.MaxHealth); Compare("ad", unit.AttackDamage); Compare("as", unit.AttackSpeed);
+                    Compare("ap", unit.AbilityPower); Compare("armor", unit.Armor); Compare("mr", unit.MagicResist); Compare("maxMana", unit.MaxMana);
+                    count++;
+                    if (!unit.Items.SequenceEqual(expected.GetProperty("items").EnumerateArray().Select(x => x.GetString()!)))
+                        throw new InvalidOperationException($"Combat {name}: equipment/RNG mismatch.");
                     count += 2;
                     if (unit.Alive != expected.GetProperty("alive").GetBoolean()) throw new InvalidOperationException($"Combat {name}: life state mismatch.");
                     int? targetId = expected.GetProperty("target").ValueKind == JsonValueKind.Null ? null : expected.GetProperty("target").GetInt32();

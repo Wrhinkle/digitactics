@@ -23,16 +23,22 @@ The current executable is a migration workbench. It must not replace the public 
   target selection, cooldowns, HP/mana/shields and damage totals. Equipment and
   set hooks are deliberately disabled in these reference cases.
 
-Latest verification: `./native/build.ps1 -Publish` passes 419,579 assertions, compiles
+- Equipment catalog, additive stats/passives, deterministic Thief Glove rolls,
+  attack/ability crits, dodge, on-hit effects, lifelines, burn/wounds, regeneration,
+  auras and timed shared passives. Another 116 reference fights cover every shared
+  completed item and mixed loadouts in all 22 variants. Item-specific hooks remain
+  disabled; the native equipment layer does not yet execute those hooks.
+
+Latest verification: `./native/build.ps1 -Publish` passes 1,309,931 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Integrate equipment stats and passive effects, effect timers, full combat event
-   metadata and stable hook dispatch into the verified combat kernel. Extend the
-   reference battles to enable real items and hooks before claiming full combat parity.
+1. Integrate hook timers, full combat event metadata and stable hook dispatch into
+   the verified combat kernel. Extend reference battles to enable item/set hooks
+   before claiming full combat parity.
 2. Set-defined ability dispatch; port each ruleset with explicit coverage
    and deterministic full-match trace comparisons.
 3. Full match state and commands: planning board, economy, round progression, AI,

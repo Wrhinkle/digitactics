@@ -14,18 +14,19 @@ public sealed partial class CombatSimulation
         double value = UnitValues.AbilityValue(unit.Line, unit.Entry.Stage) * unit.AbilityPower / 100;
         int radius = unit.Line.Ability.Radius == 0 ? 1 : unit.Line.Ability.Radius;
         Emit("cast", unit);
+        AfterCast(unit);
         switch (unit.Line.Ability.Kind)
         {
-            case "nuke": Damage(unit, target, value, DamageKind.Magic); break;
+            case "nuke": AbilityDamage(unit, target, value); break;
             case "aoe":
-                foreach (var enemy in EnemiesNear(unit, target.Cell, radius)) Damage(unit, enemy, value, DamageKind.Magic);
+                foreach (var enemy in EnemiesNear(unit, target.Cell, radius)) AbilityDamage(unit, enemy, value);
                 break;
             case "stun":
-                target.Stun = Math.Max(target.Stun, 1.5 + unit.Entry.Stage * 0.25);
-                Damage(unit, target, value, DamageKind.Magic); break;
+                StunUnit(target, 1.5 + unit.Entry.Stage * 0.25);
+                AbilityDamage(unit, target, value); break;
             case "slam":
                 foreach (var enemy in EnemiesNear(unit, unit.Cell, radius))
-                { enemy.Stun = Math.Max(enemy.Stun, 1); Damage(unit, enemy, value, DamageKind.Magic); }
+                { StunUnit(enemy, 1); AbilityDamage(unit, enemy, value); }
                 break;
             case "shield":
                 unit.Shield += value; Emit("shield", unit);
@@ -40,16 +41,16 @@ public sealed partial class CombatSimulation
                 {
                     var enemies = units.Where(e => e.Alive && e.Team != unit.Team).ToArray();
                     if (enemies.Length == 0) break;
-                    Damage(unit, enemies[(int)(random.Next() * enemies.Length)], value, DamageKind.Magic);
+                    AbilityDamage(unit, enemies[(int)(random.Next() * enemies.Length)], value);
                 }
                 break;
             case "drain":
                 double total = 0;
                 var hits = unit.Line.Ability.Radius > 0 ? EnemiesNear(unit, target.Cell, unit.Line.Ability.Radius) : [target];
-                foreach (var enemy in hits) total += Damage(unit, enemy, value, DamageKind.Magic);
+                foreach (var enemy in hits) total += AbilityDamage(unit, enemy, value);
                 Heal(unit, total * 0.6); break;
             case "weaken":
-                Damage(unit, target, value, DamageKind.Magic);
+                AbilityDamage(unit, target, value);
                 if (target.Alive) { target.Weakness = Math.Max(target.WeakUntil > Time ? target.Weakness : 0, 0.3); target.WeakUntil = Time + 4; }
                 break;
             case "rally":
@@ -57,26 +58,26 @@ public sealed partial class CombatSimulation
                     .Take(unit.Entry.Stage >= 2 ? 3 : 2).ToArray())
                 { ally.Shield += value; ally.SpeedBuffs.Add(new(0.3, Time + 4)); Emit("shield", ally); }
                 break;
-            case "execute": Damage(unit, target, target.Health < target.MaxHealth * 0.5 ? value * 2 : value, DamageKind.Magic); break;
+            case "execute": AbilityDamage(unit, target, target.Health < target.MaxHealth * 0.5 ? value * 2 : value); break;
             case "dash":
                 var weakest = units.Where(e => e.Alive && e.Team != unit.Team).OrderBy(e => e.Health).FirstOrDefault();
                 if (weakest is null) break;
                 if (unit.Cell.DistanceTo(weakest.Cell) > 1 && FreeNeighbor(weakest, unit.Cell) is { } cell)
                 { Emit("leap", unit); Place(unit, cell); }
-                unit.Target = weakest; Damage(unit, weakest, value, DamageKind.Magic); break;
+                unit.Target = weakest; AbilityDamage(unit, weakest, value); break;
             case "chain":
                 var hit = new HashSet<int>();
                 CombatUnit? current = target;
                 for (int i = 0; i <= unit.Entry.Stage + 2 && current is not null; i++)
                 {
-                    hit.Add(current.Id); Damage(unit, current, value, DamageKind.Magic); value *= 0.8;
+                    hit.Add(current.Id); AbilityDamage(unit, current, value); value *= 0.8;
                     var origin = current.Cell;
                     current = units.Where(e => e.Alive && e.Team != unit.Team && !hit.Contains(e.Id) && origin.DistanceTo(e.Cell) <= 3)
                         .OrderBy(e => origin.DistanceTo(e.Cell)).FirstOrDefault();
                 }
                 break;
             case "line":
-                foreach (var enemy in LineTargets(unit, target)) Damage(unit, enemy, value, DamageKind.Magic);
+                foreach (var enemy in LineTargets(unit, target)) AbilityDamage(unit, enemy, value);
                 break;
             default: throw new NotSupportedException(unit.Line.Ability.Kind);
         }

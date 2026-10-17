@@ -1,6 +1,6 @@
 namespace DigiTactics.Rules;
 
-/// <summary>Fixed-tick combat kernel. Set hooks and equipment are integrated separately during migration.</summary>
+/// <summary>Fixed-tick combat kernel. Equipment is compiled per unit; set hooks are integrated separately during migration.</summary>
 public sealed partial class CombatSimulation
 {
     public const double Tick = 1.0 / 30;
@@ -26,6 +26,8 @@ public sealed partial class CombatSimulation
         random = new(seed); this.overtimeStart = overtimeStart; this.timeLimit = timeLimit;
         Units = units.AsReadOnly(); Events = events.AsReadOnly();
         var lines = rules.Lines.ToDictionary(l => l.Id);
+        var items = rules.Items.ToDictionary(i => i.Id);
+        var thiefPool = rules.CoreItems.Where(id => !items[id].Passives.TryGetValue("thief", out var flag) || !flag.GetBoolean()).ToArray();
         for (int team = 0; team < 2; team++) foreach (var entry in team == 0 ? sideA : sideB)
         {
             var cell = team == 0 ? new HexCell(entry.Column, entry.Row) : new(columns - 1 - entry.Column, 7 - entry.Row);
@@ -35,7 +37,13 @@ public sealed partial class CombatSimulation
             if (!SupportedAbilities.Contains(line.Ability.Kind))
                 throw new NotSupportedException($"Ability {line.Ability.Kind} has not been migrated yet.");
             var unit = new CombatUnit(units.Count, entry, line, team, cell, random.Next());
+            unit.Equipment.Apply(unit, items, thiefPool, random);
             units.Add(unit); occupancy[index] = unit;
+        }
+        foreach (var unit in units)
+        {
+            if (unit.Equipment.Crown) unit.Shield += unit.MaxHealth * 0.25;
+            unit.Health = unit.MaxHealth; unit.Mana = Math.Min(unit.MaxMana - 1, unit.Mana);
         }
         CheckEnd();
     }
@@ -57,6 +65,9 @@ public sealed partial class CombatSimulation
     private void Update(CombatUnit unit)
     {
         unit.SpeedBuffs.RemoveAll(b => b.Until <= Time);
+        if (unit.Equipment.Regen != 0) Heal(unit, unit.MaxHealth * unit.Equipment.Regen * Tick, true);
+        Passives(unit);
+        if (!unit.Alive) return;
         unit.AttackCooldown -= Tick; unit.MoveCooldown -= Tick;
         if (unit.Stun > 0) { unit.Stun -= Tick; return; }
         if (unit.CastLock > 0) { unit.CastLock -= Tick; return; }
@@ -110,35 +121,67 @@ public sealed partial class CombatSimulation
 
     private void Attack(CombatUnit unit, CombatUnit target)
     {
-        unit.AttackCooldown = 1 / (unit.AttackSpeed * Math.Min(1 + unit.SpeedBuffs.Sum(b => b.Value), 4));
+        var p = unit.Equipment;
+        unit.AttackCooldown = 1 / (unit.AttackSpeed * Math.Min(1 + p.Rage * unit.RageStacks + unit.SpeedBuffs.Sum(b => b.Value), 4));
         Emit("attack", unit, target);
-        unit.Mana = Math.Min(unit.MaxMana, unit.Mana + 10); unit.Attacks++;
-        Damage(unit, target, unit.AttackDamage, DamageKind.Physical);
+        unit.Mana = Math.Min(unit.MaxMana, unit.Mana + 10 + p.Shojin); unit.Attacks++;
+        if (p.Rage != 0) unit.RageStacks++;
+        unit.AttackDamage += unit.BaseAttackDamage * p.Kraken;
+        if (p.Titan) TitanStack(unit);
+        if (target.Equipment.Titan) TitanStack(target);
+        if (target.Equipment.Thorns != 0 && !(target.ThornCooldown > Time))
+        {
+            target.ThornCooldown = Time + 1.5;
+            foreach (var enemy in EnemiesNear(target, target.Cell, 1)) Damage(target, enemy, target.Equipment.Thorns, DamageKind.Magic);
+        }
+        if (target.Dodge > 0 && random.Next() < target.Dodge) { Emit("dodge", target); return; }
+        double amount = unit.AttackDamage;
+        if (unit.CriticalChance > 0 && random.Next() < unit.CriticalChance) amount *= unit.CriticalDamage;
+        if (p.Shred != 0) { target.ShredUntil = Time + 3; target.Shred = p.Shred; }
+        Damage(unit, target, amount, DamageKind.Physical);
+        if (p.Split != 0)
+        {
+            var other = EnemiesNear(unit, target.Cell, 2).Where(e => e != target).OrderBy(e => target.Cell.DistanceTo(e.Cell)).FirstOrDefault();
+            if (other is not null) Damage(unit, other, amount * p.Split, DamageKind.Physical);
+        }
+        if (p.Volt != 0 && unit.Attacks % 3 == 0)
+        {
+            var pool = units.Where(e => e.Alive && e.Team != unit.Team).ToList();
+            for (int k = 0; k < 3 && pool.Count > 0; k++)
+            {
+                int index = (int)(random.Next() * pool.Count); var enemy = pool[index]; pool.RemoveAt(index);
+                Damage(unit, enemy, p.Volt, DamageKind.Magic);
+            }
+        }
     }
 
-    private double Damage(CombatUnit source, CombatUnit target, double amount, DamageKind kind)
+    private double Damage(CombatUnit source, CombatUnit target, double amount, DamageKind kind, bool isBurn = false)
     {
         if (!target.Alive) return 0;
-        var request = new DamageRequest(new(source.Line.Attribute, Weakened: source.WeakUntil > Time, Weakness: source.Weakness),
-            new(target.Line.Attribute, target.MaxHealth, target.Armor, target.MagicResist, target.Shield, target.Mana, target.MaxMana),
-            kind, amount, source.Cell.DistanceTo(target.Cell), Time > overtimeStart ? 1 + (Time - overtimeStart) * 0.2 : 1);
+        var request = new DamageRequest(new(source.Line.Attribute, source.Equipment.Amp, source.WeakUntil > Time, source.Weakness, GiantSlayer: source.Equipment.Slayer, GuardBreaker: source.Equipment.GuardBreaker),
+            new(target.Line.Attribute, target.MaxHealth, target.Armor, target.MagicResist, target.Shield, target.Mana, target.MaxMana, target.Equipment.Reduction, target.Gargoyle, target.VeilUntil > Time ? target.Veil : 0, target.ShredUntil > Time ? target.Shred : 0, target.BurnUntil > Time),
+            kind, amount, source.Cell.DistanceTo(target.Cell), Time > overtimeStart ? 1 + (Time - overtimeStart) * 0.2 : 1, IsBurn: isBurn);
         var result = DamageRules.Resolve(request);
         target.Shield -= result.ShieldAbsorbed; target.Health -= result.HealthDamage; target.Mana = result.ManaAfter;
         source.Dealt += result.Amount; target.Taken += result.Amount;
+        if (source.Omnivamp > 0 && source.Alive) Heal(source, result.Amount * source.Omnivamp, true);
+        if (source.Equipment.Burn && !isBurn) ApplyBurn(source, target);
         Emit("damage", target, source, UnitValues.Round(result.Amount));
         if (target.Health <= 0)
         {
             target.Alive = false; target.Health = 0; occupancy[grid.Index(target.Cell)] = null; Emit("death", target, source);
         }
+        else CheckLifelines(target);
         return result.Amount;
     }
 
-    private void Heal(CombatUnit unit, double amount)
+    private void Heal(CombatUnit unit, double amount, bool quiet = false)
     {
         if (!unit.Alive || amount <= 0) return;
+        if (unit.WoundUntil > Time) amount *= 0.67;
         double before = unit.Health; unit.Health = Math.Min(unit.MaxHealth, unit.Health + amount);
         unit.Healed += unit.Health - before;
-        if (unit.Health > before) Emit("heal", unit, amount: UnitValues.Round(unit.Health - before));
+        if (!quiet && unit.Health > before) Emit("heal", unit, amount: UnitValues.Round(unit.Health - before));
     }
 
     private void Emit(string type, CombatUnit unit, CombatUnit? target = null, double amount = 0) =>
