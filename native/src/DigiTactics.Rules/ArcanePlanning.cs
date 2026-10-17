@@ -35,6 +35,30 @@ public sealed class ArcanePlanning(MatchState state) : IMatchShopHooks
         for (int i = list.Length - 1; i > 0; i--) { int j = (int)(state.Random.Next() * (i + 1)); (list[i], list[j]) = (list[j], list[i]); }
         return list;
     }
+    public void AiTurn(MatchPlayer player, PlanningItems inventory, MatchPhase phase)
+    {
+        for (int i = player.Items.Count - 1; i >= 0; i--)
+        {
+            if (!items.TryGetValue(player.Items[i], out var item) || item.Category != "contraband") continue;
+            var holder = player.Roster.Entries.Select(e => e.Unit).Where(u => u.Items.Length < 3 &&
+                (lines[u.Line].Traits.Contains("SYN") || u.Items.Any(id => items.TryGetValue(id, out var equipped) && equipped.Emblem == "SYN")))
+                .OrderByDescending(u => UnitValues.Value(lines[u.Line], u.Stage)).ThenBy(u => u.Id).FirstOrDefault();
+            if (holder is null) continue;
+            player.Roster.UpdateUnit(holder with { Items = holder.Items.Append(player.Items[i]).ToArray() });
+            player.Items.RemoveAt(i);
+        }
+        for (int i = player.Items.Count - 1; i >= 0; i--)
+        {
+            string id = player.Items[i];
+            if (id is not ("arc_copier" or "arc_copier_small")) continue;
+            int maxTier = id == "arc_copier" ? 5 : 3;
+            var counts = player.Roster.Entries.Select(e => e.Unit).Where(u => u.Stage == 0).GroupBy(u => u.Line).ToDictionary(g => g.Key, g => g.Count());
+            var target = player.Roster.Board.Select(e => e.Unit).Where(u => u.Stage < 2 && lines[u.Line].Tier <= maxTier && state.Pool.Remaining(u.Line) > 0)
+                .OrderByDescending(u => counts.GetValueOrDefault(u.Line)).ThenByDescending(u => UnitValues.Value(lines[u.Line], u.Stage)).ThenBy(u => u.Id).FirstOrDefault();
+            if (target is not null && player.Roster.FreeBenchSlot >= 0) inventory.UseConsumable(player, i, target.Id, phase);
+        }
+    }
+
     public static void AddShimmer(ArcanePlanningState mechanic, int amount)
     {
         mechanic.Shimmer += amount;

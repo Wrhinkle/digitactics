@@ -66,6 +66,7 @@ try {
     Invoke-Checked 'node' @('tools/export-autochess-priest.cjs')
     Invoke-Checked 'node' @('tools/export-arcane-rounds.cjs')
     Invoke-Checked 'node' @('tools/export-arcane-augments.cjs')
+    Invoke-Checked 'node' @('tools/export-arcane-ai.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')

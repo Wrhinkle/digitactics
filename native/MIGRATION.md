@@ -1540,3 +1540,22 @@ to round-start behavior. Existing Arcane round and offer checks also pass. Runti
 match-controller registration, Arcane post-combat and AI hooks remain outstanding.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+
+### Arcane AI contraband and copier use
+
+`ArcanePlanning.AiTurn` assigns contraband in reverse inventory order to the highest-
+value eligible Syndicate unit, breaking ties by UID and including equipped Syndicate
+emblems. It then processes copiers in reverse order, preferring board targets with
+the most owned Rookie copies, then unit value and UID. Each copy re-evaluates the
+roster and pool after any merges. Full benches skip copying; direct consumable use
+matches the original target-lock bypass while merges still respect human board locks.
+
+1,024 reference cases pass 118,896 checks (`--arcane-ai-only`) across both paces,
+human/AI seats, planning/combat phases, full benches/inventories, depleted pools,
+small/full copiers, natural/emblem Syndicate units, merge equipment overflow and
+Anomaly inheritance. Inventory and unit order, modifiers, pool/shop cleanup, IDs
+and RNG all match. Full match-controller registration and Arcane post-combat
+progression remain outstanding.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
