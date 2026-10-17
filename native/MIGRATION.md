@@ -139,9 +139,15 @@ The current executable is a migration workbench. It must not replace the public 
   fights require all five outcomes; 68 item fights cover all stages, duplicates,
   mixed gear and bank values of 0, 7 and 30 (capped to 15 in combat). Team reward
   counters are compared independently from unit state. Summoned items rebind hooks.
-  Traits, Dragon marked-trait counting, augments and planning rules remain pending.
+  All 27 traits at 72 breakpoints now pass 168 further reference fights, with
+  every Mirage variant and seeded selection, Jade statue placement/crumbling,
+  Mage recasts, Starcaller healing/execute outcomes and Lagoon/Core counters.
+  Dragon marks count once per distinct shop line, including duplicate copies;
+  Normal's Dragon trait limit and all three Monolith positions are covered.
+  Catalog schema 11 stores Dragon marks and pace-specific trait limits. Augments
+  and planning rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 24,850,366 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 26,156,425 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

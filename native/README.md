@@ -112,7 +112,9 @@ to be a Vulkan renderer or the final game UI.
   Offer grants and planning/economy rules remain pending.
 - Dragonlands: Copycat's five outcomes and all 20 held-item hook definitions pass
   86 reference battles, including Golden Armor bank bonuses and reward counters.
-  Traits, Dragon trait counting, augments and planning rules remain pending.
+  All 27 traits and 72 breakpoints pass 168 more fights, including Mirage variants,
+  Jade statues, Mage recasts, Starcaller, Dragon marks/limits and Monolith positions.
+  Augments and planning rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

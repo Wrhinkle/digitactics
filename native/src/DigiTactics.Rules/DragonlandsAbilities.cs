@@ -3,15 +3,18 @@ namespace DigiTactics.Rules;
 internal sealed class DragonlandsUnitState
 {
     internal bool Veil;
-    internal double Shroud;
+    internal double Shroud, XabMana, Jade, MirageZap, RagingUntil, Whisper, ShrunkUntil, Cannon, CannonFlat, Guard, Mode, Swift, Warrior;
+    internal bool Statue, MirageExecute, Rage, Slayer, Lagoon, GuardUsed, Mage, MageAgain, ModeDone, Empowered;
+    internal int WhisperStacks, CannonAttacks;
 }
 
-public sealed record DragonlandsCombatRewards(int Gold, int Axe, int Investor);
+public sealed record DragonlandsCombatRewards(int Gold, int Axe, int Investor, int Lagoon = 0, int Doots = 0, int Wish = 0);
 
 public sealed partial class CombatSimulation
 {
     private readonly int[] dragonGold = new int[2], dragonAxe = new int[2], dragonInvestor = new int[2];
-    public DragonlandsCombatRewards DragonlandsRewards(int team) => new(dragonGold[team], dragonAxe[team], dragonInvestor[team]);
+    private readonly int[] dragonLagoon = new int[2], dragonDoots = new int[2], dragonWish = new int[2];
+    public DragonlandsCombatRewards DragonlandsRewards(int team) => new(dragonGold[team], dragonAxe[team], dragonInvestor[team], dragonLagoon[team], dragonDoots[team], dragonWish[team]);
 
     private bool CastDragonlandsAbility(CombatUnit unit, CombatUnit target, double value)
     {
@@ -35,11 +38,12 @@ public sealed partial class CombatSimulation
         return true;
     }
 
-    private void BindDragonlands(CombatSetup setup)
+    private void BindDragonlands(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
         foreach (var side in new[] { setup.SideA, setup.SideB })
-            if (!side.NoTraits || (side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
-                throw new NotSupportedException("Dragonlands traits and augments have not been migrated yet.");
+            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
+                throw new NotSupportedException("Dragonlands augments have not been migrated yet.");
+        BindDragonlandsTraits(sideA, sideB, setup);
         double Bank(CombatUnit u) => Math.Clamp((u.Team == 0 ? setup.SideA : setup.SideB).Dragonlands?.Bank ?? 0, 0, 15);
         foreach (var unit in units) BindDragonlandsItems(unit, Bank(unit));
         BindSummonedItems = unit => BindDragonlandsItems(unit, Bank(unit));

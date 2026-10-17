@@ -1,6 +1,6 @@
 namespace DigiTactics.Rules;
 
-public sealed record DragonlandsState(double Bank = 0);
+public sealed record DragonlandsState(double Bank = 0, bool HpFull = false);
 public sealed record GizmosState(double GoldStart = 0);
 public sealed record GalaxiesState(Dictionary<string, int>? Bounty = null);
 public sealed record FatesState(int Deva = 0, string? Fallen = null, double Blossom = 0);
@@ -8,7 +8,7 @@ public sealed record CombatBuffs(double AttackSpeed = 0, double Armor = 0, doubl
 public sealed record CombatPartner(int Owner, string[]? Augments = null, CombatBuffs? Buffs = null, double PartnerTop = 0, GizmosState? Gizmos = null, DragonlandsState? Dragonlands = null);
 public sealed record CombatSideEffects(bool NoTraits = false, Dictionary<string, int>? Counts = null, string[]? Augments = null,
     CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0, FatesState? Fates = null, GalaxiesState? Galaxies = null, GizmosState? Gizmos = null, DragonlandsState? Dragonlands = null);
-public sealed record CombatSetup(CombatSideEffects SideA, CombatSideEffects SideB, string? Galaxy = null, string? Mutation = null, string? RoundType = null, int RoundStage = 0);
+public sealed record CombatSetup(CombatSideEffects SideA, CombatSideEffects SideB, string? Galaxy = null, string? Mutation = null, string? RoundType = null, int RoundStage = 0, string? Mirage = null, string? Pace = null);
 
 public static class TraitRules
 {
@@ -116,6 +116,9 @@ public static class TraitRules
         }
         if (rules.Id.StartsWith("fates/", StringComparison.Ordinal) && counts.TryGetValue("NINJA", out int ninja) && ninja != 1 && ninja != 4)
             counts["NINJA"] = 0;
+        if (rules.Id.StartsWith("dragonlands/", StringComparison.Ordinal))
+            foreach (var lineId in lines.Keys)
+                if (rules.Lines.Single(l => l.Id == lineId).Mark is { } mark) counts[mark] = counts.GetValueOrDefault(mark) + 2;
         return counts;
     }
 }

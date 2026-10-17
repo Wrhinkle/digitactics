@@ -135,6 +135,11 @@ internal static class CombatParity
                     var actual = combat.DragonlandsRewards(team); var expected = dragonRewards[team]; count += 3;
                     if (actual.Gold != expected.GetProperty("gold").GetInt32() || actual.Axe != expected.GetProperty("axe").GetInt32() || actual.Investor != expected.GetProperty("investor").GetInt32())
                         throw new InvalidOperationException($"Dragonlands rewards mismatch {name}/{team}");
+                    if (expected.TryGetProperty("lagoon", out var lagoon)) {
+                        count += 3;
+                        if (actual.Lagoon != lagoon.GetInt32() || actual.Doots != expected.GetProperty("doots").GetInt32() || actual.Wish != expected.GetProperty("wish").GetInt32())
+                            throw new InvalidOperationException($"Dragonlands trait counters mismatch {name}/{team}");
+                    }
                 }
             double completedTime = combat.Time;
             combat.Step();

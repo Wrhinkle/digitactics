@@ -728,6 +728,50 @@ for (const { item, stage } of dragonItemCases) {
 }
 
 
+// Every Dragonlands trait breakpoint with mixed opponents and production ability hooks.
+DT.Sets.activate('dragonlands', 'hyper');
+const dragonTraits = Object.entries(DT.TRAITS).map(([id,t]) => [id, [...t.bp]]);
+for (const [id, bp] of dragonTraits) for (let level = 0; level < bp.length; level++) for (const mirage of (id === 'MIRAGE' ? ['dancer','warlord','overload','executioner',null] : [null])) for (const formation of [0,1]) {
+  const pace = formation ? 'normal' : 'hyper', cols = formation ? 14 : 7;
+  DT.Sets.activate('dragonlands', pace);
+  const seed = 530000 + fixtures.length, pick = DT.makeRng(seed);
+  const components = Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].component);
+  const own=[]; let contributed=0;
+  for(const line of DT.SHOP_LINES.filter(l=>l.traits.includes(id))) {
+    const weight=line.mark===id?3:1;
+    if(contributed+weight<=bp[level]){own.push(line);contributed+=weight;}
+  }
+  if(!own.length){const line=DT.SHOP_LINES.find(l=>l.traits.includes(id));if(!line)throw new Error(`No board for ${id}/${level}`);own.push(line);contributed=line.mark===id?3:1;}
+  const selected = [];
+  while (selected.length < Math.max(4, own.length)) {
+    const l = DT.SHOP_LINES[Math.floor(pick() * DT.SHOP_LINES.length)];
+    if (!selected.includes(l)) selected.push(l);
+  }
+  const entries = lines => lines.map((l,i) => ({ line:l.id, stage:level % 3, c:i % cols, r:formation ? 4+i%3 : 4+Math.floor(i/cols),
+    items:i % 2 ? [] : [formation ? dragonlandsHookItems[Math.floor(pick()*dragonlandsHookItems.length)] : components[Math.floor(pick()*components.length)]] }));
+  const sideA=entries(own), sideB=entries(selected);
+  if(id==='MONO'){
+    sideA[0].c=2; sideA[0].r=4;
+    const ally=DT.SHOP_LINES.find(l=>!l.mark).id;
+    sideA.push({line:ally,stage:1,c:4,r:4,items:[]},{line:ally,stage:1,c:3,r:6,items:[]},
+      {line:sideA[0].line,stage:0,c:0,r:5,items:[]});
+  }
+  if(contributed<bp[level])sideA[0].bonusTraits={[id]:bp[level]-contributed};
+  const mech={hpFull:!!formation,bank:formation?25:7};
+  const cb = new DT.Combat({units:sideA,cols,mech}, {units:sideB,cols,mech}, {seed, info:{mech:{mirage},type:'pvp',stage:4,pace}});
+  if (DT.traitLevel(id,cb.traitCounts[0][id]) !== level+1) throw new Error(`Missing Dragonlands breakpoint ${id}/${level}`);
+  const samples=[{tick:0,units:snapshots(cb)}]; let tick=0;
+  while (!cb.done && tick<2000) {cb.step();tick++;if(tick%15===0 || cb.done) samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,bonusTraits:u.bonusTraits,gluttonHealth:u.mods?.glutHp||0,gluttonAbilityPower:u.mods?.glutAp||0}));
+  fixtures.push({name:`dragonlands-trait/${id}/${level}/${mirage}/${formation}`,variant:`dragonlands/${pace}`,seed,cols,
+    sideA:convert(sideA),sideB:convert(sideB),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,
+    traitCounts:cb.traitCounts,meeps:cb.teamFx.map(f=>f.meep||0),pirateKills:cb.teamFx.map(f=>f.pirate||0),
+    dragonRewards:cb.teamFx.map(f=>({gold:f.gold||0,axe:f.axe||0,investor:f.investor||0,lagoon:f.lagoon||0,doots:f.doots||0,wish:f.wish||0})),
+    setup:{sideA:{dragonlands:mech},sideB:{dragonlands:mech},mirage,roundType:'pvp',roundStage:4,pace}});
+}
+
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
