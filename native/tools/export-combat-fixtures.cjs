@@ -1124,6 +1124,82 @@ for(const core of [...coliseumCores,'mixed'])for(const stage of [0,1,2])for(cons
 for(const flag of ['allout','infection-spread','infection-expire','infection-dead-source'])if(!coliseumCoverage.has(flag))throw new Error(`Coliseum lifecycle never exercised: ${flag}`);
 
 
+
+DT.Sets.activate('coliseum','hyper');
+const coliseumTraits=Object.entries(DT.TRAITS).map(([id,t])=>[id,[...t.bp]]);
+for(const [id,bp] of coliseumTraits)for(let level=0;level<bp.length;level++)for(const formation of [0,1]){
+  const pace=formation?'normal':'hyper',cols=formation?14:7;DT.Sets.activate('coliseum',pace);
+  const seed=1170000+fixtures.length,pick=DT.makeRng(seed),components=Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].component&&!DT.COMPONENTS[id]?.special);
+  const own=DT.SHOP_LINES.filter(l=>l.traits.includes(id)).slice(0,bp[level]),foes=[];
+  while(foes.length<Math.max(5,own.length)){const line=DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)];if(!foes.includes(line))foes.push(line);}
+  const entries=lines=>lines.map((l,i)=>{
+    const forms=DT.Sets.def('coliseum').forms[l.id]||[],form=forms[(level+formation)%forms.length];
+    return {line:l.id,stage:(level+formation)%3,c:i%cols,r:formation?4+i%4:4+Math.floor(i/cols),
+      items:i%2?[components[Math.floor(pick()*components.length)]]:[],
+      mods:{...(form?{form:form.id}:{}),...(formation?{pu:coliseumCores[Math.floor(pick()*coliseumCores.length)]}:{})},
+      ...(form?.trait?{bonusTraits:{[form.trait]:1}}:{})};
+  });
+  const a=entries(own),b=entries(foes);
+  if(own.length<bp[level])a[0].bonusTraits={...(a[0].bonusTraits||{}),[id]:bp[level]-own.length};
+  const mech={rcAP:formation?65:0,supreme:formation?own[0].id:null},roundStage=formation?6:0;
+  const cb=new DT.Combat({units:a,cols,mech},{units:b,cols,mech},{seed,info:{stage:roundStage}});
+  if(DT.traitLevel(id,cb.traitCounts[0][id])!==level+1)throw new Error(`Coliseum missing breakpoint ${id}/${level}`);
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,bonusTraits:u.bonusTraits,coliseum:{form:u.mods.form||null,powerUp:u.mods.pu||null}}));
+  fixtures.push({name:`coliseum-trait/${id}/${level}/${formation}`,variant:`coliseum/${pace}`,seed,cols,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    setup:{sideA:{coliseum:mech},sideB:{coliseum:mech},roundStage}});
+}
+
+
+
+DT.Sets.activate('coliseum','hyper');
+const coliseumSpecial=[],sensei=DT.SHOP_LINES.filter(l=>l.traits.includes('MEN'));
+for(let mask=1;mask<16;mask++)coliseumSpecial.push({name:`sensei-${mask}`,lines:sensei.filter((_,i)=>mask&(1<<i)).map(l=>l.id)});
+for(const form of DT.Sets.def('coliseum').forms.col_justimon)for(const stars of [0,1,2]){
+  const ally=DT.SHOP_LINES.find(l=>l.traits.includes(form.trait));
+  coliseumSpecial.push({name:`stance-${form.id}-${stars}`,lines:[ally.id,'col_justimon'],stars,form});
+}
+for(const stars of [0,1,2])coliseumSpecial.push({name:`rose-${stars}`,lines:['col_lotosmon','col_gotsumon','col_bearmon','col_geogreymon','col_lalamon'],stars,rose:true});
+for(const preferred of [false,true])coliseumSpecial.push({name:`supreme-${preferred}`,lines:DT.SHOP_LINES.filter(l=>l.traits.includes('SC')).map(l=>l.id),preferred});
+let sawRegrowth=false;
+for(const test of coliseumSpecial)for(const duos of [false,true]){
+  const cols=duos?14:7,pace=duos?'normal':'hyper';DT.Sets.activate('coliseum',pace);
+  const seed=1230000+fixtures.length,pick=DT.makeRng(seed),stars=test.stars??1;
+  const a=test.lines.map((line,i)=>({line,stage:stars,c:i,r:test.rose&&i===0?7:4+i%2,owner:0,items:[],mods:test.rose?{pu:'matrix'}:{},
+    ...(line==='col_justimon'&&test.form?{mods:{form:test.form.id},bonusTraits:{[test.form.trait]:1}}:{})}));
+  const b=test.rose?a.map(u=>({...u,owner:2,mods:{...u.mods}})):Array.from({length:Math.max(5,a.length)},(_,i)=>({line:DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)].id,stage:stars,c:i,r:4+i%3,owner:2,items:[],mods:{}}));
+  if(duos)for(const [team,units] of [[0,a],[1,b]])for(let i=0;i<3;i++)units.push({line:DT.SHOP_LINES.filter(l=>!l.traits.includes('MEN'))[i].id,stage:1,c:7+i,r:4+i,owner:team*2+1,items:[],mods:{pu:'guardian'}});
+  const mech={supreme:test.preferred?test.lines[0]:null,rcAP:40};
+  const side=(units,team)=>({units,cols,mech,...(duos?{parts:[0,1].map(part=>({owner:team*2+part,augs:[],units:units.filter(u=>u.owner===team*2+part)}))}:{})});
+  const sideA=side(a,0),sideB=side(b,1);
+  if(duos){sideA.counts=DT.Duos.teamCounts(sideA.parts);sideB.counts=DT.Duos.teamCounts(sideB.parts);}
+  const cb=new DT.Combat(sideA,sideB,{seed,info:{stage:5}}),initialPlants=cb.units.filter(u=>u.line.id==='col_root'||u.line.id==='col_spine').length;
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  if(cb.units.filter(u=>u.line.id==='col_root'||u.line.id==='col_spine').length>initialPlants)sawRegrowth=true;
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,owner:u.owner,bonusTraits:u.bonusTraits,coliseum:{form:u.mods.form||null,powerUp:u.mods.pu||null}}));
+  const effects=a=>({coliseum:mech,...(duos?{parts:a.parts.map(p=>({owner:p.owner,augments:[]}))}:{})});
+  fixtures.push({name:`coliseum-special/${test.name}/${duos}`,variant:`coliseum/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    setup:{sideA:effects(sideA),sideB:effects(sideB),roundStage:5}});
+}
+if(!sawRegrowth)throw new Error('Coliseum plant regrowth never exercised');
+// Full front rows prevent the Mech summon; opening one cell permits exactly one.
+for(const gap of [false,true]){
+  DT.Sets.activate('coliseum','hyper');const seed=1290000+fixtures.length,lines=DT.SHOP_LINES.filter(l=>l.traits.includes('MECH')).slice(0,3);
+  const a=Array.from({length:gap?27:28},(_,i)=>({line:lines[i%3].id,stage:0,c:i%7,r:4+Math.floor(i/7),items:[]}));
+  const b=a.map(u=>({...u})),cb=new DT.Combat({units:a},{units:b},{seed});
+  if(cb.units.filter(u=>u.line.id==='col_mech').length!==(gap?2:0))throw new Error('Coliseum Mech placement boundary mismatch');
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items}));
+  fixtures.push({name:`coliseum-special/mech-space/${gap}`,variant:'coliseum/hyper',seed,cols:7,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts});
+}
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

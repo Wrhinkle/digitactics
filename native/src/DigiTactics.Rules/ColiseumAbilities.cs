@@ -2,6 +2,9 @@ namespace DigiTactics.Rules;
 
 internal sealed class ColiseumUnitState
 {
+    internal double Academy, StarAp, StarHit, StarMana, StarHeal, Luchador, EdgeUntil, Prodigy, Protector;
+    internal bool Supreme, StarHealed, LuchadorUsed, Edge, Juggernaut, ProtectorUsed;
+    internal int Sorcerer;
     internal double Bulk, Adaptive, Atomic, ThornCooldown, ChillUntil;
     internal bool AllOut, AllOutUsed, Burst, Spirit, Overdrive, Ascended;
     internal int Biomerge;
@@ -77,14 +80,14 @@ public sealed partial class CombatSimulation
         return true;
     }
 
-    private void BindColiseum(CombatSetup setup)
+    private void BindColiseum(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
         foreach (var side in new[] { setup.SideA, setup.SideB }) {
-            if (!side.NoTraits) throw new NotSupportedException("Coliseum traits have not been migrated yet.");
             if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false)) throw new NotSupportedException("Coliseum augments have not been migrated yet.");
         }
         foreach (var u in units) foreach (var id in u.Items)
             if (items.TryGetValue(id, out var item) && item.Hooks.Length > 0) throw new NotSupportedException($"Coliseum item hooks {id} have not been migrated yet.");
+        BindColiseumTraits(sideA, sideB, setup);
         var context = Hooks.Context(CombatHookSource.Mechanic, "digicore");
         Hooks.Add(context, CombatHook.CombatStart, (c, _) => {
             foreach (var u in units.Where(u => !u.Summoned)) {

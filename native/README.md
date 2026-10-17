@@ -130,7 +130,10 @@ to be a Vulkan renderer or the final game UI.
 - Coliseum: six custom abilities across nine casters, six form choices and all
   24 Digi-Core paths pass 240 further reference battles. These include infection
   spread/expiration after caster death, All Out recovery, mixed cores and both
-  board widths. Traits, item hooks, augments and planning/settlement remain pending.
+  board widths. All 26 traits at 75 breakpoints pass 150 more fights, with 60
+  targeted cases for Sensei subsets, stance priority, plant regrowth, Supreme
+  selection and crowded Mech spawning. Item hooks, augments and planning/settlement
+  remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner one battle at a time; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

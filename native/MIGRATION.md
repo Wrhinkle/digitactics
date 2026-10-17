@@ -182,21 +182,26 @@ The current executable is a migration workbench. It must not replace the public 
   component equipment and Pirate Captain AP. Infection timers retain their own
   source/victim state, continue after caster death and transfer on victim death;
   coverage guards require spread, expiration and a dead source. Bakemon's All Out
-  recovery, buffs and recurring self-damage are included. Trait, held-item and
-  augment binding, offers and planning/settlement remain pending.
+  recovery, buffs and recurring self-damage are included. All 26 traits at 75
+  breakpoints now pass 150 additional fights; 60 targeted Solo/Duos cases cover
+  every Sensei subset, Justimon's priority-ordered stance membership, Rose Queen
+  regrowth, prior Supreme selection and full/one-space Mech spawn boundaries.
+  Catalog schema 13 includes authored form metadata. Sensei count suppression,
+  dynamic trait membership and summon interactions match the reference engine.
+  Held-item and augment binding, offers and planning/settlement remain pending.
 - Reference fixture export now streams individual battles into a temporary gzip
   file and replaces the previous fixture only on success. The native runner reads
   one battle at a time. This removes the V8 single-string limit without dropping
   recorded samples or reducing comparison coverage.
 
-Latest verification: `./native/build.ps1 -Publish` passes 44,288,418 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 46,300,841 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Finish Coliseum traits/items/augments; port Underlords (including Knockout)
+1. Finish Coliseum items/augments; port Underlords (including Knockout)
    and Auto Chess combat,
    remaining powers and mechanics.
    Finish hook context side/trait state and

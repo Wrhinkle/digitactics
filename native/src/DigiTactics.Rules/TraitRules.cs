@@ -1,6 +1,6 @@
 namespace DigiTactics.Rules;
 
-public sealed record ColiseumState(double RcAP = 0);
+public sealed record ColiseumState(double RcAP = 0, string? Supreme = null);
 public sealed record ArcaneState(double ArcSynHp = 0, bool ArcSynAug = false, double ArcChests = 0, string[]? ArcJunk = null);
 public sealed record DragonlandsState(double Bank = 0, bool HpFull = false, double CtKills = 0);
 public sealed record GizmosState(double GoldStart = 0);
@@ -122,6 +122,7 @@ public static class TraitRules
             foreach (var lineId in lines.Keys)
                 if (rules.Lines.Single(l => l.Id == lineId).Mark is { } mark) counts[mark] = counts.GetValueOrDefault(mark) + 2;
         if (rules.Id.StartsWith("arcane/", StringComparison.Ordinal) && counts.GetValueOrDefault("EMI") is 2 or 3) counts["EMI"] = 0;
+        if (rules.Id.StartsWith("coliseum/", StringComparison.Ordinal) && counts.GetValueOrDefault("MEN") is 2 or 3) counts["MEN"] = 0;
         return counts;
     }
 }

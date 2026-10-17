@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 12,
+  "schemaVersion": 13,
   "variants": [
     {
       "id": "faction-wars/normal",
@@ -4293,6 +4293,7 @@
           10
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -10423,6 +10424,7 @@
           10
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -16115,6 +16117,7 @@
           15
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -22076,6 +22079,7 @@
           10
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -27814,6 +27818,7 @@
           30
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -33206,6 +33211,7 @@
           30
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -38320,6 +38326,7 @@
           25
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -44259,6 +44266,7 @@
           10
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -50965,6 +50973,7 @@
           25
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -58616,6 +58625,7 @@
           25
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -65816,6 +65826,7 @@
           25
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 2,
         "hyper": 0,
@@ -71734,6 +71745,7 @@
           10
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 2,
         "hyper": 0,
@@ -77604,6 +77616,7 @@
           10
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -83750,6 +83763,7 @@
           10
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -90257,6 +90271,48 @@
           25
         ]
       ],
+      "forms": {
+        "col_justimon": [
+          {
+            "id": "blitz",
+            "name": "Blitz Arm",
+            "description": "Duelist stance. Gains the Duelist trait and 30% attack speed. Its ability strikes the 2 nearest enemies several times and cuts their armor.",
+            "trait": "DUE"
+          },
+          {
+            "id": "critical",
+            "name": "Critical Arm",
+            "description": "Executioner stance. Gains the Executioner trait and 20% crit chance. Its ability hits the lowest-health enemy within 3 hexes, stuns it for 1.5 seconds and splashes adjacent enemies.",
+            "trait": "EXE"
+          },
+          {
+            "id": "trinity",
+            "name": "Trinity Arm",
+            "description": "Juggernaut stance. Gains the Juggernaut trait and 400 HP. Its ability takes 50% less damage for 2 seconds, then smashes its target and everything around it.",
+            "trait": "JUG"
+          }
+        ],
+        "col_labramon": [
+          {
+            "id": "ballista",
+            "name": "Ballistamon",
+            "description": "Tank partner. 20% more HP and 15 armor and MR. Its ability gains a shield, taunts nearby enemies and stuns them briefly.",
+            "trait": null
+          },
+          {
+            "id": "dorulu",
+            "name": "Dorulumon",
+            "description": "Diver partner. 30% more attack damage and 20% omnivamp. Its ability drills through to the lowest-health enemy, double damage below 50% HP.",
+            "trait": null
+          },
+          {
+            "id": "sparrow",
+            "name": "Sparrowmon",
+            "description": "Ranged partner. Attacks from 4 hexes with 25% more attack speed. Its ability gives it 50% attack speed for 5 seconds and fires at 3 enemies.",
+            "trait": null
+          }
+        ]
+      },
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -96367,6 +96423,48 @@
           10
         ]
       ],
+      "forms": {
+        "col_justimon": [
+          {
+            "id": "blitz",
+            "name": "Blitz Arm",
+            "description": "Duelist stance. Gains the Duelist trait and 30% attack speed. Its ability strikes the 2 nearest enemies several times and cuts their armor.",
+            "trait": "DUE"
+          },
+          {
+            "id": "critical",
+            "name": "Critical Arm",
+            "description": "Executioner stance. Gains the Executioner trait and 20% crit chance. Its ability hits the lowest-health enemy within 3 hexes, stuns it for 1.5 seconds and splashes adjacent enemies.",
+            "trait": "EXE"
+          },
+          {
+            "id": "trinity",
+            "name": "Trinity Arm",
+            "description": "Juggernaut stance. Gains the Juggernaut trait and 400 HP. Its ability takes 50% less damage for 2 seconds, then smashes its target and everything around it.",
+            "trait": "JUG"
+          }
+        ],
+        "col_labramon": [
+          {
+            "id": "ballista",
+            "name": "Ballistamon",
+            "description": "Tank partner. 20% more HP and 15 armor and MR. Its ability gains a shield, taunts nearby enemies and stuns them briefly.",
+            "trait": null
+          },
+          {
+            "id": "dorulu",
+            "name": "Dorulumon",
+            "description": "Diver partner. 30% more attack damage and 20% omnivamp. Its ability drills through to the lowest-health enemy, double damage below 50% HP.",
+            "trait": null
+          },
+          {
+            "id": "sparrow",
+            "name": "Sparrowmon",
+            "description": "Ranged partner. Attacks from 4 hexes with 25% more attack speed. Its ability gives it 50% attack speed for 5 seconds and fires at 3 enemies.",
+            "trait": null
+          }
+        ]
+      },
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -102587,6 +102685,7 @@
           10
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -108194,6 +108293,7 @@
           10
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -113699,6 +113799,7 @@
           6
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -119220,6 +119321,7 @@
           6
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -124843,6 +124945,7 @@
           6
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
@@ -130450,6 +130553,7 @@
           6
         ]
       ],
+      "forms": {},
       "dragonTraitLimits": {
         "normal": 0,
         "hyper": 0,
