@@ -1010,3 +1010,25 @@ suite with `--arcane-offers-only`. Production round hooks, combat setup from thi
 persistent state and full match/desktop integration remain pending.
 
 Validation: 147,982,115 full-suite checks and packaged BRUTAL smoke tests pass.
+
+## Integrated native AI turns
+
+`MatchAi.Turn` now connects native offer selection/execution, on-AI-turn dispatch,
+XP and shopping, Duos portal transfers, bench cleanup, board arrangement, crafting
+and equipment, then a final arrangement. `PlanPlayers` processes alive AI seats in
+seat order and leaves human seats alone. Pairing and health synchronization stay
+with `MatchRounds`, avoiding a second RNG-consuming pairing pass.
+
+Mode integration remains explicit through required `IMatchAiHooks`: turn hooks,
+live capacity, base capacity, placement checks, equip-hook presence and rerolls.
+Base capacity excludes item bonuses; the arrangement algorithm adds those itself.
+Overflow refunds retain shared-pool ownership. No production no-op hook defaults
+are supplied.
+
+48 Solo/Duos traces cover all 22 variants over 10,080 AI turns and pass 374,157
+comparisons. They compare economy, shop reservations, ordered boards/benches,
+equipment, arrivals, RNG and call order. Base traces isolate mode hooks while
+preserving native equipment restrictions; four additional Coliseum traces use its
+actual purchase, combine, sale and AI-core handlers and verify modifiers/refunds.
+Run with `--ai-turns-only`. These establish component integration; the production
+mode dispatcher, complete match loop and desktop UI remain pending.
