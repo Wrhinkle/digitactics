@@ -27,6 +27,7 @@ public static class NativeApplication
                     for (int i = 0; i < images.GetArrayLength(); i++) _ = model.Image(i);
             }
             Console.WriteLine($"Native asset smoke passed: {models.Assets.Count} verified model payloads, rigs and textures; {models.Sources.Count} prepared motions.");
+            CombatAnimationSmoke.Run(catalog);
         }
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try

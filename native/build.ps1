@@ -20,6 +20,7 @@ try {
     Invoke-Checked 'node' @('tools/export-combat-fixtures.cjs')
     Invoke-Checked 'node' @('tools/export-event-fixtures.cjs')
     Invoke-Checked 'node' @('tools/export-scene-fixtures.cjs')
+    Invoke-Checked 'node' @('tools/export-choreography.cjs')
     Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Desktop', '--locked-mode')
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--', $nativeRoot)
     Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore')

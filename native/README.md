@@ -75,8 +75,12 @@ The build also compiles the original motion preparation for all 905 model source
 459 fallback clips, adjusted rest poses and six weapon-parenting changes. Native
 sampling passes 1,266,912 reference checks against those prepared scenes. The 667
 deduplicated motion payloads add about 1.6 MB; no JavaScript runs in the app.
-Production material shaders, arena sizing/lighting, combat-to-animation integration
-and production screens remain unfinished.
+Combat choreography now consumes real simulation cues in renderer order, drives
+model actions and exposes facing, lunge/recoil, hit flash, cast highlight/label and
+death transforms. It passes 610,546 original-renderer checks across 44 battle traces;
+the packaged app also checks real model playback through battles in all 22 catalogs.
+Production material shaders, arena sizing/lighting, drawing full battle scenes and
+production screens remain unfinished.
 
 ## Boundaries
 

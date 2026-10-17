@@ -366,7 +366,7 @@ The workbench uses prepared rigs, and packaged smoke prepares all 905 sources.
 Original nonfinite tracks remain covered by the existing repair checks instead of
 reference equality. This does not establish rendering parity: production material
 shaders (including normal/roughness/specular maps), transparent depth sorting,
-combat-to-animation integration and arena normalization/lighting remain unfinished.
+full battle scene drawing and arena normalization/lighting remain unfinished.
 
 Native ModelAnimator now implements UnitView action priorities, the 60% attack
 retrigger gate, .55-second attack and 1.1-second special speed limits, repeating
@@ -381,7 +381,22 @@ Static sources and original nonfinite clips are excluded from this reference sui
 the separate rig repair tests still cover corrupt authored data. The workbench
 exposes action buttons and packaged smoke exercises action protection while drawing.
 
-Latest verification: the native test suite passes 124,826,427 assertions.
+CombatChoreography now connects authoritative simulation events to an independent
+model driver. It preserves consume-before-view-sync ordering, once-only victory
+actions, view replacement on form changes, cast priority for shots, and the original
+accepted/rejected-attack lunge distances. Per-frame outputs carry smoothed facing,
+body lunge/recoil, damage flash, cast intensity/ring pulse/label lifetime and death
+shrink/sink transforms. Simulation time controls effects; frame delta advances models
+and facing. The desktop driver caches prepared rigs and owns playback per unit,
+including random visual-only idle offsets. No gameplay state is changed.
+Reference traces execute the original selected consume cases, UnitView.update and
+death/label updates with only GPU/audio/DOM operations stubbed. There are 610,546
+checks across 44 battles, including both viewing orientations and 7/14-column boards.
+Element colors and particle/audio effects are not established by this fixture.
+Packaged smoke drives real prepared models through battles in all 22 catalogs and
+checks finite poses. Full combat scene drawing and effect materials are still pending.
+
+Latest verification: the native test suite passes 125,436,973 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
