@@ -19,6 +19,7 @@ public sealed class CombatUnit
     internal bool FrenzyActive;
     internal bool FatesGrace;
     public int CombatGold { get; internal set; }
+    internal GalaxiesUnitState Galaxies { get; } = new();
     internal FatesItemState FatesItems { get; } = new();
     public IReadOnlyList<string> Traits { get; internal set; } = Array.Empty<string>();
     internal double PerHexAmplification, BonusAgainstBurning, AttackSpeedPerAttack;

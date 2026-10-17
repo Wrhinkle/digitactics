@@ -5,7 +5,7 @@ public sealed record CombatBuffs(double AttackSpeed = 0, double Armor = 0, doubl
 public sealed record CombatPartner(int Owner, string[]? Augments = null, CombatBuffs? Buffs = null, double PartnerTop = 0);
 public sealed record CombatSideEffects(bool NoTraits = false, Dictionary<string, int>? Counts = null, string[]? Augments = null,
     CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0, FatesState? Fates = null);
-public sealed record CombatSetup(CombatSideEffects SideA, CombatSideEffects SideB);
+public sealed record CombatSetup(CombatSideEffects SideA, CombatSideEffects SideB, string? Galaxy = null);
 
 public static class TraitRules
 {

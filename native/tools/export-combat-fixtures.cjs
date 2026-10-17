@@ -9,7 +9,7 @@ DT.Combat.prototype.has = () => false;
 const kinds = ['nuke', 'aoe', 'stun', 'slam', 'shield', 'heal', 'barrage', 'drain', 'weaken', 'rally', 'line', 'execute', 'chain', 'dash'];
 const snapshots = cb => cb.units.map(u => ({ id: u.id, hp: u.hp, mana: u.mana, shield: u.shield, c: u.c, r: u.r,
   alive: u.alive, target: u.target ? u.target.id : null, atkCd: u.atkCd, moveCd: u.moveCd,
-  stun: u.stun, lock: u.lock, dealt: u.dealt, taken: u.taken, healed: u.healed, nAtk: u.nAtk, maxHp: u.maxHp, ad: u.ad, as: u.as, ap: u.ap, armor: u.armor, mr: u.mr, maxMana: u.maxMana, items: u.items, stage: u.stage, summoned: !!u.summoned, blossomKills: u.state.blossom || 0, timeRune: u.state.rune || 0, combatGold: u.state.gold || 0 }));
+  stun: u.stun, lock: u.lock, dealt: u.dealt, taken: u.taken, healed: u.healed, nAtk: u.nAtk, maxHp: u.maxHp, ad: u.ad, as: u.as, ap: u.ap, armor: u.armor, mr: u.mr, maxMana: u.maxMana, items: u.items, stage: u.stage, summoned: !!u.summoned, blossomKills: u.state.blossom || 0, timeRune: u.state.rune || 0, combatGold: u.state.gold || 0, range: u.range }));
 const fixtures = [];
 const exercised = new Set();
 for (const kind of kinds) {
@@ -302,6 +302,33 @@ for (const augment of fatesAugments) for (const duos of [false, true]) for (cons
     sideA: convert(a), sideB: convert(b), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
     traitCounts: cb.traitCounts, setup: { sideA: effects(a), sideB: effects(b) } });
 }
+// Every Galaxies custom ability with its production mechanic callbacks and no traits/items hooks.
+DT.Sets.activate('galaxies', 'hyper');
+const galaxiesKinds = [...new Set(DT.SHOP_LINES.map(l => l.type))].filter(kind => !kinds.includes(kind));
+for (const kind of galaxiesKinds) for (const stage of [0, 1, 2]) for (const cols of [7, 14]) {
+  const pace = cols === 7 ? 'normal' : 'hyper'; DT.Sets.activate('galaxies', pace);
+  const primary = DT.SHOP_LINES.find(l => l.type === kind);
+  const galaxy = stage === 0 ? null : stage === 1 ? 'datastream' : 'darkocean';
+  const critItem = Object.keys(DT.ITEMS).find(id => DT.ITEMS[id].component && DT.ITEMS[id].stats.crit);
+  let accepted = false;
+  for (let attempt = 0; attempt < 12 && !accepted; attempt++) {
+    const seed = 30000 + galaxiesKinds.indexOf(kind) * 6 + stage * 2 + (cols === 14 ? 1 : 0) + attempt * 100000, pick = DT.makeRng(seed);
+    const entries = main => Array.from({ length: 5 }, (_, i) => ({ line: main && i === 0 ? primary.id : DT.SHOP_LINES[Math.floor(pick() * DT.SHOP_LINES.length)].id,
+      stage, c: i + 1, r: i === 0 ? 6 : 4 + i % 2, items: i === 0 && critItem ? [critItem] : [] }));
+    const sideA = entries(true), sideB = entries(false);
+    const cb = new DT.Combat({ units: sideA, noTraits: true, cols }, { units: sideB, noTraits: true, cols }, { seed, info: { mech: { galaxy } } });
+    const samples = [{ tick: 0, units: snapshots(cb) }]; let tick = 0;
+    while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+    if (!cb.events.some(e => e.type === 'cast' && e.at === 0)) continue;
+    accepted = true;
+    const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+    fixtures.push({ name: `galaxies-ability/${kind}/${stage}/${cols}`, variant: `galaxies/${pace}`, seed, cols,
+      sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, meeps: cb.teamFx.map(fx => fx.meep || 0),
+      setup: { sideA: { noTraits: true }, sideB: { noTraits: true }, galaxy } });
+  }
+  if (!accepted) throw new Error(`Unable to exercise Galaxies ability ${kind}/${stage}/${cols}`);
+}
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

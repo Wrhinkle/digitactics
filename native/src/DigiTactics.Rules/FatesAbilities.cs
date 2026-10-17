@@ -3,12 +3,8 @@ namespace DigiTactics.Rules;
 public sealed partial class CombatSimulation
 {
     private static readonly HashSet<string> FatesAbilities = ["grow", "blossom", "burst", "frenzy", "lullaby", "showstopper", "rewind"];
-    private bool SupportsAbility(string kind) => SupportedAbilities.Contains(kind) ||
-        (rules.Id.StartsWith("fates/", StringComparison.Ordinal) && FatesAbilities.Contains(kind));
-
-    private bool CastSetAbility(CombatUnit unit, CombatUnit target, double value)
+    private bool CastFatesAbility(CombatUnit unit, CombatUnit target, double value)
     {
-        if (!rules.Id.StartsWith("fates/", StringComparison.Ordinal)) return false;
         switch (unit.Line.Ability.Kind)
         {
             case "grow":

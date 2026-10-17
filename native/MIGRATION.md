@@ -79,7 +79,14 @@ The current executable is a migration workbench. It must not replace the public 
   Partner forms. Shared Duos combat augments now have a set-independent binder.
   Augment selection, instant grants and round/economy hooks remain unported.
 
-Latest verification: `./native/build.ps1 -Publish` passes 5,165,347 assertions, compiles
+- Galaxies: all 52 custom abilities and the supporting combat mechanic callbacks
+  (poison, frenzy, cyclone, mana tax, hex, revive, meep accounting and delayed
+  spell effects). 312 reference battles exercise every custom cast at all three
+  stages on both board widths, with normal/datastream/darkocean combat modifiers.
+  Poison intentionally follows the shipped context API: it grants damage mana.
+  Traits, held-item hooks, augments, mech pilots and planning rules remain pending.
+
+Latest verification: `./native/build.ps1 -Publish` passes 7,993,952 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

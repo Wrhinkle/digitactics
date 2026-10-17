@@ -88,6 +88,9 @@ to be a Vulkan renderer or the final game UI.
 - Fates combat augments and Partner count modifiers: 48 additional Solo/Duos
   reference fights cover ordering, owner scoping, items and trait interactions.
   Augment choices, grants and planning/economy behavior remain pending.
+- Galaxies: 312 reference battles exercise all 52 custom abilities and their timed
+  mechanic effects at every star level on both board widths. Galaxies trait/item/
+  augment binding, mech pilots and planning rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.
