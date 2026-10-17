@@ -551,6 +551,53 @@ for (const caster of reckoningCasters) for (const stage of [0, 1, 2]) for (const
 }
 
 
+// Every Reckoning trait breakpoint with mixed opponents and production ability hooks.
+DT.Sets.activate('reckoning', 'hyper');
+const reckoningTraits = Object.entries(DT.TRAITS).map(([id,t]) => [id, [...t.bp]]);
+for (const [id, bp] of reckoningTraits) for (let level = 0; level < bp.length; level++) for (const formation of [0,1]) {
+  const pace = level % 2 ? 'normal' : 'hyper', cols = level % 2 ? 14 : 7;
+  DT.Sets.activate('reckoning', pace);
+  const seed = 290000 + fixtures.length, pick = DT.makeRng(seed);
+  const components = Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].component);
+  const shadow = Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].cat === 'shadow' && !DT.ITEMS[id].hooks);
+  const own = DT.SHOP_LINES.filter(l => l.traits.includes(id)).slice(0, bp[level]);
+  const selected = [];
+  while (selected.length < Math.max(4, own.length)) {
+    const l = DT.SHOP_LINES[Math.floor(pick() * DT.SHOP_LINES.length)];
+    if (!selected.includes(l)) selected.push(l);
+  }
+  const entries = lines => lines.map((l,i) => ({ line:l.id, stage:level % 3, c:i % cols, r:formation ? 4+i%3 : 4+Math.floor(i/cols),
+    items:i % 2 ? [] : [formation && shadow.length ? shadow[Math.floor(pick()*shadow.length)] : components[Math.floor(pick()*components.length)]] }));
+  const sideA=entries(own), sideB=entries(selected);
+  if (own.length < bp[level]) sideA[0].bonusTraits = {[id]:bp[level]-own.length};
+  const cb = new DT.Combat({units:sideA,cols}, {units:sideB,cols}, {seed});
+  if (DT.traitLevel(id,cb.traitCounts[0][id]) !== level+1) throw new Error(`Missing Reckoning breakpoint ${id}/${level}`);
+  const samples=[{tick:0,units:snapshots(cb)}]; let tick=0;
+  while (!cb.done && tick<2000) {cb.step();tick++;if(tick%15===0 || cb.done) samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,bonusTraits:u.bonusTraits,gluttonHealth:u.mods?.glutHp||0,gluttonAbilityPower:u.mods?.glutAp||0}));
+  fixtures.push({name:`reckoning-trait/${id}/${level}/${formation}`,variant:`reckoning/${pace}`,seed,cols,
+    sideA:convert(sideA),sideB:convert(sideB),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,
+    traitCounts:cb.traitCounts,meeps:cb.teamFx.map(f=>f.meep||0),pirateKills:cb.teamFx.map(f=>f.pirate||0),
+    setup:{sideA:{},sideB:{}}});
+}
+
+
+
+DT.Sets.activate('reckoning','hyper');
+const royalRivals=DT.SHOP_LINES.filter(l=>l.traits.includes('RIV'));
+for(const rival of royalRivals) for(const both of [false,true]) for(const stage of [0,2]) {
+  const own=both?royalRivals:[rival];
+  const foes=DT.SHOP_LINES.filter(l=>l.traits.some(t=>rival.rivals.includes(t))).slice(0,4);
+  const entries=lines=>lines.map((l,i)=>({line:l.id,stage,c:i+1,r:4,items:[]}));
+  const a=entries(own),b=entries(foes),seed=310000+fixtures.length;
+  const cb=new DT.Combat({units:a},{units:b},{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items}));
+  fixtures.push({name:`reckoning-rival/${rival.id}/${both}/${stage}`,variant:'reckoning/hyper',seed,cols:7,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts});
+}
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

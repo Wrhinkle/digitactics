@@ -118,9 +118,15 @@ The current executable is a migration workbench. It must not replace the public 
   both board widths, including PvE stat scaling. Catalog schema 9 adds summon IDs
   and per-stage PvE multipliers. Shadow-item mechanic callbacks are wired, but their
   effect producers and interaction coverage remain part of the pending item port.
-  Traits, item hooks, augments and planning/economy rules remain pending.
+  All 27 traits at 61 breakpoints now pass 122 reference fights across two
+  formations, with components and hook-free Shadow equipment. Eight additional
+  fights check both Royal Rivals individually and together (the bonus turns off).
+  Sentinel uses buff identity when passing its shield, preserving unrelated buffs;
+  Chimera inheritance, Trickster copies, Phantom revival and Eternal summons are
+  included. Catalog schema 10 exports rival-trait lists. Item hooks, augments and
+  planning/economy rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 18,522,558 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 19,571,105 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

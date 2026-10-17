@@ -103,7 +103,9 @@ to be a Vulkan renderer or the final game UI.
   Upgrade picks/grants, feeding commands and planning rules remain pending.
 - Reckoning: four custom abilities across five casters, both summon partners,
   possession decay, Respite and PvE scaling pass 30 additional reference battles.
-  Traits, item hooks, augments and planning/economy rules remain pending.
+  All 27 traits and 61 breakpoints pass 130 more reference battles, including
+  Sentinel, Chimera inheritance, revival and Royal Rival activation/deactivation.
+  Item hooks, augments and planning/economy rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

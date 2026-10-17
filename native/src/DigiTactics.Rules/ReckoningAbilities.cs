@@ -2,6 +2,9 @@ namespace DigiTactics.Rules;
 
 internal sealed class ReckoningUnitState
 {
+    internal double Trickster, Night, NightDamage, Day, Phantom, Cavalier, CavalierUntil, Ranger, RangerNext, Renewer, Skirmisher;
+    internal bool NightUsed, DayUsed, PhantomUsed, PhantomRisen, Legion, LegionHeal;
+    internal int Spellweaver, Cannoneer;
     internal CombatUnit? Pet, Possessor, CurseSource;
     internal double PossessUntil, Decay, DecayNext, ShroudMax, CurseNext;
     internal double Lunar { get; set; }
@@ -60,11 +63,12 @@ public sealed partial class CombatSimulation
         return true;
     }
 
-    private void BindReckoning(CombatSetup setup)
+    private void BindReckoning(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
         foreach (var side in new[] { setup.SideA, setup.SideB })
-            if (!side.NoTraits || (side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
-                throw new NotSupportedException("Reckoning traits and augments have not been migrated yet.");
+            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
+                throw new NotSupportedException("Reckoning augments have not been migrated yet.");
+        BindReckoningTraits(sideA, sideB, setup);
         var context = Hooks.Context(CombatHookSource.Mechanic, "shadow");
         Hooks.Add(context, CombatHook.CombatStart, (_, _) => {
             if (setup.RoundType != "pve" || rules.PveMultipliers is not { Length: > 0 } multipliers) return;

@@ -3,7 +3,7 @@ namespace DigiTactics.Rules;
 public sealed record PartnerModifier(string? Bonus, string? Trait = null);
 public sealed record CombatEntry(string Line, int Stage, int Column, int Row, int Uid = 0, int? Owner = null, string[]? Items = null, Dictionary<string, int>? BonusTraits = null, PartnerModifier? Partner = null, double GluttonHealth = 0, double GluttonAbilityPower = 0);
 public readonly record struct CombatEvent(double Time, string Type, int Unit, int? Target = null, double Amount = 0);
-public readonly record struct AttackSpeedBuff(double Value, double Until, bool Infiltrator = false);
+public sealed record AttackSpeedBuff(double Value, double Until, bool Infiltrator = false);
 
 /// <summary>Runtime state belongs to one battle; content definitions are shared and never modified.</summary>
 public sealed class CombatUnit

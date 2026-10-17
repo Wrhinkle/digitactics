@@ -12,7 +12,7 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const exportLine = l => {
     const role = DT.ROLES[DT.roleOf(l)] || DT.BASE_ROLES.Striker;
     return {
-    summon: l.summon || null, id: l.id, tier: l.tier, price: l.price || l.tier, copies: l.combine || rules.copies || 3,
+    rivals: l.rivals || [], summon: l.summon || null, id: l.id, tier: l.tier, price: l.price || l.tier, copies: l.combine || rules.copies || 3,
     forms: l.forms, traits: l.traits, attribute: l.attr,
     slots: l.slots || 1,
     sellPremium: set.id === 'dragonlands' && l.slots === 2 ? Math.max(0, (l.price || l.tier) - l.tier) : 0,
@@ -74,7 +74,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 9, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 10, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');
