@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 147,982,115 assertions.
+Latest verification: the native test suite passes 149,432,188 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -1032,3 +1032,27 @@ preserving native equipment restrictions; four additional Coliseum traces use it
 actual purchase, combine, sale and AI-core handlers and verify modifiers/refunds.
 Run with `--ai-turns-only`. These establish component integration; the production
 mode dispatcher, complete match loop and desktop UI remain pending.
+
+## Native carousel rounds
+
+Schema 31 exports stage-specific carousel tiers and item policy, including
+Reckoning's shadow-item chance. `MatchCarousel` reserves up to nine pool copies,
+prioritizes the lowest eligible tier for the first seven, shuffles pick order and
+stably orders later rounds by health. AI options are scored once each, preserving
+RNG order and first-option ties.
+
+Picks validate the current player and availability, grant a unit or full-bench
+gold, return that unit's reservation when necessary, deliver the item, combine
+through required recipient/partner hooks and clear max-star shop offers. `Step`
+runs AI picks up to a human; `Finish` assigns remaining first-available choices
+and releases unclaimed reservations. The state exposes current options, order and
+turn for future UI/command integration.
+
+2,200 original carousels across all 22 variants in Solo/Duos provide 1,075,916
+comparisons. They exercise health ties, automatic finish, exhausted/partly exhausted
+pools, full benches, item caps, invalid/out-of-turn picks, merge callback order,
+shadow items, roster and shop state, pool counts and RNG. Callbacks are instrumented
+in these traces; production mode dispatch and carousel UI remain pending. Run with
+`--carousel-only`.
+
+Validation: 149,432,188 full-suite checks and packaged BRUTAL smoke tests pass.

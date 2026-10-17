@@ -39,6 +39,7 @@ try {
     Invoke-Checked 'node' @('tools/export-underlords-offers.cjs')
     Invoke-Checked 'node' @('tools/export-arcane-offers.cjs')
     Invoke-Checked 'node' @('tools/export-ai-turns.cjs')
+    Invoke-Checked 'node' @('tools/export-carousels.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')

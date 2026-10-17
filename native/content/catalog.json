@@ -1,8 +1,38 @@
 {
-  "schemaVersion": 30,
+  "schemaVersion": 31,
   "variants": [
     {
       "id": "faction-wars/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "normal",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:pocket": {
@@ -8260,6 +8290,36 @@
     },
     {
       "id": "faction-wars/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "component",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:pocket": {
@@ -16503,6 +16563,36 @@
     },
     {
       "id": "fates/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "normal",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:fat_envelope": {
@@ -24752,6 +24842,36 @@
     },
     {
       "id": "fates/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "component",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:fat_envelope": {
@@ -32988,6 +33108,36 @@
     },
     {
       "id": "galaxies/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "normal",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:gal_a_cash": {
@@ -40375,6 +40525,36 @@
     },
     {
       "id": "galaxies/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "component",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:gal_a_cash": {
@@ -47758,6 +47938,36 @@
     },
     {
       "id": "gizmos/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "normal",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:giz_a_spare": {
@@ -56452,6 +56662,36 @@
     },
     {
       "id": "gizmos/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "component",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:giz_a_spare": {
@@ -65125,6 +65365,36 @@
     },
     {
       "id": "reckoning/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "reckoning",
+        "shadowChance": 0.5
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:rec_a_coins": {
@@ -76063,6 +76333,36 @@
     },
     {
       "id": "reckoning/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "reckoning",
+        "shadowChance": 0.5
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:rec_a_coins": {
@@ -86988,6 +87288,36 @@
     },
     {
       "id": "dragonlands/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "normal",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:drg_hoard": {
@@ -95282,6 +95612,36 @@
     },
     {
       "id": "dragonlands/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "component",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:drg_hoard": {
@@ -103553,6 +103913,36 @@
     },
     {
       "id": "arcane/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "normal",
+        "shadowChance": 0
+      },
       "anomalyTags": {
         "x_power": "ad",
         "x_guard": "tank",
@@ -112156,6 +112546,36 @@
     },
     {
       "id": "arcane/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "component",
+        "shadowChance": 0
+      },
       "anomalyTags": {
         "x_power": "ad",
         "x_guard": "tank",
@@ -120745,6 +121165,36 @@
     },
     {
       "id": "coliseum/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "normal",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:col_a_coins": {
@@ -129351,6 +129801,36 @@
     },
     {
       "id": "coliseum/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "component",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "augment:col_a_coins": {
@@ -137936,6 +138416,36 @@
     },
     {
       "id": "underlords/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "normal",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "power:ul_anessa_dark": {
@@ -145717,6 +146227,36 @@
     },
     {
       "id": "underlords/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "component",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "power:ul_anessa_dark": {
@@ -153494,6 +154034,36 @@
     },
     {
       "id": "autochess/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "normal",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {},
       "economy": {
@@ -160919,6 +161489,36 @@
     },
     {
       "id": "autochess/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "component",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {},
       "economy": {
@@ -168322,6 +168922,36 @@
     },
     {
       "id": "underlords_ko/normal",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "itemPolicy": "normal",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "power:ul_anessa_dark": {
@@ -176165,6 +176795,36 @@
     },
     {
       "id": "underlords_ko/hyper",
+      "carousel": {
+        "tiersByStage": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ],
+        "itemPolicy": "component",
+        "shadowChance": 0
+      },
       "anomalyTags": {},
       "offerAi": {
         "power:ul_anessa_dark": {
