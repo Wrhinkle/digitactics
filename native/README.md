@@ -537,3 +537,24 @@ fixtures both omit general AI planning and carousel actions; these tests establi
 the round-start behavior, not complete-match parity. Combat settlement mechanics,
 AI core assignment, the global hook dispatcher and production integration remain
 pending.
+
+## Coliseum post-combat progression
+
+`ColiseumPlanning.RoundEnd` consumes the settlement context's player-specific unit
+view. Supreme Virus remembers the first highest-damage eligible unit, including
+in PvE. Jewel Gambit counts only dead, non-summoned enemies, applies stage and
+Double Down multipliers, grants the single per-round kill-threshold reward and
+preserves the original automatic half-value cash-out on a Double Down win.
+Champ fans accumulate on wins and heal up to the stage's base loss damage on a
+loss. Missing combat data produces no changes; real combat contexts must retain
+unit state so traits and damage are not silently omitted.
+
+24 completed reference/native battles, including Lotosmon's summoned plants,
+feed 5,760 controlled post-combat contexts. The 36,174 checks validate terminal
+battle results, traits and damage, then compare gold, health, inventory, Supreme
+selection, fans, Gambit state, kill progress and RNG. Contexts vary declared
+win/loss/draw results, trait counts, stages, PvE, full inventory, missing combat
+and the original Duos owner filtering, including ownerless units. These contexts
+exercise the hook; complete-match orchestration remains a separate requirement.
+AI core assignment, the composed hook dispatcher, other mode mechanics and
+production match integration remain pending.

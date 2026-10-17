@@ -12,6 +12,8 @@ public sealed class PlayerMechanics
     public int? ColiseumFormUnitId { get; set; }
     public ColiseumGambitState ColiseumGambit { get; } = new();
     public ColiseumPirateState ColiseumPirate { get; } = new();
+    public string? ColiseumSupreme { get; set; }
+    public int ColiseumFans { get; set; }
 }
 
 public sealed class ColiseumPirateState
@@ -28,6 +30,8 @@ public sealed class ColiseumGambitState
     public int Count { get; set; }
     public bool DoubleDown { get; set; }
     public bool Ready { get; set; }
+    public int Kills { get; set; }
+    public int KillTarget { get; set; }
 }
 
 internal sealed class ModePveRewards(MatchState state, MatchLoot loot)

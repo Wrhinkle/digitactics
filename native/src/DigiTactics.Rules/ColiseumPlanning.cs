@@ -12,6 +12,53 @@ public sealed class ColiseumPlanning(MatchState state) : IMatchShopHooks
     private ColiseumPlanningRules Rules => state.Rules.Coliseum!;
     private readonly MatchLoot loot = new(state);
 
+    public void RoundEnd(RoundEndContext context, int stage)
+    {
+        if (context.Match.Combat is null) return;
+        var player = context.Player;
+        var units = context.Units.Select(u => u.State ?? throw new InvalidOperationException("A combat result is missing unit state.")).ToArray();
+        CombatUnit? top = null;
+        foreach (var unit in units)
+            if (unit.Team == context.Team && !unit.Summoned && unit.Traits.Contains("SC") &&
+                (top is null || unit.Dealt > top.Dealt)) top = unit;
+        if (top is not null) player.Mechanics.ColiseumSupreme = top.Line.Id;
+        if (context.Pve) return;
+        int level = TraitRules.Level(state.Rules.Traits.Single(t => t.Id == "CG"), context.Traits.GetValueOrDefault("CG"));
+        if (level > 0)
+        {
+            var gambit = player.Mechanics.ColiseumGambit;
+            int kills = units.Count(u => u.Team != context.Team && !u.Alive && !u.Summoned);
+            double multiplier = stage >= 4 ? 2 : stage >= 3 ? 1.5 : 1;
+            double gained = kills * multiplier + (context.Won ? 0 : 4 * multiplier);
+            gambit.Level = level;
+            if (gambit.DoubleDown && !context.Won) gained *= 2;
+            gambit.Gems += gained;
+            if (level >= 2)
+            {
+                gambit.Kills += kills;
+                int target = gambit.KillTarget != 0 ? gambit.KillTarget : 8;
+                if (gambit.Kills >= target)
+                {
+                    gambit.Kills -= target;
+                    if (loot.RandomComponent() is { } item) player.GiveItem(item);
+                    gambit.KillTarget = 6 + (int)(state.Random.Next() * 5);
+                }
+            }
+            if (gambit.DoubleDown && context.Won) { gambit.Gems *= .5; CashOut(player); }
+            else { gambit.Count++; if (gambit.Count >= 3) gambit.Ready = true; }
+        }
+        if (context.Traits.GetValueOrDefault("CH") != 0)
+        {
+            var champ = units.FirstOrDefault(u => u.Team == context.Team && u.Line.Id == "col_craniamon");
+            if (context.Won) player.Mechanics.ColiseumFans += champ is null ? 1 : champ.Stage + 1;
+            else if (player.Mechanics.ColiseumFans != 0)
+            {
+                player.Health += Math.Min(player.Mechanics.ColiseumFans, state.Rules.Loss!.BaseDamage(stage));
+                player.Mechanics.ColiseumFans = 0;
+            }
+        }
+    }
+
     public void RoundStart(MatchPlayer player, RoundPosition round)
     {
         if (Rules.CoreRounds.Contains(round.Label)) player.Mechanics.ColiseumCores++;
