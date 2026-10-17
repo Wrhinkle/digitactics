@@ -112,7 +112,15 @@ The current executable is a migration workbench. It must not replace the public 
   shield hooks, fixing First Aid and Censer interactions. Upgrade picks, grants,
   feeding commands and planning rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 18,160,656 assertions, compiles
+- Reckoning: Hook, Summon, Possess and Respite are implemented, including both
+  summoned partner mappings, possession resurrection/decay and the lethal-protection
+  zone. Thirty reference battles exercise all five casters at every star level on
+  both board widths, including PvE stat scaling. Catalog schema 9 adds summon IDs
+  and per-stage PvE multipliers. Shadow-item mechanic callbacks are wired, but their
+  effect producers and interaction coverage remain part of the pending item port.
+  Traits, item hooks, augments and planning/economy rules remain pending.
+
+Latest verification: `./native/build.ps1 -Publish` passes 18,522,558 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

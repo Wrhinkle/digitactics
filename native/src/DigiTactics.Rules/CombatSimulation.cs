@@ -56,6 +56,7 @@ public sealed partial class CombatSimulation
             if (rules.Id.StartsWith("fates/", StringComparison.Ordinal)) FatesCombat.Bind(this, rules, sideA, sideB, setup);
             else if (rules.Id.StartsWith("galaxies/", StringComparison.Ordinal)) BindGalaxies(sideA, sideB, setup);
             else if (rules.Id.StartsWith("gizmos/", StringComparison.Ordinal)) BindGizmos(sideA, sideB, setup);
+            else if (rules.Id.StartsWith("reckoning/", StringComparison.Ordinal)) BindReckoning(setup);
             else FactionWarsCombat.Bind(this, rules, sideA, sideB, setup);
         }
         configureHooks?.Invoke(Hooks);

@@ -101,6 +101,9 @@ to be a Vulkan renderer or the final game UI.
   All 37 combat upgrades, Injection and Booster/Burst counting pass another 160
   Solo/Duos battles, including temporary items and Woodland copies.
   Upgrade picks/grants, feeding commands and planning rules remain pending.
+- Reckoning: four custom abilities across five casters, both summon partners,
+  possession decay, Respite and PvE scaling pass 30 additional reference battles.
+  Traits, item hooks, augments and planning/economy rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

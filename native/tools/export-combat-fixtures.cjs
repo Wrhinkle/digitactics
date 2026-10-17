@@ -523,6 +523,34 @@ for (const augment of gizmoAugments) for (const duos of [false,true]) for (const
 }
 
 
+// Every Reckoning custom ability with production mechanic callbacks and no traits/items hooks.
+DT.Sets.activate('reckoning', 'hyper');
+const reckoningCasters = DT.SHOP_LINES.filter(l => !kinds.includes(l.type)).map(l=>l.id);
+for (const caster of reckoningCasters) for (const stage of [0, 1, 2]) for (const cols of [7, 14]) {
+  const pace = cols === 7 ? 'normal' : 'hyper'; DT.Sets.activate('reckoning', pace);
+  const primary = DT.SHOP_LINES.find(l => l.id === caster), kind = primary.type;
+  const roundType = stage === 1 ? 'pve' : 'pvp', roundStage = stage + 3;
+  const critItem = Object.keys(DT.ITEMS).find(id => DT.ITEMS[id].component && DT.ITEMS[id].stats.crit);
+  let accepted = false;
+  for (let attempt = 0; attempt < 12 && !accepted; attempt++) {
+    const seed = 250000 + reckoningCasters.indexOf(caster) * 6 + stage * 2 + (cols === 14 ? 1 : 0) + attempt * 100000, pick = DT.makeRng(seed);
+    const entries = main => Array.from({ length: 5 }, (_, i) => ({ line: main && i === 0 ? primary.id : DT.SHOP_LINES[Math.floor(pick() * DT.SHOP_LINES.length)].id,
+      stage, c: i + 1, r: i === 0 ? 6 : 4 + i % 2, items: i === 0 && critItem ? [critItem] : [] }));
+    const sideA = entries(true), sideB = entries(false);
+    const cb = new DT.Combat({ units: sideA, noTraits: true, cols }, { units: sideB, noTraits: true, cols }, { seed, info: { type:roundType, stage:roundStage } });
+    const samples = [{ tick: 0, units: snapshots(cb) }]; let tick = 0;
+    while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+    if (!cb.events.some(e => e.type === 'cast' && e.at === 0)) continue;
+    accepted = true;
+    const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+    fixtures.push({ name: `reckoning-ability/${caster}/${stage}/${cols}`, variant: `reckoning/${pace}`, seed, cols,
+      sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, meeps: cb.teamFx.map(fx => fx.meep || 0),
+      setup: { sideA: { noTraits: true }, sideB: { noTraits: true }, roundType, roundStage } });
+  }
+  if (!accepted) throw new Error(`Unable to exercise Reckoning ability ${kind}/${stage}/${cols}`);
+}
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
