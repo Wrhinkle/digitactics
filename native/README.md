@@ -91,7 +91,9 @@ to be a Vulkan renderer or the final game UI.
 - Galaxies: 312 reference battles exercise all 52 custom abilities and their timed
   mechanic effects at every star level on both board widths. Another 48 battles
   verify all 26 combat traits and their breakpoints, including DigiXros fusion and
-  pilot ejection. Held-item hooks, augments and planning rules remain pending.
+  pilot ejection. All 17 held-item hook definitions, nine combat augments, Stars
+  counting and shared Duos augments are covered by 82 additional reference fights.
+  Consumables, grants, rewards and planning rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

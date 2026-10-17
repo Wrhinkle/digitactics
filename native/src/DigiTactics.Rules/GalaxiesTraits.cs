@@ -99,7 +99,7 @@ public sealed partial class CombatSimulation
                     case "BR": Each(u => u.MaxHealth += value); break;
                     case "BO": On(CombatHook.DamageDealt, (_, e) => {
                         var u = e.Unit!; var target = e.Target!;
-                        if (!Member(u) || e.Kind == DamageKind.Physical || e.IsBurn || !target.Alive || !((u.CastLock >= 0.34 && u.Mana < 1) || u.Galaxies.Casting)) return;
+                        if (!Member(u) || e.Kind == DamageKind.Physical || e.IsBurn || !target.Alive || !GalaxySpell(u)) return;
                         double tick = UnitValues.Round(Time * 30);
                         if (target.Galaxies.BombedBy == u.Id && target.Galaxies.BombedTick == tick) return;
                         target.Galaxies.BombedBy = u.Id; target.Galaxies.BombedTick = tick; StunUnit(target, value);

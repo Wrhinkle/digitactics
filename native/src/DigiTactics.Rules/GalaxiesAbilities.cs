@@ -2,6 +2,7 @@ namespace DigiTactics.Rules;
 
 internal sealed class GalaxiesUnitState
 {
+    internal bool Rebirth, Trapped;
     internal bool Frenzy, Mega, Excited, Casting, Lanterned;
     internal List<CombatUnit>? Pilots;
     internal double Overload, ProtectorUntil;

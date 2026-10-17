@@ -4,10 +4,16 @@ public sealed partial class CombatSimulation
 {
     private void BindGalaxies(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
-        foreach (var side in new[] { setup.SideA, setup.SideB })
-            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
-                throw new NotSupportedException("Galaxies augments have not been migrated yet.");
+        for (int team = 0; team < 2; team++)
+        {
+            var side = team == 0 ? setup.SideA : setup.SideB;
+            if (side.Parts is { } parts)
+                foreach (var part in parts) GalaxiesAugments.Bind(this, team, part.Augments ?? [], part.Owner, part.PartnerTop);
+            else GalaxiesAugments.Bind(this, team, side.Augments ?? [], partnerTop: side.PartnerTop);
+        }
         BindGalaxiesTraits(sideA, sideB, setup);
+        foreach (var unit in units) BindGalaxiesItems(unit);
+        BindSummonedItems = BindGalaxiesItems;
         var context = Hooks.Context(CombatHookSource.Mechanic, "galaxy");
         Hooks.Add(context, CombatHook.CombatStart, (_, _) => {
             if (setup.Galaxy == "darkocean") {

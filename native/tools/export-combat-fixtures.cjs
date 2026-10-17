@@ -364,6 +364,54 @@ for (const [id, bp] of galaxyTraits) for (let level = 0; level < bp.length; leve
     setup:{sideA:{galaxies:{bounty}},sideB:{}}});
 }
 
+DT.Sets.activate('galaxies', 'hyper');
+const galaxiesHookItems = Object.keys(DT.ITEMS).filter(id => DT.ITEMS[id].hooks);
+const galaxyItemCases = galaxiesHookItems.flatMap(item => [0, 2].map(stage => ({ item, stage }))).concat(Array.from({ length: 8 }, (_, n) => ({ item: null, stage: n % 3 })));
+for (const { item, stage } of galaxyItemCases) {
+  const pace = stage === 0 ? 'normal' : 'hyper';
+  DT.Sets.activate('galaxies', pace);
+  const cols = stage === 2 ? 14 : 7, seed = 91000 + fixtures.length, pick = DT.makeRng(seed);
+  const candidates = DT.SHOP_LINES;
+  const entries = () => Array.from({ length: 6 }, (_, i) => ({ line: candidates[Math.floor(pick() * candidates.length)].id,
+    stage, c: i, r: 4 + i % 2,
+    items: item ? (i === 0 ? [item, item] : [item]) : Array.from({ length: 3 }, () => galaxiesHookItems[Math.floor(pick() * galaxiesHookItems.length)]) }));
+  const sideA = entries(), sideB = entries();
+  const cb = new DT.Combat({ units: sideA, cols }, { units: sideB, cols }, { seed });
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+  fixtures.push({ name: `galaxies-item/${item || 'mixed'}/${stage}/${seed}`, variant: `galaxies/${pace}`, seed, cols,
+    sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
+    traitCounts: cb.traitCounts });
+}
+
+DT.Sets.activate('galaxies', 'hyper');
+const galaxyAugments = Object.entries(DT.AUGMENT).filter(([id,a]) => id.startsWith('gal_') && Object.keys(a.hooks || {}).some(k=>DT.Sets.COMBAT_HOOKS.includes(k) || k === 'onCountTraits')).map(([id])=>id);
+for (const augment of galaxyAugments) for (const duos of [false,true]) for (const stage of [0,2]) {
+  const pace = duos ? 'normal' : 'hyper', cols = duos ? 14 : 7;
+  DT.Sets.activate('galaxies',pace);
+  const seed=97000+fixtures.length,pick=DT.makeRng(seed);
+  function side(team) {
+    const parts=[0,1].map(part=>{
+      const owner=team*2+part;
+      const chosen=DT.SHOP_LINES.filter(l=>l.traits.includes('TK')).slice(0,3);
+      chosen.push(DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)]);
+      return {owner,augs:part===0?[augment,'duo_tag']:[augment,'duo_sync'],units:chosen.map((l,i)=>({line:l.id,stage,c:part*7+i,r:4+i%3,owner,
+        items:[galaxiesHookItems[Math.floor(pick()*galaxiesHookItems.length)]]}))};
+    });
+    return duos ? {parts,units:parts.flatMap(p=>p.units),cols,counts:DT.Duos.teamCounts(parts)} : {units:parts[0].units,augs:[augment],cols};
+  }
+  const a=side(0),b=side(1),cb=new DT.Combat(a,b,{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,owner:u.owner,items:u.items}));
+  const effects=a=>duos?{parts:a.parts.map(p=>({owner:p.owner,augments:p.augs}))}:{augments:a.augs};
+  fixtures.push({name:`galaxies-augment/${augment}/${duos}/${stage}`,variant:`galaxies/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    setup:{sideA:effects(a),sideB:effects(b)}});
+}
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

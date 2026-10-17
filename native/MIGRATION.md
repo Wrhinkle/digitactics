@@ -89,9 +89,13 @@ The current executable is a migration workbench. It must not replace the public 
   Forty-eight additional reference fights compare production trait combinations;
   the DigiXros fixture requires both pilots to eject. Attack-speed buff accumulation
   preserves the original addition order to avoid shifting attacks by one tick.
-  Held-item hooks, augments and planning rules remain pending.
+  All 17 held-item hook definitions and nine combat augments are now bound,
+  plus the Stars trait-count modifier and shared Duos augments. Forty-two item
+  fights cover duplicate/mixed loadouts; forty augment fights cover Solo/Duos
+  ownership with production traits and items. Summons rebind item hooks.
+  Consumables, augment grants, rewards and other planning rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 8,550,432 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 9,721,549 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

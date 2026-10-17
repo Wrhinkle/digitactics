@@ -89,6 +89,12 @@ public static class TraitRules
                     var definition = rules.Traits.Single(t => t.Id == trait);
                     if (definition.Kind == "family" && counts[trait] >= definition.Breakpoints[0]) counts[trait]++;
                 }
+            if (augment == "gal_a_stars" && rules.Id.StartsWith("galaxies/", StringComparison.Ordinal))
+                foreach (var trait in counts.Keys.ToArray())
+                {
+                    var definition = rules.Traits.Single(t => t.Id == trait);
+                    if (definition.Kind == "origin" && definition.Breakpoints.Length > 1 && counts[trait] >= definition.Breakpoints[0]) counts[trait]++;
+                }
             if (rules.Id.StartsWith("fates/", StringComparison.Ordinal) && augment is "fat_twin" or "fat_soulmates")
             {
                 var partner = units.FirstOrDefault(u => u.Partner is not null);
