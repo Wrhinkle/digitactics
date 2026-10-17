@@ -1025,3 +1025,23 @@ These references intentionally stop before first-round offers/hooks, carousel or
 AI planning; those still need connection in the full match controller.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+## Opening-round orchestration
+
+`MatchRounds.Start` performs the separate opening transition after `MatchStart`:
+carousel modes immediately start their carousel; other modes create each player's
+offer, dispatch round-start effects, clear max-star shops, then plan AI, pair seats
+and synchronize Duos health. It does not grant later-round income/XP, reset free
+rolls/transfers or refresh the already-created shops. Repeated calls cannot replay
+opening rewards; constructing at a later position or advancing closes this path.
+
+264 constructor references across all 22 variants and Solo/Duos pass 47,592 checks.
+They use the actual game-start mechanics, shop handlers, offers, carousel generation
+and initial automatic carousel picks. Controlled round-start/AI callbacks verify
+ordering and team health synchronization; they do not claim full production AI
+or mode-round-hook integration. Opening state, inventories, rosters, pool, pending
+offers, carousel turns, pairing and RNG match. Use `--opening-rounds-only`.
+Existing round regressions pass another 735,775 checks. The production controller
+still needs to supply the remaining mode hooks and connect combat and presentation.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.

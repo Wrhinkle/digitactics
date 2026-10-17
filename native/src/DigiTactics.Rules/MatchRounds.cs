@@ -17,6 +17,7 @@ public sealed class MatchRounds
     private readonly MatchState state;
     private readonly MatchOffers offers;
     private readonly IMatchRoundHooks hooks;
+    private bool openingHandled;
     public MatchRounds(MatchState state, MatchOffers offers, IMatchRoundHooks hooks,
         RoundPosition? position = null, MatchPhase phase = MatchPhase.Planning)
     {
@@ -24,6 +25,7 @@ public sealed class MatchRounds
         Position = position ?? RoundPosition.First;
         _ = state.Rules.Schedule!.TypeOf(Position);
         Phase = phase;
+        openingHandled = Position != RoundPosition.First || phase != MatchPhase.Planning;
     }
     public RoundPosition Position { get; private set; }
     public MatchPhase Phase { get; private set; }
@@ -31,10 +33,32 @@ public sealed class MatchRounds
     public IReadOnlyList<MatchPair> Pairs { get; private set; } = [];
     public IReadOnlyList<MatchRoundResult> Results { get; private set; } = [];
 
+    public bool Start()
+    {
+        if (state.Over || openingHandled) return false;
+        if (Phase != MatchPhase.Planning) throw new InvalidOperationException("The opening round is no longer in planning.");
+        openingHandled = true;
+        if (RoundType == "carousel") hooks.StartCarousel(Position);
+        else
+        {
+            foreach (var player in state.Players)
+            {
+                offers.Make(player, Position);
+                hooks.RoundStart(player, Position);
+                player.Shop.ClearMaxed();
+            }
+            hooks.PlanAi(Position);
+            Pairs = state.MakePairs(RoundType);
+            if (state.Duos) state.SyncTeams();
+        }
+        return true;
+    }
+
     public bool Advance()
     {
         if (state.Over) return false;
         if (Phase == MatchPhase.Combat) throw new InvalidOperationException("Finish combat before advancing the round.");
+        openingHandled = true;
         Position = state.Rules.Schedule!.Next(Position);
         if (state.Duos) foreach (var player in state.Players) hooks.ResetTransfers(player);
         foreach (var player in state.Players.Where(p => p.Alive).ToArray())
