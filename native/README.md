@@ -1141,3 +1141,23 @@ changes/duplicates and passes all 582,288 comparisons. Production controller
 registration and the hooks that award persistent team bonuses remain pending.
 
 Validation: all 156,820,580 full-suite checks and packaged BRUTAL smoke checks passed.
+
+## Underlords persistent Tamer units
+
+`UnderlordsPlanning.PowerPicked` creates the selected power's Tamer only when the
+player has no existing Tamer on either board or bench. It selects the original
+role-preferred free board cell without a capacity check; a full board falls back
+to the bench. If both are full the allocated unit is discarded, preserving the
+original UID progression. A bench Tamer blocks a second creation just like a board
+Tamer. `RankUp` updates the first owned Tamer in place at ranks 3 and 5 and caps
+its form at three stars, preserving its identity and roster position.
+
+1,152 reference traces cover all eight powers in standard and Knockout Underlords,
+both paces and human/AI seats, passing 1,253,824 checks. They include empty/partial/
+full boards, full benches, existing Tamers, repeat picks, ranks 1–10, capacity,
+shop cleanup, pool state, placement order and consumed IDs. Run with
+`--underlords-tamers-only`. The production offer/round dispatcher must call these
+handlers from power-pick and rank-up events; remaining Underlords planning effects
+and combat-input integration are still pending.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.

@@ -52,6 +52,7 @@ try {
     Invoke-Checked 'node' @('tools/export-fates-ai.cjs')
     Invoke-Checked 'node' @('tools/export-fates-settlement.cjs')
     Invoke-Checked 'node' @('tools/export-match-placement.cjs')
+    Invoke-Checked 'node' @('tools/export-underlords-tamers.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
