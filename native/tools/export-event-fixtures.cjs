@@ -57,24 +57,29 @@ for (const item of core) for (const stage of [0, 2])
 Object.assign(DT.Combat.prototype, originalHooks);
 const directory = path.join(__dirname, '../tests/fixtures/combat');
 const manifest = JSON.parse(fs.readFileSync(path.join(directory, 'manifest.json')));
-for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos', 'reckoning', 'dragonlands', 'arcane', 'coliseum', 'galaxies']) {
+for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos', 'reckoning', 'dragonlands', 'arcane', 'coliseum', 'galaxies', 'underlords', 'underlords_ko']) {
   const shard = manifest.files.find(f => f.file.startsWith(`${setId}-`));
   const compressed = fs.readFileSync(path.join(directory, shard.file));
   if (require('node:crypto').createHash('sha256').update(compressed).digest('hex') !== shard.sha256)
     throw new Error(`${setId} gameplay fixture integrity failure`);
   const corpus = JSON.parse(require('node:zlib').gunzipSync(compressed));
   if (corpus.length !== shard.battles) throw new Error(`${setId} gameplay fixture count mismatch`);
-  for (const trace of corpus.filter(t => (t.name.startsWith('fates-') || t.name.startsWith('faction-') || t.name.startsWith('autochess/') || t.name.startsWith('gizmos-') || t.name.startsWith('reckoning-') || t.name.startsWith('dragonlands-') || t.name.startsWith('arcane-') || t.name.startsWith('coliseum-') || t.name.startsWith('galaxies-')) && !t.summonItemProbe && !t.observerSummonProbe)) {
+  for (const trace of corpus.filter(t => (t.name.startsWith('fates-') || t.name.startsWith('faction-') || t.name.startsWith('autochess/') || t.name.startsWith('gizmos-') || t.name.startsWith('reckoning-') || t.name.startsWith('dragonlands-') || t.name.startsWith('arcane-') || t.name.startsWith('coliseum-') || t.name.startsWith('galaxies-') || t.name.startsWith('underlords-')) && !t.summonItemProbe && !t.observerSummonProbe)) {
     const [set, pace] = trace.variant.split('/'); DT.Sets.activate(set, pace);
+    const isolated = trace.name.startsWith('underlords-cast/');
+    if (isolated) {
+      for (const name of ['fireTeam', 'fireGlobal']) DT.Combat.prototype[name] = function () {};
+      DT.Combat.prototype.has = () => false;
+    }
     const setup = trace.setup || { sideA: { augments: trace.augsA }, sideB: { augments: trace.augsB } };
     const buffs = b => b && ({ as: b.attackSpeed, armor: b.armor, mana: b.mana });
     function side(entries, effects) {
       const units = entries.map(u => ({ ...u, c: u.column, r: u.row,
         mods: { ...(u.partner ? { partner: true, bonus: u.partner.bonus, trait: u.partner.trait } : {}), form: u.coliseum?.form, pu: u.coliseum?.powerUp, arcAnom: u.arcaneAnomaly, glutHp: u.gluttonHealth, glutAp: u.gluttonAbilityPower } }));
-      const result = { units, cols: trace.cols, noTraits: effects.noTraits, augs: effects.augments, globals: effects.globals,
-        counts: effects.counts, mech: effects.galaxies || effects.fates || effects.gizmos || effects.dragonlands || effects.arcane || effects.coliseum, buffs: buffs(effects.buffs), partnerTop: effects.partnerTop };
+      const result = { units, cols: trace.cols, noTraits: isolated || effects.noTraits, augs: effects.augments, globals: effects.globals, power: effects.power,
+        counts: effects.counts, mech: effects.underlords || effects.galaxies || effects.fates || effects.gizmos || effects.dragonlands || effects.arcane || effects.coliseum, buffs: buffs(effects.buffs), partnerTop: effects.partnerTop };
       if (effects.parts) {
-        result.parts = effects.parts.map(p => ({ owner: p.owner, augs: p.augments, globals: p.globals, mech: p.galaxies || p.gizmos || p.dragonlands || p.arcane || p.coliseum, buffs: buffs(p.buffs), partnerTop: p.partnerTop,
+        result.parts = effects.parts.map(p => ({ owner: p.owner, augs: p.augments, globals: p.globals, power: p.power, mech: p.underlords || p.galaxies || p.gizmos || p.dragonlands || p.arcane || p.coliseum, buffs: buffs(p.buffs), partnerTop: p.partnerTop,
           units: units.filter(u => u.owner === p.owner) }));
         result.counts = DT.Duos.teamCounts(result.parts);
       }
@@ -84,11 +89,12 @@ for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos', 'reckoning'
     const oldMana = manaLine?.mana; if (manaLine) manaLine.mana = trace.lineManaOverride.maxMana;
     const cb = new DT.Combat(side(trace.sideA, setup.sideA), side(trace.sideB, setup.sideB), { seed: trace.seed, info: { type: setup.roundType, stage: setup.roundStage, pace: setup.pace, mech: { mutation: setup.mutation, mirage: setup.mirage, galaxy: setup.galaxy, arcSponsor: setup.arcSponsor } } });
     let ticks = 0; while (!cb.done && ticks < 2000) { cb.step(); ticks++; }
+    Object.assign(DT.Combat.prototype, originalHooks);
     if (manaLine) { if (oldMana === undefined) delete manaLine.mana; else manaLine.mana = oldMana; }
     if (!cb.done || ticks !== trace.tick || cb.winner !== trace.winner || Math.abs(cb.t - trace.time) > 1e-10)
       throw new Error(`Production replay setup differs from gameplay fixture: ${trace.name}`);
     traces.push({ name: trace.name, variant: trace.variant, seed: trace.seed, cols: trace.cols,
-      sideA: trace.sideA, sideB: trace.sideB, setup, lineManaOverride: trace.lineManaOverride, ticks, events: presentationEvents(cb) });
+      sideA: trace.sideA, sideB: trace.sideB, setup: isolated ? undefined : setup, lineManaOverride: trace.lineManaOverride, ticks, events: presentationEvents(cb) });
   }
 }
 for (const kind of kinds) if (!casts.has(kind)) throw new Error(`No cast coverage: ${kind}`);
@@ -99,6 +105,7 @@ for (const kind of ['Physical', 'Magic', 'True'])
   if (!allEvents.some(e => e.kind === kind)) throw new Error(`No damage cue coverage: ${kind}`);
 if (!allEvents.some(e => e.critical) || !allEvents.some(e => e.big)) throw new Error('Missing critical or amplified effect coverage');
 for (const [prefix, labels] of [
+  ['underlords-', ['Rises', 'Untouchable', 'Summoned', 'Delta Strike', 'Frozen', 'Silenced', 'Empowered', 'Roar', 'Duel!', 'Rage', 'Hexed', 'Metamorphosis', "God's Strength", 'Chronosphere', 'Stone', 'Tidebringer', 'Eclipse', 'Grave', 'Blocked', 'Evade', 'Enthralled', 'Yoink!', 'Cyclone', 'Refresh', 'Thunderhide', 'Satanic', 'The End of Medicine', 'Enthrall', 'Rejuvenating Ritual', 'Summon Demonic Golem', 'Implosion', 'Shockwave', 'Friendly Fire', "Let's Go Crazy", 'Roundhouse', 'Barrels of Fun', 'To Your Health', 'Happy Hour', 'Escape Artist', 'Soothing Balm', 'Death Spin', 'All Out Attack!']],
   ['galaxies-', ['Riposte', 'Isolated', 'Plumage', 'Frenzy', 'Chosen', 'Incoming', 'Digivolve!', 'Cyclone', 'Time stop', 'Critter', 'Rescued', 'Finished', 'Eject', 'Overload', 'Dark power', 'DigiXros!', 'Rebirth', 'Construct', 'Disarmed', 'Blown away', 'Blocked', 'Excited']],
   ['fates-', ['+1 gold', '+2 AP', 'Ascend', 'Frenzy', 'Frozen', 'Full Moon', 'Guardian Wing', 'Lone Blade', 'Pumped Up', 'Push-ups', 'Rewind', 'Rocket Fist', 'Showtime', 'Soulmon', 'Spirit Rush', 'Stasis', 'Tankmon', 'Trap Claw', 'Zephyr']],
   ['coliseum-', ['Mega Mech', 'Max Spirit', 'Luchador!', 'Supreme', 'Bulk Up', 'Spirit Evolution', 'Overdrive', 'Ascension', 'All Out', 'Vanish', 'Stasis']],
@@ -113,4 +120,4 @@ for (const [prefix, labels] of [
   for (const label of labels) if (!labelsSeen.has(label)) throw new Error(`Missing ${prefix} presentation coverage: ${label}`);
 }
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/events.json.gz'), require('node:zlib').gzipSync(JSON.stringify(traces)));
-console.log(`Exported ${traces.length} ordered presentation traces.`);
+console.log(`Exported ${traces.length} ordered presentation traces (${allEvents.length} cues).`);

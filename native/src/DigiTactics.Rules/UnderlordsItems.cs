@@ -34,7 +34,7 @@ public sealed partial class CombatSimulation
                 case "ul_blink": On(CombatHook.UnitTick, (_, _) => {
                     if (Time < 0.5 || !u.Alive || u.Stun > 0 || u.SilenceUntil > Time || Time < s.BlinkAt) return;
                     s.BlinkAt = Time + 15; var far = TargetByDistance(u, true);
-                    if (far is null || FreeCellNear(far, u.Cell) is not { } cell || UnitAt(cell) is not null || !MoveFromHook(u, cell, 0.2)) return;
+                    if (far is null || FreeCellNear(far, u.Cell) is not { } cell || UnitAt(cell) is not null || !MoveFromHook(u, cell, 0.2, leap: true)) return;
                     u.Target = far; if (u.MaxMana > 0) u.Mana = Math.Min(u.MaxMana, u.Mana + 45);
                 }); break;
                 case "ul_desolator": On(CombatHook.Attack, (_, e) => { if (e.Target!.Alive) UnderlordsTimedDebuff(e.Target, "ulDeso", CombatStat.Armor, 15, 5); }); break;
@@ -51,7 +51,7 @@ public sealed partial class CombatSimulation
                 case "ul_battlefury": Start(c => { if (u.Range > 1) { u.Equipment.Split = Math.Max(0, u.Equipment.Split - 0.5 * c.Count); u.AttackDamage -= u.BaseAttackDamage * 0.35 * c.Count; } }); break;
                 case "ul_euls": On(CombatHook.AnyAttack, (c, e) => {
                     if (e.Target != u || !u.Alive || e.Unit!.Team == u.Team || !e.Unit.Alive || s.EulsCooldown > Time) return;
-                    s.EulsCooldown = Time + 10; c.Stun(e.Unit, 2.5); e.Unit.InvulnerableUntil = Time + 2.5;
+                    s.EulsCooldown = Time + 10; c.Stun(e.Unit, 2.5); e.Unit.InvulnerableUntil = Time + 2.5; c.Text(e.Unit, "Cyclone");
                 }); break;
                 case "ul_madness": Start(_ => { u.MaxMana = 0; u.Mana = 0; }); break;
                 case "ul_necro": On(CombatHook.Cast, (_, _) => {
@@ -72,7 +72,7 @@ public sealed partial class CombatSimulation
                     if (!c.Every(u, "ulDagon", 12)) return;
                     var pool = EnemiesOf(u).Where(x => x.Health <= x.MaxHealth * 0.5).ToArray();
                     if (pool.Length == 0) { u.Timers["ulDagon"] = Time + 1; return; }
-                    c.Damage(u, pool[(int)(c.Random() * pool.Length)], 600 * c.Count);
+                    var target = pool[(int)(c.Random() * pool.Length)]; c.Effect("beam", u, target); c.Damage(u, target, 600 * c.Count);
                 }); break;
                 case "ul_diffusal": On(CombatHook.Attack, (c, e) => {
                     var target = e.Target!; if (!target.Alive) return;
@@ -85,18 +85,18 @@ public sealed partial class CombatSimulation
                 case "ul_maelstrom": On(CombatHook.Attack, (c, e) => {
                     if (c.Random() >= 0.25) return; var hit = new List<CombatUnit>(); CombatUnit? current = e.Target;
                     for (int k = 0; k < 4 && current is not null; k++) {
-                        hit.Add(current); c.Damage(u, current, 110 * (current.Summoned ? 1.5 : 1)); var center = current.Cell;
+                        hit.Add(current); c.Effect("beam", u, current); c.Damage(u, current, 110 * (current.Summoned ? 1.5 : 1)); var center = current.Cell;
                         current = EnemiesOf(u).Where(x => !hit.Contains(x) && x.Cell.DistanceTo(center) <= 3).OrderBy(x => x.Cell.DistanceTo(center)).FirstOrDefault();
                     }
                 }); break;
                 case "ul_mekansm": On(CombatHook.DamageTaken, (c, _) => {
-                    if (u.Health >= u.MaxHealth * 0.5 || s.Mekansm) return; s.Mekansm = true;
+                    if (u.Health >= u.MaxHealth * 0.5 || s.Mekansm) return; s.Mekansm = true; Burst(u.Cell, 3, 1 - u.Team);
                     foreach (var a in UnderlordsAllies(u, 3)) c.Heal(a, 500);
                 }); break;
-                case "ul_refresher": On(CombatHook.Cast, (_, _) => { if (u.MaxMana > 0 && !s.Refresher) { s.Refresher = true; u.Mana = u.MaxMana; } }); break;
+                case "ul_refresher": On(CombatHook.Cast, (_, _) => { if (u.MaxMana > 0 && !s.Refresher) { s.Refresher = true; u.Mana = u.MaxMana; Emit("text", u, text: "Refresh"); } }); break;
                 case "ul_vyse": On(CombatHook.DamageTaken, (c, e) => {
                     if (e.Source is not { Alive: true } source || source.Team == u.Team || s.VyseCooldown > Time) return;
-                    s.VyseCooldown = Time + 15; c.Stun(source, 2.5);
+                    s.VyseCooldown = Time + 15; c.Stun(source, 2.5); c.Text(source, "Hexed");
                 }); break;
                 case "ul_bloodthorn":
                     On(CombatHook.UnitTick, (c, _) => {
@@ -105,17 +105,17 @@ public sealed partial class CombatSimulation
                     });
                     On(CombatHook.BeforeDamage, (_, e) => { if (e.Target!.SilenceUntil > Time) e.Multiplier *= 1.4; }); break;
                 case "ul_horn": On(CombatHook.UnitTick, (_, _) => {
-                    if (Time < 2 || s.Horn) return; s.Horn = true; UnderlordsSummon(u, "ul_s_thunderhide", 1, u);
+                    if (Time < 2 || s.Horn) return; s.Horn = true; if (UnderlordsSummon(u, "ul_s_thunderhide", 1, u) is { } summon) Emit("text", summon, text: "Thunderhide");
                 }); break;
                 case "ul_radiance": On(CombatHook.UnitTick, (c, _) => {
                     if (!c.Every(u, "ulRadiance", 1)) return;
                     foreach (var x in EnemiesNear(u, u.Cell, 2)) { c.Damage(u, x, 50 * c.Count); if (x.Alive && c.Random() < 0.17) x.Blind = true; }
                 }); break;
                 case "ul_satanic": On(CombatHook.DamageTaken, (c, _) => {
-                    if (u.Health >= u.MaxHealth * 0.5 || s.SatanicCooldown > Time) return; s.SatanicCooldown = Time + 10; c.Buff(u, CombatStat.Omnivamp, 1.5, 3);
+                    if (u.Health >= u.MaxHealth * 0.5 || s.SatanicCooldown > Time) return; s.SatanicCooldown = Time + 10; c.Buff(u, CombatStat.Omnivamp, 1.5, 3); c.Text(u, "Satanic");
                 }); break;
                 case "ul_shiva": On(CombatHook.UnitTick, (c, _) => {
-                    if (Time < 2 || s.Shiva) return; s.Shiva = true;
+                    if (Time < 2 || s.Shiva) return; s.Shiva = true; Burst(u.Cell, 3, u.Team);
                     foreach (var x in EnemiesNear(u, u.Cell, 3)) { c.Damage(u, x, 250); if (x.Alive) UnderlordsTimedDebuff(x, "ulShivaSlow", CombatStat.AttackSpeed, 0.4, 4); }
                 }); break;
                 case "ul_vesture": Start(_ => { foreach (var a in UnderlordsAllies(u, 1)) a.Underlords.Grave = Math.Max(a.Underlords.Grave, 6); }); break;

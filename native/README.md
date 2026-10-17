@@ -39,7 +39,9 @@ traits, contraband, augments and anomalies, including mana-boundary and lone
 Devour cases. Coliseum adds 672 battles and 283,616 cues across abilities,
 forms, Digi-Cores, traits and items. Galaxies adds 442 battles and 104,242 cues
 across abilities, trait strikes, DigiXros ejection, items and Galaxy modifiers.
-Underlords visual cues and the production renderer remain unfinished.
+Underlords and Knockout add 1,898 battles and 1,333,172 cues across abilities,
+hero passives, alliances, items and all eight Tamer builds at every rank. The
+production renderer and complete movement/animation metadata remain unfinished.
 
 ## Boundaries
 

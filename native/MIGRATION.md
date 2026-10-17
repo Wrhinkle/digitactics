@@ -284,10 +284,17 @@ and round state are retained in replay. Galaxies adds 442 battles and 104,242
 cues across all 52 ability types, trait strikes, DigiXros assembly/ejection,
 items and Galaxy modifiers. Replay retains bounty state; named-effect guards
 cover transformations, rescue, overload, ejection and defensive item triggers.
-The suite totals 3,744 battles and 1,351,238 cues. Underlords presentation
-callbacks and complete replay coverage remain pending; this is not a renderer.
+Underlords and Knockout add 1,898 battles and 1,333,172 cues across all custom
+abilities, hero passives, alliances, items and eight Tamer builds at all six ranks.
+Replay carries stored duel/beast bonuses, global items, powers and Duos ownership.
+The isolated Underlords cast fixtures retain disabled hook dispatch; production
+fixtures retain the real hooks. Named-effect guards cover passive triggers,
+revivals, summons, defensive effects and every Tamer cooldown cast.
+The suite totals 5,642 battles and 2,684,410 cues across all sets. This verifies
+the recorded presentation stream, not the renderer or complete movement/animation
+metadata; those remain pending.
 
-Latest verification: the native test suite passes 102,115,991 assertions.
+Latest verification: the native test suite passes 103,451,061 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

@@ -48,7 +48,8 @@ public sealed partial class CombatSimulation
                         var u = e.Unit!; if (!Member(u) || u.Underlords.Fell) return;
                         u.Underlords.Fell = true;
                         foreach (var a in UnderlordsAllies(u, 2)) if (a != u) { c.Heal(a, value); a.Equipment.Amp += 0.06; }
-                        if (level >= 2 && u.Health <= 0) u.Health = u.MaxHealth * 0.4;
+                        Burst(u.Cell, 2, 1 - u.Team);
+                        if (level >= 2 && u.Health <= 0) { u.Health = u.MaxHealth * 0.4; c.Text(u, "Rises"); }
                     }); break;
                     case "HOLY": Start(c => HealingAmplification[c.Team!.Value] += value); break;
                     case "NIGHT": Start(c => { foreach (var u in units) if (u.Team != c.Team) u.Armor -= value; }); break;
@@ -57,7 +58,7 @@ public sealed partial class CombatSimulation
                         On(CombatHook.Tick, (c, _) => { if (Time < next) return; next += 1; foreach (var u in c.Mine) if (u.Alive && u.MaxMana > 0) u.Mana = Math.Min(u.MaxMana, u.Mana + value); }); break;
                     case "HUNTER": On(CombatHook.Attack, (c, e) => {
                         var u = e.Unit!; if (!Member(u) || c.Random() >= value) return;
-                        for (int k = 0; k < level && e.Target!.Alive; k++) c.Damage(u, e.Target, u.AttackDamage, DamageKind.Physical);
+                        for (int k = 0; k < level && e.Target!.Alive; k++) { c.Effect(u.Range > 1 ? "shot" : "hit", u, e.Target); c.Damage(u, e.Target, u.AttackDamage, DamageKind.Physical); }
                     }); break;
                     case "KNIGHT": On(CombatHook.BeforeDamageTaken, (c, e) => {
                         var u = e.Unit!; if (!Member(u)) return;
@@ -67,7 +68,7 @@ public sealed partial class CombatSimulation
                     case "WIZARD": On(CombatHook.BeforeDamage, (c, e) => { if (e.Kind == DamageKind.Magic && e.Unit!.Team == c.Team) e.Multiplier *= 1 + value; }); break;
                     case "SAGE": On(CombatHook.DamageTaken, (_, e) => {
                         var u = e.Unit!; if (!Member(u) || u.Health >= u.MaxHealth * 0.5 || u.Underlords.Sage) return;
-                        u.Underlords.Sage = true; u.InvulnerableUntil = Time + 3; u.CastLock = Math.Max(u.CastLock, 3);
+                        u.Underlords.Sage = true; u.InvulnerableUntil = Time + 3; u.CastLock = Math.Max(u.CastLock, 3); Emit("text", u, text: "Untouchable"); Emit("shield", u);
                     }); break;
                     case "TOXIC": On(CombatHook.Attack, (_, e) => { if (Member(e.Unit!)) UnderlordsPoison(e.Unit!, e.Target!); }); break;
                     case "ROGUE": Each(u => u.Underlords.Rogue = new(value, P("ad"))); break;
@@ -76,7 +77,8 @@ public sealed partial class CombatSimulation
                     case "SHAMAN": Start(c => {
                         var shaman = Members(c).OrderByDescending(u => u.Stage).ThenByDescending(u => u.Line.Tier).ThenBy(u => u.Id).FirstOrDefault();
                         if (shaman is null) return;
-                        UnderlordsSummon(shaman, new[] { "ul_s_wolf", "ul_s_hatchling", "ul_s_blackdragon" }[level - 1], level == 3 ? 0 : shaman.Stage, shaman);
+                        var summoned = UnderlordsSummon(shaman, new[] { "ul_s_wolf", "ul_s_hatchling", "ul_s_blackdragon" }[level - 1], level == 3 ? 0 : shaman.Stage, shaman);
+                        if (summoned is not null) c.Text(summoned, "Summoned");
                     }, 10); break;
                     case "SPIRIT":
                         var charged = new List<CombatUnit>();
@@ -88,7 +90,9 @@ public sealed partial class CombatSimulation
                             var center = new HexCell((int)UnitValues.Round(points.Sum(p => p.Cell.Column) / 3.0), (int)UnitValues.Round(points.Sum(p => p.Cell.Row) / 3.0));
                             double damage = 0, stun = 0;
                             foreach (var s in three) { double mult = UnderlordsValue(s, 1, 1.5, 2); damage += value * mult; stun += 1.5 * mult; }
+                            Burst(center, 2, c.Team!.Value);
                             foreach (var x in EnemiesNear(three[0], center, 2)) { c.Damage(three[0], x, damage); if (x.Alive) c.Stun(x, stun / 3); }
+                            foreach (var s in three) c.Text(s, "Delta Strike");
                         }); break;
                     case "SUMMONER": On(CombatHook.BeforeDamage, (c, e) => { if (e.Unit!.Summoned && e.Unit.Team == c.Team) e.Multiplier *= 1 + value; }); break;
                     case "BLADE": On(CombatHook.BeforeDamage, (c, e) => {

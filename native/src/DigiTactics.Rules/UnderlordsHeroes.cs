@@ -40,6 +40,7 @@ public sealed partial class CombatSimulation
                 c.After(1, () => {
                     u.Stun = 0; u.Weakness = 0; u.BurnSource = null; u.BurnUntil = 0; u.BurnAccumulated = 0;
                     if (s.Poison is { } poison) { poison.Stacks = 0; if (poison.Buff is not null) UnderlordsSpeed(u, ref poison.Buff, 0); }
+                    Burst(u.Cell, 2, u.Team);
                     foreach (var e in EnemiesNear(u, u.Cell, 2)) c.Damage(u, e, 300);
                     u.Health = Math.Max(1, u.Health - 150);
                 }, u); break;
@@ -60,14 +61,14 @@ public sealed partial class CombatSimulation
             case "ul_kunkka":
                 if (!three || u.Attacks % 4 != 0 || !target.Alive) break;
                 c.Damage(u, target, 150, DamageKind.Physical);
-                foreach (var x in EnemiesNear(u, target.Cell, 1)) if (x != target) c.Damage(u, x, u.AttackDamage * 0.75, DamageKind.Physical); break;
+                foreach (var x in EnemiesNear(u, target.Cell, 1)) if (x != target) c.Damage(u, x, u.AttackDamage * 0.75, DamageKind.Physical); c.Text(u, "Tidebringer"); break;
             case "ul_luna":
                 var hit = new List<CombatUnit> { target }; var current = target; double damage = e.Amount;
                 for (int k = 0; k < UnderlordsValue(u, 3, 5, 7); k++) {
                     damage *= 0.7; var cell = current.Cell;
                     var next = EnemiesOf(u).Where(x => !hit.Contains(x) && x.Cell.DistanceTo(cell) <= 2).OrderBy(x => x.Cell.DistanceTo(cell)).FirstOrDefault();
                     if (next is null) break;
-                    hit.Add(next); c.Damage(u, next, damage, DamageKind.Physical); current = next;
+                    hit.Add(next); c.Effect("shot", u, next); c.Damage(u, next, damage, DamageKind.Physical); current = next;
                 } break;
             case "ul_spiritbreaker":
                 if (!three || !target.Alive || s.BashCooldown > Time || c.Random() >= 0.25) break;
@@ -94,18 +95,20 @@ public sealed partial class CombatSimulation
     {
         var u = e.Target!;
         if (u.Line.Id == "ul_enchantress" && u.Stage == 2 && c.Random() < 0.5) UnderlordsTimedDebuff(e.Unit!, "ulUntouch", CombatStat.AttackSpeed, 0.5, 1.5);
-        if (u.Line.Id == "ul_axe" && u.Alive && c.Random() < UnderlordsValue(u, 0.2, 0.22, 0.25))
+        if (u.Line.Id == "ul_axe" && u.Alive && c.Random() < UnderlordsValue(u, 0.2, 0.22, 0.25)) {
+            Burst(u.Cell, 1, u.Team);
             foreach (var x in EnemiesNear(u, u.Cell, 1)) c.Damage(u, x, UnderlordsValue(u, 100, 180, 300), DamageKind.True);
+        }
     }
     private void HurtUnderlordsHero(CombatHookContext c, CombatUnit u)
     {
         if (u.Line.Id != "ul_luna" || u.Stage != 2 || u.Health >= u.MaxHealth * 0.5 || u.Underlords.Eclipse) return;
-        u.Underlords.Eclipse = true; int count = 0;
+        u.Underlords.Eclipse = true; c.Text(u, "Eclipse"); int count = 0;
         void Beam() {
             if (!u.Alive || count >= 15) return; count++;
             var pool = EnemiesNear(u, u.Cell, 2).Where(x => x.Underlords.Beams < 5).ToArray();
             if (pool.Length > 0) {
-                var x = pool[(int)(c.Random() * pool.Length)]; x.Underlords.Beams++;
+                var x = pool[(int)(c.Random() * pool.Length)]; x.Underlords.Beams++; c.Effect("beam", u, x);
                 c.Damage(u, x, 150); if (x.Alive) c.Stun(x, 0.5);
             }
             c.After(0.3, Beam, u);

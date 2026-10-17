@@ -72,11 +72,11 @@ public sealed partial class CombatSimulation
             var u = e.Unit!; var s = u.Underlords;
             if (s.Tamer.Paying) return;
             if (e.Kind == DamageKind.Magic && s.MagicImmuneUntil > Time) { e.Multiplier = 0; return; }
-            if (s.Refract > 0 && e.Amount > 0 && !e.IsBurn) { s.Refract--; e.Multiplier = 0; return; }
+            if (s.Refract > 0 && e.Amount > 0 && !e.IsBurn) { s.Refract--; e.Multiplier = 0; c.Text(u, "Blocked"); return; }
             if (e.Kind == DamageKind.Physical && !e.IsBurn) {
-                if (s.EvadeUntil > Time) { e.Multiplier = 0; return; }
-                if (u.Line.Id == "ul_queenofpain" && u.Stage == 2 && u.Cell.DistanceTo(e.Source!.Cell) <= 2 && c.Random() < 0.25) { e.Multiplier = 0; return; }
-                if (s.Rogue is { } rogue && c.Random() < rogue.Evasion) { e.Multiplier = 0; u.AttackDamage += rogue.AttackDamage; return; }
+                if (s.EvadeUntil > Time) { e.Multiplier = 0; c.Text(u, "Evade"); return; }
+                if (u.Line.Id == "ul_queenofpain" && u.Stage == 2 && u.Cell.DistanceTo(e.Source!.Cell) <= 2 && c.Random() < 0.25) { e.Multiplier = 0; c.Text(u, "Evade"); return; }
+                if (s.Rogue is { } rogue && c.Random() < rogue.Evasion) { e.Multiplier = 0; u.AttackDamage += rogue.AttackDamage; c.Text(u, "Evade"); return; }
             }
             if (s.Tamer.Barrel != 0) e.Multiplier *= 1 + s.Tamer.Barrel;
             if (e.Source!.Summoned && u.Line.Id == "ul_beastmaster" && u.Stage == 2) e.Multiplier *= 0.25;
@@ -89,7 +89,7 @@ public sealed partial class CombatSimulation
             var u = e.Unit!;
             if (u.Underlords.Aphotic is { } ap && u.Shield <= 0) {
                 u.Underlords.Aphotic = null;
-                if (Time <= ap.Until) foreach (var x in EnemiesNear(u, u.Cell, 2)) c.Damage(ap.Source, x, ap.Value);
+                if (Time <= ap.Until) { Burst(u.Cell, 2, u.Team); foreach (var x in EnemiesNear(u, u.Cell, 2)) c.Damage(ap.Source, x, ap.Value); }
             }
             HurtUnderlordsHero(c, u);
         });
@@ -97,12 +97,12 @@ public sealed partial class CombatSimulation
             var u = e.Unit!; var s = u.Underlords;
             if (u.Health > 0 || s.Grave == 0 || s.GraveDone) return;
             if (s.GraveUntil != 0) { if (Time < s.GraveUntil) u.Health = 1; return; }
-            s.GraveUntil = Time + s.Grave; u.Health = 1;
+            s.GraveUntil = Time + s.Grave; u.Health = 1; c.Text(u, "Grave");
             c.After(s.Grave, () => { if (u.Alive) { s.GraveDone = true; c.Damage(u, u, u.Health + 1e6, DamageKind.True); } }, u);
         });
         On(CombatHook.Death, (c, e) => {
             var u = e.Unit!;
-            if (u.Line.Id == "ul_vengeful" && u.Stage == 2) foreach (var x in EnemiesNear(u, u.Cell, 2)) c.Damage(u, x, 300);
+            if (u.Line.Id == "ul_vengeful" && u.Stage == 2) { Burst(u.Cell, 2, u.Team); foreach (var x in EnemiesNear(u, u.Cell, 2)) c.Damage(u, x, 300); }
             if (u.Line.Id == "ul_juggernaut") foreach (var (a, add) in u.Underlords.Juggernaut) if (a.Alive) { a.MaxHealth -= add; a.Health = Math.Max(1, Math.Min(a.Health, a.MaxHealth)); }
             foreach (var p in units) if (p.Alive && p.Team != u.Team && p.Line.Id == "ul_pudge" && p.Stage == 2 && p.Cell.DistanceTo(u.Cell) <= 1) { p.MaxHealth += 300; p.Health += 300; p.MagicResist += 10; }
             foreach (var d in u.Underlords.Dots.ToArray()) {
@@ -163,7 +163,7 @@ public sealed partial class CombatSimulation
         if (s.Exorcism is { Left: > 0 } ex && Time >= ex.Next && u.Alive) {
             ex.Next = Time + 6.0 / 8; ex.Left--;
             var pool = EnemiesNear(u, u.Cell, 3);
-            if (pool.Length > 0) { var x = pool[(int)(c.Random() * pool.Length)]; double done = c.Damage(u, x, ex.Value); c.Heal(u, done * 0.25, true); }
+            if (pool.Length > 0) { var x = pool[(int)(c.Random() * pool.Length)]; c.Effect("shot", u, x); double done = c.Damage(u, x, ex.Value); c.Heal(u, done * 0.25, true); }
         }
         TickUnderlordsHero(c, u);
     }

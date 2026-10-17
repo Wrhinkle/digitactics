@@ -17,7 +17,7 @@ public sealed partial class CombatSimulation
             if (Time < next || !u.Alive || u.Stun > 0 || u.SilenceUntil > Time) return false;
             cooldowns[key] = Time + period; return true;
         }
-        void CastFx(CombatUnit u) => Emit("cast", u); // Presentation cue, not a mana cast or onCast dispatch.
+        void CastFx(CombatUnit u, string name) { Emit("cast", u, text: name); Emit("text", u, text: name); } // Presentation cue, not a mana cast or onCast dispatch.
         void On(CombatHook hook, Action<CombatHookContext, CombatHookEvent> action, int order = 0) => Hooks.Add(context, hook, action, order);
         On(CombatHook.CombatStart, (c, _) => {
             tamer = c.Mine.FirstOrDefault(u => u.Line.Tamer is not null); if (tamer is not { } u) return;
@@ -37,19 +37,19 @@ public sealed partial class CombatSimulation
             switch (kind) {
                 case "anessa":
                     if (build == "dark") {
-                        if (Cooldown(u, "a1", 8, 0.5)) { CastFx(u); foreach (var a in UnderlordsAllies(u)) c.Buff(a, CombatStat.AttackDamage, a.BaseAttackDamage * V(0.4, 0.43, 0.46, 0.49, 0.52, 0.55), 6); }
+                        if (Cooldown(u, "a1", 8, 0.5)) { CastFx(u, "The End of Medicine"); foreach (var a in UnderlordsAllies(u)) c.Buff(a, CombatStat.AttackDamage, a.BaseAttackDamage * V(0.4, 0.43, 0.46, 0.49, 0.52, 0.55), 6); }
                         if (Cooldown(u, "a2", 8, 1) && TargetByDistance(u) is { } target) {
-                            CastFx(u); c.Buff(target, CombatStat.Armor, -30, 6); target.Underlords.Tamer.ThrallTeam = u.Team; target.Underlords.Tamer.ThrallUntil = Time + 6;
+                            CastFx(u, "Enthrall"); c.Effect("beam", u, target); c.Buff(target, CombatStat.Armor, -30, 6); target.Underlords.Tamer.ThrallTeam = u.Team; target.Underlords.Tamer.ThrallUntil = Time + 6;
                             foreach (var a in UnderlordsAllies(u)) if (a.Cell.DistanceTo(target.Cell) <= a.Range + 2) a.Target = target;
                         }
                     } else {
                         if (Cooldown(u, "a1", 8, 0.5)) {
-                            CastFx(u); u.Health = Math.Max(1, u.Health - u.MaxHealth * 0.05);
+                            CastFx(u, "Rejuvenating Ritual"); u.Health = Math.Max(1, u.Health - u.MaxHealth * 0.05);
                             foreach (var a in UnderlordsAllies(u)) { c.Heal(a, V(75, 110, 140, 170, 205, 230)); a.Underlords.Tamer.RitualUntil = Time + 6; a.Underlords.Tamer.RitualHps = V(10, 15, 21, 27, 33, 38); }
                         }
                         if (Cooldown(u, "a2", 15, 1) && TargetByDistance(u, true) is { } target) {
-                            CastFx(u); var golem = UnderlordsSummon(u, "ul_s_golem", rank / 2, target, FreeCellNear(target, u.Cell), scale: 1 + 0.12 * (rank % 2));
-                            if (golem is not null) c.After(0.25, () => { if (golem.Alive) foreach (var x in EnemiesNear(u, golem.Cell, 2)) c.Stun(x, 2); });
+                            CastFx(u, "Summon Demonic Golem"); var golem = UnderlordsSummon(u, "ul_s_golem", rank / 2, target, FreeCellNear(target, u.Cell), scale: 1 + 0.12 * (rank % 2));
+                            if (golem is not null) c.After(0.25, () => { if (golem.Alive) { Burst(golem.Cell, 2, u.Team); foreach (var x in EnemiesNear(u, golem.Cell, 2)) c.Stun(x, 2); } });
                         }
                     } break;
                 case "hob":
@@ -57,43 +57,44 @@ public sealed partial class CombatSimulation
                     if (Cooldown(u, "h1", 12, 0.5)) {
                         var target = u.Target is { Alive: true } current ? current : TargetByDistance(u);
                         if (target is not null) {
-                            CastFx(u); bool fire = build == "fire"; double total = fire ? V(640, 820, 1000, 1200, 1380, 1560) : V(420, 560, 700, 840, 980, 1120);
-                            var group = EnemiesNear(u, target.Cell, 1);
+                            bool fire = build == "fire"; CastFx(u, fire ? "Implosion" : "Shockwave"); double total = fire ? V(640, 820, 1000, 1200, 1380, 1560) : V(420, 560, 700, 840, 980, 1120);
+                            var group = EnemiesNear(u, target.Cell, 1); Burst(target.Cell, 1, u.Team);
                             foreach (var x in group) { c.Damage(u, x, total / group.Length); if (!x.Alive) continue; c.Burn(u, x); if (!fire) c.Stun(x, 1.5); }
                         }
                     }
                     if (build == "fire" && Cooldown(u, "h2", 13, 1)) {
-                        CastFx(u); for (int k = 0; k < 8; k++) {
-                            var target = RandomEnemyTarget(u); if (target is null) break;
+                        CastFx(u, "Friendly Fire"); for (int k = 0; k < 8; k++) {
+                            var target = RandomEnemyTarget(u); if (target is null) break; Burst(target.Cell, 1, u.Team);
                             foreach (var x in EnemiesNear(u, target.Cell, 1)) { c.Damage(u, x, V(160, 190, 225, 270, 325, 375)); if (x.Alive) c.Burn(u, x); }
                         }
                     }
                     if (build == "crazy" && Cooldown(u, "h2", 10, 1)) {
-                        CastFx(u); s.CrazyUntil = Time + 6; u.Range = 10;
+                        CastFx(u, "Let's Go Crazy"); s.CrazyUntil = Time + 6; u.Range = 10;
                         foreach (var a in UnderlordsAllies(u)) c.Buff(a, CombatStat.AttackSpeed, V(0.3, 0.42, 0.54, 0.66, 0.78, 0.9), 6);
                     } break;
                 case "jules":
                     if (c.Every(u, "ulJulesArmor", 0.5)) { int adjacent = c.Adjacent(u).Count(x => x.Alive); u.Armor = s.BaseArmor + 10 * adjacent; u.MagicResist = s.BaseMr + 10 * adjacent; }
                     if (build == "brawl") {
                         if (Cooldown(u, "j1", 8, 0.5)) {
-                            CastFx(u); s.GuardUntil = Time + 5; c.Heal(u, u.MaxHealth * 0.1);
+                            CastFx(u, "Roundhouse"); s.GuardUntil = Time + 5; c.Heal(u, u.MaxHealth * 0.1);
                             foreach (var x in EnemiesNear(u, u.Cell, 2)) x.Target = u;
                             c.Buff(u, CombatStat.AttackSpeed, 1, 5); c.Buff(u, CombatStat.Omnivamp, 0.6, 5);
                         }
                         if (Cooldown(u, "j2", 12, 1)) {
-                            CastFx(u);
+                            CastFx(u, "Barrels of Fun");
                             foreach (var a in UnderlordsPick(UnderlordsAllies(u), 4)) c.Buff(a, CombatStat.AttackSpeed, 0.5, 4);
-                            foreach (var x in UnderlordsPick(EnemiesOf(u), 4)) x.Underlords.Tamer.Barrel = 0.25;
+                            foreach (var x in UnderlordsPick(EnemiesOf(u), 4)) { x.Underlords.Tamer.Barrel = 0.25; c.Effect("shot", u, x, big: true); }
                         }
                     } else {
-                        if (Cooldown(u, "j1", 10, 0.5)) { CastFx(u); s.GuardUntil = Time + 5; s.ToastUntil = Time + 5; }
-                        if (Cooldown(u, "j2", 10, 1)) { CastFx(u); foreach (var a in UnderlordsAllies(u)) a.Underlords.Tamer.HappyUntil = Time + 7; }
+                        if (Cooldown(u, "j1", 10, 0.5)) { CastFx(u, "To Your Health"); s.GuardUntil = Time + 5; s.ToastUntil = Time + 5; }
+                        if (Cooldown(u, "j2", 10, 1)) { CastFx(u, "Happy Hour"); foreach (var a in UnderlordsAllies(u)) { a.Underlords.Tamer.HappyUntil = Time + 7; c.Effect("shield", a); } }
                     } break;
                 case "enno":
                     if (Cooldown(u, "e1", 3, 0.5)) {
                         var targets = EnemiesNear(u, u.Cell, 3).OrderBy(x => x.Cell.DistanceTo(u.Cell)).ThenBy(x => x.Id).Take((int)V(3, 4, 4, 5, 5, 5)).ToArray();
                         if (targets.Length > 0) {
-                            CastFx(u); foreach (var x in targets) {
+                            CastFx(u, build == "balm" ? "Soothing Balm" : "Death Spin"); foreach (var x in targets) {
+                                c.Effect("shot", u, x);
                                 UnderlordsPoison(u, x);
                                 if (build == "rabid") c.Damage(u, x, V(25, 25, 35, 35, 45, 45) * (x.Underlords.Poison?.Stacks ?? 0), DamageKind.Physical);
                                 else {
@@ -104,7 +105,7 @@ public sealed partial class CombatSimulation
                         }
                     }
                     if (build == "rabid" && Cooldown(u, "e2", 10, 1)) {
-                        CastFx(u); foreach (var x in EnemiesOf(u)) { UnderlordsPoison(u, x, 3); c.Damage(u, x, V(45, 65, 90, 110, 130, 155), DamageKind.Physical); if (x.Alive) c.Stun(x, 1.1); }
+                        CastFx(u, "All Out Attack!"); foreach (var x in EnemiesOf(u)) { UnderlordsPoison(u, x, 3); c.Damage(u, x, V(45, 65, 90, 110, 130, 155), DamageKind.Physical); if (x.Alive) c.Stun(x, 1.1); }
                     } break;
             }
         });
@@ -115,7 +116,7 @@ public sealed partial class CombatSimulation
                 if (build != "dark" || s.ThrallTeam != team || Time > s.ThrallUntil || victim.Team == team || victim.Summoned) return;
                 s.ThrallTeam = null;
                 var copy = c.Summon(team, victim.Line.Id, victim.Stage, victim.Cell, new());
-                if (copy is not null && !copy.Traits.Contains("DEMON")) copy.Traits = copy.Traits.Append("DEMON").ToArray();
+                if (copy is not null) { if (!copy.Traits.Contains("DEMON")) copy.Traits = copy.Traits.Append("DEMON").ToArray(); c.Text(copy, "Enthralled"); }
             });
         }
         if (kind == "hob") On(CombatHook.Attack, (c, e) => {
@@ -129,7 +130,7 @@ public sealed partial class CombatSimulation
         if (kind == "enno") On(CombatHook.DamageTaken, (c, e) => {
             var u = e.Unit!; if (u != tamer || !u.Alive) return; var s = u.Underlords.Tamer;
             double[] marks = rank >= 3 ? [0.5, 0.25] : [0.5]; if (s.Escapes >= marks.Length || u.Health >= u.MaxHealth * marks[s.Escapes]) return;
-            s.Escapes++; CastFx(u); u.Stun = 0; u.BurnSource = null; u.BurnUntil = 0; u.BurnAccumulated = 0; u.Weakness = 0; u.SilenceUntil = 0;
+            s.Escapes++; CastFx(u, "Escape Artist"); u.Stun = 0; u.BurnSource = null; u.BurnUntil = 0; u.BurnAccumulated = 0; u.Weakness = 0; u.SilenceUntil = 0;
             if (u.Underlords.Poison is { } poison) { poison.Stacks = 0; if (poison.Buff is not null) UnderlordsSpeed(u, ref poison.Buff, 0); }
             HexCell? best = null; int distance = -1;
             for (int i = 0; i < 56; i++) {
@@ -137,7 +138,7 @@ public sealed partial class CombatSimulation
                 var foes = EnemiesOf(u); int d = foes.Length == 0 ? 0 : foes.Min(x => x.Cell.DistanceTo(cell));
                 if (d > distance && d <= 3) { distance = d; best = cell; }
             }
-            if (best is { } destination) MoveFromHook(u, destination, 0.3);
+            if (best is { } destination) MoveFromHook(u, destination, 0.3, leap: true);
             foreach (var x in EnemiesNear(u, u.Cell, 1)) c.Stun(x, 1.5);
         });
     }
@@ -166,6 +167,6 @@ public sealed partial class CombatSimulation
             u.CriticalChance += sign * S("crit"); u.Dodge += sign * S("dodge"); u.Omnivamp += sign * S("omnivamp");
             if (S("hp") != 0) u.MaxHealth = Math.Max(1, u.MaxHealth + sign * S("hp"));
         }
-        Apply(holder!, -1); Apply(tamer, 1);
+        Apply(holder!, -1); Apply(tamer, 1); Emit("text", tamer, text: "Yoink!");
     }
 }
