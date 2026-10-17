@@ -20,6 +20,7 @@
 import * as THREE from 'three';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { loadTemplate } from './render3d.js';
+import { dances as mysteryDances } from './mystery-content.js';
 
 const DT = window.DT;
 const C = DT.Cosmetics;
@@ -596,8 +597,10 @@ const DANCES = [
 ];
 
 // ---------- catalog ----------
+DANCES.push(...mysteryDances);
 const PRICE = { common: 150, rare: 400, epic: 900, legendary: 1800 };
 DT.Cosmetics.register('dance', DANCES.map((d) => ({
+  ...(d.secret ? { secret: true, lootPool: d.lootPool, egg: false, tag: d.tag } : {}),
   id: d.id, name: d.name, rarity: d.rarity, price: d.free ? 0 : PRICE[d.rarity], icon: d.icon,
   ...(d.free ? { free: true } : {}),
   desc: `${d.desc} ${d.bpm} BPM.`,

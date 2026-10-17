@@ -1,0 +1,6519 @@
+[
+  {
+    "set": "faction-wars",
+    "line": "agumon",
+    "stage": 0,
+    "form": "Agumon",
+    "key": "catalog:CS_Agumon:chr050"
+  },
+  {
+    "set": "faction-wars",
+    "line": "agumon",
+    "stage": 1,
+    "form": "Greymon",
+    "key": "catalog:L_Greymon:chr326"
+  },
+  {
+    "set": "faction-wars",
+    "line": "gabumon",
+    "stage": 0,
+    "form": "Gabumon",
+    "key": "catalog:CS_Gabumon:chr151"
+  },
+  {
+    "set": "faction-wars",
+    "line": "gabumon",
+    "stage": 1,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "faction-wars",
+    "line": "tentomon",
+    "stage": 0,
+    "form": "Tentomon",
+    "key": "catalog:TS_Tentomon:chr303"
+  },
+  {
+    "set": "faction-wars",
+    "line": "palmon",
+    "stage": 0,
+    "form": "Palmon",
+    "key": "catalog:CS_Palmon:chr348"
+  },
+  {
+    "set": "faction-wars",
+    "line": "palmon",
+    "stage": 1,
+    "form": "Togemon",
+    "key": "catalog:CS_Togemon:chr349"
+  },
+  {
+    "set": "faction-wars",
+    "line": "gomamon",
+    "stage": 0,
+    "form": "Gomamon",
+    "key": "catalog:CS_Gomamon:chr343"
+  },
+  {
+    "set": "faction-wars",
+    "line": "gomamon",
+    "stage": 1,
+    "form": "Ikkakumon",
+    "key": "catalog:L_Ikkakumon:chr344"
+  },
+  {
+    "set": "faction-wars",
+    "line": "biyomon",
+    "stage": 0,
+    "form": "Biyomon",
+    "key": "catalog:CS_Biyomon:chr307"
+  },
+  {
+    "set": "faction-wars",
+    "line": "biyomon",
+    "stage": 1,
+    "form": "Birdramon",
+    "key": "catalog:CS_Birdramon:chr308"
+  },
+  {
+    "set": "faction-wars",
+    "line": "hagurumon",
+    "stage": 0,
+    "form": "Hagurumon",
+    "key": "catalog:CS_Hagurumon:chr009"
+  },
+  {
+    "set": "faction-wars",
+    "line": "hagurumon",
+    "stage": 1,
+    "form": "Guardromon",
+    "key": "catalog:L_Guardromon:chr341"
+  },
+  {
+    "set": "faction-wars",
+    "line": "demidevimon",
+    "stage": 0,
+    "form": "DemiDevimon",
+    "key": "catalog:CS_DemiDevimon:chr097"
+  },
+  {
+    "set": "faction-wars",
+    "line": "demidevimon",
+    "stage": 1,
+    "form": "Devimon",
+    "key": "catalog:L_Devimon:chr093"
+  },
+  {
+    "set": "faction-wars",
+    "line": "numemon",
+    "stage": 0,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "faction-wars",
+    "line": "numemon",
+    "stage": 2,
+    "form": "PlatinumNumemon",
+    "key": "catalog:CS_PlatinumNumemon:chr069"
+  },
+  {
+    "set": "faction-wars",
+    "line": "otamamon",
+    "stage": 0,
+    "form": "Otamamon",
+    "key": "catalog:TS_Otamamon:chr582"
+  },
+  {
+    "set": "faction-wars",
+    "line": "otamamon",
+    "stage": 1,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "faction-wars",
+    "line": "gotsumon",
+    "stage": 0,
+    "form": "Gotsumon",
+    "key": "catalog:Gotsumon:chr081"
+  },
+  {
+    "set": "faction-wars",
+    "line": "gotsumon",
+    "stage": 1,
+    "form": "Starmon",
+    "key": "catalog:CS_Starmon:chr014"
+  },
+  {
+    "set": "faction-wars",
+    "line": "falcomon",
+    "stage": 0,
+    "form": "Falcomon",
+    "key": "catalog:CS_Falcomon:chr705"
+  },
+  {
+    "set": "faction-wars",
+    "line": "falcomon",
+    "stage": 1,
+    "form": "Peckmon",
+    "key": "catalog:CS_Peckmon:chr702"
+  },
+  {
+    "set": "faction-wars",
+    "line": "guilmon",
+    "stage": 0,
+    "form": "Guilmon",
+    "key": "catalog:L_Guilmon:chr090"
+  },
+  {
+    "set": "faction-wars",
+    "line": "guilmon",
+    "stage": 1,
+    "form": "Growlmon",
+    "key": "catalog:CS_Growlmon:chr078"
+  },
+  {
+    "set": "faction-wars",
+    "line": "guilmon",
+    "stage": 2,
+    "form": "WarGrowlmon",
+    "key": "catalog:RD_WarGrowlmon:main"
+  },
+  {
+    "set": "faction-wars",
+    "line": "renamon",
+    "stage": 0,
+    "form": "Renamon",
+    "key": "catalog:CS_Renamon:chr391"
+  },
+  {
+    "set": "faction-wars",
+    "line": "renamon",
+    "stage": 1,
+    "form": "Kyubimon",
+    "key": "catalog:L_Kyubimon:chr395"
+  },
+  {
+    "set": "faction-wars",
+    "line": "terriermon",
+    "stage": 0,
+    "form": "Terriermon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701"
+  },
+  {
+    "set": "faction-wars",
+    "line": "terriermon",
+    "stage": 1,
+    "form": "Gargomon",
+    "key": "catalog:CS_Gargomon:chr710"
+  },
+  {
+    "set": "faction-wars",
+    "line": "terriermon",
+    "stage": 2,
+    "form": "Rapidmon",
+    "key": "catalog:CS_Rapidmon:chr722"
+  },
+  {
+    "set": "faction-wars",
+    "line": "patamon",
+    "stage": 0,
+    "form": "Patamon",
+    "key": "catalog:TS_Patamon:chr096"
+  },
+  {
+    "set": "faction-wars",
+    "line": "patamon",
+    "stage": 1,
+    "form": "Angemon",
+    "key": "catalog:CS_Angemon:chr087"
+  },
+  {
+    "set": "faction-wars",
+    "line": "patamon",
+    "stage": 2,
+    "form": "MagnaAngemon",
+    "key": "catalog:L_MagnaAngemon:chr101"
+  },
+  {
+    "set": "faction-wars",
+    "line": "salamon",
+    "stage": 0,
+    "form": "Salamon",
+    "key": "catalog:CS_Salamon:chr361"
+  },
+  {
+    "set": "faction-wars",
+    "line": "betamon",
+    "stage": 0,
+    "form": "Betamon",
+    "key": "catalog:CS_Betamon:chr389"
+  },
+  {
+    "set": "faction-wars",
+    "line": "betamon",
+    "stage": 1,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "faction-wars",
+    "line": "wormmon",
+    "stage": 0,
+    "form": "Wormmon",
+    "key": "catalog:CS_Wormmon:chr392"
+  },
+  {
+    "set": "faction-wars",
+    "line": "wormmon",
+    "stage": 1,
+    "form": "Stingmon",
+    "key": "catalog:CS_Stingmon:chr091"
+  },
+  {
+    "set": "faction-wars",
+    "line": "lunamon",
+    "stage": 0,
+    "form": "Lunamon",
+    "key": "catalog:TS_Lunamon:chr002"
+  },
+  {
+    "set": "faction-wars",
+    "line": "armadillomon",
+    "stage": 0,
+    "form": "Armadillomon",
+    "key": "catalog:CS_Armadillomon:chr707"
+  },
+  {
+    "set": "faction-wars",
+    "line": "kudamon",
+    "stage": 0,
+    "form": "Kudamon",
+    "key": "catalog:CS_Kudamon:chr053"
+  },
+  {
+    "set": "faction-wars",
+    "line": "kudamon",
+    "stage": 1,
+    "form": "Reppamon",
+    "key": "catalog:CS_Reppamon:chr077"
+  },
+  {
+    "set": "faction-wars",
+    "line": "fanbeemon",
+    "stage": 0,
+    "form": "FanBeemon",
+    "key": "catalog:TS_Funbeemon:chr042"
+  },
+  {
+    "set": "faction-wars",
+    "line": "fanbeemon",
+    "stage": 1,
+    "form": "Waspmon",
+    "key": "catalog:L_Waspmon:chr454"
+  },
+  {
+    "set": "faction-wars",
+    "line": "elecmon",
+    "stage": 0,
+    "form": "Elecmon",
+    "key": "catalog:Elecmon:chr564"
+  },
+  {
+    "set": "faction-wars",
+    "line": "elecmon",
+    "stage": 1,
+    "form": "Leomon",
+    "key": "catalog:CS_Leomon:chr072"
+  },
+  {
+    "set": "faction-wars",
+    "line": "elecmon",
+    "stage": 2,
+    "form": "Panjyamon",
+    "key": "catalog:Panjyamon:main"
+  },
+  {
+    "set": "faction-wars",
+    "line": "hawkmon",
+    "stage": 0,
+    "form": "Hawkmon",
+    "key": "catalog:L_Hawkmon:chr706"
+  },
+  {
+    "set": "faction-wars",
+    "line": "hawkmon",
+    "stage": 1,
+    "form": "Aquilamon",
+    "key": "catalog:L_Aquilamon:chr015"
+  },
+  {
+    "set": "faction-wars",
+    "line": "keramon",
+    "stage": 0,
+    "form": "Keramon",
+    "key": "catalog:TS_Keramon:chr626"
+  },
+  {
+    "set": "faction-wars",
+    "line": "lopmon",
+    "stage": 0,
+    "form": "Lopmon",
+    "key": "catalog:CS_Lopmon:chr750"
+  },
+  {
+    "set": "faction-wars",
+    "line": "lopmon",
+    "stage": 1,
+    "form": "Turuiemon",
+    "key": "catalog:Turuiemon:d014"
+  },
+  {
+    "set": "faction-wars",
+    "line": "candlemon",
+    "stage": 0,
+    "form": "Meramon",
+    "key": "catalog:L_Meramon:chr010"
+  },
+  {
+    "set": "faction-wars",
+    "line": "candlemon",
+    "stage": 1,
+    "form": "Wizardmon",
+    "key": "catalog:L_Wizardmon:chr377"
+  },
+  {
+    "set": "faction-wars",
+    "line": "agumonsv",
+    "stage": 0,
+    "form": "GeoGreymon",
+    "key": "catalog:CS_GeoGreymon:chr054"
+  },
+  {
+    "set": "faction-wars",
+    "line": "dracomon",
+    "stage": 0,
+    "form": "Dracomon",
+    "key": "catalog:CS_Dracomon:chr208"
+  },
+  {
+    "set": "faction-wars",
+    "line": "woodmon",
+    "stage": 0,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "faction-wars",
+    "line": "monodramon",
+    "stage": 0,
+    "form": "Monodramon",
+    "key": "catalog:TS_Monodramon:chr458"
+  },
+  {
+    "set": "faction-wars",
+    "line": "zubamon",
+    "stage": 0,
+    "form": "Zubamon",
+    "key": "catalog:CS_Zubamon:chr697"
+  },
+  {
+    "set": "faction-wars",
+    "line": "zubamon",
+    "stage": 1,
+    "form": "ZubaEagermon",
+    "key": "catalog:CS_ZubaEagermon:chr698"
+  },
+  {
+    "set": "faction-wars",
+    "line": "veemon",
+    "stage": 0,
+    "form": "Veemon",
+    "key": "catalog:L_Veemon:chr114"
+  },
+  {
+    "set": "faction-wars",
+    "line": "veemon",
+    "stage": 1,
+    "form": "ExVeemon",
+    "key": "catalog:L_ExVeemon:chr365"
+  },
+  {
+    "set": "faction-wars",
+    "line": "dorumon",
+    "stage": 0,
+    "form": "Dorumon",
+    "key": "catalog:CS_Dorumon:chr112"
+  },
+  {
+    "set": "faction-wars",
+    "line": "dorumon",
+    "stage": 1,
+    "form": "Dorugamon",
+    "key": "catalog:L_Dorugamon:chr396"
+  },
+  {
+    "set": "faction-wars",
+    "line": "gaomon",
+    "stage": 0,
+    "form": "Gaomon",
+    "key": "catalog:L_Gaomon:chr055"
+  },
+  {
+    "set": "faction-wars",
+    "line": "gaomon",
+    "stage": 1,
+    "form": "Gaogamon",
+    "key": "catalog:CS_Gaogamon:chr068"
+  },
+  {
+    "set": "faction-wars",
+    "line": "lalamon",
+    "stage": 0,
+    "form": "Lalamon",
+    "key": "catalog:CS_Lalamon:chr056"
+  },
+  {
+    "set": "faction-wars",
+    "line": "lalamon",
+    "stage": 1,
+    "form": "Sunflowmon",
+    "key": "catalog:L_Sunflowmon:chr058"
+  },
+  {
+    "set": "faction-wars",
+    "line": "commandramon",
+    "stage": 0,
+    "form": "ToyAgumon",
+    "key": "catalog:L_ToyAgumon:chr708"
+  },
+  {
+    "set": "faction-wars",
+    "line": "lobomon",
+    "stage": 2,
+    "form": "MagnaGarurumon",
+    "key": "catalog:MagnaGarurumon:chr678"
+  },
+  {
+    "set": "faction-wars",
+    "line": "hackmon",
+    "stage": 2,
+    "form": "Jesmon",
+    "key": "catalog:CS_Jesmon:chr749"
+  },
+  {
+    "set": "faction-wars",
+    "line": "blackgatomon",
+    "stage": 0,
+    "form": "BlackGatomon",
+    "key": "skin:SKIN_Gatomon_chr043"
+  },
+  {
+    "set": "faction-wars",
+    "line": "blackgatomon",
+    "stage": 2,
+    "form": "Lilithmon",
+    "key": "catalog:CS_Lilithmon:chr034"
+  },
+  {
+    "set": "faction-wars",
+    "line": "ryudamon",
+    "stage": 0,
+    "form": "Ryudamon",
+    "key": "catalog:CS_Ryudamon:chr190"
+  },
+  {
+    "set": "faction-wars",
+    "line": "ryudamon",
+    "stage": 1,
+    "form": "Ginryumon",
+    "key": "catalog:CS_Ginryumon:chr191"
+  },
+  {
+    "set": "faction-wars",
+    "line": "lucemon",
+    "stage": 0,
+    "form": "Lucemon",
+    "key": "catalog:CS_Lucemon:chr390"
+  },
+  {
+    "set": "faction-wars",
+    "line": "beelzemon",
+    "stage": 0,
+    "form": "Impmon",
+    "key": "catalog:TS_Impmon:chr081"
+  },
+  {
+    "set": "faction-wars",
+    "line": "beelzemon",
+    "stage": 1,
+    "form": "Beelzemon",
+    "key": "catalog:L_Beelzemon:chr035"
+  },
+  {
+    "set": "faction-wars",
+    "line": "veedramon",
+    "stage": 0,
+    "form": "Veedramon",
+    "key": "catalog:CS_Veedramon:chr397"
+  },
+  {
+    "set": "faction-wars",
+    "line": "omnimon",
+    "stage": 1,
+    "form": "Omnimon",
+    "key": "catalog:CS_Omnimon:chr088"
+  },
+  {
+    "set": "faction-wars",
+    "line": "omnimon",
+    "stage": 2,
+    "form": "Omnimon X",
+    "key": "unique:L_Omnimon_X"
+  },
+  {
+    "set": "faction-wars",
+    "line": "alphamon",
+    "stage": 0,
+    "form": "Alphamon NX",
+    "key": "unique:CS_Alphamon_NX"
+  },
+  {
+    "set": "faction-wars",
+    "line": "alphamon",
+    "stage": 1,
+    "form": "Alphamon",
+    "key": "catalog:CS_Alphamon:chr416"
+  },
+  {
+    "set": "faction-wars",
+    "line": "alphamon",
+    "stage": 2,
+    "form": "Alphamon Ouryuken",
+    "key": "unique:CS_Alphamon_Ouryuken"
+  },
+  {
+    "set": "faction-wars",
+    "line": "daemon",
+    "stage": 0,
+    "form": "Daemon",
+    "key": "catalog:CS_Daemon:chr038"
+  },
+  {
+    "set": "faction-wars",
+    "line": "daemon",
+    "stage": 1,
+    "form": "Daemon",
+    "key": "catalog:CS_Daemon:chr038"
+  },
+  {
+    "set": "faction-wars",
+    "line": "daemon",
+    "stage": 2,
+    "form": "Daemon",
+    "key": "catalog:CS_Daemon:chr038"
+  },
+  {
+    "set": "faction-wars",
+    "line": "goblimon",
+    "stage": 0,
+    "form": "Goblimon",
+    "key": "catalog:CS_Goblimon:chr111"
+  },
+  {
+    "set": "faction-wars",
+    "line": "goblimon",
+    "stage": 1,
+    "form": "Goblimon",
+    "key": "catalog:CS_Goblimon:chr111"
+  },
+  {
+    "set": "faction-wars",
+    "line": "goblimon",
+    "stage": 2,
+    "form": "Goblimon",
+    "key": "catalog:CS_Goblimon:chr111"
+  },
+  {
+    "set": "faction-wars",
+    "line": "ogremon",
+    "stage": 0,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "faction-wars",
+    "line": "ogremon",
+    "stage": 1,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "faction-wars",
+    "line": "ogremon",
+    "stage": 2,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "faction-wars",
+    "line": "tyrannomon",
+    "stage": 0,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "faction-wars",
+    "line": "tyrannomon",
+    "stage": 1,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "faction-wars",
+    "line": "tyrannomon",
+    "stage": 2,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "faction-wars",
+    "line": "bakemon",
+    "stage": 0,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "faction-wars",
+    "line": "bakemon",
+    "stage": 1,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "faction-wars",
+    "line": "bakemon",
+    "stage": 2,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "faction-wars",
+    "line": "crusadermon",
+    "stage": 0,
+    "form": "Crusadermon",
+    "key": "catalog:CS_Crusadermon:chr703"
+  },
+  {
+    "set": "faction-wars",
+    "line": "crusadermon",
+    "stage": 1,
+    "form": "Crusadermon",
+    "key": "catalog:CS_Crusadermon:chr703"
+  },
+  {
+    "set": "faction-wars",
+    "line": "crusadermon",
+    "stage": 2,
+    "form": "Crusadermon",
+    "key": "catalog:CS_Crusadermon:chr703"
+  },
+  {
+    "set": "faction-wars",
+    "line": "leopardmon",
+    "stage": 0,
+    "form": "Leopardmon",
+    "key": "unique:CS_Leopardmon"
+  },
+  {
+    "set": "faction-wars",
+    "line": "leopardmon",
+    "stage": 1,
+    "form": "Leopardmon",
+    "key": "unique:CS_Leopardmon"
+  },
+  {
+    "set": "faction-wars",
+    "line": "leopardmon",
+    "stage": 2,
+    "form": "Leopardmon",
+    "key": "unique:CS_Leopardmon"
+  },
+  {
+    "set": "faction-wars",
+    "line": "magnamon",
+    "stage": 0,
+    "form": "Magnamon",
+    "key": "catalog:CS_Magnamon:chr382"
+  },
+  {
+    "set": "faction-wars",
+    "line": "magnamon",
+    "stage": 1,
+    "form": "Magnamon",
+    "key": "catalog:CS_Magnamon:chr382"
+  },
+  {
+    "set": "faction-wars",
+    "line": "magnamon",
+    "stage": 2,
+    "form": "Magnamon",
+    "key": "catalog:CS_Magnamon:chr382"
+  },
+  {
+    "set": "faction-wars",
+    "line": "armageddemon",
+    "stage": 0,
+    "form": "Armageddemon",
+    "key": "catalog:CS_Armageddemon:chr106"
+  },
+  {
+    "set": "faction-wars",
+    "line": "armageddemon",
+    "stage": 1,
+    "form": "Armageddemon",
+    "key": "catalog:CS_Armageddemon:chr106"
+  },
+  {
+    "set": "faction-wars",
+    "line": "armageddemon",
+    "stage": 2,
+    "form": "Armageddemon",
+    "key": "catalog:CS_Armageddemon:chr106"
+  },
+  {
+    "set": "faction-wars",
+    "line": "leviamon",
+    "stage": 0,
+    "form": "Leviamon",
+    "key": "catalog:CS_Leviamon:chr037"
+  },
+  {
+    "set": "faction-wars",
+    "line": "leviamon",
+    "stage": 1,
+    "form": "Leviamon",
+    "key": "catalog:CS_Leviamon:chr037"
+  },
+  {
+    "set": "faction-wars",
+    "line": "leviamon",
+    "stage": 2,
+    "form": "Leviamon",
+    "key": "catalog:CS_Leviamon:chr037"
+  },
+  {
+    "set": "faction-wars",
+    "line": "barbamon",
+    "stage": 0,
+    "form": "Barbamon",
+    "key": "catalog:CS_Barbamon:chr036"
+  },
+  {
+    "set": "faction-wars",
+    "line": "barbamon",
+    "stage": 1,
+    "form": "Barbamon",
+    "key": "catalog:CS_Barbamon:chr036"
+  },
+  {
+    "set": "faction-wars",
+    "line": "barbamon",
+    "stage": 2,
+    "form": "Barbamon",
+    "key": "catalog:CS_Barbamon:chr036"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_hawkmon",
+    "stage": 0,
+    "form": "Hawkmon",
+    "key": "catalog:TS_Hawkmon:chr706"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_hawkmon",
+    "stage": 1,
+    "form": "Aquilamon",
+    "key": "catalog:L_Aquilamon:chr015"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_gazimon",
+    "stage": 0,
+    "form": "Gazimon",
+    "key": "catalog:TS_Gazimon:chr569"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_syakomon",
+    "stage": 0,
+    "form": "Syakomon",
+    "key": "catalog:TS_Shakomon:chr709"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_blackgabumon",
+    "stage": 0,
+    "form": "BlackGabumon",
+    "key": "skin:SKIN_L_Gabumon_chr713"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_blackgabumon",
+    "stage": 1,
+    "form": "BlackGarurumon",
+    "key": "skin:SKIN_L_Garurumon_chr714"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_keramon",
+    "stage": 0,
+    "form": "Keramon",
+    "key": "catalog:TS_Keramon:chr626"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_armadillomon",
+    "stage": 0,
+    "form": "Armadillomon",
+    "key": "catalog:CS_Armadillomon:chr707"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_tapirmon",
+    "stage": 1,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_gomamon",
+    "stage": 0,
+    "form": "Gomamon",
+    "key": "catalog:TS_Gomamon:chr343"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_gomamon",
+    "stage": 1,
+    "form": "Ikkakumon",
+    "key": "catalog:L_Ikkakumon:chr344"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_solarmon",
+    "stage": 0,
+    "form": "Solarmon",
+    "key": "catalog:TS_Solarmon_Hagurumon:chr728"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_solarmon",
+    "stage": 1,
+    "form": "Clockmon",
+    "key": "catalog:L_Clockmon:chr398"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_chuumon",
+    "stage": 0,
+    "form": "Chuumon",
+    "key": "catalog:TS_Tyumon:chr020"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_patamon",
+    "stage": 0,
+    "form": "Patamon",
+    "key": "catalog:TS_Patamon:chr096"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_patamon",
+    "stage": 1,
+    "form": "Angemon",
+    "key": "catalog:CS_Angemon:chr087"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_patamon",
+    "stage": 2,
+    "form": "MagnaAngemon",
+    "key": "catalog:L_MagnaAngemon:chr101"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_renamon",
+    "stage": 0,
+    "form": "Renamon",
+    "key": "catalog:TS_Renamon:chr391"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_renamon",
+    "stage": 1,
+    "form": "Kyubimon",
+    "key": "catalog:L_Kyubimon:chr395"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_shoutmon",
+    "stage": 0,
+    "form": "Shoutmon",
+    "key": "catalog:TS_Shoutmon:chr682"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_kokuwamon",
+    "stage": 1,
+    "form": "Guardromon",
+    "key": "catalog:L_Guardromon:chr341"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_gizamon",
+    "stage": 1,
+    "form": "Gesomon",
+    "key": "catalog:Gesomon:main"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_falcomon",
+    "stage": 0,
+    "form": "Falcomon",
+    "key": "catalog:TS_Falcomon:chr705"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_falcomon",
+    "stage": 1,
+    "form": "Peckmon",
+    "key": "catalog:CS_Peckmon:chr702"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_betamon",
+    "stage": 0,
+    "form": "Betamon",
+    "key": "catalog:TS_Betamon:main"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_betamon",
+    "stage": 1,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_tsukaimon",
+    "stage": 1,
+    "form": "Devimon",
+    "key": "catalog:L_Devimon:chr093"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_gotsumon",
+    "stage": 0,
+    "form": "Gotsumon",
+    "key": "catalog:TS_Gottsumon:chr595"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_biyomon",
+    "stage": 0,
+    "form": "Biyomon",
+    "key": "catalog:L_Biyomon:chr307"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_biyomon",
+    "stage": 1,
+    "form": "Birdramon",
+    "key": "catalog:CS_Birdramon:chr308"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_kudamon",
+    "stage": 0,
+    "form": "Kudamon",
+    "key": "catalog:TS_Kudamon:chr053"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_kudamon",
+    "stage": 1,
+    "form": "Reppamon",
+    "key": "catalog:CS_Reppamon:chr077"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_ryudamon",
+    "stage": 0,
+    "form": "Ryudamon",
+    "key": "catalog:TS_Ryudamon:chr190"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_ryudamon",
+    "stage": 1,
+    "form": "Ginryumon",
+    "key": "catalog:CS_Ginryumon:chr191"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_monodramon",
+    "stage": 0,
+    "form": "Monodramon",
+    "key": "catalog:TS_Monodramon:chr458"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_lunamon",
+    "stage": 0,
+    "form": "Lunamon",
+    "key": "catalog:TS_Lunamon:chr002"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_starmon",
+    "stage": 1,
+    "form": "Starmon",
+    "key": "catalog:CS_Starmon:chr014"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_floramon",
+    "stage": 1,
+    "form": "Sunflowmon",
+    "key": "catalog:L_Sunflowmon:chr058"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_agumon",
+    "stage": 0,
+    "form": "Agumon",
+    "key": "catalog:L_Agumon:chr050"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_agumon",
+    "stage": 1,
+    "form": "GeoGreymon",
+    "key": "catalog:CS_GeoGreymon:chr054"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_crabmon",
+    "stage": 2,
+    "form": "Plesiomon",
+    "key": "catalog:CS_Plesiomon:chr450"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_aruraumon",
+    "stage": 1,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_elecmon",
+    "stage": 0,
+    "form": "Elecmon",
+    "key": "catalog:TS_Elecmon_Elecmon_Aegiomon:chr564"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_elecmon",
+    "stage": 1,
+    "form": "Leomon",
+    "key": "catalog:CS_Leomon:chr072"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_lopmon",
+    "stage": 0,
+    "form": "Lopmon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr750"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_lopmon",
+    "stage": 1,
+    "form": "Turuiemon",
+    "key": "catalog:Turuiemon:d014"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_toyagumon",
+    "stage": 0,
+    "form": "ToyAgumon",
+    "key": "catalog:TS_ToyAgumon:chr708"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_tentomon",
+    "stage": 0,
+    "form": "Tentomon",
+    "key": "catalog:TS_Tentomon:chr303"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_dorumon",
+    "stage": 0,
+    "form": "Dorumon",
+    "key": "catalog:L_Dorumon:chr112"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_dorumon",
+    "stage": 1,
+    "form": "Dorugamon",
+    "key": "catalog:L_Dorugamon:chr396"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_gaomon",
+    "stage": 0,
+    "form": "Gaomon",
+    "key": "catalog:TS_Gaomon:chr055"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_gaomon",
+    "stage": 1,
+    "form": "Gaogamon",
+    "key": "catalog:CS_Gaogamon:chr068"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_blackagumon",
+    "stage": 0,
+    "form": "BlackAgumon",
+    "key": "skin:SKIN_L_Agumon_chr143"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_blackagumon",
+    "stage": 1,
+    "form": "BlackGreymon",
+    "key": "skin:SKIN_L_Greymon_chr712"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_blackagumon",
+    "stage": 2,
+    "form": "BlackMetalGreymon",
+    "key": "skin:SKIN_MetalGreymon_chr327"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_impmon",
+    "stage": 0,
+    "form": "Impmon",
+    "key": "catalog:TS_Impmon:chr081"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_impmon",
+    "stage": 1,
+    "form": "Beelzemon",
+    "key": "catalog:RD_Beelzemon:main"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_terriermon",
+    "stage": 0,
+    "form": "Terriermon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_terriermon",
+    "stage": 1,
+    "form": "Gargomon",
+    "key": "catalog:CS_Gargomon:chr710"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_lobomon",
+    "stage": 2,
+    "form": "MagnaGarurumon",
+    "key": "catalog:MagnaGarurumon:chr678"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_salamon",
+    "stage": 0,
+    "form": "Salamon",
+    "key": "catalog:TS_Plotmon:chr361"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_hagurumon",
+    "stage": 0,
+    "form": "Hagurumon",
+    "key": "catalog:L_Hagurumon:chr009"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_vegiemon",
+    "stage": 0,
+    "form": "Vegiemon",
+    "key": "catalog:CS_Vegiemon:chr314"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_vegiemon",
+    "stage": 2,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_etemon",
+    "stage": 1,
+    "form": "MetalEtemon",
+    "key": "unique:L_MetalEtemon"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_etemon",
+    "stage": 2,
+    "form": "KingEtemon",
+    "key": "unique:L_KingEtemon"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_leviamon",
+    "stage": 0,
+    "form": "Leviamon",
+    "key": "catalog:CS_Leviamon:chr037"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_leviamon",
+    "stage": 1,
+    "form": "Leviamon",
+    "key": "catalog:CS_Leviamon:chr037"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_leviamon",
+    "stage": 2,
+    "form": "Leviamon",
+    "key": "catalog:CS_Leviamon:chr037"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_kimeramon",
+    "stage": 1,
+    "form": "Chaosmon",
+    "key": "unique:CS_Chaosmon"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_kimeramon",
+    "stage": 2,
+    "form": "Chaosmon Valdur Arm",
+    "key": "unique:CS_Chaosmon_Valdur_Arm"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_vikemon",
+    "stage": 0,
+    "form": "Pandamon",
+    "key": "unique:L_Pandamon"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_lucemon",
+    "stage": 0,
+    "form": "Lucemon",
+    "key": "catalog:TS_Lucemon:chr390"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_goblimon",
+    "stage": 0,
+    "form": "Goblimon",
+    "key": "catalog:TS_Goburimon:chr111"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_goblimon",
+    "stage": 1,
+    "form": "Goblimon",
+    "key": "catalog:TS_Goburimon:chr111"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_goblimon",
+    "stage": 2,
+    "form": "Goblimon",
+    "key": "catalog:TS_Goburimon:chr111"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_ogremon",
+    "stage": 0,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_ogremon",
+    "stage": 1,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_ogremon",
+    "stage": 2,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_tyrannomon",
+    "stage": 0,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_tyrannomon",
+    "stage": 1,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_tyrannomon",
+    "stage": 2,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_snowgoblimon",
+    "stage": 0,
+    "form": "SnowGoblimon",
+    "key": "catalog:TS_Goburimon:chr578"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_snowgoblimon",
+    "stage": 1,
+    "form": "SnowGoblimon",
+    "key": "catalog:TS_Goburimon:chr578"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_snowgoblimon",
+    "stage": 2,
+    "form": "SnowGoblimon",
+    "key": "catalog:TS_Goburimon:chr578"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_diaboromon",
+    "stage": 0,
+    "form": "Omnimon Alter-B",
+    "key": "unique:L_Omnimon_Alter_B"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_diaboromon",
+    "stage": 1,
+    "form": "Omnimon Alter-B",
+    "key": "unique:L_Omnimon_Alter_B"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_diaboromon",
+    "stage": 2,
+    "form": "Omnimon Alter-B",
+    "key": "unique:L_Omnimon_Alter_B"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_apocalymon",
+    "stage": 0,
+    "form": "Armageddemon",
+    "key": "catalog:CS_Armageddemon:chr106"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_apocalymon",
+    "stage": 1,
+    "form": "Armageddemon",
+    "key": "catalog:CS_Armageddemon:chr106"
+  },
+  {
+    "set": "galaxies",
+    "line": "gal_w_apocalymon",
+    "stage": 2,
+    "form": "Armageddemon",
+    "key": "catalog:CS_Armageddemon:chr106"
+  },
+  {
+    "set": "fates",
+    "line": "fat_lunamon",
+    "stage": 0,
+    "form": "Lunamon",
+    "key": "catalog:TS_Lunamon:chr002"
+  },
+  {
+    "set": "fates",
+    "line": "fat_keramon",
+    "stage": 0,
+    "form": "Keramon",
+    "key": "catalog:TS_Keramon:chr626"
+  },
+  {
+    "set": "fates",
+    "line": "fat_zubamon",
+    "stage": 0,
+    "form": "Zubamon",
+    "key": "catalog:CS_Zubamon:chr697"
+  },
+  {
+    "set": "fates",
+    "line": "fat_zubamon",
+    "stage": 1,
+    "form": "ZubaEagermon",
+    "key": "catalog:CS_ZubaEagermon:chr698"
+  },
+  {
+    "set": "fates",
+    "line": "fat_hagurumon",
+    "stage": 0,
+    "form": "Hagurumon",
+    "key": "catalog:TS_Solarmon_Hagurumon:chr009"
+  },
+  {
+    "set": "fates",
+    "line": "fat_hagurumon",
+    "stage": 1,
+    "form": "Guardromon",
+    "key": "catalog:L_Guardromon:chr341"
+  },
+  {
+    "set": "fates",
+    "line": "fat_gotsumon",
+    "stage": 0,
+    "form": "Gotsumon",
+    "key": "catalog:Gotsumon:chr081"
+  },
+  {
+    "set": "fates",
+    "line": "fat_gotsumon",
+    "stage": 2,
+    "form": "IceDevimon",
+    "key": "skin:SKIN_CS_Devimon_chr730"
+  },
+  {
+    "set": "fates",
+    "line": "fat_mushroomon",
+    "stage": 1,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "fates",
+    "line": "fat_otamamon",
+    "stage": 0,
+    "form": "Otamamon",
+    "key": "catalog:TS_Otamamon:chr582"
+  },
+  {
+    "set": "fates",
+    "line": "fat_otamamon",
+    "stage": 1,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "fates",
+    "line": "fat_terriermon",
+    "stage": 0,
+    "form": "Terriermon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701"
+  },
+  {
+    "set": "fates",
+    "line": "fat_terriermon",
+    "stage": 1,
+    "form": "Gargomon",
+    "key": "catalog:CS_Gargomon:chr710"
+  },
+  {
+    "set": "fates",
+    "line": "fat_terriermon",
+    "stage": 2,
+    "form": "Rapidmon",
+    "key": "catalog:CS_Rapidmon:chr722"
+  },
+  {
+    "set": "fates",
+    "line": "fat_numemon",
+    "stage": 0,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "fates",
+    "line": "fat_numemon",
+    "stage": 1,
+    "form": "GoldNumemon",
+    "key": "unique:L_GoldNumemon"
+  },
+  {
+    "set": "fates",
+    "line": "fat_numemon",
+    "stage": 2,
+    "form": "PlatinumNumemon",
+    "key": "catalog:CS_PlatinumNumemon:chr069"
+  },
+  {
+    "set": "fates",
+    "line": "fat_betamon",
+    "stage": 0,
+    "form": "Betamon",
+    "key": "catalog:CS_Betamon:chr389"
+  },
+  {
+    "set": "fates",
+    "line": "fat_betamon",
+    "stage": 1,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "fates",
+    "line": "fat_demidevimon",
+    "stage": 0,
+    "form": "DemiDevimon",
+    "key": "catalog:CS_DemiDevimon:chr097"
+  },
+  {
+    "set": "fates",
+    "line": "fat_demidevimon",
+    "stage": 1,
+    "form": "Devimon",
+    "key": "catalog:L_Devimon:chr093"
+  },
+  {
+    "set": "fates",
+    "line": "fat_patamon",
+    "stage": 0,
+    "form": "Patamon",
+    "key": "catalog:TS_Patamon:chr096"
+  },
+  {
+    "set": "fates",
+    "line": "fat_patamon",
+    "stage": 1,
+    "form": "Angemon",
+    "key": "catalog:CS_Angemon:chr087"
+  },
+  {
+    "set": "fates",
+    "line": "fat_patamon",
+    "stage": 2,
+    "form": "MagnaAngemon",
+    "key": "catalog:L_MagnaAngemon:chr101"
+  },
+  {
+    "set": "fates",
+    "line": "fat_ryudamon",
+    "stage": 0,
+    "form": "Ryudamon",
+    "key": "catalog:CS_Ryudamon:chr190"
+  },
+  {
+    "set": "fates",
+    "line": "fat_ryudamon",
+    "stage": 1,
+    "form": "Ginryumon",
+    "key": "catalog:CS_Ginryumon:chr191"
+  },
+  {
+    "set": "fates",
+    "line": "fat_gabumon",
+    "stage": 0,
+    "form": "Gabumon",
+    "key": "catalog:CS_Gabumon:chr151"
+  },
+  {
+    "set": "fates",
+    "line": "fat_gabumon",
+    "stage": 1,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "fates",
+    "line": "fat_palmon",
+    "stage": 0,
+    "form": "Palmon",
+    "key": "catalog:CS_Palmon:chr348"
+  },
+  {
+    "set": "fates",
+    "line": "fat_palmon",
+    "stage": 1,
+    "form": "Togemon",
+    "key": "catalog:CS_Togemon:chr349"
+  },
+  {
+    "set": "fates",
+    "line": "fat_hawkmon",
+    "stage": 0,
+    "form": "Hawkmon",
+    "key": "catalog:L_Hawkmon:chr706"
+  },
+  {
+    "set": "fates",
+    "line": "fat_hawkmon",
+    "stage": 1,
+    "form": "Aquilamon",
+    "key": "catalog:L_Aquilamon:chr015"
+  },
+  {
+    "set": "fates",
+    "line": "fat_kudamon",
+    "stage": 0,
+    "form": "Kudamon",
+    "key": "catalog:CS_Kudamon:chr053"
+  },
+  {
+    "set": "fates",
+    "line": "fat_kudamon",
+    "stage": 1,
+    "form": "Reppamon",
+    "key": "catalog:CS_Reppamon:chr077"
+  },
+  {
+    "set": "fates",
+    "line": "fat_gaomon",
+    "stage": 0,
+    "form": "Gaomon",
+    "key": "catalog:L_Gaomon:chr055"
+  },
+  {
+    "set": "fates",
+    "line": "fat_gaomon",
+    "stage": 1,
+    "form": "Gaogamon",
+    "key": "catalog:CS_Gaogamon:chr068"
+  },
+  {
+    "set": "fates",
+    "line": "fat_lalamon",
+    "stage": 0,
+    "form": "Lalamon",
+    "key": "catalog:CS_Lalamon:chr056"
+  },
+  {
+    "set": "fates",
+    "line": "fat_lalamon",
+    "stage": 1,
+    "form": "Sunflowmon",
+    "key": "catalog:L_Sunflowmon:chr058"
+  },
+  {
+    "set": "fates",
+    "line": "fat_gizamon",
+    "stage": 1,
+    "form": "Gesomon",
+    "key": "catalog:Gesomon:main"
+  },
+  {
+    "set": "fates",
+    "line": "fat_fanbeemon",
+    "stage": 0,
+    "form": "FanBeemon",
+    "key": "catalog:TS_Funbeemon:chr042"
+  },
+  {
+    "set": "fates",
+    "line": "fat_fanbeemon",
+    "stage": 1,
+    "form": "Waspmon",
+    "key": "catalog:L_Waspmon:chr454"
+  },
+  {
+    "set": "fates",
+    "line": "fat_candlemon",
+    "stage": 1,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "fates",
+    "line": "fat_agumon",
+    "stage": 0,
+    "form": "Agumon",
+    "key": "catalog:CS_Agumon:chr050"
+  },
+  {
+    "set": "fates",
+    "line": "fat_agumon",
+    "stage": 1,
+    "form": "Greymon",
+    "key": "catalog:L_Greymon:chr326"
+  },
+  {
+    "set": "fates",
+    "line": "fat_falcomon",
+    "stage": 0,
+    "form": "Falcomon",
+    "key": "catalog:CS_Falcomon:chr705"
+  },
+  {
+    "set": "fates",
+    "line": "fat_falcomon",
+    "stage": 1,
+    "form": "Peckmon",
+    "key": "catalog:CS_Peckmon:chr702"
+  },
+  {
+    "set": "fates",
+    "line": "fat_blackgatomon",
+    "stage": 0,
+    "form": "BlackGatomon",
+    "key": "skin:SKIN_Gatomon_chr043"
+  },
+  {
+    "set": "fates",
+    "line": "fat_blackgatomon",
+    "stage": 2,
+    "form": "Lilithmon",
+    "key": "catalog:CS_Lilithmon:chr034"
+  },
+  {
+    "set": "fates",
+    "line": "fat_hackmon",
+    "stage": 2,
+    "form": "Jesmon",
+    "key": "catalog:CS_Jesmon:chr749"
+  },
+  {
+    "set": "fates",
+    "line": "fat_syakomon",
+    "stage": 0,
+    "form": "Syakomon",
+    "key": "catalog:L_Syakomon:chr709"
+  },
+  {
+    "set": "fates",
+    "line": "fat_tentomon",
+    "stage": 0,
+    "form": "Tentomon",
+    "key": "catalog:TS_Tentomon:chr303"
+  },
+  {
+    "set": "fates",
+    "line": "fat_salamon",
+    "stage": 0,
+    "form": "Salamon",
+    "key": "catalog:CS_Salamon:chr361"
+  },
+  {
+    "set": "fates",
+    "line": "fat_chuumon",
+    "stage": 0,
+    "form": "Chuumon",
+    "key": "catalog:TS_Tyumon:chr020"
+  },
+  {
+    "set": "fates",
+    "line": "fat_chuumon",
+    "stage": 1,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "fates",
+    "line": "fat_aruraumon",
+    "stage": 1,
+    "form": "Vegiemon",
+    "key": "catalog:CS_Vegiemon:chr314"
+  },
+  {
+    "set": "fates",
+    "line": "fat_dracomon",
+    "stage": 0,
+    "form": "Dracomon",
+    "key": "catalog:CS_Dracomon:chr208"
+  },
+  {
+    "set": "fates",
+    "line": "fat_blackagumon",
+    "stage": 0,
+    "form": "BlackAgumon",
+    "key": "skin:SKIN_L_Agumon_chr143_cs"
+  },
+  {
+    "set": "fates",
+    "line": "fat_blackagumon",
+    "stage": 1,
+    "form": "BlackGreymon",
+    "key": "skin:SKIN_L_Greymon_chr712"
+  },
+  {
+    "set": "fates",
+    "line": "fat_blackagumon",
+    "stage": 2,
+    "form": "BlackWarGreymon",
+    "key": "skin:SKIN_WarGreymon_chr175"
+  },
+  {
+    "set": "fates",
+    "line": "fat_renamon",
+    "stage": 0,
+    "form": "Renamon",
+    "key": "catalog:CS_Renamon:chr391"
+  },
+  {
+    "set": "fates",
+    "line": "fat_renamon",
+    "stage": 1,
+    "form": "Kyubimon",
+    "key": "catalog:L_Kyubimon:chr395"
+  },
+  {
+    "set": "fates",
+    "line": "fat_biyomon",
+    "stage": 0,
+    "form": "Biyomon",
+    "key": "catalog:TS_Piyomon:chr307"
+  },
+  {
+    "set": "fates",
+    "line": "fat_biyomon",
+    "stage": 1,
+    "form": "Birdramon",
+    "key": "catalog:CS_Birdramon:chr308"
+  },
+  {
+    "set": "fates",
+    "line": "fat_tapirmon",
+    "stage": 1,
+    "form": "Wizardmon",
+    "key": "catalog:L_Wizardmon:chr377"
+  },
+  {
+    "set": "fates",
+    "line": "fat_dorumon",
+    "stage": 0,
+    "form": "Dorumon",
+    "key": "catalog:TS_Dorumon:chr112"
+  },
+  {
+    "set": "fates",
+    "line": "fat_dorumon",
+    "stage": 1,
+    "form": "Dorugamon",
+    "key": "catalog:L_Dorugamon:chr396"
+  },
+  {
+    "set": "fates",
+    "line": "fat_guilmon",
+    "stage": 0,
+    "form": "Guilmon",
+    "key": "catalog:L_Guilmon:chr090"
+  },
+  {
+    "set": "fates",
+    "line": "fat_guilmon",
+    "stage": 1,
+    "form": "Growlmon",
+    "key": "catalog:CS_Growlmon:chr078"
+  },
+  {
+    "set": "fates",
+    "line": "fat_guilmon",
+    "stage": 2,
+    "form": "Gallantmon",
+    "key": "unique:L_Gallantmon"
+  },
+  {
+    "set": "fates",
+    "line": "fat_gomamon",
+    "stage": 0,
+    "form": "Gomamon",
+    "key": "catalog:CS_Gomamon:chr343"
+  },
+  {
+    "set": "fates",
+    "line": "fat_gomamon",
+    "stage": 1,
+    "form": "Ikkakumon",
+    "key": "catalog:L_Ikkakumon:chr344"
+  },
+  {
+    "set": "fates",
+    "line": "fat_wormmon",
+    "stage": 0,
+    "form": "Wormmon",
+    "key": "catalog:CS_Wormmon:chr392"
+  },
+  {
+    "set": "fates",
+    "line": "fat_wormmon",
+    "stage": 1,
+    "form": "Stingmon",
+    "key": "catalog:CS_Stingmon:chr091"
+  },
+  {
+    "set": "fates",
+    "line": "fat_blackgabumon",
+    "stage": 0,
+    "form": "BlackGabumon",
+    "key": "skin:SKIN_CS_Gabumon_chr713"
+  },
+  {
+    "set": "fates",
+    "line": "fat_blackgabumon",
+    "stage": 1,
+    "form": "BlackGarurumon",
+    "key": "skin:SKIN_CS_Garurumon_chr714"
+  },
+  {
+    "set": "fates",
+    "line": "fat_blackgabumon",
+    "stage": 2,
+    "form": "CresGarurumon",
+    "key": "unique:L_CresGarurumon"
+  },
+  {
+    "set": "fates",
+    "line": "fat_lopmon",
+    "stage": 0,
+    "form": "Lopmon",
+    "key": "catalog:CS_Lopmon:chr750"
+  },
+  {
+    "set": "fates",
+    "line": "fat_lopmon",
+    "stage": 1,
+    "form": "Turuiemon",
+    "key": "catalog:Turuiemon:d014"
+  },
+  {
+    "set": "fates",
+    "line": "fat_lopmon",
+    "stage": 2,
+    "form": "Cherubimon (Good)",
+    "key": "unique:CS_Cherubimon_Good"
+  },
+  {
+    "set": "fates",
+    "line": "fat_veemon",
+    "stage": 0,
+    "form": "Veemon",
+    "key": "catalog:L_Veemon:chr114"
+  },
+  {
+    "set": "fates",
+    "line": "fat_veemon",
+    "stage": 1,
+    "form": "Magnamon",
+    "key": "catalog:CS_Magnamon:chr382"
+  },
+  {
+    "set": "fates",
+    "line": "fat_leomon",
+    "stage": 0,
+    "form": "Leomon",
+    "key": "catalog:CS_Leomon:chr072"
+  },
+  {
+    "set": "fates",
+    "line": "fat_ouryumon",
+    "stage": 2,
+    "form": "Alphamon",
+    "key": "catalog:CS_Alphamon:chr416"
+  },
+  {
+    "set": "fates",
+    "line": "fat_clockmon",
+    "stage": 0,
+    "form": "Clockmon",
+    "key": "catalog:L_Clockmon:chr398"
+  },
+  {
+    "set": "fates",
+    "line": "fat_clockmon",
+    "stage": 1,
+    "form": "Digitamamon",
+    "key": "unique:CS_Digitamamon"
+  },
+  {
+    "set": "fates",
+    "line": "fat_impmon",
+    "stage": 0,
+    "form": "Impmon",
+    "key": "catalog:TS_Impmon:chr081"
+  },
+  {
+    "set": "fates",
+    "line": "fat_impmon",
+    "stage": 1,
+    "form": "Beelzemon",
+    "key": "catalog:L_Beelzemon:chr035"
+  },
+  {
+    "set": "fates",
+    "line": "fat_goblimon",
+    "stage": 0,
+    "form": "Goblimon",
+    "key": "catalog:CS_Goblimon:chr111"
+  },
+  {
+    "set": "fates",
+    "line": "fat_goblimon",
+    "stage": 1,
+    "form": "Goblimon",
+    "key": "catalog:CS_Goblimon:chr111"
+  },
+  {
+    "set": "fates",
+    "line": "fat_goblimon",
+    "stage": 2,
+    "form": "Goblimon",
+    "key": "catalog:CS_Goblimon:chr111"
+  },
+  {
+    "set": "fates",
+    "line": "fat_ogremon",
+    "stage": 0,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "fates",
+    "line": "fat_ogremon",
+    "stage": 1,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "fates",
+    "line": "fat_ogremon",
+    "stage": 2,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_zubamon",
+    "stage": 0,
+    "form": "Zubamon",
+    "key": "catalog:TS_Zubamon:chr697"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_zubamon",
+    "stage": 1,
+    "form": "ZubaEagermon",
+    "key": "catalog:CS_ZubaEagermon:chr698"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_otamamon",
+    "stage": 0,
+    "form": "Otamamon",
+    "key": "catalog:TS_Otamamon:chr582"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_otamamon",
+    "stage": 1,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_keramon",
+    "stage": 0,
+    "form": "Keramon",
+    "key": "catalog:TS_Keramon:chr626"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_wormmon",
+    "stage": 0,
+    "form": "Wormmon",
+    "key": "catalog:TS_Wormmon:chr392"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_wormmon",
+    "stage": 1,
+    "form": "Stingmon",
+    "key": "catalog:CS_Stingmon:chr091"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_chuumon",
+    "stage": 0,
+    "form": "Chuumon",
+    "key": "catalog:TS_Tyumon:chr020"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_gomamon",
+    "stage": 0,
+    "form": "Gomamon",
+    "key": "catalog:TS_Gomamon:chr343"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_gomamon",
+    "stage": 1,
+    "form": "Ikkakumon",
+    "key": "catalog:L_Ikkakumon:chr344"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_demidevimon",
+    "stage": 0,
+    "form": "DemiDevimon",
+    "key": "catalog:TS_PicoDevimon:chr097"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_demidevimon",
+    "stage": 1,
+    "form": "Devimon",
+    "key": "catalog:L_Devimon:chr093"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_toyagumon",
+    "stage": 0,
+    "form": "ToyAgumon",
+    "key": "catalog:TS_ToyAgumon:chr708"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_toyagumon",
+    "stage": 1,
+    "form": "Starmon",
+    "key": "catalog:CS_Starmon:chr014"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_blackagumon",
+    "stage": 0,
+    "form": "BlackAgumon",
+    "key": "skin:SKIN_CS_Agumon_chr143"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_blackagumon",
+    "stage": 1,
+    "form": "Meramon",
+    "key": "catalog:L_Meramon:chr010"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_blackgabumon",
+    "stage": 0,
+    "form": "BlackGabumon",
+    "key": "skin:SKIN_L_Gabumon_chr713"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_blackgabumon",
+    "stage": 2,
+    "form": "BlackMetalGarurumon",
+    "key": "skin:SKIN_MetalGarurumon_chr182"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_falcomon",
+    "stage": 0,
+    "form": "Falcomon",
+    "key": "catalog:TS_Falcomon:chr705"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_falcomon",
+    "stage": 1,
+    "form": "Peckmon",
+    "key": "catalog:CS_Peckmon:chr702"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_impmon",
+    "stage": 0,
+    "form": "Impmon",
+    "key": "catalog:TS_Impmon:chr081"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_impmon",
+    "stage": 1,
+    "form": "Wizardmon",
+    "key": "catalog:L_Wizardmon:chr377"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_hagurumon",
+    "stage": 0,
+    "form": "Hagurumon",
+    "key": "catalog:CS_Hagurumon:chr009"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_hagurumon",
+    "stage": 1,
+    "form": "Guardromon",
+    "key": "catalog:L_Guardromon:chr341"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_kumamon",
+    "stage": 2,
+    "form": "IceLeomon",
+    "key": "skin:SKIN_Leomon_chr409"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_monodramon",
+    "stage": 0,
+    "form": "Monodramon",
+    "key": "catalog:TS_Monodramon:chr458"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_lalamon",
+    "stage": 0,
+    "form": "Lalamon",
+    "key": "catalog:TS_Lalamon:chr056"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_lalamon",
+    "stage": 1,
+    "form": "Sunflowmon",
+    "key": "catalog:L_Sunflowmon:chr058"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_patamon",
+    "stage": 0,
+    "form": "Patamon",
+    "key": "catalog:TS_Patamon:chr096"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_patamon",
+    "stage": 1,
+    "form": "Angemon",
+    "key": "catalog:CS_Angemon:chr087"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_patamon",
+    "stage": 2,
+    "form": "MagnaAngemon",
+    "key": "catalog:L_MagnaAngemon:chr101"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_tsukaimon",
+    "stage": 1,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_goblimon",
+    "stage": 0,
+    "form": "Goblimon",
+    "key": "catalog:TS_Goburimon:chr111"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_goblimon",
+    "stage": 1,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_lunamon",
+    "stage": 0,
+    "form": "Lunamon",
+    "key": "catalog:TS_Lunamon:chr002"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_terriermon",
+    "stage": 0,
+    "form": "Terriermon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_terriermon",
+    "stage": 1,
+    "form": "Gargomon",
+    "key": "catalog:CS_Gargomon:chr710"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_terriermon",
+    "stage": 2,
+    "form": "Rapidmon",
+    "key": "catalog:CS_Rapidmon:chr722"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_dracomon",
+    "stage": 0,
+    "form": "Dracomon",
+    "key": "catalog:TS_Dracomon:chr208"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_dracomon",
+    "stage": 1,
+    "form": "Coredramon (Blue)",
+    "key": "skin:SKIN_Coredramon_Green_chr218"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_elecmon",
+    "stage": 0,
+    "form": "Elecmon",
+    "key": "catalog:TS_Elecmon_Elecmon_Aegiomon:chr564"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_elecmon",
+    "stage": 1,
+    "form": "Leomon",
+    "key": "catalog:CS_Leomon:chr072"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_floramon",
+    "stage": 1,
+    "form": "Togemon",
+    "key": "catalog:CS_Togemon:chr349"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_salamon",
+    "stage": 0,
+    "form": "Salamon",
+    "key": "catalog:TS_Plotmon:chr361"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_gazimon",
+    "stage": 0,
+    "form": "Gazimon",
+    "key": "catalog:TS_Gazimon:chr569"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_gazimon",
+    "stage": 2,
+    "form": "Beelzemon",
+    "key": "catalog:RD_Beelzemon:main"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_blackgatomon",
+    "stage": 0,
+    "form": "BlackGatomon",
+    "key": "skin:SKIN_CS_Gatomon_chr043"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_blackgatomon",
+    "stage": 2,
+    "form": "Lilithmon",
+    "key": "catalog:CS_Lilithmon:chr034"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_kudamon",
+    "stage": 0,
+    "form": "Kudamon",
+    "key": "catalog:TS_Kudamon:chr053"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_kudamon",
+    "stage": 1,
+    "form": "Reppamon",
+    "key": "catalog:CS_Reppamon:chr077"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_lopmon",
+    "stage": 0,
+    "form": "Lopmon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr750"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_lopmon",
+    "stage": 1,
+    "form": "Turuiemon",
+    "key": "catalog:Turuiemon:d014"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_lopmon",
+    "stage": 2,
+    "form": "Cherubimon (Evil)",
+    "key": "unique:CS_Cherubimon_Evil"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_biyomon",
+    "stage": 0,
+    "form": "Biyomon",
+    "key": "catalog:CS_Biyomon:chr307"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_biyomon",
+    "stage": 1,
+    "form": "Birdramon",
+    "key": "catalog:CS_Birdramon:chr308"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_ryudamon",
+    "stage": 0,
+    "form": "Ryudamon",
+    "key": "catalog:TS_Ryudamon:chr190"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_ryudamon",
+    "stage": 1,
+    "form": "Ginryumon",
+    "key": "catalog:CS_Ginryumon:chr191"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_palmon",
+    "stage": 0,
+    "form": "Palmon",
+    "key": "catalog:TS_Palmon:chr348"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_palmon",
+    "stage": 1,
+    "form": "Vegiemon",
+    "key": "catalog:CS_Vegiemon:chr314"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_gaomon",
+    "stage": 0,
+    "form": "Gaomon",
+    "key": "catalog:TS_Gaomon:chr055"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_gaomon",
+    "stage": 1,
+    "form": "Gaogamon",
+    "key": "catalog:CS_Gaogamon:chr068"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_dorumon",
+    "stage": 0,
+    "form": "Dorumon",
+    "key": "catalog:CS_Dorumon:chr112"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_dorumon",
+    "stage": 1,
+    "form": "Dorugamon",
+    "key": "catalog:L_Dorugamon:chr396"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_woodmon",
+    "stage": 0,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_hackmon",
+    "stage": 2,
+    "form": "Jesmon",
+    "key": "catalog:CS_Jesmon:chr749"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_hawkmon",
+    "stage": 0,
+    "form": "Hawkmon",
+    "key": "catalog:TS_Hawkmon:chr706"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_hawkmon",
+    "stage": 1,
+    "form": "Aquilamon",
+    "key": "catalog:L_Aquilamon:chr015"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_blackgreymon",
+    "stage": 0,
+    "form": "BlackGreymon",
+    "key": "skin:SKIN_L_Greymon_chr712"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_blackgreymon",
+    "stage": 1,
+    "form": "BlackMetalGreymon",
+    "key": "skin:SKIN_MetalGreymon_chr327"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_blackgreymon",
+    "stage": 2,
+    "form": "BlackWarGreymon",
+    "key": "skin:SKIN_WarGreymon_chr175"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_veemon",
+    "stage": 0,
+    "form": "Veemon",
+    "key": "catalog:TS_V_mon:chr114"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_veemon",
+    "stage": 1,
+    "form": "Magnamon",
+    "key": "catalog:CS_Magnamon:chr382"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_unimon",
+    "stage": 2,
+    "form": "Ophanimon Falldown Mode",
+    "key": "unique:L_Ophanimon_Falldown_Mode"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_growlmon",
+    "stage": 0,
+    "form": "Growlmon",
+    "key": "catalog:L_Growlmon:chr078"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_growlmon",
+    "stage": 1,
+    "form": "WarGrowlmon",
+    "key": "catalog:RD_WarGrowlmon:main"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_guilmon",
+    "stage": 0,
+    "form": "Guilmon",
+    "key": "catalog:TS_Guilmon:chr090"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_guilmon",
+    "stage": 1,
+    "form": "Gallantmon",
+    "key": "unique:L_Gallantmon"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_guilmon",
+    "stage": 2,
+    "form": "Gallantmon Crimson Mode",
+    "key": "catalog:L_Gallantmon:chr013"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_sisciel",
+    "stage": 0,
+    "form": "Sistermon Ciel",
+    "key": "unique:CS_Sistermon_Ciel"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_clockmon",
+    "stage": 0,
+    "form": "Clockmon",
+    "key": "catalog:L_Clockmon:chr398"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_lucemon",
+    "stage": 0,
+    "form": "Lucemon",
+    "key": "catalog:TS_Lucemon:chr390"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_renamon",
+    "stage": 0,
+    "form": "Renamon",
+    "key": "catalog:TS_Renamon:chr391"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_wolf",
+    "stage": 0,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_wolf",
+    "stage": 1,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_wolf",
+    "stage": 2,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_pagumon",
+    "stage": 0,
+    "form": "Arcadiamon (In-Training)",
+    "key": "unique:CS_Arcadiamon_In_Training"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_pagumon",
+    "stage": 1,
+    "form": "Arcadiamon (Rookie)",
+    "key": "unique:CS_Arcadiamon_Rookie"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_pagumon",
+    "stage": 2,
+    "form": "Arcadiamon (Champion)",
+    "key": "unique:CS_Arcadiamon_Champion"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_numemon",
+    "stage": 0,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_numemon",
+    "stage": 1,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_numemon",
+    "stage": 2,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_geremon",
+    "stage": 0,
+    "form": "ShellNumemon",
+    "key": "catalog:L_ShellNumemon:chr455"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_geremon",
+    "stage": 1,
+    "form": "ShellNumemon",
+    "key": "catalog:L_ShellNumemon:chr455"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_geremon",
+    "stage": 2,
+    "form": "ShellNumemon",
+    "key": "catalog:L_ShellNumemon:chr455"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_tyrannomon",
+    "stage": 0,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_tyrannomon",
+    "stage": 1,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_tyrannomon",
+    "stage": 2,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_icedevimon",
+    "stage": 0,
+    "form": "IceDevimon",
+    "key": "skin:SKIN_CS_Devimon_chr730"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_icedevimon",
+    "stage": 1,
+    "form": "IceDevimon",
+    "key": "skin:SKIN_CS_Devimon_chr730"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_icedevimon",
+    "stage": 2,
+    "form": "IceDevimon",
+    "key": "skin:SKIN_CS_Devimon_chr730"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_kingetemon",
+    "stage": 0,
+    "form": "KingEtemon",
+    "key": "unique:L_KingEtemon"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_kingetemon",
+    "stage": 1,
+    "form": "KingEtemon",
+    "key": "unique:L_KingEtemon"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_kingetemon",
+    "stage": 2,
+    "form": "KingEtemon",
+    "key": "unique:L_KingEtemon"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_daemon",
+    "stage": 0,
+    "form": "Daemon",
+    "key": "catalog:CS_Daemon:chr038"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_daemon",
+    "stage": 1,
+    "form": "Daemon",
+    "key": "catalog:CS_Daemon:chr038"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_daemon",
+    "stage": 2,
+    "form": "Daemon",
+    "key": "catalog:CS_Daemon:chr038"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_leviamon",
+    "stage": 0,
+    "form": "Leviamon",
+    "key": "catalog:CS_Leviamon:chr037"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_leviamon",
+    "stage": 1,
+    "form": "Leviamon",
+    "key": "catalog:CS_Leviamon:chr037"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_leviamon",
+    "stage": 2,
+    "form": "Leviamon",
+    "key": "catalog:CS_Leviamon:chr037"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_barbamon",
+    "stage": 0,
+    "form": "Barbamon",
+    "key": "catalog:CS_Barbamon:chr036"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_barbamon",
+    "stage": 1,
+    "form": "Barbamon",
+    "key": "catalog:CS_Barbamon:chr036"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_barbamon",
+    "stage": 2,
+    "form": "Barbamon",
+    "key": "catalog:CS_Barbamon:chr036"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_belphemon",
+    "stage": 0,
+    "form": "Belphemon Rage Mode",
+    "key": "catalog:CS_Belphemon_Rage_Mode:chr040"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_belphemon",
+    "stage": 1,
+    "form": "Belphemon Rage Mode",
+    "key": "catalog:CS_Belphemon_Rage_Mode:chr040"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_belphemon",
+    "stage": 2,
+    "form": "Belphemon Rage Mode",
+    "key": "catalog:CS_Belphemon_Rage_Mode:chr040"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_apocalymon",
+    "stage": 0,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_apocalymon",
+    "stage": 1,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_apocalymon",
+    "stage": 2,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_armageddemon",
+    "stage": 0,
+    "form": "Armageddemon",
+    "key": "catalog:CS_Armageddemon:chr106"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_armageddemon",
+    "stage": 1,
+    "form": "Armageddemon",
+    "key": "catalog:CS_Armageddemon:chr106"
+  },
+  {
+    "set": "reckoning",
+    "line": "rec_w_armageddemon",
+    "stage": 2,
+    "form": "Armageddemon",
+    "key": "catalog:CS_Armageddemon:chr106"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_meramon",
+    "stage": 0,
+    "form": "Meramon",
+    "key": "catalog:L_Meramon:chr010"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_zubamon",
+    "stage": 0,
+    "form": "Zubamon",
+    "key": "catalog:CS_Zubamon:chr697"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_zubamon",
+    "stage": 1,
+    "form": "ZubaEagermon",
+    "key": "catalog:CS_ZubaEagermon:chr698"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_goblimon",
+    "stage": 0,
+    "form": "Goblimon",
+    "key": "catalog:CS_Goblimon:chr111"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_goblimon",
+    "stage": 1,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_toyagumon",
+    "stage": 0,
+    "form": "ToyAgumon",
+    "key": "catalog:L_ToyAgumon:chr708"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_syakomon",
+    "stage": 0,
+    "form": "Syakomon",
+    "key": "catalog:L_Syakomon:chr709"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_tsukaimon",
+    "stage": 1,
+    "form": "Devimon",
+    "key": "catalog:L_Devimon:chr093"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_tsukaimon",
+    "stage": 2,
+    "form": "IceDevimon",
+    "key": "skin:SKIN_CS_Devimon_chr730"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_bakemon",
+    "stage": 0,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_bakemon",
+    "stage": 2,
+    "form": "Beelzemon",
+    "key": "catalog:L_Beelzemon:chr035"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_kamemon",
+    "stage": 1,
+    "form": "Ikkakumon",
+    "key": "catalog:L_Ikkakumon:chr344"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_chuumon",
+    "stage": 0,
+    "form": "Chuumon",
+    "key": "catalog:TS_Tyumon:chr020"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_seadramon",
+    "stage": 0,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_kokuwamon",
+    "stage": 1,
+    "form": "Guardromon",
+    "key": "catalog:L_Guardromon:chr341"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_terriermon",
+    "stage": 0,
+    "form": "Terriermon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_terriermon",
+    "stage": 1,
+    "form": "Gargomon",
+    "key": "catalog:CS_Gargomon:chr710"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_terriermon",
+    "stage": 2,
+    "form": "Rapidmon (Armor)",
+    "key": "catalog:L_Rapidmon_Armor:chr751"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_falcomon",
+    "stage": 0,
+    "form": "Falcomon",
+    "key": "catalog:CS_Falcomon:chr705"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_falcomon",
+    "stage": 2,
+    "form": "Ravemon",
+    "key": "catalog:CS_Ravemon:chr740"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_sorcermon",
+    "stage": 1,
+    "form": "Wizardmon",
+    "key": "catalog:L_Wizardmon:chr377"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_blackgabumon",
+    "stage": 0,
+    "form": "BlackGabumon",
+    "key": "skin:SKIN_CS_Gabumon_chr713"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_blackgabumon",
+    "stage": 1,
+    "form": "BlackGarurumon",
+    "key": "skin:SKIN_CS_Garurumon_chr714"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_blackgabumon",
+    "stage": 2,
+    "form": "MetalGarurumon X",
+    "key": "unique:L_MetalGarurumon_X"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_solarmon",
+    "stage": 0,
+    "form": "Solarmon",
+    "key": "catalog:L_Solarmon:chr728"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_solarmon",
+    "stage": 1,
+    "form": "Clockmon",
+    "key": "catalog:L_Clockmon:chr398"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_woodmon",
+    "stage": 0,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_hawkmon",
+    "stage": 0,
+    "form": "Hawkmon",
+    "key": "catalog:L_Hawkmon:chr706"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_hawkmon",
+    "stage": 1,
+    "form": "Aquilamon",
+    "key": "catalog:L_Aquilamon:chr015"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_gizamon",
+    "stage": 1,
+    "form": "Gesomon",
+    "key": "catalog:Gesomon:main"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_gizamon",
+    "stage": 2,
+    "form": "MarineDevimon",
+    "key": "catalog:MarineDevimon:main"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_starmon",
+    "stage": 0,
+    "form": "Agumon",
+    "key": "catalog:CS_Agumon:chr050"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_starmon",
+    "stage": 1,
+    "form": "Starmon",
+    "key": "catalog:CS_Starmon:chr014"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_vegiemon",
+    "stage": 0,
+    "form": "Vegiemon",
+    "key": "catalog:CS_Vegiemon:chr314"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_demidevimon",
+    "stage": 0,
+    "form": "DemiDevimon",
+    "key": "catalog:CS_DemiDevimon:chr097"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_salamon",
+    "stage": 0,
+    "form": "Salamon",
+    "key": "catalog:CS_Salamon:chr361"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_blackagumon",
+    "stage": 0,
+    "form": "BlackAgumon",
+    "key": "skin:SKIN_L_Agumon_chr143"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_blackagumon",
+    "stage": 1,
+    "form": "BlackGreymon",
+    "key": "skin:SKIN_L_Greymon_chr712"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_blackagumon",
+    "stage": 2,
+    "form": "WarGreymon X",
+    "key": "catalog:RD_Wargreymon_X:main"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_impmon",
+    "stage": 0,
+    "form": "Impmon",
+    "key": "catalog:TS_Impmon:chr081"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_impmon",
+    "stage": 2,
+    "form": "Lilithmon",
+    "key": "catalog:CS_Lilithmon:chr034"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_numemon",
+    "stage": 0,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_numemon",
+    "stage": 2,
+    "form": "PlatinumNumemon",
+    "key": "catalog:CS_PlatinumNumemon:chr069"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_youkomon",
+    "stage": 2,
+    "form": "Kuzuhamon",
+    "key": "skin:SKIN_Sakuyamon_chr754"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_tyrannomon",
+    "stage": 0,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_shoutmon",
+    "stage": 0,
+    "form": "Shoutmon",
+    "key": "catalog:CS_Shoutmon:chr682"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_hagurumon",
+    "stage": 0,
+    "form": "Hagurumon",
+    "key": "catalog:L_Hagurumon:chr009"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_lalamon",
+    "stage": 0,
+    "form": "Lalamon",
+    "key": "catalog:CS_Lalamon:chr056"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_dorumon",
+    "stage": 0,
+    "form": "Dorumon",
+    "key": "catalog:L_Dorumon:chr112"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_gotsumon",
+    "stage": 0,
+    "form": "Gotsumon",
+    "key": "catalog:Gotsumon:chr081"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_justimon",
+    "stage": 2,
+    "form": "Gankoomon",
+    "key": "unique:L_Gankoomon"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_keramon",
+    "stage": 0,
+    "form": "Keramon",
+    "key": "catalog:TS_Keramon:chr626"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_gekomon",
+    "stage": 0,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_datamon",
+    "stage": 1,
+    "form": "GranLocomon",
+    "key": "unique:L_GranLocomon"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_renamon",
+    "stage": 0,
+    "form": "Renamon",
+    "key": "catalog:CS_Renamon:chr391"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_lucemon",
+    "stage": 0,
+    "form": "Lucemon",
+    "key": "catalog:CS_Lucemon:chr390"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_w_belphemon",
+    "stage": 0,
+    "form": "Belphemon Rage Mode",
+    "key": "catalog:CS_Belphemon_Rage_Mode:chr040"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_w_belphemon",
+    "stage": 1,
+    "form": "Belphemon Rage Mode",
+    "key": "catalog:CS_Belphemon_Rage_Mode:chr040"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_w_belphemon",
+    "stage": 2,
+    "form": "Belphemon Rage Mode",
+    "key": "catalog:CS_Belphemon_Rage_Mode:chr040"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_w_apocalymon",
+    "stage": 0,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_w_apocalymon",
+    "stage": 1,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "gizmos",
+    "line": "giz_w_apocalymon",
+    "stage": 2,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_gazimon",
+    "stage": 0,
+    "form": "Gazimon",
+    "key": "catalog:TS_Gazimon:chr569"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_gotsumon",
+    "stage": 0,
+    "form": "Gotsumon",
+    "key": "catalog:TS_Gottsumon:chr595"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_patamon",
+    "stage": 0,
+    "form": "Patamon",
+    "key": "catalog:TS_Patamon:chr096"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_lunamon",
+    "stage": 0,
+    "form": "Lunamon",
+    "key": "catalog:TS_Lunamon:chr002"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_elecmon",
+    "stage": 0,
+    "form": "Elecmon",
+    "key": "catalog:TS_Elecmon_Elecmon_Aegiomon:chr564"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_impmon",
+    "stage": 0,
+    "form": "Impmon",
+    "key": "catalog:TS_Impmon:chr081"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_gaomon",
+    "stage": 0,
+    "form": "Gaomon",
+    "key": "catalog:TS_Gaomon:chr055"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_fanbeemon",
+    "stage": 0,
+    "form": "FanBeemon",
+    "key": "catalog:TS_Funbeemon:chr042"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_syakomon",
+    "stage": 0,
+    "form": "Syakomon",
+    "key": "catalog:TS_Shakomon:chr709"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_syakomon",
+    "stage": 1,
+    "form": "ShellNumemon",
+    "key": "catalog:L_ShellNumemon:chr455"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_dracmon",
+    "stage": 1,
+    "form": "IceDevimon",
+    "key": "skin:SKIN_CS_Devimon_chr730"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_armadillomon",
+    "stage": 0,
+    "form": "Armadillomon",
+    "key": "catalog:CS_Armadillomon:chr707"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_gabumon",
+    "stage": 0,
+    "form": "Gabumon",
+    "key": "catalog:L_Gabumon:chr151"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_gomamon",
+    "stage": 0,
+    "form": "Gomamon",
+    "key": "catalog:TS_Gomamon:chr343"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_gomamon",
+    "stage": 1,
+    "form": "Ikkakumon",
+    "key": "catalog:L_Ikkakumon:chr344"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_blackagumon",
+    "stage": 0,
+    "form": "BlackAgumon",
+    "key": "skin:SKIN_L_Agumon_chr143_cs"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_blackagumon",
+    "stage": 1,
+    "form": "BlackGreymon",
+    "key": "skin:SKIN_L_Greymon_chr712"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_chuumon",
+    "stage": 0,
+    "form": "Chuumon",
+    "key": "catalog:TS_Tyumon:chr020"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_betamon",
+    "stage": 0,
+    "form": "Betamon",
+    "key": "catalog:TS_Betamon:main"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_betamon",
+    "stage": 1,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_salamon",
+    "stage": 0,
+    "form": "Salamon",
+    "key": "catalog:TS_Plotmon:chr361"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_biyomon",
+    "stage": 0,
+    "form": "Biyomon",
+    "key": "catalog:TS_Piyomon:chr307"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_biyomon",
+    "stage": 2,
+    "form": "Ravemon",
+    "key": "catalog:CS_Ravemon:chr740"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_monodramon",
+    "stage": 0,
+    "form": "Monodramon",
+    "key": "catalog:TS_Monodramon:chr458"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_otamamon",
+    "stage": 0,
+    "form": "Otamamon",
+    "key": "catalog:TS_Otamamon:chr582"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_otamamon",
+    "stage": 1,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_aruraumon",
+    "stage": 1,
+    "form": "Vegiemon",
+    "key": "catalog:CS_Vegiemon:chr314"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_renamon",
+    "stage": 0,
+    "form": "Renamon",
+    "key": "catalog:TS_Renamon:chr391"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_renamon",
+    "stage": 2,
+    "form": "Kuzuhamon",
+    "key": "skin:SKIN_Sakuyamon_chr754"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_veemon",
+    "stage": 0,
+    "form": "Veemon",
+    "key": "catalog:TS_V_mon:chr114"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_veemon",
+    "stage": 2,
+    "form": "WarGreymon X",
+    "key": "catalog:RD_Wargreymon_X:main"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_lalamon",
+    "stage": 0,
+    "form": "Lalamon",
+    "key": "catalog:TS_Lalamon:chr056"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_lalamon",
+    "stage": 1,
+    "form": "Sunflowmon",
+    "key": "catalog:L_Sunflowmon:chr058"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_snowgoblimon",
+    "stage": 0,
+    "form": "SnowGoblimon",
+    "key": "catalog:TS_Goburimon:chr578"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_blackgabumon",
+    "stage": 0,
+    "form": "BlackGabumon",
+    "key": "skin:SKIN_L_Gabumon_chr713"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_blackgabumon",
+    "stage": 2,
+    "form": "BlackMetalGarurumon",
+    "key": "skin:SKIN_MetalGarurumon_chr182"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_hawkmon",
+    "stage": 0,
+    "form": "Hawkmon",
+    "key": "catalog:TS_Hawkmon:chr706"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_hawkmon",
+    "stage": 1,
+    "form": "Aquilamon",
+    "key": "catalog:L_Aquilamon:chr015"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_psychemon",
+    "stage": 1,
+    "form": "Meramon",
+    "key": "catalog:L_Meramon:chr010"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_kudamon",
+    "stage": 0,
+    "form": "Kudamon",
+    "key": "catalog:TS_Kudamon:chr053"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_toyagumon",
+    "stage": 0,
+    "form": "ToyAgumon",
+    "key": "catalog:TS_ToyAgumon:chr708"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_toyagumon",
+    "stage": 1,
+    "form": "Guardromon",
+    "key": "catalog:L_Guardromon:chr341"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_dorumon",
+    "stage": 0,
+    "form": "Dorumon",
+    "key": "catalog:TS_Dorumon:chr112"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_dracomon",
+    "stage": 0,
+    "form": "Dracomon",
+    "key": "catalog:TS_Dracomon:chr208"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_tentomon",
+    "stage": 0,
+    "form": "Tentomon",
+    "key": "catalog:TS_Tentomon:chr303"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_tentomon",
+    "stage": 2,
+    "form": "Justimon",
+    "key": "catalog:L_Justimon:main"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_guilmon",
+    "stage": 0,
+    "form": "Guilmon",
+    "key": "catalog:TS_Guilmon:chr090"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_guilmon",
+    "stage": 1,
+    "form": "Gallantmon",
+    "key": "unique:L_Gallantmon"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_guilmon",
+    "stage": 2,
+    "form": "Gallantmon Crimson Mode",
+    "key": "catalog:L_Gallantmon:chr013"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_gizamon",
+    "stage": 1,
+    "form": "Gesomon",
+    "key": "catalog:Gesomon:main"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_goblimon",
+    "stage": 0,
+    "form": "Goblimon",
+    "key": "catalog:TS_Goburimon:chr111"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_goblimon",
+    "stage": 1,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_ryudamon",
+    "stage": 0,
+    "form": "Ryudamon",
+    "key": "catalog:TS_Ryudamon:chr190"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_coredramon",
+    "stage": 0,
+    "form": "Coredramon (Blue)",
+    "key": "skin:SKIN_Coredramon_Green_chr218"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_dorugamon",
+    "stage": 0,
+    "form": "Dorugamon",
+    "key": "catalog:L_Dorugamon:chr396"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_growlmon",
+    "stage": 1,
+    "form": "WarGrowlmon (Yellow)",
+    "key": "unique:NO_WarGrowlmon_Yellow"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_growlmon",
+    "stage": 2,
+    "form": "Examon",
+    "key": "unique:CS_Examon"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_bakemon",
+    "stage": 0,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_greymon",
+    "stage": 0,
+    "form": "Greymon",
+    "key": "catalog:L_Greymon:chr326"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_greymon",
+    "stage": 1,
+    "form": "BlitzGreymon",
+    "key": "unique:L_BlitzGreymon"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_leomon",
+    "stage": 0,
+    "form": "Leomon",
+    "key": "catalog:CS_Leomon:chr072"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_leomon",
+    "stage": 2,
+    "form": "Susanoomon",
+    "key": "catalog:L_Susanoomon:f068"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_zubamon",
+    "stage": 0,
+    "form": "Zubamon",
+    "key": "catalog:TS_Zubamon:chr697"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_clockmon",
+    "stage": 0,
+    "form": "Clockmon",
+    "key": "catalog:L_Clockmon:chr398"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_w_tyrannomon",
+    "stage": 0,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_w_tyrannomon",
+    "stage": 1,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_w_tyrannomon",
+    "stage": 2,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_w_blackwargreymon",
+    "stage": 0,
+    "form": "BlackWarGreymon",
+    "key": "skin:SKIN_WarGreymon_chr175"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_w_blackwargreymon",
+    "stage": 1,
+    "form": "BlackWarGreymon",
+    "key": "skin:SKIN_WarGreymon_chr175"
+  },
+  {
+    "set": "dragonlands",
+    "line": "drg_w_blackwargreymon",
+    "stage": 2,
+    "form": "BlackWarGreymon",
+    "key": "skin:SKIN_WarGreymon_chr175"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_kokuwamon",
+    "stage": 1,
+    "form": "Guardromon",
+    "key": "catalog:L_Guardromon:chr341"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_goblimon",
+    "stage": 0,
+    "form": "Goblimon",
+    "key": "catalog:CS_Goblimon:chr111"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_goblimon",
+    "stage": 1,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_impmon",
+    "stage": 0,
+    "form": "Impmon",
+    "key": "catalog:TS_Impmon:chr081"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_impmon",
+    "stage": 1,
+    "form": "Meramon",
+    "key": "catalog:L_Meramon:chr010"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_zubamon",
+    "stage": 0,
+    "form": "Zubamon",
+    "key": "catalog:CS_Zubamon:chr697"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_zubamon",
+    "stage": 1,
+    "form": "ZubaEagermon",
+    "key": "catalog:CS_ZubaEagermon:chr698"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_lalamon",
+    "stage": 0,
+    "form": "Lalamon",
+    "key": "catalog:CS_Lalamon:chr056"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_lalamon",
+    "stage": 1,
+    "form": "Sunflowmon",
+    "key": "catalog:L_Sunflowmon:chr058"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_tsukaimon",
+    "stage": 1,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_chuumon",
+    "stage": 0,
+    "form": "Chuumon",
+    "key": "catalog:TS_Tyumon:chr020"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_snowgoblimon",
+    "stage": 0,
+    "form": "SnowGoblimon",
+    "key": "catalog:TS_Goburimon:chr578"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_snowgoblimon",
+    "stage": 2,
+    "form": "IceLeomon",
+    "key": "skin:SKIN_Leomon_chr409"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_gaomon",
+    "stage": 0,
+    "form": "Gaomon",
+    "key": "catalog:L_Gaomon:chr055"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_gaomon",
+    "stage": 1,
+    "form": "Gaogamon",
+    "key": "catalog:CS_Gaogamon:chr068"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_aruraumon",
+    "stage": 1,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_hyokomon",
+    "stage": 1,
+    "form": "Peckmon",
+    "key": "catalog:CS_Peckmon:chr702"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_lopmon",
+    "stage": 0,
+    "form": "Lopmon",
+    "key": "catalog:CS_Lopmon:chr750"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_lopmon",
+    "stage": 1,
+    "form": "Turuiemon",
+    "key": "catalog:Turuiemon:d014"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_monodramon",
+    "stage": 0,
+    "form": "Monodramon",
+    "key": "catalog:TS_Monodramon:chr458"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_terriermon",
+    "stage": 0,
+    "form": "Terriermon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_terriermon",
+    "stage": 1,
+    "form": "Gargomon",
+    "key": "catalog:CS_Gargomon:chr710"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_terriermon",
+    "stage": 2,
+    "form": "Rapidmon",
+    "key": "catalog:CS_Rapidmon:chr722"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_elecmon",
+    "stage": 0,
+    "form": "Elecmon",
+    "key": "catalog:Elecmon:chr564"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_elecmon",
+    "stage": 1,
+    "form": "Leomon",
+    "key": "catalog:CS_Leomon:chr072"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_gotsumon",
+    "stage": 0,
+    "form": "Gotsumon",
+    "key": "catalog:Gotsumon:chr081"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_hagurumon",
+    "stage": 0,
+    "form": "Hagurumon",
+    "key": "catalog:CS_Hagurumon:chr009"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_hagurumon",
+    "stage": 1,
+    "form": "Clockmon",
+    "key": "catalog:L_Clockmon:chr398"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_betamon",
+    "stage": 0,
+    "form": "Betamon",
+    "key": "catalog:CS_Betamon:chr389"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_betamon",
+    "stage": 1,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_shamanmon",
+    "stage": 0,
+    "form": "Shamanmon",
+    "key": "skin:SKIN_TS_Goburimon_chr577"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_gomamon",
+    "stage": 0,
+    "form": "Gomamon",
+    "key": "catalog:CS_Gomamon:chr343"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_gomamon",
+    "stage": 1,
+    "form": "Ikkakumon",
+    "key": "catalog:L_Ikkakumon:chr344"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_keramon",
+    "stage": 0,
+    "form": "Keramon",
+    "key": "catalog:TS_Keramon:chr626"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_armadillomon",
+    "stage": 0,
+    "form": "Armadillomon",
+    "key": "catalog:CS_Armadillomon:chr707"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_syakomon",
+    "stage": 0,
+    "form": "Syakomon",
+    "key": "catalog:L_Syakomon:chr709"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_numemon",
+    "stage": 0,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_gazimon",
+    "stage": 0,
+    "form": "Gazimon",
+    "key": "catalog:L_Gazimon:chr569"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_saberdramon",
+    "stage": 1,
+    "form": "Ravemon",
+    "key": "catalog:CS_Ravemon:chr740"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_renamon",
+    "stage": 0,
+    "form": "Renamon",
+    "key": "catalog:CS_Renamon:chr391"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_renamon",
+    "stage": 1,
+    "form": "Kyubimon",
+    "key": "catalog:L_Kyubimon:chr395"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_tentomon",
+    "stage": 0,
+    "form": "Tentomon",
+    "key": "catalog:TS_Tentomon:chr303"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_ryudamon",
+    "stage": 0,
+    "form": "Ryudamon",
+    "key": "catalog:CS_Ryudamon:chr190"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_ryudamon",
+    "stage": 1,
+    "form": "Ginryumon",
+    "key": "catalog:CS_Ginryumon:chr191"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_hawkmon",
+    "stage": 0,
+    "form": "Hawkmon",
+    "key": "catalog:L_Hawkmon:chr706"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_hawkmon",
+    "stage": 1,
+    "form": "Aquilamon",
+    "key": "catalog:L_Aquilamon:chr015"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_gizamon",
+    "stage": 1,
+    "form": "Gesomon",
+    "key": "catalog:Gesomon:main"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_demidevimon",
+    "stage": 0,
+    "form": "Arcadiamon (Rookie)",
+    "key": "unique:CS_Arcadiamon_Rookie"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_demidevimon",
+    "stage": 1,
+    "form": "Arcadiamon (Champion)",
+    "key": "unique:CS_Arcadiamon_Champion"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_demidevimon",
+    "stage": 2,
+    "form": "Arcadiamon (Ultimate)",
+    "key": "unique:CS_Arcadiamon_Ultimate"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_fanbeemon",
+    "stage": 0,
+    "form": "FanBeemon",
+    "key": "catalog:TS_Funbeemon:chr042"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_fanbeemon",
+    "stage": 1,
+    "form": "Waspmon",
+    "key": "catalog:L_Waspmon:chr454"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_lunamon",
+    "stage": 0,
+    "form": "Lunamon",
+    "key": "catalog:TS_Lunamon:chr002"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_biyomon",
+    "stage": 0,
+    "form": "Biyomon",
+    "key": "catalog:CS_Biyomon:chr307"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_biyomon",
+    "stage": 1,
+    "form": "Birdramon",
+    "key": "catalog:CS_Birdramon:chr308"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_gallantmon",
+    "stage": 0,
+    "form": "Gallantmon",
+    "key": "unique:L_Gallantmon"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_gallantmon",
+    "stage": 1,
+    "form": "Gallantmon",
+    "key": "unique:L_Gallantmon"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_gallantmon",
+    "stage": 2,
+    "form": "Gallantmon Crimson Mode",
+    "key": "catalog:L_Gallantmon:chr013"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_beelzemon",
+    "stage": 0,
+    "form": "Beelzemon",
+    "key": "catalog:L_Beelzemon:chr035"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_diaboromon",
+    "stage": 2,
+    "form": "Armageddemon",
+    "key": "catalog:CS_Armageddemon:chr106"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_blackwargreymon",
+    "stage": 0,
+    "form": "BlackMetalGreymon",
+    "key": "skin:SKIN_MetalGreymon_chr327"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_blackwargreymon",
+    "stage": 1,
+    "form": "BlackWarGreymon",
+    "key": "skin:SKIN_WarGreymon_chr175"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_blackwargreymon",
+    "stage": 2,
+    "form": "BlackWarGreymon",
+    "key": "skin:SKIN_WarGreymon_chr175"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_millenniummon",
+    "stage": 0,
+    "form": "Arcadiamon (Mega)",
+    "key": "unique:CS_Arcadiamon_Mega"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_millenniummon",
+    "stage": 1,
+    "form": "Arcadiamon (Ultra)",
+    "key": "unique:CS_Arcadiamon_Ultra"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_millenniummon",
+    "stage": 2,
+    "form": "Arcadiamon (Ultra)",
+    "key": "unique:CS_Arcadiamon_Ultra"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_toyagumon",
+    "stage": 0,
+    "form": "ToyAgumon",
+    "key": "catalog:L_ToyAgumon:chr708"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_toyagumon",
+    "stage": 1,
+    "form": "ToyAgumon",
+    "key": "catalog:L_ToyAgumon:chr708"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_toyagumon",
+    "stage": 2,
+    "form": "ToyAgumon",
+    "key": "catalog:L_ToyAgumon:chr708"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_otamamon",
+    "stage": 0,
+    "form": "Otamamon",
+    "key": "catalog:TS_Otamamon:chr582"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_otamamon",
+    "stage": 1,
+    "form": "Otamamon",
+    "key": "catalog:TS_Otamamon:chr582"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_otamamon",
+    "stage": 2,
+    "form": "Otamamon",
+    "key": "catalog:TS_Otamamon:chr582"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_gekomon",
+    "stage": 0,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_gekomon",
+    "stage": 1,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_gekomon",
+    "stage": 2,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_tyrannomon",
+    "stage": 0,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_tyrannomon",
+    "stage": 1,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_w_tyrannomon",
+    "stage": 2,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_s_belphemon",
+    "stage": 0,
+    "form": "Belphemon Sleep Mode",
+    "key": "unique:L_Belphemon_Sleep_Mode"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_s_belphemon",
+    "stage": 1,
+    "form": "Belphemon Sleep Mode",
+    "key": "unique:L_Belphemon_Sleep_Mode"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_s_belphemon",
+    "stage": 2,
+    "form": "Belphemon Sleep Mode",
+    "key": "unique:L_Belphemon_Sleep_Mode"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_s_shellnumemon",
+    "stage": 0,
+    "form": "ShellNumemon",
+    "key": "catalog:L_ShellNumemon:chr455"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_s_shellnumemon",
+    "stage": 1,
+    "form": "ShellNumemon",
+    "key": "catalog:L_ShellNumemon:chr455"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_s_shellnumemon",
+    "stage": 2,
+    "form": "ShellNumemon",
+    "key": "catalog:L_ShellNumemon:chr455"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_s_garurumon",
+    "stage": 0,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_s_garurumon",
+    "stage": 1,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "arcane",
+    "line": "arc_s_garurumon",
+    "stage": 2,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_hagurumon",
+    "stage": 0,
+    "form": "Hagurumon",
+    "key": "catalog:L_Hagurumon:chr009"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_hagurumon",
+    "stage": 1,
+    "form": "Guardromon",
+    "key": "catalog:L_Guardromon:chr341"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_lunamon",
+    "stage": 0,
+    "form": "Lunamon",
+    "key": "catalog:TS_Lunamon:chr002"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_zubamon",
+    "stage": 0,
+    "form": "Zubamon",
+    "key": "catalog:TS_Zubamon:chr697"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_zubamon",
+    "stage": 1,
+    "form": "ZubaEagermon",
+    "key": "catalog:CS_ZubaEagermon:chr698"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_gabumon",
+    "stage": 0,
+    "form": "Gabumon",
+    "key": "catalog:L_Gabumon:chr151"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_gabumon",
+    "stage": 1,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_lobomon",
+    "stage": 2,
+    "form": "MagnaGarurumon",
+    "key": "catalog:MagnaGarurumon:chr678"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_tsukaimon",
+    "stage": 1,
+    "form": "Devimon",
+    "key": "catalog:L_Devimon:chr093"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_elecmon",
+    "stage": 0,
+    "form": "Elecmon",
+    "key": "catalog:TS_Elecmon_Elecmon_Aegiomon:chr564"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_elecmon",
+    "stage": 2,
+    "form": "IceLeomon",
+    "key": "skin:SKIN_Leomon_chr409"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_armadillomon",
+    "stage": 0,
+    "form": "Armadillomon",
+    "key": "catalog:CS_Armadillomon:chr707"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_gotsumon",
+    "stage": 0,
+    "form": "Gotsumon",
+    "key": "catalog:TS_Gottsumon:chr595"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_gotsumon",
+    "stage": 1,
+    "form": "Starmon",
+    "key": "catalog:CS_Starmon:chr014"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_betamon",
+    "stage": 0,
+    "form": "Betamon",
+    "key": "catalog:TS_Betamon:main"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_betamon",
+    "stage": 1,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_syakomon",
+    "stage": 0,
+    "form": "Syakomon",
+    "key": "catalog:TS_Shakomon:chr709"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_numemon",
+    "stage": 0,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_goblimon",
+    "stage": 0,
+    "form": "Goblimon",
+    "key": "catalog:TS_Goburimon:chr111"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_goblimon",
+    "stage": 1,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_monodramon",
+    "stage": 0,
+    "form": "Monodramon",
+    "key": "catalog:TS_Monodramon:chr458"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_wormmon",
+    "stage": 0,
+    "form": "Wormmon",
+    "key": "catalog:TS_Wormmon:chr392"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_demidevimon",
+    "stage": 0,
+    "form": "DemiDevimon",
+    "key": "catalog:TS_PicoDevimon:chr097"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_demidevimon",
+    "stage": 1,
+    "form": "IceDevimon",
+    "key": "skin:SKIN_CS_Devimon_chr730"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_fanbeemon",
+    "stage": 0,
+    "form": "FanBeemon",
+    "key": "catalog:TS_Funbeemon:chr042"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_fanbeemon",
+    "stage": 1,
+    "form": "Waspmon",
+    "key": "catalog:L_Waspmon:chr454"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_falcomon",
+    "stage": 0,
+    "form": "Falcomon",
+    "key": "catalog:TS_Falcomon:chr705"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_falcomon",
+    "stage": 1,
+    "form": "Peckmon",
+    "key": "catalog:CS_Peckmon:chr702"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_patamon",
+    "stage": 0,
+    "form": "Patamon",
+    "key": "catalog:TS_Patamon:chr096"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_patamon",
+    "stage": 1,
+    "form": "Angemon",
+    "key": "catalog:CS_Angemon:chr087"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_patamon",
+    "stage": 2,
+    "form": "MagnaAngemon",
+    "key": "catalog:L_MagnaAngemon:chr101"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_biyomon",
+    "stage": 0,
+    "form": "Biyomon",
+    "key": "catalog:L_Biyomon:chr307"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_biyomon",
+    "stage": 1,
+    "form": "Birdramon",
+    "key": "catalog:CS_Birdramon:chr308"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_lopmon",
+    "stage": 0,
+    "form": "Lopmon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr750"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_lopmon",
+    "stage": 1,
+    "form": "Turuiemon",
+    "key": "catalog:Turuiemon:d014"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_gaomon",
+    "stage": 0,
+    "form": "Gaomon",
+    "key": "catalog:TS_Gaomon:chr055"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_gaomon",
+    "stage": 1,
+    "form": "Gaogamon",
+    "key": "catalog:CS_Gaogamon:chr068"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_hawkmon",
+    "stage": 0,
+    "form": "Hawkmon",
+    "key": "catalog:TS_Hawkmon:chr706"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_hawkmon",
+    "stage": 1,
+    "form": "Aquilamon",
+    "key": "catalog:L_Aquilamon:chr015"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_ryudamon",
+    "stage": 0,
+    "form": "Ryudamon",
+    "key": "catalog:TS_Ryudamon:chr190"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_ryudamon",
+    "stage": 1,
+    "form": "Ginryumon",
+    "key": "catalog:CS_Ginryumon:chr191"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_kyubimon",
+    "stage": 0,
+    "form": "Kyubimon",
+    "key": "catalog:L_Kyubimon:chr395"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_ikkakumon",
+    "stage": 0,
+    "form": "Ikkakumon",
+    "key": "catalog:L_Ikkakumon:chr344"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_vegiemon",
+    "stage": 0,
+    "form": "Vegiemon",
+    "key": "catalog:CS_Vegiemon:chr314"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_lalamon",
+    "stage": 0,
+    "form": "Lalamon",
+    "key": "catalog:TS_Lalamon:chr056"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_lalamon",
+    "stage": 1,
+    "form": "Sunflowmon",
+    "key": "catalog:L_Sunflowmon:chr058"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_tyrannomon",
+    "stage": 0,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_reppamon",
+    "stage": 0,
+    "form": "Reppamon",
+    "key": "catalog:CS_Reppamon:chr077"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_sistermonciel",
+    "stage": 0,
+    "form": "Sistermon Ciel",
+    "key": "unique:CS_Sistermon_Ciel"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_gargomon",
+    "stage": 0,
+    "form": "Gargomon",
+    "key": "catalog:CS_Gargomon:chr710"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_gargomon",
+    "stage": 1,
+    "form": "Rapidmon",
+    "key": "catalog:CS_Rapidmon:chr722"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_bakemon",
+    "stage": 0,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_keramon",
+    "stage": 0,
+    "form": "Keramon",
+    "key": "catalog:TS_Keramon:chr626"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_geogreymon",
+    "stage": 0,
+    "form": "GeoGreymon",
+    "key": "catalog:CS_GeoGreymon:chr054"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_bearmon",
+    "stage": 0,
+    "form": "Bearmon (Big)",
+    "key": "skin:SKIN_TS_Bearmon_chr924"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_wizardmon",
+    "stage": 0,
+    "form": "Wizardmon",
+    "key": "catalog:L_Wizardmon:chr377"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_impmon",
+    "stage": 0,
+    "form": "Impmon",
+    "key": "catalog:TS_Impmon:chr081"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_impmon",
+    "stage": 1,
+    "form": "Beelzemon",
+    "key": "catalog:RD_Beelzemon:main"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_leomon",
+    "stage": 0,
+    "form": "Leomon",
+    "key": "catalog:CS_Leomon:chr072"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_leomon",
+    "stage": 1,
+    "form": "Panjyamon",
+    "key": "catalog:Panjyamon:main"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_salamon",
+    "stage": 0,
+    "form": "Salamon",
+    "key": "catalog:TS_Plotmon:chr361"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_ravemon",
+    "stage": 0,
+    "form": "Ravemon",
+    "key": "catalog:CS_Ravemon:chr740"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_ravemon",
+    "stage": 1,
+    "form": "Ravemon",
+    "key": "catalog:CS_Ravemon:chr740"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_ravemon",
+    "stage": 2,
+    "form": "Ravemon Burst Mode",
+    "key": "unique:L_Ravemon_Burst_Mode"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_justimon",
+    "stage": 0,
+    "form": "Justimon",
+    "key": "catalog:L_Justimon:main"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_justimon",
+    "stage": 1,
+    "form": "Justimon",
+    "key": "catalog:L_Justimon:main"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_justimon",
+    "stage": 2,
+    "form": "Justimon",
+    "key": "catalog:L_Justimon:main"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_merukimon",
+    "stage": 0,
+    "form": "Minervamon",
+    "key": "unique:L_Minervamon"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_root",
+    "stage": 0,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_root",
+    "stage": 1,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_root",
+    "stage": 2,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_spine",
+    "stage": 0,
+    "form": "Togemon",
+    "key": "catalog:CS_Togemon:chr349"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_spine",
+    "stage": 1,
+    "form": "Togemon",
+    "key": "catalog:CS_Togemon:chr349"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_spine",
+    "stage": 2,
+    "form": "Togemon",
+    "key": "catalog:CS_Togemon:chr349"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_gazimon",
+    "stage": 0,
+    "form": "Gazimon",
+    "key": "catalog:TS_Gazimon:chr569"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_gazimon",
+    "stage": 1,
+    "form": "Gazimon",
+    "key": "catalog:TS_Gazimon:chr569"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_gazimon",
+    "stage": 2,
+    "form": "Gazimon",
+    "key": "catalog:TS_Gazimon:chr569"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_snowgoblimon",
+    "stage": 0,
+    "form": "SnowGoblimon",
+    "key": "catalog:TS_Goburimon:chr578"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_snowgoblimon",
+    "stage": 1,
+    "form": "SnowGoblimon",
+    "key": "catalog:TS_Goburimon:chr578"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_snowgoblimon",
+    "stage": 2,
+    "form": "SnowGoblimon",
+    "key": "catalog:TS_Goburimon:chr578"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_meramon",
+    "stage": 0,
+    "form": "Meramon",
+    "key": "catalog:L_Meramon:chr010"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_meramon",
+    "stage": 1,
+    "form": "Meramon",
+    "key": "catalog:L_Meramon:chr010"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_meramon",
+    "stage": 2,
+    "form": "Meramon",
+    "key": "catalog:L_Meramon:chr010"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_alphamon",
+    "stage": 0,
+    "form": "Leopardmon",
+    "key": "unique:CS_Leopardmon"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_alphamon",
+    "stage": 1,
+    "form": "Leopardmon",
+    "key": "unique:CS_Leopardmon"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_alphamon",
+    "stage": 2,
+    "form": "Leopardmon Leopard Mode",
+    "key": "catalog:CS_Leopardmon:chr743"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_omnimon",
+    "stage": 0,
+    "form": "Omnimon NX",
+    "key": "unique:CS_Omnimon_NX"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_omnimon",
+    "stage": 1,
+    "form": "Omnimon Alter-S",
+    "key": "unique:L_Omnimon_Alter_S"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_omnimon",
+    "stage": 2,
+    "form": "Omnimon Merciful Mode",
+    "key": "unique:L_Omnimon_Merciful_Mode"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_imperialdramon",
+    "stage": 0,
+    "form": "Imperialdramon Paladin Mode",
+    "key": "catalog:CS_Imperialdramon_Paladin_Mode:chr420"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_imperialdramon",
+    "stage": 1,
+    "form": "Imperialdramon Paladin Mode",
+    "key": "catalog:CS_Imperialdramon_Paladin_Mode:chr420"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_imperialdramon",
+    "stage": 2,
+    "form": "Imperialdramon Paladin Mode",
+    "key": "catalog:CS_Imperialdramon_Paladin_Mode:chr420"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_apocalymon",
+    "stage": 0,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_apocalymon",
+    "stage": 1,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "coliseum",
+    "line": "col_w_apocalymon",
+    "stage": 2,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_antimage",
+    "stage": 0,
+    "form": "BlackGabumon",
+    "key": "skin:SKIN_CS_Gabumon_chr713"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_antimage",
+    "stage": 1,
+    "form": "BlackGarurumon",
+    "key": "skin:SKIN_CS_Garurumon_chr714"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_antimage",
+    "stage": 2,
+    "form": "BlackMetalGarurumon",
+    "key": "skin:SKIN_MetalGarurumon_chr182"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_batrider",
+    "stage": 0,
+    "form": "Hawkmon",
+    "key": "catalog:L_Hawkmon:chr706"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_batrider",
+    "stage": 2,
+    "form": "Ravemon",
+    "key": "catalog:CS_Ravemon:chr740"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_bounty",
+    "stage": 0,
+    "form": "Gazimon",
+    "key": "catalog:L_Gazimon:chr569"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_crystal",
+    "stage": 0,
+    "form": "Muchomon",
+    "key": "unique:TS_Muchomon"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_drow",
+    "stage": 1,
+    "form": "Peckmon",
+    "key": "catalog:CS_Peckmon:chr702"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_lich",
+    "stage": 1,
+    "form": "IceDevimon",
+    "key": "skin:SKIN_CS_Devimon_chr730"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_phantom",
+    "stage": 2,
+    "form": "Kuzuhamon",
+    "key": "skin:SKIN_Sakuyamon_chr754"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_slardar",
+    "stage": 0,
+    "form": "Syakomon",
+    "key": "catalog:L_Syakomon:chr709"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_tusk",
+    "stage": 0,
+    "form": "Gomamon",
+    "key": "catalog:CS_Gomamon:chr343"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_tusk",
+    "stage": 1,
+    "form": "Ikkakumon",
+    "key": "catalog:L_Ikkakumon:chr344"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_venomancer",
+    "stage": 1,
+    "form": "Vegiemon",
+    "key": "catalog:CS_Vegiemon:chr314"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_chaosknight",
+    "stage": 0,
+    "form": "BlackAgumon",
+    "key": "skin:SKIN_L_Agumon_chr143_cs"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_chaosknight",
+    "stage": 1,
+    "form": "BlackGreymon",
+    "key": "skin:SKIN_L_Greymon_chr712"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_chaosknight",
+    "stage": 2,
+    "form": "BlackMetalGreymon",
+    "key": "skin:SKIN_MetalGreymon_chr327"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_kunkka",
+    "stage": 1,
+    "form": "ShellNumemon",
+    "key": "catalog:L_ShellNumemon:chr455"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_legion",
+    "stage": 0,
+    "form": "Zubamon",
+    "key": "catalog:CS_Zubamon:chr697"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_legion",
+    "stage": 1,
+    "form": "ZubaEagermon",
+    "key": "catalog:CS_ZubaEagermon:chr698"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_luna",
+    "stage": 0,
+    "form": "Terriermon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_prophet",
+    "stage": 0,
+    "form": "Lalamon",
+    "key": "catalog:CS_Lalamon:chr056"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_prophet",
+    "stage": 1,
+    "form": "Sunflowmon",
+    "key": "catalog:L_Sunflowmon:chr058"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_pudge",
+    "stage": 0,
+    "form": "Goblimon",
+    "key": "catalog:CS_Goblimon:chr111"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_queenofpain",
+    "stage": 0,
+    "form": "Impmon",
+    "key": "catalog:TS_Impmon:chr081"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_queenofpain",
+    "stage": 2,
+    "form": "Lilithmon",
+    "key": "catalog:CS_Lilithmon:chr034"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_spiritbreaker",
+    "stage": 0,
+    "form": "Elecmon",
+    "key": "catalog:Elecmon:chr564"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_alchemist",
+    "stage": 0,
+    "form": "Gotsumon",
+    "key": "catalog:Gotsumon:chr081"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_alchemist",
+    "stage": 1,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_beastmaster",
+    "stage": 0,
+    "form": "Gaomon",
+    "key": "catalog:L_Gaomon:chr055"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_beastmaster",
+    "stage": 1,
+    "form": "Leomon",
+    "key": "catalog:CS_Leomon:chr072"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_lifestealer",
+    "stage": 0,
+    "form": "Keramon",
+    "key": "catalog:TS_Keramon:chr626"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_omniknight",
+    "stage": 0,
+    "form": "Patamon",
+    "key": "catalog:TS_Patamon:chr096"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_puck",
+    "stage": 0,
+    "form": "Dracomon",
+    "key": "catalog:CS_Dracomon:chr208"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_puck",
+    "stage": 1,
+    "form": "Coredramon (Blue)",
+    "key": "skin:SKIN_Coredramon_Green_chr218"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_shadowshaman",
+    "stage": 0,
+    "form": "Shamanmon",
+    "key": "skin:SKIN_TS_Goburimon_chr577"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_shadowshaman",
+    "stage": 1,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_slark",
+    "stage": 1,
+    "form": "Gesomon",
+    "key": "catalog:Gesomon:main"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_spectre",
+    "stage": 1,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_terrorblade",
+    "stage": 0,
+    "form": "Dorumon",
+    "key": "catalog:TS_Dorumon:chr112"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_treant",
+    "stage": 0,
+    "form": "Palmon",
+    "key": "catalog:CS_Palmon:chr348"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_treant",
+    "stage": 1,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_doom",
+    "stage": 0,
+    "form": "Meramon",
+    "key": "catalog:L_Meramon:chr010"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_doom",
+    "stage": 2,
+    "form": "Belphemon Rage Mode",
+    "key": "catalog:CS_Belphemon_Rage_Mode:chr040"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_mirana",
+    "stage": 0,
+    "form": "Salamon",
+    "key": "catalog:CS_Salamon:chr361"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_pangolier",
+    "stage": 0,
+    "form": "Armadillomon",
+    "key": "catalog:CS_Armadillomon:chr707"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_rubick",
+    "stage": 0,
+    "form": "Kudamon",
+    "key": "catalog:CS_Kudamon:chr053"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_templar",
+    "stage": 0,
+    "form": "Renamon",
+    "key": "catalog:CS_Renamon:chr391"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_tidehunter",
+    "stage": 0,
+    "form": "Betamon",
+    "key": "catalog:CS_Betamon:chr389"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_tidehunter",
+    "stage": 2,
+    "form": "Plesiomon",
+    "key": "catalog:CS_Plesiomon:chr450"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_viper",
+    "stage": 0,
+    "form": "Monodramon",
+    "key": "catalog:TS_Monodramon:chr458"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_voidspirit",
+    "stage": 0,
+    "form": "Lucemon",
+    "key": "catalog:CS_Lucemon:chr390"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_axe",
+    "stage": 0,
+    "form": "ToyAgumon",
+    "key": "catalog:L_ToyAgumon:chr708"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_axe",
+    "stage": 1,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_dragonknight",
+    "stage": 0,
+    "form": "Guilmon",
+    "key": "catalog:L_Guilmon:chr090"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_dragonknight",
+    "stage": 1,
+    "form": "Growlmon",
+    "key": "catalog:CS_Growlmon:chr078"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_dragonknight",
+    "stage": 2,
+    "form": "Gallantmon",
+    "key": "unique:L_Gallantmon"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_faceless",
+    "stage": 0,
+    "form": "Hagurumon",
+    "key": "catalog:TS_Solarmon_Hagurumon:chr009"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_faceless",
+    "stage": 1,
+    "form": "Clockmon",
+    "key": "catalog:L_Clockmon:chr398"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_keeper",
+    "stage": 0,
+    "form": "Solarmon",
+    "key": "catalog:L_Solarmon:chr728"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_keeper",
+    "stage": 1,
+    "form": "Wizardmon",
+    "key": "catalog:L_Wizardmon:chr377"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_keeper",
+    "stage": 2,
+    "form": "MagnaAngemon",
+    "key": "catalog:L_MagnaAngemon:chr101"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_medusa",
+    "stage": 0,
+    "form": "Lunamon",
+    "key": "catalog:TS_Lunamon:chr002"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_trollwarlord",
+    "stage": 0,
+    "form": "SnowGoblimon",
+    "key": "catalog:TS_Goburimon:chr578"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_wraithking",
+    "stage": 0,
+    "form": "Agumon",
+    "key": "catalog:CS_Agumon:chr050"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_wraithking",
+    "stage": 2,
+    "form": "BlackWarGreymon",
+    "key": "skin:SKIN_WarGreymon_chr175"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_tamer_anessa",
+    "stage": 0,
+    "form": "Lopmon",
+    "key": "catalog:CS_Lopmon:chr750"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_tamer_enno",
+    "stage": 0,
+    "form": "Chuumon",
+    "key": "catalog:TS_Tyumon:chr020"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_archer",
+    "stage": 0,
+    "form": "DemiDevimon",
+    "key": "catalog:CS_DemiDevimon:chr097"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_archer",
+    "stage": 1,
+    "form": "DemiDevimon",
+    "key": "catalog:CS_DemiDevimon:chr097"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_archer",
+    "stage": 2,
+    "form": "DemiDevimon",
+    "key": "catalog:CS_DemiDevimon:chr097"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_wolf",
+    "stage": 0,
+    "form": "Gabumon",
+    "key": "catalog:CS_Gabumon:chr151"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_wolf",
+    "stage": 1,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_hatchling",
+    "stage": 0,
+    "form": "Biyomon",
+    "key": "catalog:TS_Piyomon:chr307"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_hatchling",
+    "stage": 1,
+    "form": "Birdramon",
+    "key": "catalog:CS_Birdramon:chr308"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_ward",
+    "stage": 0,
+    "form": "Kuramon",
+    "key": "catalog:TS_Kuramon:chr629"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_ward",
+    "stage": 1,
+    "form": "Kuramon",
+    "key": "catalog:TS_Kuramon:chr629"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_ward",
+    "stage": 2,
+    "form": "Kuramon",
+    "key": "catalog:TS_Kuramon:chr629"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_treant",
+    "stage": 0,
+    "form": "Tanemon",
+    "key": "catalog:TS_Tanemon:chr512"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_treant",
+    "stage": 1,
+    "form": "Tanemon",
+    "key": "catalog:TS_Tanemon:chr512"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_treant",
+    "stage": 2,
+    "form": "Tanemon",
+    "key": "catalog:TS_Tanemon:chr512"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_serpent",
+    "stage": 0,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_serpent",
+    "stage": 1,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_serpent",
+    "stage": 2,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_bruiser",
+    "stage": 0,
+    "form": "Starmon",
+    "key": "catalog:CS_Starmon:chr014"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_bruiser",
+    "stage": 1,
+    "form": "Starmon",
+    "key": "catalog:CS_Starmon:chr014"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_s_bruiser",
+    "stage": 2,
+    "form": "Starmon",
+    "key": "catalog:CS_Starmon:chr014"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_w_melee",
+    "stage": 0,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_w_melee",
+    "stage": 1,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_w_melee",
+    "stage": 2,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_w_ranged",
+    "stage": 0,
+    "form": "Otamamon",
+    "key": "catalog:TS_Otamamon:chr582"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_w_ranged",
+    "stage": 1,
+    "form": "Otamamon",
+    "key": "catalog:TS_Otamamon:chr582"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_w_ranged",
+    "stage": 2,
+    "form": "Otamamon",
+    "key": "catalog:TS_Otamamon:chr582"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_w_roshan",
+    "stage": 0,
+    "form": "Omnimon Zwart D",
+    "key": "unique:L_Omnimon_Zwart_D"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_w_roshan",
+    "stage": 1,
+    "form": "Omnimon Zwart D",
+    "key": "unique:L_Omnimon_Zwart_D"
+  },
+  {
+    "set": "underlords",
+    "line": "ul_w_roshan",
+    "stage": 2,
+    "form": "Omnimon Zwart D",
+    "key": "unique:L_Omnimon_Zwart_D"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_lopmon",
+    "stage": 0,
+    "form": "Lopmon",
+    "key": "catalog:TS_Terriermon_Lopmon_and_Assistant:chr750"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_lopmon",
+    "stage": 1,
+    "form": "Turuiemon",
+    "key": "catalog:Turuiemon:d014"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_agumon",
+    "stage": 0,
+    "form": "Agumon",
+    "key": "catalog:L_Agumon:chr050"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_agumon",
+    "stage": 1,
+    "form": "Greymon",
+    "key": "catalog:L_Greymon:chr326"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_fanbeemon",
+    "stage": 0,
+    "form": "FanBeemon",
+    "key": "catalog:TS_Funbeemon:chr042"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_fanbeemon",
+    "stage": 1,
+    "form": "Waspmon",
+    "key": "catalog:L_Waspmon:chr454"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_keramon",
+    "stage": 0,
+    "form": "Keramon",
+    "key": "catalog:TS_Keramon:chr626"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_hagurumon",
+    "stage": 0,
+    "form": "Hagurumon",
+    "key": "catalog:CS_Hagurumon:chr009"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_hagurumon",
+    "stage": 1,
+    "form": "Guardromon",
+    "key": "catalog:L_Guardromon:chr341"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_kudamon",
+    "stage": 0,
+    "form": "Kudamon",
+    "key": "catalog:TS_Kudamon:chr053"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_kudamon",
+    "stage": 1,
+    "form": "Reppamon",
+    "key": "catalog:CS_Reppamon:chr077"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_tentomon",
+    "stage": 0,
+    "form": "Tentomon",
+    "key": "catalog:TS_Tentomon:chr303"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_gotsumon",
+    "stage": 0,
+    "form": "Gotsumon",
+    "key": "catalog:TS_Gottsumon:chr595"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_dracomon",
+    "stage": 0,
+    "form": "Dracomon",
+    "key": "catalog:TS_Dracomon:chr208"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_dracomon",
+    "stage": 1,
+    "form": "Coredramon (Blue)",
+    "key": "skin:SKIN_Coredramon_Green_chr218"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_candlemon",
+    "stage": 1,
+    "form": "Wizardmon",
+    "key": "catalog:L_Wizardmon:chr377"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_goblimon",
+    "stage": 0,
+    "form": "Goblimon",
+    "key": "catalog:TS_Goburimon:chr111"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_salamon",
+    "stage": 0,
+    "form": "Salamon",
+    "key": "catalog:TS_Plotmon:chr361"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_palmon",
+    "stage": 0,
+    "form": "Palmon",
+    "key": "catalog:TS_Palmon:chr348"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_palmon",
+    "stage": 1,
+    "form": "Togemon",
+    "key": "catalog:CS_Togemon:chr349"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_blackagumon",
+    "stage": 0,
+    "form": "BlackAgumon",
+    "key": "skin:SKIN_CS_Agumon_chr143"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_blackagumon",
+    "stage": 1,
+    "form": "BlackGreymon",
+    "key": "skin:SKIN_L_Greymon_chr712"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_blackagumon",
+    "stage": 2,
+    "form": "BlackWarGreymon",
+    "key": "skin:SKIN_WarGreymon_chr175"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_tsukaimon",
+    "stage": 1,
+    "form": "Bakemon",
+    "key": "catalog:CS_Bakemon:chr013"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_lalamon",
+    "stage": 0,
+    "form": "Lalamon",
+    "key": "catalog:TS_Lalamon:chr056"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_lalamon",
+    "stage": 1,
+    "form": "Sunflowmon",
+    "key": "catalog:L_Sunflowmon:chr058"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_hyokomon",
+    "stage": 1,
+    "form": "Meramon",
+    "key": "catalog:L_Meramon:chr010"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_floramon",
+    "stage": 1,
+    "form": "BlackGatomon",
+    "key": "skin:SKIN_CS_Gatomon_chr043"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_gomamon",
+    "stage": 0,
+    "form": "Gomamon",
+    "key": "catalog:TS_Gomamon:chr343"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_gomamon",
+    "stage": 1,
+    "form": "Ikkakumon",
+    "key": "catalog:L_Ikkakumon:chr344"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_solarmon",
+    "stage": 0,
+    "form": "Solarmon",
+    "key": "catalog:TS_Solarmon_Hagurumon:chr728"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_solarmon",
+    "stage": 1,
+    "form": "Clockmon",
+    "key": "catalog:L_Clockmon:chr398"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_lunamon",
+    "stage": 0,
+    "form": "Lunamon",
+    "key": "catalog:TS_Lunamon:chr002"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_wormmon",
+    "stage": 0,
+    "form": "Wormmon",
+    "key": "catalog:TS_Wormmon:chr392"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_wormmon",
+    "stage": 1,
+    "form": "Stingmon",
+    "key": "catalog:CS_Stingmon:chr091"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_biyomon",
+    "stage": 0,
+    "form": "Biyomon",
+    "key": "catalog:CS_Biyomon:chr307"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_biyomon",
+    "stage": 1,
+    "form": "Birdramon",
+    "key": "catalog:CS_Birdramon:chr308"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_gabumon",
+    "stage": 0,
+    "form": "Gabumon",
+    "key": "catalog:L_Gabumon:chr151"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_gabumon",
+    "stage": 1,
+    "form": "Garurumon",
+    "key": "catalog:L_Garurumon:chr012"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_patamon",
+    "stage": 0,
+    "form": "Patamon",
+    "key": "catalog:TS_Patamon:chr096"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_patamon",
+    "stage": 1,
+    "form": "Angemon",
+    "key": "catalog:CS_Angemon:chr087"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_patamon",
+    "stage": 2,
+    "form": "MagnaAngemon",
+    "key": "catalog:L_MagnaAngemon:chr101"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_falcomon",
+    "stage": 0,
+    "form": "Falcomon",
+    "key": "catalog:TS_Falcomon:chr705"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_falcomon",
+    "stage": 1,
+    "form": "Peckmon",
+    "key": "catalog:CS_Peckmon:chr702"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_snowgoblimon",
+    "stage": 0,
+    "form": "SnowGoblimon",
+    "key": "catalog:TS_Goburimon:chr578"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_snowgoblimon",
+    "stage": 2,
+    "form": "IceLeomon",
+    "key": "skin:SKIN_Leomon_chr409"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_gazimon",
+    "stage": 0,
+    "form": "Gazimon",
+    "key": "catalog:TS_Gazimon:chr569"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_gazimon",
+    "stage": 1,
+    "form": "Devimon",
+    "key": "catalog:L_Devimon:chr093"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_monodramon",
+    "stage": 0,
+    "form": "Monodramon",
+    "key": "catalog:TS_Monodramon:chr458"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_hawkmon",
+    "stage": 0,
+    "form": "Hawkmon",
+    "key": "catalog:TS_Hawkmon:chr706"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_hawkmon",
+    "stage": 1,
+    "form": "Aquilamon",
+    "key": "catalog:L_Aquilamon:chr015"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_mushroomon",
+    "stage": 1,
+    "form": "Woodmon",
+    "key": "catalog:CS_Woodmon:chr393"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_guilmon",
+    "stage": 0,
+    "form": "Guilmon",
+    "key": "catalog:TS_Guilmon:chr090"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_guilmon",
+    "stage": 1,
+    "form": "Growlmon",
+    "key": "catalog:L_Growlmon:chr078"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_guilmon",
+    "stage": 2,
+    "form": "WarGrowlmon",
+    "key": "catalog:RD_WarGrowlmon:main"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_dorumon",
+    "stage": 0,
+    "form": "Dorumon",
+    "key": "catalog:CS_Dorumon:chr112"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_dorumon",
+    "stage": 1,
+    "form": "Dorugamon",
+    "key": "catalog:L_Dorugamon:chr396"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_armadillomon",
+    "stage": 0,
+    "form": "Armadillomon",
+    "key": "catalog:CS_Armadillomon:chr707"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_impmon",
+    "stage": 0,
+    "form": "Impmon",
+    "key": "catalog:TS_Impmon:chr081"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_impmon",
+    "stage": 1,
+    "form": "Beelzemon",
+    "key": "catalog:RD_Beelzemon:main"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_veemon",
+    "stage": 0,
+    "form": "Veemon",
+    "key": "catalog:TS_V_mon:chr114"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_veemon",
+    "stage": 1,
+    "form": "ExVeemon",
+    "key": "catalog:L_ExVeemon:chr365"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_shamanmon",
+    "stage": 0,
+    "form": "Shamanmon",
+    "key": "skin:SKIN_TS_Goburimon_chr577"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_gaomon",
+    "stage": 0,
+    "form": "Gaomon",
+    "key": "catalog:TS_Gaomon:chr055"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_gaomon",
+    "stage": 1,
+    "form": "Gaogamon",
+    "key": "catalog:CS_Gaogamon:chr068"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_gaomon",
+    "stage": 2,
+    "form": "MirageGaogamon",
+    "key": "unique:L_MirageGaogamon"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_betamon",
+    "stage": 0,
+    "form": "Betamon",
+    "key": "catalog:TS_Betamon:main"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_betamon",
+    "stage": 1,
+    "form": "Seadramon",
+    "key": "catalog:CS_Seadramon:chr347"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_demidevimon",
+    "stage": 0,
+    "form": "DemiDevimon",
+    "key": "catalog:TS_PicoDevimon:chr097"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_renamon",
+    "stage": 0,
+    "form": "Renamon",
+    "key": "catalog:TS_Renamon:chr391"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_renamon",
+    "stage": 1,
+    "form": "Kyubimon",
+    "key": "catalog:L_Kyubimon:chr395"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_terriermon",
+    "stage": 0,
+    "form": "Terriermon Assistant",
+    "key": "unique:TS_Terriermon_Assistant"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_terriermon",
+    "stage": 1,
+    "form": "Gargomon",
+    "key": "catalog:CS_Gargomon:chr710"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_lucemon",
+    "stage": 0,
+    "form": "Lucemon",
+    "key": "catalog:TS_Lucemon:chr390"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_syakomon",
+    "stage": 0,
+    "form": "Syakomon",
+    "key": "catalog:TS_Shakomon:chr709"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_syakomon",
+    "stage": 2,
+    "form": "Plesiomon",
+    "key": "catalog:CS_Plesiomon:chr450"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_elecmon",
+    "stage": 0,
+    "form": "Elecmon",
+    "key": "catalog:TS_Elecmon_Elecmon_Aegiomon:chr564"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_s_tanemon",
+    "stage": 0,
+    "form": "Tanemon",
+    "key": "catalog:TS_Tanemon:chr512"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_s_tanemon",
+    "stage": 1,
+    "form": "Tanemon",
+    "key": "catalog:TS_Tanemon:chr512"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_s_tanemon",
+    "stage": 2,
+    "form": "Tanemon",
+    "key": "catalog:TS_Tanemon:chr512"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_s_vegiemon",
+    "stage": 0,
+    "form": "Vegiemon",
+    "key": "catalog:CS_Vegiemon:chr314"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_s_vegiemon",
+    "stage": 1,
+    "form": "Vegiemon",
+    "key": "catalog:CS_Vegiemon:chr314"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_s_vegiemon",
+    "stage": 2,
+    "form": "Vegiemon",
+    "key": "catalog:CS_Vegiemon:chr314"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_numemon",
+    "stage": 0,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_numemon",
+    "stage": 1,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_numemon",
+    "stage": 2,
+    "form": "Numemon",
+    "key": "catalog:CS_Numemon:chr070"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_gekomon",
+    "stage": 0,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_gekomon",
+    "stage": 1,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_gekomon",
+    "stage": 2,
+    "form": "Gekomon",
+    "key": "catalog:CS_Gekomon:chr399"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_ogremon",
+    "stage": 0,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_ogremon",
+    "stage": 1,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_ogremon",
+    "stage": 2,
+    "form": "Ogremon",
+    "key": "catalog:CS_Ogremon:chr394"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_tyrannomon",
+    "stage": 0,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_tyrannomon",
+    "stage": 1,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_tyrannomon",
+    "stage": 2,
+    "form": "Tyrannomon",
+    "key": "catalog:L_Tyrannomon:chr363"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_apocalymon",
+    "stage": 0,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_apocalymon",
+    "stage": 1,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  },
+  {
+    "set": "autochess",
+    "line": "ac_w_apocalymon",
+    "stage": 2,
+    "form": "Apocalymon",
+    "key": "catalog:L_Apocalymon:chr328"
+  }
+]

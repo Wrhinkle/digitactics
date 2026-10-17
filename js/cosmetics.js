@@ -30,7 +30,7 @@
   let save = { bits: 0, owned: {}, equipped: {}, history: [] };
   try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s === 'object') save = Object.assign(save, s); } catch (e) { /* blocked or corrupt */ }
   for (const k of KINDS) save.owned[k] = save.owned[k] || [];
-  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) { /* private mode */ } };
+  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(save)); return true; } catch (e) { return false; } };
   const emit = (kind) => { for (const fn of listeners) { try { fn(kind); } catch (e) { console.warn(e); } } };
 
   const multi = (kind) => kind === 'emote' || kind === 'sound';
@@ -47,6 +47,7 @@
       emit(kind);
     },
     list(kind) { return catalog[kind] || []; },
+    visible(kind) { return this.list(kind).filter(it => !it.secret || this.owns(kind, it.id)); },
     get(kind, id) { return (catalog[kind] || []).find((x) => x.id === id) || null; },
     owns(kind, id) {
       const it = this.get(kind, id);
@@ -54,9 +55,12 @@
       return !!it && (it.free || save.owned[kind].includes(id));
     },
     grant(kind, id) {
+      if (!this.get(kind, id)) return false;
+      const before = save.owned[kind].slice();
       if (!save.owned[kind].includes(id)) save.owned[kind].push(id);
-      persist();
+      if (!persist()) { save.owned[kind] = before; return false; }
       emit(kind);
+      return true;
     },
     equipped(kind) {
       const owned = (id) => id && this.owns(kind, id);
@@ -142,7 +146,7 @@
       if (!aiLooks.has(key)) {
         const o = {};
         for (const k of KINDS) {
-          const items = Cosmetics.list(k);
+          const items = Cosmetics.list(k).filter(it => !it.secret);
           const pick = (n) => (items.length ? items[hash(`${key}:${k}:${n}`) % items.length].id : null);
           o[k] = k === 'emote' || k === 'sound' ? Array.from({ length: SLOTS }, (_, n) => pick(n)) : pick(0);
         }

@@ -5,7 +5,8 @@ const { spawn, execFileSync } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const arg = process.argv[2] || path.join(__dirname, '..', 'dist', 'DigiTactics-Steam', 'Digi-Tactics.exe');
+const requested = process.argv[2] || path.join(__dirname, '..', 'dist', 'DigiTactics-Steam', 'Digi-Tactics.exe');
+const arg = requested === 'dev' ? requested : path.resolve(requested);
 const report = path.join(os.tmpdir(), `dt-smoke-${Date.now()}.json`);
 let steamRunning = false;
 try { steamRunning = /steam\.exe/i.test(execFileSync('tasklist', ['/FI', 'IMAGENAME eq steam.exe', '/NH'], { windowsHide: true }).toString()); } catch (e) { /* no tasklist */ }
@@ -19,7 +20,7 @@ const timer = setInterval(() => {
     const r = JSON.parse(fs.readFileSync(report, 'utf8'));
     console.log(JSON.stringify(r, null, 2));
     fs.rmSync(report, { force: true });
-    setTimeout(() => process.exit(r.error || (r.page && r.page.solo !== true) || !r.security || Object.values(r.security).some((v) => v !== true) ? 1 : 0), 500);
+    setTimeout(() => process.exit(r.error || r.native?.ok !== true || r.page?.solo !== true || !r.security || Object.values(r.security).some((v) => v !== true) ? 1 : 0), 500);
   } else if (Date.now() - t0 > 90000) {
     clearInterval(timer);
     console.error('no report after 90 s');

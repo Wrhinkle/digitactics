@@ -1,0 +1,57 @@
+{
+  "faction-wars": {
+    "omnimon": ["WarGreymon", "Omnimon", "Omnimon X"],
+    "alphamon": ["Alphamon NX", "Alphamon", "Alphamon Ouryuken"],
+    "bearmon": ["Bearmon (Little)", "Grizzlymon", "GrapLeomon"]
+  },
+  "galaxies": {
+    "gal_etemon": ["Etemon", "MetalEtemon", "KingEtemon"],
+    "gal_kimeramon": ["Kimeramon", "Chaosmon", "Chaosmon Valdur Arm"],
+    "gal_vikemon": ["Pandamon", "Vikemon", "Vikemon"],
+    "gal_w_diaboromon": ["Omnimon Alter-B", "Omnimon Alter-B", "Omnimon Alter-B"]
+  },
+  "fates": {
+    "fat_numemon": ["Numemon", "GoldNumemon", "PlatinumNumemon"],
+    "fat_lopmon": ["Lopmon", "Turuiemon", "Cherubimon (Good)"],
+    "fat_blackgabumon": ["BlackGabumon", "BlackGarurumon", "CresGarurumon"],
+    "fat_clockmon": ["Clockmon", "Digitamamon", "Millenniummon"]
+  },
+  "reckoning": {
+    "rec_sisciel": ["Sistermon Ciel", "Sistermon Ciel (Awakened)", "Durandamon"],
+    "rec_lopmon": ["Lopmon", "Turuiemon", "Cherubimon (Evil)"],
+    "rec_unimon": ["Unimon", "HippoGryphonmon", "Ophanimon Falldown Mode"],
+    "rec_w_kingetemon": ["KingEtemon", "KingEtemon", "KingEtemon"],
+    "rec_w_pagumon": ["Arcadiamon (In-Training)", "Arcadiamon (Rookie)", "Arcadiamon (Champion)"]
+  },
+  "gizmos": {
+    "giz_datamon": ["Datamon", "GranLocomon", "Chaosdromon"],
+    "giz_justimon": ["Justimon: Blitz Arm", "Justimon: Critical Arm", "Gankoomon"],
+    "giz_blackgabumon": ["BlackGabumon", "BlackGarurumon", "MetalGarurumon X"]
+  },
+  "dragonlands": {
+    "drg_greymon": ["Greymon", "BlitzGreymon", "Volcanicdramon"],
+    "drg_growlmon": ["Growlmon (Yellow)", "WarGrowlmon (Yellow)", "Examon"]
+  },
+  "arcane": {
+    "arc_demidevimon": ["Arcadiamon (Rookie)", "Arcadiamon (Champion)", "Arcadiamon (Ultimate)"],
+    "arc_millenniummon": ["Arcadiamon (Mega)", "Arcadiamon (Ultra)", "Arcadiamon (Ultra)"],
+    "arc_s_belphemon": ["Belphemon Sleep Mode", "Belphemon Sleep Mode", "Belphemon Sleep Mode"]
+  },
+  "coliseum": {
+    "col_sistermonciel": ["Sistermon Ciel", "Sistermon Ciel (Awakened)", "Dianamon"],
+    "col_bearmon": ["Bearmon (Big)", "Grizzlymon", "Monzaemon"],
+    "col_ravemon": ["Ravemon", "Ravemon", "Ravemon Burst Mode"],
+    "col_merukimon": ["Minervamon", "Merukimon", "Merukimon"],
+    "col_w_alphamon": ["Leopardmon", "Leopardmon", "Leopardmon Leopard Mode"],
+    "col_w_omnimon": ["Omnimon NX", "Omnimon Alter-S", "Omnimon Merciful Mode"]
+  },
+  "underlords": {
+    "ul_w_roshan": ["Omnimon Zwart D", "Omnimon Zwart D", "Omnimon Zwart D"],
+    "ul_tidehunter": ["Betamon", "Whamon", "Plesiomon"],
+    "ul_crystal": ["Muchomon", "Icemon", "Merukimon"]
+  },
+  "autochess": {
+    "ac_gaomon": ["Gaomon", "Gaogamon", "MirageGaogamon"],
+    "ac_terriermon": ["Terriermon Assistant", "Gargomon", "MegaGargomon"]
+  }
+}

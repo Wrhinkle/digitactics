@@ -28,7 +28,7 @@ function load(opts = {}) {
   }
   ctx.globalThis = ctx;
   vm.createContext(ctx);
-  for (const f of ruleFiles()) vm.runInContext(fs.readFileSync(path.join(ROOT, f), 'utf8'), ctx, { filename: f });
+  for (const f of ruleFiles().filter(f=>!opts.exclude?.includes(f))) vm.runInContext(fs.readFileSync(path.join(ROOT, f), 'utf8'), ctx, { filename: f });
   return ctx.DT;
 }
 

@@ -17,7 +17,7 @@ const { app } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-const SHELL = 1;
+const SHELL = 2;
 if (process.env.DT_USERDATA) app.setPath('userData', path.resolve(process.env.DT_USERDATA));
 const UD = app.getPath('userData');
 const P = path.join(UD, 'payload');

@@ -10,6 +10,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { LAYOUT } from './render3d.js';
 import { extraThemes } from './boards-extra.js';
+import { mysteryBoards } from './mystery-boards.js';
 
 const DT = window.DT;
 const { cellWorld, benchWorld, itemWorld, BENCH_Z, BENCH_STEP, ITEM_SLOTS } = LAYOUT;
@@ -660,6 +661,7 @@ const THEMES = [
 
 THEMES.push(...extraThemes({ THREE, DT, C, std, dummy, canvasTex, gradient, speckle, softDot, part, merge, setInst, inst, mesh, rimSpots, farSpots, sea, plain, particles, island, pineGeo, gearGeo, LAYOUT }));
 
+THEMES.push(...mysteryBoards({ THREE, std, mesh, island, sea, inst, setInst }));
 const THEME = Object.fromEntries(THEMES.map((t) => [t.id, t]));
 const themeOf = (id) => THEME[id] || THEME[DEFAULT];
 
@@ -996,6 +998,7 @@ function previewInto(id, el) {
 
 // ---------- catalog ----------
 DT.Cosmetics.register('board', THEMES.map((t) => ({
+  ...(t.secret ? { secret: true, lootPool: t.lootPool, egg: false, tag: t.tag } : {}),
   id: t.id, name: t.name, price: t.price, rarity: t.rarity, desc: t.desc, icon: t.icon,
   ...(t.free ? { free: true } : {}),
   data: { tiles: t.tiles, fog: t.fog[0] },

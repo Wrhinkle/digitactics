@@ -5,15 +5,25 @@ import * as THREE from 'three';
 const V = () => new THREE.Vector3();
 const Q = () => new THREE.Quaternion();
 const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), Z = new THREE.Vector3(0, 0, 1);
-const armName = /(?:^|_)(?:arm\d*|ude|shoulder)(?:_|$)|upperarm/i;
-const headName = /(?:^|_)(?:head|atama)(?:_|$)/i;
-const chestName = /(?:^|_)(?:chest|mune|spine02)(?:_|$)/i;
+const armName = /(?:^|_)(?:arm\d*|ude|shoulder)(?:[lr])?(?:_|$)|upperarm/i;
+const headName = /(?:^|_)(?:head|atama|face)(?:_?0?[12])?(?:_|$)/i;
+const chestName = /(?:^|_)(?:chest|mune|spine0[12])(?:_|$)/i;
 const tailName = /(?:^|_)(?:tail|sippo|shippo)(?:0?1)?(?:_|$)/i;
 const valid = b => !/end|nub|twist|helper/i.test(b.name);
 
 export function modelClips(gltf, src) {
-  const authored = gltf.animations || [];
-  if (authored.length && src?.anim !== false) return authored;
+  const authored = (gltf.animations || []).filter(c=>!src?.fallbackRoles?.includes(c.name));
+  if (authored.length && src?.anim !== false) {
+    const missing = ['idle','attack','special','win'].filter(role => !authored.some(c => c.name === role));
+    if (!missing.length) return authored;
+    // Build missing actions from the authored neutral pose, retaining every original clip.
+    const pose = new THREE.AnimationMixer(gltf.scene);
+    pose.clipAction(authored.find(c => c.name === 'idle') || authored[0]).play();
+    pose.update(0);
+    const extra = fallbackClips(gltf.scene, false).filter(c => missing.includes(c.name));
+    pose.stopAllAction();pose.uncacheRoot(gltf.scene);
+    return [...authored, ...extra];
+  }
   // Disabled Noesis reels contain unrelated actions and root travel. Their first frame
   // still provides the assembled rest pose, including armor and weapon transforms.
   if (authored.length) {
@@ -24,7 +34,7 @@ export function modelClips(gltf, src) {
   return fallbackClips(gltf.scene);
 }
 
-export function fallbackClips(scene) {
+export function fallbackClips(scene, adjustRest = true) {
   const bones = new Set();
   scene.traverse(o => { if (o.isSkinnedMesh) for (const b of o.skeleton.bones) bones.add(b); });
   if (!bones.size) return [];
@@ -32,13 +42,15 @@ export function fallbackClips(scene) {
   const box = new THREE.Box3().setFromObject(scene), height = box.max.y - box.min.y;
   const hasHead = [...bones].some(b => headName.test(b.name));
   const isHead = b => headName.test(b.name) || (!hasHead && /(?:^|_)(?:neck|kubi)(?:_|$)/i.test(b.name));
-  const isChest = b => chestName.test(b.name) || /(?:^|_)body$/i.test(b.name);
+  const hasNamedBody = [...bones].some(b => chestName.test(b.name) || /(?:^|_)body$/i.test(b.name));
+  const isChest = b => chestName.test(b.name) || /(?:^|_)body$/i.test(b.name) || (!hasNamedBody && /^J_center$/i.test(b.name));
   // Some imports leave a held weapon under the root instead of the hand. Preserve its rest
   // transform while parenting nearby grips to the hand, so posing an arm also carries its weapon.
   const hands = [...bones].filter(b => /(?:^|_)(?:hand\d*|te|wrist)(?:_|$)/i.test(b.name) && valid(b));
   const feet = [...bones].filter(b => /(?:^|_)(?:foot|ankle|kakato)(?:_|$)/i.test(b.name));
   const footY = feet.length ? Math.min(...feet.map(b => b.getWorldPosition(V()).y)) : box.min.y;
   for (const b of bones) {
+    if (!adjustRest) break;
     if (!/bamboo_sword|(?:^|_)weapon(?:0?[12])?$/i.test(b.name)) continue;
     let parent = b.parent, held = false;
     while (parent) { if (hands.includes(parent)) held = true; parent = parent.parent; }
@@ -65,7 +77,7 @@ export function fallbackClips(scene) {
     if (!child) continue;
     const origin = b.getWorldPosition(V()), direction = child.getWorldPosition(V()).sub(origin).normalize();
     // Only lower outstretched upper arms. Forelegs and already-posed arms keep their orientation.
-    if (armName.test(b.name) && Math.abs(direction.x) > .8 && Math.abs(direction.y) < .3 && origin.y > box.min.y + height * .25) {
+    if (adjustRest && armName.test(b.name) && Math.abs(direction.x) > .8 && Math.abs(direction.y) < .3 && origin.y > box.min.y + height * .25) {
       const target = new THREE.Vector3(Math.sign(direction.x) * .45, -.82, .3).normalize();
       const delta = Q().setFromUnitVectors(direction, target);
       const parent = b.parent.getWorldQuaternion(Q());
@@ -82,7 +94,7 @@ export function fallbackClips(scene) {
   const rest = selected.map(b => ({
     bone: b, world: b.getWorldQuaternion(Q()), parent: b.parent.getWorldQuaternion(Q()).invert(),
     arm: arms.find(a => a.bone === b), head: isHead(b), chest: isChest(b), tail: tailName.test(b.name),
-  }));
+  })).filter(r=>[...r.world.toArray(),...r.parent.toArray()].every(Number.isFinite));
   const make = (role, duration) => {
     const count = 25, times = Array.from({ length: count }, (_, i) => duration * i / (count - 1));
     const tracks = rest.map(r => {

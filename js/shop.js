@@ -167,7 +167,7 @@ function showAward(panel, g, session) {
 }
 
 // ---------- prices, featured, eggs ----------
-const sellable = (k) => C.list(k).filter((it) => !it.free && it.price > 0 && !EGG_ONLY(it));
+const sellable = (k) => C.list(k).filter((it) => !it.secret && !it.free && it.price > 0 && !EGG_ONLY(it));
 function featured() {
   const d = today();
   const all = [];
@@ -184,7 +184,7 @@ const EGGS = [{ id: 'mixed', name: 'Mixed Digi-Egg', kinds: KINDS.map(([k]) => k
   .concat(KINDS.map(([k, many]) => ({ id: k, name: `${KIND_NAME[k]} Egg`, kinds: [k], price: EGG_KIND_PRICE, desc: `One of the ${many.toLowerCase()}.` })));
 function eggPool(egg) {
   const pool = [];
-  for (const k of egg.kinds) for (const it of C.list(k)) if (it.egg !== false && !it.free) pool.push({ kind: k, item: it });
+  for (const k of egg.kinds) for (const it of C.list(k)) if (!it.secret && it.egg !== false && !it.free) pool.push({ kind: k, item: it });
   return pool;
 }
 // odds per rarity among the rarities this egg can actually roll
@@ -328,7 +328,7 @@ function render() {
   const tabs = view.mode === 'store' ? KINDS.map(([k, many]) => [k, many]).concat([['eggs', 'Digi-Eggs']]) : KINDS.map(([k, many]) => [k, many]);
   if (!tabs.some(([k]) => k === view.tab)) view.tab = 'legend';
   root.querySelector('.dts-tabs').innerHTML = tabs.map(([k, name]) => {
-    const n = k === 'eggs' ? '' : view.mode === 'locker' ? C.list(k).filter((it) => C.owns(k, it.id)).length : C.list(k).filter((it) => !it.linked).length;
+    const n = k === 'eggs' ? '' : view.mode === 'locker' ? C.list(k).filter((it) => C.owns(k, it.id)).length : C.list(k).filter((it) => !it.secret && !it.linked).length;
     return `<button data-tab="${k}" class="${k === view.tab ? 'on' : ''}">${name}${n !== '' ? ` <span>${n}</span>` : ''}</button>`;
   }).join('');
   const body = root.querySelector('.dts-body');
@@ -346,8 +346,8 @@ function queueRender() {
 function storeHTML(kind) {
   const f = featured();
   // linked items (soundboard clips as elimination sounds) are sold on their own tab, not here
-  const items = C.list(kind).filter((it) => !it.linked);
-  const linked = C.list(kind).length - items.length;
+  const items = C.list(kind).filter((it) => !it.secret && !it.linked);
+  const linked = C.list(kind).filter(it => !it.secret).length - items.length;
   const feat = f.length ? `<section class="dts-feat"><h3>Featured today <span class="muted">${Math.round(FEATURED_OFF * 100)}% off, changes at midnight</span></h3>
     <div class="dts-grid">${f.map((x) => cardHTML(x.kind, x.item, { kindLabel: true })).join('')}</div></section>` : '';
   const sorted = items.slice().sort((a, b) => (b.free ? 1 : 0) - (a.free ? 1 : 0) || RARITIES.indexOf(a.rarity) - RARITIES.indexOf(b.rarity) || (a.price || 0) - (b.price || 0));
@@ -393,7 +393,7 @@ function eggOnlyHTML(pool) {
 
 function lockerHTML(kind) {
   const owned = C.list(kind).filter((it) => C.owns(kind, it.id));
-  const more = C.list(kind).length - owned.length;
+  const more = C.visible(kind).length - owned.length;
   const shopLink = more > 0 ? `<button data-gostore="${kind}">${more} more in the Store</button>` : '';
   if (!owned.length) return `<div class="dts-empty">You don't own any ${TAB_NAME[kind].toLowerCase()} yet. ${shopLink}</div>`;
   let wheel = '';
@@ -433,7 +433,7 @@ function closeModal() {
 let pending = null;
 function confirmBuy(kind, id) {
   const it = C.get(kind, id);
-  if (!it || C.owns(kind, id)) return;
+  if (!it || it.secret || C.owns(kind, id)) return;
   if (EGG_ONLY(it)) { sfx('error'); return msg(`${it.name} only hatches from Digi-Eggs.`, true); }
   const price = priceOf(kind, it);
   if (price > W.bits) { sfx('error'); return msg(`Not enough Bits: ${it.name} costs ${price}, you have ${W.bits}.`, true); }
@@ -462,7 +462,7 @@ function doBuy() {
   if (!p) return closeModal();
   if (p.type === 'egg') return hatch(p.id);
   const it = C.get(p.kind, p.id);
-  if (!it || C.owns(p.kind, p.id) || EGG_ONLY(it)) return closeModal();
+  if (!it || it.secret || C.owns(p.kind, p.id) || EGG_ONLY(it)) return closeModal();
   if (!W.spend(p.price)) { closeModal(); sfx('error'); return msg('Not enough Bits.', true); }
   C.grant(p.kind, p.id);
   sfx('buy');

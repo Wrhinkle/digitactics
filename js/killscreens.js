@@ -6,6 +6,7 @@
 // It never pauses anything: click it or press Esc to skip. Several eliminations in one round play one after another.
 import * as THREE from 'three';
 import { Moves } from './moveprims.js';
+import { killThemes as mysteryKillThemes } from './mystery-content.js';
 import { makePlaceholder, lib, UnitView } from './render3d.js';
 
 const DT = window.DT;
@@ -333,6 +334,10 @@ const items = VARIANTS.map(([id, theme, name, rarity, desc, free]) => ({
   data: { theme },
   preview: (el) => preview(el, theme, id),
 }));
+for (const s of mysteryKillThemes) {
+  THEMES[s.id] = s.theme;
+  items.push({ ...s, data: { theme: s.id }, preview: el => preview(el, s.id, s.id) });
+}
 DT.Cosmetics.register('killscreen', items);
 const themeOf = (id) => { const it = DT.Cosmetics.get('killscreen', id); return (it && it.data && THEMES[it.data.theme]) ? it.data.theme : 'basic'; };
 

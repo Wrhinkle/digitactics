@@ -184,7 +184,7 @@
       refresh();
     } else if (e.k === 'vote') refresh();
     else if (e.k === 'start' && res) beginCombatView();
-    else if (e.k === 'end' && res) { endCombatView(); if (DT.KillScreens) DT.KillScreens.onRoundEnd(game); }
+    else if (e.k === 'end' && res) { endCombatView(); if (DT.KillScreens) DT.KillScreens.onRoundEnd(game); DT.MysteryLoot?.roundEnd(game); }
     else if (e.k === 'next' && res) nextRoundView();
   }
 

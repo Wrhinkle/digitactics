@@ -896,8 +896,8 @@
     o.start(t);
     o.stop(t + 0.12);
   }
-  function hat(p, t, open7, v) {
-    mnoise(t, { type: "highpass", f: 7500, dec: open7 ? 0.2 : 0.035, vol: (open7 ? 0.05 : 0.06) * v, out: p.drums });
+  function hat(p, t, open8, v) {
+    mnoise(t, { type: "highpass", f: 7500, dec: open8 ? 0.2 : 0.035, vol: (open8 ? 0.05 : 0.06) * v, out: p.drums });
   }
   function crash(p, t) {
     mnoise(t, { type: "highpass", f: 4500, dec: 1.6, vol: 0.11, out: p.drums });
@@ -3519,23 +3519,23 @@
   var EventDispatcher = class {
     addEventListener(type, listener) {
       if (this._listeners === void 0) this._listeners = {};
-      const listeners6 = this._listeners;
-      if (listeners6[type] === void 0) {
-        listeners6[type] = [];
+      const listeners7 = this._listeners;
+      if (listeners7[type] === void 0) {
+        listeners7[type] = [];
       }
-      if (listeners6[type].indexOf(listener) === -1) {
-        listeners6[type].push(listener);
+      if (listeners7[type].indexOf(listener) === -1) {
+        listeners7[type].push(listener);
       }
     }
     hasEventListener(type, listener) {
       if (this._listeners === void 0) return false;
-      const listeners6 = this._listeners;
-      return listeners6[type] !== void 0 && listeners6[type].indexOf(listener) !== -1;
+      const listeners7 = this._listeners;
+      return listeners7[type] !== void 0 && listeners7[type].indexOf(listener) !== -1;
     }
     removeEventListener(type, listener) {
       if (this._listeners === void 0) return;
-      const listeners6 = this._listeners;
-      const listenerArray = listeners6[type];
+      const listeners7 = this._listeners;
+      const listenerArray = listeners7[type];
       if (listenerArray !== void 0) {
         const index2 = listenerArray.indexOf(listener);
         if (index2 !== -1) {
@@ -3545,8 +3545,8 @@
     }
     dispatchEvent(event) {
       if (this._listeners === void 0) return;
-      const listeners6 = this._listeners;
-      const listenerArray = listeners6[event.type];
+      const listeners7 = this._listeners;
+      const listenerArray = listeners7[event.type];
       if (listenerArray !== void 0) {
         event.target = this;
         const array = listenerArray.slice(0);
@@ -6243,9 +6243,9 @@
           this.union(_box$4);
         }
       }
-      const children = object.children;
-      for (let i = 0, l = children.length; i < l; i++) {
-        this.expandByObject(children[i], precise);
+      const children2 = object.children;
+      for (let i = 0, l = children2.length; i < l; i++) {
+        this.expandByObject(children2[i], precise);
       }
       return this;
     }
@@ -8028,9 +8028,9 @@
     }
     getObjectsByProperty(name2, value, result = []) {
       if (this[name2] === value) result.push(this);
-      const children = this.children;
-      for (let i = 0, l = children.length; i < l; i++) {
-        children[i].getObjectsByProperty(name2, value, result);
+      const children2 = this.children;
+      for (let i = 0, l = children2.length; i < l; i++) {
+        children2[i].getObjectsByProperty(name2, value, result);
       }
       return result;
     }
@@ -8057,17 +8057,17 @@
     }
     traverse(callback) {
       callback(this);
-      const children = this.children;
-      for (let i = 0, l = children.length; i < l; i++) {
-        children[i].traverse(callback);
+      const children2 = this.children;
+      for (let i = 0, l = children2.length; i < l; i++) {
+        children2[i].traverse(callback);
       }
     }
     traverseVisible(callback) {
       if (this.visible === false) return;
       callback(this);
-      const children = this.children;
-      for (let i = 0, l = children.length; i < l; i++) {
-        children[i].traverseVisible(callback);
+      const children2 = this.children;
+      for (let i = 0, l = children2.length; i < l; i++) {
+        children2[i].traverseVisible(callback);
       }
     }
     traverseAncestors(callback) {
@@ -8094,9 +8094,9 @@
         this.matrixWorldNeedsUpdate = false;
         force = true;
       }
-      const children = this.children;
-      for (let i = 0, l = children.length; i < l; i++) {
-        const child = children[i];
+      const children2 = this.children;
+      for (let i = 0, l = children2.length; i < l; i++) {
+        const child = children2[i];
         child.updateMatrixWorld(force);
       }
     }
@@ -8114,9 +8114,9 @@
         }
       }
       if (updateChildren === true) {
-        const children = this.children;
-        for (let i = 0, l = children.length; i < l; i++) {
-          const child = children[i];
+        const children2 = this.children;
+        for (let i = 0, l = children2.length; i < l; i++) {
+          const child = children2[i];
           child.updateWorldMatrix(false, true);
         }
       }
@@ -17025,9 +17025,9 @@
           }
         }
       }
-      const children = object.children;
-      for (let i = 0, l = children.length; i < l; i++) {
-        renderObject(children[i], camera2, shadowCamera, light, type);
+      const children2 = object.children;
+      for (let i = 0, l = children2.length; i < l; i++) {
+        renderObject(children2[i], camera2, shadowCamera, light, type);
       }
     }
     function onMaterialDispose(event) {
@@ -21162,9 +21162,9 @@ void main() {
             }
           }
         }
-        const children = object.children;
-        for (let i = 0, l = children.length; i < l; i++) {
-          projectObject(children[i], camera2, groupOrder, sortObjects);
+        const children2 = object.children;
+        for (let i = 0, l = children2.length; i < l; i++) {
+          projectObject(children2[i], camera2, groupOrder, sortObjects);
         }
       }
       function renderScene(currentRenderList2, scene2, camera2, viewport) {
@@ -31000,9 +31000,9 @@ void main() {
       if (data.userData !== void 0) object.userData = data.userData;
       if (data.layers !== void 0) object.layers.mask = data.layers;
       if (data.children !== void 0) {
-        const children = data.children;
-        for (let i = 0; i < children.length; i++) {
-          object.add(this.parseObject(children[i], geometries, materials, textures, animations));
+        const children2 = data.children;
+        for (let i = 0; i < children2.length; i++) {
+          object.add(this.parseObject(children2[i], geometries, materials, textures, animations));
         }
       }
       if (data.animations !== void 0) {
@@ -31920,9 +31920,9 @@ void main() {
         }
       }
       if (root4.children) {
-        const searchNodeSubtree = function(children) {
-          for (let i = 0; i < children.length; i++) {
-            const childNode = children[i];
+        const searchNodeSubtree = function(children2) {
+          for (let i = 0; i < children2.length; i++) {
+            const childNode = children2[i];
             if (childNode.name === nodeName || childNode.uuid === nodeName) {
               return childNode;
             }
@@ -33239,9 +33239,9 @@ void main() {
       if (result === false) propagate = false;
     }
     if (propagate === true && recursive === true) {
-      const children = object.children;
-      for (let i = 0, l = children.length; i < l; i++) {
-        intersect(children[i], raycaster, intersects2, true);
+      const children2 = object.children;
+      for (let i = 0, l = children2.length; i < l; i++) {
+        intersect(children2[i], raycaster, intersects2, true);
       }
     }
   }
@@ -36889,7 +36889,7 @@ void main() {
         skeletonPending
       ]).then(function(results) {
         const node = results[0];
-        const children = results[1];
+        const children2 = results[1];
         const skeleton = results[2];
         if (skeleton !== null) {
           node.traverse(function(mesh2) {
@@ -36897,8 +36897,8 @@ void main() {
             mesh2.bind(skeleton, _identityMatrix2);
           });
         }
-        for (let i = 0, il = children.length; i < il; i++) {
-          node.add(children[i]);
+        for (let i = 0, il = children2.length; i < il; i++) {
+          node.add(children2[i]);
         }
         return node;
       });
@@ -38717,7 +38717,7 @@ void main() {
     }
     // fill this.pts[0..count) first, then call build
     build(cam, bright = 1) {
-      const n4 = this.count, P2 = this.posArr, C11 = this.colArr, pts = this.pts;
+      const n4 = this.count, P2 = this.posArr, C13 = this.colArr, pts = this.pts;
       const cx = cam.position.x, cy = cam.position.y, cz = cam.position.z;
       for (let i = 0; i < RIB_N; i++) {
         const j = Math.min(i, n4 - 1);
@@ -38740,9 +38740,9 @@ void main() {
         P2[o + 4] = p.y - sy;
         P2[o + 5] = p.z - sz;
         const f = bright * (i < n4 ? 1 : 0);
-        C11[o] = C11[o + 3] = this.color.r * f;
-        C11[o + 1] = C11[o + 4] = this.color.g * f;
-        C11[o + 2] = C11[o + 5] = this.color.b * f;
+        C13[o] = C13[o + 3] = this.color.r * f;
+        C13[o + 1] = C13[o + 4] = this.color.g * f;
+        C13[o + 2] = C13[o + 5] = this.color.b * f;
       }
       const g2 = this.mesh.geometry;
       g2.attributes.position.needsUpdate = true;
@@ -41740,19 +41740,19 @@ void main() {
           st3.ring2.material.color.copy(WHITE);
           st3.sw.material.color.copy(cb);
         }
-        const open7 = k < 0.25 ? k / 0.25 : k > 0.8 ? (1 - k) / 0.2 : 1;
+        const open8 = k < 0.25 ? k / 0.25 : k > 0.8 ? (1 - k) / 0.2 : 1;
         for (const m of [st3.ring, st3.ring2, st3.sw]) {
           m.position.set(gx, gy, gz);
           m.rotation.set(0, camYaw, 0);
         }
-        st3.ring.scale.set(S4 * open7, S4 * 1.25 * open7, S4);
-        st3.ring2.scale.set(S4 * 0.92 * open7, S4 * 1.15 * open7, S4 * 0.5);
+        st3.ring.scale.set(S4 * open8, S4 * 1.25 * open8, S4);
+        st3.ring2.scale.set(S4 * 0.92 * open8, S4 * 1.15 * open8, S4 * 0.5);
         st3.sw.rotateZ(dt * 6);
-        st3.sw.scale.set(S4 * 0.9 * open7, S4 * 1.1 * open7, 1);
-        st3.ring.material.opacity = 0.9 * open7;
-        st3.ring2.material.opacity = 0.5 * open7;
-        st3.sw.material.opacity = 0.75 * open7;
-        fx2.quad("glow", gx, gy, gz, S4 * 2.5 * open7, S4 * 2.5 * open7, ca, 0.4 * open7);
+        st3.sw.scale.set(S4 * 0.9 * open8, S4 * 1.1 * open8, 1);
+        st3.ring.material.opacity = 0.9 * open8;
+        st3.ring2.material.opacity = 0.5 * open8;
+        st3.sw.material.opacity = 0.75 * open8;
+        fx2.quad("glow", gx, gy, gz, S4 * 2.5 * open8, S4 * 2.5 * open8, ca, 0.4 * open8);
         const n4 = Math.round(dt * 140);
         for (let i = 0; i < n4; i++) {
           const t = c.T.length ? c.T[i % c.T.length] : B;
@@ -42342,9 +42342,9 @@ void main() {
       let T3 = p.T;
       const type = p.line ? p.line.type : null;
       if (!T3.length && p.curTarget && type !== "heal") T3 = [{ x: p.curTarget.x, y: 0.8, z: p.curTarget.z }];
-      const C11 = p.area ? { x: p.area.x, z: p.area.z } : T3.length ? { x: T3[0].x, z: T3[0].z } : { x: P2.x, z: P2.z };
+      const C13 = p.area ? { x: p.area.x, z: p.area.z } : T3.length ? { x: T3[0].x, z: T3[0].z } : { x: P2.x, z: P2.z };
       const R4 = p.area ? (p.area.r + 0.5) * 1.7 : 1.2;
-      const aim = T3[0] || C11;
+      const aim = T3[0] || C13;
       const yaw = Math.atan2(aim.x - P2.x, aim.z - P2.z) || 0;
       const fwd = 0.35 * S4;
       const A2 = { x: P2.x + Math.sin(yaw) * fwd, y: p.h * 0.62 + p.y0, z: P2.z + Math.cos(yaw) * fwd };
@@ -42353,7 +42353,7 @@ void main() {
         P: P2,
         h: p.h,
         T: T3,
-        C: C11,
+        C: C13,
         R: R4,
         S: S4,
         stage: stage3,
@@ -42368,7 +42368,7 @@ void main() {
       };
       if (p.area && T3.length <= 1 && c.type !== "heal") {
         const extra = [];
-        if (!T3.length) extra.push({ x: C11.x, y: 0.8, z: C11.z });
+        if (!T3.length) extra.push({ x: C13.x, y: 0.8, z: C13.z });
         c.T = T3.concat(extra);
       }
       (CHARGES[spec.charge || "aura"] || CHARGES.aura)(fx2, c, p.release);
@@ -42409,14 +42409,24 @@ void main() {
   var X = new Vector3(1, 0, 0);
   var Y = new Vector3(0, 1, 0);
   var Z = new Vector3(0, 0, 1);
-  var armName = /(?:^|_)(?:arm\d*|ude|shoulder)(?:_|$)|upperarm/i;
-  var headName = /(?:^|_)(?:head|atama)(?:_|$)/i;
-  var chestName = /(?:^|_)(?:chest|mune|spine02)(?:_|$)/i;
+  var armName = /(?:^|_)(?:arm\d*|ude|shoulder)(?:[lr])?(?:_|$)|upperarm/i;
+  var headName = /(?:^|_)(?:head|atama|face)(?:_?0?[12])?(?:_|$)/i;
+  var chestName = /(?:^|_)(?:chest|mune|spine0[12])(?:_|$)/i;
   var tailName = /(?:^|_)(?:tail|sippo|shippo)(?:0?1)?(?:_|$)/i;
   var valid = (b) => !/end|nub|twist|helper/i.test(b.name);
   function modelClips(gltf, src) {
-    const authored = gltf.animations || [];
-    if (authored.length && src?.anim !== false) return authored;
+    const authored = (gltf.animations || []).filter((c) => !src?.fallbackRoles?.includes(c.name));
+    if (authored.length && src?.anim !== false) {
+      const missing = ["idle", "attack", "special", "win"].filter((role) => !authored.some((c) => c.name === role));
+      if (!missing.length) return authored;
+      const pose = new AnimationMixer(gltf.scene);
+      pose.clipAction(authored.find((c) => c.name === "idle") || authored[0]).play();
+      pose.update(0);
+      const extra = fallbackClips(gltf.scene, false).filter((c) => missing.includes(c.name));
+      pose.stopAllAction();
+      pose.uncacheRoot(gltf.scene);
+      return [...authored, ...extra];
+    }
     if (authored.length) {
       const pose = new AnimationMixer(gltf.scene);
       pose.clipAction(authored[0]).play();
@@ -42424,7 +42434,7 @@ void main() {
     }
     return fallbackClips(gltf.scene);
   }
-  function fallbackClips(scene2) {
+  function fallbackClips(scene2, adjustRest = true) {
     const bones = /* @__PURE__ */ new Set();
     scene2.traverse((o) => {
       if (o.isSkinnedMesh) for (const b of o.skeleton.bones) bones.add(b);
@@ -42434,11 +42444,13 @@ void main() {
     const box3 = new Box3().setFromObject(scene2), height = box3.max.y - box3.min.y;
     const hasHead = [...bones].some((b) => headName.test(b.name));
     const isHead = (b) => headName.test(b.name) || !hasHead && /(?:^|_)(?:neck|kubi)(?:_|$)/i.test(b.name);
-    const isChest = (b) => chestName.test(b.name) || /(?:^|_)body$/i.test(b.name);
+    const hasNamedBody = [...bones].some((b) => chestName.test(b.name) || /(?:^|_)body$/i.test(b.name));
+    const isChest = (b) => chestName.test(b.name) || /(?:^|_)body$/i.test(b.name) || !hasNamedBody && /^J_center$/i.test(b.name);
     const hands = [...bones].filter((b) => /(?:^|_)(?:hand\d*|te|wrist)(?:_|$)/i.test(b.name) && valid(b));
     const feet = [...bones].filter((b) => /(?:^|_)(?:foot|ankle|kakato)(?:_|$)/i.test(b.name));
     const footY = feet.length ? Math.min(...feet.map((b) => b.getWorldPosition(V()).y)) : box3.min.y;
     for (const b of bones) {
+      if (!adjustRest) break;
       if (!/bamboo_sword|(?:^|_)weapon(?:0?[12])?$/i.test(b.name)) continue;
       let parent = b.parent, held = false;
       while (parent) {
@@ -42471,7 +42483,7 @@ void main() {
       const child = b.children.find((c) => c.isBone && /elbow|hiji|ancon|forearm/i.test(c.name)) || b.children.find((c) => c.isBone);
       if (!child) continue;
       const origin = b.getWorldPosition(V()), direction = child.getWorldPosition(V()).sub(origin).normalize();
-      if (armName.test(b.name) && Math.abs(direction.x) > 0.8 && Math.abs(direction.y) < 0.3 && origin.y > box3.min.y + height * 0.25) {
+      if (adjustRest && armName.test(b.name) && Math.abs(direction.x) > 0.8 && Math.abs(direction.y) < 0.3 && origin.y > box3.min.y + height * 0.25) {
         const target = new Vector3(Math.sign(direction.x) * 0.45, -0.82, 0.3).normalize();
         const delta = Q().setFromUnitVectors(direction, target);
         const parent = b.parent.getWorldQuaternion(Q());
@@ -42494,7 +42506,7 @@ void main() {
       head: isHead(b),
       chest: isChest(b),
       tail: tailName.test(b.name)
-    }));
+    })).filter((r) => [...r.world.toArray(), ...r.parent.toArray()].every(Number.isFinite));
     const make = (role, duration) => {
       const count2 = 25, times = Array.from({ length: count2 }, (_, i) => duration * i / (count2 - 1));
       const tracks = rest.map((r) => {
@@ -44699,8 +44711,46 @@ void main() {
     bakemon: "myotismon:bond neodevimon:battle",
     lekismon: "crescemon:bond andiramon:food"
   };
+  Object.assign(FORMS, {
+    ginryumon: ["ryudamon:1", CH, "Ginryumon"],
+    hisyaryumon: ["ryudamon:2", U, "Hisyaryumon"],
+    peckmon: ["falcomon:1", CH, "Peckmon"],
+    crowmon: ["falcomon:2", U, "Crowmon"],
+    dobermon: ["ac:Dobermon", CH, "Dobermon"],
+    musyamon: ["ac:Musyamon", CH, "Musyamon"],
+    grademon: ["drg:Grademon", U, "Grademon"],
+    firamon: ["coronamon:1", CH, "Firamon"],
+    flaremon: ["coronamon:2", U, "Flaremon"],
+    waspmon: ["fanbeemon:1", CH, "Waspmon"],
+    cannonbeemon: ["fanbeemon:2", U, "CannonBeemon"],
+    coelamon: ["gizamon:1", CH, "Coelamon"],
+    frigimon: ["extra:DW1_Frigimon", CH, "Frigimon"],
+    mammothmon: ["ac:Mammothmon", U, "Mammothmon"]
+  });
+  Object.assign(EVO, {
+    ryudamon: "ginryumon:bond coredramon:battle",
+    ginryumon: "hisyaryumon:bond",
+    falcomon: "peckmon:bond aquilamon:battle",
+    hyokomon: "peckmon:bond birdramon:battle",
+    peckmon: "crowmon:bond garudamon:battle",
+    gazimon: "dobermon:bond garurumon:battle",
+    dobermon: "weregarurumon:bond",
+    kotemon: "musyamon:bond guardromon:battle",
+    musyamon: "grademon:bond",
+    coronamon: "firamon:bond",
+    firamon: "flaremon:bond",
+    lunamon: "lekismon:bond",
+    fanbeemon: "waspmon:bond kabuterimon:battle",
+    waspmon: "cannonbeemon:bond",
+    syakomon: "coelamon:bond seadramon:battle",
+    crabmon: "coelamon:bond ikkakumon:battle",
+    coelamon: "megaseadramon:bond zudomon:battle",
+    penguinmon: "frigimon:bond seadramon:battle",
+    frigimon: "mammothmon:bond zudomon:battle"
+  });
   var KIDS = {};
   for (const [f, s] of Object.entries(EVO)) KIDS[f] = s.split(/\s+/).map((x) => x.split(":"));
+  var children = (id2) => KIDS[C3.get("legend", id2)?.data?.evoRoot || id2] || [];
   var MAX_LEVEL = 10;
   var DATA_FOR = [0, 100, 100, 150, 200, 200, 250, 300, 300, 400];
   var TIER_LEVEL = [1, 3, 6, 10];
@@ -44785,7 +44835,7 @@ void main() {
   var XP_MAX = DATA_FOR.reduce((a, b) => a + b, 0);
   var stageOf = (id2) => {
     const it = C3.get("legend", id2);
-    return it && /^Fresh/.test(it.desc || "") ? "Fresh" : "In-Training";
+    return it?.data?.level || (it && /^Fresh/.test(it.desc || "") ? "Fresh" : "In-Training");
   };
   var TIER = { Fresh: 0, "In-Training": 0, Rookie: 1, Champion: 2, Ultimate: 3 };
   var RANK = { Fresh: 0, "In-Training": 1, Rookie: 2, Champion: 3, Ultimate: 4 };
@@ -44804,7 +44854,7 @@ void main() {
     const it = C3.get("legend", formId);
     if (!it) return null;
     const level = stageOf(formId);
-    return { id: formId, name: it.name, level, tier: 0, rank: RANK[level], legend: formId };
+    return { id: formId, name: it.name, level, tier: TIER[level], rank: RANK[level], legend: formId };
   }
   var entryLevel = (f) => f.tier > 0 ? TIER_LEVEL[f.tier] : IT_LEVEL;
   var reachCache = /* @__PURE__ */ new Map();
@@ -44812,7 +44862,7 @@ void main() {
     if (reachCache.has(id2)) return reachCache.get(id2);
     const seen = /* @__PURE__ */ new Set([id2]);
     const q = [id2];
-    while (q.length) for (const [k] of KIDS[q.shift()] || []) if (!seen.has(k) && FORMS[k]) {
+    while (q.length) for (const [k] of children(q.shift())) if (!seen.has(k) && FORMS[k]) {
       seen.add(k);
       q.push(k);
     }
@@ -44824,7 +44874,7 @@ void main() {
     const seen = /* @__PURE__ */ new Set([id2]);
     const edges = [];
     const parents = {};
-    for (let i = 0; i < order.length; i++) for (const [k] of KIDS[order[i]] || []) {
+    for (let i = 0; i < order.length; i++) for (const [k] of children(order[i])) {
       if (!FORMS[k]) continue;
       edges.push([order[i], k]);
       (parents[k] = parents[k] || []).push(order[i]);
@@ -44882,7 +44932,7 @@ void main() {
     const bonus2 = careBonus(id2);
     const care = { bond: cap2((r.care.bond || 0) + bonus2.bond), battle: cap2((r.care.battle || 0) + bonus2.battle), food: cap2((r.care.food || 0) + bonus2.food) };
     const total = care.bond + care.battle + care.food;
-    return (KIDS[from] || []).filter(([k]) => FORMS[k]).map(([form, c]) => ({
+    return children(from).filter(([k]) => FORMS[k]).map(([form, c]) => ({
       form,
       care: c,
       weight: c === "wild" ? Math.max(WILD_MIN, WILD_BASE - total) + bonus2.wild : CARE_BASE + CARE_PER * care[c]
@@ -45062,7 +45112,7 @@ void main() {
       const depth = [1, 2, 2, 3, 3][h % 5];
       let f = id2;
       for (let d = 0; d < depth; d++) {
-        const kids = (KIDS[f] || []).filter(([k]) => FORMS[k]);
+        const kids = children(f).filter(([k]) => FORMS[k]);
         if (!kids.length) break;
         f = kids[hash(`${seed}|${d}`) % kids.length][0];
       }
@@ -45114,6 +45164,116 @@ void main() {
     return { legend: legend2, form: form && FORMS[form] ? form : null };
   }
   DT9.LegendEvo = LegendEvo;
+
+  // js/mystery-content.js
+  var COLLECTIONS = [
+    { pool: "daily", label: "Daybreak", names: ["Sunbeam", "Dewdrop", "Orchard", "Firefly", "Petal", "Honeycomb", "Raincloud", "Seashell", "Kite", "Sprout", "Lantern", "Rainbow", "Pebble", "Snowflake", "Feather", "Waterlily", "Starlight", "Campfire", "Windmill", "Moonrise"], color: ["#ffc76b", "#7de0cf", "#ed91b9", "#a9c7ff", "#b8e986"], words: ["HELLO!", "NICE!", "GROW!", "SHINE!", "BLOOM!", "SWEET!", "OOPS!", "WAVE!", "WHEE!", "GO!", "CHEERS!", "WOW!", "SOLID!", "CHILL!", "FLY!", "ZEN!", "WISH!", "COZY!", "SPIN!", "NIGHT!"] },
+    { pool: "vault", label: "Cipher", names: ["Prism", "Eclipse", "Comet", "Circuit", "Obsidian", "Nebula", "Voltage", "Portal", "Meteor", "Mirage", "Quartz", "Gravity", "Signal", "Nova", "Chrome", "Vortex", "Pulsar", "Phantom", "Aurora", "Singularity"], color: ["#cb9aff", "#5ce5ff", "#ff719e", "#a3ffcb", "#ffcc6e"], words: ["RARE!", "DARK!", "ZOOM!", "LINK!", "TOUGH!", "DREAM!", "ZAP!", "WARP!", "BOOM!", "HUH?!", "GLOW!", "DROP!", "BEEP!", "BURST!", "SLICK!", "SWIRL!", "PULSE!", "BOO!", "DAZZLE!", "GG!"] }
+  ];
+  function rewards(kind2, make) {
+    return COLLECTIONS.flatMap((set2, p) => Array.from({ length: kind2 === "board" ? 5 : 20 }, (_, i) => {
+      const id2 = `mystery_${set2.pool}_${kind2}_${i + 1}`;
+      return {
+        ...make({ ...set2, p, i, id: id2, color: set2.color[i % 5], name: set2.names[i], word: set2.words[i] }),
+        id: id2,
+        secret: true,
+        lootPool: set2.pool,
+        egg: false,
+        price: 0,
+        rarity: i >= 16 ? "legendary" : i >= 8 ? "epic" : "rare",
+        tag: set2.label
+      };
+    }));
+  }
+  var stickers = rewards("emote", (s) => ({
+    name: `${s.name} ${s.p ? "Signal" : "Greeting"}`,
+    desc: `${s.word} An animated ${s.label.toLowerCase()} sticker.`,
+    data: { mood: "any", role: ["happy", "wave", "taunt", "dance"][s.i % 4] },
+    art: () => {
+      const n4 = 4 + s.i % 7, points = Array.from({ length: n4 * 2 }, (_, k) => {
+        const a = k * Math.PI / n4 - Math.PI / 2, r = k % 2 ? 38 : 53;
+        return `${60 + Math.cos(a) * r},${59 + Math.sin(a) * r}`;
+      }).join(" ");
+      return `<g class="${["a-bob", "a-pulse", "a-wiggle", "a-twinkle"][s.i % 4]}"><polygon points="${points}" fill="${s.color}" stroke="#1b1424" stroke-width="4"/><circle cx="60" cy="50" r="${20 + s.i % 5}" fill="#17233b"/><path d="M43 49 l6 ${s.i % 2 ? "-5" : "5"} M71 49 l6 ${s.i % 2 ? "5" : "-5"}" stroke="white" stroke-width="4" fill="none"/><path d="M51 59 Q60 ${s.i % 3 ? 70 : 50} 69 59" stroke="white" stroke-width="3" fill="none"/><text x="60" y="91" text-anchor="middle" fill="#17233b" font-family="system-ui" font-weight="900" font-size="15">${s.word}</text></g>`;
+    }
+  }));
+  var dances = rewards("dance", (s) => ({
+    name: `${s.name} ${["Two-Step", "Waltz", "Shuffle", "Bounce", "Wave"][s.i % 5]}`,
+    desc: `${s.label} choreography with ${s.i % 2 ? "alternating arm sweeps" : "overhead accents"} and a ${s.i % 3 ? "side step" : "quarter turn"}.`,
+    bpm: 84 + s.i * 3 + s.p * 7,
+    icon: "\u266B",
+    pose(b) {
+      const phase = b * Math.PI * (s.i % 3 === 0 ? 2 : 1) + s.p * Math.PI / 2, wave = Math.sin(phase), beat = Math.max(0, Math.sin(b * Math.PI)), bar = Math.floor(b) % 8;
+      const reach2 = 0.35 + s.i % 5 * 0.1, swing2 = Math.sin(phase + s.i * 0.31), left2 = bar % 2 === 0;
+      return {
+        aL: [reach2, 0.25 + swing2 * 0.5, 0.45],
+        aR: [-reach2, 0.25 - swing2 * 0.5, 0.45],
+        fL: [0.2, left2 ? 0.9 : 0.1, 0.55],
+        fR: [-0.2, left2 ? 0.1 : 0.9, 0.55],
+        lL: [0.13 + wave * 0.14, -1, 0.12 * beat],
+        lR: [-0.13 + wave * 0.14, -1, -0.12 * beat],
+        hp: [0, wave * (4 + s.i % 4), wave * 7],
+        sp: [beat * 5, 0, -wave * 5],
+        hd: [-beat * 8, wave * 9, 0],
+        tl: wave * 24,
+        w: wave * 0.45,
+        rt: { x: wave * (0.025 + s.i % 4 * 0.015), y: beat * (0.025 + s.i % 5 * 8e-3), ry: s.i % 3 === 0 ? Math.sin(b * Math.PI / 4) * 0.6 : wave * 0.12, z: Math.sin(b * Math.PI / 2) * 0.025 }
+      };
+    }
+  }));
+  var killThemes = rewards("killscreen", (s) => ({
+    name: `${s.name} Finale`,
+    desc: `${s.label} rings, ${s.i % 2 ? "rising stars" : "orbiting shards"} and a sweeping victory halo.`,
+    icon: "\u2726",
+    theme: { rim: s.color, text: "#ffffff", draw(c, w, h, t) {
+      c.fillStyle = s.p ? "#0e081f" : "#081a24";
+      c.fillRect(0, 0, w, h);
+      const m = Math.min(w, h), cx = w / 2, cy = h * 0.42;
+      c.save();
+      c.translate(cx, cy);
+      c.rotate(Math.sin(t * 0.3) * 0.2);
+      for (let j = 0; j < 4 + s.i % 5; j++) {
+        c.strokeStyle = s.color;
+        c.globalAlpha = 0.5 - j * 0.045;
+        c.lineWidth = 2 + j % 3;
+        c.beginPath();
+        c.ellipse(0, 0, m * (0.12 + j * 0.065), m * (0.12 + j * 0.065) * (s.i % 2 ? 0.55 : 1), t * (j % 2 ? -0.2 : 0.2), 0, Math.PI * 2);
+        c.stroke();
+      }
+      for (let j = 0; j < 36; j++) {
+        const a = j * 2.399 + t * (0.18 + s.i * 0.015), r = m * (0.1 + (j / 36 + t * 0.07) % 1 * 0.6), sz = 2 + (j + s.i) % 6;
+        c.globalAlpha = 0.3 + j % 4 * 0.16;
+        c.fillStyle = j % 3 ? s.color : "#fff";
+        c.save();
+        c.translate(Math.cos(a) * r, Math.sin(a) * r);
+        c.rotate(a);
+        if (s.i % 2) {
+          c.beginPath();
+          c.moveTo(0, -sz * 2);
+          c.lineTo(sz, 0);
+          c.lineTo(0, sz * 2);
+          c.lineTo(-sz, 0);
+          c.closePath();
+          c.fill();
+        } else c.fillRect(-sz, -sz, sz * 2, sz * 2);
+        c.restore();
+      }
+      c.restore();
+    } }
+  }));
+  var sounds = (kind2) => rewards(kind2, (s) => ({
+    name: `${s.name} ${kind2 === "sound" ? "Call" : "Cadence"}`,
+    icon: "\u266A",
+    desc: `An original ${s.p ? "electronic" : "bell-like"} ${kind2 === "sound" ? "call" : "victory cadence"}.`,
+    data: { clip: s.id, dur: kind2 === "sound" ? 1.5 : 2.2, stinger: kind2 === "elimsound" },
+    synth(t, out, E7) {
+      const notes = kind2 === "sound" ? 5 : 8, step2 = kind2 === "sound" ? 0.19 : 0.22;
+      for (let j = 0; j < notes; j++) {
+        const scale = [0, 2, 4, 7, 9], degree = (j * (s.i % 4 + 1) + s.i) % 5, base = (kind2 === "sound" ? 66 : 48) + s.p * 5 + s.i % 7;
+        E7.tone(t + j * step2, { f: E7.note(base + scale[degree] + (j === notes - 1 ? 12 : 0)), type: s.p ? "triangle" : "sine", dur: 0.28 + (j === notes - 1 ? 0.35 : 0), a: 0.012, dec: 0.3, vol: 0.09, out });
+      }
+    }
+  }));
 
   // js/dances.js
   var DT10 = window.DT;
@@ -45908,8 +46068,10 @@ void main() {
       }
     }
   ];
+  DANCES2.push(...dances);
   var PRICE2 = { common: 150, rare: 400, epic: 900, legendary: 1800 };
   DT10.Cosmetics.register("dance", DANCES2.map((d) => ({
+    ...d.secret ? { secret: true, lootPool: d.lootPool, egg: false, tag: d.tag } : {},
     id: d.id,
     name: d.name,
     rarity: d.rarity,
@@ -46685,7 +46847,7 @@ void main() {
 
   // js/boards-extra.js
   function extraThemes(K) {
-    const { THREE, DT: DT29, C: C11, std: std3, canvasTex: canvasTex3, speckle: speckle2, softDot: softDot2, part: part2, merge: merge2, setInst: setInst2, inst: inst2, mesh: mesh2, rimSpots: rimSpots3, farSpots: farSpots2, sea: sea2, plain: plain2, particles: particles2, pineGeo: pineGeo2, LAYOUT: LAYOUT2 } = K;
+    const { THREE, DT: DT31, C: C13, std: std3, canvasTex: canvasTex3, speckle: speckle2, softDot: softDot2, part: part2, merge: merge2, setInst: setInst2, inst: inst2, mesh: mesh2, rimSpots: rimSpots3, farSpots: farSpots2, sea: sea2, plain: plain2, particles: particles2, pineGeo: pineGeo2, LAYOUT: LAYOUT2 } = K;
     const { cellWorld: cellWorld3 } = LAYOUT2;
     const TAU3 = Math.PI * 2;
     const basic = (o) => new THREE.MeshBasicMaterial(o);
@@ -46704,7 +46866,7 @@ void main() {
       geo.rotateX(Math.PI);
       geo.rotateY(rot);
       const pos = geo.attributes.position;
-      const rng2 = DT29.makeRng(seed);
+      const rng2 = DT31.makeRng(seed);
       const off = /* @__PURE__ */ new Map();
       for (let i = 0; i < pos.count; i++) {
         const x = pos.getX(i), yy = pos.getY(i), z = pos.getZ(i);
@@ -46721,7 +46883,7 @@ void main() {
       const ring = new THREE.RingGeometry(inner, outer, 6);
       ring.rotateZ(Math.PI / 2);
       ring.rotateX(-Math.PI / 2);
-      const items3 = DT29.CELLS.map(({ c, r }) => {
+      const items3 = DT31.CELLS.map(({ c, r }) => {
         const p = cellWorld3(c, r);
         return { x: p.x, y: 0.147, z: p.z, color: r >= 4 ? mine2 : enemy };
       });
@@ -46763,11 +46925,11 @@ void main() {
       g2.stroke();
     });
     const bricks = (base, mortar, { w = 128, h = 128, bw = 32, bh = 16, seed = 5, vary = 0.12, repeat = 4 } = {}) => {
-      const rng2 = DT29.makeRng(seed);
+      const rng2 = DT31.makeRng(seed);
       return canvasTex3(w, h, (g2) => {
         g2.fillStyle = mortar;
         g2.fillRect(0, 0, w, h);
-        const c = C11(base);
+        const c = C13(base);
         for (let y = 0; y < h; y += bh) for (let x = -(y / bh % 2) * bw / 2; x < w; x += bw) {
           const k = 1 + (rng2() - 0.5) * vary * 2;
           g2.fillStyle = `rgb(${Math.min(255, c.r * 255 * k) | 0},${Math.min(255, c.g * 255 * k) | 0},${Math.min(255, c.b * 255 * k) | 0})`;
@@ -46789,7 +46951,7 @@ void main() {
       g2.fillRect(0, 0, w, h);
     });
     function lightning(ctx2, { color = "#d8c8ff", spots: spots2, height = 9, flash = 1.6, flashColor = "#e8e0ff" }) {
-      const rng2 = DT29.makeRng(91);
+      const rng2 = DT31.makeRng(91);
       const mat2 = glow2(color, 1, { fog: false });
       const bolts = [0, 1, 2].map(() => {
         const path = new THREE.CurvePath();
@@ -46837,7 +46999,7 @@ void main() {
       };
     }
     function confetti(ctx2, { n: n4 = 220, colors = ["#ff4d6d", "#ffd23f", "#3ae374", "#3a86ff", "#c77dff", "#ffffff"] } = {}) {
-      const rng2 = DT29.makeRng(77);
+      const rng2 = DT31.makeRng(77);
       const geo = new THREE.PlaneGeometry(0.14, 0.22);
       const items3 = Array.from({ length: n4 }, (_, i) => ({ x: 0, y: -50, z: 0, color: colors[i % colors.length], vx: 0, vy: 0, vz: 0, spin: 0 }));
       const m = inst2(ctx2, geo, basic({ color: "#ffffff", side: THREE.DoubleSide }), items3, { moving: true, shadow: false });
@@ -46873,7 +47035,7 @@ void main() {
       };
     }
     function fireworks(ctx2, { per = 70, max = 4, colors = ["#ff5a7a", "#ffd84a", "#5affc8", "#6ab0ff", "#ff8af0"] } = {}) {
-      const rng2 = DT29.makeRng(55);
+      const rng2 = DT31.makeRng(55);
       const bursts = Array.from({ length: max }, () => {
         const pos = new Float32Array(per * 3), vel = new Float32Array(per * 3);
         const geo = new THREE.BufferGeometry();
@@ -47153,7 +47315,7 @@ void main() {
           mesh2(ctx2, new THREE.CylinderGeometry(15, 15, 40, 4, 1, true).rotateY(Math.PI / 4), std3({ color: "#1a1a24", roughness: 1 }), { y: -21.4 });
           hexEdges(ctx2, { mine: "#36e0ff", enemy: "#ff3aa8", opacity: 0.65, additive: true });
           const win = canvasTex3(32, 64, (g2) => {
-            const rng3 = DT29.makeRng(31);
+            const rng3 = DT31.makeRng(31);
             g2.fillStyle = "#0a0a12";
             g2.fillRect(0, 0, 32, 64);
             const lit = ["#ffd27a", "#7ae8ff", "#ff8ad8", "#ffefc0"];
@@ -47164,7 +47326,7 @@ void main() {
           });
           win.repeat.set(1, 2);
           const b = [];
-          const rng2 = DT29.makeRng(32);
+          const rng2 = DT31.makeRng(32);
           for (let gx = -42; gx <= 42; gx += 5.5) for (let gz = -42; gz <= 14; gz += 5.5) {
             const x = gx + (rng2() - 0.5) * 1.5, z = gz + (rng2() - 0.5) * 1.5;
             if (Math.abs(x) < 13.6 && z > -13.6) continue;
@@ -47202,7 +47364,7 @@ void main() {
           ctx2.tick((dt, t) => {
             signs.forEach((s, i) => {
               const off = Math.sin(t * 23 + s.ph) > 0.93 && Math.sin(t * 1.7 + s.ph) > 0.4;
-              sm.setColorAt(i, C11(off ? "#222222" : s.color));
+              sm.setColorAt(i, C13(off ? "#222222" : s.color));
             });
             sm.instanceColor.needsUpdate = true;
           });
@@ -47288,7 +47450,7 @@ void main() {
         }),
         props(ctx2) {
           const pcb = canvasTex3(256, 256, (g2) => {
-            const rng2 = DT29.makeRng(404);
+            const rng2 = DT31.makeRng(404);
             g2.fillStyle = "#0e4a26";
             g2.fillRect(0, 0, 256, 256);
             g2.strokeStyle = "#3aa860";
@@ -47363,7 +47525,7 @@ void main() {
             pg.attributes.position.needsUpdate = true;
           });
           const code = canvasTex3(256, 256, (g2) => {
-            const rng2 = DT29.makeRng(405);
+            const rng2 = DT31.makeRng(405);
             g2.fillStyle = "#000000";
             g2.fillRect(0, 0, 256, 256);
             g2.font = "bold 13px monospace";
@@ -47426,7 +47588,7 @@ void main() {
         }) }),
         props(ctx2) {
           const lava = canvasTex3(128, 128, (g2) => {
-            const rng2 = DT29.makeRng(505);
+            const rng2 = DT31.makeRng(505);
             g2.fillStyle = "#b42800";
             g2.fillRect(0, 0, 128, 128);
             for (let i = 0; i < 70; i++) {
@@ -47549,7 +47711,7 @@ void main() {
           platform(ctx2, { sides: 40, r: 12.6, r2: 13.8, h: 1.4, top: speckle2("#d4bc8c", ["#e8d4a8", "#b49c6c", "#f0b8c0"], { seed: 607 }), side: "#a87a7a" });
           hexEdges(ctx2, { mine: "#9ae8ff", enemy: "#ffb8c8", opacity: 0.45 });
           const caus = canvasTex3(128, 128, (g2) => {
-            const rng2 = DT29.makeRng(608);
+            const rng2 = DT31.makeRng(608);
             g2.clearRect(0, 0, 128, 128);
             g2.strokeStyle = "rgba(200,255,255,0.8)";
             g2.lineWidth = 2.2;
@@ -47664,7 +47826,7 @@ void main() {
         }, 5) }),
         props(ctx2) {
           const ice = canvasTex3(128, 128, (g2) => {
-            const rng2 = DT29.makeRng(707);
+            const rng2 = DT31.makeRng(707);
             g2.fillStyle = "#6a94bc";
             g2.fillRect(0, 0, 128, 128);
             g2.strokeStyle = "rgba(230,245,255,0.6)";
@@ -47738,7 +47900,7 @@ void main() {
             });
             fog.near = lerp2(26, 10, w.k);
             fog.far = lerp2(62, 40, w.k);
-            fog.color.set("#24405e").lerp(C11("#8aa6c0"), w.k);
+            fog.color.set("#24405e").lerp(C13("#8aa6c0"), w.k);
           });
         }
       },
@@ -47762,7 +47924,7 @@ void main() {
         look: { pedMetal: 0.5, pedRough: 0.6, slotMetal: 0.4 },
         surface: () => ({
           tile: tileTex("#e4e6d4", "rgba(40,40,20,0.5)", (g2) => {
-            const rng2 = DT29.makeRng(8);
+            const rng2 = DT31.makeRng(8);
             g2.fillStyle = "rgba(70,80,30,0.25)";
             for (let i = 0; i < 26; i++) {
               g2.beginPath();
@@ -47790,7 +47952,7 @@ void main() {
         }),
         props(ctx2) {
           const sludge = sea2(ctx2, { color: "#5a8a2a", amp: 0.08, rough: 0.5, metal: 0.1, speed: 0.4, y: -1 });
-          sludge.material.emissive = C11("#1a3a08");
+          sludge.material.emissive = C13("#1a3a08");
           const walk = bricks("#8a8a78", "#3a3a30", { bw: 32, bh: 32, seed: 808, vary: 0.15, repeat: 8 });
           platform(ctx2, { sides: 4, r: 14.2, r2: 14.4, h: 1.2, top: walk, side: "#4a4a3a", rot: Math.PI / 4 });
           hexEdges(ctx2, { mine: "#c8e8ff", enemy: "#ffd0c0", opacity: 0.35 });
@@ -47879,7 +48041,7 @@ void main() {
         }) }),
         props(ctx2) {
           const parquet = canvasTex3(128, 128, (g2) => {
-            const rng2 = DT29.makeRng(909);
+            const rng2 = DT31.makeRng(909);
             for (let y = 0; y < 128; y += 16) for (let x = 0; x < 128; x += 64) {
               const o = y / 16 % 2 ? 32 : 0;
               const v = 0.85 + rng2() * 0.3;
@@ -47980,7 +48142,7 @@ void main() {
             evo.k = 1;
             lit.flash = 1.2;
           });
-          const purple = C11("#b07aff"), gold = C11("#ffd27a");
+          const purple = C13("#b07aff"), gold = C13("#ffd27a");
           ctx2.tick((dt, t) => {
             evo.k = Math.max(0, evo.k - dt * 0.45);
             evo.spin += dt * (0.05 + evo.k * 1.5);
@@ -47988,7 +48150,7 @@ void main() {
             c2.rotation.y = -evo.spin * 0.6;
             c1.material.color.copy(purple).lerp(gold, evo.k);
             c1.material.opacity = 0.5 + 0.1 * Math.sin(t * 2) + evo.k * 0.4;
-            sparks.material.color.copy(C11("#d8b0ff")).lerp(gold, evo.k);
+            sparks.material.color.copy(C13("#d8b0ff")).lerp(gold, evo.k);
             lit.tint.set("#ffd090");
             lit.tintK = evo.k * 0.8;
           });
@@ -48024,7 +48186,7 @@ void main() {
         }, 5) }),
         props(ctx2) {
           const marble = canvasTex3(128, 128, (g2) => {
-            const rng3 = DT29.makeRng(1010);
+            const rng3 = DT31.makeRng(1010);
             g2.fillStyle = "#bdb6aa";
             g2.fillRect(0, 0, 128, 128);
             g2.strokeStyle = "rgba(120,120,140,0.35)";
@@ -48046,7 +48208,7 @@ void main() {
           mesh2(ctx2, new THREE.CylinderGeometry(11.95, 11.95, 0.25, 64, 1, true), std3({ color: "#e0b850", metalness: 0.7, roughness: 0.3, side: THREE.DoubleSide }), { y: 0.95 });
           const cols = ["#e84a4a", "#4a7ae8", "#f0d040", "#f4f4f4", "#7a4ae8", "#3ac87a", "#ff8a3a"];
           const crowd = [];
-          const rng2 = DT29.makeRng(1011);
+          const rng2 = DT31.makeRng(1011);
           for (let k = 0; k < 9; k++) {
             const r = 12.65 + k * 0.9;
             const n4 = Math.floor(r * TAU3 / 0.5);
@@ -48196,7 +48358,7 @@ void main() {
             pools.push(p);
           }
           const up = new THREE.Vector3(0, 1, 0), dir = new THREE.Vector3();
-          const calm = C11("#fff6e0"), red = C11("#ff3a4a"), blue = C11("#3a7aff"), stick = C11("#7affd0");
+          const calm = C13("#fff6e0"), red = C13("#ff3a4a"), blue = C13("#3a7aff"), stick = C13("#7affd0");
           const st3 = { k: 0 };
           const conf = confetti(ctx2);
           ctx2.on("win", () => conf.fire());
@@ -48478,7 +48640,7 @@ void main() {
             f.ry = t;
           });
           const glyph3 = canvasTex3(256, 32, (g2) => {
-            const rng2 = DT29.makeRng(1417);
+            const rng2 = DT31.makeRng(1417);
             g2.clearRect(0, 0, 256, 32);
             g2.strokeStyle = "#ffffff";
             g2.lineWidth = 2.5;
@@ -48674,8 +48836,8 @@ void main() {
             const h = 1.4 + i / 70 * 5.4, r = 2.3 * (1 - (h - 1.2) / 6.6) + 0.15, a = i * 2.4;
             bulbs.push({ x: TX + Math.cos(a) * r, y: h, z: TZ + Math.sin(a) * r, ph: i * 1.7 });
           }
-          const bc = ["#ff3a3a", "#ffd83a", "#3aff6a", "#3a8aff", "#ff6ae0"].map(C11);
-          const gold = C11("#ffe680");
+          const bc = ["#ff3a3a", "#ffd83a", "#3aff6a", "#3a8aff", "#ff6ae0"].map(C13);
+          const gold = C13("#ffe680");
           const bm = inst2(ctx2, new THREE.SphereGeometry(0.11, 6, 4), basic({ color: "#ffffff" }), bulbs, { shadow: false });
           const party = { until: -1 };
           ctx2.on("win", (t) => {
@@ -48756,7 +48918,7 @@ void main() {
         }),
         props(ctx2) {
           const planks = canvasTex3(128, 128, (g2) => {
-            const rng2 = DT29.makeRng(1717);
+            const rng2 = DT31.makeRng(1717);
             for (let y = 0; y < 128; y += 16) {
               const v = 0.8 + rng2() * 0.3;
               g2.fillStyle = `rgb(${150 * v | 0},${100 * v | 0},${60 * v | 0})`;
@@ -48866,6 +49028,131 @@ void main() {
         }
       }
     ];
+  }
+
+  // js/mystery-boards.js
+  function mysteryBoards({ THREE: T3, std: std3, mesh: mesh2, island: island2, sea: sea2, inst: inst2, setInst: setInst2 }) {
+    const titles = ["Lantern Orchard", "Lily Observatory", "Honeycomb Haven", "Cloudmill Landing", "Petal Pavilion", "Prism Vault", "Orbital Foundry", "Crystal Relay", "Eclipse Sanctuary", "Meteor Garden"];
+    return rewards("board", (s) => ({
+      name: titles[s.p * 5 + s.i],
+      icon: "\u25C7",
+      desc: s.p ? "An illuminated vault beyond the digital horizon." : "A quiet daybreak retreat with moving garden landmarks.",
+      sky: s.p ? "#100e29" : "#203b50",
+      fog: [s.p ? "#100e29" : "#203b50", 32, 68],
+      hemi: ["#d9edff", "#33314d", 1.5],
+      sun: ["#fff0d6", 2.3],
+      slab: s.p ? "#20243b" : "#405453",
+      benchSlab: "#303b49",
+      slot: "#475768",
+      ped: "#576779",
+      tiles: { mine: "#345b8b", enemy: "#85435c", enemyPlan: "#503347" },
+      props(ctx2) {
+        const n4 = s.p * 5 + s.i;
+        sea2(ctx2, { color: s.p ? "#161932" : "#234c61", amp: 0.05, rough: 0.5, metal: 0.2 });
+        island2(ctx2, s.p ? "#343349" : "#547363", "#343b50");
+        const glow2 = std3({ color: s.color, emissive: s.color, emissiveIntensity: 0.6, metalness: 0.25, roughness: 0.4 });
+        const stone = std3({ color: s.p ? "#666783" : "#927e68", roughness: 0.8 });
+        const center = new T3.Group();
+        ctx2.g.add(center);
+        center.position.set(10, 2.1, -5.8);
+        const shapes = [() => new T3.SphereGeometry(0.9, 12, 8), () => new T3.TorusGeometry(1.3, 0.16, 8, 32), () => new T3.CylinderGeometry(1.3, 1.3, 0.55, 6), () => new T3.BoxGeometry(0.25, 3, 0.5), () => new T3.ConeGeometry(1.5, 1.4, 5), () => new T3.OctahedronGeometry(1.4), () => new T3.TorusKnotGeometry(1, 0.2, 48, 8), () => new T3.CylinderGeometry(0.2, 1.1, 2.5, 5), () => new T3.TorusGeometry(1.5, 0.4, 8, 32), () => new T3.IcosahedronGeometry(1.3)];
+        const monument = new T3.Mesh(shapes[n4](), glow2);
+        center.add(monument);
+        if (n4 === 3) {
+          const cross = new T3.Mesh(new T3.BoxGeometry(3, 0.25, 0.5), glow2);
+          center.add(cross);
+        }
+        const props = [];
+        for (let j = 0; j < 12; j++) {
+          const a = Math.PI + j * Math.PI / 11;
+          props.push({ x: Math.cos(a) * 11.5, z: Math.sin(a) * 10.4, y: 0.8, ry: a, s: 0.45 + j % 3 * 0.12 });
+        }
+        const geometry = n4 % 3 === 0 ? new T3.ConeGeometry(0.6, 1.8, 6) : n4 % 3 === 1 ? new T3.TorusGeometry(0.5, 0.12, 6, 16) : new T3.OctahedronGeometry(0.7);
+        const satellites = inst2(ctx2, geometry, glow2, props, { moving: true });
+        for (const x of [-10.5, 10.5]) mesh2(ctx2, new T3.CylinderGeometry(0.7, 1, 1.1, 6), stone, { x, y: 0.5, z: -5 });
+        const add2 = (geo, mat2, x, y, z, o = {}) => mesh2(ctx2, geo, mat2, { x, y, z, ...o });
+        const wood = std3({ color: "#63484a" }), leaf = std3({ color: ["#477b62", "#609a83", "#ad8637", "#e1edf5", "#e4a9c4"][s.i], roughness: 0.9 });
+        const garden = [[-9.6, -5.5], [-10, -1.6], [-7.5, -8.3], [7.5, -8.3], [10, -1.6]];
+        if (n4 === 0 || n4 === 4) for (const [x, z] of garden) {
+          add2(new T3.CylinderGeometry(0.19, 0.35, 1.8, 7), wood, x, 0.85, z);
+          add2(new T3.IcosahedronGeometry(1.35, 1), leaf, x, 2.05, z, { sy: 0.65 });
+          for (const dx of [-0.7, 0.7]) add2(new T3.SphereGeometry(0.22, 8, 6), glow2, x + dx, 1.35, z + 0.3);
+        }
+        if (n4 === 1) for (const [x, z] of garden) {
+          add2(new T3.CylinderGeometry(1.4, 1.4, 0.12, 24), std3({ color: "#346d88", metalness: 0.4, roughness: 0.15 }), x, 0.12, z);
+          for (let k = 0; k < 6; k++) {
+            const a = k * Math.PI / 3;
+            add2(new T3.SphereGeometry(0.55, 8, 5), leaf, x + Math.cos(a) * 0.6, 0.28, z + Math.sin(a) * 0.6, { sy: 0.12 });
+          }
+          add2(new T3.ConeGeometry(0.5, 0.8, 6), glow2, x, 0.65, z);
+        }
+        if (n4 === 2) for (const [x, z] of garden) for (let k = 0; k < 4; k++) {
+          const h = 0.8 + k * 0.5;
+          add2(new T3.CylinderGeometry(0.65, 0.65, h, 6), k % 2 ? glow2 : leaf, x + k % 2 * 0.95, h / 2, z + Math.floor(k / 2) * 0.9);
+        }
+        if (n4 === 3) for (const [x, z] of garden) {
+          for (let k = 0; k < 3; k++) add2(new T3.SphereGeometry(0.95, 10, 6), leaf, x + (k - 1) * 0.7, 0.35, z, { sy: 0.45 });
+          add2(new T3.ConeGeometry(0.65, 2.5, 6), stone, x, 1.4, z);
+          const blades = new T3.Group();
+          blades.position.set(x, 2.65, z + 0.45);
+          ctx2.g.add(blades);
+          for (const a of [0, Math.PI / 2]) {
+            const b = new T3.Mesh(new T3.BoxGeometry(2.2, 0.25, 0.18), glow2);
+            b.rotation.z = a;
+            blades.add(b);
+          }
+          ctx2.tick((dt, t) => {
+            blades.rotation.z = t * 0.6;
+          });
+        }
+        if (n4 === 4) {
+          for (const x of [-1.7, 1.7]) add2(new T3.CylinderGeometry(0.13, 0.13, 2.3, 6), wood, x, 1.15, -9.2);
+          add2(new T3.ConeGeometry(2.7, 1.1, 4), glow2, 0, 2.8, -9.2, { ry: Math.PI / 4 });
+        }
+        if (n4 === 5 || n4 === 7) for (const [x, z] of garden) for (let k = 0; k < 3; k++) {
+          const h = 1.4 + k * 0.7;
+          add2(new T3.ConeGeometry(0.55, h, 5), k === 1 ? glow2 : stone, x + (k - 1) * 0.6, h / 2 + 0.1, z + Math.abs(k - 1) * 0.35, { rz: (k - 1) * 0.2 });
+        }
+        if (n4 === 6) for (const x of [-9.5, 9.5]) {
+          const rings = new T3.Group();
+          rings.position.set(x, 1.8, -4.4);
+          ctx2.g.add(rings);
+          for (let k = 0; k < 3; k++) {
+            const ring = new T3.Mesh(new T3.TorusGeometry(1.4, 0.07, 6, 36), glow2);
+            ring.rotation.set(k * 0.7, k * 0.8, 0);
+            rings.add(ring);
+          }
+          ctx2.tick((dt, t) => {
+            rings.rotation.y = t * 0.2;
+            rings.rotation.z = Math.sin(t * 0.3) * 0.3;
+          });
+          add2(new T3.SphereGeometry(0.6, 12, 8), stone, x, 1.8, -4.4);
+        }
+        if (n4 === 8) {
+          for (const [x, z] of garden) add2(new T3.CylinderGeometry(0.35, 0.6, 2.1, 8), stone, x, 1.05, z);
+          add2(new T3.TorusGeometry(1.45, 0.14, 8, 40), glow2, -9.5, 2.5, -5.6);
+          add2(new T3.SphereGeometry(1.25, 20, 12), std3({ color: "#120f27", roughness: 1 }), -9.5, 2.5, -5.65);
+        }
+        if (n4 === 9) for (const [x, z] of garden) {
+          add2(new T3.IcosahedronGeometry(1.1, 0), stone, x, 0.6, z, { sy: 0.6 });
+          const meteor = add2(new T3.IcosahedronGeometry(0.5, 0), glow2, x + 0.2, 1.7, z);
+          ctx2.tick((dt, t) => {
+            meteor.position.y = 1.7 + Math.sin(t + x) * 0.3;
+            meteor.rotation.y = t * 0.3;
+          });
+        }
+        ctx2.tick((dt, t) => {
+          monument.rotation.y = t * (0.15 + n4 * 0.025);
+          if (n4 === 3 || n4 === 6 || n4 === 8) center.rotation.z = t * 0.25;
+          props.forEach((p, j) => {
+            p.y = 0.8 + Math.sin(t * (0.6 + n4 * 0.05) + j) * 0.22;
+            p.ry += dt * 0.2;
+            setInst2(satellites, j, p);
+          });
+          satellites.instanceMatrix.needsUpdate = true;
+        });
+      }
+    }));
   }
 
   // js/boards.js
@@ -49734,6 +50021,7 @@ void main() {
     }
   ];
   THEMES.push(...extraThemes({ THREE: three_module_exports, DT: DT12, C: C5, std, dummy, canvasTex, gradient, speckle, softDot, part, merge, setInst, inst, mesh, rimSpots, farSpots, sea, plain, particles, island, pineGeo, gearGeo, LAYOUT }));
+  THEMES.push(...mysteryBoards({ THREE: three_module_exports, std, mesh, island, sea, inst, setInst }));
   var THEME = Object.fromEntries(THEMES.map((t) => [t.id, t]));
   var themeOf = (id2) => THEME[id2] || THEME[DEFAULT];
   var NO_GAME = { phase: "none", stage: 1, won: false, evo: 0 };
@@ -49782,7 +50070,7 @@ void main() {
     const background = Array.isArray(spec.sky) ? gradient(spec.sky) : C5(spec.sky);
     const base = { hemi: C5(spec.hemi[0]), sun: C5(spec.sun[0]) };
     let prev = null, now3 = 0;
-    const emit = (name2) => {
+    const emit2 = (name2) => {
       for (const fn of handlers[name2] || []) fn(now3);
     };
     return {
@@ -49797,10 +50085,10 @@ void main() {
           prev = { ...s };
           return;
         }
-        if (s.phase !== prev.phase) emit(s.phase);
-        if (s.stage !== prev.stage) emit("stage");
-        if (s.won && !prev.won) emit("win");
-        if (s.evo > prev.evo && s.phase !== "none" && prev.phase !== "none") emit("evolve");
+        if (s.phase !== prev.phase) emit2(s.phase);
+        if (s.stage !== prev.stage) emit2("stage");
+        if (s.won && !prev.won) emit2("win");
+        if (s.evo > prev.evo && s.phase !== "none" && prev.phase !== "none") emit2("evolve");
         prev = { ...s };
       },
       tick(dt, t) {
@@ -50093,6 +50381,7 @@ void main() {
     else previewUrl(id2).then(show4);
   }
   DT12.Cosmetics.register("board", THEMES.map((t) => ({
+    ...t.secret ? { secret: true, lootPool: t.lootPool, egg: false, tag: t.tag } : {},
     id: t.id,
     name: t.name,
     price: t.price,
@@ -50371,9 +50660,9 @@ void main() {
 
   // js/ui.js
   (function() {
-    const DT29 = window.DT;
-    const H = DT29.HYPER;
-    const P2 = DT29.Portraits;
+    const DT31 = window.DT;
+    const H = DT31.HYPER;
+    const P2 = DT31.Portraits;
     const $7 = (id2) => document.getElementById(id2);
     const bpText2 = (T3, i) => {
       if (T3.bpDesc && T3.bpDesc[i] != null) return T3.bpDesc[i];
@@ -50384,7 +50673,7 @@ void main() {
       }
     };
     const canvas = $7("board");
-    const renderer2 = new DT29.Renderer(canvas);
+    const renderer2 = new DT31.Renderer(canvas);
     const ui2 = {
       drag: null,
       hoverCell: null,
@@ -50457,8 +50746,8 @@ void main() {
     let chartAt = 0;
     let hist = /* @__PURE__ */ new Map();
     const esc13 = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-    const itemName = (id2) => DT29.ITEMS[id2] ? DT29.ITEMS[id2].name : id2;
-    const itemImg2 = (id2, extra = "") => DT29.ITEMS[id2] ? `<img class="${DT29.ITEMS[id2].component ? "c" : "f"}" src="${DT29.itemIcon(id2)}" alt="${esc13(itemName(id2))}" ${extra}>` : "";
+    const itemName = (id2) => DT31.ITEMS[id2] ? DT31.ITEMS[id2].name : id2;
+    const itemImg2 = (id2, extra = "") => DT31.ITEMS[id2] ? `<img class="${DT31.ITEMS[id2].component ? "c" : "f"}" src="${DT31.itemIcon(id2)}" alt="${esc13(itemName(id2))}" ${extra}>` : "";
     const coin = '<i class="coin s"></i>';
     const store7 = {
       get(k) {
@@ -50475,10 +50764,10 @@ void main() {
         }
       }
     };
-    const legendId = () => DT29.Cosmetics.equipped("legend");
-    const legendKey3 = () => DT29.LegendEvo ? DT29.LegendEvo.key(legendId()) : legendId();
+    const legendId = () => DT31.Cosmetics.equipped("legend");
+    const legendKey3 = () => DT31.LegendEvo ? DT31.LegendEvo.key(legendId()) : legendId();
     renderer2.setLegend(legendKey3());
-    DT29.Cosmetics.onChange((kind2) => {
+    DT31.Cosmetics.onChange((kind2) => {
       if (kind2 !== "legend") return;
       renderer2.setLegend(legendKey3());
       fillTitleLegend();
@@ -50486,10 +50775,10 @@ void main() {
       if (game7) refresh2();
     });
     function avatarHTML2(q) {
-      if (game7 && q === game7.human) return DT29.Legends.html(legendKey3());
+      if (game7 && q === game7.human) return DT31.Legends.html(legendKey3());
       const units = q.boardUnits().length ? q.boardUnits() : q.allUnits();
       let best = null;
-      for (const u of units) if (!best || DT29.unitValue(u) + u.items.length * 0.5 > DT29.unitValue(best) + best.items.length * 0.5) best = u;
+      for (const u of units) if (!best || DT31.unitValue(u) + u.items.length * 0.5 > DT31.unitValue(best) + best.items.length * 0.5) best = u;
       if (best) return P2.html(best.line, best.stage);
       return `<span class="pt" style="--fc:#556"><b>${esc13(q.name.slice(0, 2))}</b></span>`;
     }
@@ -50504,9 +50793,9 @@ void main() {
     function resetView() {
       paused = false;
       P2.cancelPrefetch();
-      if (DT29.Sfx) {
-        DT29.Sfx.combat(false);
-        DT29.Sfx.music(true);
+      if (DT31.Sfx) {
+        DT31.Sfx.combat(false);
+        DT31.Sfx.music(true);
       }
       clearResultTimer();
       combat = null;
@@ -50525,9 +50814,9 @@ void main() {
     }
     function newGame(setId) {
       session = null;
-      const pick3 = typeof setId === "string" ? setId : DT29.SetPicker && DT29.SetPicker.selected() || DT29.Sets.DEFAULT;
-      const pace2 = typeof arguments[1] === "string" ? arguments[1] : DT29.SetPicker && DT29.SetPicker.pace ? DT29.SetPicker.pace() : void 0;
-      game7 = DT29.Lock.create({ seed: Math.random() * 1e9 | 0, at: performance.now(), setId: pick3, pace: pace2, format: typeof arguments[2] === "string" ? arguments[2] : DT29.SetPicker.format() });
+      const pick3 = typeof setId === "string" ? setId : DT31.SetPicker && DT31.SetPicker.selected() || DT31.Sets.DEFAULT;
+      const pace2 = typeof arguments[1] === "string" ? arguments[1] : DT31.SetPicker && DT31.SetPicker.pace ? DT31.SetPicker.pace() : void 0;
+      game7 = DT31.Lock.create({ seed: Math.random() * 1e9 | 0, at: performance.now(), setId: pick3, pace: pace2, format: typeof arguments[2] === "string" ? arguments[2] : DT31.SetPicker.format() });
       document.body.classList.remove("mp");
       resetView();
       startPlanning();
@@ -50553,7 +50842,7 @@ void main() {
     function commit(e) {
       if (paused) return;
       e.at = performance.now();
-      onEntry(e, DT29.Lock.apply(game7, e), true);
+      onEntry(e, DT31.Lock.apply(game7, e), true);
     }
     function act2(a, g2 = {}) {
       if (session) return session.send(a, g2);
@@ -50569,7 +50858,8 @@ void main() {
       else if (e.k === "start" && res) beginCombatView();
       else if (e.k === "end" && res) {
         endCombatView();
-        if (DT29.KillScreens) DT29.KillScreens.onRoundEnd(game7);
+        if (DT31.KillScreens) DT31.KillScreens.onRoundEnd(game7);
+        DT31.MysteryLoot?.roundEnd(game7);
       } else if (e.k === "next" && res) nextRoundView();
     }
     function startPlanning() {
@@ -50594,7 +50884,7 @@ void main() {
       commit({ k: "start" });
     }
     function beginCombatView() {
-      if (DT29.Scout && DT29.Scout.snapshot) DT29.Scout.snapshot(game7);
+      if (DT31.Scout && DT31.Scout.snapshot) DT31.Scout.snapshot(game7);
       ui2.drag = null;
       endItemDrag();
       const m = game7.matchOf(game7.human);
@@ -50612,9 +50902,9 @@ void main() {
       clearCasts();
       $7("banner").classList.add("hidden");
       refresh2();
-      if (DT29.Sfx) {
-        DT29.Sfx.play("fight");
-        DT29.Sfx.combat(true);
+      if (DT31.Sfx) {
+        DT31.Sfx.play("fight");
+        DT31.Sfx.combat(true);
       }
       if (!combat && (session || !(game7.matches && game7.matches.length))) combatWatched();
     }
@@ -50632,7 +50922,7 @@ void main() {
     function skip2() {
       if (!game7 || game7.phase !== "combat") return;
       if (!combat) return combatWatched();
-      while (!combat.done) combat.step(DT29.TICK);
+      while (!combat.done) combat.step(DT31.TICK);
       if (drawn === combat) {
         renderer2.resetFx();
         clearCasts();
@@ -50798,9 +51088,9 @@ void main() {
       if (p.offer) bits.push(`${offerName(p.offer.kind)} pick`);
       if (p.wisp) bits.push("Data Wisp in the shop");
       const who = game7.isPvE ? "Wild Digimon" : opp ? `vs ${esc13(opp.player.name)}${opp.ghost ? " (ghost)" : ""}` : roundName(game7.roundType);
-      if (DT29.Sfx) {
-        DT29.Sfx.combat(false);
-        DT29.Sfx.play(game7.round === 1 && game7.stage > 1 ? "levelup" : "round");
+      if (DT31.Sfx) {
+        DT31.Sfx.combat(false);
+        DT31.Sfx.play(game7.round === 1 && game7.stage > 1 ? "levelup" : "round");
       }
       const b = $7("banner");
       b.className = "round";
@@ -50817,8 +51107,8 @@ void main() {
       const oppP = r.match.pve ? null : isA ? r.match.b : r.match.a;
       const opp = oppP ? oppP.name : "Wild Digimon";
       const title = won ? "Victory" : lost ? "Defeat" : "Draw";
-      if (DT29.Sfx) DT29.Sfx.play(won ? "win" : lost ? "loss" : "round");
-      if (DT29.Legends && (won || lost)) DT29.Legends.play(me.id, won ? "happy" : "sad");
+      if (DT31.Sfx) DT31.Sfx.play(won ? "win" : lost ? "loss" : "round");
+      if (DT31.Legends && (won || lost)) DT31.Legends.play(me.id, won ? "happy" : "sad");
       const bits = [];
       if (dmg) bits.push(`<b style="color:var(--bad)">-${dmg} HP</b>`);
       if (won && !r.match.pve) bits.push(`<b style="color:var(--gold)">+${H.winGold} gold</b>`);
@@ -50838,11 +51128,11 @@ void main() {
       const place4 = game7.human.placement || 1;
       const o = $7("overlay");
       const winner = game7.players.find((p) => p.placement === 1);
-      if (DT29.Sfx) {
-        DT29.Sfx.music(false);
-        DT29.Sfx.play(place4 === 1 ? "champion" : "gameover");
+      if (DT31.Sfx) {
+        DT31.Sfx.music(false);
+        DT31.Sfx.play(place4 === 1 ? "champion" : "gameover");
       }
-      if (DT29.Client) return DT29.Client.gameOver({ game: game7, session, again: () => session ? leaveNet() : newGame() });
+      if (DT31.Client) return DT31.Client.gameOver({ game: game7, session, again: () => session ? leaveNet() : newGame() });
       setPanel2(`
       <h1>${place4 === 1 ? "Champion Tamer!" : "Game Over"}</h1>
       <div class="place">#${place4}</div>
@@ -50850,7 +51140,7 @@ void main() {
       <button id="againBtn" class="primary big">${session ? "Back to lobbies" : "Play again"}</button>`);
       o.classList.remove("hidden");
       $7("againBtn").onclick = () => session ? leaveNet() : newGame();
-      if (DT29.Shop) DT29.Shop.showAward(o.querySelector(".panel"), game7, session);
+      if (DT31.Shop) DT31.Shop.showAward(o.querySelector(".panel"), game7, session);
     }
     function showEliminated() {
       const o = $7("overlay");
@@ -50862,10 +51152,10 @@ void main() {
           if (!game7.playOn()) return showGameOver();
           commit({ k: "next" });
         }
-        if (DT29.Scout && DT29.Scout.follow) DT29.Scout.follow();
+        if (DT31.Scout && DT31.Scout.follow) DT31.Scout.follow();
       };
       const leave = () => leaveSpectate();
-      if (DT29.Client) return DT29.Client.eliminated({ game: game7, session, watch, leave });
+      if (DT31.Client) return DT31.Client.eliminated({ game: game7, session, watch, leave });
       setPanel2(`
       <h1>Eliminated</h1>
       <div class="place">#${game7.human.placement}</div>
@@ -50874,7 +51164,7 @@ void main() {
       o.classList.remove("hidden");
       $7("watchBtn").onclick = watch;
       $7("leaveBtn").onclick = leave;
-      if (DT29.Shop) DT29.Shop.showAward(o.querySelector(".panel"), game7, session);
+      if (DT31.Shop) DT31.Shop.showAward(o.querySelector(".panel"), game7, session);
     }
     function leaveSpectate() {
       if (!game7) return;
@@ -50890,7 +51180,7 @@ void main() {
       clearResultTimer();
       clearTimeout(toastTimer);
       P2.cancelPrefetch();
-      DT29.KillScreens?.clear();
+      DT31.KillScreens?.clear();
       closePicker();
       endItemDrag();
       ui2.drag = null;
@@ -50906,15 +51196,15 @@ void main() {
       renderer2.mirror = false;
       renderer2.resetFx();
       clearCasts();
-      if (DT29.Sfx) {
-        DT29.Sfx.combat(false);
-        DT29.Sfx.music(false);
+      if (DT31.Sfx) {
+        DT31.Sfx.combat(false);
+        DT31.Sfx.music(false);
       }
       document.body.classList.remove("mp");
       for (const id2 of ["banner", "modal", "tooltip", "sellZone", "dmgChart", "duoPanel"]) $7(id2)?.classList.add("hidden");
       if (s) return Promise.resolve().then(() => s.leave()).catch(() => {
         showTitle();
-        DT29.Client?.toast("Left the match. The lobby connection could not be closed cleanly.", "info");
+        DT31.Client?.toast("Left the match. The lobby connection could not be closed cleanly.", "info");
       });
       showTitle();
     }
@@ -50967,7 +51257,7 @@ void main() {
       $7("gameMenuDescription").textContent = "Leaving match\u2026";
       try {
         await leaveNet();
-        DT29.Client?.lobbyBack();
+        DT31.Client?.lobbyBack();
         showTitle();
       } finally {
         leavingGame = false;
@@ -50984,7 +51274,7 @@ void main() {
         return;
       }
       if (e.key !== "Escape" || e.repeat || e.defaultPrevented || !game7) return;
-      if (document.querySelector("dialog[open], #picker:not(.hidden), #emoteWheel.open") || ui2.viewing != null || DT29.KillScreens?.active || DT29.SoundUI?.isOpen() || DT29.Shop?.isOpen() || DT29.Codex?.fullOpen() || DT29.LegendEvo?.isOpen()) return;
+      if (document.querySelector("dialog[open], #picker:not(.hidden), #emoteWheel.open") || ui2.viewing != null || DT31.KillScreens?.active || DT31.SoundUI?.isOpen() || DT31.Shop?.isOpen() || DT31.Codex?.fullOpen() || DT31.LegendEvo?.isOpen()) return;
       if (!$7("overlay").classList.contains("hidden") || document.body.classList.contains("client-on")) return;
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -51034,7 +51324,7 @@ void main() {
     function sellUid(uid) {
       if (!ownView()) return;
       const f = game7.findUnit(game7.human, uid);
-      if (f && !DT29.canSell(f.u)) return toast3("That Digimon can't be sold");
+      if (f && !DT31.canSell(f.u)) return toast3("That Digimon can't be sold");
       ui2.hoverUid = null;
       act2("sell", { uid });
     }
@@ -51046,32 +51336,32 @@ void main() {
     function feedback(a, g2, res) {
       sound(a, res);
       if (a === "portal") toast3(res && res.kind ? "Sent to your partner" : { limit: "No portal sends left this round", full: "Your partner\u2019s bench is full", itemsFull: "Your partner\u2019s item bench is full", bench: "Send a Digimon from your bench", phase: "The portal opens during planning", noSend: "This unit cannot be sent" }[res] || "Cannot send that right now", res && res.kind ? "info" : void 0);
-      if (a === "buy" && Array.isArray(res)) for (const u of res) toast3(`Digivolved into ${DT29.LINE[u.line].forms[u.stage]}!`, "info");
+      if (a === "buy" && Array.isArray(res)) for (const u of res) toast3(`Digivolved into ${DT31.LINE[u.line].forms[u.stage]}!`, "info");
       else if (a === "sell" && !res) {
         const f = game7.findUnit(game7.human, g2.uid);
-        toast3(f && !DT29.canSell(f.u) ? "That Digimon can't be sold" : "Cannot sell board units during combat");
+        toast3(f && !DT31.canSell(f.u) ? "That Digimon can't be sold" : "Cannot sell board units during combat");
       } else if (a === "reroll" && !res) toast3("Not enough gold");
       else if (a === "move") {
         if (res === "cap") toast3(`Board is full (${game7.human.cap()}). ${game7.R.xp ? "Buy XP to level up." : "You level up at the start of each stage."}`);
         else if (res === false && game7.phase === "combat") toast3("The board is locked during combat");
       } else if (a === "wisp") {
         if (res === "gold") toast3("Not enough gold");
-        else if (res && DT29.WISP[res]) toast3(`${DT29.WISP[res].name} used`, "info");
+        else if (res && DT31.WISP[res]) toast3(`${DT31.WISP[res].name} used`, "info");
       } else if (a === "equip") {
-        const used = ui2.lastEquip && DT29.ITEMS[ui2.lastEquip];
+        const used = ui2.lastEquip && DT31.ITEMS[ui2.lastEquip];
         ui2.lastEquip = null;
         const msg2 = used && used.errors && used.errors[res] || EQUIP_MSG[res];
         if (res === "none") {
         } else if (msg2) toast3(msg2);
         else if (used && used.consumable && typeof res === "string") toast3(`${used.name} used`, "info");
-        else if (res && DT29.ITEMS[res] && !DT29.ITEMS[res].component && used && used.component) toast3(`Made ${itemName(res)}`, "info");
+        else if (res && DT31.ITEMS[res] && !DT31.ITEMS[res].component && used && used.component) toast3(`Made ${itemName(res)}`, "info");
       } else if (a === "offer" && res) {
-        toast3(DT29.AUGMENT[res] ? `Augment: ${DT29.AUGMENT[res].name}` : DT29.POWER[res] ? `Tamer power: ${DT29.POWER[res].name}` : DT29.ITEMS[res] ? `Got ${itemName(res)}` : "Picked", "info");
+        toast3(DT31.AUGMENT[res] ? `Augment: ${DT31.AUGMENT[res].name}` : DT31.POWER[res] ? `Tamer power: ${DT31.POWER[res].name}` : DT31.ITEMS[res] ? `Got ${itemName(res)}` : "Picked", "info");
       } else if (a === "orb" && res) {
         const bits = [];
         if (res.gold) bits.push(`+${res.gold}g`);
         for (const id2 of res.items) bits.push(itemName(id2));
-        if (res.unit) bits.push(DT29.LINE[res.unit].forms[0]);
+        if (res.unit) bits.push(DT31.LINE[res.unit].forms[0]);
         toast3(bits.join(", "), "info");
       }
     }
@@ -51088,15 +51378,15 @@ void main() {
       busy: "Make your pick first"
     };
     function sound(a, res) {
-      const S4 = DT29.Sfx;
+      const S4 = DT31.Sfx;
       if (!S4) return;
       const ok = res !== null && res !== false && typeof res !== "string";
       if (a === "buy") S4.play(res == null ? "error" : res.length ? "digivolve" : "buy");
       else if (a === "sell") S4.play(res ? "sell" : "error");
       else if (a === "reroll") S4.play(res ? "reroll" : "error");
       else if (a === "move") S4.play(res === true ? "place" : res === "cap" ? "error" : null);
-      else if (a === "equip") S4.play(DT29.ITEMS[res] ? DT29.ITEMS[res].component ? "equip" : "forge" : typeof res === "string" && res !== "none" && !EQUIP_MSG[res] ? "forge" : "error");
-      else if (a === "wisp") S4.play(res && DT29.WISP[res] ? "pick" : "error");
+      else if (a === "equip") S4.play(DT31.ITEMS[res] ? DT31.ITEMS[res].component ? "equip" : "forge" : typeof res === "string" && res !== "none" && !EQUIP_MSG[res] ? "forge" : "error");
+      else if (a === "wisp") S4.play(res && DT31.WISP[res] ? "pick" : "error");
       else if (a === "offer" || a === "carousel" || a === "offerReroll") S4.play(ok ? "pick" : null);
       else if (a === "orb" && res) S4.play("orb");
       else if (a === "lock") S4.play("place");
@@ -51117,7 +51407,7 @@ void main() {
       renderHistory(p);
       renderModal2();
       renderTooltip();
-      if (DT29.Scout) DT29.Scout.render();
+      if (DT31.Scout) DT31.Scout.render();
     }
     const scouted = () => game7 && ui2.viewing != null ? game7.players[ui2.viewing] || null : null;
     function renderDuos(p) {
@@ -51129,7 +51419,7 @@ void main() {
         panel3.innerHTML = '<button id="duoPartner"></button><button id="duoPortal" title="Drag a bench Digimon or item here to send it to your partner"><span class="portal-ring">\u25CE</span><b>Partner Portal</b><small></small></button><span id="duoIncoming"></span>';
         $7("duoPartner").onclick = () => {
           const q2 = game7.partnerOf(game7.human);
-          if (q2 && DT29.Scout) DT29.Scout.view(ui2.viewing === q2.id ? game7.human.id : q2.id);
+          if (q2 && DT31.Scout) DT31.Scout.view(ui2.viewing === q2.id ? game7.human.id : q2.id);
         };
         $7("duoPortal").onclick = () => toast3("Drag a bench Digimon or item onto the portal to send it", "info");
       }
@@ -51137,10 +51427,10 @@ void main() {
       if (!game7.duo) return;
       const q = game7.partnerOf(p);
       $7("duoPartner").innerHTML = `<b>${esc13(q.name)}</b> \xB7 Lv ${q.level} \xB7 ${q.gold}g<br><small>Team ${p.team + 1} \xB7 ${Math.max(0, p.hp)} shared HP \xB7 View partner</small>`;
-      const open7 = p.alive && game7.phase === "planning" && game7.roundType !== "carousel" && p.portal < game7.portalLimit(p);
-      $7("duoPortal").classList.toggle("closed", !open7);
-      $7("duoPortal").querySelector("small").textContent = open7 ? `${game7.portalLimit(p) - p.portal} sends left \xB7 drag here` : "Opens next planning round";
-      const arrived = (p.incoming || []).map((e) => e.kind === "item" ? itemName(e.item) : DT29.LINE[e.line]?.forms[e.stage] || "Digimon");
+      const open8 = p.alive && game7.phase === "planning" && game7.roundType !== "carousel" && p.portal < game7.portalLimit(p);
+      $7("duoPortal").classList.toggle("closed", !open8);
+      $7("duoPortal").querySelector("small").textContent = open8 ? `${game7.portalLimit(p) - p.portal} sends left \xB7 drag here` : "Opens next planning round";
+      const arrived = (p.incoming || []).map((e) => e.kind === "item" ? itemName(e.item) : DT31.LINE[e.line]?.forms[e.stage] || "Digimon");
       const txt = arrived.length ? `Received: ${arrived.join(", ")}` : "";
       if ($7("duoIncoming").textContent !== txt) {
         $7("duoIncoming").textContent = txt;
@@ -51148,7 +51438,7 @@ void main() {
           panel3.classList.remove("arrived");
           void panel3.offsetWidth;
           panel3.classList.add("arrived");
-          if (DT29.Sfx) DT29.Sfx.play("orb");
+          if (DT31.Sfx) DT31.Sfx.play("orb");
         }
       }
     }
@@ -51166,7 +51456,7 @@ void main() {
         const arm = !!ok && !aug2;
         const tip = `${label3} ${roundName(t)}${ok ? ` \xB7 ${offerName(ok)}` : ""}${h ? ` \xB7 ${{ w: "Won", l: "Lost", d: "Draw" }[h.res]}` : ""}`;
         const cls = ["rt", r === game7.round ? "cur" : "", h && r !== game7.round ? h.res : ""].join(" ");
-        track2.push(`<div class="${cls}" title="${tip}">${{ carousel: "C", pve: "PvE", pvp: "PvP" }[t]}${aug2 ? `<i class="ex" style="background:${DT29.AUG_TIER_COLOR[3]}"></i>` : arm ? '<i class="ex" style="background:#4fb3ff"></i>' : ""}</div>`);
+        track2.push(`<div class="${cls}" title="${tip}">${{ carousel: "C", pve: "PvE", pvp: "PvP" }[t]}${aug2 ? `<i class="ex" style="background:${DT31.AUG_TIER_COLOR[3]}"></i>` : arm ? '<i class="ex" style="background:#4fb3ff"></i>' : ""}</div>`);
       }
       $7("stageTrack").innerHTML = track2.join("");
       $7("phaseLabel").textContent = { planning: "Planning", combat: "Combat", result: "Result" }[game7.phase];
@@ -51194,7 +51484,7 @@ void main() {
       $7("levelLabel").textContent = `Level ${p.level}`;
       const X2 = game7.R.xp;
       const nx = game7.nextLevelAt();
-      const need = X2 ? DT29.XP_NEXT[p.level] : 0;
+      const need = X2 ? DT31.XP_NEXT[p.level] : 0;
       $7("xpLabel").textContent = X2 ? p.level >= (X2.maxLevel || 9) ? "Max level" : `${p.xp}/${need} XP` : nx ? `Lv ${nx.level} at stage ${nx.stage}` : "Max level";
       xpBar(p, X2, need);
       xpButton(p);
@@ -51218,7 +51508,7 @@ void main() {
       $7("lockBtn").textContent = p.locked ? "Shop locked" : "Lock shop";
       $7("lockBtn").classList.toggle("on", p.locked);
       const full2 = (a, b) => `<b class="${a >= b ? "full" : ""}">${a}/${b}</b>`;
-      $7("capLabel").innerHTML = `Bench ${full2(p.benchCount(), DT29.BENCH)} \xB7 Items ${full2(p.items.length, H.itemCap)}`;
+      $7("capLabel").innerHTML = `Bench ${full2(p.benchCount(), DT31.BENCH)} \xB7 Items ${full2(p.items.length, H.itemCap)}`;
     }
     function shopUnit(p, i) {
       const id2 = p.shop[i];
@@ -51232,7 +51522,7 @@ void main() {
       const maxStage = game7.R && game7.R.maxStage != null ? game7.R.maxStage : 2;
       const cards = p.shop.map((id2, i) => {
         if (!id2) return `<div class="card empty"></div>`;
-        const L2 = DT29.LINE[id2];
+        const L2 = DT31.LINE[id2];
         const su = shopUnit(p, i);
         const cls = ["card"];
         const cost = game7.shopCost(p, i);
@@ -51244,32 +51534,32 @@ void main() {
         const bonus2 = su.bonusTraits || {};
         const times = (t) => (L2.traits.includes(t) ? 1 : 0) + (bonus2[t] || 0);
         const tlist = L2.traits.concat(Object.keys(bonus2).filter((t) => !L2.traits.includes(t)));
-        const traits = tlist.filter((t) => DT29.TRAITS[t]).map((t) => `<span${bonus2[t] ? ' class="bt"' : ""}><i style="background:${DT29.TRAITS[t].color}"></i>${DT29.TRAITS[t].name}${bonus2[t] && times(t) > 1 ? ` <b title="Counts ${times(t)} times">x${times(t)}</b>` : ""}</span>`).join("");
-        const stars = su.stage ? ` <small style="color:${DT29.STAGE_COLORS[su.stage]}">${"\u2605".repeat(su.stage + 1)}</small>` : "";
-        return `<div class="${cls.join(" ")}" data-slot="${i}" style="--tier:${DT29.TIER_COLORS[L2.tier]}">
+        const traits = tlist.filter((t) => DT31.TRAITS[t]).map((t) => `<span${bonus2[t] ? ' class="bt"' : ""}><i style="background:${DT31.TRAITS[t].color}"></i>${DT31.TRAITS[t].name}${bonus2[t] && times(t) > 1 ? ` <b title="Counts ${times(t)} times">x${times(t)}</b>` : ""}</span>`).join("");
+        const stars = su.stage ? ` <small style="color:${DT31.STAGE_COLORS[su.stage]}">${"\u2605".repeat(su.stage + 1)}</small>` : "";
+        return `<div class="${cls.join(" ")}" data-slot="${i}" style="--tier:${DT31.TIER_COLORS[L2.tier]}">
         <div class="art">${P2.html(id2, su.stage)}</div>
         <div class="ct">${traits}</div>
         ${su.meta && su.meta.tag ? `<div class="mtag">${esc13(su.meta.tag)}</div>` : ""}
-        <div class="attr" style="color:${DT29.ATTR[L2.attr].color}">${L2.attr}</div>
+        <div class="attr" style="color:${DT31.ATTR[L2.attr].color}">${L2.attr}</div>
         ${own2 ? `<div class="own" title="${own2 >= need - 1 ? "Buying this one digivolves it" : "Copies you own"}">${own2 >= need - 1 ? "Digivolve" : `${own2}/${need}`}</div>` : ""}
         <div class="nb"><div class="cn">${L2.forms[su.stage]}${stars}</div><div class="price">${coin}${cost}</div></div>
       </div>`;
       });
       if (p.wisp) {
-        const w = DT29.WISP[p.wisp.id];
+        const w = DT31.WISP[p.wisp.id];
         cards.push(`<div class="card wisp ${p.gold < p.wisp.cost ? "poor" : ""}" data-wisp="1">
-        ${DT29.ItemArt.img(`wisp:${w.id}`, 30, "wispart")}<div class="kind">${w.kind} Wisp</div><div class="cn">${w.name}</div><div class="wd">${esc13(w.desc)}</div>
+        ${DT31.ItemArt.img(`wisp:${w.id}`, 30, "wispart")}<div class="kind">${w.kind} Wisp</div><div class="cn">${w.name}</div><div class="wd">${esc13(w.desc)}</div>
         <div class="price">${coin}${p.wisp.cost}</div></div>`);
-      } else if (DT29.WISPS.length) cards.push(`<div class="card empty" title="A Data Wisp appears here every other round from stage 2"></div>`);
+      } else if (DT31.WISPS.length) cards.push(`<div class="card empty" title="A Data Wisp appears here every other round from stage 2"></div>`);
       $7("shop").innerHTML = cards.join("");
     }
     function traitRows(p) {
       const units = p.boardUnits();
-      const counts = DT29.countTraits(units, p.augs);
+      const counts = DT31.countTraits(units, p.augs);
       return Object.keys(counts).map((id2) => {
         const byLine = /* @__PURE__ */ new Map();
-        for (const u of units) if (DT29.LINE[u.line].shop && DT29.unitTraits(u).includes(id2) && (!byLine.has(u.line) || byLine.get(u.line).stage < u.stage)) byLine.set(u.line, u);
-        return { id: id2, n: counts[id2], lv: DT29.traitLevel(id2, counts[id2]), units: [...byLine.values()] };
+        for (const u of units) if (DT31.LINE[u.line].shop && DT31.unitTraits(u).includes(id2) && (!byLine.has(u.line) || byLine.get(u.line).stage < u.stage)) byLine.set(u.line, u);
+        return { id: id2, n: counts[id2], lv: DT31.traitLevel(id2, counts[id2]), units: [...byLine.values()] };
       }).sort((a, b) => b.lv - a.lv || b.n - a.n || a.id.localeCompare(b.id));
     }
     const traitTier = (T3, lv) => !lv ? "l0" : lv >= T3.bp.length ? "gold" : lv >= 2 ? "silver" : "bronze";
@@ -51277,27 +51567,27 @@ void main() {
       let rows = traitRows(p);
       if (game7.duo && game7.roundType === "pvp") {
         const team = game7.teamOf(p), side = game7.teamSide(team), counts = side.counts;
-        rows = Object.keys(counts).filter((id2) => DT29.TRAITS[id2]).map((id2) => ({ id: id2, n: counts[id2], lv: DT29.traitLevel(id2, counts[id2]), units: side.units.filter((u) => DT29.LINE[u.line].traits.includes(id2)) })).sort((a, b) => b.lv - a.lv || b.n - a.n);
+        rows = Object.keys(counts).filter((id2) => DT31.TRAITS[id2]).map((id2) => ({ id: id2, n: counts[id2], lv: DT31.traitLevel(id2, counts[id2]), units: side.units.filter((u) => DT31.LINE[u.line].traits.includes(id2)) })).sort((a, b) => b.lv - a.lv || b.n - a.n);
       }
       const active2 = rows.filter((r) => r.lv).length;
       const head = game7.duo && game7.roundType === "pvp" ? "Combined team traits" : p === game7.human ? "Traits" : `${esc13(p.name)}'s traits`;
       $7("traitList").innerHTML = `<div class="ph${p === game7.human ? "" : " scout"}">${head}<span>${active2} active</span></div>` + (rows.length ? rows.map(({ id: id2, n: n4, lv, units }) => {
-        const T3 = DT29.TRAITS[id2];
+        const T3 = DT31.TRAITS[id2];
         const next2 = T3.bp.find((b) => b > n4);
         const bps = T3.bp.map((b, i) => `<b class="${i < lv ? "on" : ""}">${b}</b>`).join("");
         return `<div class="trait ${traitTier(T3, lv)}" data-trait="${id2}" style="--tc:${T3.color}">
         <div class="tb"><span>${n4}</span></div>
         <div class="tn"><span>${T3.name}</span><em>${next2 ? `${n4}/${next2}` : n4}</em></div>
         <div class="tbp">${bps}${lv ? `<span class="fx">${bpText2(T3, lv - 1)}</span>` : ""}</div>
-        <div class="tu">${units.map((u) => P2.html(u.line, u.stage, `t${DT29.LINE[u.line].tier}`)).join("")}</div>
+        <div class="tu">${units.map((u) => P2.html(u.line, u.stage, `t${DT31.LINE[u.line].tier}`)).join("")}</div>
       </div>`;
       }).join("") : '<div class="emptyhint">Place Digimon on the board to activate traits.</div>');
     }
     function renderAugs(p) {
       $7("augs").innerHTML = p.augs.length ? `<div class="ph">Augments<span>${p.augs.length}/3</span></div>` + p.augs.map((id2) => {
-        const a = DT29.AUGMENT[id2];
-        const c = DT29.AUG_TIER_COLOR[a.tier];
-        return `<div class="aug" style="border-color:${c}55">${DT29.ItemArt.img(`aug:${id2}`, 30, "augart")}<div><b style="color:${c}">${a.name}</b><div class="ad">${esc13(a.desc)}</div></div></div>`;
+        const a = DT31.AUGMENT[id2];
+        const c = DT31.AUG_TIER_COLOR[a.tier];
+        return `<div class="aug" style="border-color:${c}55">${DT31.ItemArt.img(`aug:${id2}`, 30, "augart")}<div><b style="color:${c}">${a.name}</b><div class="ad">${esc13(a.desc)}</div></div></div>`;
       }).join("") : "";
     }
     function renderPlayers(p, opp) {
@@ -51345,7 +51635,7 @@ void main() {
     }
     function introHtml() {
       if (!game7 || game7.stage > 1) return "";
-      if (!ui2.intro || ui2.intro.game !== game7) ui2.intro = { game: game7, data: DT29.mechanicIntro(game7), seen: false };
+      if (!ui2.intro || ui2.intro.game !== game7) ui2.intro = { game: game7, data: DT31.mechanicIntro(game7), seen: false };
       const d = ui2.intro.data;
       if (!d || ui2.intro.seen) return "";
       return `<div class="mintro" style="--ic:${esc13(d.color || "var(--gold)")}">${d.img || ""}<div class="mi-b">${d.title ? `<div class="mi-t">${esc13(d.title)}</div>` : ""}<h3>${esc13(d.name || "")}</h3>
@@ -51360,11 +51650,11 @@ void main() {
         const c = game7.carousel;
         const myTurn = game7.carouselTurn() === p;
         const choices = c.opts.map((o, i) => {
-          const L2 = DT29.LINE[o.line];
-          return `<div class="choice small ${o.by ? "taken" : ""}" data-carousel="${i}" style="border-color:${DT29.TIER_COLORS[L2.tier]}">
+          const L2 = DT31.LINE[o.line];
+          return `<div class="choice small ${o.by ? "taken" : ""}" data-carousel="${i}" style="border-color:${DT31.TIER_COLORS[L2.tier]}">
           <div class="cimg">${P2.html(o.line, 0)}${itemImg2(o.item)}</div>
           <h4>${L2.forms[0]}</h4>
-          <div class="d">${L2.tier}-cost \xB7 ${L2.traits.map((t) => DT29.TRAITS[t].name).join(", ")}</div>
+          <div class="d">${L2.tier}-cost \xB7 ${L2.traits.map((t) => DT31.TRAITS[t].name).join(", ")}</div>
           <div class="d" style="color:var(--text)">${itemName(o.item)}</div>
           ${o.by ? `<div class="d" style="color:var(--gold)">Taken by ${esc13(o.by)}</div>` : ""}</div>`;
         }).join("");
@@ -51376,26 +51666,26 @@ void main() {
         const o = p.offer;
         const aug2 = o.kind === "augment" || o.kind === "power";
         const custom = !aug2 && o.kind !== "armory" && o.kind !== "itemTier";
-        const defOf = (id2) => (o.kind === "power" ? DT29.POWER[id2] : DT29.AUGMENT[id2]) || { name: id2, desc: "", tier: 1 };
+        const defOf = (id2) => (o.kind === "power" ? DT31.POWER[id2] : DT31.AUGMENT[id2]) || { name: id2, desc: "", tier: 1 };
         const tier = aug2 ? defOf(o.options[0]).tier || 1 : 0;
         const choices = o.options.map((id2, i) => {
           if (aug2) {
             const a = defOf(id2);
-            const c = DT29.AUG_TIER_COLOR[a.tier || 1];
-            return `<div class="choice aug" data-offer="${i}" style="border-color:${c}">${DT29.ItemArt.img(`aug:${id2}`, 64, "augart")}<h4 style="color:${c}">${esc13(a.name)}</h4><div class="d">${esc13(a.desc)}</div></div>`;
+            const c = DT31.AUG_TIER_COLOR[a.tier || 1];
+            return `<div class="choice aug" data-offer="${i}" style="border-color:${c}">${DT31.ItemArt.img(`aug:${id2}`, 64, "augart")}<h4 style="color:${c}">${esc13(a.name)}</h4><div class="d">${esc13(a.desc)}</div></div>`;
           }
           if (custom) {
             const K = game7.set.mechanic.offerKinds[o.kind] || {};
             const card3 = K.card ? K.card(id2) : { name: String(id2) };
             return `<div class="choice" data-offer="${i}">${card3.img || ""}<h4>${esc13(card3.name)}</h4><div class="d">${esc13(card3.desc || "")}</div></div>`;
           }
-          const it = DT29.ITEMS[id2];
-          return `<div class="choice" data-offer="${i}">${itemImg2(id2, 'class="bigicon"').replace(/class="(c|f)" /, "")}<h4>${it.name}</h4><div class="d">${esc13(DT29.itemText(id2))}</div>
+          const it = DT31.ITEMS[id2];
+          return `<div class="choice" data-offer="${i}">${itemImg2(id2, 'class="bigicon"').replace(/class="(c|f)" /, "")}<h4>${it.name}</h4><div class="d">${esc13(DT31.itemText(id2))}</div>
           ${it.from && !it.component ? `<div class="d">From ${it.from.map(itemName).join(" + ")}</div>` : ""}</div>`;
         }).join("");
-        const title = o.kind === "augment" ? `${DT29.AUG_TIER_NAME[tier]} Augment` : offerName(o.kind);
+        const title = o.kind === "augment" ? `${DT31.AUG_TIER_NAME[tier]} Augment` : offerName(o.kind);
         const sub = o.kind === "augment" ? "Pick one augment. It lasts the whole game." : o.kind === "power" ? "Pick your Tamer power. It ranks up later in the game." : custom ? (game7.set.mechanic.offerKinds[o.kind] || {}).sub || "Pick one." : "Pick one item. It goes to your item bench.";
-        html2 = `<div class="mpanel">${intro}<div class="mhead"><h2 style="${aug2 ? `color:${DT29.AUG_TIER_COLOR[tier]}` : ""}">${esc13(title)}</h2>
+        html2 = `<div class="mpanel">${intro}<div class="mhead"><h2 style="${aug2 ? `color:${DT31.AUG_TIER_COLOR[tier]}` : ""}">${esc13(title)}</h2>
           <button id="peekBtn">${ui2.peek ? "Show choices" : "View board"}</button></div>
         <div class="msub">${sub}</div>
         <div class="choices">${choices}</div>
@@ -51437,69 +51727,69 @@ void main() {
       </table>`;
     }
     function itemsBlock(items3) {
-      return items3.map((id2) => `<div class="itm">${itemImg2(id2)}<div><b>${itemName(id2)}</b><br>${esc13(DT29.itemText(id2))}</div></div>`).join("");
+      return items3.map((id2) => `<div class="itm">${itemImg2(id2)}<div><b>${itemName(id2)}</b><br>${esc13(DT31.itemText(id2))}</div></div>`).join("");
     }
-    const unitNotes = (u) => u ? DT29.unitNote(u).map((t) => `<div class="foot unote">${esc13(t)}</div>`).join("") : "";
+    const unitNotes = (u) => u ? DT31.unitNote(u).map((t) => `<div class="foot unote">${esc13(t)}</div>`).join("") : "";
     function tooltipFor(line, stage3, live3, items3 = [], unit = null) {
-      const s = live3 || DT29.unitStats(line, stage3);
-      let traits = live3 ? live3.traits : DT29.unitTraits({ line: line.id, items: items3 });
-      const bt = !live3 && unit && unit.bonusTraits ? Object.keys(unit.bonusTraits).filter((t) => DT29.TRAITS[t] && !traits.includes(t)) : [];
+      const s = live3 || DT31.unitStats(line, stage3);
+      let traits = live3 ? live3.traits : DT31.unitTraits({ line: line.id, items: items3 });
+      const bt = !live3 && unit && unit.bonusTraits ? Object.keys(unit.bonusTraits).filter((t) => DT31.TRAITS[t] && !traits.includes(t)) : [];
       if (bt.length) traits = traits.concat(bt);
-      const tags = traits.map((t) => `<span class="tag" style="color:${DT29.TRAITS[t].color};border-color:${DT29.TRAITS[t].color}55">${DT29.TRAITS[t].name}</span>`).join("") + `<span class="tag" style="color:${DT29.ATTR[line.attr].color};border-color:${DT29.ATTR[line.attr].color}55">${line.attr}</span>`;
+      const tags = traits.map((t) => `<span class="tag" style="color:${DT31.TRAITS[t].color};border-color:${DT31.TRAITS[t].color}55">${DT31.TRAITS[t].name}</span>`).join("") + `<span class="tag" style="color:${DT31.ATTR[line.attr].color};border-color:${DT31.ATTR[line.attr].color}55">${line.attr}</span>`;
       const evo = line.forms.map((f, i) => i === stage3 ? `<b>${f}</b>` : f).join(" \u2192 ");
-      return `<div class="th" style="--tier:${DT29.TIER_COLORS[line.tier]}">${P2.html(line.id, stage3)}<div><h3>${line.forms[stage3]}</h3>
-      <div class="line">${DT29.stageName(line, stage3)} \xB7 ${line.tier}-cost \xB7 <span style="color:${DT29.STAGE_COLORS[stage3]}">${"\u2605".repeat(stage3 + 1)}</span></div></div></div>
+      return `<div class="th" style="--tier:${DT31.TIER_COLORS[line.tier]}">${P2.html(line.id, stage3)}<div><h3>${line.forms[stage3]}</h3>
+      <div class="line">${DT31.stageName(line, stage3)} \xB7 ${line.tier}-cost \xB7 <span style="color:${DT31.STAGE_COLORS[stage3]}">${"\u2605".repeat(stage3 + 1)}</span></div></div></div>
       <div class="line">${evo}</div>
       <div class="tags">${tags}</div>
       ${statsTable(s, live3)}
-      <div class="ab"><b>${line.abil[stage3]}</b>: ${DT29.abilityText(line, stage3, live3 ? live3.ap : 100)}</div>
+      <div class="ab"><b>${line.abil[stage3]}</b>: ${DT31.abilityText(line, stage3, live3 ? live3.ap : 100)}</div>
       ${unitNotes(live3 || unit)}
       ${itemsBlock(live3 ? live3.items : items3)}`;
     }
     function dropPreview(id2, u) {
-      const it = DT29.ITEMS[id2];
-      if (it.consumable) return `${it.name}: ${DT29.consumablePreview(id2, u, game7.human, game7).text}`;
-      if (it.emblem && DT29.unitTraits(u).includes(it.emblem)) return "Already has this trait";
+      const it = DT31.ITEMS[id2];
+      if (it.consumable) return `${it.name}: ${DT31.consumablePreview(id2, u, game7.human, game7).text}`;
+      if (it.emblem && DT31.unitTraits(u).includes(it.emblem)) return "Already has this trait";
       if (it.component) {
-        const c = u.items.find((x) => DT29.isComponent(x) && DT29.combineItems(x, id2));
-        if (c) return `Combines into ${itemName(DT29.combineItems(c, id2))}`;
+        const c = u.items.find((x) => DT31.isComponent(x) && DT31.combineItems(x, id2));
+        if (c) return `Combines into ${itemName(DT31.combineItems(c, id2))}`;
       }
-      if (!DT29.holdsItems(u)) return "Can't hold items";
+      if (!DT31.holdsItems(u)) return "Can't hold items";
       return u.items.length >= 3 || game7.equipVeto(game7.human, u, id2, null) ? "Item slots full" : `Equip ${it.name}`;
     }
     function itemTip(id2) {
-      const it = DT29.ITEMS[id2];
-      let html2 = `<div class="itip">${DT29.ItemArt.img(id2, 64)}<div><h3>${itemName(id2)}</h3><div class="line">${it.component ? "Component" : it.consumable ? "Consumable" : it.emblem ? "Crest" : "Completed item"}</div></div></div><div class="ab">${esc13(DT29.itemText(id2))}</div>`;
+      const it = DT31.ITEMS[id2];
+      let html2 = `<div class="itip">${DT31.ItemArt.img(id2, 64)}<div><h3>${itemName(id2)}</h3><div class="line">${it.component ? "Component" : it.consumable ? "Consumable" : it.emblem ? "Crest" : "Completed item"}</div></div></div><div class="ab">${esc13(DT31.itemText(id2))}</div>`;
       if (it.component) {
-        const combos = DT29.COMPONENT_IDS.map((c) => [c, DT29.combineItems(id2, c)]).filter((x) => x[1]);
+        const combos = DT31.COMPONENT_IDS.map((c) => [c, DT31.combineItems(id2, c)]).filter((x) => x[1]);
         html2 += `<div class="foot">Combines with:</div><div class="recipes">` + combos.map(([c, r]) => `<div class="itm">${itemImg2(c)}<div><b>${itemName(r)}</b></div></div>`).join("") + "</div>";
-      } else if (it.from) html2 += `<div class="foot">Made from ${DT29.recipesOf(id2).map((r) => r.map(itemName).join(" + ")).join(" or ")}</div>`;
+      } else if (it.from) html2 += `<div class="foot">Made from ${DT31.recipesOf(id2).map((r) => r.map(itemName).join(" + ")).join(" or ")}</div>`;
       return html2;
     }
     function traitTip(id2) {
       const p = scouted() || game7.human;
-      const T3 = DT29.TRAITS[id2];
+      const T3 = DT31.TRAITS[id2];
       const row = traitRows(p).find((r) => r.id === id2);
       const n4 = row ? row.n : 0;
-      const lv = DT29.traitLevel(id2, n4);
+      const lv = DT31.traitLevel(id2, n4);
       const counted = new Set(row ? row.units.map((u) => u.line) : []);
-      const bench = [...new Set(p.bench.filter((u) => u && DT29.unitTraits(u).includes(id2) && !counted.has(u.line)).map((u) => DT29.LINE[u.line].forms[u.stage]))];
+      const bench = [...new Set(p.bench.filter((u) => u && DT31.unitTraits(u).includes(id2) && !counted.has(u.line)).map((u) => DT31.LINE[u.line].forms[u.stage]))];
       return `<h3 style="color:${T3.color}">${T3.name}</h3><div class="line">${T3.kind ? T3.kind[0].toUpperCase() + T3.kind.slice(1) : "Trait"} \xB7 ${n4} unique Digimon on the board</div>
       <div class="ab">${esc13(T3.desc)}</div>
       ${T3.bp.map((b, i) => `<div class="bpl ${i < lv ? "on" : ""}"><b style="color:${i < lv ? T3.color : "inherit"}">(${b})</b> ${bpText2(T3, i)}</div>`).join("")}
-      ${row && row.units.length ? `<div class="foot">Counting: ${row.units.map((u) => DT29.LINE[u.line].forms[u.stage]).join(", ")}</div>` : ""}
+      ${row && row.units.length ? `<div class="foot">Counting: ${row.units.map((u) => DT31.LINE[u.line].forms[u.stage]).join(", ")}</div>` : ""}
       ${bench.length ? `<div class="foot">${p === game7.human ? "On your bench" : "On their bench"}: ${bench.join(", ")}</div>` : ""}
       <div class="foot">Each different Digimon counts once.</div>`;
     }
     function playerTip(q) {
-      const units = q.boardUnits().slice().sort((a, b) => DT29.unitValue(b) - DT29.unitValue(a));
-      const counts = DT29.countTraits(q.boardUnits(), q.augs);
-      const act3 = Object.keys(counts).filter((t) => DT29.traitLevel(t, counts[t])).map((t) => `<span class="tag" style="color:${DT29.TRAITS[t].color};border-color:${DT29.TRAITS[t].color}55">${counts[t]} ${DT29.TRAITS[t].name}</span>`).join("");
+      const units = q.boardUnits().slice().sort((a, b) => DT31.unitValue(b) - DT31.unitValue(a));
+      const counts = DT31.countTraits(q.boardUnits(), q.augs);
+      const act3 = Object.keys(counts).filter((t) => DT31.traitLevel(t, counts[t])).map((t) => `<span class="tag" style="color:${DT31.TRAITS[t].color};border-color:${DT31.TRAITS[t].color}55">${counts[t]} ${DT31.TRAITS[t].name}</span>`).join("");
       const h = (hist.get(q.id) || []).slice(-6);
       return `<div class="th">${avatarHTML2(q)}<div><h3>${esc13(q.name)}</h3><div class="line">${q.alive ? `${Math.max(0, q.hp)} HP \xB7 Level ${q.level}` : `Placed #${q.placement}`}${session ? q.isHuman ? " \xB7 Player" : " \xB7 AI" : q === game7.human ? "" : " \xB7 AI"}</div></div></div>
       ${act3 ? `<div class="tags">${act3}</div>` : ""}
-      ${units.length ? `<div class="foot">Board: ${units.map((u) => DT29.LINE[u.line].forms[u.stage] + (u.items.length ? ` (${u.items.length} item${u.items.length > 1 ? "s" : ""})` : "")).join(", ")}</div>` : ""}
-      <div class="foot">Augments: ${q.augs.map((a) => DT29.AUGMENT[a].name).join(", ") || "none yet"}</div>
+      ${units.length ? `<div class="foot">Board: ${units.map((u) => DT31.LINE[u.line].forms[u.stage] + (u.items.length ? ` (${u.items.length} item${u.items.length > 1 ? "s" : ""})` : "")).join(", ")}</div>` : ""}
+      <div class="foot">Augments: ${q.augs.map((a) => DT31.AUGMENT[a].name).join(", ") || "none yet"}</div>
       ${h.length ? `<div class="foot">Recent: ${h.map((x) => `${x.round} ${x.res.toUpperCase()}`).join(" \xB7 ")}</div>` : ""}`;
     }
     function renderTooltip() {
@@ -51511,11 +51801,11 @@ void main() {
         el2.classList.add("hidden");
         return;
       }
-      const IC = DT29.ItemCards;
+      const IC = DT31.ItemCards;
       if (ui2.itemDrag && ui2.hoverUid != null) {
         const f = game7.findUnit(p, ui2.hoverUid);
         const id2 = p.items[ui2.itemDrag.idx];
-        if (f && id2) html2 = IC ? IC.unitCard(id2, f.u, game7, p) : `<div class="drop">${dropPreview(id2, f.u)}</div>` + tooltipFor(DT29.LINE[f.u.line], f.u.stage, null, f.u.items, f.u);
+        if (f && id2) html2 = IC ? IC.unitCard(id2, f.u, game7, p) : `<div class="drop">${dropPreview(id2, f.u)}</div>` + tooltipFor(DT31.LINE[f.u.line], f.u.stage, null, f.u.items, f.u);
       } else if (ui2.itemDrag && IC) {
         const id2 = p.items[ui2.itemDrag.idx];
         const over = ui2.itemDrag.over;
@@ -51525,15 +51815,15 @@ void main() {
       } else if (ui2.hoverItem >= 0 && p.items[ui2.hoverItem]) {
         html2 = IC ? IC.itemCard(p.items[ui2.hoverItem], p) : itemTip(p.items[ui2.hoverItem]);
       } else if (ui2.hoverWisp && p.wisp) {
-        const w = DT29.WISP[p.wisp.id];
-        html2 = `<div class="itip">${DT29.ItemArt.img(`wisp:${w.id}`, 64)}<div><h3>${w.name}</h3><div class="line">${w.kind} Wisp \xB7 ${p.wisp.cost} gold \xB7 one use, this round only</div></div></div><div class="ab">${esc13(w.desc)}</div>`;
+        const w = DT31.WISP[p.wisp.id];
+        html2 = `<div class="itip">${DT31.ItemArt.img(`wisp:${w.id}`, 64)}<div><h3>${w.name}</h3><div class="line">${w.kind} Wisp \xB7 ${p.wisp.cost} gold \xB7 one use, this round only</div></div></div><div class="ab">${esc13(w.desc)}</div>`;
         ui2.tipAnchor = { el: document.querySelector(".card.wisp"), side: "top" };
       } else if (ui2.hoverShop >= 0 && p.shop[ui2.hoverShop]) {
         const id2 = p.shop[ui2.hoverShop];
         const su = shopUnit(p, ui2.hoverShop);
-        html2 = tooltipFor(DT29.LINE[id2], su.stage, null, [], su) + (su.meta && su.meta.tag ? `<div class="foot mtagline">${esc13(su.meta.tag)} offer${su.meta.note ? `: ${esc13(su.meta.note)}` : ""}</div>` : "") + `<div class="foot">${game7.pool[id2]} more in the shared pool (of ${DT29.POOL_SIZE[DT29.LINE[id2].tier]})</div>`;
+        html2 = tooltipFor(DT31.LINE[id2], su.stage, null, [], su) + (su.meta && su.meta.tag ? `<div class="foot mtagline">${esc13(su.meta.tag)} offer${su.meta.note ? `: ${esc13(su.meta.note)}` : ""}</div>` : "") + `<div class="foot">${game7.pool[id2]} more in the shared pool (of ${DT31.POOL_SIZE[DT31.LINE[id2].tier]})</div>`;
         ui2.tipAnchor = { el: document.querySelector(`.card[data-slot="${ui2.hoverShop}"]`), side: "top" };
-      } else if (ui2.hoverTrait && DT29.TRAITS[ui2.hoverTrait]) {
+      } else if (ui2.hoverTrait && DT31.TRAITS[ui2.hoverTrait]) {
         html2 = traitTip(ui2.hoverTrait);
         ui2.tipAnchor = { el: document.querySelector(`.trait[data-trait="${ui2.hoverTrait}"]`), side: "right" };
       } else if (ui2.hoverPlayer >= 0 && game7.players[ui2.hoverPlayer]) {
@@ -51544,7 +51834,7 @@ void main() {
         if (u && u.alive) html2 = tooltipFor(u.line, u.stage, u, [], u);
       } else if (ui2.hoverUid != null) {
         const f = game7.findUnit(p, ui2.hoverUid);
-        if (f) html2 = tooltipFor(DT29.LINE[f.u.line], f.u.stage, null, f.u.items, f.u) + (DT29.canSell(f.u) ? `<div class="foot">Sell for ${DT29.sellValue(f.u)} gold (E)${f.u.items.length ? ", items return to your bench" : ""}</div>` : `<div class="foot">Can't be sold</div>`);
+        if (f) html2 = tooltipFor(DT31.LINE[f.u.line], f.u.stage, null, f.u.items, f.u) + (DT31.canSell(f.u) ? `<div class="foot">Sell for ${DT31.sellValue(f.u)} gold (E)${f.u.items.length ? ", items return to your bench" : ""}</div>` : `<div class="foot">Can't be sold</div>`);
       }
       if (html2 !== el2._html) {
         el2.innerHTML = html2;
@@ -51596,9 +51886,9 @@ void main() {
       setTimeout(() => row.remove(), life + 400);
     };
     function openPicker() {
-      if (DT29.Shop && DT29.Shop.openLocker) return DT29.Shop.openLocker("legend");
+      if (DT31.Shop && DT31.Shop.openLocker) return DT31.Shop.openLocker("legend");
       const cur4 = legendId();
-      const tiles = DT29.Cosmetics.list("legend").filter((x) => DT29.Cosmetics.owns("legend", x.id)).map((x) => `<div class="lg ${x.id === cur4 ? "on" : ""}" data-lid="${esc13(x.id)}" title="${esc13(x.desc || x.name)}">${DT29.Legends.html(x.id)}<span>${esc13(x.name)}</span></div>`).join("");
+      const tiles = DT31.Cosmetics.list("legend").filter((x) => DT31.Cosmetics.owns("legend", x.id)).map((x) => `<div class="lg ${x.id === cur4 ? "on" : ""}" data-lid="${esc13(x.id)}" title="${esc13(x.desc || x.name)}">${DT31.Legends.html(x.id)}<span>${esc13(x.name)}</span></div>`).join("");
       const el2 = $7("picker");
       el2.innerHTML = `<div class="pk"><div class="pkh"><h2>Little Legend</h2><div class="muted">Your tactician on the board. Other players see it in combat.</div>
       <button id="pickClose">Done</button></div><div class="pkgrid lgown">${tiles}</div></div>`;
@@ -51611,16 +51901,16 @@ void main() {
       const t = ev.target;
       if (t.id === "picker" || t.id === "pickClose") return closePicker();
       const tile = t.closest(".lg[data-lid]");
-      if (tile) DT29.Cosmetics.equip("legend", tile.dataset.lid);
+      if (tile) DT31.Cosmetics.equip("legend", tile.dataset.lid);
     });
     $7("legendBtn").onclick = openPicker;
     function fillTitleLegend() {
       const el2 = $7("titleLegend");
       if (!el2) return;
-      const it = DT29.Cosmetics.get("legend", legendId());
-      const evo = DT29.LegendEvo && DT29.LegendEvo.info(legendId());
+      const it = DT31.Cosmetics.get("legend", legendId());
+      const evo = DT31.LegendEvo && DT31.LegendEvo.info(legendId());
       const name2 = evo ? `${evo.formInfo.name} <span class="muted">Lv ${evo.level}</span>` : esc13(it ? it.name : "");
-      el2.innerHTML = `${DT29.Legends.html(legendKey3())}<div><div class="lt">Little Legend</div><div class="ln">${name2}</div><button id="pickLegendBtn">Choose</button>${evo ? ` <button data-evo-open="${esc13(legendId())}">Digivolve</button>` : ""}</div>`;
+      el2.innerHTML = `${DT31.Legends.html(legendKey3())}<div><div class="lt">Little Legend</div><div class="ln">${name2}</div><button id="pickLegendBtn">Choose</button>${evo ? ` <button data-evo-open="${esc13(legendId())}">Digivolve</button>` : ""}</div>`;
       $7("pickLegendBtn").onclick = openPicker;
     }
     function unitAt(pt) {
@@ -51631,7 +51921,7 @@ void main() {
       if (game7.phase === "combat" && combat) return null;
       const cell = renderer2.cellAt(pt.x, pt.y);
       if (cell && cell.r >= 4) {
-        const u = p.board[DT29.cellKey(cell.c, cell.r)];
+        const u = p.board[DT31.cellKey(cell.c, cell.r)];
         if (u) return { unit: u, from: { type: "board", c: cell.c, r: cell.r } };
       }
       return null;
@@ -51714,7 +52004,7 @@ void main() {
         ui2.hoverBench = renderer2.benchAt(pt.x, pt.y);
         const overShop = !!(ev.target.closest && ev.target.closest("#shopbar"));
         $7("sellZone").classList.toggle("hidden", !(ui2.drag.moved && overShop));
-        if (ui2.drag.moved) $7("sellZone").textContent = DT29.canSell(ui2.drag.unit) ? `Sell for ${DT29.sellValue(ui2.drag.unit)} gold` : "Can't be sold";
+        if (ui2.drag.moved) $7("sellZone").textContent = DT31.canSell(ui2.drag.unit) ? `Sell for ${DT31.sellValue(ui2.drag.unit)} gold` : "Can't be sold";
         return;
       }
       const prev = [ui2.hoverUid, ui2.hoverCombatId, ui2.hoverItem, ui2.hoverTrait, ui2.hoverPlayer];
@@ -51832,7 +52122,7 @@ void main() {
     $7("players").addEventListener("click", (ev) => {
       if (ev.target.closest("#mpPlayerControls")) {
         ev.stopPropagation();
-        DT29.Net?.players();
+        DT31.Net?.players();
       }
     });
     $7("skipBtn").onclick = skip2;
@@ -51845,15 +52135,15 @@ void main() {
       $7("timerBtn").classList.toggle("off", !ui2.timerOn);
     };
     const soundLabel = () => {
-      $7("soundBtn").textContent = { all: "Sound on", effects: "Music off", off: "Muted" }[DT29.Sfx.mode];
-      $7("soundBtn").classList.toggle("off", DT29.Sfx.mode === "off");
+      $7("soundBtn").textContent = { all: "Sound on", effects: "Music off", off: "Muted" }[DT31.Sfx.mode];
+      $7("soundBtn").classList.toggle("off", DT31.Sfx.mode === "off");
     };
     soundLabel();
     $7("soundBtn").onclick = () => {
-      if (DT29.SoundUI) return DT29.SoundUI.toggle();
-      DT29.Sfx.cycle();
+      if (DT31.SoundUI) return DT31.SoundUI.toggle();
+      DT31.Sfx.cycle();
       soundLabel();
-      if (DT29.Sfx.mode !== "off") DT29.Sfx.play("buy");
+      if (DT31.Sfx.mode !== "off") DT31.Sfx.play("buy");
     };
     $7("speedBtn").onclick = () => {
       ui2.speed = ui2.speed === 1 ? 2 : ui2.speed === 2 ? 4 : 1;
@@ -51868,27 +52158,27 @@ void main() {
         showCredits();
       };
       const mp = $7("mpBtn");
-      if (mp) mp.onclick = () => DT29.Net ? DT29.Net.open() : toast3("Multiplayer is not available here");
+      if (mp) mp.onclick = () => DT31.Net ? DT31.Net.open() : toast3("Multiplayer is not available here");
       fillTitleLegend();
       setTimeout(() => {
-        if (!game7 && !session) P2.prefetch(DT29.SHOP_LINES.map((l) => P2.key(l.id, 0)));
+        if (!game7 && !session) P2.prefetch(DT31.SHOP_LINES.map((l) => P2.key(l.id, 0)));
       }, 1500);
     }
     function showTitle() {
-      if (DT29.Sfx) DT29.Sfx.music(false);
+      if (DT31.Sfx) DT31.Sfx.music(false);
       const o = $7("overlay");
-      if (DT29.Client) {
+      if (DT31.Client) {
         o.classList.remove("hidden");
         bindTitle();
-        return DT29.Client.home();
+        return DT31.Client.home();
       }
       setPanel2(titleHTML, true);
       o.classList.remove("hidden");
       bindTitle();
     }
     function showCredits() {
-      if (DT29.Client) return DT29.Client.credits();
-      const rows = (DT29.AssetCredits || []).map((s) => `<div><b>${esc13(s.name)}</b>: ${esc13(s.contributors.join(", ") || "Contributor not yet verified")} (${esc13(s.license)})${s.url ? ` <a href="${esc13(s.url)}" target="_blank" rel="noopener">Source</a>` : ""}</div>`).join("");
+      if (DT31.Client) return DT31.Client.credits();
+      const rows = (DT31.AssetCredits || []).map((s) => `<div><b>${esc13(s.name)}</b>: ${esc13(s.contributors.join(", ") || "Contributor not yet verified")} (${esc13(s.license)})${s.url ? ` <a href="${esc13(s.url)}" target="_blank" rel="noopener">Source</a>` : ""}</div>`).join("");
       setPanel2(`<h1 style="font-size:26px">Credits &amp; acknowledgements</h1>
       <p class="sub">An unofficial, non-commercial fan project. Model sources and recorded contributors are listed below. Full acknowledgements are in CREDITS.md.</p>
       <div class="credits">${rows || "No models configured."}</div>
@@ -51943,7 +52233,7 @@ void main() {
       else ui2.planLeft -= dt;
       const left2 = Math.max(0, Math.ceil(ui2.planLeft));
       if (left2 !== ui2.lastLeft) {
-        if (left2 > 0 && left2 <= 5 && DT29.Sfx) DT29.Sfx.play("tick", { last: left2 === 1 });
+        if (left2 > 0 && left2 <= 5 && DT31.Sfx) DT31.Sfx.play("tick", { last: left2 === 1 });
         ui2.lastLeft = left2;
       }
       el2.textContent = `${left2}s`;
@@ -51964,14 +52254,14 @@ void main() {
       }
     }
     let combatFresh = false;
-    function show4(cb, team, fresh2) {
+    function show4(cb, team, fresh3) {
       if (cb === drawn && (!cb || team === drawnTeam)) return;
       drawn = cb;
       drawnTeam = team;
       renderer2.resetFx();
       clearCasts();
       renderer2.mirror = !!cb && team === 1;
-      if (cb) renderer2.evIdx = fresh2 ? 0 : cb.events.length;
+      if (cb) renderer2.evIdx = fresh3 ? 0 : cb.events.length;
       combatFresh = false;
       ui2.hoverCombatId = null;
       renderChart(true);
@@ -51990,9 +52280,9 @@ void main() {
         if (game7.phase === "combat" && combat) {
           if (!combat.done) {
             acc += dt * ui2.speed;
-            while (acc >= DT29.TICK && !combat.done) {
-              combat.step(DT29.TICK);
-              acc -= DT29.TICK;
+            while (acc >= DT31.TICK && !combat.done) {
+              combat.step(DT31.TICK);
+              acc -= DT31.TICK;
             }
           } else if (!combatEndAt) {
             combatEndAt = now3;
@@ -52008,20 +52298,20 @@ void main() {
         if (game7.phase === "combat" && !combat && !session && !combatReported && clock >= longestFight() + 0.7) combatWatched();
         let cb = null;
         let team = 0;
-        let fresh2 = false;
+        let fresh3 = false;
         if (fighting && ui2.viewing != null) {
-          const f = DT29.Scout && DT29.Scout.fight ? DT29.Scout.fight(clock) : null;
+          const f = DT31.Scout && DT31.Scout.fight ? DT31.Scout.fight(clock) : null;
           if (f) {
             cb = f.cb;
             team = f.team;
-            fresh2 = f.fresh;
+            fresh3 = f.fresh;
           }
         } else if (fighting && combat) {
           cb = combat;
           team = myTeam;
-          fresh2 = combatFresh;
+          fresh3 = combatFresh;
         }
-        show4(cb, team, fresh2);
+        show4(cb, team, fresh3);
         if (cb) {
           renderer2.consume(cb);
           if (!cb.done || game7.phase === "combat") {
@@ -52036,7 +52326,7 @@ void main() {
       }
       requestAnimationFrame(frame4);
     }
-    DT29.UI = {
+    DT31.UI = {
       startNetGame,
       leaveNet,
       showTitle,
@@ -52385,7 +52675,7 @@ void main() {
 
   // js/net-steam.js
   var GAME_KEY = "digitactics";
-  var PROTO_VERSION = "7";
+  var PROTO_VERSION = "8";
   var HOST_GONE_MS = 6e3;
   var CHUNK2 = 150;
   var keyIndex = (k) => k ? parseInt(String(k).slice(1), 10) : -1;
@@ -53255,13 +53545,13 @@ void main() {
       enterRoom(id2);
     };
     let shown3 = null;
-    const off = T.watchLobbies((fresh2) => {
-      lastLobbies = { at: Date.now(), rows: fresh2 };
+    const off = T.watchLobbies((fresh3) => {
+      lastLobbies = { at: Date.now(), rows: fresh3 };
       const list = document.getElementById("mpList");
       if (!list) return;
       const count2 = document.getElementById("mpCount");
-      if (count2) count2.textContent = fresh2.length ? String(fresh2.length) : "";
-      const html2 = fresh2.length ? fresh2.map((l) => {
+      if (count2) count2.textContent = fresh3.length ? String(fresh3.length) : "";
+      const html2 = fresh3.length ? fresh3.map((l) => {
         const seats = Array.from({ length: 8 }, (_, i) => seatOf(l.slots, i));
         const seated = seats.filter(Boolean).length;
         const playing = l.status === "playing";
@@ -53834,16 +54124,16 @@ void main() {
   function players2() {
     if (!room?.lobby) return;
     document.getElementById("mpSafety")?.remove();
-    const dialog = document.createElement("dialog");
-    dialog.id = "mpSafety";
-    dialog.className = "mp-safety";
+    const dialog2 = document.createElement("dialog");
+    dialog2.id = "mpSafety";
+    dialog2.className = "mp-safety";
     const title = document.createElement("h2");
     title.textContent = "Players";
-    dialog.append(title);
+    dialog2.append(title);
     const help = document.createElement("p");
     help.textContent = "Mute hides a player\u2019s emotes and soundboard. Remove blocks them from this lobby.";
-    dialog.append(help);
-    const button = (label3, fn, parent = dialog) => {
+    dialog2.append(help);
+    const button = (label3, fn, parent = dialog2) => {
       const b = document.createElement("button");
       b.className = "btn btn-secondary";
       b.textContent = label3;
@@ -53866,12 +54156,12 @@ void main() {
         await T.ban(s.uid);
         players2();
       }, row).dataset.remove = slot;
-      dialog.append(row);
+      dialog2.append(row);
     }
-    button("Close", () => dialog.close());
-    dialog.addEventListener("close", () => dialog.remove());
-    document.body.append(dialog);
-    dialog.showModal();
+    button("Close", () => dialog2.close());
+    dialog2.addEventListener("close", () => dialog2.remove());
+    document.body.append(dialog2);
+    dialog2.showModal();
   }
   DT14.Net = { open, status, invite, lobbies, players: players2, resyncs: 0, lobbySet: () => lobbySet(), transport: T.kind, backend, debug: () => T.debug ? T.debug() : null };
   T.onChange = () => {
@@ -55202,7 +55492,7 @@ void main() {
     $("playSolo").style.setProperty("--party-art", `url('${ART2("lobby-bg")}')`);
     const host = $("partySlots");
     const names = (DT15.TAMERS || DT15.DEFAULT_TAMERS || ["Tai", "Matt", "Sora", "Izzy", "Mimi", "Joe", "Kari"]).slice(0, 7);
-    const legends = C6.list("legend");
+    const legends = C6.list("legend").filter((it) => !it.secret);
     const hash4 = (s) => {
       let h = 2166136261;
       for (let i = 0; i < s.length; i++) {
@@ -55275,7 +55565,7 @@ void main() {
   var EGG_ONLY2 = (it) => !!(it && it.eggOnly && !it.free);
   function colItems(kind2) {
     const q = col2.q.trim().toLowerCase();
-    let items3 = C6.list(kind2).filter((it) => {
+    let items3 = C6.visible(kind2).filter((it) => {
       const owned3 = C6.owns(kind2, it.id);
       if (col2.own === "owned" && !owned3) return false;
       if (col2.own === "locked" && owned3) return false;
@@ -55294,7 +55584,7 @@ void main() {
   RENDER.collection = () => {
     const root4 = $("pgCollection");
     const kind2 = col2.tab;
-    const all = C6.list(kind2);
+    const all = C6.visible(kind2);
     const items3 = colItems(kind2);
     if (!col2.sel[kind2] || !C6.get(kind2, col2.sel[kind2])) col2.sel[kind2] = (MULTI(kind2) ? C6.equipped(kind2).find(Boolean) : C6.equipped(kind2)) || all[0] && all[0].id;
     const grid = root4.querySelector(".cgrid");
@@ -55307,13 +55597,14 @@ void main() {
     <div class="coll-main">
       <div class="coll-banner" style="background-image:url('${ART2(COLL_ART[kind2] || "coll-legends")}')">
         <div><div class="eyebrow">Collection</div><h1 class="page-title">${esc3(KINDS2.find((x) => x[0] === kind2)[1])}</h1></div>
-        <div class="coll-count"><b>${ownK}</b> / ${all.length} owned<small>${KINDS2.reduce((n4, [k]) => n4 + C6.list(k).filter((it) => C6.owns(k, it.id)).length, 0)} / ${KINDS2.reduce((n4, [k]) => n4 + C6.list(k).length, 0)} in total</small>
+        <div class="coll-count"><b>${ownK}</b> / ${all.length} owned<small>${KINDS2.reduce((n4, [k]) => n4 + C6.visible(k).filter((it) => C6.owns(k, it.id)).length, 0)} / ${KINDS2.reduce((n4, [k]) => n4 + C6.visible(k).length, 0)} in total</small>
           <div class="progress thin"><i style="width:${all.length ? 100 * ownK / all.length : 0}%"></i></div></div></div>
       <div class="ctabs" role="tablist">${KINDS2.map(([k, many]) => {
-      const own2 = C6.list(k).filter((it) => C6.owns(k, it.id)).length;
-      return `<button class="ctab${k === kind2 ? " on" : ""}" data-ctab="${k}" role="tab" aria-selected="${k === kind2}">${many} <span>${own2}/${C6.list(k).length}</span></button>`;
+      const own2 = C6.visible(k).filter((it) => C6.owns(k, it.id)).length;
+      return `<button class="ctab${k === kind2 ? " on" : ""}" data-ctab="${k}" role="tab" aria-selected="${k === kind2}">${many} <span>${own2}/${C6.visible(k).length}</span></button>`;
     }).join("")}</div>
       <div class="ctools">
+        ${kind2 === "emote" ? '<button class="btn btn-secondary" data-retro-emotes>Digimon World 1</button>' : ""}
         <input id="colSearch" class="input search" type="search" placeholder="Search ${esc3(KINDS2.find((x) => x[0] === kind2)[1].toLowerCase())}" value="${esc3(col2.q)}" aria-label="Search" spellcheck="false">
         <div class="seg" role="group" aria-label="Show">${[["all", "All"], ["owned", "Owned"], ["locked", "Not owned"]].map(([v, l]) => `<button class="${col2.own === v ? "on" : ""}" data-cown="${v}">${l}</button>`).join("")}</div>
         <select id="colRar" class="input" aria-label="Rarity"><option value="all">All rarities</option>${RARITIES.map((r) => `<option value="${r}" ${col2.rar === r ? "selected" : ""}>${r[0].toUpperCase()}${r.slice(1)}</option>`).join("")}</select>
@@ -55395,6 +55686,13 @@ void main() {
     if (!t) return;
     const d = t.dataset;
     const kind2 = col2.tab;
+    if ("retroEmotes" in d) {
+      col2.q = "Digimon World 1";
+      col2.own = "all";
+      col2.rar = "all";
+      col2.sel.emote = "retro_hug";
+      return RENDER.collection();
+    }
     if (d.ctab) {
       col2.tab = d.ctab;
       col2.q = "";
@@ -55452,6 +55750,7 @@ void main() {
   RENDER.loot = () => {
     const root4 = $("pgLoot");
     const { eggs, legends } = lootItems();
+    const boxes = DT15.MysteryLoot?.inventory() || { daily: 0, vault: 0, keys: 0 };
     if (!st.lootSel || st.lootSel.t === "egg" && !eggs.some((e) => e.id === st.lootSel.id) || st.lootSel.t === "legend" && !legends.some((l) => l.it.id === st.lootSel.id)) {
       const ready3 = legends.find((l) => l.evo && l.evo.canDigivolve);
       st.lootSel = ready3 ? { t: "legend", id: ready3.it.id } : eggs[0] ? { t: "egg", id: eggs[0].id } : null;
@@ -55481,12 +55780,17 @@ void main() {
     root4.innerHTML = `<div class="loot">
     <div class="loot-stage" style="background-image:url('${ART2("loot-bg")}')">
       <div class="loot-head"><div><div class="eyebrow">Loot</div><h1 class="page-title">Incubator</h1></div>
-        <div class="loot-mats"><span class="mat"><img src="${ART2("loot-shard")}" alt=""><b>${dataTotal}</b><small>Digi-Data</small></span>
+        <div class="loot-mats"><span class="mat"><img src="${ART2("loot-shard")}" alt=""><b>${dataTotal}</b><small>Digi-Data \xB7 Legend XP</small></span>
           <span class="mat"><img src="${ART2("loot-chest")}" alt=""><b>${ready2}</b><small>Ready to digivolve</small></span>
           <span class="mat bits">${bit}<b>${W2.bits.toLocaleString()}</b><small>Bits</small></span></div></div>
-      <div class="altar">${altar}</div>
+      <div class="altar">${altar}</div><p class="loot-data-help">Digi-Data is XP for each Little Legend. Earn it through matches, duplicate legend hatches and Digi-Farm care to level up and unlock digivolution. Bits are your spending currency.</p>
     </div>
     <aside class="loot-inv">
+      <section class="mystery-boxes"><div class="tile-h">Mystery boxes</div><p>Exclusive surprises. Rewards appear in Collection only after you discover them.</p>
+        <article><span class="mystery-symbol">\u2600</span><div><b>Daybreak Box \xD7 ${boxes.daily}</b><small>First completed round each day.</small></div><button class="btn" data-mystery-open="daily" ${boxes.daily ? "" : "disabled"}>Open</button></article>
+        <article><span class="mystery-symbol">\u25C7</span><div><b>Cipher Box \xD7 ${boxes.vault}</b><small>Needs 1 Cipher Key. You have ${boxes.keys}.</small></div><button class="btn" data-mystery-open="vault" ${boxes.vault && boxes.keys ? "" : "disabled"}>Unlock</button></article>
+        <p>Boxes and keys can drop after rounds from stage 2 onward. No purchases required. Each box reveals one new cosmetic; the two pools never overlap.</p>
+      </section>
       <div class="tile-h"><span>Digi-Eggs</span><span class="muted">${eggs.length}</span></div>
       <div class="loot-grid">${eggs.map((e) => `<button class="loot-item egg${sel2 && sel2.t === "egg" && sel2.id === e.id ? " sel" : ""}" data-loot-egg="${esc3(e.id)}" title="${esc3(e.name)}">
         <img src="${ART2("loot-egg")}" style="--hue:${EGG_HUE[e.id] || 0}deg" alt=""><span>${esc3(e.name.replace(" Egg", "").replace("Digi-", ""))}</span><small>${bit}${e.price}</small></button>`).join("")}</div>
@@ -55500,6 +55804,12 @@ void main() {
     const t = e.target.closest("button");
     if (!t) return;
     const d = t.dataset;
+    if (d.mysteryOpen) {
+      const reward2 = DT15.MysteryLoot.open(d.mysteryOpen);
+      RENDER.loot();
+      DT15.MysteryLoot.reveal(reward2);
+      return;
+    }
     if (d.lootEgg) {
       st.lootSel = { t: "egg", id: d.lootEgg };
       sfx2("place", true);
@@ -56162,6 +56472,10 @@ void main() {
     { id: "retro_stomp", name: "Brachiomon Stomp", rarity: "legendary", tag: "Retro", desc: "Retro: Brachiomon stomps the ground beside your Little Legend.", data: { mood: "good", role: "taunt", retro: { model: "extra:DW1_Brachiomon", act: "stomp", size: 0.85 } } }
   ];
   var PRICE3 = { common: 150, rare: 400, epic: 900, legendary: 1800 };
+  for (const item of stickers) {
+    ART3[item.id] = item.art;
+    EMOTES.push(item);
+  }
   function stickerHTML(id2) {
     return ART3[id2] ? svg2(ART3[id2]()) : "";
   }
@@ -56230,6 +56544,7 @@ void main() {
     document.head.appendChild(st3);
   }
   var rarityOrder = { common: 0, rare: 1, epic: 2, legendary: 3 };
+  for (const item of EMOTES) if (item.data?.retro) item.desc = `Digimon World 1 emote. ${item.desc} Shows a 3D Digimon beside your Little Legend when used in a match.`;
   DT16.Cosmetics.register("emote", EMOTES.map((e) => {
     const html2 = stickerHTML(e.id);
     return Object.assign({}, e, {
@@ -57216,7 +57531,7 @@ void main() {
     })();
     return a;
   }
-  var sellable = (k) => C7.list(k).filter((it) => !it.free && it.price > 0 && !EGG_ONLY3(it));
+  var sellable = (k) => C7.list(k).filter((it) => !it.secret && !it.free && it.price > 0 && !EGG_ONLY3(it));
   function featured() {
     const d = today();
     const all = [];
@@ -57231,7 +57546,7 @@ void main() {
   var EGGS = [{ id: "mixed", name: "Mixed Digi-Egg", kinds: KINDS3.map(([k]) => k), price: EGG_MIXED_PRICE, desc: "Any cosmetic from any category." }].concat(KINDS3.map(([k, many]) => ({ id: k, name: `${KIND_NAME[k]} Egg`, kinds: [k], price: EGG_KIND_PRICE, desc: `One of the ${many.toLowerCase()}.` })));
   function eggPool(egg) {
     const pool = [];
-    for (const k of egg.kinds) for (const it of C7.list(k)) if (it.egg !== false && !it.free) pool.push({ kind: k, item: it });
+    for (const k of egg.kinds) for (const it of C7.list(k)) if (!it.secret && it.egg !== false && !it.free) pool.push({ kind: k, item: it });
     return pool;
   }
   function eggOdds(pool) {
@@ -57379,7 +57694,7 @@ void main() {
     const tabs = view.mode === "store" ? KINDS3.map(([k, many]) => [k, many]).concat([["eggs", "Digi-Eggs"]]) : KINDS3.map(([k, many]) => [k, many]);
     if (!tabs.some(([k]) => k === view.tab)) view.tab = "legend";
     root.querySelector(".dts-tabs").innerHTML = tabs.map(([k, name2]) => {
-      const n4 = k === "eggs" ? "" : view.mode === "locker" ? C7.list(k).filter((it) => C7.owns(k, it.id)).length : C7.list(k).filter((it) => !it.linked).length;
+      const n4 = k === "eggs" ? "" : view.mode === "locker" ? C7.list(k).filter((it) => C7.owns(k, it.id)).length : C7.list(k).filter((it) => !it.secret && !it.linked).length;
       return `<button data-tab="${k}" class="${k === view.tab ? "on" : ""}">${name2}${n4 !== "" ? ` <span>${n4}</span>` : ""}</button>`;
     }).join("");
     const body2 = root.querySelector(".dts-body");
@@ -57398,8 +57713,8 @@ void main() {
   }
   function storeHTML(kind2) {
     const f = featured();
-    const items3 = C7.list(kind2).filter((it) => !it.linked);
-    const linked = C7.list(kind2).length - items3.length;
+    const items3 = C7.list(kind2).filter((it) => !it.secret && !it.linked);
+    const linked = C7.list(kind2).filter((it) => !it.secret).length - items3.length;
     const feat = f.length ? `<section class="dts-feat"><h3>Featured today <span class="muted">${Math.round(FEATURED_OFF * 100)}% off, changes at midnight</span></h3>
     <div class="dts-grid">${f.map((x) => cardHTML(x.kind, x.item, { kindLabel: true })).join("")}</div></section>` : "";
     const sorted = items3.slice().sort((a, b) => (b.free ? 1 : 0) - (a.free ? 1 : 0) || RARITIES2.indexOf(a.rarity) - RARITIES2.indexOf(b.rarity) || (a.price || 0) - (b.price || 0));
@@ -57442,7 +57757,7 @@ void main() {
   }
   function lockerHTML(kind2) {
     const owned3 = C7.list(kind2).filter((it) => C7.owns(kind2, it.id));
-    const more = C7.list(kind2).length - owned3.length;
+    const more = C7.visible(kind2).length - owned3.length;
     const shopLink = more > 0 ? `<button data-gostore="${kind2}">${more} more in the Store</button>` : "";
     if (!owned3.length) return `<div class="dts-empty">You don't own any ${TAB_NAME[kind2].toLowerCase()} yet. ${shopLink}</div>`;
     let wheel2 = "";
@@ -57478,7 +57793,7 @@ void main() {
   var pending = null;
   function confirmBuy(kind2, id2) {
     const it = C7.get(kind2, id2);
-    if (!it || C7.owns(kind2, id2)) return;
+    if (!it || it.secret || C7.owns(kind2, id2)) return;
     if (EGG_ONLY3(it)) {
       sfx3("error");
       return msg(`${it.name} only hatches from Digi-Eggs.`, true);
@@ -57515,7 +57830,7 @@ void main() {
     if (!p) return closeModal2();
     if (p.type === "egg") return hatch(p.id);
     const it = C7.get(p.kind, p.id);
-    if (!it || C7.owns(p.kind, p.id) || EGG_ONLY3(it)) return closeModal2();
+    if (!it || it.secret || C7.owns(p.kind, p.id) || EGG_ONLY3(it)) return closeModal2();
     if (!W3.spend(p.price)) {
       closeModal2();
       sfx3("error");
@@ -57531,14 +57846,14 @@ void main() {
   var hatchTimer = null;
   function hatch(eggId) {
     const egg = EGGS.find((e) => e.id === eggId);
-    const roll2 = egg && rollEgg(egg);
-    if (!roll2) return closeModal2();
+    const roll3 = egg && rollEgg(egg);
+    if (!roll3) return closeModal2();
     if (!W3.spend(egg.price)) {
       closeModal2();
       sfx3("error");
       return msg("Not enough Bits.", true);
     }
-    const { kind: kind2, item } = roll2;
+    const { kind: kind2, item } = roll3;
     const dup = C7.owns(kind2, item.id);
     const evo = dup && kind2 === "legend" && DT17.LegendEvo ? DT17.LegendEvo.addDuplicate(item.id) : null;
     const refund = dup && !evo ? Math.round((item.price || 0) * REFUND) : 0;
@@ -57560,7 +57875,7 @@ void main() {
       <p class="muted dts-skip">Click to skip</p>
     </div>`);
     const eggEl = box3.querySelector(".dts-egg");
-    const reveal = () => {
+    const reveal2 = () => {
       clearTimeout(hatchTimer);
       if (!eggEl.isConnected || box3.querySelector(".dts-hatch").classList.contains("done")) return;
       box3.querySelector(".dts-hatch").classList.add("done");
@@ -57577,11 +57892,11 @@ void main() {
       sfx3("forge");
       hatchTimer = setTimeout(() => {
         eggEl.classList.add("burst");
-        hatchTimer = setTimeout(reveal, 380);
+        hatchTimer = setTimeout(reveal2, 380);
       }, 750);
     }, 1300);
     box3.querySelector(".dts-hatch").addEventListener("click", (e) => {
-      if (!e.target.closest("button")) reveal();
+      if (!e.target.closest("button")) reveal2();
     });
   }
   function onClick(e) {
@@ -58724,14 +59039,14 @@ void main() {
       return { ok: true, msg: `${nameOf(id2)} got away with it. Discipline went down.`, spoiled: true };
     }
     const t = now2();
-    const fresh2 = t - p.lastPraise >= PRAISE_COOLDOWN;
+    const fresh3 = t - p.lastPraise >= PRAISE_COOLDOWN;
     p.lastPraise = t;
-    p.happy = clamp2(p.happy + (fresh2 ? 10 : 2), 0, 100);
-    if (fresh2) {
+    p.happy = clamp2(p.happy + (fresh3 ? 10 : 2), 0, 100);
+    if (fresh3) {
       p.goodBond += 0.34;
       p.disc = clamp2(p.disc + 1, 0, 100);
     }
-    const rw = fresh2 ? rewardFor(id2, "praise") : { bits: 0, data: 0 };
+    const rw = fresh3 ? rewardFor(id2, "praise") : { bits: 0, data: 0 };
     changed3(id2);
     return { ok: true, msg: `${nameOf(id2)} is proud.`, reward: rw };
   }
@@ -60485,23 +60800,23 @@ void main() {
       v.setMoving(false);
       a.t -= dt;
       if (a.t <= 0) {
-        const roll2 = Math.random();
+        const roll3 = Math.random();
         if (d.tantrum) {
           v.play("taunt");
           a.t = 1.4;
           pop(a, "\u{1F4A2}");
         } else if (d.sick) {
-          if (roll2 < 0.4) v.play("sad");
+          if (roll3 < 0.4) v.play("sad");
           else walkTo(a, ...randomSpot());
           a.t = 2 + Math.random() * 3;
-        } else if (roll2 < 0.55) walkTo(a, ...randomSpot());
-        else if (roll2 < 0.7 && d.happy >= 60) {
+        } else if (roll3 < 0.55) walkTo(a, ...randomSpot());
+        else if (roll3 < 0.7 && d.happy >= 60) {
           v.play("happy");
           a.t = 2;
-        } else if (roll2 < 0.78 && d.happy < 30) {
+        } else if (roll3 < 0.78 && d.happy < 30) {
           v.play("sad");
           a.t = 2.5;
-        } else if (roll2 < 0.9 && d.happy >= 40 && d.energy >= 25) friendPlay(a);
+        } else if (roll3 < 0.9 && d.happy >= 40 && d.energy >= 25) friendPlay(a);
         else {
           v.yaw = Math.atan2(-a.x, 8 - a.z) + (Math.random() - 0.5) * 0.8;
           a.t = 2 + Math.random() * 2;
@@ -61146,15 +61461,15 @@ void main() {
       draw(c, w, h, t) {
         fillBg(c, w, h, "#06182a", "#020509");
         const cx = w / 2, cy = h * 0.45, m = Math.min(w, h);
-        const open7 = easeOut(t / 0.9);
-        glow(c, cx, cy, m * (0.25 + 0.45 * open7), "rgba(160,250,255,0.9)", 0.35 + 0.4 * open7);
+        const open8 = easeOut(t / 0.9);
+        glow(c, cx, cy, m * (0.25 + 0.45 * open8), "rgba(160,250,255,0.9)", 0.35 + 0.4 * open8);
         c.lineWidth = Math.max(1.5, m * 8e-3);
         for (let k = 0; k < 4; k++) {
           c.strokeStyle = `rgba(140,240,255,${0.75 - k * 0.15})`;
-          poly2(c, cx, cy, m * (0.16 + 0.09 * k) * (0.6 + 0.4 * open7), 6, t * (k % 2 ? 0.7 : -0.5) + k);
+          poly2(c, cx, cy, m * (0.16 + 0.09 * k) * (0.6 + 0.4 * open8), 6, t * (k % 2 ? 0.7 : -0.5) + k);
           c.stroke();
         }
-        const gap = open7 * m * 0.2;
+        const gap = open8 * m * 0.2;
         c.fillStyle = "rgba(4,20,34,0.85)";
         c.fillRect(cx - gap - m * 0.12, cy - m * 0.24, m * 0.12, m * 0.48);
         c.fillRect(cx + gap, cy - m * 0.24, m * 0.12, m * 0.48);
@@ -61440,6 +61755,10 @@ void main() {
     data: { theme },
     preview: (el2) => preview2(el2, theme, id2)
   }));
+  for (const s of killThemes) {
+    THEMES3[s.id] = s.theme;
+    items.push({ ...s, data: { theme: s.id }, preview: (el2) => preview2(el2, s.id, s.id) });
+  }
   DT22.Cosmetics.register("killscreen", items);
   var themeOf3 = (id2) => {
     const it = DT22.Cosmetics.get("killscreen", id2);
@@ -63025,12 +63344,211 @@ void main() {
   document.head.appendChild(st2);
   DT24.ElimSounds = { play: play3, resolve: resolve2, stats: stats4, DEFAULT: DEFAULT2, stingers: Object.keys(STINGERS).map((k) => `es_${k}`) };
 
-  // js/soundui.js
+  // js/mystery-register.js
   var DT25 = window.DT;
+  var C11 = DT25.Cosmetics;
+  var companions = [
+    "Agumon",
+    "Gabumon",
+    "Patamon",
+    "Gatomon",
+    "Gomamon",
+    "Palmon",
+    "Tentomon",
+    "Biyomon",
+    "Veemon",
+    "Wormmon",
+    "Hawkmon",
+    "Armadillomon",
+    "Guilmon",
+    "Renamon",
+    "Terriermon",
+    "Lopmon",
+    "Impmon",
+    "Dorumon",
+    "Ryudamon",
+    "Dracmon",
+    "Kudamon",
+    "Gaomon",
+    "Falcomon",
+    "Lalamon",
+    "Goblimon",
+    "Gazimon",
+    "Elecmon",
+    "Bearmon",
+    "Monodramon",
+    "Kotemon",
+    "Hyokomon",
+    "Coronamon",
+    "Lunamon",
+    "FanBeemon",
+    "Keramon",
+    "Gotsumon",
+    "Otamamon",
+    "Syakomon",
+    "Crabmon",
+    "Penguinmon"
+  ];
+  C11.register("legend", rewards("legend", (s) => {
+    const name2 = companions[s.p * 20 + s.i];
+    const found = Object.entries(DT25.MODEL_SOURCES).find(([key2, src2]) => src2.form?.toLowerCase() === name2.toLowerCase());
+    if (!found) throw Error(`Missing companion model: ${name2}`);
+    const [model, src] = found;
+    return {
+      name: `${name2} Companion`,
+      desc: `${name2 === "Gatomon" ? "Champion" : "Rookie"} Digimon. A ${s.label} companion for your board and Digi-Farm.`,
+      data: { model, evoRoot: name2.toLowerCase(), level: name2 === "Gatomon" ? "Champion" : "Rookie", scale: 1, rotY: 0, clips: {}, credit: src },
+      preview(el2) {
+        el2.innerHTML = DT25.Legends.html(s.id, "lgprev", "width:100%;height:100%;min-height:96px");
+      }
+    };
+  }));
+  for (const kind2 of ["sound", "elimsound"]) C11.register(kind2, sounds(kind2).map((s) => {
+    DT25.Sfx.defineClip(s.id, (t, out) => s.synth(t, out, DT25.Sfx.engine), s.data.dur);
+    return { ...s, preview(el2) {
+      const b = document.createElement("button");
+      b.className = "sb-prev";
+      b.textContent = "\u25B6 Play";
+      el2.appendChild(b);
+      b.onclick = (e) => {
+        e.stopPropagation();
+        DT25.Sfx.engine.ensure();
+        DT25.Sfx.clip(s.id, true);
+      };
+    } };
+  }));
+
+  // js/mystery-loot.js
+  var DT26 = window.DT;
+  var C12 = DT26.Cosmetics;
+  var KEY6 = "dt.mysteryLoot.v1";
+  var fresh2 = () => ({ daily: 0, vault: 0, keys: 0, day: "", games: {}, boxMisses: 0, keyMisses: 0, pending: null });
+  var save5 = fresh2();
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY6));
+    if (s && typeof s === "object") save5 = { ...save5, ...s };
+  } catch (_) {
+  }
+  for (const k of ["daily", "vault", "keys", "boxMisses", "keyMisses"]) if (!Number.isSafeInteger(save5[k]) || save5[k] < 0) save5[k] = 0;
+  if (!save5.games || typeof save5.games !== "object" || Array.isArray(save5.games)) save5.games = {};
+  var listeners6 = /* @__PURE__ */ new Set();
+  function persist5(next2) {
+    try {
+      localStorage.setItem(KEY6, JSON.stringify(next2));
+      save5 = next2;
+      return true;
+    } catch (_) {
+      DT26.Client?.toast("Could not save loot. Free some storage and try again.", "bad");
+      return false;
+    }
+  }
+  function emit() {
+    C12.notify("loot");
+    for (const fn of listeners6) fn();
+  }
+  var roll2 = () => {
+    const a = new Uint32Array(1);
+    crypto.getRandomValues(a);
+    return a[0] / 4294967296;
+  };
+  function settle() {
+    const p = save5.pending;
+    if (!p || !C12.get(p.kind, p.id)) return;
+    if (!C12.grant(p.kind, p.id)) return;
+    persist5({ ...save5, pending: null });
+  }
+  function roundEnd(g2) {
+    const me = g2?.human;
+    if (!me || !g2.results?.some((r) => r.match && (r.match.a === me || r.match.a2 === me || !r.match.ghost && (r.match.b === me || r.match.b2 === me)))) return [];
+    const key2 = `${g2.setId}:${g2.duo ? "duos" : "solo"}:${g2.seed}:${me.id}`, round2 = g2.stage * 100 + g2.round;
+    if (!Number.isFinite(round2) || round2 <= (save5.games[key2] || 0)) return [];
+    const next2 = structuredClone(save5), drops = [];
+    next2.games[key2] = round2;
+    const ids2 = Object.keys(next2.games);
+    for (const old of ids2.slice(0, Math.max(0, ids2.length - 1e3))) delete next2.games[old];
+    const date = /* @__PURE__ */ new Date(), day = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    if (day > next2.day) {
+      next2.day = day;
+      next2.daily++;
+      drops.push("Daybreak Box");
+    }
+    if (g2.stage >= 2) {
+      if (++next2.boxMisses >= 16 || roll2() < 0.06) {
+        next2.vault++;
+        next2.boxMisses = 0;
+        drops.push("Cipher Box");
+      }
+      if (++next2.keyMisses >= 20 || roll2() < 0.05) {
+        next2.keys++;
+        next2.keyMisses = 0;
+        drops.push("Cipher Key");
+      }
+    }
+    if (!persist5(next2)) return [];
+    emit();
+    if (drops.length) DT26.Client?.toast(`${drops.join(" + ")} collected! Open it in Loot.`, "good");
+    return drops;
+  }
+  function open6(pool) {
+    if (!["daily", "vault"].includes(pool)) return null;
+    settle();
+    if (save5.pending || save5[pool] < 1 || pool === "vault" && save5.keys < 1) return null;
+    const available = C12.KINDS.flatMap((kind2) => C12.list(kind2).filter((it) => it.lootPool === pool && !C12.owns(kind2, it.id)).map((it) => ({ kind: kind2, id: it.id })));
+    if (!available.length) {
+      DT26.Client?.toast("You have discovered every reward in this box. Your box is saved.", "info");
+      return null;
+    }
+    const reward2 = available[Math.floor(roll2() * available.length)];
+    const next2 = { ...save5, [pool]: save5[pool] - 1, keys: save5.keys - (pool === "vault" ? 1 : 0), pending: reward2 };
+    if (!persist5(next2)) return null;
+    settle();
+    emit();
+    return C12.owns(reward2.kind, reward2.id) ? reward2 : null;
+  }
+  var dialog = null;
+  function reveal(reward2) {
+    if (!reward2) return;
+    if (dialog) dialog.close();
+    const item = C12.get(reward2.kind, reward2.id);
+    if (!item) return;
+    const el2 = document.createElement("dialog");
+    let dispose2 = null;
+    dialog = el2;
+    dialog.className = "mystery-reveal";
+    dialog.innerHTML = '<div class="eyebrow">New discovery</div><div class="mystery-preview"></div><h2></h2><p></p><div class="mystery-actions"><button class="btn lc-cta" data-equip>Equip</button><button class="btn btn-secondary" data-close>Keep in collection</button></div>';
+    dialog.querySelector("h2").textContent = item.name;
+    dialog.querySelector("p").textContent = item.desc || "";
+    document.body.appendChild(dialog);
+    dialog.showModal();
+    DT26.Sfx?.play("pick");
+    const preview3 = dialog.querySelector(".mystery-preview");
+    if (item.preview) dispose2 = item.preview(preview3);
+    else preview3.textContent = item.icon || "\u2726";
+    el2.querySelector("[data-close]").onclick = () => el2.close();
+    el2.querySelector("[data-equip]").onclick = () => {
+      C12.equip(reward2.kind, reward2.id);
+      DT26.Client?.toast(`Equipped ${item.name}`, "good");
+      el2.close();
+    };
+    el2.addEventListener("close", () => {
+      if (typeof dispose2 === "function") dispose2();
+      dispose2 = null;
+      el2.remove();
+      if (dialog === el2) dialog = null;
+    }, { once: true });
+  }
+  DT26.MysteryLoot = { roundEnd, open: open6, reveal, inventory: () => ({ daily: save5.daily, vault: save5.vault, keys: save5.keys, day: save5.day }), onChange: (fn) => {
+    listeners6.add(fn);
+    return () => listeners6.delete(fn);
+  } };
+  settle();
+
+  // js/soundui.js
+  var DT27 = window.DT;
   var $4 = (id2) => document.getElementById(id2);
   var esc9 = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-  var S3 = () => DT25.Sfx.settings;
-  var M2 = () => DT25.Music;
+  var S3 = () => DT27.Sfx.settings;
+  var M2 = () => DT27.Music;
   var css7 = `
 #sndPop { position: fixed; z-index: 80; width: 330px; max-width: calc(100vw - 16px); max-height: calc(100vh - 70px); overflow: auto; padding: 12px 14px;
   border-radius: 10px; background: var(--panel, #141a26); border: 1px solid var(--line2, #3a4762); box-shadow: 0 10px 30px rgba(0,0,0,0.6); font-size: 13px; }
@@ -63065,7 +63583,7 @@ void main() {
   function buttonLabel() {
     const b = $4("soundBtn");
     if (!b) return;
-    const m = DT25.Sfx.mode;
+    const m = DT27.Sfx.mode;
     b.textContent = { all: "Sound on", effects: "Music off", off: "Muted" }[m];
     b.classList.toggle("off", m === "off");
   }
@@ -63098,20 +63616,20 @@ void main() {
     const slider = (id2, key2) => {
       const el2 = $4(id2);
       el2.oninput = () => {
-        DT25.Sfx.set({ [key2]: el2.value / 100 });
+        DT27.Sfx.set({ [key2]: el2.value / 100 });
         $4(`${id2}V`).textContent = el2.value;
       };
       el2.onchange = () => {
-        if (key2 === "sfx") DT25.Sfx.play("buy");
+        if (key2 === "sfx") DT27.Sfx.play("buy");
       };
     };
     slider("spMusic", "music");
     slider("spSfx", "sfx");
     slider("spBoard", "board");
-    $4("spBoard").onchange = () => DT25.Sfx.clip("digivice", true);
-    $4("spMute").onchange = (ev) => DT25.Sfx.set({ muted: ev.target.checked });
-    $4("spMusicOn").onchange = (ev) => DT25.Sfx.set({ musicOff: !ev.target.checked });
-    $4("spOthers").onchange = (ev) => DT25.Sfx.set({ muteOthers: ev.target.checked });
+    $4("spBoard").onchange = () => DT27.Sfx.clip("digivice", true);
+    $4("spMute").onchange = (ev) => DT27.Sfx.set({ muted: ev.target.checked });
+    $4("spMusicOn").onchange = (ev) => DT27.Sfx.set({ musicOff: !ev.target.checked });
+    $4("spOthers").onchange = (ev) => DT27.Sfx.set({ muteOthers: ev.target.checked });
     for (const r of pop2.querySelectorAll("input[name=spSrc]")) {
       r.onchange = () => {
         if (r.value === "own" && !M2().own.list.length) {
@@ -63119,7 +63637,7 @@ void main() {
           sync();
           return;
         }
-        DT25.Sfx.set({ source: r.value });
+        DT27.Sfx.set({ source: r.value });
       };
     }
     $4("spAdd").onclick = () => $4("spFile").click();
@@ -63186,7 +63704,7 @@ void main() {
     pop2.style.top = `${r.bottom + 6}px`;
     pop2.style.left = `${Math.max(8, Math.min(window.innerWidth - w - 8, r.right - w))}px`;
   }
-  function open6() {
+  function open7() {
     if (!pop2) build5();
     pop2.classList.remove("hidden");
     sync();
@@ -63197,7 +63715,7 @@ void main() {
   }
   function toggle2() {
     if (isOpen4()) close5();
-    else open6();
+    else open7();
   }
   window.addEventListener("pointerdown", (ev) => {
     if (!isOpen4()) return;
@@ -63211,13 +63729,13 @@ void main() {
   window.addEventListener("resize", () => {
     if (isOpen4()) place3();
   });
-  DT25.Sfx.onChange(sync);
-  DT25.Music.onChange(sync);
+  DT27.Sfx.onChange(sync);
+  DT27.Music.onChange(sync);
   buttonLabel();
-  DT25.SoundUI = { open: open6, close: close5, toggle: toggle2, isOpen: isOpen4, sync };
+  DT27.SoundUI = { open: open7, close: close5, toggle: toggle2, isOpen: isOpen4, sync };
 
   // js/scout.js
-  var DT26 = window.DT;
+  var DT28 = window.DT;
   var $5 = (id2) => document.getElementById(id2);
   var esc10 = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
   var FADE_OUT = 0.14;
@@ -63269,9 +63787,9 @@ void main() {
   var fade = document.createElement("div");
   fade.id = "scoutFade";
   arena.appendChild(fade);
-  var game5 = () => DT26.UI && DT26.UI.game ? DT26.UI.game() : null;
-  var ui = () => DT26.UI && DT26.UI.ui ? DT26.UI.ui() : null;
-  var renderer = () => DT26.UI && DT26.UI.renderer ? DT26.UI.renderer() : null;
+  var game5 = () => DT28.UI && DT28.UI.game ? DT28.UI.game() : null;
+  var ui = () => DT28.UI && DT28.UI.ui ? DT28.UI.ui() : null;
+  var renderer = () => DT28.UI && DT28.UI.renderer ? DT28.UI.renderer() : null;
   var lastGame = null;
   var trans = null;
   var legend = null;
@@ -63315,7 +63833,7 @@ void main() {
     let r = round.replays.get(m);
     if (r) return r;
     const s = round.snaps.get(m) || { sideA: clone3(m.sideA), sideB: clone3(m.sideB), info: clone3(m.info) };
-    r = new DT26.Combat(clone3(s.sideA), clone3(s.sideB), { seed: m.seed, record: true, info: clone3(s.info) });
+    r = new DT28.Combat(clone3(s.sideA), clone3(s.sideB), { seed: m.seed, record: true, info: clone3(s.info) });
     r.steps = 0;
     for (const u of r.units) {
       u.c0 = u.c;
@@ -63327,7 +63845,7 @@ void main() {
   }
   function stepTo(r, m, t) {
     while (!r.done && r.t < t - 1e-9 && r.steps < MAX_STEPS) {
-      r.step(DT26.TICK);
+      r.step(DT28.TICK);
       r.steps++;
     }
     if ((r.done || r.steps >= MAX_STEPS) && !r.checked && m.combat && m.combat.done) {
@@ -63346,12 +63864,12 @@ void main() {
     if (!g2 || id2 == null || !(g2.phase === "combat" || g2.phase === "result")) return null;
     if (!g2.matches || !g2.matches.length) return null;
     snapshot(g2);
-    let fresh2 = false;
+    let fresh3 = false;
     const mf = matchFor(g2, g2.players[id2]);
-    if (mf && !round.replays.has(mf.m)) fresh2 = clock < FRESH_S;
+    if (mf && !round.replays.has(mf.m)) fresh3 = clock < FRESH_S;
     for (const m of g2.matches) stepTo(replayOf(m), m, clock);
     if (!mf) return null;
-    return { cb: round.replays.get(mf.m), team: mf.team, fresh: fresh2, match: mf.m };
+    return { cb: round.replays.get(mf.m), team: mf.team, fresh: fresh3, match: mf.m };
   }
   function verify() {
     const g2 = game5();
@@ -63359,9 +63877,9 @@ void main() {
     snapshot(g2);
     return g2.matches.map((m) => {
       const s = round.snaps.get(m);
-      const r = new DT26.Combat(clone3(s.sideA), clone3(s.sideB), { seed: m.seed, record: true, info: clone3(s.info) });
+      const r = new DT28.Combat(clone3(s.sideA), clone3(s.sideB), { seed: m.seed, record: true, info: clone3(s.info) });
       let n4 = 0;
-      while (!r.done && n4++ < MAX_STEPS) r.step(DT26.TICK);
+      while (!r.done && n4++ < MAX_STEPS) r.step(DT28.TICK);
       const rec2 = m.combat && m.combat.done ? m.combat : null;
       return {
         a: m.a.id,
@@ -63431,19 +63949,19 @@ void main() {
     u.hoverItem = -1;
     u.hoverCell = null;
     u.hoverCombatId = null;
-    if (r && r.setBoard && DT26.Social && g2) {
+    if (r && r.setBoard && DT28.Social && g2) {
       if (id2 != null) {
-        const look2 = DT26.Social.lookOf(g2.players[id2]);
-        const board2 = look2 && look2.board || DT26.Boards && DT26.Boards.DEFAULT || null;
+        const look2 = DT28.Social.lookOf(g2.players[id2]);
+        const board2 = look2 && look2.board || DT28.Boards && DT28.Boards.DEFAULT || null;
         r.boardOverride = board2;
         r.setBoard(board2);
       } else {
         r.boardOverride = null;
-        if (DT26.Boards && DT26.Boards.wanted) r.setBoard(DT26.Boards.wanted(r));
+        if (DT28.Boards && DT28.Boards.wanted) r.setBoard(DT28.Boards.wanted(r));
       }
     }
     if (id2 == null) dropLegends();
-    if (DT26.UI.refresh) DT26.UI.refresh();
+    if (DT28.UI.refresh) DT28.UI.refresh();
     else render6();
   }
   function clearSlide() {
@@ -63534,16 +64052,16 @@ void main() {
   }
   function syncLegend(cur4, q, spot2, color, yaw) {
     const r = renderer();
-    const look2 = q && DT26.Social ? DT26.Social.lookOf(q) : null;
+    const look2 = q && DT28.Social ? DT28.Social.lookOf(q) : null;
     const lid = look2 && look2.legend;
     if (cur4 && (!q || cur4.playerId !== q.id || cur4.legendId !== lid)) {
       r.scene.remove(cur4.view.group);
       cur4.view.dispose();
       cur4 = null;
     }
-    if (!q || !lid || !DT26.Legends) return cur4;
+    if (!q || !lid || !DT28.Legends) return cur4;
     if (!cur4) {
-      const v = DT26.Legends.createView(lid, yaw == null ? { color } : { color, yaw });
+      const v = DT28.Legends.createView(lid, yaw == null ? { color } : { color, yaw });
       v.group.position.set(spot2.x, 0, spot2.z);
       r.scene.add(v.group);
       cur4 = { view: v, playerId: q.id, legendId: lid };
@@ -63551,7 +64069,7 @@ void main() {
     return cur4;
   }
   function shownOpponent(g2) {
-    const sh = DT26.UI.shown ? DT26.UI.shown() : null;
+    const sh = DT28.UI.shown ? DT28.UI.shown() : null;
     const id2 = viewingId();
     if (!sh || !sh.combat || id2 == null || !round) return null;
     for (const [m, r] of round.replays) {
@@ -63572,12 +64090,12 @@ void main() {
     if (oppLegend) oppLegend.view.update(dt);
   }
   function traitChips(q) {
-    const counts = DT26.countTraits(q.boardUnits(), q.augs);
-    return Object.keys(counts).filter((t) => DT26.traitLevel(t, counts[t])).sort((a, b) => DT26.traitLevel(b, counts[b]) - DT26.traitLevel(a, counts[a]) || counts[b] - counts[a]).map((t) => `<span style="color:${DT26.TRAITS[t].color};border-color:${DT26.TRAITS[t].color}66">${counts[t]} ${esc10(DT26.TRAITS[t].name)}</span>`).join("");
+    const counts = DT28.countTraits(q.boardUnits(), q.augs);
+    return Object.keys(counts).filter((t) => DT28.traitLevel(t, counts[t])).sort((a, b) => DT28.traitLevel(b, counts[b]) - DT28.traitLevel(a, counts[a]) || counts[b] - counts[a]).map((t) => `<span style="color:${DT28.TRAITS[t].color};border-color:${DT28.TRAITS[t].color}66">${counts[t]} ${esc10(DT28.TRAITS[t].name)}</span>`).join("");
   }
   function avatar(q) {
-    const look2 = DT26.Social ? DT26.Social.lookOf(q) : null;
-    return look2 && look2.legend && DT26.Legends ? DT26.Legends.html(look2.legend) : "";
+    const look2 = DT28.Social ? DT28.Social.lookOf(q) : null;
+    return look2 && look2.legend && DT28.Legends ? DT28.Legends.html(look2.legend) : "";
   }
   var oppName = (m, team) => m.pve ? "Wild Digimon" : team === 0 ? `${m.b.name}${m.b2 ? " + " + m.b2.name : ""}${m.ghost ? " (ghost)" : ""}` : `${m.a.name}${m.a2 ? " + " + m.a2.name : ""}`;
   var left = (r, team) => r ? r.units.filter((x) => x.alive && x.team === team).length : "?";
@@ -63645,7 +64163,7 @@ void main() {
   banner.addEventListener("click", (ev) => {
     const t = ev.target;
     if (t.id === "scoutHome") return home();
-    if (t.id === "scoutLeave") return DT26.UI.leaveSpectate && DT26.UI.leaveSpectate();
+    if (t.id === "scoutLeave") return DT28.UI.leaveSpectate && DT28.UI.leaveSpectate();
     const nav2 = t.closest && t.closest("[data-sp]");
     if (nav2) {
       following = false;
@@ -63741,7 +64259,7 @@ void main() {
   requestAnimationFrame(frame3);
   var r0 = renderer();
   if (r0) r0.scoutTick = sceneTick;
-  DT26.Scout = { view: view2, home, cycle, render: render6, viewing: viewingId, snapshot, fight, follow, verify, stats: stats5, busy: () => !!trans, replays: () => round ? round.replays : null };
+  DT28.Scout = { view: view2, home, cycle, render: render6, viewing: viewingId, snapshot, fight, follow, verify, stats: stats5, busy: () => !!trans, replays: () => round ? round.replays : null };
 
   // js/codexstyle.js
   var css9 = `
@@ -63936,15 +64454,15 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   document.head.appendChild(tag4);
 
   // js/codex.js
-  var DT27 = window.DT;
-  var KEY6 = "c";
-  var UI3 = () => DT27.UI || {};
+  var DT29 = window.DT;
+  var KEY7 = "c";
+  var UI3 = () => DT29.UI || {};
   var game6 = () => UI3().game ? UI3().game() : null;
   var esc11 = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   var cap = (s) => String(s || "").charAt(0).toUpperCase() + String(s || "").slice(1);
   var $6 = (id2) => document.getElementById(id2);
   function trait(id2) {
-    const T3 = DT27.TRAITS && DT27.TRAITS[id2] || {};
+    const T3 = DT29.TRAITS && DT29.TRAITS[id2] || {};
     return { id: id2, T: T3, name: T3.name || id2, color: T3.color || "#8e98ad", kind: T3.kind || "trait", bp: Array.isArray(T3.bp) ? T3.bp : [] };
   }
   function bpText(T3, i) {
@@ -63961,10 +64479,10 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   var tidy = (s) => s.replace(/\d+\.\d{5,}/g, (x) => String(Number(Number(x).toFixed(3))));
   var notesOf = (T3) => (Array.isArray(T3.notes) ? T3.notes : T3.notes ? [T3.notes] : []).map(String);
   var levelOf2 = (bp, n4) => bp.reduce((lv, b) => n4 >= b ? lv + 1 : lv, 0);
-  var allTraitIds = () => Object.keys(DT27.TRAITS || {});
-  var linesWith = (id2) => DT27.LINES.filter((l) => (l.traits || []).includes(id2));
-  var crestsFor = (id2) => Object.values(DT27.ITEMS || {}).filter((it) => it && it.emblem === id2);
-  var tierColor = (t) => DT27.TIER_COLORS && DT27.TIER_COLORS[t] || "#9aa4b1";
+  var allTraitIds = () => Object.keys(DT29.TRAITS || {});
+  var linesWith = (id2) => DT29.LINES.filter((l) => (l.traits || []).includes(id2));
+  var crestsFor = (id2) => Object.values(DT29.ITEMS || {}).filter((it) => it && it.emblem === id2);
+  var tierColor = (t) => DT29.TIER_COLORS && DT29.TIER_COLORS[t] || "#9aa4b1";
   var kinds = () => [...new Set(allTraitIds().map((id2) => trait(id2).kind))].sort((a, b) => kindOrder(a) - kindOrder(b) || a.localeCompare(b));
   var kindOrder = (k) => k === "family" ? 0 : k === "role" ? 1 : 2;
   var sortTraits = (ids2) => ids2.slice().sort((a, b) => kindOrder(trait(a).kind) - kindOrder(trait(b).kind) || trait(a).name.localeCompare(trait(b).name));
@@ -63979,15 +64497,15 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   function itemImg(id2, cls = "") {
     let url2 = "";
     try {
-      if (DT27.ItemArt && typeof DT27.ItemArt.url === "function") url2 = DT27.ItemArt.url(id2, 64) || "";
+      if (DT29.ItemArt && typeof DT29.ItemArt.url === "function") url2 = DT29.ItemArt.url(id2, 64) || "";
     } catch (e) {
       url2 = "";
     }
-    if (!url2 && DT27.itemIcon) url2 = DT27.itemIcon(id2);
-    const it = DT27.ITEMS[id2] || {};
+    if (!url2 && DT29.itemIcon) url2 = DT29.itemIcon(id2);
+    const it = DT29.ITEMS[id2] || {};
     return url2 ? `<img class="cx-ii ${cls}" src="${esc11(url2)}" alt="" title="${esc11(it.name || id2)}">` : `<span class="cx-ii ${cls}">${esc11(it.short || "?")}</span>`;
   }
-  var portrait = (lineId, stage3, cls = "") => DT27.Portraits ? DT27.Portraits.html(lineId, stage3, cls) : `<span class="pt ${cls}"><b>${esc11(DT27.LINE[lineId].forms[stage3].slice(0, 2))}</b></span>`;
+  var portrait = (lineId, stage3, cls = "") => DT29.Portraits ? DT29.Portraits.html(lineId, stage3, cls) : `<span class="pt ${cls}"><b>${esc11(DT29.LINE[lineId].forms[stage3].slice(0, 2))}</b></span>`;
   function ownedMap(p) {
     const m = /* @__PURE__ */ new Map();
     if (!p) return m;
@@ -64006,7 +64524,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     const g2 = game6();
     if (!g2 || !g2.human || !g2.pool) return null;
     const p = g2.human;
-    return { g: g2, p, counts: DT27.countTraits(p.boardUnits(), p.augs), owned: ownedMap(p) };
+    return { g: g2, p, counts: DT29.countTraits(p.boardUnits(), p.augs), owned: ownedMap(p) };
   }
   function unitChip(l, ctx2, size = "") {
     const o = ctx2 && ctx2.owned.get(l.id);
@@ -64034,31 +64552,31 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     <div class="cx-bps">${t.bp.map((b, i) => `<div class="cx-bp${ctx2 && i < lv ? " on" : ""}${ctx2 && i === lv - 1 ? " cur" : ""}"><b>${b}</b><span>${esc11(bpText(T3, i))}</span></div>`).join("")}</div>
     ${shop.length ? `<div class="cx-units">${shop.map((l) => unitChip(l, ctx2)).join("")}</div>` : ""}
     ${wild.length ? `<div class="cx-sub">Wild</div><div class="cx-units">${wild.map((l) => unitChip(l, null)).join("")}</div>` : ""}
-    ${crests.map((c) => `<div class="cx-crest">${itemImg(c.id, "sm")}<span>${esc11(c.name)}: ${c.from ? c.from.map((f) => esc11((DT27.ITEMS[f] || {}).name || f)).join(" + ") : `found in ${esc11(dropSource())}`}</span></div>`).join("")}
+    ${crests.map((c) => `<div class="cx-crest">${itemImg(c.id, "sm")}<span>${esc11(c.name)}: ${c.from ? c.from.map((f) => esc11((DT29.ITEMS[f] || {}).name || f)).join(" + ") : `found in ${esc11(dropSource())}`}</span></div>`).join("")}
   </div>`;
   }
   function statLine2(s) {
     return `<span>AS <b>${s.as}</b></span><span>Range <b>${s.range}</b></span><span>Armor <b>${s.armor}</b></span><span>MR <b>${s.mr}</b></span><span>Mana <b>${s.mana}/${s.maxMana}</b></span>`;
   }
   function attrText(attr) {
-    const beats2 = DT27.ATTR_BEATS[attr];
-    const by = Object.keys(DT27.ATTR_BEATS).find((k) => DT27.ATTR_BEATS[k] === attr);
+    const beats2 = DT29.ATTR_BEATS[attr];
+    const by = Object.keys(DT29.ATTR_BEATS).find((k) => DT29.ATTR_BEATS[k] === attr);
     if (!beats2) return "No attribute advantage or weakness.";
     return `Deals 20% more damage to ${beats2}${by ? `, takes 20% more from ${by}` : ""}.`;
   }
   function unitHTML(lineId, ctx2) {
-    const l = DT27.LINE[lineId];
+    const l = DT29.LINE[lineId];
     if (!l) return '<div class="cx-empty">Unknown Digimon.</div>';
-    const A2 = DT27.ATTR[l.attr] || { color: "#c8c8c8" };
+    const A2 = DT29.ATTR[l.attr] || { color: "#c8c8c8" };
     const o = ctx2 && ctx2.owned.get(l.id);
     const stages = [0, 1, 2].filter((s) => l.forms[s] != null);
-    const s0 = DT27.unitStats(l, 0);
+    const s0 = DT29.unitStats(l, 0);
     let own2 = "";
     if (o) {
       const parts = o.forms.map((f) => `${l.forms[f.stage]}${f.stage ? " " + "\u2605".repeat(f.stage + 1) : ""} (${f.where === "board" ? "board" : "bench"})`);
       own2 = `<div class="cx-ownline">You have: ${esc11(parts.join(", "))}</div>`;
     }
-    const pool = ctx2 && l.shop && ctx2.g.pool[l.id] != null ? `<span class="cx-pill">${ctx2.g.pool[l.id]}/${DT27.POOL_SIZE[l.tier]} left in the pool</span>` : "";
+    const pool = ctx2 && l.shop && ctx2.g.pool[l.id] != null ? `<span class="cx-pill">${ctx2.g.pool[l.id]}/${DT29.POOL_SIZE[l.tier]} left in the pool</span>` : "";
     return `<div class="cx-unit" style="--tc:${tierColor(l.tier)}">
     <div class="cx-uh">
       <div class="cx-uname"><b>${esc11(l.forms[0])}</b> <span class="muted">line</span></div>
@@ -64070,29 +64588,29 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     </div>
     <div class="cx-common">${statLine2(s0)}</div>
     ${stages.map((s) => {
-      const st3 = DT27.unitStats(l, s);
+      const st3 = DT29.unitStats(l, s);
       return `<div class="cx-form">
         ${portrait(l.id, s, `t${l.tier} big`)}
         <div class="cx-fbody">
-          <div class="cx-fname"><b>${esc11(l.forms[s])}</b> <span class="cx-stars">${"\u2605".repeat(s + 1)}</span> <span class="muted">${esc11(DT27.stageName(l, s))}</span></div>
+          <div class="cx-fname"><b>${esc11(l.forms[s])}</b> <span class="cx-stars">${"\u2605".repeat(s + 1)}</span> <span class="muted">${esc11(DT29.stageName(l, s))}</span></div>
           <div class="cx-fstats">HP <b>${st3.maxHp}</b> \xB7 AD <b>${st3.ad}</b></div>
-          <div class="cx-abil"><b>${esc11((l.abil || [])[s] || "Ability")}</b> ${esc11(DT27.abilityText(l, s))}</div>
+          <div class="cx-abil"><b>${esc11((l.abil || [])[s] || "Ability")}</b> ${esc11(DT29.abilityText(l, s))}</div>
         </div></div>`;
     }).join("")}
-    ${l.shop ? `<div class="cx-foot">Three of one form digivolve into the next. Sells for ${stages.map((s) => DT27.sellValue({ line: l.id, stage: s })).join(" / ")} gold.</div>` : '<div class="cx-foot">Wild Digimon appear in PvE rounds only and never count for traits.</div>'}
+    ${l.shop ? `<div class="cx-foot">Three of one form digivolve into the next. Sells for ${stages.map((s) => DT29.sellValue({ line: l.id, stage: s })).join(" / ")} gold.</div>` : '<div class="cx-foot">Wild Digimon appear in PvE rounds only and never count for traits.</div>'}
   </div>`;
   }
   function rulesSections() {
-    const S4 = DT27.SET;
+    const S4 = DT29.SET;
     const pace2 = paceSection();
     const duos = { id: "duos", title: "Duos: teams of two", html: "<p>Choose Duos alongside your set and pace. Eight Tamers form four teams. Partners share health and finish together, from first to fourth, while keeping their own shops, gold, items and boards.</p><p>During planning, drag a bench Digimon or item onto the Partner Portal. Hyper Roll allows one send per round; Normal allows two. Sent copies can complete your partner\u2019s digivolution. A full bench accepts a Digimon only if it can digivolve immediately.</p><p>Both partners fight together on a wide arena against the other team. Traits count across both boards and apply to your whole side. Your augments and items still belong to you. Eleven Duos augments reward teamwork. Wild Digimon rounds and carousels stay individual.</p><p>Click your partner\u2019s panel to view their board. In multiplayer, adjacent lobby seats with the same team number are partners; move to an empty seat to change teams. When a team is eliminated, both partners see the final attacker\u2019s ultimate and the winning team\u2019s victory dance.</p>" };
-    if (S4 && typeof S4.def.codexRules === "function") return [pace2, duos, ...S4.def.codexRules(DT27.HYPER, S4.pace) || []];
+    if (S4 && typeof S4.def.codexRules === "function") return [pace2, duos, ...S4.def.codexRules(DT29.HYPER, S4.pace) || []];
     if (S4 && (S4.rules.xp || !S4.rules.levelByStage || !S4.rules.incomeByStage)) return [pace2, duos, ...genericRules()];
     return [pace2, duos, ...hyperRules()];
   }
   function paceSection() {
-    const H = DT27.HYPER || {};
-    const S4 = DT27.SET;
+    const H = DT29.HYPER || {};
+    const S4 = DT29.SET;
     const pace2 = S4 && S4.pace || H.pace || "hyper";
     const name2 = pace2 === "normal" ? "Normal" : "Hyper Roll";
     const tname = { carousel: "carousel", pve: "wild", pvp: "PvP" };
@@ -64103,7 +64621,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     };
     const offers = [];
     for (let st3 = 1; st3 <= 7; st3++) for (let r = 1; r <= H.roundsInStage(st3); r++) {
-      const o = DT27.Game && DT27.Game.prototype.offerAt.call({ R: H }, st3, r);
+      const o = DT29.Game && DT29.Game.prototype.offerAt.call({ R: H }, st3, r);
       if (o && (o.kind === "augment" || o.kind === "armory")) offers.push(`${o.kind === "augment" ? "augment" : "Armory"} ${st3}-${r}`);
     }
     const loss = [2, 3, 4, 5, 6, 7].map((st3) => H.lossDamage(st3));
@@ -64122,14 +64640,14 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     <p>${H.planTime} s planning. Combat overtime starts at ${T3.overtime} s; a fight still going at ${T3.limit} s is a draw.</p>` };
   }
   function genericRules() {
-    const H = DT27.HYPER || {};
-    const S4 = DT27.SET;
-    const tiers = [1, 2, 3, 4, 5].filter((t) => DT27.POOL_SIZE[t]);
+    const H = DT29.HYPER || {};
+    const S4 = DT29.SET;
+    const tiers = [1, 2, 3, 4, 5].filter((t) => DT29.POOL_SIZE[t]);
     const X2 = H.xp;
     const levels = X2 ? Array.from({ length: (X2.maxLevel || 9) - (X2.startLevel || 1) + 1 }, (_, i) => (X2.startLevel || 1) + i) : [...new Set((H.levelByStage || []).filter(Boolean))];
     const offers = [];
     for (let st3 = 1; st3 <= 8; st3++) for (let r = 1; r <= H.roundsInStage(st3); r++) {
-      const o = DT27.Game && DT27.Game.prototype.offerAt.call({ R: H }, st3, r);
+      const o = DT29.Game && DT29.Game.prototype.offerAt.call({ R: H }, st3, r);
       if (o) offers.push(`${st3}-${r} ${o.kind}`);
     }
     const mech = S4 && S4.mechanic && S4.mechanic.name ? `<p><b>${esc11(S4.mechanic.name)}.</b> ${esc11(S4.mechanic.desc || "")}</p>` : "";
@@ -64141,17 +64659,17 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
       ${H.streak ? ` Win or loss streaks pay ${H.streak.map(([n4, g2]) => `${g2} at ${n4}`).join(", ")}.` : ""} A PvP win pays ${H.winGold}. Rerolls cost ${H.rerollCost}.</p>
       <p>${X2 ? `Buy ${X2.buyXp || 4} XP for ${X2.buyCost || 4} gold (F), and gain ${X2.perRound != null ? X2.perRound : 2} XP each round. Your level is your team size, up to ${X2.maxLevel || 9}.` : "Everyone levels up at the start of each stage."}</p>` },
       { id: "shop", title: "Shop and pool", html: `
-      <p>The shop shows ${DT27.SHOP} Digimon. All 8 Tamers share one pool: ${tiers.map((t) => `<b style="color:${tierColor(t)}">${DT27.POOL_SIZE[t]}</b> of each ${t}-cost`).join(", ")}.</p>
+      <p>The shop shows ${DT29.SHOP} Digimon. All 8 Tamers share one pool: ${tiers.map((t) => `<b style="color:${tierColor(t)}">${DT29.POOL_SIZE[t]}</b> of each ${t}-cost`).join(", ")}.</p>
       <table class="cx-tbl odds"><tr><th>Level</th>${tiers.map((t) => `<th style="color:${tierColor(t)}">${t}g</th>`).join("")}</tr>
-        ${levels.map((lv) => `<tr><td>${lv}</td>${tiers.map((t) => `<td>${(DT27.SHOP_ODDS[Math.min(DT27.SHOP_ODDS.length - 1, lv)] || [])[t - 1] || 0}%</td>`).join("")}</tr>`).join("")}</table>` },
-      { id: "evo", title: "Digivolution", html: `<p>${H.copies || 3} copies of a form digivolve into the next form${DT27.SHOP_LINES.some((l) => l.combine) ? " (some Digimon need fewer)" : ""}. Items carry over.</p>` },
+        ${levels.map((lv) => `<tr><td>${lv}</td>${tiers.map((t) => `<td>${(DT29.SHOP_ODDS[Math.min(DT29.SHOP_ODDS.length - 1, lv)] || [])[t - 1] || 0}%</td>`).join("")}</tr>`).join("")}</table>` },
+      { id: "evo", title: "Digivolution", html: `<p>${H.copies || 3} copies of a form digivolve into the next form${DT29.SHOP_LINES.some((l) => l.combine) ? " (some Digimon need fewer)" : ""}. Items carry over.</p>` },
       { id: "offers", title: "Picks", html: `<p>${offers.length ? offers.map(esc11).join(", ") : "No picks."}</p>` }
     ];
   }
   function hyperRules() {
-    const H = DT27.HYPER || {};
-    const P0 = DT27.Player ? new DT27.Player(0, "", false) : { gold: 0, hp: H.startHp };
-    const typeOf = DT27.Game && DT27.Game.prototype.typeOf;
+    const H = DT29.HYPER || {};
+    const P0 = DT29.Player ? new DT29.Player(0, "", false) : { gold: 0, hp: H.startHp };
+    const typeOf = DT29.Game && DT29.Game.prototype.typeOf;
     const tname = { carousel: "Carousel", pve: "Wild Digimon", pvp: "PvP" };
     const roundRow = (s) => {
       const out = [];
@@ -64168,21 +64686,21 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     const stages = [];
     for (let s = 1; s < Math.max(H.levelByStage.length, H.incomeByStage.length) + 1; s++) stages.push(s);
     const at = (arr, s) => arr[Math.min(s, arr.length - 1)];
-    const lineA = DT27.SHOP_LINES[0];
-    const hpMul = lineA ? [1, 2].map((s) => (DT27.unitStats(lineA, s).maxHp / DT27.unitStats(lineA, 0).maxHp).toFixed(1)) : ["?", "?"];
-    const abMul = lineA ? [1, 2].map((s) => (DT27.abilityValue(lineA, s) / DT27.abilityValue(lineA, 0)).toFixed(1)) : ["?", "?"];
-    const tiers = [1, 2, 3, 4, 5].filter((t) => DT27.POOL_SIZE[t]);
+    const lineA = DT29.SHOP_LINES[0];
+    const hpMul = lineA ? [1, 2].map((s) => (DT29.unitStats(lineA, s).maxHp / DT29.unitStats(lineA, 0).maxHp).toFixed(1)) : ["?", "?"];
+    const abMul = lineA ? [1, 2].map((s) => (DT29.abilityValue(lineA, s) / DT29.abilityValue(lineA, 0)).toFixed(1)) : ["?", "?"];
+    const tiers = [1, 2, 3, 4, 5].filter((t) => DT29.POOL_SIZE[t]);
     const levels = [...new Set(H.levelByStage.filter(Boolean))];
-    const attrs = Object.keys(DT27.ATTR_BEATS);
-    const nComp = DT27.STAT_COMPONENTS.length;
-    const nCore = DT27.CORE_ITEMS.length;
-    const nCrest = Object.values(DT27.ITEMS).filter((it) => it.emblem).length;
-    const augCount = (t) => DT27.AUGMENTS.filter((a) => a.tier === t).length;
-    const wispKinds = [...new Set(DT27.WISPS.map((w) => w.kind))];
+    const attrs = Object.keys(DT29.ATTR_BEATS);
+    const nComp = DT29.STAT_COMPONENTS.length;
+    const nCore = DT29.CORE_ITEMS.length;
+    const nCrest = Object.values(DT29.ITEMS).filter((it) => it.emblem).length;
+    const augCount = (t) => DT29.AUGMENTS.filter((a) => a.tier === t).length;
+    const wispKinds = [...new Set(DT29.WISPS.map((w) => w.kind))];
     const augRounds = H.augmentStages.map((s) => `${s}-2`).join(", ");
     const sellAt = (t, stage3) => {
-      const l = DT27.SHOP_LINES.find((x) => x.tier === t);
-      return l ? DT27.sellValue({ line: l.id, stage: stage3 }) : "?";
+      const l = DT29.SHOP_LINES.find((x) => x.tier === t);
+      return l ? DT29.sellValue({ line: l.id, stage: stage3 }) : "?";
     };
     return [
       { id: "rounds", title: "Rounds", html: `
@@ -64198,10 +64716,10 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
         <tr><td>Loss</td>${stages.map((s) => `<td>${H.lossDamage(s)}</td>`).join("")}</tr></table>
       <p class="muted">Loss is the Tamer HP lost for a defeat. Losing a stage 1 wild round costs 1 HP. Surviving units add no damage.</p>` },
       { id: "shop", title: "Shop and pool", html: `
-      <p>The shop shows ${DT27.SHOP} Digimon plus a Wisp slot. All 8 Tamers share one pool: ${tiers.map((t) => `<b style="color:${tierColor(t)}">${DT27.POOL_SIZE[t]}</b> of each ${t}-cost`).join(", ")}. Buying takes a copy out; selling or being eliminated puts it back.</p>
+      <p>The shop shows ${DT29.SHOP} Digimon plus a Wisp slot. All 8 Tamers share one pool: ${tiers.map((t) => `<b style="color:${tierColor(t)}">${DT29.POOL_SIZE[t]}</b> of each ${t}-cost`).join(", ")}. Buying takes a copy out; selling or being eliminated puts it back.</p>
       <table class="cx-tbl odds"><tr><th>Level</th>${tiers.map((t) => `<th style="color:${tierColor(t)}">${t}g</th>`).join("")}</tr>
-        ${levels.map((lv) => `<tr><td>${lv}</td>${tiers.map((t) => `<td>${(DT27.SHOP_ODDS[Math.min(9, lv)] || [])[t - 1] || 0}%</td>`).join("")}</tr>`).join("")}</table>
-      <p>Your bench holds ${DT27.BENCH} Digimon.</p>` },
+        ${levels.map((lv) => `<tr><td>${lv}</td>${tiers.map((t) => `<td>${(DT29.SHOP_ODDS[Math.min(9, lv)] || [])[t - 1] || 0}%</td>`).join("")}</tr>`).join("")}</table>
+      <p>Your bench holds ${DT29.BENCH} Digimon.</p>` },
       { id: "evo", title: "Digivolution", html: `
       <p>Three copies of the same form digivolve into the next form: three Rookies make a Champion (\u2605\u2605), three Champions make an Ultimate (\u2605\u2605\u2605). Copies on the bench and board both count. Items carry over (up to 3; extras go to your item bench).</p>
       <p>Each form has about ${hpMul[0]}x and ${hpMul[1]}x the HP and AD of the first, and its ability is ${abMul[0]}x and ${abMul[1]}x as strong.</p>
@@ -64210,15 +64728,15 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
       <p>Every Digimon has a family and a role. A trait turns on when enough <b>different</b> Digimon with it are on your board; two copies of the same Digimon count once. Wild Digimon and the bench don't count.</p>
       <p>A Crest (Digi-Egg + a component) gives its holder one more trait.</p>` },
       { id: "attr", title: "Attributes", html: `
-      <p class="cx-attrs">${attrs.map((a) => `<b style="color:${(DT27.ATTR[a] || {}).color}">${esc11(a)}</b> beats <b style="color:${(DT27.ATTR[DT27.ATTR_BEATS[a]] || {}).color}">${esc11(DT27.ATTR_BEATS[a])}</b>`).join(" \xB7 ")}</p>
-      <p>The winning side deals 20% more damage. ${Object.keys(DT27.ATTR).filter((a) => !DT27.ATTR_BEATS[a]).map(esc11).join(", ")} Digimon have no advantage or weakness.</p>` },
+      <p class="cx-attrs">${attrs.map((a) => `<b style="color:${(DT29.ATTR[a] || {}).color}">${esc11(a)}</b> beats <b style="color:${(DT29.ATTR[DT29.ATTR_BEATS[a]] || {}).color}">${esc11(DT29.ATTR_BEATS[a])}</b>`).join(" \xB7 ")}</p>
+      <p>The winning side deals 20% more damage. ${Object.keys(DT29.ATTR).filter((a) => !DT29.ATTR_BEATS[a]).map(esc11).join(", ")} Digimon have no advantage or weakness.</p>` },
       { id: "items", title: "Items and recipes", html: `
       <p>${nComp} stat components plus the Digi-Egg. Drag a component onto a Digimon; a second component combines into one of ${nCore} completed items. Up to 3 items per Digimon. Items never combine on the item bench, which holds ${H.itemCap}.</p>
       <p>Digi-Egg + component = one of ${nCrest} Crests. Two Digi-Eggs make a Golden Digi-Egg (+1 team size). Selling a Digimon returns its items. Magnetic Remover and Reforger take items off or reroll them.</p>
       <p>Items come from the 1-1 carousel, the Armory (components through stage 3, completed items after) and loot orbs from wild rounds. Walk your Little Legend into an orb to open it.</p>` },
       { id: "augs", title: "Augments", html: `
       <p>Pick 1 of 3 at ${augRounds}, with one reroll. Each augment round rolls one tier for the whole lobby: Silver 35%, Gold 47%, Prismatic 18%.</p>
-      <p>${[1, 2, 3].map((t) => `<b style="color:${DT27.AUG_TIER_COLOR[t]}">${augCount(t)} ${DT27.AUG_TIER_NAME[t]}</b>`).join(", ")} augments.</p>` },
+      <p>${[1, 2, 3].map((t) => `<b style="color:${DT29.AUG_TIER_COLOR[t]}">${augCount(t)} ${DT29.AUG_TIER_NAME[t]}</b>`).join(", ")} augments.</p>` },
       { id: "wisps", title: "Data Wisps", html: `
       <p>On even rounds from stage 2, a one-use Wisp sits in the sixth shop slot. It costs its base price plus the stage number. An unbought Wisp leaves at the end of the round.</p>
       <p>Categories: ${wispKinds.map(esc11).join(", ")}.</p>` },
@@ -64241,7 +64759,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     panel2.innerHTML = `<div class="cx-ph">
       <b class="cx-ptitle">Codex</b>
       <button class="cx-icon" data-full="1" title="Open the full codex">\u2922</button>
-      <button class="cx-icon" data-pclose="1" title="Close (${KEY6.toUpperCase()})">\u2715</button>
+      <button class="cx-icon" data-pclose="1" title="Close (${KEY7.toUpperCase()})">\u2715</button>
     </div>
     <div class="cx-pbar"><div class="cx-seg cx-scope"><button data-scope="board">My board</button><button data-scope="pool" title="Every trait in this game's shop pool">All in game</button><button data-ptab="rules">Rules</button></div></div>
     <div class="cx-pback hidden"><button class="cx-back" data-back="1">\u2190 Traits</button></div>
@@ -64263,11 +64781,11 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   }
   function panelTraitIds(ctx2) {
     if (!ctx2) return [];
-    const board2 = Object.keys(ctx2.counts).filter((id2) => DT27.TRAITS[id2]);
+    const board2 = Object.keys(ctx2.counts).filter((id2) => DT29.TRAITS[id2]);
     let ids2 = board2;
     if (pv2.scope === "pool") {
       const set2 = new Set(board2);
-      for (const id2 of Object.keys(ctx2.g.pool)) for (const t of DT27.LINE[id2] && DT27.LINE[id2].traits || []) if (DT27.TRAITS[t]) set2.add(t);
+      for (const id2 of Object.keys(ctx2.g.pool)) for (const t of DT29.LINE[id2] && DT29.LINE[id2].traits || []) if (DT29.TRAITS[t]) set2.add(t);
       ids2 = [...set2];
     }
     const lv = (id2) => levelOf2(trait(id2).bp, ctx2.counts[id2] || 0);
@@ -64376,7 +64894,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     }
   }
   var ALL_TABS = [["traits", "Traits"], ["digimon", "Digimon"], ["items", "Items"], ["augments", "Augments"], ["wisps", "Data Wisps"], ["rules", "Rules"]];
-  var tabsNow = () => ALL_TABS.filter(([k]) => k === "wisps" ? (DT27.WISPS || []).length : k === "augments" ? (DT27.AUGMENTS || []).length : true);
+  var tabsNow = () => ALL_TABS.filter(([k]) => k === "wisps" ? (DT29.WISPS || []).length : k === "augments" ? (DT29.AUGMENTS || []).length : true);
   var TABS = ALL_TABS;
   var fv = { open: false, tab: "traits", q: "", kind: "all", cost: "all", modal: null };
   var full = null;
@@ -64416,46 +64934,46 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     return [t.name, id2, t.kind, t.T.desc, notesOf(t.T), t.bp.map((_, i) => bpText(t.T, i)), linesWith(id2).map((l) => l.forms)];
   };
   var lineHay = (l) => [l.id, l.forms, l.abil, l.attr, l.type, (l.traits || []).map((t) => trait(t).name), l.shop ? `${l.tier} gold cost` : "wild"];
-  var itemHay = (it) => [it.name, it.id, it.desc, DT27.statText ? DT27.statText(it.stats || {}) : "", (it.from || []).map((f) => (DT27.ITEMS[f] || {}).name), it.emblem ? trait(it.emblem).name : ""];
+  var itemHay = (it) => [it.name, it.id, it.desc, DT29.statText ? DT29.statText(it.stats || {}) : "", (it.from || []).map((f) => (DT29.ITEMS[f] || {}).name), it.emblem ? trait(it.emblem).name : ""];
   function tabCount(tab) {
     const q = fv.q;
     switch (tab) {
       case "traits":
         return allTraitIds().filter((id2) => matches(q, traitHay(id2))).length;
       case "digimon":
-        return DT27.LINES.filter((l) => matches(q, lineHay(l))).length;
+        return DT29.LINES.filter((l) => matches(q, lineHay(l))).length;
       case "items":
-        return Object.values(DT27.ITEMS).filter((it) => matches(q, itemHay(it))).length;
+        return Object.values(DT29.ITEMS).filter((it) => matches(q, itemHay(it))).length;
       case "augments":
-        return DT27.AUGMENTS.filter((a) => matches(q, a.name, a.desc, DT27.AUG_TIER_NAME[a.tier])).length;
+        return DT29.AUGMENTS.filter((a) => matches(q, a.name, a.desc, DT29.AUG_TIER_NAME[a.tier])).length;
       case "wisps":
-        return DT27.WISPS.filter((w) => matches(q, w.name, w.desc, w.kind)).length;
+        return DT29.WISPS.filter((w) => matches(q, w.name, w.desc, w.kind)).length;
       default:
         return "";
     }
   }
   var SET_ART2 = { "faction-wars": "mode-faction-wars", dragonlands: "mode-dragonlands", autochess: "mode-autochess" };
-  var browsable = () => DT27.Sets && DT27.Sets.pickable ? DT27.Sets.pickable() : [];
+  var browsable = () => DT29.Sets && DT29.Sets.pickable ? DT29.Sets.pickable() : [];
   function gameRunning() {
     const g2 = game6();
     return !!(g2 && !g2.over) || !!(UI3().inGame && UI3().inGame());
   }
   function browseId() {
-    if (!DT27.Sets) return null;
-    if (gameRunning()) return DT27.SET_ID;
+    if (!DT29.Sets) return null;
+    if (gameRunning()) return DT29.SET_ID;
     const ids2 = browsable().map((o) => o.id);
-    if (!fv.set || !ids2.includes(fv.set)) fv.set = ids2.includes(DT27.SET_ID) ? DT27.SET_ID : ids2[0] || DT27.SET_ID;
+    if (!fv.set || !ids2.includes(fv.set)) fv.set = ids2.includes(DT29.SET_ID) ? DT29.SET_ID : ids2[0] || DT29.SET_ID;
     return fv.set;
   }
   function withSet(fn) {
     const id2 = browseId();
-    const prev = DT27.Sets ? DT27.Sets.activeId : null;
+    const prev = DT29.Sets ? DT29.Sets.activeId : null;
     if (!id2 || id2 === prev) return fn();
-    DT27.Sets.activate(id2);
+    DT29.Sets.activate(id2);
     try {
       return fn();
     } finally {
-      DT27.Sets.activate(prev);
+      DT29.Sets.activate(prev);
     }
   }
   function renderSets() {
@@ -64467,17 +64985,17 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     nav2.innerHTML = opts.map((o) => {
       let n4 = 0;
       try {
-        n4 = Object.keys(DT27.Sets.get(o.id).TRAITS || {}).length;
+        n4 = Object.keys(DT29.Sets.get(o.id).TRAITS || {}).length;
       } catch (e) {
         n4 = 0;
       }
       const lock = live3 && o.id !== cur4;
       return `<button class="cx-set${o.id === cur4 ? " on" : ""}" data-cx-set="${esc11(o.id)}" role="tab" aria-selected="${o.id === cur4}" ${lock ? 'disabled title="A game is running: the codex shows its set"' : `title="${esc11(o.desc)}"`}
-      style="--art:url('assets/client/${SET_ART2[o.id] || "mode-multiplayer"}.webp')" data-traits="${n4}">${o.id === DT27.SET_ID && live3 ? '<span class="cx-live">In game</span>' : ""}<b>${esc11(o.name)}</b><small>${n4} traits \xB7 ${esc11(DT27.SetPicker ? DT27.SetPicker.modeName(o.mode) : o.mode)}</small></button>`;
+      style="--art:url('assets/client/${SET_ART2[o.id] || "mode-multiplayer"}.webp')" data-traits="${n4}">${o.id === DT29.SET_ID && live3 ? '<span class="cx-live">In game</span>' : ""}<b>${esc11(o.name)}</b><small>${n4} traits \xB7 ${esc11(DT29.SetPicker ? DT29.SetPicker.modeName(o.mode) : o.mode)}</small></button>`;
     }).join("");
   }
   function browseSet(id2) {
-    if (!DT27.Sets || !DT27.Sets.has(id2) || gameRunning()) return false;
+    if (!DT29.Sets || !DT29.Sets.has(id2) || gameRunning()) return false;
     fv.set = id2;
     fv.kind = "all";
     fv.cost = "all";
@@ -64495,7 +65013,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   function renderFullNow() {
     if (!tabsNow().some(([k]) => k === fv.tab)) fv.tab = "traits";
     const h2 = full.querySelector(".cx-head h2");
-    if (h2) h2.textContent = DT27.SET && DT27.Sets && DT27.Sets.ids().filter((id2) => !DT27.Sets.def(id2).hidden).length > 1 ? `Codex \xB7 ${DT27.SET.name}` : "Codex";
+    if (h2) h2.textContent = DT29.SET && DT29.Sets && DT29.Sets.ids().filter((id2) => !DT29.Sets.def(id2).hidden).length > 1 ? `Codex \xB7 ${DT29.SET.name}` : "Codex";
     full.querySelector(".cx-tabs").innerHTML = tabsNow().map(([k, name2]) => {
       const n4 = tabCount(k);
       return `<button data-tab="${k}" class="${k === fv.tab ? "on" : ""}">${name2}${n4 !== "" ? ` <span>${n4}</span>` : ""}</button>`;
@@ -64512,33 +65030,33 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
       const ids2 = sortTraits(allTraitIds()).filter((id2) => (fv.kind === "all" || trait(id2).kind === fv.kind) && matches(q, traitHay(id2)));
       html2 = ids2.length ? `<div class="cx-tgrid">${ids2.map((id2) => traitHTML(id2, null)).join("")}</div>` : emptyHTML();
     } else if (fv.tab === "digimon") {
-      const tiers = [...new Set(DT27.SHOP_LINES.map((l) => l.tier))].sort((a, b) => a - b);
-      fhtml = `<div class="cx-seg">${[["all", "All"]].concat(tiers.map((t) => [String(t), `${t} gold`])).concat(DT27.LINES.some((l) => !l.shop) ? [["wild", "Wild"]] : []).map(([k, n4]) => `<button data-cost="${k}" class="${fv.cost === k ? "on" : ""}"${/^\d+$/.test(k) ? ` style="--tc:${tierColor(Number(k))}"` : ""}>${n4}</button>`).join("")}</div>`;
-      const list = DT27.LINES.filter((l) => matches(q, lineHay(l)) && (fv.cost === "all" || (fv.cost === "wild" ? !l.shop : l.shop && String(l.tier) === fv.cost)));
+      const tiers = [...new Set(DT29.SHOP_LINES.map((l) => l.tier))].sort((a, b) => a - b);
+      fhtml = `<div class="cx-seg">${[["all", "All"]].concat(tiers.map((t) => [String(t), `${t} gold`])).concat(DT29.LINES.some((l) => !l.shop) ? [["wild", "Wild"]] : []).map(([k, n4]) => `<button data-cost="${k}" class="${fv.cost === k ? "on" : ""}"${/^\d+$/.test(k) ? ` style="--tc:${tierColor(Number(k))}"` : ""}>${n4}</button>`).join("")}</div>`;
+      const list = DT29.LINES.filter((l) => matches(q, lineHay(l)) && (fv.cost === "all" || (fv.cost === "wild" ? !l.shop : l.shop && String(l.tier) === fv.cost)));
       const groups = tiers.map((t) => [`${t} gold`, tierColor(t), list.filter((l) => l.shop && l.tier === t)]).concat([["Wild Digimon (PvE only)", "#8e98ad", list.filter((l) => !l.shop)]]);
       html2 = list.length ? groups.filter((g2) => g2[2].length).map(([name2, col3, ls]) => `<section class="cx-group"><h3 style="color:${col3}">${esc11(name2)} <span class="muted">${ls.length}</span></h3>
       <div class="cx-lgrid">${ls.map(lineCard).join("")}</div></section>`).join("") : emptyHTML();
     } else if (fv.tab === "items") {
       html2 = itemsHTML(q);
     } else if (fv.tab === "augments") {
-      const groups = [1, 2, 3].concat([...new Set(DT27.AUGMENTS.map((a) => a.tier))].filter((t) => ![1, 2, 3].includes(t)));
-      const any = DT27.AUGMENTS.filter((a) => matches(q, a.name, a.desc, DT27.AUG_TIER_NAME[a.tier]));
+      const groups = [1, 2, 3].concat([...new Set(DT29.AUGMENTS.map((a) => a.tier))].filter((t) => ![1, 2, 3].includes(t)));
+      const any = DT29.AUGMENTS.filter((a) => matches(q, a.name, a.desc, DT29.AUG_TIER_NAME[a.tier]));
       html2 = any.length ? groups.map((t) => {
         const ls = any.filter((a) => a.tier === t);
         if (!ls.length) return "";
-        const col3 = DT27.AUG_TIER_COLOR[t] || "#c9d1dc";
-        return `<section class="cx-group"><h3 style="color:${col3}">${esc11(DT27.AUG_TIER_NAME[t] || `Tier ${t}`)} <span class="muted">${ls.length}</span></h3>
+        const col3 = DT29.AUG_TIER_COLOR[t] || "#c9d1dc";
+        return `<section class="cx-group"><h3 style="color:${col3}">${esc11(DT29.AUG_TIER_NAME[t] || `Tier ${t}`)} <span class="muted">${ls.length}</span></h3>
         <div class="cx-cgrid">${ls.map((a) => `<div class="cx-card" data-cx-aug="${esc11(a.id)}" style="--tc:${col3}"><div class="cx-ch"><i class="cx-gem"></i><b>${esc11(a.name)}</b></div><div class="cx-desc">${esc11(a.desc)}</div></div>`).join("")}</div></section>`;
       }).join("") : emptyHTML();
     } else if (fv.tab === "wisps") {
-      const ws = DT27.WISPS.filter((w) => matches(q, w.name, w.desc, w.kind));
-      const ks = [...new Set(DT27.WISPS.map((w) => w.kind))];
+      const ws = DT29.WISPS.filter((w) => matches(q, w.name, w.desc, w.kind));
+      const ks = [...new Set(DT29.WISPS.map((w) => w.kind))];
       html2 = `<p class="cx-intro">A one-use Wisp appears in the sixth shop slot on even rounds from stage 2. Its price is its base cost plus the stage number. Unbought Wisps leave at the end of the round.</p>` + (ws.length ? ks.map((k) => {
         const ls = ws.filter((w) => w.kind === k);
         if (!ls.length) return "";
         return `<section class="cx-group"><h3>${esc11(k)} <span class="muted">${ls.length}</span></h3><div class="cx-cgrid">${ls.map((w) => `<div class="cx-card wisp" data-cx-wisp="${esc11(w.id)}">
           <div class="cx-ch"><i class="cx-wisp"></i><b>${esc11(w.name)}</b><span class="cx-cost">${w.base ? `${w.base} + stage` : "stage"} gold</span></div>
-          <div class="cx-desc">${esc11(w.desc)}</div><div class="cx-meta">From stage ${w.minStage}. At stage ${Math.max(2, w.minStage)}: ${DT27.wispCost(w, Math.max(2, w.minStage))} gold.</div></div>`).join("")}</div></section>`;
+          <div class="cx-desc">${esc11(w.desc)}</div><div class="cx-meta">From stage ${w.minStage}. At stage ${Math.max(2, w.minStage)}: ${DT29.wispCost(w, Math.max(2, w.minStage))} gold.</div></div>`).join("")}</div></section>`;
       }).join("") : emptyHTML());
     } else if (fv.tab === "rules") {
       const secs = rulesSections().filter((s) => matches(q, s.title, s.html.replace(/<[^>]+>/g, " ")));
@@ -64552,49 +65070,49 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   function lineCard(l) {
     const stages = [0, 1, 2].filter((s) => l.forms[s] != null);
     const same = l.forms.every((f) => f === l.forms[0]);
-    const s0 = DT27.unitStats(l, 0);
-    const A2 = DT27.ATTR[l.attr] || { color: "#c8c8c8" };
+    const s0 = DT29.unitStats(l, 0);
+    const A2 = DT29.ATTR[l.attr] || { color: "#c8c8c8" };
     return `<div class="cx-line${l.shop ? "" : " wild"}" data-cx-line="${esc11(l.id)}" style="--tc:${tierColor(l.tier)}" role="button" tabindex="0">
     <div class="cx-lh"><b>${esc11(l.forms[0])}</b><span class="cx-pill cost">${l.shop ? `${l.tier}g` : "wild"}</span><span class="cx-pill" style="color:${A2.color};border-color:${A2.color}66">${esc11(l.attr)}</span></div>
     <div class="cx-forms">${(same ? [0] : stages).map((s) => `<div class="cx-lf">${portrait(l.id, s, `t${l.tier}`)}<div><b>${esc11(l.forms[s])}</b><span>${esc11((l.abil || [])[s] || "")}</span></div></div>`).join("")}</div>
     <div class="cx-tchips">${(l.traits || []).map((id2) => `<span class="cx-tchip" style="--tc:${trait(id2).color}">${badge(id2, "xs")}${esc11(trait(id2).name)}</span>`).join("")}</div>
-    <div class="cx-abil small">${esc11(DT27.abilityText(l, 0))}</div>
-    <div class="cx-lstats"><span>HP <b>${stages.map((s) => DT27.unitStats(l, s).maxHp).join("/")}</b></span><span>AD <b>${stages.map((s) => DT27.unitStats(l, s).ad).join("/")}</b></span><span>AS <b>${s0.as}</b></span><span>Range <b>${s0.range}</b></span></div>
+    <div class="cx-abil small">${esc11(DT29.abilityText(l, 0))}</div>
+    <div class="cx-lstats"><span>HP <b>${stages.map((s) => DT29.unitStats(l, s).maxHp).join("/")}</b></span><span>AD <b>${stages.map((s) => DT29.unitStats(l, s).ad).join("/")}</b></span><span>AS <b>${s0.as}</b></span><span>Range <b>${s0.range}</b></span></div>
   </div>`;
   }
   function dropSource() {
-    const src = DT27.SET && DT27.SET.def && DT27.SET.def.items && DT27.SET.def.items.dropEmblemSource;
+    const src = DT29.SET && DT29.SET.def && DT29.SET.def.items && DT29.SET.def.items.dropEmblemSource;
     if (src) return src;
-    const R4 = DT27.HYPER || {};
+    const R4 = DT29.HYPER || {};
     const armory = R4.armoryRounds && R4.armoryRounds.length || R4.armoryStages && R4.armoryStages.length || (R4.offers || []).some((o) => o.kind === "armory");
     return armory ? "the Armory and loot" : "loot";
   }
   function itemCard2(it, extra = "") {
-    const st3 = DT27.statText && it.stats ? DT27.statText(it.stats) : "";
-    const pairs = it.from && !it.component ? DT27.recipesOf ? DT27.recipesOf(it.id) : [it.from] : [];
-    const recipe = (r) => `<div class="cx-recipe">${r.map((f) => itemImg(f, "xs")).join("<i>+</i>")}<span>${r.map((f) => esc11((DT27.ITEMS[f] || {}).name || f)).join(" + ")}</span></div>`;
+    const st3 = DT29.statText && it.stats ? DT29.statText(it.stats) : "";
+    const pairs = it.from && !it.component ? DT29.recipesOf ? DT29.recipesOf(it.id) : [it.from] : [];
+    const recipe = (r) => `<div class="cx-recipe">${r.map((f) => itemImg(f, "xs")).join("<i>+</i>")}<span>${r.map((f) => esc11((DT29.ITEMS[f] || {}).name || f)).join(" + ")}</span></div>`;
     const rec2 = pairs.length ? pairs.map(recipe).join("") : it.drop ? `<div class="cx-recipe"><span>No recipe: found in ${esc11(dropSource())}</span></div>` : "";
     return `<div class="cx-card item" data-cx-item="${esc11(it.id)}" id="cx-item-${esc11(it.id)}">
     <div class="cx-ch">${itemImg(it.id)}<div><b>${esc11(it.name)}</b>${st3 && !it.component ? `<div class="cx-stat">${esc11(st3)}</div>` : ""}</div></div>
     <div class="cx-desc">${esc11(it.desc || "")}</div>${rec2}${extra}</div>`;
   }
   function itemsHTML(q) {
-    const items3 = Object.values(DT27.ITEMS);
-    const comps = DT27.COMPONENT_IDS.map((id2) => DT27.ITEMS[id2]).filter((it) => it && matches(q, itemHay(it)));
-    const core = DT27.CORE_ITEMS.map((id2) => DT27.ITEMS[id2]).filter((it) => it && matches(q, itemHay(it)));
+    const items3 = Object.values(DT29.ITEMS);
+    const comps = DT29.COMPONENT_IDS.map((id2) => DT29.ITEMS[id2]).filter((it) => it && matches(q, itemHay(it)));
+    const core = DT29.CORE_ITEMS.map((id2) => DT29.ITEMS[id2]).filter((it) => it && matches(q, itemHay(it)));
     const crests = items3.filter((it) => it.emblem && matches(q, itemHay(it)));
-    const coreSet = new Set(DT27.CORE_ITEMS);
+    const coreSet = new Set(DT29.CORE_ITEMS);
     const special = items3.filter((it) => !it.component && !it.emblem && !coreSet.has(it.id) && matches(q, itemHay(it)));
     if (!comps.length && !core.length && !crests.length && !special.length) return emptyHTML();
-    const ids2 = DT27.COMPONENT_IDS;
+    const ids2 = DT29.COMPONENT_IDS;
     const hit = new Set([...core, ...crests, ...special].map((it) => it.id));
     const grid = `<section class="cx-group"><h3>Recipe grid <span class="muted">two components make one item</span></h3>
     <div class="cx-gridwrap"><table class="cx-rgrid"><tr><th></th>${ids2.map((c) => `<th>${itemImg(c, "sm")}</th>`).join("")}</tr>
     ${ids2.map((a) => `<tr><th>${itemImg(a, "sm")}</th>${ids2.map((b) => {
-      const r = DT27.combineItems(a, b);
+      const r = DT29.combineItems(a, b);
       if (!r) return "<td></td>";
-      const it = DT27.ITEMS[r];
-      return `<td class="${q && !hit.has(r) ? "dim" : ""}"><button data-goitem="${esc11(r)}" title="${esc11(it.name)}: ${esc11(DT27.itemText ? DT27.itemText(r) : it.desc)}">${itemImg(r, "sm")}</button></td>`;
+      const it = DT29.ITEMS[r];
+      return `<td class="${q && !hit.has(r) ? "dim" : ""}"><button data-goitem="${esc11(r)}" title="${esc11(it.name)}: ${esc11(DT29.itemText ? DT29.itemText(r) : it.desc)}">${itemImg(r, "sm")}</button></td>`;
     }).join("")}</tr>`).join("")}</table></div></section>`;
     const sec = (title, sub, list) => list.length ? `<section class="cx-group"><h3>${title} <span class="muted">${sub}</span></h3><div class="cx-cgrid">${list.map((it) => itemCard2(it)).join("")}</div></section>` : "";
     return sec("Components", `${comps.length}`, comps) + grid + sec("Completed items", `${core.length}`, core) + sec("Crests", "Digi-Egg + a component: the holder gains a trait", crests) + sec("Special", `${special.length}`, special);
@@ -64633,7 +65151,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
       return renderFull();
     }
     if (d.cxSet) {
-      if (DT27.Sfx) DT27.Sfx.play("pick");
+      if (DT29.Sfx) DT29.Sfx.play("pick");
       return browseSet(d.cxSet);
     }
     if (d.cxLine) return showModal(withSet(() => unitHTML(d.cxLine, fv.ctx ? gameCtx() : null)));
@@ -64663,7 +65181,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   }
   function openFull(tab, q, setId) {
     buildFull();
-    if (setId && DT27.Sets && DT27.Sets.has(setId) && !gameRunning()) fv.set = setId;
+    if (setId && DT29.Sets && DT29.Sets.has(setId) && !gameRunning()) fv.set = setId;
     else if (!fv.open) fv.set = null;
     if (tab && TABS.some(([k]) => k === tab)) fv.tab = tab;
     if (q != null) {
@@ -64690,7 +65208,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     const o = $6("overlay");
     return !!(o && !o.classList.contains("hidden"));
   };
-  var busyElsewhere = () => DT27.Shop && DT27.Shop.isOpen && DT27.Shop.isOpen() || $6("picker") && !$6("picker").classList.contains("hidden");
+  var busyElsewhere = () => DT29.Shop && DT29.Shop.isOpen && DT29.Shop.isOpen() || $6("picker") && !$6("picker").classList.contains("hidden");
   function toggle3() {
     if (fv.open) return closeFull();
     if (titleUp() || !gameCtx()) return openFull();
@@ -64707,7 +65225,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     if (!bar) return;
     const b = document.createElement("button");
     b.id = "codexBtn";
-    b.title = `Codex: traits, Digimon and rules (${KEY6.toUpperCase()})`;
+    b.title = `Codex: traits, Digimon and rules (${KEY7.toUpperCase()})`;
     b.textContent = "Codex";
     const before = $6("emoteBtn");
     bar.insertBefore(b, before && before.parentNode === bar ? before : bar.firstChild);
@@ -64718,14 +65236,14 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   }
   document.addEventListener("click", (e) => {
     if (!e.target.closest) return;
-    const open7 = e.target.closest("[data-codex-open], #codexBtn");
-    if (open7) {
+    const open8 = e.target.closest("[data-codex-open], #codexBtn");
+    if (open8) {
       e.preventDefault();
-      if (open7.id === "codexBtn") return toggle3();
-      return openFull(open7.getAttribute("data-codex-open") || void 0);
+      if (open8.id === "codexBtn") return toggle3();
+      return openFull(open8.getAttribute("data-codex-open") || void 0);
     }
     const tr2 = e.target.closest("#traitList [data-trait]");
-    if (tr2 && DT27.TRAITS[tr2.dataset.trait]) {
+    if (tr2 && DT29.TRAITS[tr2.dataset.trait]) {
       openPanel(tr2.dataset.trait);
       const tip = $6("tooltip");
       if (tip) tip.classList.add("hidden");
@@ -64751,7 +65269,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     }
   }, true);
   window.addEventListener("keydown", (e) => {
-    if (e.key.toLowerCase() !== KEY6 || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
+    if (e.key.toLowerCase() !== KEY7 || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
     if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
     if (busyElsewhere()) return;
     e.preventDefault();
@@ -64768,7 +65286,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   }, 400);
   addTopButton();
   document.addEventListener("DOMContentLoaded", addTopButton);
-  DT27.Codex = {
+  DT29.Codex = {
     toggle: toggle3,
     openPanel,
     closePanel,
@@ -64782,34 +65300,34 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     fullOpen: () => fv.open,
     traitIds: allTraitIds,
     bpText: (id2, i) => bpText(trait(id2).T, i),
-    key: KEY6
+    key: KEY7
   };
 
   // js/setpicker.js
-  var DT28 = window.DT;
-  var KEY7 = "dt.set.v1";
+  var DT30 = window.DT;
+  var KEY8 = "dt.set.v1";
   var FORMAT_KEY = "dt.format.v1";
   function format() {
-    return DT28.Duos.validFormat(store6.get(FORMAT_KEY));
+    return DT30.Duos.validFormat(store6.get(FORMAT_KEY));
   }
   function setFormat(f) {
-    store6.set(DT28.Duos.validFormat(f), FORMAT_KEY);
+    store6.set(DT30.Duos.validFormat(f), FORMAT_KEY);
     render7();
-    if (DT28.Client && DT28.Client.refreshPlay) DT28.Client.refreshPlay();
+    if (DT30.Client && DT30.Client.refreshPlay) DT30.Client.refreshPlay();
   }
   var formatHTML = () => `<div class="pace-pick" role="radiogroup" aria-label="Format"><span class="pp-lbl">Format</span>${["solo", "duos"].map((f) => `<button class="pp-btn${format() === f ? " on" : ""}" role="radio" aria-checked="${format() === f}" data-format="${f}">${f === "duos" ? "Duos \xB7 2v2" : "Free for all"}</button>`).join("")}<small class="pp-desc">${format() === "duos" ? "Four teams of two. Share health, send Digimon through the portal, combine your traits in one team battle." : "Eight Tamers. Every board for itself."}</small></div>`;
   var PACE_KEY = "dt.pace.v1";
   var MODE = { tft: "Classic", underlords: "Undermons", autochess: "Auto Chess" };
   var esc12 = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
   var store6 = {
-    get(k = KEY7) {
+    get(k = KEY8) {
       try {
         return localStorage.getItem(k);
       } catch (e) {
         return null;
       }
     },
-    set(v, k = KEY7) {
+    set(v, k = KEY8) {
       try {
         localStorage.setItem(k, v);
       } catch (e) {
@@ -64835,15 +65353,15 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     if (p !== "hyper" && p !== "normal") return;
     store6.set(p, PACE_KEY);
     const id2 = selected();
-    if (id2 !== "chaos" && !gameRunning2()) DT28.Sets.activate(id2, p);
+    if (id2 !== "chaos" && !gameRunning2()) DT30.Sets.activate(id2, p);
     render7();
-    if (DT28.Client && DT28.Client.refreshPlay) DT28.Client.refreshPlay();
+    if (DT30.Client && DT30.Client.refreshPlay) DT30.Client.refreshPlay();
   }
   var paceHTML = (where) => `<div class="pace-pick" role="radiogroup" aria-label="Pace" data-pace-where="${where}"><span class="pp-lbl">Pace</span>${PACES.map((o) => `<button type="button" class="pp-btn${o.id === pace() ? " on" : ""}"
   role="radio" aria-checked="${o.id === pace()}" data-pace="${o.id}" title="${esc12(o.desc)}">${esc12(o.name)}</button>`).join("")}<small class="pp-desc">${esc12((PACES.find((o) => o.id === pace()) || PACES[0]).desc)}</small></div>`;
   var CHAOS = { id: "chaos", name: "Chaos", mode: "mixed", desc: "A random set every game, picked from the game seed.", colors: { main: "#e58bff" } };
   function options() {
-    const list = DT28.Sets.pickable();
+    const list = DT30.Sets.pickable();
     return list.length > 1 ? list.concat([CHAOS]) : list;
   }
   function valid2(id2) {
@@ -64851,20 +65369,20 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   }
   function selected() {
     const s = store6.get();
-    return s && valid2(s) ? s : DT28.Sets.DEFAULT;
+    return s && valid2(s) ? s : DT30.Sets.DEFAULT;
   }
   function gameRunning2() {
-    const g2 = DT28.UI && DT28.UI.game && DT28.UI.game();
-    return !!(g2 && !g2.over) || !!(DT28.UI && DT28.UI.inGame && DT28.UI.inGame());
+    const g2 = DT30.UI && DT30.UI.game && DT30.UI.game();
+    return !!(g2 && !g2.over) || !!(DT30.UI && DT30.UI.inGame && DT30.UI.inGame());
   }
   function select2(id2) {
     if (!valid2(id2)) return;
     store6.set(id2);
-    if (id2 !== "chaos" && !gameRunning2()) DT28.Sets.activate(id2, pace());
+    if (id2 !== "chaos" && !gameRunning2()) DT30.Sets.activate(id2, pace());
     render7();
-    if (DT28.Client && DT28.Client.refreshPlay) DT28.Client.refreshPlay();
+    if (DT30.Client && DT30.Client.refreshPlay) DT30.Client.refreshPlay();
   }
-  var label2 = (id2) => id2 === "chaos" ? "Chaos" : DT28.Sets.label(id2);
+  var label2 = (id2) => id2 === "chaos" ? "Chaos" : DT30.Sets.label(id2);
   var modeName = (m) => MODE[m] || (m === "mixed" ? "Any set" : m);
   var artOf = (id2) => `assets/client/mode-${id2}.webp`;
   var css10 = document.createElement("style");
@@ -64929,7 +65447,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
       }
       const pb = e.target.closest("[data-pace]");
       if (pb) {
-        if (DT28.Sfx) DT28.Sfx.play("pick");
+        if (DT30.Sfx) DT30.Sfx.play("pick");
         setPace(pb.dataset.pace);
         return;
       }
@@ -64940,7 +65458,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
       }
       const b = e.target.closest("[data-set]");
       if (!b) return;
-      if (DT28.Sfx) DT28.Sfx.play("pick");
+      if (DT30.Sfx) DT30.Sfx.play("pick");
       select2(b.dataset.set);
     });
     mount.addEventListener("keydown", (e) => {
@@ -64957,7 +65475,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   function move(step2) {
     const opts = options();
     const i = opts.findIndex((o) => o.id === selected());
-    if (DT28.Sfx) DT28.Sfx.play("pick");
+    if (DT30.Sfx) DT30.Sfx.play("pick");
     select2(opts[(i + step2 + opts.length) % opts.length].id);
   }
   function revealSelection(animate) {
@@ -65019,7 +65537,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
         }
         const pb = e.target.closest("[data-pace]");
         if (pb) {
-          if (DT28.Sfx) DT28.Sfx.play("pick");
+          if (DT30.Sfx) DT30.Sfx.play("pick");
           setPace(pb.dataset.pace);
         }
       });
@@ -65032,9 +65550,9 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
   }
   render7();
   setTimeout(() => {
-    if (selected() !== "chaos" && (selected() !== DT28.SET_ID || DT28.SET_PACE !== pace()) && !gameRunning2()) DT28.Sets.activate(selected(), pace());
+    if (selected() !== "chaos" && (selected() !== DT30.SET_ID || DT30.SET_PACE !== pace()) && !gameRunning2()) DT30.Sets.activate(selected(), pace());
   }, 0);
-  DT28.SetPicker = { format, setFormat, selected, select: select2, options, label: label2, modeName, render: render7, pace, setPace, paceOptions: paceOptions2, paceLabel: paceLabel2 };
+  DT30.SetPicker = { format, setFormat, selected, select: select2, options, label: label2, modeName, render: render7, pace, setPace, paceOptions: paceOptions2, paceLabel: paceLabel2 };
 
   // js/theme.js
   var A = (n4) => `url('assets/client/${n4}.webp')`;
@@ -66163,9 +66681,14 @@ body.reduce-motion :is(#overlay, #cmodal, #dtStore, #cxFull, #dtFarm, #cload) { 
 
 `;
   var tag5 = document.createElement("style");
+  var lootStyle = document.createElement("style");
+  lootStyle.textContent = `
+.mystery-boxes{padding:16px;border-bottom:1px solid #586074}.mystery-boxes p,.loot-data-help{font-size:12px;line-height:1.6;color:#b4c2d5}.mystery-boxes article{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid #ffffff15}.mystery-boxes article>div{flex:1}.mystery-boxes small{display:block;color:#b4c2d5;margin-top:5px}.mystery-symbol{font-size:32px;color:#eec279}.loot-data-help{margin:0;padding:10px 24px;background:#0b1521dd}.mystery-reveal{width:min(520px,calc(100vw - 32px));max-height:90vh;overflow:auto;text-align:center;border:1px solid #d2ad70;border-radius:18px;padding:28px;color:#f2f4fc;background:radial-gradient(ellipse at top,#253c55,#0d1424 75%);box-shadow:0 18px 100px #000a}.mystery-reveal::backdrop{background:#030813ce;backdrop-filter:blur(7px)}.mystery-preview{height:260px;display:grid;place-items:center;margin:16px 0}.mystery-preview img{max-width:100%;max-height:100%}.mystery-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.mystery-reveal p{color:#b4c2d5;line-height:1.6}@media(max-width:600px){.mystery-preview{height:180px}.mystery-boxes{padding:10px}.mystery-boxes article{gap:8px}.mystery-symbol{font-size:24px}}`;
   tag5.id = "dt-theme";
   tag5.textContent = css11;
   document.head.appendChild(tag5);
+  lootStyle.textContent += `.loot-data-help{position:relative;z-index:1}@media(max-width:900px){#pgLoot{overflow:auto}.loot{grid-template-columns:1fr;height:auto;min-height:100%}.loot-stage{min-height:510px}.loot-inv{overflow:visible}.altar{grid-template-columns:minmax(120px,.8fr) minmax(0,1fr);padding:12px;gap:12px}.altar-info{padding:16px}.altar-info h2{font-size:24px}.loot-mats{flex-wrap:wrap}.mystery-boxes article>div{min-width:0}}@media(max-width:480px){.altar{grid-template-columns:1fr}.altar-item{max-height:170px;max-width:170px}.loot-stage{min-height:620px}}`;
+  document.head.appendChild(lootStyle);
 })();
 /**
  * @license

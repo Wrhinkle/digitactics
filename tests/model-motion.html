@@ -13,17 +13,21 @@ const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:tru
 const scene=new THREE.Scene();scene.background=new THREE.Color('#354052');scene.add(new THREE.HemisphereLight('#ffffff','#45546d',2.2));
 const light=new THREE.DirectionalLight('#fff6e8',2.2);light.position.set(2,3,4);scene.add(light);
 const camera=new THREE.PerspectiveCamera(35,1,.01,100);camera.position.set(0,.65,2.3);camera.lookAt(0,.5,0);
-window.inspectModel=async (key,file)=>{
+window.inspectModel=async (key,file,yaw=0)=>{
  const gltf=await loader.loadAsync('../'+file),authored=gltf.animations.length,src=DT.MODEL_SOURCES[key]||{};
  const template=prepareTemplate(gltf,src),obj=SkeletonUtils.clone(template.root);scene.add(obj);if(src.rotY)obj.rotation.y=src.rotY;
+ obj.rotation.y += yaw;
+ obj.updateMatrixWorld(true);const bounds=new THREE.Box3().setFromObject(obj),center=bounds.getCenter(new THREE.Vector3()),size=bounds.getSize(new THREE.Vector3());
+ camera.position.set(center.x,center.y+.15,center.z+Math.max(size.x,size.y,size.z)*1.9);camera.lookAt(center);
  const bones=[],eyes=[];obj.traverse(o=>{if(o.isBone)bones.push(o);if(o.isMesh)for(const m of [].concat(o.material))if(/eye/i.test(m.name))eyes.push({name:m.name,textured:!!m.map,uv:!!o.geometry.attributes.uv});});
  const clips=[template.clip,...Object.values(template.actions)].filter(Boolean),motion={},pictures=[];
  if(clips.length){const mixer=new THREE.AnimationMixer(obj);
- for(const clip of clips){mixer.stopAllAction();const action=mixer.clipAction(clip).play();mixer.update(0);obj.updateMatrixWorld(true);const start=bones.map(b=>b.quaternion.clone());let moved=0;
-  for(const u of [.25,.5,.75]){mixer.setTime(clip.duration*u);obj.updateMatrixWorld(true);moved=Math.max(moved,...bones.map((b,i)=>start[i].angleTo(b.quaternion)));}
+ for(const clip of clips){mixer.stopAllAction();const action=mixer.clipAction(clip).play();mixer.update(0);obj.updateMatrixWorld(true);const start=bones.map(b=>({q:b.quaternion.clone(),p:b.position.clone(),s:b.scale.clone()}));let moved=0;
+  for(const u of [.25,.5,.75]){mixer.setTime(clip.duration*u);obj.updateMatrixWorld(true);moved=Math.max(moved,...bones.map((b,i)=>Math.max(start[i].q.angleTo(b.quaternion),start[i].p.distanceTo(b.position),start[i].s.distanceTo(b.scale))));}
   motion[clip.name]=moved;mixer.setTime(clip.duration*(clip.name==='idle'?.25:.5));renderer.render(scene,camera);pictures.push({role:clip.name,image:renderer.domElement.toDataURL('image/png')});action.stop();
  }
  mixer.stopAllAction();mixer.uncacheRoot(obj);}
+ if(!pictures.length){renderer.render(scene,camera);pictures.push({role:'rest (unanimated)',image:renderer.domElement.toDataURL('image/png')});}
  scene.remove(obj);disposeSkeletons(obj);
  return {key,file,authored,disabled:src.anim===false,bones:bones.length,motion,eyes,pictures};
 };

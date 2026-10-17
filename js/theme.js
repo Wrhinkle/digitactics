@@ -1131,6 +1131,11 @@ body.reduce-motion :is(#overlay, #cmodal, #dtStore, #cxFull, #dtFarm, #cload) { 
 
 `;
 const tag = document.createElement('style');
+const lootStyle=document.createElement('style');
+lootStyle.textContent=`
+.mystery-boxes{padding:16px;border-bottom:1px solid #586074}.mystery-boxes p,.loot-data-help{font-size:12px;line-height:1.6;color:#b4c2d5}.mystery-boxes article{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid #ffffff15}.mystery-boxes article>div{flex:1}.mystery-boxes small{display:block;color:#b4c2d5;margin-top:5px}.mystery-symbol{font-size:32px;color:#eec279}.loot-data-help{margin:0;padding:10px 24px;background:#0b1521dd}.mystery-reveal{width:min(520px,calc(100vw - 32px));max-height:90vh;overflow:auto;text-align:center;border:1px solid #d2ad70;border-radius:18px;padding:28px;color:#f2f4fc;background:radial-gradient(ellipse at top,#253c55,#0d1424 75%);box-shadow:0 18px 100px #000a}.mystery-reveal::backdrop{background:#030813ce;backdrop-filter:blur(7px)}.mystery-preview{height:260px;display:grid;place-items:center;margin:16px 0}.mystery-preview img{max-width:100%;max-height:100%}.mystery-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.mystery-reveal p{color:#b4c2d5;line-height:1.6}@media(max-width:600px){.mystery-preview{height:180px}.mystery-boxes{padding:10px}.mystery-boxes article{gap:8px}.mystery-symbol{font-size:24px}}`;
 tag.id = 'dt-theme';
 tag.textContent = css;
 document.head.appendChild(tag);
+lootStyle.textContent += `.loot-data-help{position:relative;z-index:1}@media(max-width:900px){#pgLoot{overflow:auto}.loot{grid-template-columns:1fr;height:auto;min-height:100%}.loot-stage{min-height:510px}.loot-inv{overflow:visible}.altar{grid-template-columns:minmax(120px,.8fr) minmax(0,1fr);padding:12px;gap:12px}.altar-info{padding:16px}.altar-info h2{font-size:24px}.loot-mats{flex-wrap:wrap}.mystery-boxes article>div{min-width:0}}@media(max-width:480px){.altar{grid-template-columns:1fr}.altar-item{max-height:170px;max-width:170px}.loot-stage{min-height:620px}}`;
+document.head.appendChild(lootStyle);

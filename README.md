@@ -10,7 +10,7 @@ A free, unofficial Digimon autobattler made for fun. Buy Digimon, combine copies
 
 ## Start playing
 
-1. Open **[the latest release](https://github.com/Wrhinkle/digitactics/releases/latest)**. Under **Assets**, download `DigiTactics-Steam-1.0.12.zip` (or the newer version's full zip). The automatic **Source code** downloads are for developers, not the ready-to-play game.
+1. Open **[the latest release](https://github.com/Wrhinkle/digitactics/releases/latest)**. Under **Assets**, download `DigiTactics-Steam-1.0.13.zip` (or the newer version's full zip). The automatic **Source code** downloads are for developers, not the ready-to-play game.
 2. Extract the entire zip to a writable folder. Keep all its files together and launch **`Digi-Tactics.exe`** inside the extracted folder. Do not run it from inside the zip.
 3. For online play, have the Steam desktop client running and signed in before launching. Solo works without an online lobby.
 4. Open **Play**, browse the mode carousel, choose your ruleset and pace, then start solo or open Multiplayer to create/join a lobby.
@@ -27,6 +27,8 @@ The release is for **64-bit Windows** and includes its desktop runtime. No devel
 
 Winning finishes with the actual final attack and a ground-level team victory dance. Cosmetic collections and progression are earned locally; this project is not a real-money storefront.
 
+Your first completed combat round each day earns a **Daybreak Box**. From stage 2 onward, rounds can also drop **Cipher Boxes** and **Cipher Keys**; one key opens one Cipher Box. Open them in **Loot**. The two exclusive pools each contain 20 companions, emotes, dances, victory screens, soundboard clips and elimination sounds, plus five boards. Rewards stay hidden in Collection until discovered, and boxes avoid duplicate rewards. **Digi-Data** is individual companion XP earned through matches, duplicate legend hatches and Digi-Farm care; **Bits** are spending currency. Find the nine retro 3D emotes using **Collection → Emotes → Digimon World 1**.
+
 ## Play online
 
 The Windows build uses Steam identity, lobbies, friend invites and relayed peer networking. Open the game on both computers first, then create a **public** or **friends-only** lobby. Public rooms appear in the lobby browser; the host can invite friends through the overlay. Everyone should use the latest release. Lobby discovery is a room browser, not a ranked matchmaking queue.
@@ -38,6 +40,8 @@ The build includes peer/message validation, host-side action checks, rate limits
 **[Online, privacy, saves and updates explained](docs/ONLINE_AND_UPDATES.md)**
 
 ## Updates and saves
+
+**Updating from 1.0.12 or earlier:** download and extract the full 1.0.13 build once. This release repairs a missing native networking dependency in the desktop runtime, which a game-only update cannot replace. Keep your existing profile folder; later compatible game updates continue automatically.
 
 The game checks this public repository's latest release at launch, downloads and verifies a newer game payload, and applies it on restart. **No token is included or required.** If GitHub is offline or rate-limited, the installed game remains usable; you can always download a full release manually. A desktop-runtime change may require a new full download. Private testers should download this public full build once to switch update channels.
 

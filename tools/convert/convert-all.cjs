@@ -94,7 +94,7 @@ const GAME = { Links: 'Digimon Links', ReArise: 'Digimon ReArise', CyberSleuth: 
 // Animations folder, else the first FBX, else the first OBJ, else a DAE (FBX2glTF reads COLLADA too).
 const PICK = {
   PawnChessmon_Black: /g146_d\.fbx$/i, KnightChessmon_Black: /m181_d\.fbx$/i, Kiwimon: /m140_m\.fbx$/i, MagnaGarurumon: /chr675\.fbx$/i,
-  Gammamon: /\.obj$/i, DW1_Greymon: /Greymon1\.obj$/i, DW1_Bakemon: /Bakemon 1\.obj$/i, DW1_Meramon: /Meramon 1\.obj$/i, DW1_Vademon: /Vademon1\.obj$/i,
+  Gammamon: /Gammamon\.fbx$/i, DW1_Greymon: /Greymon1\.obj$/i, DW1_Bakemon: /Bakemon 1\.obj$/i, DW1_Meramon: /Meramon 1\.obj$/i, DW1_Vademon: /Vademon1\.obj$/i,
 };
 // Texture swaps after conversion: folder -> { texture the converter linked: file in the rip to use instead }.
 const RETEXTURE = {
@@ -195,6 +195,7 @@ for (const folder of [...new Set(Object.values(MAP))]) {
   try {
     if (!pick) throw new Error('no model file');
     convertOne(pick, OUT, name);
+    if (folder === 'Gammamon') execFileSync(process.execPath, [path.join(HERE, 'restore-gammamon.mjs'), out, out], { windowsHide: true, stdio: 'pipe' });
     await retexture(folder, out);
     converted[folder] = { file: `models/files/${name}.glb`, src: path.relative(path.join(HERE, 'rips', 'x'), pick), kb: Math.round(fs.statSync(out).size / 1024) };
     console.log(`ok   ${folder.padEnd(16)} ${converted[folder].kb} KB  <- ${converted[folder].src}`);

@@ -1,0 +1,182 @@
+[
+  {
+    "folder": "L_GoldNumemon",
+    "form": "GoldNumemon"
+  },
+  {
+    "folder": "L_Pandamon",
+    "form": "Pandamon"
+  },
+  {
+    "folder": "L_Belphemon_Sleep_Mode",
+    "form": "Belphemon Sleep Mode"
+  },
+  {
+    "folder": "L_BlitzGreymon",
+    "form": "BlitzGreymon"
+  },
+  {
+    "folder": "L_CresGarurumon",
+    "form": "CresGarurumon"
+  },
+  {
+    "folder": "L_Gallantmon",
+    "form": "Gallantmon"
+  },
+  {
+    "folder": "L_Gankoomon",
+    "form": "Gankoomon"
+  },
+  {
+    "folder": "L_GranLocomon",
+    "form": "GranLocomon"
+  },
+  {
+    "folder": "L_KingEtemon",
+    "form": "KingEtemon"
+  },
+  {
+    "folder": "L_MetalEtemon",
+    "form": "MetalEtemon"
+  },
+  {
+    "folder": "L_MetalGarurumon_X",
+    "form": "MetalGarurumon X"
+  },
+  {
+    "folder": "L_Minervamon",
+    "form": "Minervamon"
+  },
+  {
+    "folder": "L_MirageGaogamon",
+    "form": "MirageGaogamon"
+  },
+  {
+    "folder": "L_Omnimon_Alter_B",
+    "form": "Omnimon Alter B"
+  },
+  {
+    "folder": "L_Omnimon_Alter_S",
+    "form": "Omnimon Alter S"
+  },
+  {
+    "folder": "L_Omnimon_Merciful_Mode",
+    "form": "Omnimon Merciful Mode",
+    "pick": "chr448\\.fbx$",
+    "anim": false
+  },
+  {
+    "folder": "L_Omnimon_X",
+    "form": "Omnimon X"
+  },
+  {
+    "folder": "L_Omnimon_Zwart_D",
+    "form": "Omnimon Zwart D"
+  },
+  {
+    "folder": "L_Ophanimon_Falldown_Mode",
+    "form": "Ophanimon Falldown Mode"
+  },
+  {
+    "folder": "L_Ravemon_Burst_Mode",
+    "form": "Ravemon Burst Mode"
+  },
+  {
+    "folder": "CS_Arcadiamon_In_Training",
+    "form": "Arcadiamon In Training"
+  },
+  {
+    "folder": "CS_Arcadiamon_Rookie",
+    "form": "Arcadiamon Rookie"
+  },
+  {
+    "folder": "CS_Arcadiamon_Champion",
+    "form": "Arcadiamon Champion"
+  },
+  {
+    "folder": "CS_Sistermon_Ciel",
+    "form": "Sistermon Ciel"
+  },
+  {
+    "folder": "CS_Arcadiamon_Ultimate",
+    "form": "Arcadiamon Ultimate"
+  },
+  {
+    "folder": "CS_Digitamamon",
+    "form": "Digitamamon"
+  },
+  {
+    "folder": "CS_Arcadiamon_Mega",
+    "form": "Arcadiamon Mega"
+  },
+  {
+    "folder": "CS_Cherubimon_Evil",
+    "form": "Cherubimon Evil"
+  },
+  {
+    "folder": "CS_Cherubimon_Good",
+    "form": "Cherubimon Good"
+  },
+  {
+    "folder": "CS_Leopardmon",
+    "form": "Leopardmon"
+  },
+  {
+    "folder": "CS_Omnimon_NX",
+    "form": "Omnimon NX"
+  },
+  {
+    "folder": "CS_Arcadiamon_Ultra",
+    "form": "Arcadiamon Ultra"
+  },
+  {
+    "folder": "CS_Chaosmon",
+    "form": "Chaosmon"
+  },
+  {
+    "folder": "CS_Examon",
+    "form": "Examon"
+  },
+  {
+    "folder": "CS_Alphamon_NX",
+    "source": "CS_Alphamon",
+    "form": "Alphamon NX",
+    "pick": "chr901\\.fbx$"
+  },
+  {
+    "folder": "CS_Alphamon_Ouryuken",
+    "source": "CS_Alphamon",
+    "form": "Alphamon Ouryuken",
+    "pick": "chr766\\.fbx$"
+  },
+  {
+    "folder": "CS_Chaosmon_Valdur_Arm",
+    "source": "CS_Chaosmon",
+    "form": "Chaosmon Valdur Arm",
+    "pick": "chr118\\.fbx$"
+  },
+  {
+    "folder": "TS_Muchomon",
+    "source": "TS_Penmon",
+    "form": "Muchomon",
+    "pick": "chr622\\.fbx$",
+    "retexture": {
+      "chr622a01.png": "chr623a01.png",
+      "chr622b01.png": "chr623b01.png",
+      "chr622p01.png": "chr623p01.png"
+    }
+  },
+  {
+    "folder": "TS_Terriermon_Assistant",
+    "source": "TS_Terriermon_Lopmon_and_Assistant",
+    "form": "Terriermon Assistant",
+    "pick": "chr790\\.fbx$",
+    "retexture": {
+      "chr790p01.png": "chr999p01.png"
+    }
+  },
+  {
+    "folder": "NO_WarGrowlmon_Yellow",
+    "form": "WarGrowlmon Yellow"
+  }
+]

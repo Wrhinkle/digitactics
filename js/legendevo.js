@@ -241,8 +241,28 @@ const EVO = {
   bakemon: 'myotismon:bond neodevimon:battle',
   lekismon: 'crescemon:bond andiramon:food',
 };
+Object.assign(FORMS, {
+  ginryumon:['ryudamon:1',CH,'Ginryumon'],hisyaryumon:['ryudamon:2',U,'Hisyaryumon'],
+  peckmon:['falcomon:1',CH,'Peckmon'],crowmon:['falcomon:2',U,'Crowmon'],
+  dobermon:['ac:Dobermon',CH,'Dobermon'],musyamon:['ac:Musyamon',CH,'Musyamon'],grademon:['drg:Grademon',U,'Grademon'],
+  firamon:['coronamon:1',CH,'Firamon'],flaremon:['coronamon:2',U,'Flaremon'],
+  waspmon:['fanbeemon:1',CH,'Waspmon'],cannonbeemon:['fanbeemon:2',U,'CannonBeemon'],
+  coelamon:['gizamon:1',CH,'Coelamon'],frigimon:['extra:DW1_Frigimon',CH,'Frigimon'],mammothmon:['ac:Mammothmon',U,'Mammothmon'],
+});
+Object.assign(EVO, {
+  ryudamon:'ginryumon:bond coredramon:battle',ginryumon:'hisyaryumon:bond',
+  falcomon:'peckmon:bond aquilamon:battle',hyokomon:'peckmon:bond birdramon:battle',peckmon:'crowmon:bond garudamon:battle',
+  gazimon:'dobermon:bond garurumon:battle',dobermon:'weregarurumon:bond',
+  kotemon:'musyamon:bond guardromon:battle',musyamon:'grademon:bond',
+  coronamon:'firamon:bond',firamon:'flaremon:bond',lunamon:'lekismon:bond',
+  fanbeemon:'waspmon:bond kabuterimon:battle',waspmon:'cannonbeemon:bond',
+  syakomon:'coelamon:bond seadramon:battle',crabmon:'coelamon:bond ikkakumon:battle',coelamon:'megaseadramon:bond zudomon:battle',
+  penguinmon:'frigimon:bond seadramon:battle',frigimon:'mammothmon:bond zudomon:battle',
+});
 const KIDS = {};
 for (const [f, s] of Object.entries(EVO)) KIDS[f] = s.split(/\s+/).map((x) => x.split(':'));
+// Discovered companions share the care branches of their species, with independent saved progress.
+const children = id => KIDS[C.get('legend',id)?.data?.evoRoot || id] || [];
 
 // ---------- economy ----------
 const MAX_LEVEL = 10;
@@ -303,7 +323,7 @@ function levelOf(xp) {
 const XP_MAX = DATA_FOR.reduce((a, b) => a + b, 0);
 
 // ---------- forms ----------
-const stageOf = (id) => { const it = C.get('legend', id); return it && /^Fresh/.test(it.desc || '') ? 'Fresh' : 'In-Training'; };
+const stageOf = (id) => { const it = C.get('legend', id); return it?.data?.level || (it && /^Fresh/.test(it.desc || '') ? 'Fresh' : 'In-Training'); };
 const TIER = { Fresh: 0, 'In-Training': 0, Rookie: 1, Champion: 2, Ultimate: 3 };
 const RANK = { Fresh: 0, 'In-Training': 1, Rookie: 2, Champion: 3, Ultimate: 4 }; // row order in the tree
 function formInfo(formId) {
@@ -321,7 +341,7 @@ function formInfo(formId) {
   const it = C.get('legend', formId);
   if (!it) return null;
   const level = stageOf(formId);
-  return { id: formId, name: it.name, level, tier: 0, rank: RANK[level], legend: formId };
+  return { id: formId, name: it.name, level, tier: TIER[level], rank: RANK[level], legend: formId };
 }
 // level needed to digivolve into this form
 const entryLevel = (f) => (f.tier > 0 ? TIER_LEVEL[f.tier] : IT_LEVEL);
@@ -331,7 +351,7 @@ function reach(id) {
   if (reachCache.has(id)) return reachCache.get(id);
   const seen = new Set([id]);
   const q = [id];
-  while (q.length) for (const [k] of KIDS[q.shift()] || []) if (!seen.has(k) && FORMS[k]) { seen.add(k); q.push(k); }
+  while (q.length) for (const [k] of children(q.shift())) if (!seen.has(k) && FORMS[k]) { seen.add(k); q.push(k); }
   reachCache.set(id, seen);
   return seen;
 }
@@ -343,7 +363,7 @@ function tree(id) {
   const seen = new Set([id]);
   const edges = [];
   const parents = {};
-  for (let i = 0; i < order.length; i++) for (const [k] of KIDS[order[i]] || []) {
+  for (let i = 0; i < order.length; i++) for (const [k] of children(order[i])) {
     if (!FORMS[k]) continue;
     edges.push([order[i], k]);
     (parents[k] = parents[k] || []).push(order[i]);
@@ -386,7 +406,7 @@ function weightsFor(r, from, id) {
   const bonus = careBonus(id);
   const care = { bond: cap((r.care.bond || 0) + bonus.bond), battle: cap((r.care.battle || 0) + bonus.battle), food: cap((r.care.food || 0) + bonus.food) };
   const total = care.bond + care.battle + care.food;
-  return (KIDS[from] || []).filter(([k]) => FORMS[k]).map(([form, c]) => ({
+  return children(from).filter(([k]) => FORMS[k]).map(([form, c]) => ({
     form, care: c, weight: c === 'wild' ? Math.max(WILD_MIN, WILD_BASE - total) + bonus.wild : CARE_BASE + CARE_PER * care[c],
   }));
 }
@@ -529,7 +549,7 @@ const LegendEvo = {
     const depth = [1, 2, 2, 3, 3][h % 5];
     let f = id;
     for (let d = 0; d < depth; d++) {
-      const kids = (KIDS[f] || []).filter(([k]) => FORMS[k]);
+      const kids = children(f).filter(([k]) => FORMS[k]);
       if (!kids.length) break;
       f = kids[hash(`${seed}|${d}`) % kids.length][0];
     }

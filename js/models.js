@@ -5342,6 +5342,2671 @@
   });
   // RIPS-END
 
+  // UNIQUE-START (tools/convert/import-unique.cjs)
+  Object.assign(DT.MODEL_SOURCES, {
+  "unique:L_GoldNumemon": {
+    "form": "GoldNumemon",
+    "uid": "rip-l_goldnumemon",
+    "rip": true,
+    "name": "GoldNumemon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304056/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Pandamon": {
+    "form": "Pandamon",
+    "uid": "rip-l_pandamon",
+    "rip": true,
+    "name": "Pandamon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304027/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Belphemon_Sleep_Mode": {
+    "form": "Belphemon Sleep Mode",
+    "uid": "rip-l_belphemon_sleep_mode",
+    "rip": true,
+    "name": "Belphemon Sleep Mode (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304158/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_BlitzGreymon": {
+    "form": "BlitzGreymon",
+    "uid": "rip-l_blitzgreymon",
+    "rip": true,
+    "name": "BlitzGreymon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308036/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_CresGarurumon": {
+    "form": "CresGarurumon",
+    "uid": "rip-l_cresgarurumon",
+    "rip": true,
+    "name": "CresGarurumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308180/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Gallantmon": {
+    "form": "Gallantmon",
+    "uid": "rip-l_gallantmon",
+    "rip": true,
+    "name": "Gallantmon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304054/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Gankoomon": {
+    "form": "Gankoomon",
+    "uid": "rip-l_gankoomon",
+    "rip": true,
+    "name": "Gankoomon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304201/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_GranLocomon": {
+    "form": "GranLocomon",
+    "uid": "rip-l_granlocomon",
+    "rip": true,
+    "name": "GranLocomon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304203/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_KingEtemon": {
+    "form": "KingEtemon",
+    "uid": "rip-l_kingetemon",
+    "rip": true,
+    "name": "KingEtemon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304489/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_MetalEtemon": {
+    "form": "MetalEtemon",
+    "uid": "rip-l_metaletemon",
+    "rip": true,
+    "name": "MetalEtemon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304083/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_MetalGarurumon_X": {
+    "form": "MetalGarurumon X",
+    "uid": "rip-l_metalgarurumon_x",
+    "rip": true,
+    "name": "MetalGarurumon X (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304069/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Minervamon": {
+    "form": "Minervamon",
+    "uid": "rip-l_minervamon",
+    "rip": true,
+    "name": "Minervamon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304218/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_MirageGaogamon": {
+    "form": "MirageGaogamon",
+    "uid": "rip-l_miragegaogamon",
+    "rip": true,
+    "name": "MirageGaogamon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304044/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Omnimon_Alter_B": {
+    "form": "Omnimon Alter B",
+    "uid": "rip-l_omnimon_alter_b",
+    "rip": true,
+    "name": "Omnimon Alter B (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304226/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Omnimon_Alter_S": {
+    "form": "Omnimon Alter S",
+    "uid": "rip-l_omnimon_alter_s",
+    "rip": true,
+    "name": "Omnimon Alter S (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/308181/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Omnimon_Merciful_Mode": {
+    "form": "Omnimon Merciful Mode",
+    "uid": "rip-l_omnimon_merciful_mode",
+    "rip": true,
+    "name": "Omnimon Merciful Mode (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/307595/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "anim": false
+  },
+  "unique:L_Omnimon_X": {
+    "form": "Omnimon X",
+    "uid": "rip-l_omnimon_x",
+    "rip": true,
+    "name": "Omnimon X (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305434/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Omnimon_Zwart_D": {
+    "form": "Omnimon Zwart D",
+    "uid": "rip-l_omnimon_zwart_d",
+    "rip": true,
+    "name": "Omnimon Zwart D (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304227/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Ophanimon_Falldown_Mode": {
+    "form": "Ophanimon Falldown Mode",
+    "uid": "rip-l_ophanimon_falldown_mode",
+    "rip": true,
+    "name": "Ophanimon Falldown Mode (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/305588/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:L_Ravemon_Burst_Mode": {
+    "form": "Ravemon Burst Mode",
+    "uid": "rip-l_ravemon_burst_mode",
+    "rip": true,
+    "name": "Ravemon Burst Mode (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304220/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Arcadiamon_In_Training": {
+    "form": "Arcadiamon In Training",
+    "uid": "rip-cs_arcadiamon_in_training",
+    "rip": true,
+    "name": "Arcadiamon In Training (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324341/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Arcadiamon_Rookie": {
+    "form": "Arcadiamon Rookie",
+    "uid": "rip-cs_arcadiamon_rookie",
+    "rip": true,
+    "name": "Arcadiamon Rookie (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324342/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Arcadiamon_Champion": {
+    "form": "Arcadiamon Champion",
+    "uid": "rip-cs_arcadiamon_champion",
+    "rip": true,
+    "name": "Arcadiamon Champion (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324343/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Sistermon_Ciel": {
+    "form": "Sistermon Ciel",
+    "uid": "rip-cs_sistermon_ciel",
+    "rip": true,
+    "name": "Sistermon Ciel (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324399/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Arcadiamon_Ultimate": {
+    "form": "Arcadiamon Ultimate",
+    "uid": "rip-cs_arcadiamon_ultimate",
+    "rip": true,
+    "name": "Arcadiamon Ultimate (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324344/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Digitamamon": {
+    "form": "Digitamamon",
+    "uid": "rip-cs_digitamamon",
+    "rip": true,
+    "name": "Digitamamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324568/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Arcadiamon_Mega": {
+    "form": "Arcadiamon Mega",
+    "uid": "rip-cs_arcadiamon_mega",
+    "rip": true,
+    "name": "Arcadiamon Mega (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324345/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Cherubimon_Evil": {
+    "form": "Cherubimon Evil",
+    "uid": "rip-cs_cherubimon_evil",
+    "rip": true,
+    "name": "Cherubimon Evil (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324575/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Cherubimon_Good": {
+    "form": "Cherubimon Good",
+    "uid": "rip-cs_cherubimon_good",
+    "rip": true,
+    "name": "Cherubimon Good (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324576/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Leopardmon": {
+    "form": "Leopardmon",
+    "uid": "rip-cs_leopardmon",
+    "rip": true,
+    "name": "Leopardmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324487/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Omnimon_NX": {
+    "form": "Omnimon NX",
+    "uid": "rip-cs_omnimon_nx",
+    "rip": true,
+    "name": "Omnimon NX (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324491/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Arcadiamon_Ultra": {
+    "form": "Arcadiamon Ultra",
+    "uid": "rip-cs_arcadiamon_ultra",
+    "rip": true,
+    "name": "Arcadiamon Ultra (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324273/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Chaosmon": {
+    "form": "Chaosmon",
+    "uid": "rip-cs_chaosmon",
+    "rip": true,
+    "name": "Chaosmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324508/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Examon": {
+    "form": "Examon",
+    "uid": "rip-cs_examon",
+    "rip": true,
+    "name": "Examon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324279/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Alphamon_NX": {
+    "form": "Alphamon NX",
+    "uid": "rip-cs_alphamon_nx",
+    "rip": true,
+    "name": "Alphamon NX (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324489/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Alphamon_Ouryuken": {
+    "form": "Alphamon Ouryuken",
+    "uid": "rip-cs_alphamon_ouryuken",
+    "rip": true,
+    "name": "Alphamon Ouryuken (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324489/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:CS_Chaosmon_Valdur_Arm": {
+    "form": "Chaosmon Valdur Arm",
+    "uid": "rip-cs_chaosmon_valdur_arm",
+    "rip": true,
+    "name": "Chaosmon Valdur Arm (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324508/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:TS_Muchomon": {
+    "form": "Muchomon",
+    "uid": "rip-ts_muchomon",
+    "rip": true,
+    "name": "Muchomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603892/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:TS_Terriermon_Assistant": {
+    "form": "Terriermon Assistant",
+    "uid": "rip-ts_terriermon_assistant",
+    "rip": true,
+    "name": "Terriermon Assistant (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603357/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "unique:NO_WarGrowlmon_Yellow": {
+    "form": "WarGrowlmon Yellow",
+    "uid": "rip-no_wargrowlmon_yellow",
+    "rip": true,
+    "name": "WarGrowlmon Yellow (Digimon World: Next Order)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342142/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  }
+});
+  // UNIQUE-END
+
+
+
+  // SKINS-START (tools/convert/import-skins.cjs)
+  Object.assign(DT.MODEL_SOURCES, {
+  "skin:SKIN_MetalGreymon_chr327": {
+    "form": "BlackMetalGreymon",
+    "uid": "rip-skin_metalgreymon_chr327",
+    "rip": true,
+    "name": "BlackMetalGreymon (digimonlinks)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304070/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_Leomon_chr409": {
+    "form": "IceLeomon",
+    "uid": "rip-skin_leomon_chr409",
+    "rip": true,
+    "name": "IceLeomon (digimonlinks)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304016/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_Coredramon_Green_chr218": {
+    "form": "Coredramon (Blue)",
+    "uid": "rip-skin_coredramon_green_chr218",
+    "rip": true,
+    "name": "Coredramon (Blue) (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304048/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_Numemon_chr729": {
+    "form": "Geremon",
+    "uid": "rip-skin_numemon_chr729",
+    "rip": true,
+    "name": "Geremon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304025/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_Gatomon_chr043": {
+    "form": "BlackGatomon",
+    "uid": "rip-skin_gatomon_chr043",
+    "rip": true,
+    "name": "BlackGatomon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304007/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_Omnimon_chr757": {
+    "form": "Omnimon Zwart",
+    "uid": "rip-skin_omnimon_chr757",
+    "rip": true,
+    "name": "Omnimon Zwart (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304026/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_WarGreymon_chr175": {
+    "form": "BlackWarGreymon",
+    "uid": "rip-skin_wargreymon_chr175",
+    "rip": true,
+    "name": "BlackWarGreymon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304040/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_MetalGarurumon_chr182": {
+    "form": "BlackMetalGarurumon",
+    "uid": "rip-skin_metalgarurumon_chr182",
+    "rip": true,
+    "name": "BlackMetalGarurumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304068/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_Sakuyamon_chr754": {
+    "form": "Kuzuhamon",
+    "uid": "rip-skin_sakuyamon_chr754",
+    "rip": true,
+    "name": "Kuzuhamon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304170/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_CS_Agumon_chr143": {
+    "form": "BlackAgumon",
+    "uid": "rip-skin_cs_agumon_chr143",
+    "rip": true,
+    "name": "BlackAgumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324396/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_CS_Gabumon_chr713": {
+    "form": "BlackGabumon",
+    "uid": "rip-skin_cs_gabumon_chr713",
+    "rip": true,
+    "name": "BlackGabumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324615/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_CS_Devimon_chr730": {
+    "form": "IceDevimon",
+    "uid": "rip-skin_cs_devimon_chr730",
+    "rip": true,
+    "name": "IceDevimon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/326172/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_CS_Garurumon_chr714": {
+    "form": "BlackGarurumon",
+    "uid": "rip-skin_cs_garurumon_chr714",
+    "rip": true,
+    "name": "BlackGarurumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/326174/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_CS_Gatomon_chr043": {
+    "form": "BlackGatomon",
+    "uid": "rip-skin_cs_gatomon_chr043",
+    "rip": true,
+    "name": "BlackGatomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/326175/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_CS_Numemon_chr729": {
+    "form": "Geremon",
+    "uid": "rip-skin_cs_numemon_chr729",
+    "rip": true,
+    "name": "Geremon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335824/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_CS_Omnimon_chr757": {
+    "form": "Omnimon Zwart",
+    "uid": "rip-skin_cs_omnimon_chr757",
+    "rip": true,
+    "name": "Omnimon Zwart (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324591/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_L_Agumon_chr143": {
+    "form": "BlackAgumon",
+    "uid": "rip-skin_l_agumon_chr143",
+    "rip": true,
+    "name": "BlackAgumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/302502/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_L_Agumon_chr143_cs": {
+    "form": "BlackAgumon",
+    "uid": "rip-skin_l_agumon_chr143_cs",
+    "rip": true,
+    "name": "BlackAgumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/302502/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_L_Gabumon_chr713": {
+    "form": "BlackGabumon",
+    "uid": "rip-skin_l_gabumon_chr713",
+    "rip": true,
+    "name": "BlackGabumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304052/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_L_Garurumon_chr714": {
+    "form": "BlackGarurumon",
+    "uid": "rip-skin_l_garurumon_chr714",
+    "rip": true,
+    "name": "BlackGarurumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304006/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_L_Greymon_chr712": {
+    "form": "BlackGreymon",
+    "uid": "rip-skin_l_greymon_chr712",
+    "rip": true,
+    "name": "BlackGreymon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304043/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_L_Meramon_chr177": {
+    "form": "BlueMeramon",
+    "uid": "rip-skin_l_meramon_chr177",
+    "rip": true,
+    "name": "BlueMeramon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304023/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_L_WereGarurumon_chr715": {
+    "form": "ShadowWereGarurumon",
+    "uid": "rip-skin_l_weregarurumon_chr715",
+    "rip": true,
+    "name": "ShadowWereGarurumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304078/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_L_Gallantmon_chr150": {
+    "form": "ChaosGallantmon",
+    "uid": "rip-skin_l_gallantmon_chr150",
+    "rip": true,
+    "name": "ChaosGallantmon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304054/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_TS_Bearmon_chr924": {
+    "form": "Bearmon (Big)",
+    "uid": "rip-skin_ts_bearmon_chr924",
+    "rip": true,
+    "name": "Bearmon (Big) (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603876/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_TS_Bearmon_chr925": {
+    "form": "Bearmon (Little)",
+    "uid": "rip-skin_ts_bearmon_chr925",
+    "rip": true,
+    "name": "Bearmon (Little) (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603876/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  },
+  "skin:SKIN_TS_Goburimon_chr577": {
+    "form": "Shamanmon",
+    "uid": "rip-skin_ts_goburimon_chr577",
+    "rip": true,
+    "name": "Shamanmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/607435/",
+    "author": "The Models Resource",
+    "license": "Game rip"
+  }
+});
+  // SKINS-END
+
+  // CATALOG-START (tools/convert/register-catalog.cjs)
+  Object.assign(DT.MODEL_SOURCES, {
+  "catalog:NeoDevimon:main": {
+    "form": "NeoDevimon",
+    "uid": "rip-cat_neodevimon_main",
+    "rip": true,
+    "name": "NeoDevimon (Digimon Masters)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/287785/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:Elecmon:chr564": {
+    "form": "Elecmon",
+    "uid": "rip-cat_elecmon_chr564",
+    "rip": true,
+    "name": "Elecmon (Digimon ReArise)",
+    "url": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327409/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:Panjyamon:main": {
+    "form": "Panjyamon",
+    "uid": "rip-cat_panjyamon_main",
+    "rip": true,
+    "name": "Panjyamon (Digimon Masters)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/289511/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:Turuiemon:d014": {
+    "form": "Turuiemon",
+    "uid": "rip-cat_turuiemon_d014",
+    "rip": true,
+    "name": "Turuiemon (Digimon ReArise)",
+    "url": "https://models.spriters-resource.com/mobile/digimonrearise/asset/327687/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:Gesomon:main": {
+    "form": "Gesomon",
+    "uid": "rip-cat_gesomon_main",
+    "rip": true,
+    "name": "Gesomon (Digimon Masters)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/290035/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:MarineDevimon:main": {
+    "form": "MarineDevimon",
+    "uid": "rip-cat_marinedevimon_main",
+    "rip": true,
+    "name": "MarineDevimon (Digimon Masters)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/290036/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:Mistymon:main": {
+    "form": "Mistymon",
+    "uid": "rip-cat_mistymon_main",
+    "rip": true,
+    "name": "Mistymon (Digimon Masters)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/287843/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:MarineDevimon2:main": {
+    "form": "MarineDevimon",
+    "uid": "rip-cat_marinedevimon2_main",
+    "rip": true,
+    "name": "MarineDevimon (Digimon New Century)",
+    "url": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/335383/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:ShineGreymon:chr776": {
+    "form": "ShineGreymon Burst Mode",
+    "uid": "rip-cat_shinegreymon_chr776",
+    "rip": true,
+    "name": "ShineGreymon Burst Mode (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304032/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:Gotsumon:chr081": {
+    "form": "Gotsumon",
+    "uid": "rip-cat_gotsumon_chr081",
+    "rip": true,
+    "name": "Gotsumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324502/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:MagnaGarurumon:chr678": {
+    "form": "MagnaGarurumon",
+    "uid": "rip-cat_magnagarurumon_chr678",
+    "rip": true,
+    "name": "MagnaGarurumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331597/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:PawnChessmon_Black:g153": {
+    "form": "PawnChessmon Black",
+    "uid": "rip-cat_pawnchessmon_black_g153",
+    "rip": true,
+    "name": "PawnChessmon Black (Digimon New Century)",
+    "url": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/335393/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:KnightChessmon_Black:m189": {
+    "form": "KnightChessmon Black",
+    "uid": "rip-cat_knightchessmon_black_m189",
+    "rip": true,
+    "name": "KnightChessmon Black (Digimon New Century)",
+    "url": "https://models.spriters-resource.com/mobile/digimonnewcentury/asset/335392/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Botamon:chr317": {
+    "form": "Botamon",
+    "uid": "rip-cat_cs_botamon_chr317",
+    "rip": true,
+    "name": "Botamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324335/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Pabumon:chr387": {
+    "form": "Pabumon",
+    "uid": "rip-cat_cs_pabumon_chr387",
+    "rip": true,
+    "name": "Pabumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324538/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Poyomon:chr320": {
+    "form": "Poyomon",
+    "uid": "rip-cat_cs_poyomon_chr320",
+    "rip": true,
+    "name": "Poyomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324539/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Punimon:chr437": {
+    "form": "Punimon",
+    "uid": "rip-cat_cs_punimon_chr437",
+    "rip": true,
+    "name": "Punimon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324540/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Bukamon:chr514": {
+    "form": "Bukamon",
+    "uid": "rip-cat_cs_bukamon_chr514",
+    "rip": true,
+    "name": "Bukamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324544/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Motimon:chr388": {
+    "form": "Motimon",
+    "uid": "rip-cat_cs_motimon_chr388",
+    "rip": true,
+    "name": "Motimon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324545/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Nyaromon:chr515": {
+    "form": "Nyaromon",
+    "uid": "rip-cat_cs_nyaromon_chr515",
+    "rip": true,
+    "name": "Nyaromon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324546/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Pagumon:chr567": {
+    "form": "Pagumon",
+    "uid": "rip-cat_cs_pagumon_chr567",
+    "rip": true,
+    "name": "Pagumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324547/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Tokomon:chr325": {
+    "form": "Tokomon",
+    "uid": "rip-cat_cs_tokomon_chr325",
+    "rip": true,
+    "name": "Tokomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324549/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Tsumemon:chr631": {
+    "form": "Tsumemon",
+    "uid": "rip-cat_cs_tsumemon_chr631",
+    "rip": true,
+    "name": "Tsumemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324550/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Tsunomon:chr438": {
+    "form": "Tsunomon",
+    "uid": "rip-cat_cs_tsunomon_chr438",
+    "rip": true,
+    "name": "Tsunomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324551/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Wanyamon:chr321": {
+    "form": "Wanyamon",
+    "uid": "rip-cat_cs_wanyamon_chr321",
+    "rip": true,
+    "name": "Wanyamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324552/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Yokomon:chr510": {
+    "form": "Yokomon",
+    "uid": "rip-cat_cs_yokomon_chr510",
+    "rip": true,
+    "name": "Yokomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324553/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Agumon:chr050": {
+    "form": "Agumon",
+    "uid": "rip-cat_cs_agumon_chr050",
+    "rip": true,
+    "name": "Agumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324396/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Armadillomon:chr707": {
+    "form": "Armadillomon",
+    "uid": "rip-cat_cs_armadillomon_chr707",
+    "rip": true,
+    "name": "Armadillomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324593/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Betamon:chr389": {
+    "form": "Betamon",
+    "uid": "rip-cat_cs_betamon_chr389",
+    "rip": true,
+    "name": "Betamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324594/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Biyomon:chr307": {
+    "form": "Biyomon",
+    "uid": "rip-cat_cs_biyomon_chr307",
+    "rip": true,
+    "name": "Biyomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324595/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_DemiDevimon:chr097": {
+    "form": "DemiDevimon",
+    "uid": "rip-cat_cs_demidevimon_chr097",
+    "rip": true,
+    "name": "DemiDevimon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324596/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Dorumon:chr112": {
+    "form": "Dorumon",
+    "uid": "rip-cat_cs_dorumon_chr112",
+    "rip": true,
+    "name": "Dorumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324597/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Dracomon:chr208": {
+    "form": "Dracomon",
+    "uid": "rip-cat_cs_dracomon_chr208",
+    "rip": true,
+    "name": "Dracomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324598/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Falcomon:chr705": {
+    "form": "Falcomon",
+    "uid": "rip-cat_cs_falcomon_chr705",
+    "rip": true,
+    "name": "Falcomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324614/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Gabumon:chr151": {
+    "form": "Gabumon",
+    "uid": "rip-cat_cs_gabumon_chr151",
+    "rip": true,
+    "name": "Gabumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324615/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Goblimon:chr111": {
+    "form": "Goblimon",
+    "uid": "rip-cat_cs_goblimon_chr111",
+    "rip": true,
+    "name": "Goblimon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324618/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Gomamon:chr343": {
+    "form": "Gomamon",
+    "uid": "rip-cat_cs_gomamon_chr343",
+    "rip": true,
+    "name": "Gomamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324619/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Hagurumon:chr009": {
+    "form": "Hagurumon",
+    "uid": "rip-cat_cs_hagurumon_chr009",
+    "rip": true,
+    "name": "Hagurumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324621/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Kudamon:chr053": {
+    "form": "Kudamon",
+    "uid": "rip-cat_cs_kudamon_chr053",
+    "rip": true,
+    "name": "Kudamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324610/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Lalamon:chr056": {
+    "form": "Lalamon",
+    "uid": "rip-cat_cs_lalamon_chr056",
+    "rip": true,
+    "name": "Lalamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324611/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Lopmon:chr750": {
+    "form": "Lopmon",
+    "uid": "rip-cat_cs_lopmon_chr750",
+    "rip": true,
+    "name": "Lopmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324612/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Lucemon:chr390": {
+    "form": "Lucemon",
+    "uid": "rip-cat_cs_lucemon_chr390",
+    "rip": true,
+    "name": "Lucemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324613/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Palmon:chr348": {
+    "form": "Palmon",
+    "uid": "rip-cat_cs_palmon_chr348",
+    "rip": true,
+    "name": "Palmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324599/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Renamon:chr391": {
+    "form": "Renamon",
+    "uid": "rip-cat_cs_renamon_chr391",
+    "rip": true,
+    "name": "Renamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324601/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Ryudamon:chr190": {
+    "form": "Ryudamon",
+    "uid": "rip-cat_cs_ryudamon_chr190",
+    "rip": true,
+    "name": "Ryudamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324622/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Salamon:chr361": {
+    "form": "Salamon",
+    "uid": "rip-cat_cs_salamon_chr361",
+    "rip": true,
+    "name": "Salamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324602/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Wormmon:chr392": {
+    "form": "Wormmon",
+    "uid": "rip-cat_cs_wormmon_chr392",
+    "rip": true,
+    "name": "Wormmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324606/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Zubamon:chr697": {
+    "form": "Zubamon",
+    "uid": "rip-cat_cs_zubamon_chr697",
+    "rip": true,
+    "name": "Zubamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324607/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Angemon:chr087": {
+    "form": "Angemon",
+    "uid": "rip-cat_cs_angemon_chr087",
+    "rip": true,
+    "name": "Angemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/326167/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Bakemon:chr013": {
+    "form": "Bakemon",
+    "uid": "rip-cat_cs_bakemon_chr013",
+    "rip": true,
+    "name": "Bakemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/326169/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Birdramon:chr308": {
+    "form": "Birdramon",
+    "uid": "rip-cat_cs_birdramon_chr308",
+    "rip": true,
+    "name": "Birdramon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/326170/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Gaogamon:chr068": {
+    "form": "Gaogamon",
+    "uid": "rip-cat_cs_gaogamon_chr068",
+    "rip": true,
+    "name": "Gaogamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/326173/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Gargomon:chr710": {
+    "form": "Gargomon",
+    "uid": "rip-cat_cs_gargomon_chr710",
+    "rip": true,
+    "name": "Gargomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324560/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Gekomon:chr399": {
+    "form": "Gekomon",
+    "uid": "rip-cat_cs_gekomon_chr399",
+    "rip": true,
+    "name": "Gekomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335816/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_GeoGreymon:chr054": {
+    "form": "GeoGreymon",
+    "uid": "rip-cat_cs_geogreymon_chr054",
+    "rip": true,
+    "name": "GeoGreymon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/326176/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Ginryumon:chr191": {
+    "form": "Ginryumon",
+    "uid": "rip-cat_cs_ginryumon_chr191",
+    "rip": true,
+    "name": "Ginryumon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/326177/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_GoldNumemon:chr113": {
+    "form": "GoldNumemon",
+    "uid": "rip-cat_cs_goldnumemon_chr113",
+    "rip": true,
+    "name": "GoldNumemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335817/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Growlmon:chr078": {
+    "form": "Growlmon",
+    "uid": "rip-cat_cs_growlmon_chr078",
+    "rip": true,
+    "name": "Growlmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335819/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Leomon:chr072": {
+    "form": "Leomon",
+    "uid": "rip-cat_cs_leomon_chr072",
+    "rip": true,
+    "name": "Leomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335822/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Numemon:chr070": {
+    "form": "Numemon",
+    "uid": "rip-cat_cs_numemon_chr070",
+    "rip": true,
+    "name": "Numemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335824/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Ogremon:chr394": {
+    "form": "Ogremon",
+    "uid": "rip-cat_cs_ogremon_chr394",
+    "rip": true,
+    "name": "Ogremon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335825/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Peckmon:chr702": {
+    "form": "Peckmon",
+    "uid": "rip-cat_cs_peckmon_chr702",
+    "rip": true,
+    "name": "Peckmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335826/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Reppamon:chr077": {
+    "form": "Reppamon",
+    "uid": "rip-cat_cs_reppamon_chr077",
+    "rip": true,
+    "name": "Reppamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335827/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Seadramon:chr347": {
+    "form": "Seadramon",
+    "uid": "rip-cat_cs_seadramon_chr347",
+    "rip": true,
+    "name": "Seadramon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335828/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Starmon:chr014": {
+    "form": "Starmon",
+    "uid": "rip-cat_cs_starmon_chr014",
+    "rip": true,
+    "name": "Starmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335830/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Stingmon:chr091": {
+    "form": "Stingmon",
+    "uid": "rip-cat_cs_stingmon_chr091",
+    "rip": true,
+    "name": "Stingmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335831/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Togemon:chr349": {
+    "form": "Togemon",
+    "uid": "rip-cat_cs_togemon_chr349",
+    "rip": true,
+    "name": "Togemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335834/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Veedramon:chr397": {
+    "form": "Veedramon",
+    "uid": "rip-cat_cs_veedramon_chr397",
+    "rip": true,
+    "name": "Veedramon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335836/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Vegiemon:chr314": {
+    "form": "Vegiemon",
+    "uid": "rip-cat_cs_vegiemon_chr314",
+    "rip": true,
+    "name": "Vegiemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335837/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Woodmon:chr393": {
+    "form": "Woodmon",
+    "uid": "rip-cat_cs_woodmon_chr393",
+    "rip": true,
+    "name": "Woodmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335840/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_ZubaEagermon:chr698": {
+    "form": "ZubaEagermon",
+    "uid": "rip-cat_cs_zubaeagermon_chr698",
+    "rip": true,
+    "name": "ZubaEagermon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335841/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Rapidmon:chr722": {
+    "form": "Rapidmon",
+    "uid": "rip-cat_cs_rapidmon_chr722",
+    "rip": true,
+    "name": "Rapidmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324561/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Alphamon:chr416": {
+    "form": "Alphamon",
+    "uid": "rip-cat_cs_alphamon_chr416",
+    "rip": true,
+    "name": "Alphamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324489/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Barbamon:chr036": {
+    "form": "Barbamon",
+    "uid": "rip-cat_cs_barbamon_chr036",
+    "rip": true,
+    "name": "Barbamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324634/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Crusadermon:chr703": {
+    "form": "Crusadermon",
+    "uid": "rip-cat_cs_crusadermon_chr703",
+    "rip": true,
+    "name": "Crusadermon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324488/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Crusadermon:chr902": {
+    "form": "Crusadermon NX",
+    "uid": "rip-cat_cs_crusadermon_chr902",
+    "rip": true,
+    "name": "Crusadermon NX (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324488/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Daemon:chr038": {
+    "form": "Daemon",
+    "uid": "rip-cat_cs_daemon_chr038",
+    "rip": true,
+    "name": "Daemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324630/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Jesmon:chr749": {
+    "form": "Jesmon",
+    "uid": "rip-cat_cs_jesmon_chr749",
+    "rip": true,
+    "name": "Jesmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324486/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Leopardmon:chr903": {
+    "form": "Leopardmon NX",
+    "uid": "rip-cat_cs_leopardmon_chr903",
+    "rip": true,
+    "name": "Leopardmon NX (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324487/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Leopardmon:chr743": {
+    "form": "Leopardmon Leopard Mode",
+    "uid": "rip-cat_cs_leopardmon_chr743",
+    "rip": true,
+    "name": "Leopardmon Leopard Mode (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324487/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Leviamon:chr037": {
+    "form": "Leviamon",
+    "uid": "rip-cat_cs_leviamon_chr037",
+    "rip": true,
+    "name": "Leviamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324631/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Lilithmon:chr034": {
+    "form": "Lilithmon",
+    "uid": "rip-cat_cs_lilithmon_chr034",
+    "rip": true,
+    "name": "Lilithmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324629/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_PlatinumNumemon:chr069": {
+    "form": "PlatinumNumemon",
+    "uid": "rip-cat_cs_platinumnumemon_chr069",
+    "rip": true,
+    "name": "PlatinumNumemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324420/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "fallbackRoles": [
+      "idle"
+    ],
+    "catalog": true
+  },
+  "catalog:CS_Plesiomon:chr450": {
+    "form": "Plesiomon",
+    "uid": "rip-cat_cs_plesiomon_chr450",
+    "rip": true,
+    "name": "Plesiomon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324632/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Ravemon:chr740": {
+    "form": "Ravemon",
+    "uid": "rip-cat_cs_ravemon_chr740",
+    "rip": true,
+    "name": "Ravemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Arcadiamon_Ultra:chr912": {
+    "form": "Arcadiamon Ultra (Boss)",
+    "uid": "rip-cat_cs_arcadiamon_ultra_chr912",
+    "rip": true,
+    "name": "Arcadiamon Ultra (Boss) (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324273/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Armageddemon:chr106": {
+    "form": "Armageddemon",
+    "uid": "rip-cat_cs_armageddemon_chr106",
+    "rip": true,
+    "name": "Armageddemon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324587/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Belphemon_Rage_Mode:chr040": {
+    "form": "Belphemon Rage Mode",
+    "uid": "rip-cat_cs_belphemon_rage_mode_chr040",
+    "rip": true,
+    "name": "Belphemon Rage Mode (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324588/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Examon:chr350": {
+    "form": "Examon (Boss)",
+    "uid": "rip-cat_cs_examon_chr350",
+    "rip": true,
+    "name": "Examon (Boss) (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324279/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Imperialdramon_Paladin_Mode:chr420": {
+    "form": "Imperialdramon Paladin Mode",
+    "uid": "rip-cat_cs_imperialdramon_paladin_mode_chr420",
+    "rip": true,
+    "name": "Imperialdramon Paladin Mode (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324590/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Omnimon:chr088": {
+    "form": "Omnimon",
+    "uid": "rip-cat_cs_omnimon_chr088",
+    "rip": true,
+    "name": "Omnimon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324591/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Magnamon:chr382": {
+    "form": "Magnamon",
+    "uid": "rip-cat_cs_magnamon_chr382",
+    "rip": true,
+    "name": "Magnamon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324542/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:CS_Shoutmon:chr682": {
+    "form": "Shoutmon",
+    "uid": "rip-cat_cs_shoutmon_chr682",
+    "rip": true,
+    "name": "Shoutmon (Digimon Story Cyber Sleuth: Complete Edition)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324498/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Agumon:chr050": {
+    "form": "Agumon",
+    "uid": "rip-cat_l_agumon_chr050",
+    "rip": true,
+    "name": "Agumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/302502/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Biyomon:chr307": {
+    "form": "Biyomon",
+    "uid": "rip-cat_l_biyomon_chr307",
+    "rip": true,
+    "name": "Biyomon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304046/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Dorumon:chr112": {
+    "form": "Dorumon",
+    "uid": "rip-cat_l_dorumon_chr112",
+    "rip": true,
+    "name": "Dorumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304050/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Gabumon:chr151": {
+    "form": "Gabumon",
+    "uid": "rip-cat_l_gabumon_chr151",
+    "rip": true,
+    "name": "Gabumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304052/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Gaomon:chr055": {
+    "form": "Gaomon",
+    "uid": "rip-cat_l_gaomon_chr055",
+    "rip": true,
+    "name": "Gaomon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304005/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Gazimon:chr569": {
+    "form": "Gazimon",
+    "uid": "rip-cat_l_gazimon_chr569",
+    "rip": true,
+    "name": "Gazimon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304202/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Guilmon:chr090": {
+    "form": "Guilmon",
+    "uid": "rip-cat_l_guilmon_chr090",
+    "rip": true,
+    "name": "Guilmon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304010/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Hagurumon:chr009": {
+    "form": "Hagurumon",
+    "uid": "rip-cat_l_hagurumon_chr009",
+    "rip": true,
+    "name": "Hagurumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304012/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Hawkmon:chr706": {
+    "form": "Hawkmon",
+    "uid": "rip-cat_l_hawkmon_chr706",
+    "rip": true,
+    "name": "Hawkmon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304204/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Solarmon:chr728": {
+    "form": "Solarmon",
+    "uid": "rip-cat_l_solarmon_chr728",
+    "rip": true,
+    "name": "Solarmon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304034/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Syakomon:chr709": {
+    "form": "Syakomon",
+    "uid": "rip-cat_l_syakomon_chr709",
+    "rip": true,
+    "name": "Syakomon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304222/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_ToyAgumon:chr708": {
+    "form": "ToyAgumon",
+    "uid": "rip-cat_l_toyagumon_chr708",
+    "rip": true,
+    "name": "ToyAgumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304209/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Veemon:chr114": {
+    "form": "Veemon",
+    "uid": "rip-cat_l_veemon_chr114",
+    "rip": true,
+    "name": "Veemon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304074/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Aquilamon:chr015": {
+    "form": "Aquilamon",
+    "uid": "rip-cat_l_aquilamon_chr015",
+    "rip": true,
+    "name": "Aquilamon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/303996/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Clockmon:chr398": {
+    "form": "Clockmon",
+    "uid": "rip-cat_l_clockmon_chr398",
+    "rip": true,
+    "name": "Clockmon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304101/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Devimon:chr093": {
+    "form": "Devimon",
+    "uid": "rip-cat_l_devimon_chr093",
+    "rip": true,
+    "name": "Devimon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304003/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Dorugamon:chr396": {
+    "form": "Dorugamon",
+    "uid": "rip-cat_l_dorugamon_chr396",
+    "rip": true,
+    "name": "Dorugamon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304102/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_ExVeemon:chr365": {
+    "form": "ExVeemon",
+    "uid": "rip-cat_l_exveemon_chr365",
+    "rip": true,
+    "name": "ExVeemon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304103/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Garurumon:chr012": {
+    "form": "Garurumon",
+    "uid": "rip-cat_l_garurumon_chr012",
+    "rip": true,
+    "name": "Garurumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304006/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Greymon:chr326": {
+    "form": "Greymon",
+    "uid": "rip-cat_l_greymon_chr326",
+    "rip": true,
+    "name": "Greymon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304043/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Growlmon:chr078": {
+    "form": "Growlmon",
+    "uid": "rip-cat_l_growlmon_chr078",
+    "rip": true,
+    "name": "Growlmon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304009/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Guardromon:chr341": {
+    "form": "Guardromon",
+    "uid": "rip-cat_l_guardromon_chr341",
+    "rip": true,
+    "name": "Guardromon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304091/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Ikkakumon:chr344": {
+    "form": "Ikkakumon",
+    "uid": "rip-cat_l_ikkakumon_chr344",
+    "rip": true,
+    "name": "Ikkakumon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304106/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Kyubimon:chr395": {
+    "form": "Kyubimon",
+    "uid": "rip-cat_l_kyubimon_chr395",
+    "rip": true,
+    "name": "Kyubimon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304108/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Meramon:chr010": {
+    "form": "Meramon",
+    "uid": "rip-cat_l_meramon_chr010",
+    "rip": true,
+    "name": "Meramon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304023/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_ShellNumemon:chr455": {
+    "form": "ShellNumemon",
+    "uid": "rip-cat_l_shellnumemon_chr455",
+    "rip": true,
+    "name": "ShellNumemon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304193/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Sunflowmon:chr058": {
+    "form": "Sunflowmon",
+    "uid": "rip-cat_l_sunflowmon_chr058",
+    "rip": true,
+    "name": "Sunflowmon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304037/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Tyrannomon:chr363": {
+    "form": "Tyrannomon",
+    "uid": "rip-cat_l_tyrannomon_chr363",
+    "rip": true,
+    "name": "Tyrannomon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304121/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Waspmon:chr454": {
+    "form": "Waspmon",
+    "uid": "rip-cat_l_waspmon_chr454",
+    "rip": true,
+    "name": "Waspmon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304195/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Wizardmon:chr377": {
+    "form": "Wizardmon",
+    "uid": "rip-cat_l_wizardmon_chr377",
+    "rip": true,
+    "name": "Wizardmon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304124/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_MagnaAngemon:chr101": {
+    "form": "MagnaAngemon",
+    "uid": "rip-cat_l_magnaangemon_chr101",
+    "rip": true,
+    "name": "MagnaAngemon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304064/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Apocalymon:chr328": {
+    "form": "Apocalymon",
+    "uid": "rip-cat_l_apocalymon_chr328",
+    "rip": true,
+    "name": "Apocalymon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/310677/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "anim": false,
+    "catalog": true
+  },
+  "catalog:L_Beelzemon:chr035": {
+    "form": "Beelzemon",
+    "uid": "rip-cat_l_beelzemon_chr035",
+    "rip": true,
+    "name": "Beelzemon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304000/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Gallantmon:chr013": {
+    "form": "Gallantmon Crimson Mode",
+    "uid": "rip-cat_l_gallantmon_chr013",
+    "rip": true,
+    "name": "Gallantmon Crimson Mode (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304054/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Justimon:main": {
+    "form": "Justimon",
+    "uid": "rip-cat_l_justimon_main",
+    "rip": true,
+    "name": "Justimon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/327641/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_MirageGaogamon:chr777": {
+    "form": "MirageGaogamon Burst Mode",
+    "uid": "rip-cat_l_miragegaogamon_chr777",
+    "rip": true,
+    "name": "MirageGaogamon Burst Mode (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304044/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Rosemon:chr779": {
+    "form": "Rosemon Burst Mode",
+    "uid": "rip-cat_l_rosemon_chr779",
+    "rip": true,
+    "name": "Rosemon Burst Mode (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304031/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Susanoomon:f068": {
+    "form": "Susanoomon",
+    "uid": "rip-cat_l_susanoomon_f068",
+    "rip": true,
+    "name": "Susanoomon (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304225/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:L_Rapidmon_Armor:chr751": {
+    "form": "Rapidmon Armor",
+    "uid": "rip-cat_l_rapidmon_armor_chr751",
+    "rip": true,
+    "name": "Rapidmon Armor (Digimon Links)",
+    "url": "https://models.spriters-resource.com/mobile/digimonlinks/asset/311329/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Botamon:chr317": {
+    "form": "Botamon",
+    "uid": "rip-cat_ts_botamon_chr317",
+    "rip": true,
+    "name": "Botamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598275/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Bubbmon:chr387": {
+    "form": "Pabumon",
+    "uid": "rip-cat_ts_bubbmon_chr387",
+    "rip": true,
+    "name": "Pabumon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598273/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Choromon:chr241": {
+    "form": "Choromon",
+    "uid": "rip-cat_ts_choromon_chr241",
+    "rip": true,
+    "name": "Choromon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598271/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Dodomon:chr316": {
+    "form": "Dodomon",
+    "uid": "rip-cat_ts_dodomon_chr316",
+    "rip": true,
+    "name": "Dodomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598272/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Kuramon:chr629": {
+    "form": "Kuramon",
+    "uid": "rip-cat_ts_kuramon_chr629",
+    "rip": true,
+    "name": "Kuramon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598270/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Poyomon:chr320": {
+    "form": "Poyomon",
+    "uid": "rip-cat_ts_poyomon_chr320",
+    "rip": true,
+    "name": "Poyomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598276/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Punimon:chr437": {
+    "form": "Punimon",
+    "uid": "rip-cat_ts_punimon_chr437",
+    "rip": true,
+    "name": "Punimon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598274/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Caprimon:chr242": {
+    "form": "Caprimon",
+    "uid": "rip-cat_ts_caprimon_chr242",
+    "rip": true,
+    "name": "Caprimon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601649/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Dorimon:chr466": {
+    "form": "Dorimon",
+    "uid": "rip-cat_ts_dorimon_chr466",
+    "rip": true,
+    "name": "Dorimon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601676/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Koromon:chr322": {
+    "form": "Koromon",
+    "uid": "rip-cat_ts_koromon_chr322",
+    "rip": true,
+    "name": "Koromon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601661/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Mochimon:chr388": {
+    "form": "Motimon",
+    "uid": "rip-cat_ts_mochimon_chr388",
+    "rip": true,
+    "name": "Motimon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601682/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Nyaromon:chr515": {
+    "form": "Nyaromon",
+    "uid": "rip-cat_ts_nyaromon_chr515",
+    "rip": true,
+    "name": "Nyaromon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601677/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Pagumon:chr567": {
+    "form": "Pagumon",
+    "uid": "rip-cat_ts_pagumon_chr567",
+    "rip": true,
+    "name": "Pagumon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601679/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Pukamon:chr514": {
+    "form": "Bukamon",
+    "uid": "rip-cat_ts_pukamon_chr514",
+    "rip": true,
+    "name": "Bukamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601681/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Pyocomon:chr510": {
+    "form": "Yokomon",
+    "uid": "rip-cat_ts_pyocomon_chr510",
+    "rip": true,
+    "name": "Yokomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601680/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Tanemon:chr512": {
+    "form": "Tanemon",
+    "uid": "rip-cat_ts_tanemon_chr512",
+    "rip": true,
+    "name": "Tanemon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601664/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Tokomon:chr325": {
+    "form": "Tokomon",
+    "uid": "rip-cat_ts_tokomon_chr325",
+    "rip": true,
+    "name": "Tokomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601675/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Tsumemon:chr631": {
+    "form": "Tsumemon",
+    "uid": "rip-cat_ts_tsumemon_chr631",
+    "rip": true,
+    "name": "Tsumemon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601670/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Tunomon:chr438": {
+    "form": "Tsunomon",
+    "uid": "rip-cat_ts_tunomon_chr438",
+    "rip": true,
+    "name": "Tsunomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601668/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Wanyamon:chr321": {
+    "form": "Wanyamon",
+    "uid": "rip-cat_ts_wanyamon_chr321",
+    "rip": true,
+    "name": "Wanyamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601683/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Armadimon:chr707": {
+    "form": "Armadimon",
+    "uid": "rip-cat_ts_armadimon_chr707",
+    "rip": true,
+    "name": "Armadimon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608284/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Betamon:main": {
+    "form": "Betamon",
+    "uid": "rip-cat_ts_betamon_main",
+    "rip": true,
+    "name": "Betamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604897/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Dorumon:chr112": {
+    "form": "Dorumon",
+    "uid": "rip-cat_ts_dorumon_chr112",
+    "rip": true,
+    "name": "Dorumon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/605583/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Dracomon:chr208": {
+    "form": "Dracomon",
+    "uid": "rip-cat_ts_dracomon_chr208",
+    "rip": true,
+    "name": "Dracomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/605576/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Dracumon:chr457": {
+    "form": "Dracumon",
+    "uid": "rip-cat_ts_dracumon_chr457",
+    "rip": true,
+    "name": "Dracumon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608077/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Elecmon_Elecmon_Aegiomon:chr564": {
+    "form": "Elecmon",
+    "uid": "rip-cat_ts_elecmon_elecmon_aegiomon_chr564",
+    "rip": true,
+    "name": "Elecmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604898/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Falcomon:chr705": {
+    "form": "Falcomon",
+    "uid": "rip-cat_ts_falcomon_chr705",
+    "rip": true,
+    "name": "Falcomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603627/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Funbeemon:chr042": {
+    "form": "FanBeemon",
+    "uid": "rip-cat_ts_funbeemon_chr042",
+    "rip": true,
+    "name": "FanBeemon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608107/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Gaomon:chr055": {
+    "form": "Gaomon",
+    "uid": "rip-cat_ts_gaomon_chr055",
+    "rip": true,
+    "name": "Gaomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604925/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Gazimon:chr569": {
+    "form": "Gazimon",
+    "uid": "rip-cat_ts_gazimon_chr569",
+    "rip": true,
+    "name": "Gazimon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/607069/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Goburimon:chr111": {
+    "form": "Goblimon",
+    "uid": "rip-cat_ts_goburimon_chr111",
+    "rip": true,
+    "name": "Goblimon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/607435/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Goburimon:chr578": {
+    "form": "SnowGoblimon",
+    "uid": "rip-cat_ts_goburimon_chr578",
+    "rip": true,
+    "name": "SnowGoblimon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/607435/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Gomamon:chr343": {
+    "form": "Gomamon",
+    "uid": "rip-cat_ts_gomamon_chr343",
+    "rip": true,
+    "name": "Gomamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/602600/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Gottsumon:chr595": {
+    "form": "Gotsumon",
+    "uid": "rip-cat_ts_gottsumon_chr595",
+    "rip": true,
+    "name": "Gotsumon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/605299/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Guilmon:chr090": {
+    "form": "Guilmon",
+    "uid": "rip-cat_ts_guilmon_chr090",
+    "rip": true,
+    "name": "Guilmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/607376/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Hawkmon:chr706": {
+    "form": "Hawkmon",
+    "uid": "rip-cat_ts_hawkmon_chr706",
+    "rip": true,
+    "name": "Hawkmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608447/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Huckmon:chr687": {
+    "form": "Huckmon",
+    "uid": "rip-cat_ts_huckmon_chr687",
+    "rip": true,
+    "name": "Huckmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606184/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Impmon:chr081": {
+    "form": "Impmon",
+    "uid": "rip-cat_ts_impmon_chr081",
+    "rip": true,
+    "name": "Impmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606792/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Keramon:chr626": {
+    "form": "Keramon",
+    "uid": "rip-cat_ts_keramon_chr626",
+    "rip": true,
+    "name": "Keramon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608482/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Kudamon:chr053": {
+    "form": "Kudamon",
+    "uid": "rip-cat_ts_kudamon_chr053",
+    "rip": true,
+    "name": "Kudamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/602596/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Lalamon:chr056": {
+    "form": "Lalamon",
+    "uid": "rip-cat_ts_lalamon_chr056",
+    "rip": true,
+    "name": "Lalamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606514/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Lucemon:chr390": {
+    "form": "Lucemon",
+    "uid": "rip-cat_ts_lucemon_chr390",
+    "rip": true,
+    "name": "Lucemon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604647/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Lunamon:chr002": {
+    "form": "Lunamon",
+    "uid": "rip-cat_ts_lunamon_chr002",
+    "rip": true,
+    "name": "Lunamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606525/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Monodramon:chr458": {
+    "form": "Monodramon",
+    "uid": "rip-cat_ts_monodramon_chr458",
+    "rip": true,
+    "name": "Monodramon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603905/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Mushmon:chr607": {
+    "form": "Mushmon",
+    "uid": "rip-cat_ts_mushmon_chr607",
+    "rip": true,
+    "name": "Mushmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608230/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Otamamon:chr582": {
+    "form": "Otamamon",
+    "uid": "rip-cat_ts_otamamon_chr582",
+    "rip": true,
+    "name": "Otamamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606868/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Palmon:chr348": {
+    "form": "Palmon",
+    "uid": "rip-cat_ts_palmon_chr348",
+    "rip": true,
+    "name": "Palmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606444/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Patamon:chr096": {
+    "form": "Patamon",
+    "uid": "rip-cat_ts_patamon_chr096",
+    "rip": true,
+    "name": "Patamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606167/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_PicoDevimon:chr097": {
+    "form": "DemiDevimon",
+    "uid": "rip-cat_ts_picodevimon_chr097",
+    "rip": true,
+    "name": "DemiDevimon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608094/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Piyomon:chr307": {
+    "form": "Biyomon",
+    "uid": "rip-cat_ts_piyomon_chr307",
+    "rip": true,
+    "name": "Biyomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603472/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Plotmon:chr361": {
+    "form": "Salamon",
+    "uid": "rip-cat_ts_plotmon_chr361",
+    "rip": true,
+    "name": "Salamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603644/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Renamon:chr391": {
+    "form": "Renamon",
+    "uid": "rip-cat_ts_renamon_chr391",
+    "rip": true,
+    "name": "Renamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606695/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Ryudamon:chr190": {
+    "form": "Ryudamon",
+    "uid": "rip-cat_ts_ryudamon_chr190",
+    "rip": true,
+    "name": "Ryudamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604001/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Shakomon:chr709": {
+    "form": "Syakomon",
+    "uid": "rip-cat_ts_shakomon_chr709",
+    "rip": true,
+    "name": "Syakomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/607520/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Shoutmon:chr682": {
+    "form": "Shoutmon",
+    "uid": "rip-cat_ts_shoutmon_chr682",
+    "rip": true,
+    "name": "Shoutmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/605346/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Solarmon_Hagurumon:chr009": {
+    "form": "Hagurumon",
+    "uid": "rip-cat_ts_solarmon_hagurumon_chr009",
+    "rip": true,
+    "name": "Hagurumon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603333/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Solarmon_Hagurumon:chr728": {
+    "form": "Solarmon",
+    "uid": "rip-cat_ts_solarmon_hagurumon_chr728",
+    "rip": true,
+    "name": "Solarmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603333/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Tentomon:chr303": {
+    "form": "Tentomon",
+    "uid": "rip-cat_ts_tentomon_chr303",
+    "rip": true,
+    "name": "Tentomon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603374/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701": {
+    "form": "Terriermon",
+    "uid": "rip-cat_ts_terriermon_lopmon_and_assistant_chr701",
+    "rip": true,
+    "name": "Terriermon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603357/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Terriermon_Lopmon_and_Assistant:chr750": {
+    "form": "Lopmon",
+    "uid": "rip-cat_ts_terriermon_lopmon_and_assistant_chr750",
+    "rip": true,
+    "name": "Lopmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603357/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_ToyAgumon:chr708": {
+    "form": "ToyAgumon",
+    "uid": "rip-cat_ts_toyagumon_chr708",
+    "rip": true,
+    "name": "ToyAgumon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603392/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Tyumon:chr020": {
+    "form": "Chuumon",
+    "uid": "rip-cat_ts_tyumon_chr020",
+    "rip": true,
+    "name": "Chuumon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608054/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_V_mon:chr114": {
+    "form": "Veemon",
+    "uid": "rip-cat_ts_v_mon_chr114",
+    "rip": true,
+    "name": "Veemon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608297/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Wormmon:chr392": {
+    "form": "Wormmon",
+    "uid": "rip-cat_ts_wormmon_chr392",
+    "rip": true,
+    "name": "Wormmon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608453/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:TS_Zubamon:chr697": {
+    "form": "Zubamon",
+    "uid": "rip-cat_ts_zubamon_chr697",
+    "rip": true,
+    "name": "Zubamon (Digimon Story Time Stranger)",
+    "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/602660/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:RD_Beelzemon:main": {
+    "form": "Beelzemon",
+    "uid": "rip-cat_rd_beelzemon_main",
+    "rip": true,
+    "name": "Beelzemon (Digimon World Re:Digitize)",
+    "url": "https://models.spriters-resource.com/psp/digimonworldredigitize/asset/310408/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:RD_Dodomon:main": {
+    "form": "Dorimon",
+    "uid": "rip-cat_rd_dodomon_main",
+    "rip": true,
+    "name": "Dorimon (Digimon World Re:Digitize)",
+    "url": "https://models.spriters-resource.com/psp/digimonworldredigitize/asset/290193/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:RD_Jyarimon:main": {
+    "form": "Jyarimon",
+    "uid": "rip-cat_rd_jyarimon_main",
+    "rip": true,
+    "name": "Jyarimon (Digimon World Re:Digitize)",
+    "url": "https://models.spriters-resource.com/psp/digimonworldredigitize/asset/297283/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:RD_VictoryGreymon:main": {
+    "form": "VictoryGreymon",
+    "uid": "rip-cat_rd_victorygreymon_main",
+    "rip": true,
+    "name": "VictoryGreymon (Digimon World Re:Digitize)",
+    "url": "https://models.spriters-resource.com/psp/digimonworldredigitize/asset/310409/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:RD_Wanyamon:main": {
+    "form": "Wanyamon",
+    "uid": "rip-cat_rd_wanyamon_main",
+    "rip": true,
+    "name": "Wanyamon (Digimon World Re:Digitize)",
+    "url": "https://models.spriters-resource.com/psp/digimonworldredigitize/asset/297284/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:RD_Wargreymon_X:main": {
+    "form": "Wargreymon X",
+    "uid": "rip-cat_rd_wargreymon_x_main",
+    "rip": true,
+    "name": "Wargreymon X (Digimon World Re:Digitize)",
+    "url": "https://models.spriters-resource.com/psp/digimonworldredigitize/asset/290184/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  },
+  "catalog:RD_WarGrowlmon:main": {
+    "form": "WarGrowlmon",
+    "uid": "rip-cat_rd_wargrowlmon_main",
+    "rip": true,
+    "name": "WarGrowlmon (Digimon World Re:Digitize)",
+    "url": "https://models.spriters-resource.com/psp/digimonworldredigitize/asset/310410/",
+    "author": "The Models Resource",
+    "license": "Game rip",
+    "catalog": true
+  }
+});
+  // CATALOG-END
+
   // MODEL-OPTIONS: display options merged over the entries above (outside the generated RIPS block so a re-run keeps them).
   // yOffset lifts a model by a fraction of its height (render3d.js), for flyers whose idle swings below their feet.
   // maxFootprint (board units, default 1.9) lets wide wings or long bodies spill past one tile so an evolution is not

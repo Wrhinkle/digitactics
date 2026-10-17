@@ -1,0 +1,224 @@
+{
+  "_alias": {
+    "SKIN_MetalGreymon_chr327": "MetalGreymon",
+    "SKIN_Leomon_chr409": "Leomon",
+    "SKIN_Coredramon_Green_chr218": "Coredramon_Green",
+    "SKIN_Numemon_chr729": "Numemon",
+    "SKIN_Gatomon_chr043": "Gatomon",
+    "SKIN_Omnimon_chr757": "Omnimon",
+    "SKIN_WarGreymon_chr175": "WarGreymon",
+    "SKIN_MetalGarurumon_chr182": "MetalGarurumon",
+    "SKIN_Sakuyamon_chr754": "Sakuyamon",
+    "SKIN_CS_Agumon_chr143": "CS_Agumon",
+    "SKIN_CS_Gabumon_chr713": "CS_Gabumon",
+    "SKIN_CS_Devimon_chr730": "CS_Devimon",
+    "SKIN_CS_Garurumon_chr714": "CS_Garurumon",
+    "SKIN_CS_Gatomon_chr043": "CS_Gatomon",
+    "SKIN_CS_Numemon_chr729": "CS_Numemon",
+    "SKIN_CS_Omnimon_chr757": "CS_Omnimon",
+    "SKIN_L_Agumon_chr143": "L_Agumon",
+    "SKIN_L_Agumon_chr143_cs": "L_Agumon",
+    "SKIN_L_Gabumon_chr713": "L_Gabumon",
+    "SKIN_L_Garurumon_chr714": "L_Garurumon",
+    "SKIN_L_Greymon_chr712": "L_Greymon",
+    "SKIN_L_Meramon_chr177": "L_Meramon",
+    "SKIN_L_WereGarurumon_chr715": "L_WereGarurumon",
+    "SKIN_L_Gallantmon_chr150": "L_Gallantmon",
+    "SKIN_TS_Bearmon_chr924": "TS_Bearmon",
+    "SKIN_TS_Bearmon_chr925": "TS_Bearmon",
+    "SKIN_TS_Goburimon_chr577": "TS_Goburimon"
+  },
+  "_form": {
+    "SKIN_MetalGreymon_chr327": "BlackMetalGreymon",
+    "SKIN_Leomon_chr409": "IceLeomon",
+    "SKIN_Coredramon_Green_chr218": "Coredramon (Blue)",
+    "SKIN_Numemon_chr729": "Geremon",
+    "SKIN_Gatomon_chr043": "BlackGatomon",
+    "SKIN_Omnimon_chr757": "Omnimon Zwart",
+    "SKIN_WarGreymon_chr175": "BlackWarGreymon",
+    "SKIN_MetalGarurumon_chr182": "BlackMetalGarurumon",
+    "SKIN_Sakuyamon_chr754": "Kuzuhamon",
+    "SKIN_CS_Agumon_chr143": "BlackAgumon",
+    "SKIN_CS_Gabumon_chr713": "BlackGabumon",
+    "SKIN_CS_Devimon_chr730": "IceDevimon",
+    "SKIN_CS_Garurumon_chr714": "BlackGarurumon",
+    "SKIN_CS_Gatomon_chr043": "BlackGatomon",
+    "SKIN_CS_Numemon_chr729": "Geremon",
+    "SKIN_CS_Omnimon_chr757": "Omnimon Zwart",
+    "SKIN_L_Agumon_chr143": "BlackAgumon",
+    "SKIN_L_Agumon_chr143_cs": "BlackAgumon",
+    "SKIN_L_Gabumon_chr713": "BlackGabumon",
+    "SKIN_L_Garurumon_chr714": "BlackGarurumon",
+    "SKIN_L_Greymon_chr712": "BlackGreymon",
+    "SKIN_L_Meramon_chr177": "BlueMeramon",
+    "SKIN_L_WereGarurumon_chr715": "ShadowWereGarurumon",
+    "SKIN_L_Gallantmon_chr150": "ChaosGallantmon",
+    "SKIN_TS_Bearmon_chr924": "Bearmon (Big)",
+    "SKIN_TS_Bearmon_chr925": "Bearmon (Little)",
+    "SKIN_TS_Goburimon_chr577": "Shamanmon"
+  },
+  "_input": {
+    "SKIN_MetalGreymon_chr327": "MetalGreymon/MetalGreymon BlackMetalGreymon/chr302 With Animations.fbx",
+    "SKIN_Leomon_chr409": "Leomon/Leomon IceLeomon/chr072 With Animations.fbx",
+    "SKIN_Coredramon_Green_chr218": "Coredramon_Green/Coredramon (Green) Coredramon (Blue)/chr209 with animations.fbx",
+    "SKIN_Numemon_chr729": "Numemon/Numemon Geremon/chr070 with animations.fbx",
+    "SKIN_Gatomon_chr043": "Gatomon/Gatomon BlackGatomon/chr092 With Animations.fbx",
+    "SKIN_Omnimon_chr757": "Omnimon/Omnimon Omnimon Zwart/chr088 With Animations.fbx",
+    "SKIN_WarGreymon_chr175": "WarGreymon/WarGreymon BlackWarGreymon/chr027 With Animations.fbx",
+    "SKIN_MetalGarurumon_chr182": "MetalGarurumon/MetalGarurumon BlackMetalGarurumon/Animations/chr135 with animations.fbx",
+    "SKIN_Sakuyamon_chr754": "Sakuyamon/Sakuyamon Kuzuhamon/chr425 with animations.fbx",
+    "SKIN_CS_Agumon_chr143": "CS_Agumon/Agumon/chr050.fbx",
+    "SKIN_CS_Gabumon_chr713": "CS_Gabumon/Gabumon BlackGabumon/chr151.fbx",
+    "SKIN_CS_Devimon_chr730": "CS_Devimon/Devimon IceDevimon/chr093.fbx",
+    "SKIN_CS_Garurumon_chr714": "CS_Garurumon/Garurumon/chr012.fbx",
+    "SKIN_CS_Gatomon_chr043": "CS_Gatomon/Gatomon BlackGatomon/chr092.fbx",
+    "SKIN_CS_Numemon_chr729": "CS_Numemon/Numemon Geremon/chr070.fbx",
+    "SKIN_CS_Omnimon_chr757": "CS_Omnimon/Omnimon Omnimon Zwart/chr088.fbx",
+    "SKIN_L_Agumon_chr143": "L_Agumon/Agumon BlackAgumon/chr050 With Animations.fbx",
+    "SKIN_L_Agumon_chr143_cs": "L_Agumon/Agumon BlackAgumon/chr050 With Animations.fbx",
+    "SKIN_L_Gabumon_chr713": "L_Gabumon/Gabumon BlackGabumon/chr151 with animations.fbx",
+    "SKIN_L_Garurumon_chr714": "L_Garurumon/Garurumon BlackGarurmon/chr012 With Animation.fbx",
+    "SKIN_L_Greymon_chr712": "L_Greymon/Greymon BlackGreyMon/chr326 with animations.fbx",
+    "SKIN_L_Meramon_chr177": "L_Meramon/Meramon Blue Meramon/chr010 With Animations.fbx",
+    "SKIN_L_WereGarurumon_chr715": "L_WereGarurumon/WereGarurumon ShadowWereGarurumon/chr140 with animations.fbx",
+    "SKIN_L_Gallantmon_chr150": "L_Gallantmon/Gallantmon Crimson Mode ChaosGallantmon/chr126 with animations.fbx",
+    "SKIN_TS_Bearmon_chr924": "TS_Bearmon/chr234.fbx",
+    "SKIN_TS_Bearmon_chr925": "TS_Bearmon/chr234.fbx",
+    "SKIN_TS_Goburimon_chr577": "TS_Goburimon/chr111.fbx"
+  },
+  "_retexture": {
+    "SKIN_MetalGreymon_chr327": {
+      "chr302a01.png": "MetalGreymon BlackMetalGreymon/chr327a01.png"
+    },
+    "SKIN_Leomon_chr409": {
+      "chr072a01.png": "Leomon IceLeomon/chr409a01.png"
+    },
+    "SKIN_Coredramon_Green_chr218": {
+      "chr209a01 Updated.png": "Coredramon (Green) Coredramon (Blue)/chr218a01 Updated.png",
+      "chr209a01.png": "Coredramon (Green) Coredramon (Blue)/chr218a01.png"
+    },
+    "SKIN_Numemon_chr729": {
+      "chr070a01.png": "Numemon Geremon/chr729a01.png"
+    },
+    "SKIN_Gatomon_chr043": {
+      "chr092a01.png": "Gatomon BlackGatomon/chr043a01.png"
+    },
+    "SKIN_Omnimon_chr757": {
+      "chr088a01.png": "Omnimon Omnimon Zwart/chr757a01.png",
+      "chr088a02.png": "Omnimon Omnimon Zwart/chr757a02.png"
+    },
+    "SKIN_WarGreymon_chr175": {
+      "chr027a01.png": "WarGreymon BlackWarGreymon/chr175a01.png"
+    },
+    "SKIN_MetalGarurumon_chr182": {
+      "chr135a01.png": "MetalGarurumon BlackMetalGarurumon/chr182a01.png"
+    },
+    "SKIN_Sakuyamon_chr754": {
+      "chr425a01.png": "Sakuyamon Kuzuhamon/chr754a01.png"
+    },
+    "SKIN_CS_Agumon_chr143": {
+      "chr050a01.png": "Agumon/chr143a01.png",
+      "chr050a01s.png": "Agumon/chr143a01s.png",
+      "chr050a01s_a.png": "Agumon/chr143a01s_a.png",
+      "chr050a02s.png": "Agumon/chr143a02s.png",
+      "chr050a02s_a.png": "Agumon/chr143a02s_a.png",
+      "chr050b01.png": "Agumon/chr143b01.png"
+    },
+    "SKIN_CS_Gabumon_chr713": {
+      "chr151a01.png": "Gabumon BlackGabumon/chr713a01.png",
+      "chr151a01s.png": "Gabumon BlackGabumon/chr713a01s.png",
+      "chr151a01s_a.png": "Gabumon BlackGabumon/chr713a01s_a.png",
+      "chr151a02s.png": "Gabumon BlackGabumon/chr713a02s.png",
+      "chr151a02s_a.png": "Gabumon BlackGabumon/chr713a02s_a.png",
+      "chr151b01.png": "Gabumon BlackGabumon/chr713b01.png"
+    },
+    "SKIN_CS_Devimon_chr730": {
+      "chr093a01.png": "Devimon IceDevimon/chr730a01.png",
+      "chr093a01s.png": "Devimon IceDevimon/chr730a01s.png",
+      "chr093a01s_a.png": "Devimon IceDevimon/chr730a01s_a.png",
+      "chr093a02.png": "Devimon IceDevimon/chr730a02.png",
+      "chr093env.png": "Devimon IceDevimon/chr730env.png"
+    },
+    "SKIN_CS_Garurumon_chr714": {
+      "chr012a01.png": "Garurumon/chr714a01.png",
+      "chr012a01s.png": "Garurumon/chr714a01s.png",
+      "chr012a01s_a.png": "Garurumon/chr714a01s_a.png",
+      "chr012b01.png": "Garurumon/chr714b01.png"
+    },
+    "SKIN_CS_Gatomon_chr043": {
+      "chr092a01.png": "Gatomon BlackGatomon/chr043a01.png",
+      "chr092a01s.png": "Gatomon BlackGatomon/chr043a01s.png",
+      "chr092a01s_a.png": "Gatomon BlackGatomon/chr043a01s_a.png",
+      "chr092b01.png": "Gatomon BlackGatomon/chr043b01.png"
+    },
+    "SKIN_CS_Numemon_chr729": {
+      "chr070a01.png": "Numemon Geremon/chr729a01.png",
+      "chr070a01s.png": "Numemon Geremon/chr729a01s.png",
+      "chr070a01s_a.png": "Numemon Geremon/chr729a01s_a.png",
+      "chr070a02s.png": "Numemon Geremon/chr729a02s.png",
+      "chr070a02s_a.png": "Numemon Geremon/chr729a02s_a.png",
+      "chr070b01.png": "Numemon Geremon/chr729b01.png"
+    },
+    "SKIN_CS_Omnimon_chr757": {
+      "chr088a01.png": "Omnimon Omnimon Zwart/chr757a01.png",
+      "chr088a01s.png": "Omnimon Omnimon Zwart/chr757a01s.png",
+      "chr088a01s_a.png": "Omnimon Omnimon Zwart/chr757a01s_a.png",
+      "chr088a02.png": "Omnimon Omnimon Zwart/chr757a02.png"
+    },
+    "SKIN_L_Agumon_chr143": {
+      "chr050a01.png": "Agumon BlackAgumon/chr143a01.png",
+      "chr050a01s.png": "Agumon BlackAgumon/Cyber Sleuth Textures/chr143a01s.png",
+      "chr050a02s.png": "Agumon BlackAgumon/Cyber Sleuth Textures/chr143a02s.png",
+      "chr050b01.png": "Agumon BlackAgumon/Cyber Sleuth Textures/chr143b01.png"
+    },
+    "SKIN_L_Agumon_chr143_cs": {
+      "chr050a01.png": "Agumon BlackAgumon/Cyber Sleuth Textures/chr143a01.png",
+      "chr050a01s.png": "Agumon BlackAgumon/Cyber Sleuth Textures/chr143a01s.png",
+      "chr050a02s.png": "Agumon BlackAgumon/Cyber Sleuth Textures/chr143a02s.png",
+      "chr050b01.png": "Agumon BlackAgumon/Cyber Sleuth Textures/chr143b01.png"
+    },
+    "SKIN_L_Gabumon_chr713": {
+      "chr151a01.png": "Gabumon BlackGabumon/chr713a01.png"
+    },
+    "SKIN_L_Garurumon_chr714": {
+      "chr012a01.png": "Garurumon BlackGarurmon/chr714a01.png"
+    },
+    "SKIN_L_Greymon_chr712": {
+      "chr326a01.png": "Greymon BlackGreyMon/chr712a01.png"
+    },
+    "SKIN_L_Meramon_chr177": {
+      "chr010a01.png": "Meramon Blue Meramon/chr177a01.png"
+    },
+    "SKIN_L_WereGarurumon_chr715": {
+      "chr140a01.png": "WereGarurumon ShadowWereGarurumon/chr715a01.png"
+    },
+    "SKIN_L_Gallantmon_chr150": {
+      "chr126a01.png": "Gallantmon Crimson Mode ChaosGallantmon/chr150a01.png",
+      "chr126a02.png": "Gallantmon Crimson Mode ChaosGallantmon/chr150a02.png"
+    },
+    "SKIN_TS_Bearmon_chr924": {
+      "chr234a01.png": "Textures/Big/chr924a01.png",
+      "chr234b01.png": "Textures/Big/chr924b01.png",
+      "chr234b01m.png": "Textures/Big/chr924b01m.png",
+      "chr234b01m_G.png": "Textures/Big/chr924b01m_G.png",
+      "chr234b01n.png": "Textures/Big/chr924b01n.png",
+      "chr234p01.png": "Textures/Big/chr924p01.png"
+    },
+    "SKIN_TS_Bearmon_chr925": {
+      "chr234a01.png": "Textures/Little/chr925a01.png",
+      "chr234b01.png": "Textures/Little/chr925b01.png",
+      "chr234b01m.png": "Textures/Little/chr925b01m.png",
+      "chr234b01m_G.png": "Textures/Little/chr925b01m_G.png",
+      "chr234b01n.png": "Textures/Little/chr925b01n.png",
+      "chr234p01.png": "Textures/Little/chr925p01.png"
+    },
+    "SKIN_TS_Goburimon_chr577": {
+      "chr111a01.png": "Textures/Shamamon Textures/chr577a01.png",
+      "chr111a01s.png": "Textures/Shamamon Textures/chr577a01s.png",
+      "chr111a01s_A.png": "Textures/Shamamon Textures/chr577a01s_A.png",
+      "chr111a01s_RGB.png": "Textures/Shamamon Textures/chr577a01s_RGB.png",
+      "chr111b01.png": "Textures/Shamamon Textures/chr577b01.png",
+      "chr111p01.png": "Textures/Shamamon Textures/chr577p01.png"
+    }
+  }
+}

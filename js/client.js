@@ -1158,7 +1158,7 @@ function renderParty() {
   $('playSolo').style.setProperty('--party-art', `url('${ART('lobby-bg')}')`);
   const host = $('partySlots');
   const names = (DT.TAMERS || DT.DEFAULT_TAMERS || ['Tai', 'Matt', 'Sora', 'Izzy', 'Mimi', 'Joe', 'Kari']).slice(0, 7);
-  const legends = C.list('legend');
+  const legends = C.list('legend').filter(it => !it.secret);
   const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h; };
   const ev = DT.LegendEvo ? DT.LegendEvo.info(C.equipped('legend')) : null;
   const meName = myName() || 'You';
@@ -1206,7 +1206,7 @@ const EGG_ONLY = (it) => !!(it && it.eggOnly && !it.free);
 
 function colItems(kind) {
   const q = col.q.trim().toLowerCase();
-  let items = C.list(kind).filter((it) => {
+  let items = C.visible(kind).filter((it) => {
     const owned = C.owns(kind, it.id);
     if (col.own === 'owned' && !owned) return false;
     if (col.own === 'locked' && owned) return false;
@@ -1226,7 +1226,7 @@ function colItems(kind) {
 RENDER.collection = () => {
   const root = $('pgCollection');
   const kind = col.tab;
-  const all = C.list(kind);
+  const all = C.visible(kind);
   const items = colItems(kind);
   if (!col.sel[kind] || !C.get(kind, col.sel[kind])) col.sel[kind] = (MULTI(kind) ? C.equipped(kind).find(Boolean) : C.equipped(kind)) || (all[0] && all[0].id);
   const grid = root.querySelector('.cgrid');
@@ -1239,13 +1239,14 @@ RENDER.collection = () => {
     <div class="coll-main">
       <div class="coll-banner" style="background-image:url('${ART(COLL_ART[kind] || 'coll-legends')}')">
         <div><div class="eyebrow">Collection</div><h1 class="page-title">${esc(KINDS.find((x) => x[0] === kind)[1])}</h1></div>
-        <div class="coll-count"><b>${ownK}</b> / ${all.length} owned<small>${KINDS.reduce((n, [k]) => n + C.list(k).filter((it) => C.owns(k, it.id)).length, 0)} / ${KINDS.reduce((n, [k]) => n + C.list(k).length, 0)} in total</small>
+        <div class="coll-count"><b>${ownK}</b> / ${all.length} owned<small>${KINDS.reduce((n, [k]) => n + C.visible(k).filter((it) => C.owns(k, it.id)).length, 0)} / ${KINDS.reduce((n, [k]) => n + C.visible(k).length, 0)} in total</small>
           <div class="progress thin"><i style="width:${all.length ? (100 * ownK) / all.length : 0}%"></i></div></div></div>
       <div class="ctabs" role="tablist">${KINDS.map(([k, many]) => {
-        const own = C.list(k).filter((it) => C.owns(k, it.id)).length;
-        return `<button class="ctab${k === kind ? ' on' : ''}" data-ctab="${k}" role="tab" aria-selected="${k === kind}">${many} <span>${own}/${C.list(k).length}</span></button>`;
+        const own = C.visible(k).filter((it) => C.owns(k, it.id)).length;
+        return `<button class="ctab${k === kind ? ' on' : ''}" data-ctab="${k}" role="tab" aria-selected="${k === kind}">${many} <span>${own}/${C.visible(k).length}</span></button>`;
       }).join('')}</div>
       <div class="ctools">
+        ${kind === "emote" ? '<button class="btn btn-secondary" data-retro-emotes>Digimon World 1</button>' : ""}
         <input id="colSearch" class="input search" type="search" placeholder="Search ${esc(KINDS.find((x) => x[0] === kind)[1].toLowerCase())}" value="${esc(col.q)}" aria-label="Search" spellcheck="false">
         <div class="seg" role="group" aria-label="Show">${[['all', 'All'], ['owned', 'Owned'], ['locked', 'Not owned']].map(([v, l]) => `<button class="${col.own === v ? 'on' : ''}" data-cown="${v}">${l}</button>`).join('')}</div>
         <select id="colRar" class="input" aria-label="Rarity"><option value="all">All rarities</option>${RARITIES.map((r) => `<option value="${r}" ${col.rar === r ? 'selected' : ''}>${r[0].toUpperCase()}${r.slice(1)}</option>`).join('')}</select>
@@ -1319,6 +1320,7 @@ $('pgCollection').addEventListener('click', (e) => {
   if (!t) return;
   const d = t.dataset;
   const kind = col.tab;
+  if ('retroEmotes' in d) { col.q = 'Digimon World 1'; col.own = 'all'; col.rar = 'all'; col.sel.emote = 'retro_hug'; return RENDER.collection(); }
   if (d.ctab) { col.tab = d.ctab; col.q = ''; sfx('pick', true); return RENDER.collection(); }
   if (d.cown) { col.own = d.cown; return RENDER.collection(); }
   if (d.csel) { col.sel[kind] = d.csel; sfx('place', true); if (stage && kind === 'legend') stage.setLegend(legendKey(d.csel)); return RENDER.collection(); }
@@ -1352,6 +1354,7 @@ function lootItems() {
 RENDER.loot = () => {
   const root = $('pgLoot');
   const { eggs, legends } = lootItems();
+  const boxes = DT.MysteryLoot?.inventory() || { daily: 0, vault: 0, keys: 0 };
   if (!st.lootSel || (st.lootSel.t === 'egg' && !eggs.some((e) => e.id === st.lootSel.id)) || (st.lootSel.t === 'legend' && !legends.some((l) => l.it.id === st.lootSel.id))) {
     const ready = legends.find((l) => l.evo && l.evo.canDigivolve);
     st.lootSel = ready ? { t: 'legend', id: ready.it.id } : eggs[0] ? { t: 'egg', id: eggs[0].id } : null;
@@ -1381,12 +1384,17 @@ RENDER.loot = () => {
   root.innerHTML = `<div class="loot">
     <div class="loot-stage" style="background-image:url('${ART('loot-bg')}')">
       <div class="loot-head"><div><div class="eyebrow">Loot</div><h1 class="page-title">Incubator</h1></div>
-        <div class="loot-mats"><span class="mat"><img src="${ART('loot-shard')}" alt=""><b>${dataTotal}</b><small>Digi-Data</small></span>
+        <div class="loot-mats"><span class="mat"><img src="${ART('loot-shard')}" alt=""><b>${dataTotal}</b><small>Digi-Data · Legend XP</small></span>
           <span class="mat"><img src="${ART('loot-chest')}" alt=""><b>${ready}</b><small>Ready to digivolve</small></span>
           <span class="mat bits">${bit}<b>${W.bits.toLocaleString()}</b><small>Bits</small></span></div></div>
-      <div class="altar">${altar}</div>
+      <div class="altar">${altar}</div><p class="loot-data-help">Digi-Data is XP for each Little Legend. Earn it through matches, duplicate legend hatches and Digi-Farm care to level up and unlock digivolution. Bits are your spending currency.</p>
     </div>
     <aside class="loot-inv">
+      <section class="mystery-boxes"><div class="tile-h">Mystery boxes</div><p>Exclusive surprises. Rewards appear in Collection only after you discover them.</p>
+        <article><span class="mystery-symbol">☀</span><div><b>Daybreak Box × ${boxes.daily}</b><small>First completed round each day.</small></div><button class="btn" data-mystery-open="daily" ${boxes.daily ? "" : "disabled"}>Open</button></article>
+        <article><span class="mystery-symbol">◇</span><div><b>Cipher Box × ${boxes.vault}</b><small>Needs 1 Cipher Key. You have ${boxes.keys}.</small></div><button class="btn" data-mystery-open="vault" ${boxes.vault && boxes.keys ? "" : "disabled"}>Unlock</button></article>
+        <p>Boxes and keys can drop after rounds from stage 2 onward. No purchases required. Each box reveals one new cosmetic; the two pools never overlap.</p>
+      </section>
       <div class="tile-h"><span>Digi-Eggs</span><span class="muted">${eggs.length}</span></div>
       <div class="loot-grid">${eggs.map((e) => `<button class="loot-item egg${sel && sel.t === 'egg' && sel.id === e.id ? ' sel' : ''}" data-loot-egg="${esc(e.id)}" title="${esc(e.name)}">
         <img src="${ART('loot-egg')}" style="--hue:${EGG_HUE[e.id] || 0}deg" alt=""><span>${esc(e.name.replace(' Egg', '').replace('Digi-', ''))}</span><small>${bit}${e.price}</small></button>`).join('')}</div>
@@ -1400,6 +1408,7 @@ $('pgLoot').addEventListener('click', (e) => {
   const t = e.target.closest('button');
   if (!t) return;
   const d = t.dataset;
+  if (d.mysteryOpen) { const reward = DT.MysteryLoot.open(d.mysteryOpen); RENDER.loot(); DT.MysteryLoot.reveal(reward); return; }
   if (d.lootEgg) { st.lootSel = { t: 'egg', id: d.lootEgg }; sfx('place', true); return RENDER.loot(); }
   if (d.lootLegend) { st.lootSel = { t: 'legend', id: d.lootLegend }; sfx('place', true); return RENDER.loot(); }
   if (d.lootEquip) { if (C.equip('legend', d.lootEquip)) { sfx('equip'); toast(`Equipped ${C.get('legend', d.lootEquip).name}`, 'good'); RENDER.loot(); } return; }

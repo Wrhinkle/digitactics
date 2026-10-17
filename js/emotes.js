@@ -5,6 +5,7 @@
 import * as THREE from 'three';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { loadTemplate } from './render3d.js';
+import { stickers } from './mystery-content.js';
 
 const DT = window.DT;
 const OL = '#1b1424';
@@ -182,6 +183,7 @@ const EMOTES = [
 ];
 const PRICE = { common: 150, rare: 400, epic: 900, legendary: 1800 };
 
+for (const item of stickers) { ART[item.id] = item.art; EMOTES.push(item); }
 export function stickerHTML(id) { return ART[id] ? svg(ART[id]()) : ''; }
 
 // ---------- styles (kept here so the feature lives in one file) ----------
@@ -251,6 +253,7 @@ function injectCss() {
 }
 
 const rarityOrder = { common: 0, rare: 1, epic: 2, legendary: 3 };
+for (const item of EMOTES) if (item.data?.retro) item.desc = `Digimon World 1 emote. ${item.desc} Shows a 3D Digimon beside your Little Legend when used in a match.`;
 DT.Cosmetics.register('emote', EMOTES.map((e) => {
   const html = stickerHTML(e.id);
   return Object.assign({}, e, {

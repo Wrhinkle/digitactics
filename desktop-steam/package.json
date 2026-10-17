@@ -13,6 +13,7 @@
     "publish-update": "node publish-update.cjs"
   },
   "dependencies": {
+    "@koromix/koffi-win32-x64": "3.3.3",
     "koffi": "^3.3.3",
     "steamworks.js": "^0.4.0"
   },
