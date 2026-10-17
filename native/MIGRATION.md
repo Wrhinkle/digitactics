@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 132,424,485 assertions.
+Latest verification: the native test suite passes 132,670,697 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -542,3 +542,22 @@ offer and round-flow traces now execute the real Treasure Dragon handler too.
 Other custom offer kinds, concrete game-start/round hooks (including Treasure
 variant initialization), item editing, AI, carousel and desktop match integration
 remain pending.
+
+## Planning items and Reckoning upgrades
+
+`PlanningItems` now equips and combines items using the complete exported recipe
+map, preserves rejection order and combat board locks, handles globals and
+inventory swaps, and enforces duplicate-trait, no-item and Underlords slot rules.
+Consumables dispatch through a required handler; concrete consumable effects are
+still pending. Roster updates retain unit IDs and ordered positions.
+
+Reckoning's Radiant Blessing, Radiant Armory and Tome now use native options and
+choice effects. Radiant options prefer held base items; upgrades replace the first
+matching copy on the board, then unit bench, then item bench, with inventory
+fallback. Existing offer/round traces now exercise these real handlers.
+
+39,600 item-command scenarios plus component recipe pairs produce 239,726 checks
+across all 22 variants. Six original-handler Radiant/Tome traces add 6,486 checks
+for selection, exclusions, upgrade order, inventory limits and RNG. The item trace
+instruments consumable/veto callbacks to verify dispatch, not consumable effects.
+Other custom offers, concrete match hooks and desktop integration remain pending.

@@ -74,6 +74,12 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
                 hooks.PowerPicked(player, id);
                 Combine(player, boardLocked);
                 break;
+            case "rec_bless": case "rec_radiant":
+                modeRewards.GrantRadiant(player, id);
+                break;
+            case "rec_tome":
+                player.GiveItem(id);
+                break;
             case "drg_treasure":
                 modeRewards.ChooseTreasure(player, id, boardLocked);
                 break;
@@ -100,6 +106,9 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             "power" => Shuffle(Rules.Powers.Where(id => !exclude.Contains(id))).Take(count).ToArray(),
             "itemTier" => Shuffle(state.Rules.Items.Where(i => i.Tier == definition.Tier && !i.Component && !i.NoDrop && !exclude.Contains(i.Id))
                 .Select(i => i.Id)).Take(count).ToArray(),
+            "rec_bless" => modeRewards.RadiantOptions(player, 3, exclude),
+            "rec_radiant" => modeRewards.RadiantOptions(player, 4, exclude),
+            "rec_tome" => Shuffle(state.Rules.Loot!.Emblems).Take(4).ToArray(),
             "drg_treasure" => modeRewards.TreasureOptions(player, exclude),
             "ac_loot" => player.Mechanics.AutoChessLoot?.ToArray() ?? [],
             _ => hooks.CustomOptions(player, round, definition, exclude),

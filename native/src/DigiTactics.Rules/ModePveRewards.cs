@@ -1,7 +1,7 @@
 namespace DigiTactics.Rules;
 
 public sealed record ModeLootRules(string Policy, string[] Artifacts, string[] Components,
-    string[] ShadowComponents, Dictionary<string, string> ShadowOf, double ShadowChance);
+    string[] ShadowComponents, Dictionary<string, string> ShadowOf, double ShadowChance, Dictionary<string, string>? RadiantOf = null, Dictionary<string, string>? BaseOf = null);
 public sealed class PlayerMechanics
 {
     public string[]? AutoChessLoot { get; set; }

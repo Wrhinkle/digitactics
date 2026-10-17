@@ -11,6 +11,44 @@ public sealed class ModeOfferRewards(MatchState state)
     private string? Pick(IReadOnlyList<string> ids) => loot.Pick(ids);
     private readonly string[] radiants = state.Rules.Items.Where(i => i.Category == "radiant").Select(i => i.Id).ToArray();
 
+    public string[] RadiantOptions(MatchPlayer player, int count, IReadOnlyList<string> exclude)
+    {
+        var upgrades = Mode.RadiantOf!;
+        var held = player.Roster.Entries.SelectMany(e => e.Unit.Items).Concat(player.Items)
+            .Where(upgrades.ContainsKey).Distinct().Select(id => upgrades[id]).Where(id => !exclude.Contains(id)).ToArray();
+        for (int i = held.Length - 1; i > 0; i--)
+        {
+            int j = (int)(Random() * (i + 1));
+            (held[i], held[j]) = (held[j], held[i]);
+        }
+        var result = held.Take(count).ToList();
+        var rest = upgrades.Values.Where(id => !result.Contains(id) && !exclude.Contains(id)).ToList();
+        while (result.Count < count && rest.Count > 0)
+        {
+            int index = (int)(Random() * rest.Count);
+            result.Add(rest[index]);
+            rest.RemoveAt(index);
+        }
+        return result.ToArray();
+    }
+
+    public void GrantRadiant(MatchPlayer player, string id)
+    {
+        string? original = Mode.BaseOf!.GetValueOrDefault(id);
+        foreach (var entry in player.Roster.Entries)
+        {
+            int index = Array.IndexOf(entry.Unit.Items, original);
+            if (index < 0) continue;
+            var items = entry.Unit.Items.ToArray();
+            items[index] = id;
+            player.Roster.UpdateUnit(entry.Unit with { Items = items });
+            return;
+        }
+        int inventory = original is null ? -1 : player.Items.IndexOf(original);
+        if (inventory >= 0) player.Items[inventory] = id;
+        else player.GiveItem(id);
+    }
+
     public string[]? Armory(MatchPlayer player, RoundPosition round)
     {
         if (Mode.Policy == "arcane")

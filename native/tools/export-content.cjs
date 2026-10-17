@@ -89,7 +89,7 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const lines = DT.SHOP_LINES.map(exportLine);
   const extraLines = Object.values(DT.LINE).filter(l => !l.shop).map(exportLine);
   const id = `${set.id}/${pace}`;
-  variants.push({ id, economy, schedule, loss,
+  variants.push({ id, economy, schedule, loss, recipes: DT.RECIPE,
     offers: { schedule: rules.offers || [], armoryStages: rules.armoryStages || [], armoryRound: rules.armoryRound || 1,
       armoryRounds: rules.armoryRounds, augmentStages: rules.augmentStages || [], augmentRound: rules.augmentRound || 2,
       augmentRounds: rules.augmentRounds, augmentRerolls: rules.augmentRerolls, augmentTierOdds: rules.augmentTierOdds,
@@ -100,11 +100,12 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
       emblems: DT.EMBLEM_IDS, consumables: DT.CONSUMABLE_IDS, customPve: !!DT.SET.pveReward,
       mode: { policy: set.id, artifacts: Object.values(DT.ITEMS).filter(i => i.cat === 'artifact').map(i => i.id),
         components: DT.COMPONENT_IDS, shadowComponents: (DT.SPECIAL_COMPONENTS || []).filter(id => DT.COMPONENTS[id]?.shadow),
+        radiantOf: DT.Sets.def(set.id).items?.radiantOf || {}, baseOf: DT.Sets.def(set.id).items?.baseOf || {},
         shadowOf: DT.Sets.def(set.id).items?.shadowOf || {}, shadowChance: rules.shadowDropChance || 0 } }, duo: DT.Duos.rules(rules), name: set.name, pace, lines, extraLines, partner: DT.Sets.def(set.id).partner || null, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
     tamers: DT.Sets.def(set.id).ulTamers || {},
     forms: Object.fromEntries(Object.entries(DT.Sets.def(set.id).forms || {}).map(([line, forms]) => [line, forms.map(f => ({ id:f.id, name:f.name, description:f.desc, trait:f.trait || null }))])),
     dragonTraitLimits: Object.fromEntries(['normal','hyper','default'].map(p => [p, DT.Sets.rulesFor(set.id, p === 'default' ? undefined : p).drgTraitMax || 0])), pveMultipliers: rules.pveMul || [], rerollCost: rules.rerollCost, shopSize: rules.shopSize || 5,
-    items: Object.entries(DT.ITEMS).map(([id, item]) => ({ id, noDrop: !!item.noDrop, tier: item.tier || 0, hat: !!item.hat, stats: item.stats || {}, passives: item.p || {}, hooks: Object.keys(item.hooks || {}), emblem: item.emblem || null, component: !!item.component, special: !!item.special, category: item.cat || null,
+    items: Object.entries(DT.ITEMS).map(([id, item]) => ({ id, consumable: !!item.consumable, noDrop: !!item.noDrop, tier: item.tier || 0, hat: !!item.hat, stats: item.stats || {}, passives: item.p || {}, hooks: Object.keys(item.hooks || {}), emblem: item.emblem || null, component: !!item.component, special: !!item.special, category: item.cat || null,
       ingredients: item.from || null, selfUpgrade: DT.combineItems(id, id),
       completedFrom: Object.entries(DT.RECIPE || {}).filter(([key, value]) => key.split('+').includes(id) && DT.ITEMS[value]?.cat === 'completed').map(([, value]) => value) })),
     coreItems: DT.CORE_ITEMS,
@@ -150,7 +151,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 21, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 22, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');

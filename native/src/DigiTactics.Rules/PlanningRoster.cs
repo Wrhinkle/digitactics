@@ -55,6 +55,14 @@ public sealed class PlanningRoster
         return entry.Unit;
     }
 
+    public bool UpdateUnit(PlanningUnit unit)
+    {
+        var entry = Entries.FirstOrDefault(e => e.Unit.Id == unit.Id);
+        if (entry is null || !lines.ContainsKey(unit.Line)) return false;
+        Set(entry.Spot, unit);
+        return true;
+    }
+
     public bool CanAcceptPurchase(string line, bool boardLocked) => FreeBenchSlot >= 0 ||
         Entries.Count(e => (!boardLocked || !e.Spot.IsBoard) && e.Unit.Line == line && e.Unit.Stage == 0) >= lines[line].Copies - 1;
 

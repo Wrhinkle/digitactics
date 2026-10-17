@@ -4,6 +4,7 @@ for(const set of DT.Sets.pickable())for(const pace of ['normal','hyper'])for(con
  DT.Sets.activate(set.id,pace);const R=DT.HYPER,log=[];
  const g=Object.create(DT.Game.prototype);
  const kinds=Object.fromEntries(Object.keys(DT.SET.mechanic.offerKinds).map(kind=>[kind,{options:()=>['custom_a','custom_b','custom_c']}]));
+ if(set.id==='reckoning')for(const k of ['rec_bless','rec_radiant','rec_tome'])kinds[k]=DT.SET.mechanic.offerKinds[k];
  if(set.id==='dragonlands')kinds.drg_treasure=DT.SET.mechanic.offerKinds.drg_treasure;
  if(set.id==='autochess')kinds.ac_loot=DT.SET.mechanic.offerKinds.ac_loot;
  Object.assign(g,{R,uid:0,rng:DT.makeRng(143),duo,phase:'result',stage:1,round:1,roundType:R.roundType(1,1),over:false,playOut:true,hasHook:()=>false,ensureSet(){},pool:Object.fromEntries(DT.SHOP_LINES.map(l=>[l.id,DT.POOL_SIZE[l.tier]])),set:{...DT.SET,def:{...DT.SET.def,items:{...DT.SET.def.items,armory:null}},mechanic:{...DT.SET.mechanic,offerKinds:kinds}}});
