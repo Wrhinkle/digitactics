@@ -31,6 +31,21 @@ public sealed class MatchLoot(MatchState state)
         return Pick(preferred.Length > 0 ? preferred : emblems);
     }
 
+    public PlanningUnit? GiveUnit(MatchPlayer player, IReadOnlyCollection<int> tiers, int stage = 0)
+    {
+        var eligible = state.Rules.Lines.Where(l => tiers.Contains(l.Tier) && state.Pool.Remaining(l.Id) >= UnitValues.Copies(l, stage)).ToArray();
+        if (eligible.Length == 0) return null;
+        var line = eligible[(int)(state.Random.Next() * eligible.Length)];
+        int copies = UnitValues.Copies(line, stage); state.Pool.Take(line.Id, copies);
+        var unit = state.CreateUnit(line.Id, stage);
+        if (!player.Roster.AddToBench(unit))
+        {
+            state.Pool.Return(line.Id, copies);
+            player.Economy.Credit(UnitValues.SellValue(line, stage));
+        }
+        return unit;
+    }
+
     public PveRewardSummary Reward(MatchPlayer player, RoundPosition round, bool won,
         Func<MatchPlayer, bool, IEnumerable<LootSpec>>? custom = null)
     {

@@ -692,3 +692,30 @@ arrival payloads, ordered hook dispatch, shop exclusions, pool counts and RNG.
 The fixture instruments hook dispatch rather than applying augment effects;
 concrete Duos augment handlers, Care Package gifts, round-reset wiring and the
 production command/UI dispatcher remain pending. Run with `--portals-only`.
+
+## Duos planning augment effects and Care Package
+
+`DuosPlanning` implements Wide Portal gold, Proud Partner's per-round three-reward
+limit, Pass the Gear, Shared Interest, Care Package and Shared Treasure. Partner
+rewards require a living partner and preserve original RNG consumption even when
+inventory capacity discards an item. Proud Partner tracks the pace's cumulative
+round number, including the opening stage's different length.
+
+`MatchLoot.GiveUnit` reserves the original number of pool copies, allocates a unit
+and either places it on the bench or returns its copies and grants sale gold.
+`MatchPortal.Gift` records successful bench arrivals as gifts, combines through
+recipient and partner hooks, and clears max-star shop offers. Gifts consume no
+portal sends and do not fire ordinary portal-send hooks. Human combat board locks
+remain respected during gift merges.
+
+The concrete shared-augment handlers are exercised alongside portal transfers in
+8,800 original-game scenarios across all 22 variants: 1,034,330 comparisons of
+inventory, gold, income, Proud Partner counters, roster, pool, arrivals, callbacks,
+shops and RNG. Mode combine hooks are isolated in these traces. The base portal
+suite now also checks gift flags (969,554 comparisons). Run the new suite with
+`--duos-planning-only`. Production hook composition and match/UI integration remain
+pending; the existing native combat/trait/settlement layers handle the other Duos
+combat, trait and damage effects.
+
+Validation: 147,196,271 full-suite checks pass, along with the self-contained
+Windows package asset, texture, purchase UI and battle-rendering smoke tests.

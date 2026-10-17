@@ -74,6 +74,21 @@ public sealed class MatchPortal(MatchState state, IMatchPortalHooks hooks)
         return new(unit is null ? "item" : "unit", evolved);
     }
 
+    public PlanningUnit? Gift(MatchPlayer from, MatchPlayer to, IReadOnlyCollection<int> tiers, MatchPhase phase)
+    {
+        var unit = new MatchLoot(state).GiveUnit(to, tiers);
+        if (unit is null || !to.Roster.Bench.Any(u => u?.Id == unit.Id)) return unit;
+        to.Incoming.Add(new("unit", from.Id, unit.Id, unit.Line, unit.Stage, Gift: true));
+        to.Roster.Combine(phase == MatchPhase.Combat && to.IsHuman, to.GiveItem, onCombine: (up, sources) =>
+        {
+            hooks.Combined(to, up, sources);
+            if (Partner(to) is { Alive: true } partner)
+                hooks.PartnerCombined(partner, to, to.Roster.Entries.FirstOrDefault(e => e.Unit.Id == up.Id)?.Unit ?? up);
+        });
+        to.Shop.ClearMaxed();
+        return unit;
+    }
+
     public void AiTurn(MatchPlayer player, MatchPhase phase, string roundType)
     {
         if (Partner(player) is not { Alive: true } partner) return;

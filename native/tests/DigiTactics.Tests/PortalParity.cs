@@ -6,14 +6,16 @@ internal static class PortalParity
 {
     private sealed class Hooks : IMatchPortalHooks
     {
+        public DuosPlanning? Planning { get; set; }
+        public RoundPosition Round { get; set; }
         public List<(string Name, int Player, int? Unit)> Events { get; } = [];
         public void Combined(MatchPlayer p, PlanningUnit u, IReadOnlyList<PlanningUnit> sources) => Events.Add(("onCombine", p.Id, u.Id));
-        public void PartnerCombined(MatchPlayer p, MatchPlayer owner, PlanningUnit u) => Events.Add(("onPartnerCombine", p.Id, u.Id));
-        public void Sent(MatchPlayer p, PortalEvent e) => Events.Add(("onPortal", p.Id, e.Unit?.Id));
+        public void PartnerCombined(MatchPlayer p, MatchPlayer owner, PlanningUnit u) { Events.Add(("onPartnerCombine", p.Id, u.Id)); Planning?.PartnerCombined(p, Round); }
+        public void Sent(MatchPlayer p, PortalEvent e) { Events.Add(("onPortal", p.Id, e.Unit?.Id)); Planning?.Sent(p, e); }
     }
-    public static int Run(string root, ContentCatalog catalog)
+    public static int Run(string root, ContentCatalog catalog, bool planning = false)
     {
-        using var input = File.OpenRead(Path.Combine(root, "tests/fixtures/portals.json.gz"));
+        using var input = File.OpenRead(Path.Combine(root, planning ? "tests/fixtures/duos-planning.json.gz" : "tests/fixtures/portals.json.gz"));
         using var gzip = new GZipStream(input, CompressionMode.Decompress); using var fixture = JsonDocument.Parse(gzip);
         int checks = 0; void Check(bool ok, string c) { checks++; if (!ok) throw new InvalidOperationException("Portal parity: " + c); }
         static string[] Strings(JsonElement e) => e.EnumerateArray().Select(x => x.GetString()!).ToArray();
@@ -21,13 +23,14 @@ internal static class PortalParity
         {
             var rules = catalog.Variants.Single(v => v.Id == trace.GetProperty("variant").GetString());
             var state = new MatchState(rules, 143, Enumerable.Range(0,8).Select(i => new MatchSeat($"AI {i}", false)).ToArray(), true);
-            var hooks = new Hooks(); var portal = new MatchPortal(state, hooks); int step = 0;
+            var hooks = new Hooks(); var portal = new MatchPortal(state, hooks); if (planning) hooks.Planning = new(state, portal); int step = 0;
             foreach (var sample in trace.GetProperty("cases").EnumerateArray())
             {
-                string context = $"{rules.Id}/{step++}"; hooks.Events.Clear();
+                string context = $"{rules.Id}/{step++}"; hooks.Events.Clear(); if (planning) hooks.Round = new(sample.GetProperty("stage").GetInt32(), sample.GetProperty("round").GetInt32());
                 foreach (var setup in sample.GetProperty("setup").EnumerateArray())
                 {
                     var p = state.Players[setup.GetProperty("id").GetInt32()]; portal.Reset(p);
+                    if (planning) p.Economy.Credit((step - 1) % 60 - 10 - p.Economy.Gold);
                     foreach (var e in p.Roster.Entries.ToArray()) p.Roster.Remove(e.Unit.Id, false);
                     p.Items.Clear(); p.Items.AddRange(Strings(setup.GetProperty("items"))); p.Augments.Clear(); p.Augments.UnionWith(Strings(setup.GetProperty("augs")));
                     foreach (var u in setup.GetProperty("units").EnumerateArray())
@@ -48,12 +51,27 @@ internal static class PortalParity
                 Check(result.Status == sample.GetProperty("result").GetString(), context + " result");
                 Check(result.Evolved.Select(u => u.Id).SequenceEqual(sample.GetProperty("evolved").EnumerateArray().Select(x => x.GetInt32())), context + " evolved");
                 portal.AiTurn(sender, phase, round);
+                var income = new Dictionary<int, int>();
+                if (planning) foreach (var p in new[] { sender, portal.Partner(sender)! })
+                {
+                    hooks.Planning!.Picked(p, sample.GetProperty("pick").GetString()!);
+                    income[p.Id] = hooks.Planning.Income(p, new(0, 0, 0, 2)).Augment;
+                    hooks.Planning.RoundStart(p, hooks.Round, phase, round);
+                    for (int i = 0; i < 5; i++) hooks.Planning.PartnerCombined(p, hooks.Round);
+                }
                 var events = sample.GetProperty("events").EnumerateArray().Select(e => (e.GetProperty("name").GetString()!, e.GetProperty("player").GetInt32(), e.GetProperty("uid").ValueKind == JsonValueKind.Null ? (int?)null : e.GetProperty("uid").GetInt32()));
                 Check(hooks.Events.SequenceEqual(events), context + " hook order");
                 foreach (var pair in sample.GetProperty("pool").EnumerateObject()) Check(state.Pool.Remaining(pair.Name) == pair.Value.GetInt32(), context + " pool");
                 foreach (var expected in sample.GetProperty("after").EnumerateArray())
                 {
                     var p = state.Players[expected.GetProperty("id").GetInt32()];
+                    if (planning)
+                    {
+                        Check(p.Economy.Gold == expected.GetProperty("gold").GetInt32(), context + " gold");
+                        Check(income[p.Id] == expected.GetProperty("income").GetInt32(), context + " income");
+                        var proudRound = expected.GetProperty("proudRound");
+                        Check(p.ProudPartnerRound == (proudRound.ValueKind == JsonValueKind.Null ? (int?)null : proudRound.GetInt32()) && p.ProudPartnerCount == expected.GetProperty("proudCount").GetInt32(), context + " proud partner");
+                    }
                     Check(p.PortalSends == expected.GetProperty("portal").GetInt32(), context + " sends");
                     Check(p.Items.SequenceEqual(Strings(expected.GetProperty("items"))), context + " inventory");
                     for (int i = 0; i < 9; i++)
@@ -74,11 +92,12 @@ internal static class PortalParity
                         var a = p.Incoming[i]; var e = incoming[i];
                         Check(a.Kind == e.GetProperty("kind").GetString() && a.From == e.GetProperty("from").GetInt32(), context + " arrival sender");
                         Check(a.Kind == "unit" ? a.Uid == e.GetProperty("uid").GetInt32() && a.Line == e.GetProperty("line").GetString() && a.Stage == e.GetProperty("stage").GetInt32() : a.Item == e.GetProperty("item").GetString(), context + " arrival payload");
+                        Check(a.Gift == (e.TryGetProperty("gift", out var gift) && gift.GetBoolean()), context + " gift flag");
                     }
                 }
             }
             Check(state.Random.Next() == trace.GetProperty("nextRandom").GetDouble(), rules.Id + " RNG");
         }
-        Console.WriteLine($"Portal parity: {checks:N0} checks across 22 variants."); return checks;
+        Console.WriteLine($"{(planning ? "Duos planning" : "Portal")} parity: {checks:N0} checks across 22 variants."); return checks;
     }
 }

@@ -36,6 +36,8 @@ public sealed class MatchPlayer
     public List<string> Globals { get; } = [];
     public CombatBuffs? NextBuffs { get; set; }
     public int PortalSends { get; internal set; }
+    public int? ProudPartnerRound { get; internal set; }
+    public int ProudPartnerCount { get; internal set; }
     public List<PortalArrival> Incoming { get; } = [];
 }
 
