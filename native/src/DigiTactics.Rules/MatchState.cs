@@ -34,6 +34,7 @@ public sealed class MatchPlayer
     public PlayerOffer? Offer { get; internal set; }
     public CombatPower? Power { get; set; }
     public List<string> Globals { get; } = [];
+    public CombatBuffs? NextBuffs { get; set; }
 }
 
 public sealed class MatchTeam(int id, MatchPlayer[] members, int health)

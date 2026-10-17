@@ -90,7 +90,7 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const extraLines = Object.values(DT.LINE).filter(l => !l.shop).map(exportLine);
   const id = `${set.id}/${pace}`;
   variants.push({ id, economy, schedule, loss, recipes: DT.RECIPE,
-    coliseum: set.id === 'coliseum' ? {
+    coliseum: set.id === 'coliseum' ? { coreRounds: rules.coreRounds || [],
       powerUps: DT.Sets.def(set.id).powerUps.map(p => ({ id: p.id, tags: p.tags })),
       frontliners: Object.values(DT.LINE).filter(l => l.ai && l.ai.tank > 0 && l.ai.tank <= 2).map(l => l.id),
       unitKinds: Object.fromEntries(Object.values(DT.LINE).map(l => {
@@ -160,7 +160,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 24, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 25, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');

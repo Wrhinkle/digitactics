@@ -26,6 +26,7 @@ try {
     Invoke-Checked 'node' @('tools/export-coliseum-core.cjs')
     Invoke-Checked 'node' @('tools/export-coliseum-choices.cjs')
     Invoke-Checked 'node' @('tools/export-coliseum-shop.cjs')
+    Invoke-Checked 'node' @('tools/export-coliseum-rounds.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
     Invoke-Checked 'node' @('tools/export-material-fixtures.cjs')

@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 137,447,009 assertions.
+Latest verification: the native test suite passes 137,622,920 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -686,3 +686,26 @@ The match command layer is ready for a composed hook dispatcher; low-level shop
 methods remain available for isolated economy fixtures. Round/combat hooks, other
 mode shop mechanics, the global dispatcher and production desktop integration are
 still pending.
+
+## Coliseum round-start rewards and offers
+
+Catalog schema 25 exports each pace's core-grant rounds. `ColiseumPlanning.RoundStart`
+queues those cores, drains stored cores as inventory space permits, grants one
+reroll per fielded three-star Crew unit and rolls Pirate Captain rewards in the
+original order. Typed pirate state retains the growing reward count, last reward
+and permanent AP. `MatchPlayer.NextBuffs` stores the armor reward while preserving
+other pending combat buffs.
+
+A ready Jewel Gambit takes priority over form offers for human players. AI chooses
+its Gambit option using health, streak and the shared random stream, then resolves
+all missing forms in roster order. Human form choices remain queued one at a time,
+and existing scheduled offers block them without suppressing round rewards.
+
+12 original `nextRound` traces cover 1,800 advances and 175,911 comparisons across
+both paces, human/AI players and three seeds. The native test drives `MatchRounds`
+through the concrete round-start handler and compares economy, shops, inventory,
+rerolls, mechanics, offers, modifiers, bonuses and RNG. The reference and native
+fixtures both omit general AI planning and carousel actions; these tests establish
+the round-start behavior, not complete-match parity. Combat settlement mechanics,
+AI core assignment, the global hook dispatcher and production integration remain
+pending.

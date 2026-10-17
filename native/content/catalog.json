@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 24,
+  "schemaVersion": 25,
   "variants": [
     {
       "id": "faction-wars/normal",
@@ -103401,6 +103401,10 @@
         "col_rod+col_tag": "col_cr_sor"
       },
       "coliseum": {
+        "coreRounds": [
+          "1-3",
+          "3-6"
+        ],
         "powerUps": [
           {
             "id": "burst",
@@ -110928,6 +110932,10 @@
         "col_rod+col_tag": "col_cr_sor"
       },
       "coliseum": {
+        "coreRounds": [
+          "1-3",
+          "3-3"
+        ],
         "powerUps": [
           {
             "id": "burst",

@@ -4,13 +4,82 @@ using System.Globalization;
 namespace DigiTactics.Rules;
 
 public sealed record ColiseumPowerUp(string Id, string[] Tags);
-public sealed record ColiseumPlanningRules(ColiseumPowerUp[] PowerUps, Dictionary<string, string> UnitKinds, string[] Frontliners);
+public sealed record ColiseumPlanningRules(ColiseumPowerUp[] PowerUps, Dictionary<string, string> UnitKinds, string[] Frontliners, string[] CoreRounds);
 
 /// <summary>Digi-Core inventory and choices share the same pending target and refund rules.</summary>
 public sealed class ColiseumPlanning(MatchState state) : IMatchShopHooks
 {
     private ColiseumPlanningRules Rules => state.Rules.Coliseum!;
     private readonly MatchLoot loot = new(state);
+
+    public void RoundStart(MatchPlayer player, RoundPosition round)
+    {
+        if (Rules.CoreRounds.Contains(round.Label)) player.Mechanics.ColiseumCores++;
+        while (player.Mechanics.ColiseumCores > 0 && player.Items.Count < state.Rules.Loot!.ItemCap)
+        {
+            player.GiveItem("col_core"); player.Mechanics.ColiseumCores--;
+        }
+        player.Shop.FreeRolls += player.Roster.Board.Count(e => e.Unit.Stage == 2 &&
+            state.Rules.Lines.Concat(state.Rules.ExtraLines).Single(l => l.Id == e.Unit.Line).Traits.Contains("CREW"));
+        if (round.Stage >= 2 && player.Roster.Board.Any(e => e.Unit.Line == "col_piedmon")) Bounty(player);
+        var gambit = player.Mechanics.ColiseumGambit;
+        if (gambit.Ready && gambit.Gems > 0)
+        {
+            var options = GambitOptions(player);
+            if (!player.IsHuman)
+            {
+                string best = options[0]; double bestScore = double.NegativeInfinity;
+                foreach (string id in options)
+                {
+                    double score = (id.StartsWith("double", StringComparison.Ordinal)
+                        ? player.Health > 10 && player.Economy.Streak < 0 ? 2 : -1 : 1) + state.Random.Next();
+                    if (score > bestScore) { bestScore = score; best = id; }
+                }
+                ChooseGambit(player, best);
+            }
+            else if (player.Offer is null)
+            {
+                player.Offer = new("col_gambit", options, 0, null);
+                return;
+            }
+        }
+        // AI resolves every missing form in board/bench order; humans get one pending offer.
+        foreach (var entry in player.Roster.Entries.ToArray())
+        {
+            var unit = entry.Unit;
+            if (!state.Rules.Forms!.TryGetValue(unit.Line, out var forms) ||
+                unit.Mods is { } mods && mods.TryGetProperty("form", out var current) && Truthy(current)) continue;
+            if (!player.IsHuman) { player.Roster.UpdateUnit(ApplyForm(unit, AiForm(player, forms))); continue; }
+            if (player.Offer is null)
+            {
+                player.Mechanics.ColiseumFormUnitId = unit.Id;
+                player.Offer = new("col_form", forms.Select(f => f.Id).ToArray(), 0, null);
+            }
+            break;
+        }
+    }
+
+    private void Bounty(MatchPlayer player)
+    {
+        var pirate = player.Mechanics.ColiseumPirate;
+        int count = ++pirate.Count;
+        List<string> rewards = ["gold", "rolls", "ap", "shield"];
+        if (count >= 3) rewards.AddRange(["comp", "comp"]);
+        if (count >= 6) rewards.Add("big");
+        if (count >= 8) rewards.Add("item");
+        string reward = rewards[(int)(state.Random.Next() * rewards.Count)];
+        pirate.LastReward = reward;
+        switch (reward)
+        {
+            case "gold": player.Economy.Credit(2 + count / 3); break;
+            case "rolls": player.Shop.FreeRolls += 2; break;
+            case "ap": pirate.AbilityPower += 8; break;
+            case "shield": player.NextBuffs = (player.NextBuffs ?? new()) with { Armor = (player.NextBuffs?.Armor ?? 0) + 25 }; break;
+            case "comp": if (loot.RandomComponent() is { } component) player.GiveItem(component); break;
+            case "big": player.Economy.Credit(8); break;
+            case "item": if (loot.RandomCompleted() is { } item) player.GiveItem(item); break;
+        }
+    }
 
     public PlanningUnit Bought(MatchPlayer player, PlanningUnit unit, int slot, MatchPhase phase)
     {

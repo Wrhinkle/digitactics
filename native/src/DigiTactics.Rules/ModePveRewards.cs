@@ -11,6 +11,14 @@ public sealed class PlayerMechanics
     public int? ColiseumCoreUnitId { get; set; }
     public int? ColiseumFormUnitId { get; set; }
     public ColiseumGambitState ColiseumGambit { get; } = new();
+    public ColiseumPirateState ColiseumPirate { get; } = new();
+}
+
+public sealed class ColiseumPirateState
+{
+    public int Count { get; set; }
+    public string? LastReward { get; set; }
+    public double AbilityPower { get; set; }
 }
 
 public sealed class ColiseumGambitState
