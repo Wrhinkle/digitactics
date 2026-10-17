@@ -1069,3 +1069,23 @@ choices, ordered roster changes, inventory, shared pool and RNG. Run with
 mode dispatcher registration remain pending.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+## Galaxies post-combat rewards
+
+`GalaxiesPlanning.RoundEnd` consumes resolved combat and scoped match context,
+returning bonus gold for settlement to credit. Data Pirate rewards run first:
+up to six recorded kills each roll trait-level gold and component chances. Then
+Treasure/Big Bang PvE items, Plunder gold and capped Meep gold follow in original
+order. Missing combat still permits Galaxy PvE item rewards. Plunder excludes
+summons and units currently absorbed as DigiXros pilots. Inventory saturation
+does not skip reward RNG draws. Team-wide pirate/Meep counters are read from the
+native combat result; unit filtering uses the settlement's ownership view.
+
+20 real battles and 4,800 reward scenarios pass 14,776 comparisons, including
+terminal units, battle duration/winner, pirate/Meep counters, payout amounts,
+inventory order and RNG. Coverage spans both paces, trait levels, reward Galaxies,
+PvE/PvP, missing combat, full inventory, summons, absorbed pilots and Duos-style
+owner filtering. Run with `--galaxies-settlement-only`. Full match dispatcher and
+persistent combat-input integration remain pending.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.

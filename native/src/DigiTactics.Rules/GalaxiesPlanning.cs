@@ -5,6 +5,34 @@ public sealed class GalaxiesPlanning(MatchState state) : IMatchShopHooks
 {
     private readonly Dictionary<string, UnitLine> lines = state.Rules.Lines.ToDictionary(l => l.Id);
     private readonly Dictionary<string, ItemDefinition> items = state.Rules.Items.ToDictionary(i => i.Id);
+    private readonly MatchLoot loot = new(state);
+
+    public int RoundEnd(RoundEndContext context, int stage)
+    {
+        int gold = 0; var combat = context.Match.Combat;
+        var pirate = state.Rules.Traits.Single(t => t.Id == "PI");
+        int level = TraitRules.Level(pirate, context.Traits.GetValueOrDefault("PI"));
+        // Trait payouts precede mechanic payouts, sharing the match RNG.
+        if (!context.Pve && combat is not null && level > 0)
+        {
+            double componentChance = pirate.Parameters["comp"][level - 1];
+            for (int i = 0; i < Math.Min(6, combat.PirateKillCount(context.Team)); i++)
+            {
+                if (state.Random.Next() < pirate.Values[level - 1]) gold++;
+                if (componentChance != 0 && state.Random.Next() < componentChance) context.Player.GiveItem(loot.RandomComponent()!);
+            }
+        }
+        if (context.Pve && state.Galaxy == "treasure") context.Player.GiveItem(stage >= 4 ? loot.RandomCompleted()! : loot.RandomComponent()!);
+        if (context.Pve && state.Galaxy == "bigbang") context.Player.GiveItem(loot.RandomComponent()!);
+        if (combat is null) return gold;
+        if (!context.Pve && state.Galaxy == "plunder")
+            foreach (var unit in context.Units.Where(u => u.Survivor.Team != context.Team && !u.Survivor.Alive && !u.Survivor.Summoned))
+            {
+                var terminal = unit.State ?? throw new InvalidOperationException("A Galaxies result is missing unit state.");
+                if (!terminal.Galaxies.Piloting && state.Random.Next() < .3) gold++;
+            }
+        return gold + Math.Min(2, combat.MeepCount(context.Team));
+    }
     public int TeamSize(int size, int stage) => size + (state.Galaxy == "bigger" && stage >= 2 ? 1 : 0);
 
     public void RoundStart(MatchPlayer player, RoundPosition round)
