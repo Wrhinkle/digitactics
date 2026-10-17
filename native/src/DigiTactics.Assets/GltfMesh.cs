@@ -76,7 +76,7 @@ public sealed record GltfMesh(GltfPrimitive[][] Meshes, MeshInstance[] Instances
         return new(meshes.ToArray(), instances.ToArray());
     }
 
-    public (Vector3D Min, Vector3D Max) Bounds(GltfRig rig, RigPose pose)
+    public (Vector3D Min, Vector3D Max) Bounds(GltfRig rig, RigPose pose, bool precise = true)
     {
         var min = new Vector3D(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity);
         var max = new Vector3D(double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
@@ -85,6 +85,9 @@ public sealed record GltfMesh(GltfPrimitive[][] Meshes, MeshInstance[] Instances
             var palette = instance.Skin >= 0 ? new Matrix4D[rig.Skins[instance.Skin].Joints.Length] : [];
             if (instance.Skin >= 0) pose.SkinMatrices(instance.Skin, instance.Node, palette);
             foreach (var primitive in Meshes[instance.Mesh])
+            {
+                var localMin = new Vector3D(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity);
+                var localMax = new Vector3D(double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
                 for (int vertex = 0; vertex < primitive.VertexCount; vertex++)
                 {
                     var values = primitive.Vertices.AsSpan(vertex * GltfPrimitive.Stride, GltfPrimitive.Stride);
@@ -99,12 +102,24 @@ public sealed record GltfMesh(GltfPrimitive[][] Meshes, MeshInstance[] Instances
                         }
                         point = skinned;
                     }
-                    point = Transform(point, pose.World[instance.Node]);
-                    min = new(Math.Min(min.X, point.X), Math.Min(min.Y, point.Y), Math.Min(min.Z, point.Z));
-                    max = new(Math.Max(max.X, point.X), Math.Max(max.Y, point.Y), Math.Max(max.Z, point.Z));
+                    if (precise) Include(Transform(point, pose.World[instance.Node]));
+                    else
+                    {
+                        localMin = new(Math.Min(localMin.X, point.X), Math.Min(localMin.Y, point.Y), Math.Min(localMin.Z, point.Z));
+                        localMax = new(Math.Max(localMax.X, point.X), Math.Max(localMax.Y, point.Y), Math.Max(localMax.Z, point.Z));
+                    }
                 }
+                if (!precise) for (int corner = 0; corner < 8; corner++)
+                    Include(Transform(new((corner & 1) == 0 ? localMin.X : localMax.X, (corner & 2) == 0 ? localMin.Y : localMax.Y,
+                        (corner & 4) == 0 ? localMin.Z : localMax.Z), pose.World[instance.Node]));
+            }
         }
         return (min, max);
+        void Include(Vector3D point)
+        {
+            min = new(Math.Min(min.X, point.X), Math.Min(min.Y, point.Y), Math.Min(min.Z, point.Z));
+            max = new(Math.Max(max.X, point.X), Math.Max(max.Y, point.Y), Math.Max(max.Z, point.Z));
+        }
     }
     private static Vector3D Transform(Vector3D v, Matrix4D m) => new(v.X*m.M11+v.Y*m.M21+v.Z*m.M31+m.M41,
         v.X*m.M12+v.Y*m.M22+v.Z*m.M32+m.M42, v.X*m.M13+v.Y*m.M23+v.Z*m.M33+m.M43);

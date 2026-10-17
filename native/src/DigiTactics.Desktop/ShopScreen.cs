@@ -10,6 +10,9 @@ internal sealed class ShopScreen
     private ShopSession session;
     private string status = "Choose a ruleset to explore the native shop and roster.";
     internal int OwnedCount => session.Roster.Units.Count;
+    internal Ruleset Rules => session.Rules;
+    internal bool BattleRequested { get; private set; }
+    internal CombatEntry[] BattleRoster() => session.Roster.Units.Select((unit, i) => new CombatEntry(unit.Line, unit.Stage, i % 7, 4 + i / 7, Items: [])).ToArray();
     internal string? RequestedAction { get; private set; }
     internal (string Variant, string Line, int Stage)? Preview
     {
@@ -30,6 +33,7 @@ internal sealed class ShopScreen
     public void Draw(int2 size)
     {
         RequestedAction = null;
+        BattleRequested = false;
         ImGui.SetNextWindowPos(new float2(20, 20));
         ImGui.SetNextWindowSize(new float2(size.X - 40, Math.Max(300, size.Y * .53f)));
         ImGui.Begin("Digi-Tactics - native migration"u8, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
@@ -48,6 +52,7 @@ internal sealed class ShopScreen
             status = session.Reroll() ? "Shop refreshed." : "Not enough gold.";
         ImGui.SameLine();
         if (ImGui.Button("Reset sandbox"u8)) { session = new(session.Rules, 143); status = "Sandbox reset."; }
+        ImGui.SameLine(); if (ImGui.Button("Test battle"u8)) BattleRequested = true;
         ImGui.SeparatorText("SHOP"u8);
         for (int slot = 0; slot < session.Slots.Count; slot++)
         {

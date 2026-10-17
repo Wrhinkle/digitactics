@@ -42,6 +42,9 @@ internal static class MeshParity
                 var (min, max) = mesh.Bounds(rig, pose);
                 double[] values = [min.X,min.Y,min.Z,max.X,max.Y,max.Z];
                 for (int i = 0; i < 6; i++) Near(values[i], sample.GetProperty(i < 3 ? "min" : "max")[i % 3].GetDouble(), "posed bounds");
+                (min, max) = mesh.Bounds(rig, pose, precise: false);
+                values = [min.X,min.Y,min.Z,max.X,max.Y,max.Z];
+                for (int i = 0; i < 6; i++) Near(values[i], sample.GetProperty(i < 3 ? "standardMin" : "standardMax")[i % 3].GetDouble(), "template bounds");
             }
         }
         Console.WriteLine($"Passed {checks} original-loader mesh checks across {vertices} vertices.");

@@ -3,6 +3,7 @@ using DigiTactics.Rules;
 
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
+if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
 if (args.Contains("--choreography-only")) { ChoreographyParity.Run(root, catalog); return; }
 using var fixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests/fixtures/parity.json")));

@@ -366,7 +366,7 @@ The workbench uses prepared rigs, and packaged smoke prepares all 905 sources.
 Original nonfinite tracks remain covered by the existing repair checks instead of
 reference equality. This does not establish rendering parity: production material
 shaders (including normal/roughness/specular maps), transparent depth sorting,
-full battle scene drawing and arena normalization/lighting remain unfinished.
+production battle visuals and arena themes/lighting remain unfinished.
 
 Native ModelAnimator now implements UnitView action priorities, the 60% attack
 retrigger gate, .55-second attack and 1.1-second special speed limits, repeating
@@ -394,9 +394,24 @@ death/label updates with only GPU/audio/DOM operations stubbed. There are 610,54
 checks across 44 battles, including both viewing orientations and 7/14-column boards.
 Element colors and particle/audio effects are not established by this fixture.
 Packaged smoke drives real prepared models through battles in all 22 catalogs and
-checks finite poses. Full combat scene drawing and effect materials are still pending.
+checks finite poses. Production battle visuals and effect materials are still pending.
 
-Latest verification: the native test suite passes 125,436,973 assertions.
+The native battle workbench now draws real combat on a hex board. Test battle uses
+the purchased roster or a six-unit demonstration, with pause/resume and return-to-shop
+controls. Health bars, hover names and cast labels accompany skeletal animation,
+movement, facing, lunges and death transforms. GpuModel owns shared geometry/textures;
+ModelRenderer owns the shader and reusable bone buffer; each actor owns its animator.
+The preview uses the same rendering path. Models use the original stage-height,
+footprint, rotation and flyer-offset formulas. Fresh template bounding boxes now
+match the original Box3 path (including local box corners transformed to world),
+raising mesh reference coverage to 74,844 checks across all 718 models.
+The packaged test now renders four seconds of a twelve-unit battle in addition to
+the shop/model preview checks, with 25 model draw calls using nine shared models.
+Captured frames were visually inspected. This is not a complete match or production
+renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
+full unit HUDs and missing-model placeholders still need completion.
+
+Latest verification: the native test suite passes 125,445,589 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

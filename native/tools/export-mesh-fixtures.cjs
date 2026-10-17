@@ -22,7 +22,10 @@ async function main() {
       // Precise traversal uses the actual SkinnedMesh.getVertexPosition implementation.
       const bounds = new THREE.Box3().setFromObject(gltf.scene,true);
       const min=bounds.min.toArray(),max=bounds.max.toArray();
-      if([...min,...max].every(Number.isFinite))samples.push({time,min,max});
+      // Template preparation measures a fresh pose, not a SkinnedMesh box cached at an earlier sample.
+      gltf.scene.traverse(o=>{if(o.isSkinnedMesh)o.computeBoundingBox();});
+      const standard=new THREE.Box3().setFromObject(gltf.scene);
+      if([...min,...max,...standard.min.toArray(),...standard.max.toArray()].every(Number.isFinite))samples.push({time,min,max,standardMin:standard.min.toArray(),standardMax:standard.max.toArray()});
       mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);
     }
     const primitives=[];

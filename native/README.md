@@ -32,6 +32,10 @@ Attack, Special, Victory and Idle buttons exercise the native action controller.
 It preserves action priorities, attack retrigger limits, clip speed limits and
 weighted transitions, checked against the original renderer/mixer in 2,399,704
 comparisons across 873 animated model sources.
+Use **Test battle** to place the purchased roster into a native combat view; an empty
+roster starts a six-unit demonstration. The view has a hex board, animated models,
+health bars, cast labels, pause/resume and a return-to-shop button. Hover over a
+health bar to see the unit name. This still does not run a complete match.
 
 The shared combat presentation stream is checked against 156 original-engine battles
 (42,626 ordered cues), including cast names, projectiles, bursts, critical damage,
@@ -67,8 +71,9 @@ materials from the original loader, including the game's cutout/unlit correction
 texture color spaces, UV channels, filtering and wrapping (26,052 checks).
 The packaged GPU smoke uploads all 1,142 textures, checks exact pixel readback,
 sampler settings, storage color formats and complete mip chains through BRUTAL OpenGL.
-Native mesh loading assembles all 7,850,058 vertices across 718 assets; 66,228 checks
-compare sampled geometry, normalized skin weights and posed bounds with Three.js.
+Native mesh loading assembles all 7,850,058 vertices across 718 assets; 74,844 checks
+compare sampled geometry, normalized skin weights and both precise and template
+bounding boxes with Three.js.
 The workbench draws models with shared vertex/index buffers and GPU bone palettes;
 packaged smoke verifies visible model pixels as well as UI purchase behavior.
 The build also compiles the original motion preparation for all 905 model sources:
@@ -79,8 +84,10 @@ Combat choreography now consumes real simulation cues in renderer order, drives
 model actions and exposes facing, lunge/recoil, hit flash, cast highlight/label and
 death transforms. It passes 610,546 original-renderer checks across 44 battle traces;
 the packaged app also checks real model playback through battles in all 22 catalogs.
-Production material shaders, arena sizing/lighting, drawing full battle scenes and
-production screens remain unfinished.
+Battle drawing shares model geometry/textures across unit instances and applies
+the original stage heights, footprint limits, source rotations and flyer offsets.
+Production shaders, arena themes/lighting, particles/audio and production screens
+remain unfinished.
 
 ## Boundaries
 
