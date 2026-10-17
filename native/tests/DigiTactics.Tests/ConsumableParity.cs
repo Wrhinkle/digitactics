@@ -27,7 +27,7 @@ internal static class ConsumableParity
                 player.Roster.UpdateUnit(unit with { Items = Strings(before.GetProperty("held")) });
                 player.Items.Clear(); player.Items.AddRange(Strings(before.GetProperty("items")));
                 string context = $"{variant}/{step++}";
-                Check(commands.Equip(player, sample.GetProperty("index").GetInt32(), 1, false) == sample.GetProperty("result").GetString(), context + " result");
+                Check(commands.Equip(player, sample.GetProperty("index").GetInt32(), 1, MatchPhase.Planning) == sample.GetProperty("result").GetString(), context + " result");
                 var after = sample.GetProperty("after");
                 Check(player.Items.SequenceEqual(Strings(after.GetProperty("items"))), context + " inventory");
                 Check(player.Roster.Entries.Single().Unit.Items.SequenceEqual(Strings(after.GetProperty("held"))), context + " held items");

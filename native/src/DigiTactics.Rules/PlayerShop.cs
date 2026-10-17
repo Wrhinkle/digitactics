@@ -38,6 +38,16 @@ public sealed class PlayerShop
         if (!Locked) Refresh();
         ClearMaxed();
     }
+    public bool RefreshMatchingTraits(IReadOnlyCollection<string> traits)
+    {
+        var excluded = roster.MaxedLines();
+        var eligible = rules.Lines.Where(l => !excluded.Contains(l.Id) && l.Traits.Any(traits.Contains)).Select(l => l.Id).ToHashSet();
+        // Existing reservations are returned only after availability is established.
+        if (!eligible.Any(id => pool.Remaining(id) > 0)) return false;
+        ReleaseOffers();
+        for (int i = 0; i < slots.Length; i++) slots[i] = pool.RollMatching(economy.Level, eligible);
+        return true;
+    }
     public bool Reroll()
     {
         if (FreeRolls > 0) FreeRolls--;

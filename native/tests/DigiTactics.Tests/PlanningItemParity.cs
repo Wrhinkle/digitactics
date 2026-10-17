@@ -34,7 +34,7 @@ internal static class PlanningItemParity
                 player.Items.AddRange(before.GetProperty("items").EnumerateArray().Select(e => e.GetString()!));
                 hooks.Deny = sample.GetProperty("deny").GetBoolean();
                 string context = $"{id}/{step++}";
-                Check(commands.Equip(player, sample.GetProperty("index").GetInt32(), sample.GetProperty("uid").GetInt32(), sample.GetProperty("locked").GetBoolean()) == sample.GetProperty("result").GetString(), context + " equip result");
+                Check(commands.Equip(player, sample.GetProperty("index").GetInt32(), sample.GetProperty("uid").GetInt32(), sample.GetProperty("locked").GetBoolean() ? MatchPhase.Combat : MatchPhase.Planning) == sample.GetProperty("result").GetString(), context + " equip result");
                 var current = player.Roster.Entries.Single().Unit;
                 Check(commands.CanHold(player, current, player.Items.FirstOrDefault() ?? rules.Items[0].Id) == sample.GetProperty("hold").GetBoolean(), context + " can hold");
                 Check(commands.Swap(player, sample.GetProperty("swapA").GetInt32(), sample.GetProperty("swapB").GetInt32()) == sample.GetProperty("swap").GetBoolean(), context + " swap result");

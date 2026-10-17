@@ -6,6 +6,8 @@ public sealed class PlayerMechanics
 {
     public string[]? AutoChessLoot { get; set; }
     public bool? DragonTreasureWon { get; set; }
+    public string? FatesPath { get; set; }
+    public int ColiseumCores { get; set; }
 }
 
 internal sealed class ModePveRewards(MatchState state, MatchLoot loot)

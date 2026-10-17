@@ -26,15 +26,16 @@ public sealed class PlanningItems(Ruleset rules, IMatchItemHooks hooks, ModeItem
     public bool CanHold(MatchPlayer player, PlanningUnit unit, string item) =>
         unit.Items.Length < 3 && HoldsItems(unit) && Veto(player, unit, item, null) is null;
 
-    public string Equip(MatchPlayer player, int itemIndex, int uid, bool boardLocked)
+    public string Equip(MatchPlayer player, int itemIndex, int uid, MatchPhase phase)
     {
+        bool boardLocked = phase == MatchPhase.Combat && player.IsHuman;
         var entry = player.Roster.Entries.FirstOrDefault(e => e.Unit.Id == uid);
         if ((uint)itemIndex >= player.Items.Count || entry is null) return "none";
         if (boardLocked && entry.Spot.IsBoard) return "locked";
         string id = player.Items[itemIndex];
         if (!items.TryGetValue(id, out var item)) return "none";
         var unit = entry.Unit;
-        if (item.Consumable) return consumables?.TryUse(player, itemIndex, unit, boardLocked,
+        if (item.Consumable) return consumables?.TryUse(player, itemIndex, unit, phase, boardLocked,
             (up, from) => hooks.Combined(player, up, from)) ?? hooks.UseConsumable(player, itemIndex, unit);
         if (item.Category == "global") { player.Items.RemoveAt(itemIndex); player.Globals.Add(id); return id; }
         if (item.Emblem is { } trait && Traits(unit).Contains(trait)) return "hasTrait";

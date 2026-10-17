@@ -54,4 +54,25 @@ public sealed class ShopPool
         }
         return null;
     }
+
+    /// <summary>Loaded Dice chooses uniformly among lines after its tier roll, not by remaining copies.</summary>
+    public string? RollMatching(int level, IReadOnlySet<string> eligible)
+    {
+        var odds = rules.Odds[Math.Min(rules.Odds.Length - 1, level)]!;
+        double roll = random.Next() * 100;
+        int tier = 1;
+        for (int i = 0; i < odds.Length; i++)
+        {
+            if (roll < odds[i]) { tier = i + 1; break; }
+            roll -= odds[i];
+        }
+        var available = rules.Lines.Where(l => eligible.Contains(l.Id) && remaining[l.Id] > 0).ToArray();
+        var candidates = available.Where(l => l.Tier == tier).ToArray();
+        if (candidates.Length == 0) candidates = available.Where(l => l.Tier <= tier).ToArray();
+        if (candidates.Length == 0) candidates = available;
+        if (candidates.Length == 0) return null;
+        string id = candidates[(int)(random.Next() * candidates.Length)].Id;
+        Take(id);
+        return id;
+    }
 }

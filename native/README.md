@@ -425,3 +425,26 @@ counts locked board units even though merging excludes them; native behavior
 retains the resulting discarded-extra/pool-reservation behavior. Mode-specific
 combine callback effects still require the concrete match hook implementation.
 Remaining consumables, custom offers and full desktop match integration are pending.
+
+## Shop, path and offer consumables
+
+Loaded Dice now rebuilds the shop using native trait matching, personal max-star
+exclusions, its exact tier fallback order and uniform eligible-line selection.
+Availability is checked before returning existing shop reservations. Fates Holy
+and Dark path items validate Lopmon and existing choices, consume the opposing
+choice item, and retain the selected path in typed player mechanics.
+
+Reckoning's Tome validates planning phase and existing offers before creating four
+shuffled emblem choices. The Coliseum extractor removes only the power-up modifier,
+preserves unrelated modifiers, and returns a core (or stores it when the item bench
+is full). Equipment commands now receive the actual match phase and derive human
+board locking from it; AI phase restrictions are no longer conflated with board
+locking.
+
+Six original-handler traces produce 490,320 comparisons across both paces. Cases
+include human/AI players, board/bench targets, all phases, busy offers, item-cap
+boundaries, existing path choices, empty and preserved modifiers, pool exhaustion,
+low/high-tier fallback, personal max-star exclusion, shop reservations and RNG.
+Coliseum core-use/options and the other remaining custom offers still require
+implementation. Full match mechanics, shop metadata and desktop integration remain
+pending.

@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace DigiTactics.Rules;
 
 /// <summary>Mode-specific inventory transformations using the owning match's random stream.</summary>
@@ -9,10 +11,49 @@ public sealed class ModeItemConsumables(MatchState state)
     private string Policy => Rules.Mode!.Policy;
 
     /// <returns>Null delegates an unimplemented mechanic to the required match hooks.</returns>
-    public string? TryUse(MatchPlayer player, int index, PlanningUnit unit, bool boardLocked,
+    public string? TryUse(MatchPlayer player, int index, PlanningUnit unit, MatchPhase phase, bool boardLocked,
         Action<PlanningUnit, IReadOnlyList<PlanningUnit>> onCombine)
     {
         string id = player.Items[index];
+        if (id == "fat_dice")
+        {
+            var line = state.Rules.Lines.Concat(state.Rules.ExtraLines).Single(l => l.Id == unit.Line);
+            if (!player.Shop.RefreshMatchingTraits(line.Traits)) return "none";
+            player.Items.RemoveAt(index);
+            return id;
+        }
+        if (id is "fat_holy" or "fat_dark")
+        {
+            if (unit.Line != "fat_lopmon" || !string.IsNullOrEmpty(player.Mechanics.FatesPath)) return "none";
+            player.Items.RemoveAt(index);
+            player.Items.Remove(id == "fat_holy" ? "fat_dark" : "fat_holy");
+            player.Mechanics.FatesPath = id == "fat_holy" ? "holy" : "dark";
+            return id;
+        }
+        if (id == "rec_tome")
+        {
+            if (phase != MatchPhase.Planning) return "phase";
+            if (player.Offer is not null) return "busy";
+            player.Items.RemoveAt(index);
+            var options = Rules.Emblems.ToArray();
+            for (int i = options.Length - 1; i > 0; i--)
+            {
+                int j = (int)(state.Random.Next() * (i + 1));
+                (options[i], options[j]) = (options[j], options[i]);
+            }
+            player.Offer = new("rec_tome", options.Take(4).ToArray(), 0, null);
+            return id;
+        }
+        if (id == "col_extractor")
+        {
+            if (unit.Mods is not { } mods || !mods.TryGetProperty("pu", out var power) || !Truthy(power)) return "none";
+            player.Items.RemoveAt(index);
+            var remaining = mods.EnumerateObject().Where(p => p.Name != "pu").ToDictionary(p => p.Name, p => p.Value);
+            player.Roster.UpdateUnit(unit with { Mods = remaining.Count == 0 ? null : JsonSerializer.SerializeToElement(remaining) });
+            if (player.Items.Count < Rules.ItemCap) player.GiveItem("col_core");
+            else player.Mechanics.ColiseumCores++;
+            return "extractor";
+        }
         if (id is "giz_copy" or "gal_copier" or "fat_copy" or "drg_dup" or "drg_dup_lesser" or
             "arc_copier" or "arc_copier_small" or "ac_digiegg")
             return Copy(player, index, unit, boardLocked, onCombine);
@@ -32,6 +73,14 @@ public sealed class ModeItemConsumables(MatchState state)
         player.Roster.UpdateUnit(unit with { Items = equipped });
         return id;
     }
+
+    private static bool Truthy(JsonElement value) => value.ValueKind switch
+    {
+        JsonValueKind.Null or JsonValueKind.Undefined or JsonValueKind.False => false,
+        JsonValueKind.String => value.GetString()!.Length != 0,
+        JsonValueKind.Number => value.GetDouble() != 0,
+        _ => true,
+    };
 
     private string Copy(MatchPlayer player, int index, PlanningUnit target, bool boardLocked,
         Action<PlanningUnit, IReadOnlyList<PlanningUnit>> onCombine)

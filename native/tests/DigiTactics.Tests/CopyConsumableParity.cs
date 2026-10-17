@@ -35,7 +35,7 @@ internal static class CopyConsumableParity
                 var hooks = new Hooks();
                 var commands = new PlanningItems(state, hooks);
                 string context = $"{variant}/{step++}";
-                Check(commands.Equip(player, 1, target.Id, sample.GetProperty("locked").GetBoolean()) == sample.GetProperty("result").GetString(), context + " result");
+                Check(commands.Equip(player, 1, target.Id, sample.GetProperty("locked").GetBoolean() ? MatchPhase.Combat : MatchPhase.Planning) == sample.GetProperty("result").GetString(), context + " result");
                 var after = sample.GetProperty("after");
                 Check(player.Items.SequenceEqual(Strings(after.GetProperty("items"))), context + " inventory");
                 var entries = player.Roster.Entries.ToArray(); var expected = after.GetProperty("entries");
