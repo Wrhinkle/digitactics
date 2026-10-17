@@ -20,7 +20,7 @@ DT.Sets.assignModels('coliseum', {
   col_demidevimon: ['demidevimon:0', 'drg:IceDevimon', 'blackgatomon:1'],
   col_fanbeemon: ['fanbeemon:0', 'fanbeemon:1', 'fanbeemon:2'],
   col_falcomon: ['falcomon:0', 'falcomon:1', 'falcomon:2'],
-  col_kamemon: ['drg:Kamemon', 'ac:Golemon', 'extra:DW1_Jijimon'],
+  col_kamemon: ['drg:Kamemon', 'ac:Golemon', 'giz:Jijimon'],
   col_patamon: ['patamon:0', 'patamon:1', 'patamon:2'],
   col_biyomon: ['biyomon:0', 'biyomon:1', 'biyomon:2'],
   col_lopmon: ['lopmon:0', 'lopmon:1', 'ac:Antylamon'],

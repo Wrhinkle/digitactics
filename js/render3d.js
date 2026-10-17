@@ -7,6 +7,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { Fx, elemColor } from './fx.js';
 import { Moves } from './moveprims.js';
 import { itemCanvas } from './icons.js';
+import { modelClips } from './model-motion.js';
 
 const DT = window.DT;
 const sfx = (name, opts) => DT.Sfx && DT.Sfx.play(name, opts);
@@ -81,8 +82,8 @@ const ACTION_ROLES = ['attack', 'special', 'win'];
 
 export function prepareTemplate(gltf, src) {
   const scene = gltf.scene;
-  const clips = gltf.animations || [];
-  const idle = src && src.anim === false ? null : pickIdle(clips);
+  const clips = modelClips(gltf, src);
+  const idle = pickIdle(clips);
   // Measure in the idle pose: rest poses of game rips are often scaled or offset differently.
   if (idle) {
     const m = new THREE.AnimationMixer(scene);

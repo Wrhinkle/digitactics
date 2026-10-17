@@ -88,12 +88,13 @@ function daeMap(dae) {
       const base = (f) => f.split(/[\\/]/).pop();
       const swap = (f) => (f && (EXT._retexture[folder] || {})[base(f)]) || f;
       const find = (f) => f && all.find((x) => path.basename(x).toLowerCase() === base(f).toLowerCase());
-      // eye materials without a DAE texture (Time Stranger): the rip's <chr>e01.png
-      const eye = chr && /eye/i.test(mat.getName()) ? `${chr}e01.png` : null;
+      // Time Stranger's e01 is only the eye-white mask; p01 carries the pupils and eyelids at UV0.
+      const eyeChr = /eye/i.test(mat.getName()) && (mat.getName().match(/chr\d+/i) || [chr])[0];
+      const eye = eyeChr ? `${eyeChr}p01.png` : null;
       if (has && !stub && folder !== 'Gizamon') continue; // Gizamon's converter picked a mask texture
       // first candidate the rip has (a stub's own name, the DAE link, by material name, eyes); last resort for an untextured or
       // stub material: the rip's only color texture (Shoutmon, Meicoomon, Belphemon)
-      const img = [stubFile, map[mat.getName()], byName(mat.getName()), eye].map(swap).map(find).find(Boolean) || sole;
+      const img = [eye, stubFile, map[mat.getName()], byName(mat.getName())].map(swap).map(find).find(Boolean) || sole;
       if (!img) continue;
       if (!cache[img]) cache[img] = doc.createTexture(path.basename(img)).setImage(fs.readFileSync(img)).setMimeType('image/png');
       mat.setBaseColorTexture(cache[img]).setBaseColorFactor([1, 1, 1, 1]).setMetallicFactor(0).setRoughnessFactor(1);

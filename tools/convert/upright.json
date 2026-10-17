@@ -733,5 +733,11 @@
    "side"
   ],
   "note": "faces front; the staff held to one side pulls the top-of-mesh centroid sideways"
+ },
+ "rip_cs_sorcermon.glb": {
+  "ok": [
+   "back"
+  ],
+  "note": "Front and side reviewed with the skeletal fallback: face points +z; the hat and cape pull the head/mesh centroid backward."
  }
 }

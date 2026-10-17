@@ -18,6 +18,8 @@ The Models Resource and Sketchfab provided source hosting. Contributors are cred
 
 Conversions and project adaptations include GLB conversion, texture optimization, material fixes, orientation and scale corrections, animation selection/retargeting, procedural poses and dances, and rendered portraits. These changes do not transfer rights in the originals.
 
+Rigged models without usable source clips use project-generated skeletal idle, attack, special and victory motions. Existing authored clips retain their original attribution. Restored eye textures come from the same credited source archives as their models.
+
 ## Mechanics and design references
 
 The game's presentation uses **Undermons** and **Auto Chess**. The following acknowledges the actual design references, separately from game copy:

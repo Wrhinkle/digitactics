@@ -18,6 +18,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { modelClips } from '../js/model-motion.js';
 
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
@@ -62,9 +63,9 @@ window.audit = async (k, file, trial) => {
   const stage = Number(k.split(':')[1]);
   const sceneG = gltf.scene;
   if (trial && trial.rot) sceneG.rotation.set(...trial.rot.map((d) => (d * Math.PI) / 180));
-  const clips = gltf.animations || [];
+  const clips = modelClips(gltf, src);
   const bind = box(sceneG, true).getSize(new THREE.Vector3());
-  const idle = trial && trial.clip ? clips.find((x) => x.name === trial.clip) : src.anim === false ? null : pickIdle(clips);
+  const idle = trial && trial.clip ? clips.find((x) => x.name === trial.clip) : pickIdle(clips);
   let mixer = null;
   if (idle) { mixer = new THREE.AnimationMixer(sceneG); mixer.clipAction(idle).play(); mixer.update(0); }
   // the renderer's own measurement (non-precise box)

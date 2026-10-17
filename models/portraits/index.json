@@ -347,10 +347,6 @@
   "file": "lopmon_2.bce7243d.webp",
   "src": "models/files/rip_andiramon.glb"
  },
- "gizamon:0": {
-  "file": "gizamon_0.16f4f496.webp",
-  "src": "models/files/rip_gizamon.glb"
- },
  "gizamon:1": {
   "file": "gizamon_1.8f614971.webp",
   "src": "models/files/rip_cs_coelamon.glb"
@@ -638,10 +634,6 @@
  "beelzemon:1": {
   "file": "beelzemon_1.53e248fe.webp",
   "src": "models/files/5916bfad3dd7434eb007a749e5170bd7.glb"
- },
- "beelzemon:2": {
-  "file": "beelzemon_2.60aa0e7b.webp",
-  "src": "models/files/rip_l_beelzemon_blast_mode.glb"
  },
  "machinedramon:0": {
   "file": "machinedramon_0.db3739e2.webp",
@@ -1239,10 +1231,6 @@
   "file": "extra_DW1_DemiMeramon.603d131e.webp",
   "src": "models/files/rip_dw1_demimeramon.glb"
  },
- "extra:DW1_Gigadramon": {
-  "file": "extra_DW1_Gigadramon.275281fb.webp",
-  "src": "models/files/rip_dw1_gigadramon.glb"
- },
  "extra:DW1_Jijimon": {
   "file": "extra_DW1_Jijimon.2b613c40.webp",
   "src": "models/files/rip_dw1_jijimon.glb"
@@ -1483,10 +1471,6 @@
   "file": "ac_Sorcermon.974a3a1a.webp",
   "src": "models/files/rip_l_sorcermon.glb"
  },
- "ac:Kotemon": {
-  "file": "ac_Kotemon.a7af7473.webp",
-  "src": "models/files/rip_ts_kotemon.glb"
- },
  "ac:Knightmon": {
   "file": "ac_Knightmon.760526d1.webp",
   "src": "models/files/rip_cs_knightmon.glb"
@@ -1519,10 +1503,6 @@
   "file": "ac_Elecmon.6971c342.webp",
   "src": "models/files/rip_cs_elecmon.glb"
  },
- "ac:Aegiomon": {
-  "file": "ac_Aegiomon.8c0b8eb7.webp",
-  "src": "models/files/rip_ts_aegiomon.glb"
- },
  "ac:Tanemon": {
   "file": "ac_Tanemon.052a39a0.webp",
   "src": "models/files/rip_cs_tanemon.glb"
@@ -1551,10 +1531,6 @@
   "file": "drg_Knightmon.760526d1.webp",
   "src": "models/files/rip_cs_knightmon.glb"
  },
- "drg:Sorcermon": {
-  "file": "drg_Sorcermon.fdc367cb.webp",
-  "src": "models/files/rip_cs_sorcermon.glb"
- },
  "drg:Elecmon": {
   "file": "drg_Elecmon.6971c342.webp",
   "src": "models/files/rip_cs_elecmon.glb"
@@ -1578,10 +1554,6 @@
  "drg:Airdramon": {
   "file": "drg_Airdramon.c5ef7636.webp",
   "src": "models/files/rip_cs_airdramon.glb"
- },
- "drg:Kotemon": {
-  "file": "drg_Kotemon.a7af7473.webp",
-  "src": "models/files/rip_ts_kotemon.glb"
  },
  "drg:Whamon": {
   "file": "drg_Whamon.d1ebb8c8.webp",
@@ -1619,17 +1591,9 @@
   "file": "drg_Coelamon.8f614971.webp",
   "src": "models/files/rip_cs_coelamon.glb"
  },
- "drg:Kamemon": {
-  "file": "drg_Kamemon.539defef.webp",
-  "src": "models/files/rip_ts_kamemon.glb"
- },
  "drg:Raptordramon": {
   "file": "drg_Raptordramon.246bd74f.webp",
   "src": "models/files/rip_cs_raptordramon.glb"
- },
- "drg:CraniamonX": {
-  "file": "drg_CraniamonX.67613726.webp",
-  "src": "models/files/rip_l_craniamon_x.glb"
  },
  "drg:BeelzemonX": {
   "file": "drg_BeelzemonX.31d15e5d.webp",
@@ -1747,14 +1711,6 @@
   "file": "drg_RedVegiemon.be51e897.webp",
   "src": "models/files/rip_no_redvegiemon.glb"
  },
- "drg:DynasmonX": {
-  "file": "drg_DynasmonX.97254120.webp",
-  "src": "models/files/rip_l_dynasmon_x.glb"
- },
- "drg:SistermonCielAwakened": {
-  "file": "drg_SistermonCielAwakened.6d84f3e7.webp",
-  "src": "models/files/rip_cs_sistermon_ciel_awakened.glb"
- },
  "drg:JesmonX": {
   "file": "drg_JesmonX.4d155566.webp",
   "src": "models/files/rip_l_jesmon_x.glb"
@@ -1774,10 +1730,6 @@
  "drg:MudFrigimon": {
   "file": "drg_MudFrigimon.5baa41f4.webp",
   "src": "models/files/rip_cs_mudfrigimon.glb"
- },
- "drg:BlackGabumon": {
-  "file": "drg_BlackGabumon.ba9f742e.webp",
-  "src": "models/files/rip_ts_blackgabumon.glb"
  },
  "drg:BlackGarurumon": {
   "file": "drg_BlackGarurumon.248ebacb.webp",
@@ -1823,10 +1775,6 @@
   "file": "drg_Merukimon.b36abba0.webp",
   "src": "models/files/rip_cs_merukimon.glb"
  },
- "drg:BlackAgumon": {
-  "file": "drg_BlackAgumon.0c4a2de8.webp",
-  "src": "models/files/rip_ts_blackagumon.glb"
- },
  "drg:BlackGreymon": {
   "file": "drg_BlackGreymon.051de0f3.webp",
   "src": "models/files/rip_cs_blackgreymon.glb"
@@ -1850,10 +1798,6 @@
  "drg:Gumdramon": {
   "file": "drg_Gumdramon.4b3ac453.webp",
   "src": "models/files/rip_l_gumdramon.glb"
- },
- "drg:Kokuwamon": {
-  "file": "drg_Kokuwamon.9a0761cb.webp",
-  "src": "models/files/rip_ts_kokuwamon.glb"
  },
  "drg:RedVeedramon": {
   "file": "drg_RedVeedramon.7d187876.webp",
@@ -1898,10 +1842,6 @@
  "drg:Gallantmon Crimson Mode": {
   "file": "drg_Gallantmon_Crimson_Mode.8ffac000.webp",
   "src": "models/files/rip_cs_gallantmon_crimson_mode.glb"
- },
- "drg:Coronamon": {
-  "file": "drg_Coronamon.2749ee90.webp",
-  "src": "models/files/rip_ts_coronamon.glb"
  },
  "drg:Goldramon": {
   "file": "drg_Goldramon.df5b2286.webp",
@@ -1951,10 +1891,6 @@
   "file": "drg_Chaosdromon.0f8c7227.webp",
   "src": "models/files/rip_l_chaosdromon.glb"
  },
- "drg:Hyokomon": {
-  "file": "drg_Hyokomon.accce7a7.webp",
-  "src": "models/files/rip_ts_hyokomon.glb"
- },
  "drg:Slayerdramon": {
   "file": "drg_Slayerdramon.5089d790.webp",
   "src": "models/files/rip_l_slayerdramon.glb"
@@ -1990,10 +1926,6 @@
  "drg:Kentaurosmon": {
   "file": "drg_Kentaurosmon.8d2739e1.webp",
   "src": "models/files/rip_cs_kentaurosmon.glb"
- },
- "drg:Kentaurosmon X": {
-  "file": "drg_Kentaurosmon_X.2213c435.webp",
-  "src": "models/files/rip_l_kentaurosmon_x.glb"
  },
  "drg:Volcanicdramon": {
   "file": "drg_Volcanicdramon.238fe08b.webp",
@@ -2095,17 +2027,9 @@
   "file": "drg_Azulongmon.1d178faf.webp",
   "src": "models/files/rip_azulongmon.glb"
  },
- "ac:Tapirmon": {
-  "file": "ac_Tapirmon.1f3765ba.webp",
-  "src": "models/files/rip_ts_bakumon.glb"
- },
  "ac:BlackGarurumon": {
   "file": "ac_BlackGarurumon.c8d42e9f.webp",
   "src": "models/files/rip_cs_blackgarurumon.glb"
- },
- "ac:Coronamon": {
-  "file": "ac_Coronamon.2749ee90.webp",
-  "src": "models/files/rip_ts_coronamon.glb"
  },
  "ac:SaviorHuckmon": {
   "file": "ac_SaviorHuckmon.d9946697.webp",
@@ -2183,10 +2107,6 @@
   "file": "ac_Silphymon.63355a40.webp",
   "src": "models/files/rip_cs_silphymon.glb"
  },
- "ac:Kokuwamon": {
-  "file": "ac_Kokuwamon.9a0761cb.webp",
-  "src": "models/files/rip_ts_kokuwamon.glb"
- },
  "ac:Golemon": {
   "file": "ac_Golemon.77a59e9e.webp",
   "src": "models/files/rip_cs_golemon.glb"
@@ -2195,25 +2115,13 @@
   "file": "ac_Meteormon.29a3de1f.webp",
   "src": "models/files/rip_cs_meteormon.glb"
  },
- "ac:Bearmon": {
-  "file": "ac_Bearmon.a8f97ddf.webp",
-  "src": "models/files/rip_ts_bearmon.glb"
- },
  "ac:Coredramon_Blue": {
   "file": "ac_Coredramon_Blue.00db822f.webp",
   "src": "models/files/rip_cs_coredramon_blue.glb"
  },
- "ac:BlackAgumon": {
-  "file": "ac_BlackAgumon.0c4a2de8.webp",
-  "src": "models/files/rip_ts_blackagumon.glb"
- },
  "ac:BlackGreymon": {
   "file": "ac_BlackGreymon.051de0f3.webp",
   "src": "models/files/rip_cs_blackgreymon.glb"
- },
- "ac:Hyokomon": {
-  "file": "ac_Hyokomon.accce7a7.webp",
-  "src": "models/files/rip_ts_hyokomon.glb"
  },
  "ac:SkullMeramon": {
   "file": "ac_SkullMeramon.5c1bd48c.webp",
@@ -2223,17 +2131,9 @@
   "file": "ac_Gumdramon.4b3ac453.webp",
   "src": "models/files/rip_l_gumdramon.glb"
  },
- "ac:Arresterdramon": {
-  "file": "ac_Arresterdramon.6f534860.webp",
-  "src": "models/files/rip_l_arresterdramon_dae.glb"
- },
  "ac:Slayerdramon": {
   "file": "ac_Slayerdramon.5089d790.webp",
   "src": "models/files/rip_l_slayerdramon.glb"
- },
- "ac:Floramon": {
-  "file": "ac_Floramon.967af362.webp",
-  "src": "models/files/rip_ts_floramon.glb"
  },
  "ac:Solarmon": {
   "file": "ac_Solarmon.2244284e.webp",
@@ -2326,10 +2226,6 @@
  "drg:KingSukamon": {
   "file": "drg_KingSukamon.3cbdc48a.webp",
   "src": "models/files/rip_no_kingsukamon.glb"
- },
- "drg:Arresterdramon": {
-  "file": "drg_Arresterdramon.6f534860.webp",
-  "src": "models/files/rip_l_arresterdramon_dae.glb"
  },
  "drg:Hudiemon": {
   "file": "drg_Hudiemon.989eaf75.webp",
@@ -2447,14 +2343,6 @@
   "file": "drg_GoldVeedramon.ec5a48e2.webp",
   "src": "models/files/rip_ra_goldveedramon.glb"
  },
- "drg:Crabmon": {
-  "file": "drg_Crabmon.689d4b2a.webp",
-  "src": "models/files/rip_ts_crabmon.glb"
- },
- "drg:Penguinmon": {
-  "file": "drg_Penguinmon.23711dab.webp",
-  "src": "models/files/rip_ts_penguinmon.glb"
- },
  "ac:Apollomon": {
   "file": "ac_Apollomon.d9efd82c.webp",
   "src": "models/files/rip_nc_apollomon.glb"
@@ -2519,10 +2407,6 @@
   "file": "giz_Guardromon.c06ca913.webp",
   "src": "models/files/rip_cs_guardromon.glb"
  },
- "giz:RapidmonArmor": {
-  "file": "giz_RapidmonArmor.306f47cf.webp",
-  "src": "models/files/rip_cs_rapidmon_armor.glb"
- },
  "giz:Jijimon": {
   "file": "giz_Jijimon.484f211a.webp",
   "src": "models/files/rip_l_jijimon.glb"
@@ -2534,5 +2418,121 @@
  "dorumon:1": {
   "file": "dorumon_1.c23d0a8f.webp",
   "src": "models/files/ef72384761d943c48e2890f125b13f0c.glb"
+ },
+ "gizamon:0": {
+  "file": "gizamon_0.b276415e.webp",
+  "src": "models/files/rip_gizamon.glb"
+ },
+ "beelzemon:2": {
+  "file": "beelzemon_2.1b929576.webp",
+  "src": "models/files/rip_l_beelzemon_blast_mode.glb"
+ },
+ "extra:DW1_Gigadramon": {
+  "file": "extra_DW1_Gigadramon.275281fb.webp",
+  "src": "models/files/rip_dw1_gigadramon.glb"
+ },
+ "drg:Coronamon": {
+  "file": "drg_Coronamon.dca5fe8c.webp",
+  "src": "models/files/rip_ts_coronamon.glb"
+ },
+ "ac:Coronamon": {
+  "file": "ac_Coronamon.dca5fe8c.webp",
+  "src": "models/files/rip_ts_coronamon.glb"
+ },
+ "ac:Kotemon": {
+  "file": "ac_Kotemon.a7af7473.webp",
+  "src": "models/files/rip_ts_kotemon.glb"
+ },
+ "ac:Aegiomon": {
+  "file": "ac_Aegiomon.ee1ec666.webp",
+  "src": "models/files/rip_ts_aegiomon.glb"
+ },
+ "drg:Sorcermon": {
+  "file": "drg_Sorcermon.7aaec92b.webp",
+  "src": "models/files/rip_cs_sorcermon.glb"
+ },
+ "drg:Kotemon": {
+  "file": "drg_Kotemon.a7af7473.webp",
+  "src": "models/files/rip_ts_kotemon.glb"
+ },
+ "drg:Kamemon": {
+  "file": "drg_Kamemon.89bf309d.webp",
+  "src": "models/files/rip_ts_kamemon.glb"
+ },
+ "drg:CraniamonX": {
+  "file": "drg_CraniamonX.ff7bc348.webp",
+  "src": "models/files/rip_l_craniamon_x.glb"
+ },
+ "drg:DynasmonX": {
+  "file": "drg_DynasmonX.48255bd6.webp",
+  "src": "models/files/rip_l_dynasmon_x.glb"
+ },
+ "drg:SistermonCielAwakened": {
+  "file": "drg_SistermonCielAwakened.4015bb12.webp",
+  "src": "models/files/rip_cs_sistermon_ciel_awakened.glb"
+ },
+ "drg:BlackGabumon": {
+  "file": "drg_BlackGabumon.2076ec23.webp",
+  "src": "models/files/rip_ts_blackgabumon.glb"
+ },
+ "ac:Kokuwamon": {
+  "file": "ac_Kokuwamon.2e6c3ea9.webp",
+  "src": "models/files/rip_ts_kokuwamon.glb"
+ },
+ "ac:Bearmon": {
+  "file": "ac_Bearmon.59d937bf.webp",
+  "src": "models/files/rip_ts_bearmon.glb"
+ },
+ "ac:BlackAgumon": {
+  "file": "ac_BlackAgumon.7a2c7423.webp",
+  "src": "models/files/rip_ts_blackagumon.glb"
+ },
+ "ac:Hyokomon": {
+  "file": "ac_Hyokomon.accce7a7.webp",
+  "src": "models/files/rip_ts_hyokomon.glb"
+ },
+ "ac:Arresterdramon": {
+  "file": "ac_Arresterdramon.c7cf3dab.webp",
+  "src": "models/files/rip_l_arresterdramon_dae.glb"
+ },
+ "ac:Floramon": {
+  "file": "ac_Floramon.af2bc5f5.webp",
+  "src": "models/files/rip_ts_floramon.glb"
+ },
+ "drg:BlackAgumon": {
+  "file": "drg_BlackAgumon.7a2c7423.webp",
+  "src": "models/files/rip_ts_blackagumon.glb"
+ },
+ "drg:Arresterdramon": {
+  "file": "drg_Arresterdramon.c7cf3dab.webp",
+  "src": "models/files/rip_l_arresterdramon_dae.glb"
+ },
+ "drg:Kokuwamon": {
+  "file": "drg_Kokuwamon.2e6c3ea9.webp",
+  "src": "models/files/rip_ts_kokuwamon.glb"
+ },
+ "drg:Hyokomon": {
+  "file": "drg_Hyokomon.accce7a7.webp",
+  "src": "models/files/rip_ts_hyokomon.glb"
+ },
+ "drg:Kentaurosmon X": {
+  "file": "drg_Kentaurosmon_X.dc2eaeb9.webp",
+  "src": "models/files/rip_l_kentaurosmon_x.glb"
+ },
+ "ac:Tapirmon": {
+  "file": "ac_Tapirmon.471999fa.webp",
+  "src": "models/files/rip_ts_bakumon.glb"
+ },
+ "drg:Crabmon": {
+  "file": "drg_Crabmon.a353e910.webp",
+  "src": "models/files/rip_ts_crabmon.glb"
+ },
+ "drg:Penguinmon": {
+  "file": "drg_Penguinmon.ad8d141b.webp",
+  "src": "models/files/rip_ts_penguinmon.glb"
+ },
+ "giz:RapidmonArmor": {
+  "file": "giz_RapidmonArmor.306f47cf.webp",
+  "src": "models/files/rip_cs_rapidmon_armor.glb"
  }
 }

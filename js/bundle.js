@@ -28618,28 +28618,28 @@ void main() {
     }
     // ensure we do not get a GarbageInGarbageOut situation, make sure tracks are at least minimally viable
     validate() {
-      let valid2 = true;
+      let valid3 = true;
       const valueSize = this.getValueSize();
       if (valueSize - Math.floor(valueSize) !== 0) {
         console.error("THREE.KeyframeTrack: Invalid value size in track.", this);
-        valid2 = false;
+        valid3 = false;
       }
       const times = this.times, values = this.values, nKeys = times.length;
       if (nKeys === 0) {
         console.error("THREE.KeyframeTrack: Track is empty.", this);
-        valid2 = false;
+        valid3 = false;
       }
       let prevTime = null;
       for (let i = 0; i !== nKeys; i++) {
         const currTime = times[i];
         if (typeof currTime === "number" && isNaN(currTime)) {
           console.error("THREE.KeyframeTrack: Time is not a valid number.", this, i, currTime);
-          valid2 = false;
+          valid3 = false;
           break;
         }
         if (prevTime !== null && prevTime > currTime) {
           console.error("THREE.KeyframeTrack: Out of order keys.", this, i, currTime, prevTime);
-          valid2 = false;
+          valid3 = false;
           break;
         }
         prevTime = currTime;
@@ -28650,13 +28650,13 @@ void main() {
             const value = values[i];
             if (isNaN(value)) {
               console.error("THREE.KeyframeTrack: Value is not a valid number.", this, i, value);
-              valid2 = false;
+              valid3 = false;
               break;
             }
           }
         }
       }
-      return valid2;
+      return valid3;
     }
     // removes equivalent sequential keys as common in morph target sequences
     // (0,0,0,0,1,1,1,0,0,0,0,0,0,0) --> (0,0,1,1,0,0)
@@ -28962,11 +28962,11 @@ void main() {
       return this;
     }
     validate() {
-      let valid2 = true;
+      let valid3 = true;
       for (let i = 0; i < this.tracks.length; i++) {
-        valid2 = valid2 && this.tracks[i].validate();
+        valid3 = valid3 && this.tracks[i].validate();
       }
-      return valid2;
+      return valid3;
     }
     optimize() {
       for (let i = 0; i < this.tracks.length; i++) {
@@ -38620,21 +38620,21 @@ void main() {
     }
     update(dt, vp, aspect2) {
       const e = vp.elements;
-      const P2 = this.pos, V = this.vel, Cc = this.col;
+      const P2 = this.pos, V2 = this.vel, Cc = this.col;
       let w = 0;
       for (let i = 0; i < this.n; i++) {
         const l = this.life[i] - dt;
         if (l <= 0) continue;
         const i3 = i * 3, w3 = w * 3, w4 = w * 4;
         const k = Math.max(0, 1 - this.drag[i] * dt);
-        const vx = V[i3] * k, vy = V[i3 + 1] * k - this.grav[i] * dt, vz = V[i3 + 2] * k;
+        const vx = V2[i3] * k, vy = V2[i3 + 1] * k - this.grav[i] * dt, vz = V2[i3 + 2] * k;
         const x = P2[i3] + vx * dt, y = Math.max(0.02, P2[i3 + 1] + vy * dt), z = P2[i3 + 2] + vz * dt;
         P2[w3] = x;
         P2[w3 + 1] = y;
         P2[w3 + 2] = z;
-        V[w3] = vx;
-        V[w3 + 1] = vy;
-        V[w3 + 2] = vz;
+        V2[w3] = vx;
+        V2[w3 + 1] = vy;
+        V2[w3 + 2] = vz;
         const ml = this.maxLife[i];
         const f = l / ml;
         const fade2 = f > 0.85 ? (1 - f) / 0.15 : f < 0.5 ? f / 0.5 : 1;
@@ -42403,6 +42403,136 @@ void main() {
   var CHARGE_NAMES = Object.keys(CHARGES);
   if (DT6) DT6.MoveFxInfo = { prims: PRIM_NAMES, impacts: IMPACT_NAMES, charges: CHARGE_NAMES, cells: Object.keys(CELL) };
 
+  // js/model-motion.js
+  var V = () => new Vector3();
+  var Q = () => new Quaternion();
+  var X = new Vector3(1, 0, 0);
+  var Y = new Vector3(0, 1, 0);
+  var Z = new Vector3(0, 0, 1);
+  var armName = /(?:^|_)(?:arm\d*|ude|shoulder)(?:_|$)|upperarm/i;
+  var headName = /(?:^|_)(?:head|atama)(?:_|$)/i;
+  var chestName = /(?:^|_)(?:chest|mune|spine02)(?:_|$)/i;
+  var tailName = /(?:^|_)(?:tail|sippo|shippo)(?:0?1)?(?:_|$)/i;
+  var valid = (b) => !/end|nub|twist|helper/i.test(b.name);
+  function modelClips(gltf, src) {
+    const authored = gltf.animations || [];
+    if (authored.length && src?.anim !== false) return authored;
+    if (authored.length) {
+      const pose = new AnimationMixer(gltf.scene);
+      pose.clipAction(authored[0]).play();
+      pose.update(0);
+    }
+    return fallbackClips(gltf.scene);
+  }
+  function fallbackClips(scene2) {
+    const bones = /* @__PURE__ */ new Set();
+    scene2.traverse((o) => {
+      if (o.isSkinnedMesh) for (const b of o.skeleton.bones) bones.add(b);
+    });
+    if (!bones.size) return [];
+    scene2.updateMatrixWorld(true);
+    const box3 = new Box3().setFromObject(scene2), height = box3.max.y - box3.min.y;
+    const hasHead = [...bones].some((b) => headName.test(b.name));
+    const isHead = (b) => headName.test(b.name) || !hasHead && /(?:^|_)(?:neck|kubi)(?:_|$)/i.test(b.name);
+    const isChest = (b) => chestName.test(b.name) || /(?:^|_)body$/i.test(b.name);
+    const hands = [...bones].filter((b) => /(?:^|_)(?:hand\d*|te|wrist)(?:_|$)/i.test(b.name) && valid(b));
+    const feet = [...bones].filter((b) => /(?:^|_)(?:foot|ankle|kakato)(?:_|$)/i.test(b.name));
+    const footY = feet.length ? Math.min(...feet.map((b) => b.getWorldPosition(V()).y)) : box3.min.y;
+    for (const b of bones) {
+      if (!/bamboo_sword|(?:^|_)weapon(?:0?[12])?$/i.test(b.name)) continue;
+      let parent = b.parent, held = false;
+      while (parent) {
+        if (hands.includes(parent)) held = true;
+        parent = parent.parent;
+      }
+      if (held) continue;
+      const pos = b.getWorldPosition(V());
+      const parked = pos.y < footY - height * 0.1;
+      if (parked) {
+        const side = /02$/.test(b.name) ? "l" : "r";
+        const grip = hands.find((h) => new RegExp(`_${side}(?:_|$)`, "i").test(h.name));
+        if (grip) {
+          grip.attach(b);
+          b.position.set(0, 0, 0);
+          scene2.updateMatrixWorld(true);
+          continue;
+        }
+      }
+      const knownGrip = /bamboo_sword/i.test(b.name) && hands.find((h) => h.name === "J_hand_r");
+      const hand = knownGrip || hands.slice().sort((a, c) => a.getWorldPosition(V()).distanceTo(pos) - c.getWorldPosition(V()).distanceTo(pos))[0];
+      if (hand && (knownGrip || hand.getWorldPosition(V()).distanceTo(pos) < height * 0.35)) {
+        hand.attach(b);
+        if (knownGrip) b.position.set(0, 0, 0);
+      }
+    }
+    const arms = [];
+    for (const b of bones) {
+      if (!valid(b) || !(armName.test(b.name) || /^J_(?:wing|hand01)_[lr]$/i.test(b.name))) continue;
+      const child = b.children.find((c) => c.isBone && /elbow|hiji|ancon|forearm/i.test(c.name)) || b.children.find((c) => c.isBone);
+      if (!child) continue;
+      const origin = b.getWorldPosition(V()), direction = child.getWorldPosition(V()).sub(origin).normalize();
+      if (armName.test(b.name) && Math.abs(direction.x) > 0.8 && Math.abs(direction.y) < 0.3 && origin.y > box3.min.y + height * 0.25) {
+        const target = new Vector3(Math.sign(direction.x) * 0.45, -0.82, 0.3).normalize();
+        const delta = Q().setFromUnitVectors(direction, target);
+        const parent = b.parent.getWorldQuaternion(Q());
+        b.quaternion.copy(parent.clone().invert().multiply(delta).multiply(b.getWorldQuaternion(Q())));
+        scene2.updateMatrixWorld(true);
+      }
+      arms.push({ bone: b, side: origin.x >= box3.getCenter(V()).x ? 1 : -1 });
+    }
+    const selected2 = [...bones].filter((b) => valid(b) && (arms.some((a) => a.bone === b) || isHead(b) || isChest(b) || tailName.test(b.name)));
+    if (!selected2.length) return [];
+    scene2.updateMatrixWorld(true);
+    scene2.traverse((o) => {
+      if (o.isSkinnedMesh) o.computeBoundingBox();
+    });
+    const rest = selected2.map((b) => ({
+      bone: b,
+      world: b.getWorldQuaternion(Q()),
+      parent: b.parent.getWorldQuaternion(Q()).invert(),
+      arm: arms.find((a) => a.bone === b),
+      head: isHead(b),
+      chest: isChest(b),
+      tail: tailName.test(b.name)
+    }));
+    const make = (role, duration) => {
+      const count2 = 25, times = Array.from({ length: count2 }, (_, i) => duration * i / (count2 - 1));
+      const tracks = rest.map((r) => {
+        const values = [];
+        for (let i = 0; i < count2; i++) {
+          const u = i / (count2 - 1), wave = Math.sin(u * Math.PI * 2);
+          const pulse = Math.sin(Math.PI * u) ** 2;
+          const delta = Q();
+          const turn = (axis, angle) => delta.multiply(Q().setFromAxisAngle(axis, angle));
+          if (role === "idle") {
+            if (r.arm) turn(Z, r.arm.side * 0.035 * wave);
+            if (r.head) turn(X, 0.025 * wave);
+            if (r.chest) turn(X, 0.018 * wave);
+            if (r.tail) turn(Y, 0.08 * wave);
+          } else if (role === "attack" || role === "special") {
+            if (r.arm) turn(X, -(role === "special" ? 1.25 : 0.8) * pulse);
+            if (r.head) turn(X, 0.12 * pulse);
+            if (r.chest) turn(Y, (role === "special" ? 0.15 : 0.1) * Math.sin(u * Math.PI * 2) * pulse);
+            if (r.tail) turn(Y, 0.25 * wave * pulse);
+          } else {
+            if (r.arm) {
+              turn(Z, r.arm.side * 1.6 * pulse);
+              turn(X, 0.2 * wave);
+            }
+            if (r.head) turn(Y, 0.12 * wave);
+            if (r.chest) turn(Z, 0.055 * wave);
+            if (r.tail) turn(Y, 0.22 * wave);
+          }
+          const q = r.parent.clone().multiply(delta).multiply(r.world).normalize();
+          values.push(q.x, q.y, q.z, q.w);
+        }
+        return new QuaternionKeyframeTrack(`${r.bone.name}.quaternion`, times, values);
+      });
+      return new AnimationClip(role, duration, tracks);
+    };
+    return [make("idle", 2.4), make("attack", 0.65), make("special", 1.2), make("win", 2)];
+  }
+
   // js/render3d.js
   var DT7 = window.DT;
   var sfx = (name2, opts) => DT7.Sfx && DT7.Sfx.play(name2, opts);
@@ -42463,8 +42593,8 @@ void main() {
   var ACTION_ROLES = ["attack", "special", "win"];
   function prepareTemplate(gltf, src) {
     const scene2 = gltf.scene;
-    const clips = gltf.animations || [];
-    const idle = src && src.anim === false ? null : pickIdle(clips);
+    const clips = modelClips(gltf, src);
+    const idle = pickIdle(clips);
     if (idle) {
       const m = new AnimationMixer(scene2);
       m.clipAction(idle).play();
@@ -45792,14 +45922,14 @@ void main() {
   })));
   var danceOf = (id2) => DANCES2.find((d) => d.id === id2) || DANCES2.find((d) => d.id === C4.equipped("dance")) || DANCES2[0];
   var LIM = { hips: 30, spine: 28, neck: 25, head: 40, up: 155, fore: 140, hand: 35, thigh: 95, shin: 110, foot: 35, tail: 35, wing: 50, ear: 45, leafArm: 65, quad: 55 };
-  var Q = () => new Quaternion();
+  var Q2 = () => new Quaternion();
   var qI = new Quaternion();
   var _a = new Vector3();
   var _b = new Vector3();
   var _e2 = new Euler();
-  var _q12 = Q();
-  var _q23 = Q();
-  var _q32 = Q();
+  var _q12 = Q2();
+  var _q23 = Q2();
+  var _q32 = Q2();
   var ROOT_KEYS = ["x", "y", "z", "rx", "ry", "rz"];
   function clampQ(q, lim) {
     if (q.w < 0) q.set(-q.x, -q.y, -q.z, -q.w);
@@ -45872,9 +46002,9 @@ void main() {
           }
           p = B[p].parent;
         }
-        e.R = Q();
-        e.A = Q();
-        e.local = Q();
+        e.R = Q2();
+        e.A = Q2();
+        e.local = Q2();
         e.d0 = B[e.bi].dir;
       }
       this.E = E7;
@@ -50581,9 +50711,9 @@ void main() {
     const roundName = (t) => ({ carousel: "Carousel", pve: "Wild Digimon", pvp: "PvP" })[t] || t;
     const offerName = (k) => ({ armory: "Armory", augment: "Augment", power: "Tamer Power", itemTier: "Item Pick" })[k] || (game7 && game7.set.mechanic.offerKinds[k] || {}).name || k;
     function xpButton(p) {
-      const X = game7.R.xp;
+      const X2 = game7.R.xp;
       let b = $7("xpBtn");
-      if (!X) {
+      if (!X2) {
         if (b) b.classList.add("hidden");
         return;
       }
@@ -50595,12 +50725,12 @@ void main() {
         $7("shopBtns").prepend(b);
       }
       b.classList.remove("hidden");
-      b.innerHTML = `Buy XP <span class="cost">${coin} ${X.buyCost || 4}</span>`;
-      b.disabled = p.gold < (X.buyCost || 4) || p.level >= (X.maxLevel || 9);
+      b.innerHTML = `Buy XP <span class="cost">${coin} ${X2.buyCost || 4}</span>`;
+      b.disabled = p.gold < (X2.buyCost || 4) || p.level >= (X2.maxLevel || 9);
     }
-    function xpBar(p, X, need) {
+    function xpBar(p, X2, need) {
       let bar = $7("xpBar");
-      if (!X) {
+      if (!X2) {
         if (bar) bar.classList.add("hidden");
         return;
       }
@@ -50611,9 +50741,9 @@ void main() {
         $7("levelBox").appendChild(bar);
       }
       bar.classList.remove("hidden");
-      const max = p.level >= (X.maxLevel || 9);
+      const max = p.level >= (X2.maxLevel || 9);
       bar.firstChild.style.width = `${max ? 100 : Math.max(0, Math.min(100, 100 * p.xp / (need || 1)))}%`;
-      bar.title = max ? "Max level" : `${p.xp}/${need} XP to level ${p.level + 1}. Buy ${X.buyXp || 4} XP for ${X.buyCost || 4} gold (F); +${X.perRound != null ? X.perRound : 2} XP each round.`;
+      bar.title = max ? "Max level" : `${p.xp}/${need} XP to level ${p.level + 1}. Buy ${X2.buyXp || 4} XP for ${X2.buyCost || 4} gold (F); +${X2.perRound != null ? X2.perRound : 2} XP each round.`;
     }
     function econLine(p, inc) {
       const R4 = game7.R;
@@ -51062,11 +51192,11 @@ void main() {
     }
     function renderEcon(p) {
       $7("levelLabel").textContent = `Level ${p.level}`;
-      const X = game7.R.xp;
+      const X2 = game7.R.xp;
       const nx = game7.nextLevelAt();
-      const need = X ? DT29.XP_NEXT[p.level] : 0;
-      $7("xpLabel").textContent = X ? p.level >= (X.maxLevel || 9) ? "Max level" : `${p.xp}/${need} XP` : nx ? `Lv ${nx.level} at stage ${nx.stage}` : "Max level";
-      xpBar(p, X, need);
+      const need = X2 ? DT29.XP_NEXT[p.level] : 0;
+      $7("xpLabel").textContent = X2 ? p.level >= (X2.maxLevel || 9) ? "Max level" : `${p.xp}/${need} XP` : nx ? `Lv ${nx.level} at stage ${nx.stage}` : "Max level";
+      xpBar(p, X2, need);
       xpButton(p);
       const bc = p.boardCount(), cap2 = p.cap();
       $7("boardCount").textContent = `${bc}/${cap2}`;
@@ -53536,8 +53666,8 @@ void main() {
     room.host = host;
     const intentLimits = /* @__PURE__ */ new Map();
     room.offs.push(T.watchIntents(id2, (key2, it) => {
-      const valid2 = it && seat(it.s) && seatOf(room?.lobby?.slots, it.s)?.uid === it.uid && action(it.a, it.g || {}) && (!STEAM || it.round === game7.stage * 100 + game7.round) && queue3.length < 64 && queue3.filter((x) => x.uid === it.uid).length < 8 && allow(intentLimits, it.uid, 4, 8);
-      if (valid2) queue3.push({ key: key2, ...it });
+      const valid3 = it && seat(it.s) && seatOf(room?.lobby?.slots, it.s)?.uid === it.uid && action(it.a, it.g || {}) && (!STEAM || it.round === game7.stage * 100 + game7.round) && queue3.length < 64 && queue3.filter((x) => x.uid === it.uid).length < 8 && allow(intentLimits, it.uid, 4, 8);
+      if (valid3) queue3.push({ key: key2, ...it });
       else T.dropIntent(id2, key2);
     }));
     const append = (e) => {
@@ -63978,14 +64108,14 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     }
     const loss = [2, 3, 4, 5, 6, 7].map((st3) => H.lossDamage(st3));
     const unitDmg = H.unitDamage ? " plus damage for each enemy Digimon still standing (1, 1 or 2 by form)" : "";
-    const X = H.xp;
+    const X2 = H.xp;
     const income = H.incomeByStage ? `Income by stage: ${H.incomeByStage.slice(1).join(" / ")}.` : typeof H.baseIncome === "function" ? `Income: ${H.baseIncome(3, 1)} gold a round (${H.baseIncome(1, 2)} early in stage 1).` : `Income: ${H.baseIncome} gold a round.`;
     const T3 = H.combatTime || { overtime: 30, limit: 45 };
     const other = pace2 === "normal" ? "Hyper Roll" : "Normal";
     return { id: "pace", title: `Pace: ${name2}`, html: `
     <p><b>${name2}.</b> ${pace2 === "normal" ? "Standard rules: buy XP, save for interest, longer games." : "Short games: levels come with each stage, fixed income, cheap rerolls."} Choose ${other} on the Play page or in the lobby for the other pace.</p>
     <p>${H.startHp} Tamer HP. A loss costs ${loss.join(" / ")} HP in stages 2-7${unitDmg}.</p>
-    <p>${X ? `Levels: buy ${X.buyXp || 4} XP for ${X.buyCost || 4} gold (F), +${X.perRound != null ? X.perRound : 2} XP each round, up to level ${X.maxLevel || 9}.` : `Levels by stage: ${(H.levelByStage || []).slice(1).join(" / ")}. No XP.`}
+    <p>${X2 ? `Levels: buy ${X2.buyXp || 4} XP for ${X2.buyCost || 4} gold (F), +${X2.perRound != null ? X2.perRound : 2} XP each round, up to level ${X2.maxLevel || 9}.` : `Levels by stage: ${(H.levelByStage || []).slice(1).join(" / ")}. No XP.`}
       ${income} ${H.interest ? `Interest: 1 per ${H.interest.per} gold saved, up to ${H.interest.max}.` : "No interest."}
       ${H.streak ? `Win or loss streaks: ${H.streak.map(([n4, g2]) => `${g2} gold at ${n4}`).join(", ")}.` : "No streak gold."} A PvP win pays ${H.winGold}. Rerolls cost ${H.rerollCost}.</p>
     <p>Stage 1: ${esc11(row(1))}. Stage 2: ${esc11(row(2))}.${offers.length ? ` Picks: ${esc11(offers.join(", "))}.` : ""}</p>
@@ -63995,8 +64125,8 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     const H = DT27.HYPER || {};
     const S4 = DT27.SET;
     const tiers = [1, 2, 3, 4, 5].filter((t) => DT27.POOL_SIZE[t]);
-    const X = H.xp;
-    const levels = X ? Array.from({ length: (X.maxLevel || 9) - (X.startLevel || 1) + 1 }, (_, i) => (X.startLevel || 1) + i) : [...new Set((H.levelByStage || []).filter(Boolean))];
+    const X2 = H.xp;
+    const levels = X2 ? Array.from({ length: (X2.maxLevel || 9) - (X2.startLevel || 1) + 1 }, (_, i) => (X2.startLevel || 1) + i) : [...new Set((H.levelByStage || []).filter(Boolean))];
     const offers = [];
     for (let st3 = 1; st3 <= 8; st3++) for (let r = 1; r <= H.roundsInStage(st3); r++) {
       const o = DT27.Game && DT27.Game.prototype.offerAt.call({ R: H }, st3, r);
@@ -64009,7 +64139,7 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
       <p>8 Tamers start with ${H.startHp} HP and ${H.startGold} gold. ${H.incomeByStage ? "Income is set by stage." : `Base income is ${typeof H.baseIncome === "function" ? H.baseIncome(3, 1) : H.baseIncome} gold a round.`}
       ${H.interest ? ` Interest: 1 gold per ${H.interest.per} saved, up to ${H.interest.max}.` : " No interest."}
       ${H.streak ? ` Win or loss streaks pay ${H.streak.map(([n4, g2]) => `${g2} at ${n4}`).join(", ")}.` : ""} A PvP win pays ${H.winGold}. Rerolls cost ${H.rerollCost}.</p>
-      <p>${X ? `Buy ${X.buyXp || 4} XP for ${X.buyCost || 4} gold (F), and gain ${X.perRound != null ? X.perRound : 2} XP each round. Your level is your team size, up to ${X.maxLevel || 9}.` : "Everyone levels up at the start of each stage."}</p>` },
+      <p>${X2 ? `Buy ${X2.buyXp || 4} XP for ${X2.buyCost || 4} gold (F), and gain ${X2.perRound != null ? X2.perRound : 2} XP each round. Your level is your team size, up to ${X2.maxLevel || 9}.` : "Everyone levels up at the start of each stage."}</p>` },
       { id: "shop", title: "Shop and pool", html: `
       <p>The shop shows ${DT27.SHOP} Digimon. All 8 Tamers share one pool: ${tiers.map((t) => `<b style="color:${tierColor(t)}">${DT27.POOL_SIZE[t]}</b> of each ${t}-cost`).join(", ")}.</p>
       <table class="cx-tbl odds"><tr><th>Level</th>${tiers.map((t) => `<th style="color:${tierColor(t)}">${t}g</th>`).join("")}</tr>
@@ -64716,19 +64846,19 @@ details.cx-rule { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
     const list = DT28.Sets.pickable();
     return list.length > 1 ? list.concat([CHAOS]) : list;
   }
-  function valid(id2) {
+  function valid2(id2) {
     return options().some((o) => o.id === id2);
   }
   function selected() {
     const s = store6.get();
-    return s && valid(s) ? s : DT28.Sets.DEFAULT;
+    return s && valid2(s) ? s : DT28.Sets.DEFAULT;
   }
   function gameRunning2() {
     const g2 = DT28.UI && DT28.UI.game && DT28.UI.game();
     return !!(g2 && !g2.over) || !!(DT28.UI && DT28.UI.inGame && DT28.UI.inGame());
   }
   function select2(id2) {
-    if (!valid(id2)) return;
+    if (!valid2(id2)) return;
     store6.set(id2);
     if (id2 !== "chaos" && !gameRunning2()) DT28.Sets.activate(id2, pace());
     render7();

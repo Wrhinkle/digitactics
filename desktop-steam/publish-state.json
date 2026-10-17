@@ -1,15 +1,15 @@
 {
-  "version": "1.0.11",
-  "date": "2026-10-17T00:23:15.124Z",
-  "sha256": "30a4080299b847acb11788bafcd9c103bdd83930532e0bd04745e8103a66a687",
-  "size": 133630801,
+  "version": "1.0.12",
+  "date": "2026-10-17T00:56:33.913Z",
+  "sha256": "055864691966e143df69dcf85a17c22018555316cfe86da2f9cf6d28108ddcfd",
+  "size": 133706520,
   "repo": "Wrhinkle/digitactics",
   "full": {
-    "version": "1.0.11",
-    "file": "DigiTactics-Steam-1.0.11.zip",
-    "size": 283057197,
-    "sha256": "c0914e3bbe9fa702b7e630a1842bb33d69d2c8d833ea58f86aa254f9053977e1",
-    "date": "2026-10-17T00:23:15.124Z"
+    "version": "1.0.12",
+    "file": "DigiTactics-Steam-1.0.12.zip",
+    "size": 283132916,
+    "sha256": "65a359d5de0e7319e510895ce116ec8feaeba688c19e1073681d2150597b6efd",
+    "date": "2026-10-17T00:56:33.913Z"
   },
   "rules": {
     "proto": "7",
