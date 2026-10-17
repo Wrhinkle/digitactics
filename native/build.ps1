@@ -58,6 +58,8 @@ try {
     Invoke-Checked 'node' @('tools/export-dragon-planning.cjs')
     Invoke-Checked 'node' @('tools/export-dragon-settlement.cjs')
     Invoke-Checked 'node' @('tools/export-dragon-augments.cjs')
+    Invoke-Checked 'node' @('tools/export-fates-trait-rewards.cjs')
+    Invoke-Checked 'node' @('tools/export-fates-augments.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')

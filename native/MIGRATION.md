@@ -1432,3 +1432,27 @@ offer dispatcher still needs to register this handler with its combined callback
 these checks validate the complete pick operation against the original engine.
 
 Validation: **158,445,766 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+
+### Fates trait rewards and augment planning effects
+
+`FatesPlanning.RoundEnd` now runs Treasure, Deva, Fallen and Forge trait callbacks
+in count order before combat-derived rewards. Treasure retains loss tokens and
+pays on wins; Fallen waits for room for both path items; Forge uses the strongest
+board smith, avoids artifacts already in inventory, and preserves unpaid progress
+when capped or full. These callbacks still run when combat state is absent.
+
+Fates augment picks now grant their original gold, health, rolls, equipment,
+artifacts and reserved units. Festival grants a Partner with three reserved copies,
+or its extra gold when the player already owns one, the bench is full, or the pool
+is exhausted. Partner modifiers use the same generator as shop offers. A required
+combine callback preserves Festival's immediate combine and caller-owned dispatch.
+Round-start dice rolls and Offerings income are also implemented.
+
+2,048 trait-reward sequences pass 32,768 checks, including 216 actual Fallen grants
+and 344 Forge grant sequences (`--fates-trait-rewards-only`). 2,400 augment cases
+pass 218,960 checks, including 48 Festival grants (`--fates-augments-only`).
+The existing 1,333,402 Partner-shop and 7,518 combat-settlement checks also pass.
+Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+Production hook composition and persistent-state combat projection remain pending;
+these handlers do not yet constitute the full production match controller.

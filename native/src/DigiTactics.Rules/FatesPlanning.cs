@@ -10,10 +10,59 @@ public sealed class FatesPlanning(MatchState state) : IMatchShopHooks
     private readonly Dictionary<string, TraitDefinition> traits = state.Rules.Traits.ToDictionary(t => t.Id);
     private readonly Dictionary<string, UnitLine> allLines = state.Rules.Lines.Concat(state.Rules.ExtraLines).ToDictionary(l => l.Id);
 
+    private readonly MatchLoot loot = new(state);
+
     public int RoundEnd(RoundEndContext context)
     {
-        if (context.Match.Combat is null) return 0;
         int gold = 0;
+        var player = context.Player;
+        var mechanic = player.Mechanics;
+        foreach (var count in context.Traits)
+        {
+            if (!traits.TryGetValue(count.Key, out var trait)) continue;
+            int level = TraitRules.Level(trait, count.Value);
+            if (level == 0) continue;
+            switch (count.Key)
+            {
+                case "TREASURE" when !context.Pve:
+                    if (!context.Won) mechanic.FatesLuck = Math.Min(8, mechanic.FatesLuck + 1);
+                    else
+                    {
+                        gold += 1 + mechanic.FatesLuck + (level >= 2 ? 3 : 0);
+                        if (mechanic.FatesLuck >= 3) player.GiveItem(loot.RandomComponent()!);
+                        if (mechanic.FatesLuck >= 5) player.GiveItem(loot.RandomCompleted()!);
+                        mechanic.FatesLuck = 0;
+                    }
+                    break;
+                case "DEVA" when !context.Pve && context.Won:
+                    mechanic.FatesDeva = Math.Min(5, mechanic.FatesDeva + 1);
+                    break;
+                case "FALLEN":
+                    mechanic.FatesFallenFights++;
+                    if (mechanic.FatesFallenFights >= 3 && string.IsNullOrEmpty(mechanic.FatesPath) &&
+                        !mechanic.FatesFallenGiven && player.Items.Count <= state.Rules.Loot!.ItemCap - 2)
+                    {
+                        mechanic.FatesFallenGiven = true;
+                        player.GiveItem("fat_holy");
+                        player.GiveItem("fat_dark");
+                    }
+                    break;
+                case "FORGE":
+                    int smith = player.Roster.Board.Where(e => e.Unit.Line == "fat_volcamon").Select(e => e.Unit.Stage).DefaultIfEmpty(-1).Max();
+                    if (smith < 0) break;
+                    mechanic.FatesForge += smith + 1;
+                    var artifacts = state.Rules.Loot!.Mode!.Artifacts;
+                    while (mechanic.FatesForge >= trait.Values[level - 1] && mechanic.FatesForged < 4 && player.Items.Count < state.Rules.Loot.ItemCap)
+                    {
+                        mechanic.FatesForge -= (int)trait.Values[level - 1];
+                        mechanic.FatesForged++;
+                        var eligible = artifacts.Where(id => !player.Items.Contains(id)).ToArray();
+                        player.GiveItem(loot.Pick(eligible.Length > 0 ? eligible : artifacts)!);
+                    }
+                    break;
+            }
+        }
+        if (context.Match.Combat is null) return gold;
         foreach (var result in context.Units.Where(u => u.Survivor.Team == context.Team && !u.Survivor.Summoned))
         {
             var unit = result.State ?? throw new InvalidOperationException("A Fates result is missing unit state.");
@@ -76,13 +125,65 @@ public sealed class FatesPlanning(MatchState state) : IMatchShopHooks
         int slot = (int)(state.Random.Next() * player.Shop.Slots.Count);
         if (!player.Shop.ReplaceOffer(slot, line.Id)) throw new InvalidOperationException("Partner reservation changed during shop roll.");
         for (int i = 0; i < player.Shop.Slots.Count; i++) player.Shop.SetMetadata(i, null);
+        player.Shop.SetMetadata(slot, new(line.Tier * 3, "Partner", PartnerSpec(line)));
+        player.Mechanics.FatesPartnerSeen = true; return true;
+    }
+
+    private ShopUnitOverride PartnerSpec(UnitLine line)
+    {
         var marks = line.Traits.Where(t => traits.TryGetValue(t, out var definition) && definition.Kind != "unique").ToArray();
         if (marks.Length == 0) marks = line.Traits;
         string trait = marks[(int)(state.Random.Next() * marks.Length)];
         string bonus = Bonuses[(int)(state.Random.Next() * Bonuses.Length)];
-        player.Shop.SetMetadata(slot, new(line.Tier * 3, "Partner", new(1, new() { [trait] = 1 },
-            JsonSerializer.SerializeToElement(new { partner = true, trait, bonus }))));
-        player.Mechanics.FatesPartnerSeen = true; return true;
+        return new(1, new() { [trait] = 1 }, JsonSerializer.SerializeToElement(new { partner = true, trait, bonus }));
+    }
+
+    public IncomeBreakdown Income(MatchPlayer player, IncomeBreakdown income) =>
+        player.Augments.Contains("fat_offerings") ? income with { Augment = income.Augment + 2 } : income;
+
+    public void RoundStart(MatchPlayer player)
+    {
+        if (player.Augments.Contains("fat_dice_aug")) player.Shop.FreeRolls++;
+    }
+
+    public void AugmentPicked(MatchPlayer player, string id, Action<MatchPlayer> combine)
+    {
+        ArgumentNullException.ThrowIfNull(combine);
+        string? Artifact() => loot.Pick(state.Rules.Loot!.Mode!.Artifacts);
+        switch (id)
+        {
+            case "fat_envelope": player.Economy.Credit(8); break;
+            case "fat_stall": player.GiveItem(loot.RandomComponent()!); player.GiveItem(loot.RandomComponent()!); break;
+            case "fat_dice_aug": player.Shop.FreeRolls++; break;
+            case "fat_charm": player.Health += 5; break;
+            case "fat_seeker": player.Economy.Credit(3); break;
+            case "fat_pouch": player.Economy.Credit(18); break;
+            case "fat_chest": player.GiveItem(loot.RandomCompleted()!); player.GiveItem(loot.RandomComponent()!); break;
+            case "fat_egghunt": player.GiveItem("fat_egg"); break;
+            case "fat_tome": player.GiveItem(loot.RandomEmblem(player)!); break;
+            case "fat_apprentice": player.GiveItem(Artifact()!); break;
+            case "fat_digivolve": loot.GiveUnit(player, [2, 3], 1); break;
+            case "fat_fortune": player.Economy.Credit(35); break;
+            case "fat_grandarmory": player.GiveItem(loot.RandomCompleted()!); player.GiveItem(loot.RandomCompleted()!); break;
+            case "fat_golden": player.GiveItem("fat_golden_egg"); break;
+            case "fat_master": player.GiveItem(Artifact()!); player.GiveItem(Artifact()!); break;
+            case "fat_mega": loot.GiveUnit(player, [4], 1); break;
+            case "fat_festival":
+                player.Economy.Credit(4);
+                var candidates = state.Rules.Lines.Where(l => l.Tier == 4 && state.Pool.Remaining(l.Id) >= 3).ToArray();
+                if (player.Roster.Entries.Any(e => IsPartner(e.Unit)) || candidates.Length == 0 || player.Roster.FreeBenchSlot < 0)
+                {
+                    player.Economy.Credit(4);
+                    break;
+                }
+                var line = candidates[(int)(state.Random.Next() * candidates.Length)];
+                state.Pool.Take(line.Id, 3);
+                var unit = state.CreateUnit(line.Id, 0);
+                var spec = PartnerSpec(line);
+                player.Roster.AddToBench(unit with { Stage = spec.Stage!.Value, BonusTraits = spec.BonusTraits, Mods = spec.Mods });
+                combine(player);
+                break;
+        }
     }
 
     public PlanningUnit Bought(MatchPlayer player, PlanningUnit unit, int slot, MatchPhase phase)
