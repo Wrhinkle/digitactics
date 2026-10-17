@@ -1103,3 +1103,27 @@ cleanup and allocation-free odds lookup, 184,724 shop-roll comparisons and
 9,345,774 planning/AI/shop regressions passed. The self-contained Windows package
 was rebuilt for the final changes.
 All final packaged BRUTAL smoke checks passed.
+
+## Fates Partner shop integration
+
+`FatesPlanning` supplies native roll, purchase and combine handlers. Partner
+configuration is read from the already-exported catalog odds/chances, and the
+player retains whether a Partner has been seen. Eligibility checks owned Partners,
+level, max-star exclusions and the shared pool. Forced first offers, Seeker chance,
+tier fallback, uniform line/slot selection, non-unique marked traits and four stat
+bonuses preserve original RNG order.
+
+The shop holds one reserved copy. A successful purchase takes two more copies when
+available and the bench has space; otherwise it becomes a Rookie Partner and
+refunds twice the tier cost. Merges preserve the first Partner source's modifiers
+and bonus traits even when an ordinary unit anchors the merge. Selling the owned
+Partner allows new offers without resetting first-offer history.
+
+640 reference traces (5,120 shop refreshes) across normal/hyper and human/AI seats
+pass 1,333,402 checks. They cover chance/forced/Seeker offers, pool depletion,
+full-bench refunds, ordinary-anchor merges through three stars, sales, prices,
+metadata, inventory, pool ownership and RNG. Use `--fates-partners-only`.
+The handlers connect through `PlayerShop.RollHooks` and `PlanningShopCommands`;
+registration in the complete production match dispatcher remains pending.
+
+Validation: the self-contained Windows build and all packaged BRUTAL smoke checks pass.

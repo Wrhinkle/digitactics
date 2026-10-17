@@ -9,7 +9,8 @@ public sealed record TraitDefinition(string Id, string Kind, int[] Breakpoints, 
 public sealed record TransformationDefinition(double? Ad = null, double As = 0, double Armor = 0, double Range = 0);
 public sealed record TamerDefinition(string Line, double[] Hp, double[] Ad, double[] Armor, double Mr);
 public sealed record FormDefinition(string Id, string Name, string Description, string? Trait = null);
-public sealed record PartnerStats(double Hp, double BonusHp, double BonusAp, double BonusAd, double BonusMana);
+public sealed record PartnerStats(double Hp, double BonusHp, double BonusAp, double BonusAd, double BonusMana,
+    int[]?[]? Odds = null, double Chance = 0, double SeekerChance = 0, int FromLevel = 4);
 public sealed record Ruleset(string Id, string Name, string Pace, UnitLine[] Lines, int[] PoolSizes, int[]?[] Odds, int RerollCost, int ShopSize,
     ItemDefinition[] Items, string[] CoreItems, TraitDefinition[] Traits, UnitLine[] ExtraLines, PartnerStats? Partner = null, double[]? PveMultipliers = null, Dictionary<string, int>? DragonTraitLimits = null, Dictionary<string, FormDefinition[]>? Forms = null, Dictionary<string, TamerDefinition>? Tamers = null, EconomyRules? Economy = null, RoundSchedule? Schedule = null, DuoRules? Duo = null, MatchLossRules? Loss = null, LootRules? Loot = null, OfferRules? Offers = null, Dictionary<string, string>? Recipes = null, ColiseumPlanningRules? Coliseum = null, Dictionary<string, string[]>? ItemRoles = null, Dictionary<string, OfferAiDefinition>? OfferAi = null, Dictionary<string, string>? AnomalyTags = null, CarouselRules? Carousel = null);
 public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
