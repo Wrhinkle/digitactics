@@ -9,6 +9,17 @@ public sealed class PlayerMechanics
     public string? FatesPath { get; set; }
     public int ColiseumCores { get; set; }
     public int? ColiseumCoreUnitId { get; set; }
+    public int? ColiseumFormUnitId { get; set; }
+    public ColiseumGambitState ColiseumGambit { get; } = new();
+}
+
+public sealed class ColiseumGambitState
+{
+    public double Gems { get; set; }
+    public int Level { get; set; }
+    public int Count { get; set; }
+    public bool DoubleDown { get; set; }
+    public bool Ready { get; set; }
 }
 
 internal sealed class ModePveRewards(MatchState state, MatchLoot loot)

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Globalization;
 
 namespace DigiTactics.Rules;
 
@@ -9,6 +10,54 @@ public sealed record ColiseumPlanningRules(ColiseumPowerUp[] PowerUps, Dictionar
 public sealed class ColiseumPlanning(MatchState state)
 {
     private ColiseumPlanningRules Rules => state.Rules.Coliseum!;
+    private readonly MatchLoot loot = new(state);
+
+    public string[] FormOptions(MatchPlayer player)
+    {
+        var unit = player.Roster.Entries.FirstOrDefault(e => e.Unit.Id == player.Mechanics.ColiseumFormUnitId)?.Unit;
+        return unit is null ? [] : (state.Rules.Forms!.GetValueOrDefault(unit.Line) ?? []).Select(f => f.Id).ToArray();
+    }
+
+    public void ChooseForm(MatchPlayer player, string id)
+    {
+        var unit = player.Roster.Entries.FirstOrDefault(e => e.Unit.Id == player.Mechanics.ColiseumFormUnitId)?.Unit;
+        player.Mechanics.ColiseumFormUnitId = null;
+        var form = unit is null ? null : state.Rules.Forms!.GetValueOrDefault(unit.Line)?.FirstOrDefault(f => f.Id == id);
+        if (unit is null || form is null) return;
+        var mods = unit.Mods?.EnumerateObject().ToDictionary(p => p.Name, p => p.Value) ?? [];
+        mods["form"] = JsonSerializer.SerializeToElement(id);
+        player.Roster.UpdateUnit(unit with { Mods = JsonSerializer.SerializeToElement(mods),
+            BonusTraits = form.Trait is null ? unit.BonusTraits : new() { [form.Trait] = 1 } });
+    }
+
+    public string[] GambitOptions(MatchPlayer player)
+    {
+        string gems = Math.Floor(player.Mechanics.ColiseumGambit.Gems + .5).ToString(CultureInfo.InvariantCulture);
+        return [$"cash:{gems}", $"double:{gems}"];
+    }
+
+    public void ChooseGambit(MatchPlayer player, string id)
+    {
+        var gambit = player.Mechanics.ColiseumGambit;
+        if (id.StartsWith("double", StringComparison.Ordinal))
+        {
+            gambit.DoubleDown = true; gambit.Count = 0; gambit.Ready = false;
+            return;
+        }
+        CashOut(player);
+    }
+
+    public void CashOut(MatchPlayer player)
+    {
+        var gambit = player.Mechanics.ColiseumGambit;
+        double gems = gambit.Gems * (gambit.Level >= 3 ? 1.3 : 1);
+        player.Economy.Credit(checked((int)Math.Floor(gems * .5 + .5)));
+        if (gems >= 80) { Give(loot.RandomCompleted()); Give(loot.RandomCompleted()); }
+        else if (gems >= 45) Give(loot.RandomCompleted());
+        else if (gems >= 25) Give(loot.RandomComponent());
+        gambit.Gems = 0; gambit.Count = 0; gambit.DoubleDown = false; gambit.Ready = false;
+        void Give(string? item) { if (item is not null) player.GiveItem(item); }
+    }
 
     public void GiveCore(MatchPlayer player)
     {

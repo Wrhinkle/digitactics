@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 135,300,525 assertions.
+Latest verification: the native test suite passes 135,632,637 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -637,5 +637,28 @@ and after rerolling, preserved modifiers, choice rejection, refunds and RNG.
 The general offer and round-flow exporters now use the original core handlers.
 
 Every catalogued consumable now has a native handler. This does not complete the
-match layer: Coliseum form/gambit choices, other custom offers, concrete game
+match layer: other custom offers, concrete game
 hooks, shop metadata and the production desktop match flow remain pending.
+
+## Coliseum form and Jewel Gambit choices
+
+The native offer engine now handles all three Coliseum offer kinds. Form choices
+resolve the pending unit, clear its target ID, preserve unrelated modifiers and
+replace bonus traits only when the selected form supplies a trait. Missing units
+and invalid forms retain the original rejection behavior.
+
+Jewel Gambit uses typed player state for gems, trait level, combat count, readiness
+and Double Down. Options use the original rounded gem labels. Cash-out reads the
+current state rather than the label, applies the level-three multiplier, rounds
+gold as the original does and rolls component/completed-item rewards at the
+25/45/80 thresholds, even when inventory capacity prevents accepting them. Double
+Down preserves gems and resets its combat count and readiness.
+
+Two reference traces provide 332,112 checks across both paces, using a controlled
+offer schedule to exercise the real original and native offer engines. Coverage
+includes all Coliseum unit lines, invalid and removed targets, trait replacement,
+modifier preservation, rerolls, fractional thresholds, full inventories, invalid
+indices, direct handler fallbacks, complete state after choices and RNG. Original
+Coliseum form/gambit handlers also replace mocks in the general offer exporters.
+The purchase/round/combat hooks that create and evolve these choices, AI selection,
+other mode offers and production match integration remain pending.

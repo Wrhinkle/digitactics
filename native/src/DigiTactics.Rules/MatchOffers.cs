@@ -81,6 +81,12 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             case "col_core":
                 coliseum.ChooseCore(player, id);
                 break;
+            case "col_form":
+                coliseum.ChooseForm(player, id);
+                break;
+            case "col_gambit":
+                coliseum.ChooseGambit(player, id);
+                break;
             case "rec_tome":
                 player.GiveItem(id);
                 break;
@@ -114,6 +120,8 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             "rec_radiant" => modeRewards.RadiantOptions(player, 4, exclude),
             "rec_tome" => Shuffle(state.Rules.Loot!.Emblems).Take(4).ToArray(),
             "col_core" => coliseum.CoreOptions(player, exclude),
+            "col_form" => coliseum.FormOptions(player),
+            "col_gambit" => coliseum.GambitOptions(player),
             "drg_treasure" => modeRewards.TreasureOptions(player, exclude),
             "ac_loot" => player.Mechanics.AutoChessLoot?.ToArray() ?? [],
             _ => hooks.CustomOptions(player, round, definition, exclude),
