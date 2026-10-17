@@ -2,10 +2,10 @@ using System.Text.Json;
 
 namespace DigiTactics.Rules;
 
-public sealed record OfferAiDefinition(int Tier, string[] Tags);
+public sealed record OfferAiDefinition(int Tier, string[] Tags, string? Tamer = null);
 
 /// <summary>Original offer ranking with one shared RNG draw per option, including stable ties.</summary>
-public sealed class AiOffers(MatchState state)
+public sealed partial class AiOffers(MatchState state)
 {
     private readonly PlanningAi ai = new(state.Rules);
     private readonly Dictionary<string, ItemDefinition> items = state.Rules.Items.ToDictionary(i => i.Id);

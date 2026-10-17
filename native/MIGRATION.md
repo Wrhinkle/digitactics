@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 147,354,671 assertions.
+Latest verification: the native test suite passes 147,477,071 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -915,3 +915,26 @@ AI-turn/desktop integration remain pending.
 
 Validation: 147,354,671 full-suite checks and packaged BRUTAL smoke tests pass
 with schema 28, including the existing battle and rendering reference checks.
+
+## AI custom offer scoring
+
+Schema 29 exports item tags/ranks, power Tamer identities and Arcane anomaly tags.
+The native `AiOffers.Select(player, offer, stage)` overload now scores every current
+custom offer kind without a scoring callback: Gizmos upgrades; Reckoning blessing,
+radiant and Tome choices; Dragonlands treasure; Arcane anomaly, market and junk;
+Coliseum core, form and Gambit; Underlords Tamer/crew; Auto Chess loot/relics.
+
+Scoring preserves Coliseum's second RNG draw per option, Radiant base-item
+ownership, Digi-Egg merge and pool eligibility, stage/gold thresholds, and Arcane's
+human-center versus AI-holder anomaly targeting. Target fallback uses the original
+stable value/item/UID ordering and skips already anomalous units.
+
+44 reference traces cover human and AI rosters in all 22 variants, comparing
+61,200 custom selections and subsequent RNG states (122,400 checks). The reference
+uses actual custom offer scorers, with option lists drawn from their content.
+Run with `--ai-custom-offers-only`. Scoring does not execute the chosen effect:
+remaining custom offer handlers and the full AI-turn/production dispatcher still
+need integration.
+
+Validation: 147,477,071 full-suite checks and packaged BRUTAL smoke tests pass
+with schema 29.
