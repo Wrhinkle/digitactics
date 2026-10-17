@@ -841,3 +841,26 @@ use its concrete purchase/combine/sale handlers and compare form modifiers and
 core refunds. Other special shop metadata/pricing handlers remain pending.
 The targeted suite runs with `--ai-shopping-only` and is included in the full
 suite. This milestone does not claim full AI turn or production match completion.
+
+## Duos portal transfers and AI sends
+
+`MatchPortal` implements ordered eligibility checks and transfers for bench units
+and inventory items. Full recipient benches accept units that immediately merge;
+board merges keep the original anchor and return excess equipment. Transfers
+retain pool ownership and clear the recipient's max-star shop offers after merges.
+`MatchPlayer` now owns send usage and incoming arrival records; `Reset` clears
+both for a new round. The current Wide Portal send-limit bonus is recognized.
+
+Required portal hooks dispatch combine, partner-combine, sender-portal and
+recipient-portal events in original order. `PartnerCopies` gates AI demand on
+partner availability and remaining sends. `AiTurn` prioritizes immediate merges,
+then partner collections, then excess components, with stable ties and the
+original four-send guard.
+
+8,800 original-game scenarios across all 22 variants pass 962,840 comparisons.
+These cover planning/combat/results and carousel restrictions, unsellable units,
+invalid requests, full benches, board/bench merges, item capacity, send limits,
+arrival payloads, ordered hook dispatch, shop exclusions, pool counts and RNG.
+The fixture instruments hook dispatch rather than applying augment effects;
+concrete Duos augment handlers, Care Package gifts, round-reset wiring and the
+production command/UI dispatcher remain pending. Run with `--portals-only`.

@@ -35,6 +35,8 @@ public sealed class MatchPlayer
     public CombatPower? Power { get; set; }
     public List<string> Globals { get; } = [];
     public CombatBuffs? NextBuffs { get; set; }
+    public int PortalSends { get; internal set; }
+    public List<PortalArrival> Incoming { get; } = [];
 }
 
 public sealed class MatchTeam(int id, MatchPlayer[] members, int health)
