@@ -33,6 +33,7 @@ try {
     Invoke-Checked 'node' @('tools/export-ai-shopping.cjs')
     Invoke-Checked 'node' @('tools/export-portals.cjs')
     Invoke-Checked 'node' @('tools/export-duos-planning.cjs')
+    Invoke-Checked 'node' @('tools/export-ai-offers.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')

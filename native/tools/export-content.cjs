@@ -89,7 +89,7 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const lines = DT.SHOP_LINES.map(exportLine);
   const extraLines = Object.values(DT.LINE).filter(l => !l.shop).map(exportLine);
   const id = `${set.id}/${pace}`;
-  variants.push({ id, economy, schedule, loss, recipes: DT.RECIPE, itemRoles: DT.ITEM_ROLE,
+  variants.push({ id, offerAi: Object.fromEntries([['augment',Object.values(DT.AUGMENT)],['power',Object.values(DT.POWER)]].flatMap(([kind, list])=>list.map(a=>[`${kind}:${a.id}`,{tier:a.tier||1,tags:a.tags||[]}]))), economy, schedule, loss, recipes: DT.RECIPE, itemRoles: DT.ITEM_ROLE,
     coliseum: set.id === 'coliseum' ? { coreRounds: rules.coreRounds || [],
       powerUps: DT.Sets.def(set.id).powerUps.map(p => ({ id: p.id, tags: p.tags })),
     } : null,
@@ -154,7 +154,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 27, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 28, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');

@@ -1,8 +1,172 @@
 {
-  "schemaVersion": 27,
+  "schemaVersion": 28,
   "variants": [
     {
       "id": "faction-wars/normal",
+      "offerAi": {
+        "augment:pocket": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:cache": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rolls": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:heart": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:training": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:thrill": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:secondWind": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:featherweights": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:frontline": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:backline": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:bank": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:trove": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:egg": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rolls2": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:income": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:evolve": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:blessing": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:lotus": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:implants": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:unity": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:overcharge": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:armory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:goldenEgg": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:megaEvolve": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:crest": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 100,
         "startGold": 0,
@@ -7867,6 +8031,170 @@
     },
     {
       "id": "faction-wars/hyper",
+      "offerAi": {
+        "augment:pocket": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:cache": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rolls": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:heart": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:training": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:thrill": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:secondWind": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:featherweights": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:frontline": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:backline": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:bank": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:trove": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:egg": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rolls2": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:income": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:evolve": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:blessing": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:lotus": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:implants": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:unity": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:overcharge": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:armory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:goldenEgg": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:megaEvolve": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:crest": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 20,
         "startGold": 3,
@@ -15717,6 +16045,188 @@
     },
     {
       "id": "fates/normal",
+      "offerAi": {
+        "augment:fat_envelope": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_stall": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_dice_aug": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_charm": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_dojo": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_lanterns": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_wall": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_nest": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_bond": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_seeker": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_pouch": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_chest": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_egghunt": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_offerings": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_shrine": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_united": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_tome": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_apprentice": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_digivolve": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_grace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_twin": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_fortune": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_grandarmory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_golden": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_master": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_soulmates": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_mega": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_festival": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_crowns": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 100,
         "startGold": 0,
@@ -23394,6 +23904,188 @@
     },
     {
       "id": "fates/hyper",
+      "offerAi": {
+        "augment:fat_envelope": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_stall": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_dice_aug": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_charm": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_dojo": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_lanterns": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_wall": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_nest": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_bond": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_seeker": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_pouch": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_chest": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_egghunt": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_offerings": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_shrine": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_united": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_tome": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_apprentice": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_digivolve": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_grace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_twin": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_fortune": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_grandarmory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_golden": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_master": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:fat_giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_soulmates": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:fat_mega": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_festival": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:fat_crowns": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 20,
         "startGold": 3,
@@ -31058,6 +31750,134 @@
     },
     {
       "id": "galaxies/normal",
+      "offerAi": {
+        "augment:gal_a_cash": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_cache": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:gal_a_rolls": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_training": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_front": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_back": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_starlight": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_bank": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_trove": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:gal_a_mental": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:gal_a_income": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_blessing": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_lotus": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_implants": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_armory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:gal_a_golden": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:gal_a_giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_stars": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_megaEvolve": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_overcharge": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 100,
         "startGold": 0,
@@ -38013,6 +38833,134 @@
     },
     {
       "id": "galaxies/hyper",
+      "offerAi": {
+        "augment:gal_a_cash": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_cache": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:gal_a_rolls": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_training": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_front": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_back": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_starlight": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_bank": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_trove": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:gal_a_mental": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:gal_a_income": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_blessing": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_lotus": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_implants": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_armory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:gal_a_golden": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:gal_a_giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_stars": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:gal_a_megaEvolve": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:gal_a_overcharge": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 20,
         "startGold": 3,
@@ -44964,6 +45912,356 @@
     },
     {
       "id": "gizmos/normal",
+      "offerAi": {
+        "augment:giz_a_spare": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_parts": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_feather1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_bless1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_implant1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_thrill1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_knife1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_makeshift1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_exiles1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_united1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_ascend": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_calc": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_hyper": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_weak": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_firstaid": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_scoped": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_underdog": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_booster": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_runic": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_overload": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_sosmall": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_cutthroat": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_bank": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_chip": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_crestkit": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_airdrop": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_bless2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_implant2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_feather2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_knife2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_makeshift2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_united2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_thrill2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_trade": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_salvage": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_shrug": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_spellblade": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_stopwatch": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_smoke": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_injection": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_reserves": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_junkyard": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_titanic": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_censer": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_grabbag": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_recruit": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_bless3": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_implant3": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_feather3": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_highend": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_ticket": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_woodland": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_windfall": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_forge": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_burst": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_united3": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_band": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        }
+      },
       "economy": {
         "startHp": 100,
         "startGold": 0,
@@ -52766,6 +54064,356 @@
     },
     {
       "id": "gizmos/hyper",
+      "offerAi": {
+        "augment:giz_a_spare": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_parts": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_feather1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_bless1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_implant1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_thrill1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_knife1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_makeshift1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_exiles1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_united1": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_ascend": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_calc": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_hyper": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_weak": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_firstaid": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_scoped": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_underdog": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_booster": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_runic": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_overload": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_sosmall": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_cutthroat": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_bank": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_chip": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_crestkit": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_airdrop": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_bless2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_implant2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_feather2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_knife2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_makeshift2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_united2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_thrill2": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_trade": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_salvage": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_shrug": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_spellblade": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_stopwatch": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_smoke": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_injection": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_reserves": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_junkyard": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_titanic": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_censer": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_grabbag": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_recruit": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_bless3": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_implant3": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_feather3": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_highend": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_ticket": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_woodland": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_windfall": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:giz_a_forge": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:giz_a_burst": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_united3": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:giz_a_band": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        }
+      },
       "economy": {
         "startHp": 20,
         "startGold": 2,
@@ -60547,6 +62195,152 @@
     },
     {
       "id": "reckoning/normal",
+      "offerAi": {
+        "augment:rec_a_coins": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:rec_a_cache": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_scan": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:rec_a_heart": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_training": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_mist": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_front": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_nest": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_bank": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:rec_a_trove": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_egg": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_income": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:rec_a_xanti": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_vamp": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_mana": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_unity": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_ascend": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:rec_a_blessing": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_armory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_nature": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_darkness": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_tome": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        }
+      },
       "economy": {
         "startHp": 100,
         "startGold": 0,
@@ -70621,6 +72415,152 @@
     },
     {
       "id": "reckoning/hyper",
+      "offerAi": {
+        "augment:rec_a_coins": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:rec_a_cache": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_scan": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:rec_a_heart": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_training": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_mist": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_front": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_nest": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_bank": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:rec_a_trove": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_egg": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_income": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:rec_a_xanti": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_vamp": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_mana": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_unity": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_ascend": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:rec_a_blessing": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_armory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_nature": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:rec_a_darkness": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:rec_a_tome": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        }
+      },
       "economy": {
         "startHp": 20,
         "startGold": 3,
@@ -80682,6 +82622,212 @@
     },
     {
       "id": "dragonlands/normal",
+      "offerAi": {
+        "augment:drg_hoard": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_feather": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_exiles": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_battlemage": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_friends": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_calcloss": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_firstaid": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_training": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_duplicates": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_scraps": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_ascension": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_celestial": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_implants": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_shell": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_uplink": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_grabbag": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_archives": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_imperialist": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_axiom": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_bigfriend": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_double": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_electro": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_treasure_hoard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_built": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_crest_gold": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_crest_rage": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_crest_tamer": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_crest_mage": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_relics": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_crown": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_wings": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_pact": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_final": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 100,
         "startGold": 0,
@@ -88359,6 +90505,212 @@
     },
     {
       "id": "dragonlands/hyper",
+      "offerAi": {
+        "augment:drg_hoard": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_feather": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_exiles": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_battlemage": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_friends": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_calcloss": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_firstaid": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_training": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_duplicates": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_scraps": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_ascension": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_celestial": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_implants": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_shell": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_uplink": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_grabbag": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_archives": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_imperialist": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_axiom": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_bigfriend": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_double": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_electro": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_treasure_hoard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_built": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_crest_gold": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_crest_rage": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_crest_tamer": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_crest_mage": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_relics": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_crown": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:drg_wings": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:drg_pact": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:drg_final": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 20,
         "startGold": 3,
@@ -96013,6 +98365,188 @@
     },
     {
       "id": "arcane/normal",
+      "offerAi": {
+        "augment:arc_a_coins": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_cache": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_rolls": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_heart": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_training": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_wind": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_feather": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_front": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_back": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_shimmer": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_bank": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_trove": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_tag": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_device": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_income": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_evolve": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_blessing": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_lotus": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_overcharge": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_find": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_forge": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_unity": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_armory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_crown": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_mega": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_mutant": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_workshop": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_market": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        }
+      },
       "economy": {
         "startHp": 100,
         "startGold": 0,
@@ -103921,6 +106455,188 @@
     },
     {
       "id": "arcane/hyper",
+      "offerAi": {
+        "augment:arc_a_coins": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_cache": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_rolls": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_heart": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_training": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_wind": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_feather": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_front": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_back": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_shimmer": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_bank": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_trove": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_tag": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_device": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_income": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_evolve": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_blessing": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_lotus": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_overcharge": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_find": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_forge": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_unity": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_armory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_crown": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_mega": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:arc_a_mutant": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:arc_a_workshop": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:arc_a_market": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        }
+      },
       "economy": {
         "startHp": 20,
         "startGold": 3,
@@ -111815,6 +114531,188 @@
     },
     {
       "id": "coliseum/normal",
+      "offerAi": {
+        "augment:col_a_coins": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_band": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_cache": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_rolls": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_heart": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_warmup": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_front": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_ringside": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_snack": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_second": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_prize": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_trove": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_ascension": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_sponsor": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_crest": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_tags": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_snacktime": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_lotus": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_unity": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_titan": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_evolve": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_artifact": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_armory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_golden": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_mega": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_feast": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_arena": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_finals": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 100,
         "startGold": 0,
@@ -119869,6 +122767,188 @@
     },
     {
       "id": "coliseum/hyper",
+      "offerAi": {
+        "augment:col_a_coins": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_band": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_cache": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_rolls": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_heart": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_warmup": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_front": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_ringside": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_snack": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_second": {
+          "tier": 1,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_prize": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_trove": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_ascension": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_sponsor": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_crest": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_tags": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_snacktime": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_lotus": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_unity": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_titan": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_evolve": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_artifact": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_jackpot": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_armory": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_golden": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_mega": {
+          "tier": 3,
+          "tags": [
+            "econ"
+          ]
+        },
+        "augment:col_a_giant": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_feast": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ]
+        },
+        "augment:col_a_arena": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        },
+        "augment:col_a_finals": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 20,
         "startGold": 3,
@@ -127902,6 +130982,56 @@
     },
     {
       "id": "underlords/normal",
+      "offerAi": {
+        "power:ul_anessa_dark": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_anessa_heal": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_hob_fire": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_hob_crazy": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_jules_brawl": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_jules_bar": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_enno_balm": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_enno_rabid": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 100,
         "startGold": 5,
@@ -135276,6 +138406,56 @@
     },
     {
       "id": "underlords/hyper",
+      "offerAi": {
+        "power:ul_anessa_dark": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_anessa_heal": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_hob_fire": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_hob_crazy": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_jules_brawl": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_jules_bar": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_enno_balm": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_enno_rabid": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 20,
         "startGold": 5,
@@ -142646,6 +145826,7 @@
     },
     {
       "id": "autochess/normal",
+      "offerAi": {},
       "economy": {
         "startHp": 100,
         "startGold": 1,
@@ -149824,6 +153005,7 @@
     },
     {
       "id": "autochess/hyper",
+      "offerAi": {},
       "economy": {
         "startHp": 20,
         "startGold": 3,
@@ -156980,6 +160162,56 @@
     },
     {
       "id": "underlords_ko/normal",
+      "offerAi": {
+        "power:ul_anessa_dark": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_anessa_heal": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_hob_fire": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_hob_crazy": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_jules_brawl": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_jules_bar": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_enno_balm": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_enno_rabid": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 4,
         "startGold": 6,
@@ -164416,6 +167648,56 @@
     },
     {
       "id": "underlords_ko/hyper",
+      "offerAi": {
+        "power:ul_anessa_dark": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_anessa_heal": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_hob_fire": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_hob_crazy": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_jules_brawl": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_jules_bar": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_enno_balm": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        },
+        "power:ul_enno_rabid": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ]
+        }
+      },
       "economy": {
         "startHp": 4,
         "startGold": 6,

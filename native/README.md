@@ -719,3 +719,27 @@ combat, trait and damage effects.
 
 Validation: 147,196,271 full-suite checks pass, along with the self-contained
 Windows package asset, texture, purchase UI and battle-rendering smoke tests.
+
+## AI standard offer selection
+
+Catalog schema 28 exports augment and power tiers/tags under `OfferAi`.
+`AiOffers.Select` implements armory, item-tier, augment and power ranking, including
+carry-role preference, craftable components, consumable penalties, emblem
+breakpoints, stage/tag weighting and the original random draw per option. It
+preserves first-option ties and empty-list behavior.
+
+All current generic-offer bonus functions are native: 19 augment bonuses across
+Faction Wars, Fates, Galaxies, Gizmos, Arcane and Coliseum, plus the 12 Underlords
+global-item bonuses shared with Knockout. Fates checks the owned Partner modifier;
+Arcane checks unit traits on board and bench; Gizmos includes augment trait bonuses
+while the other relevant board-trait scores omit them as the original does.
+
+19,800 generated rosters across all 22 variants exercise 79,200 selections with
+158,400 selection/RNG comparisons. Offers vary option count, board/bench contents,
+equipment, augments, inventory, health, streak sign and stage. The reference runs
+the original bonus functions. Run with `--ai-offers-only`. Custom mechanic offers
+still require the explicit custom-score callback, and choice execution plus full
+AI-turn/desktop integration remain pending.
+
+Validation: 147,354,671 full-suite checks and packaged BRUTAL smoke tests pass
+with schema 28, including the existing battle and rendering reference checks.
