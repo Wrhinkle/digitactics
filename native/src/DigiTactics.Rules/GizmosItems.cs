@@ -22,7 +22,7 @@ public sealed partial class CombatSimulation
                 case "giz_backup_drive": On(CombatHook.Lethal, (c, _) => {
                     if (unit.Gizmos.Backup) return;
                     unit.Gizmos.Backup = true; unit.Health = 1; unit.InvulnerableUntil = Time + 2; unit.Stun = Math.Max(unit.Stun, 2);
-                    c.After(2, () => c.Heal(unit, 400 * scale), unit);
+                    c.Text(unit, "Backup"); c.After(2, () => c.Heal(unit, 400 * scale), unit);
                 }); break;
                 case "giz_war_banner": On(CombatHook.CombatStart, (_, _) => { foreach (var a in Row(1)) a.AttackSpeed *= 1 + 0.3 * scale; }); break;
                 case "giz_rail_cannon": On(CombatHook.CombatStart, (_, _) => unit.Range++); break;
@@ -30,7 +30,7 @@ public sealed partial class CombatSimulation
                     On(CombatHook.CombatReady, (_, _) => { foreach (var e in EnemiesNear(unit, unit.Cell, 4)) e.Target = unit; });
                     On(CombatHook.Death, (c, _) => {
                         var decoy = c.Summon(unit.Team, "giz_decoy", Math.Min(2, unit.Stage), unit.Cell, new(HealthMultiplier: scale, NoHooks: true));
-                        if (decoy is not null) foreach (var e in EnemiesNear(unit, decoy.Cell, 4)) e.Target = decoy;
+                        if (decoy is not null) { foreach (var e in EnemiesNear(unit, decoy.Cell, 4)) e.Target = decoy; c.Text(decoy, "Decoy"); }
                     }); break;
                 case "giz_guard_locket": On(CombatHook.CombatStart, (c, _) => {
                     double amount = (unit.Stage == 0 ? 300 : unit.Stage == 1 ? 350 : 400) * scale;
@@ -57,7 +57,7 @@ public sealed partial class CombatSimulation
                     var foe = units.Where(e => e.Alive && e.Team != unit.Team).OrderBy(e => e.Cell.DistanceTo(spot) * 100 + e.Id).FirstOrDefault();
                     if (foe is null) return;
                     double duration = 5 * (scale > 1 ? 1.4 : 1);
-                    foe.InvulnerableUntil = Math.Max(foe.InvulnerableUntil, Time + duration); foe.Stun = Math.Max(foe.Stun, duration);
+                    foe.InvulnerableUntil = Math.Max(foe.InvulnerableUntil, Time + duration); foe.Stun = Math.Max(foe.Stun, duration); Emit("text", foe, text: "Blown away");
                 }); break;
                 case "giz_spell_shield": On(CombatHook.CombatStart, (_, _) => { foreach (var a in Row(1)) a.Gizmos.Ward = Math.Max(a.Gizmos.Ward, 500 * scale); }); break;
                 default: throw new NotSupportedException($"Gizmos item hooks for {id} have not been migrated.");

@@ -26,14 +26,15 @@ public sealed partial class CombatSimulation
                 double M(double low, double high) => level >= 2 ? high : low;
                 switch (id)
                 {
-                    case "MASQ": Start(_ => {
+                    case "MASQ": Start(c => {
                         var vip = members.OrderByDescending(u => u.Items.Count * 100 + u.Line.Tier * 10 + u.Stage).FirstOrDefault();
                         foreach (var u in members) { double k = u == vip && u.Items.Count > 0 ? 1.5 : 1; u.MaxHealth += UnitValues.Round(value * k); u.AbilityPower += UnitValues.Round(P("ap") * k); }
+                        if (vip is not null && vip.Items.Count > 0) c.Text(vip, "VIP");
                     }); break;
                     case "DB": On(CombatHook.CombatReady, (c, _) => {
                         var foes = units.Where(e => e.Alive && e.Team != c.Team).ToArray();
                         var big = foes.OrderByDescending(e => e.MaxHealth).FirstOrDefault();
-                        void Arrest(CombatUnit? e, double duration) { if (e is null) return; c.Stun(e, duration); if (e.Stun > 0) e.Gizmos.ArrestBreak = e.Health - e.MaxHealth * 0.4; }
+                        void Arrest(CombatUnit? e, double duration) { if (e is null) return; c.Stun(e, duration); if (e.Stun > 0) { e.Gizmos.ArrestBreak = e.Health - e.MaxHealth * 0.4; c.Text(e, "Arrested"); } }
                         Arrest(big, value);
                         if (level >= 2) { Arrest(foes.Where(e => e != big).OrderByDescending(e => e.AttackDamage).FirstOrDefault(), P("second")); foreach (var u in members) u.AttackSpeed *= 1 + P("as"); }
                     }); break;
@@ -72,6 +73,7 @@ public sealed partial class CombatSimulation
                         Start(c => {
                             mutation = setup.Mutation ?? Mutations[(int)(c.Random() * Mutations.Length)];
                             foreach (var u in members) {
+                                c.Text(u, mutation switch { "cyber" => "Cybernetic", "voracious" => "Voracious", "voidborne" => "Voidborne", "adrenal" => "Adrenal", "synaptic" => "Synaptic", "leech" => "Leeching", "meta" => "Metamorphosis", _ => mutation });
                                 if (mutation == "cyber") { double k = u.Items.Count > 0 ? 1.5 : 1; u.MaxHealth += UnitValues.Round(M(200, 380) * k); u.AttackDamage += u.BaseAttackDamage * M(0.12, 0.22) * k; }
                                 if (mutation == "synaptic") u.MaxMana = Math.Max(20, u.MaxMana - M(20, 35));
                             }
@@ -81,7 +83,7 @@ public sealed partial class CombatSimulation
                         On(CombatHook.DamageDealt, (c, e) => {
                             var target = e.Target!;
                             if (mutation != "voidborne" || busy || !Member(e.Unit!) || !target.Alive || target.Health > target.MaxHealth * M(0.1, 0.18)) return;
-                            busy = true; try { c.Damage(e.Unit!, target, target.Health + target.Shield + 10, DamageKind.True); } finally { busy = false; }
+                            busy = true; try { c.Text(target, "Voidborne"); c.Damage(e.Unit!, target, target.Health + target.Shield + 10, DamageKind.True); } finally { busy = false; }
                         });
                         On(CombatHook.Attack, (c, e) => { if (mutation == "adrenal" && Member(e.Unit!) && e.Target!.Alive && c.Random() < M(0.2, 0.35)) c.Damage(e.Unit!, e.Target, e.Amount, DamageKind.Physical, e.Critical); });
                         On(CombatHook.Tick, (_, _) => {
@@ -90,14 +92,14 @@ public sealed partial class CombatSimulation
                         }); break;
                     case "PET": Each(u => { u.Dodge += value; if (level >= 2) u.MaxMana = Math.Max(20, UnitValues.Round(u.MaxMana * 0.8)); }); break;
                     case "XA":
-                        void Trigger(CombatHookContext c, CombatUnit u, bool start) { u.Gizmos.Antibody = start ? 1 : 2; c.Buff(u, CombatStat.AttackSpeed, value, 8); c.Buff(u, CombatStat.DamageReduction, 0.15, 8); c.Buff(u, CombatStat.Regeneration, P("regen"), 8); }
+                        void Trigger(CombatHookContext c, CombatUnit u, bool start) { u.Gizmos.Antibody = start ? 1 : 2; c.Buff(u, CombatStat.AttackSpeed, value, 8); c.Buff(u, CombatStat.DamageReduction, 0.15, 8); c.Buff(u, CombatStat.Regeneration, P("regen"), 8); c.Text(u, "X-Antibody"); }
                         Start(c => { foreach (var u in members) { u.Gizmos.Antibody = 1; if ((side.Augments ?? []).Contains("giz_a_injection")) Trigger(c, u, true); } });
                         On(CombatHook.DamageTaken, (c, e) => { var u = e.Unit!; if (u.Gizmos.Antibody == 1 && Member(u) && u.Health < u.MaxHealth * 0.75) Trigger(c, u, false); }); break;
                     case "SIS": Each(u => { if (u.Line.Id == "giz_sistermonb") u.MaxMana = Math.Max(20, u.MaxMana - 20); if (u.Line.Id == "giz_sistermonn") u.Gizmos.Noir = true; u.Equipment.Amp += value; });
                         On(CombatHook.Kill, (c, e) => { if (e.Unit!.Gizmos.Noir && e.Unit.Alive) c.Buff(e.Unit, CombatStat.AttackSpeed, 0.4, 3); }); break;
                     case "IDOL":
                         CombatUnit? spot = null; double spotNext = 1;
-                        On(CombatHook.CombatReady, (c, _) => { spot = c.Mine.Where(u => !u.Summoned).OrderByDescending(u => u.Items.Count * 1000 + u.Line.Tier * 100 + u.Stage * 10 - u.Id * 0.001).FirstOrDefault(); if (spot is not null) { spot.Equipment.Amp += value; if (level >= 3) spot.Omnivamp += P("vamp"); } });
+                        On(CombatHook.CombatReady, (c, _) => { spot = c.Mine.Where(u => !u.Summoned).OrderByDescending(u => u.Items.Count * 1000 + u.Line.Tier * 100 + u.Stage * 10 - u.Id * 0.001).FirstOrDefault(); if (spot is not null) { spot.Equipment.Amp += value; if (level >= 3) spot.Omnivamp += P("vamp"); c.Text(spot, "Spotlight"); } });
                         On(CombatHook.Tick, (_, _) => { if (spot is not { Alive: true } || level < 2 || Time < spotNext) return; spotNext++; spot.Mana = Math.Min(spot.MaxMana, spot.Mana + P("mana")); }); break;
                     case "GLUT": Each(u => { if (u.Entry.GluttonHealth != 0) { u.MaxHealth += u.Entry.GluttonHealth; u.AbilityPower += u.Entry.GluttonAbilityPower; } }); break;
                     case "TRANS": Each(u => { u.Gizmos.Melee = u.Entry.Row <= 5; if (u.Gizmos.Melee) { u.Range = 1; u.Armor += 40; u.MagicResist += 40; } else u.Range = 4; });
@@ -128,7 +130,7 @@ public sealed partial class CombatSimulation
                         var inns = members.Where(u => u.Alive && !u.Summoned).ToArray(); if (inns.Length == 0) return;
                         int stars = inns.Sum(u => u.Stage + 1); HexCell? cell = null;
                         foreach (var u in inns) { cell = c.FreeCellNear(u, u.Cell); if (cell is not null) break; }
-                        if (cell is not null) c.Summon(c.Team!.Value, "giz_inno", (int)value, cell.Value, new(HealthMultiplier: 0.45 + 0.04 * stars, AttackMultiplier: 0.5 + 0.04 * stars, NoHooks: true));
+                        if (cell is not null) { var summon = c.Summon(c.Team!.Value, "giz_inno", (int)value, cell.Value, new(HealthMultiplier: 0.45 + 0.04 * stars, AttackMultiplier: 0.5 + 0.04 * stars, NoHooks: true)); if (summon is not null) c.Text(summon, "Built"); }
                     }); break;
                     case "SCH": double scholarNext = 2;
                         On(CombatHook.Tick, (c, _) => { if (Time < scholarNext) return; scholarNext += 2; foreach (var u in c.Mine.Where(u => u.Alive && u.MaxMana > 0)) u.Mana = Math.Min(u.MaxMana, u.Mana + value); }); break;

@@ -54,7 +54,7 @@ public sealed class CombatHookContext
     public void Stun(CombatUnit target, double duration) => Combat.HookStun(target, duration);
     public void Burn(CombatUnit source, CombatUnit target) => Combat.HookBurn(source, target);
     public void Blind(CombatUnit target) => target.Blind = true;
-    public void Silence(CombatUnit target, double duration) => target.SilenceUntil = Math.Max(target.SilenceUntil, Time + duration);
+    public void Silence(CombatUnit target, double duration) { target.SilenceUntil = Math.Max(target.SilenceUntil, Time + duration); Text(target, "Silenced"); }
     public void Weaken(CombatUnit target, double fraction, double duration)
     { target.Weakness = Math.Max(target.WeakUntil > Time ? target.Weakness : 0, fraction); target.WeakUntil = Time + duration; }
     public void Kill(CombatUnit unit, CombatUnit? source = null) { if (unit.Alive) Combat.Kill(unit, source); }

@@ -30,7 +30,7 @@ public sealed partial class CombatSimulation
                     if (ally.Cell.DistanceTo(far.Cell) <= ally.Range + 1) ally.Target = far;
                 break;
             case "devour":
-                Emit("hit", unit, target); StunUnit(target, 2.5); AbilityDamage(unit, target, value);
+                Emit("hit", unit, target, big: true); StunUnit(target, 2.5); AbilityDamage(unit, target, value);
                 Buff(unit, CombatStat.DamageReduction, 0.3, 2.5); break;
             case "visions":
                 var enemies = units.Where(u => u.Alive && u.Team != unit.Team).ToArray();
@@ -71,7 +71,7 @@ public sealed partial class CombatSimulation
             var target = e.Target!;
             if (!(target.Gizmos.Ward > 0) || e.Kind != DamageKind.Magic || !(e.Amount > 0)) return;
             e.Multiplier *= e.Amount <= target.Gizmos.Ward ? 0 : (e.Amount - target.Gizmos.Ward) / e.Amount;
-            target.Gizmos.Ward = 0;
+            target.Gizmos.Ward = 0; Emit("text", target, text: "Blocked");
         });
     }
 }

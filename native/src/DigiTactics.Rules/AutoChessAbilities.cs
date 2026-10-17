@@ -30,8 +30,8 @@ public sealed partial class CombatSimulation
                 var tf = u.Line.Transformation ?? new(); u.AttackDamage += u.BaseAttackDamage * (tf.Ad ?? 0.3);
                 if (tf.As != 0) Buff(u, CombatStat.AttackSpeed, tf.As, double.PositiveInfinity);
                 if (tf.Armor != 0) { u.Armor += tf.Armor; u.MagicResist += tf.Armor; }
-                if (tf.Range != 0) u.Range += tf.Range; break;
-            case "storm": foreach (var e in EnemiesOf(u)) AbilityDamage(u, e, value); break;
+                if (tf.Range != 0) u.Range += tf.Range; Emit("text", u, text: "Transform"); Emit("shield", u); break;
+            case "storm": foreach (var e in EnemiesOf(u)) { Emit("beam", u, e); AbilityDamage(u, e, value); } break;
             default: return false;
         }
         return true;

@@ -38,7 +38,7 @@ public sealed partial class CombatSimulation
                     On(CombatHook.DamageTaken, (c, e) => {
                         var u = e.Unit!; var source = e.Source; if (!(level >= 2 || Member(u))) return;
                         if (source is null || !source.Alive || source.Team == u.Team || source.Range > 1 || e.Kind != DamageKind.Physical || e.IsBurn || source.AutoChess.StoneCooldown > Time) return;
-                        if (c.Random() < value) { source.AutoChess.StoneCooldown = Time + 2.5; c.Stun(source, 1.5); }
+                        if (c.Random() < value) { source.AutoChess.StoneCooldown = Time + 2.5; c.Stun(source, 1.5); c.Text(source, "Stone"); }
                     }); break;
                 case "AQUAN": All(u => u.MagicResist += value); break;
                 case "CYBORG": Each(u => { u.Range++; u.AttackDamage += u.BaseAttackDamage * value; }); break;
@@ -52,6 +52,7 @@ public sealed partial class CombatSimulation
                     int successes = 0; for (int k = 0; k < value; k++) if (c.Random() < 0.3) successes++;
                     if (successes == 0) { u.AutoChess.KnightCooldown = Time + 0.5; return; }
                     u.AutoChess.KnightCooldown = Time + 4; c.Buff(u, CombatStat.DamageReduction, 0.18 * successes, 3);
+                    c.Text(u, successes > 1 ? $"Divine Shield x{successes}" : "Divine Shield"); c.Effect("shield", u);
                 }); break;
                 case "DRUID":
                     Each(u => u.AutoChess.Druid = value);
@@ -61,7 +62,7 @@ public sealed partial class CombatSimulation
                     }); break;
                 case "MECH": Each(u => u.Equipment.Regen += value); break;
                 case "SHAMAN": Start(c => {
-                    var foes = units.Where(e => e.Team != c.Team && e.Alive).ToArray(); if (foes.Length > 0) c.Stun(foes[(int)(c.Random() * foes.Length)], value);
+                    var foes = units.Where(e => e.Team != c.Team && e.Alive).ToArray(); if (foes.Length > 0) { var target = foes[(int)(c.Random() * foes.Length)]; c.Stun(target, value); c.Text(target, "Hexed"); }
                 }); break;
                 case "WARLOCK": All(u => u.Omnivamp += value); break;
                 case "DH":

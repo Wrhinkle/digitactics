@@ -256,10 +256,16 @@ Solo/Duos. Reference replay preserves side modifiers and checks the original
 battle duration/winner; guards require all authored floating labels to occur.
 Fates covers Lunar growth, Ascension, Push-ups, Soulmon, Rewind, shield/revival,
 artifact and bounce-projectile cues. Faction Wars covers DigiSoul, Spirit Evolution,
-Insectoid shots/blind misses, Muck, freezing and Undying. The other sets' presentation
-callbacks and complete replay coverage remain pending; this is not a renderer.
+Insectoid shots/blind misses, Muck, freezing and Undying. Auto Chess and Gizmos add
+730 battles and 295,415 ordered cues: transformations, summon and mutation labels,
+silence, Stone, Divine Shield stacks, item beams, revival, decoys, X-Antibody,
+Overload bursts, Copy, Smoke Bomb and blocked spell feedback. Named-effect guards
+require all of these to occur; production replays include relics, all mutation
+choices, Glutton stats, augment ownership and Duos partner state. The event suite
+now covers 1,191 battles and 425,582 cues. The other sets' presentation callbacks
+and complete replay coverage remain pending; this is not a renderer.
 
-Latest verification: the native test suite passes 100,891,637 assertions.
+Latest verification: the native test suite passes 101,187,782 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

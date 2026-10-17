@@ -20,14 +20,14 @@ public sealed partial class CombatSimulation
                     if (e.Kind != DamageKind.Physical || e.IsBurn || source is null || !source.Alive || source == u || source.Team == u.Team) return;
                     c.Damage(u, source, e.Amount * 0.3);
                 }); break;
-                case "ac_refresh_disk": On(CombatHook.Cast, (_, _) => { if (u.AutoChess.Refreshed) return; u.AutoChess.Refreshed = true; u.Mana = u.MaxMana; }); break;
+                case "ac_refresh_disk": On(CombatHook.Cast, (_, _) => { if (u.AutoChess.Refreshed) return; u.AutoChess.Refreshed = true; u.Mana = u.MaxMana; Emit("text", u, text: "Refresh"); }); break;
                 case "ac_numemon_wand": On(CombatHook.UnitTick, (c, _) => {
                     if (!c.Every(u, "acWand", 7)) return;
-                    var target = EnemiesOf(u).OrderByDescending(x => x.Line.Tier * 10 + x.Stage * 4).FirstOrDefault(); if (target is not null) c.Stun(target, 2.5);
+                    var target = EnemiesOf(u).OrderByDescending(x => x.Line.Tier * 10 + x.Stage * 4).FirstOrDefault(); if (target is not null) { c.Effect("beam", u, target); c.Stun(target, 2.5); c.Text(target, "Numemon!"); }
                 }); break;
                 case "ac_true_lance": On(CombatHook.Attack, (c, e) => { if (e.Target!.Alive) c.Damage(u, e.Target, 60); }); break;
-                case "ac_hellfire_rod": On(CombatHook.UnitTick, (c, _) => { if (c.Every(u, "acRod", 6) && RandomEnemyTarget(u) is { } target) c.Damage(u, target, 250); }); break;
-                case "ac_stun_hammer": On(CombatHook.Attack, (c, e) => { if (e.Target!.Alive && c.Random() < 0.15) c.Stun(e.Target, 1.2); }); break;
+                case "ac_hellfire_rod": On(CombatHook.UnitTick, (c, _) => { if (c.Every(u, "acRod", 6) && RandomEnemyTarget(u) is { } target) { c.Effect("beam", u, target); c.Damage(u, target, 250); } }); break;
+                case "ac_stun_hammer": On(CombatHook.Attack, (c, e) => { if (e.Target!.Alive && c.Random() < 0.15) { c.Stun(e.Target, 1.2); c.Text(e.Target, "Bash"); } }); break;
                 case "ac_frost_ring": On(CombatHook.Attack, (c, e) => { if (e.Target!.Alive) c.Buff(e.Target, CombatStat.AttackSpeed, -0.25, 2); }); break;
                 case "ac_dragon_lance": Start(_ => { if (u.Range > 1) u.Range++; }); break;
                 case "ac_ward_cape": Start(_ => { foreach (var a in Allies(2)) a.MagicResist += 25; }); break;

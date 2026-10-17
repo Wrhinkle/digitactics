@@ -29,8 +29,9 @@ The shared combat presentation stream is checked against 156 original-engine bat
 (42,626 ordered cues), including cast names, projectiles, bursts, critical damage,
 leap origins and shared item effects. Fates and Faction Wars add 305 production
 battles and 87,541 ordered cues, including traits, items, augments, revival, summon
-labels and Duos effects. The other sets' visual cues and the production renderer
-remain unfinished.
+labels and Duos effects. Auto Chess and Gizmos add 730 battles and 295,415 cues
+covering transforms, mutations, summons, relics, defensive effects and Duos state.
+The other sets' visual cues and the production renderer remain unfinished.
 
 ## Boundaries
 

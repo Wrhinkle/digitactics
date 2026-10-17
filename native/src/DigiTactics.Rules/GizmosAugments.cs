@@ -46,9 +46,9 @@ public sealed partial class CombatSimulation
                         foreach (var u in mine) c.Heal(u, Math.Min(150, u.MaxHealth * 0.04), true);
                     }); break;
                 case "giz_a_runic": On(CombatHook.CombatReady, (c, _) => { foreach (var u in c.Mine) if (Has(u, "ARC")) c.Shield(u, u.AbilityPower * 3); }); break;
-                case "giz_a_overload": On(CombatHook.Death, (c, e) => { var u = e.Unit!; if (Has(u, "XA") && !u.Summoned) foreach (var x in EnemiesNear(u, u.Cell, 2)) c.Damage(u, x, u.MaxHealth * 0.25); }); break;
+                case "giz_a_overload": On(CombatHook.Death, (c, e) => { var u = e.Unit!; if (Has(u, "XA") && !u.Summoned) { c.Burst(u.Cell, 2, u.Team); foreach (var x in EnemiesNear(u, u.Cell, 2)) c.Damage(u, x, u.MaxHealth * 0.25); } }); break;
                 case "giz_a_sosmall": Start(u => { if (Has(u, "PET")) { u.Dodge += 0.4; u.AttackSpeed *= 1.1; } }); break;
-                case "giz_a_cutthroat": On(CombatHook.Attack, (_, e) => { var u = e.Unit!; if (Has(u, "ASN") && !u.Gizmos.Cut) { u.Gizmos.Cut = true; e.Target!.Mana = 0; } }); break;
+                case "giz_a_cutthroat": On(CombatHook.Attack, (_, e) => { var u = e.Unit!; if (Has(u, "ASN") && !u.Gizmos.Cut) { u.Gizmos.Cut = true; e.Target!.Mana = 0; Emit("text", e.Target, text: "Mana cut"); } }); break;
                 case "giz_a_airdrop": Start(u => { if (u.Items.Count >= 2 && rules.CoreItems.Length > 0) ApplyTemporaryItemUpgrade(u, items[rules.CoreItems[(int)(random.Next() * rules.CoreItems.Length)]]); }); break;
                 case "giz_a_shrug": Start(u => { if (Has(u, "BRU")) u.Equipment.Regen += 0.025; }); break;
                 case "giz_a_spellblade": On(CombatHook.Cast, (_, e) => { if (Has(e.Unit!, "ARC")) e.Unit!.Gizmos.Spellblade = true; });
@@ -57,7 +57,7 @@ public sealed partial class CombatSimulation
                     bool stopped = false;
                     Start(u => { if (Has(u, "CLOCK")) u.AttackSpeed *= 1.3; });
                     On(CombatHook.Tick, (c, _) => { if (stopped || Time < 5) return; stopped = true; foreach (var u in units.Where(u => u.Alive && u.Team != team)) c.Stun(u, 2); }); break;
-                case "giz_a_smoke": On(CombatHook.DamageTaken, (_, e) => { var u = e.Unit!; if (!Has(u, "ASN") || u.Gizmos.Smoke || u.Health >= u.MaxHealth * 0.6) return; u.Gizmos.Smoke = true; u.InvulnerableUntil = Math.Max(u.InvulnerableUntil, Time + 1.5); u.Stun = 0; }); break;
+                case "giz_a_smoke": On(CombatHook.DamageTaken, (_, e) => { var u = e.Unit!; if (!Has(u, "ASN") || u.Gizmos.Smoke || u.Health >= u.MaxHealth * 0.6) return; u.Gizmos.Smoke = true; u.InvulnerableUntil = Math.Max(u.InvulnerableUntil, Time + 1.5); u.Stun = 0; Emit("text", u, text: "Smoke Bomb"); }); break;
                 case "giz_a_reserves": Start(u => { if (Has(u, "PIR")) u.Equipment.Amp += Math.Min(0.45, 0.15 + 0.01 * (state?.GoldStart ?? 0)); }); break;
                 case "giz_a_titanic": On(CombatHook.CombatReady, (c, _) => { foreach (var u in c.Mine) if (u.MaxHealth >= 1400) u.AttackDamage += u.MaxHealth * 0.03; }); break;
                 case "giz_a_censer": On(CombatHook.Shield, (c, e) => { var u = e.Unit!; if (!u.Alive || u.Gizmos.CenserUntil > Time) return; u.Gizmos.CenserUntil = Time + 3; c.Buff(u, CombatStat.AttackSpeed, 0.3, 5); }); break;
@@ -65,7 +65,7 @@ public sealed partial class CombatSimulation
                     var best = c.Mine.Where(u => u.Alive && !u.Summoned).OrderByDescending(u => u.MaxHealth * 100 - u.Id).FirstOrDefault();
                     if (best is null || c.FreeCellNear(best, best.Cell) is not { } cell) return;
                     var copy = c.Summon(team, best.Line.Id, best.Stage, cell, new(NoHooks: true));
-                    if (copy is not null) copy.MaxHealth = copy.Health = 1500;
+                    if (copy is not null) { copy.MaxHealth = copy.Health = 1500; c.Text(copy, "Copy"); }
                 }); break;
                 // Trait inputs, count modifiers and non-combat effects are handled outside this binder.
                 case "giz_a_injection": case "giz_a_booster": case "giz_a_burst": case "giz_a_spare": case "giz_a_parts":
