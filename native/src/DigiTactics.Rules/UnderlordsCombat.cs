@@ -14,6 +14,8 @@ public sealed partial class CombatSimulation
             underlordsSummoningStone[team] = side.Globals?.Contains("ul_g_stone") ?? false;
             if (side.Parts is { } partners) foreach (var part in partners) BindUnderlordsGlobals(team, part.Globals ?? [], part.Owner);
             else BindUnderlordsGlobals(team, side.Globals ?? []);
+            if (side.Parts is { } powerParts) foreach (var part in powerParts) BindUnderlordsPower(team, part.Power, part.Owner);
+            else BindUnderlordsPower(team, side.Power);
             void BindAugments(string[] ids, int? owner, double partnerTop) {
                 foreach (string id in ids) {
                     var augment = Hooks.Context(CombatHookSource.Augment, id, team, owner: owner);
@@ -30,7 +32,7 @@ public sealed partial class CombatSimulation
         On(CombatHook.CombatStart, (c, _) => {
             for (int i = 0; i < units.Count; i++) {
                 var u = units[i];
-                if (u.Line.Ability.Kind == "ul_passive" && !u.Line.Id.StartsWith("ul_tamer_", StringComparison.Ordinal)) { u.MaxMana = 0; u.Mana = 0; }
+                if (u.Line.Ability.Kind == "ul_passive" && u.Line.Tamer is null) { u.MaxMana = 0; u.Mana = 0; }
                 StartUnderlordsHero(c, u);
             }
         }, 5);
@@ -68,6 +70,7 @@ public sealed partial class CombatSimulation
         });
         On(CombatHook.BeforeDamageTaken, (c, e) => {
             var u = e.Unit!; var s = u.Underlords;
+            if (s.Tamer.Paying) return;
             if (e.Kind == DamageKind.Magic && s.MagicImmuneUntil > Time) { e.Multiplier = 0; return; }
             if (s.Refract > 0 && e.Amount > 0 && !e.IsBurn) { s.Refract--; e.Multiplier = 0; return; }
             if (e.Kind == DamageKind.Physical && !e.IsBurn) {
@@ -75,7 +78,12 @@ public sealed partial class CombatSimulation
                 if (u.Line.Id == "ul_queenofpain" && u.Stage == 2 && u.Cell.DistanceTo(e.Source!.Cell) <= 2 && c.Random() < 0.25) { e.Multiplier = 0; return; }
                 if (s.Rogue is { } rogue && c.Random() < rogue.Evasion) { e.Multiplier = 0; u.AttackDamage += rogue.AttackDamage; return; }
             }
+            if (s.Tamer.Barrel != 0) e.Multiplier *= 1 + s.Tamer.Barrel;
             if (e.Source!.Summoned && u.Line.Id == "ul_beastmaster" && u.Stage == 2) e.Multiplier *= 0.25;
+            if (s.Tamer.HappyUntil > Time && e.Amount > 0) {
+                double later = e.Amount * e.Multiplier * 0.5; e.Multiplier *= 0.5;
+                s.Tamer.Deferred += later; s.Tamer.DeferredRate = s.Tamer.Deferred / 10; s.Tamer.DeferredSource = e.Source;
+            }
         });
         On(CombatHook.DamageTaken, (c, e) => {
             var u = e.Unit!;
@@ -138,6 +146,16 @@ public sealed partial class CombatSimulation
             if (!u.Alive) return;
         }
         s.Dots.RemoveAll(d => Time > d.Until);
+        var t = s.Tamer;
+        if (Time <= t.RitualUntil && t.RitualHps != 0) c.Heal(u, t.RitualHps * dt, true);
+        if (t.Deferred > 0) {
+            double pay = Math.Min(t.Deferred, (t.DeferredRate != 0 ? t.DeferredRate : t.Deferred / 10) * dt);
+            t.Deferred -= pay; t.DeferredAccumulated += pay;
+            if (t.DeferredAccumulated >= 15) {
+                double amount = t.DeferredAccumulated; t.DeferredAccumulated = 0; t.Paying = true;
+                c.Damage(t.DeferredSource ?? u, u, amount, DamageKind.True); t.Paying = false; if (!u.Alive) return;
+            }
+        }
         if (s.FrostAura is { } frost && Time <= frost.Until && Time >= frost.Next) {
             frost.Next = Time + 1;
             foreach (var x in EnemiesNear(u, u.Cell, 2)) { c.Damage(frost.Source, x, frost.Value); if (x.Alive) UnderlordsTimedDebuff(x, "ulFrostSlow", CombatStat.AttackSpeed, 0.2, 1.2); }

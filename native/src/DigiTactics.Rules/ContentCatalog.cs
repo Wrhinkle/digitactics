@@ -3,13 +3,14 @@ using System.Text.Json;
 namespace DigiTactics.Rules;
 
 public sealed record UnitLine(string Id, int Tier, int Price, int Copies, string[] Forms, string[] Traits,
-    string Attribute, int Slots, int SellPremium, CombatTemplate Combat, AbilityTemplate Ability, string? Summon = null, string[]? Rivals = null, string? Mark = null, bool Swap = false, string? Envoy = null, string? Experiment = null);
-public sealed record ItemDefinition(string Id, Dictionary<string, double> Stats, Dictionary<string, JsonElement> Passives, string[] Hooks, string? Emblem, bool Component = false, bool Special = false, string? Category = null, string[]? CompletedFrom = null, string[]? Ingredients = null, string? SelfUpgrade = null);
+    string Attribute, int Slots, int SellPremium, CombatTemplate Combat, AbilityTemplate Ability, string? Summon = null, string[]? Rivals = null, string? Mark = null, bool Swap = false, string? Envoy = null, string? Experiment = null, string? Tamer = null);
+public sealed record ItemDefinition(string Id, Dictionary<string, double> Stats, Dictionary<string, JsonElement> Passives, string[] Hooks, string? Emblem, bool Component = false, bool Special = false, string? Category = null, string[]? CompletedFrom = null, string[]? Ingredients = null, string? SelfUpgrade = null, int Tier = 0, bool Hat = false);
 public sealed record TraitDefinition(string Id, string Kind, int[] Breakpoints, double[] Values, Dictionary<string, double[]> Parameters, JsonElement Duo);
+public sealed record TamerDefinition(string Line, double[] Hp, double[] Ad, double[] Armor, double Mr);
 public sealed record FormDefinition(string Id, string Name, string Description, string? Trait = null);
 public sealed record PartnerStats(double Hp, double BonusHp, double BonusAp, double BonusAd, double BonusMana);
 public sealed record Ruleset(string Id, string Name, string Pace, UnitLine[] Lines, int[] PoolSizes, int[]?[] Odds, int RerollCost, int ShopSize,
-    ItemDefinition[] Items, string[] CoreItems, TraitDefinition[] Traits, UnitLine[] ExtraLines, PartnerStats? Partner = null, double[]? PveMultipliers = null, Dictionary<string, int>? DragonTraitLimits = null, Dictionary<string, FormDefinition[]>? Forms = null);
+    ItemDefinition[] Items, string[] CoreItems, TraitDefinition[] Traits, UnitLine[] ExtraLines, PartnerStats? Partner = null, double[]? PveMultipliers = null, Dictionary<string, int>? DragonTraitLimits = null, Dictionary<string, FormDefinition[]>? Forms = null, Dictionary<string, TamerDefinition>? Tamers = null);
 public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
 {
     public static ContentCatalog Load(string path)
@@ -17,7 +18,7 @@ public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
         var catalog = JsonSerializer.Deserialize<ContentCatalog>(File.ReadAllText(path),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
             ?? throw new InvalidDataException("Missing content catalog.");
-        if (catalog.SchemaVersion != 13 || catalog.Variants.Length == 0)
+        if (catalog.SchemaVersion != 14 || catalog.Variants.Length == 0)
             throw new InvalidDataException("Unsupported or empty content catalog.");
         foreach (var rules in catalog.Variants)
         {

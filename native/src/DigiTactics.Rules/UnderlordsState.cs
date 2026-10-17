@@ -2,6 +2,7 @@ namespace DigiTactics.Rules;
 
 internal sealed class UnderlordsUnitState
 {
+    internal UnderlordsTamerEffects Tamer { get; } = new();
     internal UnderlordsItemState Items { get; } = new();
     internal Dictionary<string, double> EffectUntil { get; } = [];
     internal bool Fell, Sage;
@@ -56,3 +57,13 @@ internal sealed class UnderlordsZone(CombatUnit source, HexCell cell, double unt
 
 internal sealed record UnderlordsRogue(double Evasion, double AttackDamage);
 internal sealed record UnderlordsVigilant(int Target, double Amp);
+
+internal sealed class UnderlordsTamerEffects
+{
+    internal double RitualUntil, RitualHps, HappyUntil, Deferred, DeferredRate, DeferredAccumulated, Barrel;
+    internal bool Paying;
+    internal CombatUnit? DeferredSource;
+    internal int? ThrallTeam;
+    internal double ThrallUntil, CrazyUntil, BaseArmor, BaseMr, GuardUntil, ToastUntil;
+    internal int Escapes;
+}

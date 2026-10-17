@@ -147,9 +147,14 @@ to be a Vulkan renderer or the final game UI.
   further battles, including duplicate items, Meepo inheritance, summoned observer
   hooks, reflection, item summons and owner-scoped globals. Other globals retain
   their combat no-op behavior. Item grants/transfers, global economy/settlement,
-  Tamers and full match planning remain pending.
-- Full combat traces are gzip-compressed in source control and decompressed by the
-  test runner one battle at a time; comparisons retain all recorded samples.
+  Tamer selection/rank progression and full match planning remain pending.
+  All eight Tamer combat builds pass 192 further battles across ranks 1-6, both
+  modes and Solo/Duos, including enthrallment, summons, Yoink, deferred damage,
+  poison and escape thresholds. Schema 14 carries authored Tamer stats and item
+  tier/hat metadata.
+- Full combat traces are split into content-addressed gzip shards. A manifest
+  verifies hashes and battle counts; the runner still reads one battle at a time
+  and comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.
 
 ## Remaining migration work

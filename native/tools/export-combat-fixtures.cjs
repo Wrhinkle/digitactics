@@ -1391,6 +1391,43 @@ for(const key of ['ulBlinkAt','ulEulCd','ulPipe','ulMek','ulRefresh','ulVyseCd',
   if(!ulItemCoverage.has(key))throw new Error(`Underlords item effect not exercised: ${key}`);
 
 
+
+const ulTamerCoverage=new Set();
+const ulPowers=['ul_anessa_dark','ul_anessa_heal','ul_hob_fire','ul_hob_crazy','ul_jules_brawl','ul_jules_bar','ul_enno_balm','ul_enno_rabid'];
+for(const set of ['underlords','underlords_ko'])for(const power of ulPowers)for(const rank of [1,2,3,4,5,6])for(const duos of [false,true]){
+  const pace=duos?'normal':'hyper',cols=duos?14:7;DT.Sets.activate(set,pace);let accepted=false;
+  for(let attempt=0;attempt<30&&!accepted;attempt++){
+    const seed=2800000+fixtures.length+attempt*10000,pick=DT.makeRng(seed);
+    function side(team){
+      const parts=[0,1].map(part=>{
+        const id=part?ulPowers[(ulPowers.indexOf(power)+3)%ulPowers.length]:power,tamer=DT.POWER[id].tamer,owner=team*2+part;
+        const chosen=['ul_omniknight','ul_treant','ul_bristleback','ul_lich','ul_dazzle'];
+        const units=[{line:`ul_tamer_${tamer}`,stage:Math.floor((rank-1)/2),c:part*7+3,r:tamer==='jules'?4:7,owner,items:['ul_euls','ul_octarine']},
+          ...chosen.map((line,i)=>({line,stage:Math.floor((rank-1)/2),c:part*7+i,r:5+i%2,owner,items:rank%2?['ul_vitality']:['ul_pipe','ul_vesture']}))];
+        return {owner,power:{id,rank},globals:rank%2?['ul_g_stone']:['ul_g_ristul','ul_g_chivalry'],augs:[],units};
+      });
+      return duos?{parts,units:parts.flatMap(p=>p.units),power:parts[0].power,globals:parts.flatMap(p=>p.globals),counts:DT.Duos.teamCounts(parts),cols}
+        :{units:parts[0].units,power:parts[0].power,globals:parts[0].globals,cols};
+    }
+    const a=side(0),b=side(1),cb=new DT.Combat(a,b,{seed});
+    const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+    while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+    if(!cb.events.some(e=>e.type==='cast'&&e.at===0&&e.name))continue;
+    for(const event of cb.events)if(event.type==='cast'&&event.name)ulTamerCoverage.add(event.name);
+    for(const u of cb.units){if(u.summoned)ulTamerCoverage.add(u.line.id);if(u.state.ulEsc>=2)ulTamerCoverage.add('escape-twice');if(u.state.ulDeferAcc>0)ulTamerCoverage.add('deferred');}
+    if(cb.events.some(e=>e.text==='Enthralled'))ulTamerCoverage.add('enthralled');
+    const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,owner:u.owner,items:u.items}));
+    const effects=a=>({power:a.power,globals:a.globals,...(duos?{parts:a.parts.map(p=>({owner:p.owner,power:p.power,globals:p.globals}))}:{})});
+    fixtures.push({name:`underlords-tamer/${set}/${power}/${rank}/${duos}`,variant:`${set}/${pace}`,seed,cols,duos,
+      sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+      underlordsRewards:underlordsRewardsSnapshot(cb),setup:{sideA:effects(a),sideB:effects(b)}});accepted=true;
+  }
+  if(!accepted)throw new Error(`Underlords Tamer never acted: ${set}/${power}/${rank}/${duos}`);
+}
+for(const key of ['The End of Medicine','Enthrall','Rejuvenating Ritual','Summon Demonic Golem','Implosion','Shockwave','Friendly Fire',"Let's Go Crazy",'Roundhouse','Barrels of Fun','To Your Health','Happy Hour','Soothing Balm','Death Spin','All Out Attack!','Escape Artist','ul_s_archer','ul_s_golem','escape-twice','deferred','enthralled'])
+  if(!ulTamerCoverage.has(key))throw new Error(`Tamer effect not exercised: ${key}`);
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
@@ -1457,17 +1494,29 @@ for (const duos of [false, true]) {
   for (const name of names) if (!covered.has(name)) throw new Error(`Hook reference never exercised ${name}`);
   DT.SET.hooks = oldSetHooks;
 }
-// Stream each battle: the complete suite exceeds V8's maximum single-string size.
-// Replace the fixture only after compression succeeds, leaving the previous file intact on failure.
+// Content-addressed shards keep each file small and preserve the old manifest on failure.
 async function writeFixtures() {
-  const destination=path.join(__dirname,'../tests/fixtures/combat.json.gz');
-  const temporary=destination+'.tmp';
+  const directory=path.join(__dirname,'../tests/fixtures/combat');fs.mkdirSync(directory,{recursive:true});
   const encode=(_key,value)=>typeof value==='number'&&!Number.isFinite(value)?String(value):value;
-  function* chunks(){yield '[';for(let i=0;i<fixtures.length;i++){if(i)yield ',';yield JSON.stringify(fixtures[i],encode);}yield ']\n';}
-  try {
-    await require('node:stream/promises').pipeline(require('node:stream').Readable.from(chunks()),require('node:zlib').createGzip(),fs.createWriteStream(temporary));
-    fs.renameSync(temporary,destination);
-  } catch(error) {fs.rmSync(temporary,{force:true});throw error;}
-  console.log(`Exported ${fixtures.length} reference battles covering shared and production set combat.`);
+  const groups=new Map();
+  for(const fixture of fixtures){const key=fixture.variant.split('/')[0];if(!groups.has(key))groups.set(key,[]);groups.get(key).push(fixture);}
+  const files=[];
+  for(const [key,battles] of groups){
+    const temporary=path.join(directory,key+'.tmp');const hash=require('node:crypto').createHash('sha256');
+    function* chunks(){yield '[';for(let i=0;i<battles.length;i++){if(i)yield ',';yield JSON.stringify(battles[i],encode);}yield ']\n';}
+    const hashing=new (require('node:stream').Transform)({transform(chunk,_encoding,callback){hash.update(chunk);callback(null,chunk);}});
+    try {
+      await require('node:stream/promises').pipeline(require('node:stream').Readable.from(chunks()),require('node:zlib').createGzip(),hashing,fs.createWriteStream(temporary));
+      const sha256=hash.digest('hex'),file=`${key}-${sha256.slice(0,16)}.json.gz`;
+      fs.renameSync(temporary,path.join(directory,file));files.push({file,battles:battles.length,sha256});
+    } catch(error){fs.rmSync(temporary,{force:true});throw error;}
+  }
+  const manifest=path.join(directory,'manifest.json');
+  fs.writeFileSync(manifest+'.tmp',JSON.stringify({schemaVersion:1,battles:fixtures.length,files},null,2)+'\n');
+  fs.renameSync(manifest+'.tmp',manifest);
+  const keep=new Set(files.map(f=>f.file));
+  for(const file of fs.readdirSync(directory))if(file.endsWith('.json.gz')&&!keep.has(file))fs.unlinkSync(path.join(directory,file));
+  fs.rmSync(path.join(directory,'../combat.json.gz'),{force:true});
+  console.log(`Exported ${fixtures.length} reference battles in ${files.length} verified fixture shards.`);
 }
 writeFixtures().catch(error=>{console.error(error);process.exitCode=1;});

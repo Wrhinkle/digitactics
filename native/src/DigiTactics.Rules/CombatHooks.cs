@@ -103,6 +103,12 @@ public sealed class CombatHookRegistry
             ? a.Context.Kind.CompareTo(b.Context.Kind) : a.Sequence.CompareTo(b.Sequence));
     }
 
+    internal void ClearHeldItems(CombatUnit unit)
+    {
+        foreach (var key in holders.Keys.Where(k => k.Item1 == unit.Id).ToArray()) holders.Remove(key);
+        // Existing observer registrations remain, matching legacy unit.hooks = null.
+    }
+
     private static List<Listener> Bucket<TKey>(Dictionary<TKey, List<Listener>> map, TKey key) where TKey : notnull
     { if (!map.TryGetValue(key, out var list)) map[key] = list = []; return list; }
 

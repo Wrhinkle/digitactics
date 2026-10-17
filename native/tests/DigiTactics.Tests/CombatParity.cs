@@ -3,13 +3,33 @@ using DigiTactics.Rules;
 
 internal static class CombatParity
 {
+    private static async IAsyncEnumerable<JsonElement> ReadTraces(string root)
+    {
+        string directory = Path.Combine(root, "tests/fixtures/combat");
+        using var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(directory, "manifest.json")));
+        var data = manifest.RootElement;
+        if (data.GetProperty("schemaVersion").GetInt32() != 1) throw new InvalidDataException("Unsupported combat fixture manifest.");
+        int total = 0; var seen = new HashSet<string>();
+        foreach (var part in data.GetProperty("files").EnumerateArray()) {
+            string file = part.GetProperty("file").GetString()!;
+            if (Path.GetFileName(file) != file || !seen.Add(file)) throw new InvalidDataException("Invalid combat fixture filename.");
+            using var input = File.OpenRead(Path.Combine(directory, file));
+            string hash = Convert.ToHexString(await System.Security.Cryptography.SHA256.HashDataAsync(input));
+            if (!hash.Equals(part.GetProperty("sha256").GetString(), StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException($"Corrupt combat fixture {file}.");
+            input.Position = 0;
+            using var decompressed = new System.IO.Compression.GZipStream(input, System.IO.Compression.CompressionMode.Decompress);
+            int count = 0;
+            await foreach (var trace in JsonSerializer.DeserializeAsyncEnumerable<JsonElement>(decompressed)) { count++; total++; yield return trace; }
+            if (count != part.GetProperty("battles").GetInt32()) throw new InvalidDataException($"Incomplete combat fixture {file}.");
+        }
+        if (total != data.GetProperty("battles").GetInt32()) throw new InvalidDataException("Incomplete combat fixture manifest.");
+    }
+
     public static async Task<int> Run(string root, ContentCatalog catalog)
     {
-        using var input = File.OpenRead(Path.Combine(root, "tests/fixtures/combat.json.gz"));
-        using var decompressed = new System.IO.Compression.GZipStream(input, System.IO.Compression.CompressionMode.Decompress);
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         int count = 0, battles = 0;
-        await foreach (var trace in JsonSerializer.DeserializeAsyncEnumerable<JsonElement>(decompressed))
+        await foreach (var trace in ReadTraces(root))
         {
             battles++;
             string name = trace.GetProperty("name").GetString()!;

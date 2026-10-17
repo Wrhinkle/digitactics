@@ -219,27 +219,35 @@ The current executable is a migration workbench. It must not replace the public 
   effects, both item summons and item-carrying clones to occur. Summoning Stone
   reads merged-side globals and applies before clone scaling. The other global
   identities are accepted as combat no-ops; their offer/economy/settlement behavior,
-  item grants/transfers, Tamers and full match planning remain pending.
-- Reference fixture export now streams individual battles into a temporary gzip
-  file and replaces the previous fixture only on success. The native runner reads
-  one battle at a time. This removes the V8 single-string limit without dropping
-  recorded samples or reducing comparison coverage.
+  item grants/transfers and full match planning remain pending. All eight Tamer
+  builds now pass 192 additional battles: both modes, ranks 1-6 and Solo/Duos.
+  Their rank stats, item-stat theft, ritual healing, enthrallment, archer/golem
+  summons, guard/toast effects, deferred damage, poison and escape thresholds are
+  included. Guards require every named power effect, a second escape, deferred
+  payments and enthrallment to occur. Tamer cues do not dispatch mana-cast hooks.
+  Catalog schema 14 exports Tamer definitions, unit identity and item tiers/hats;
+  setup carries owner-scoped powers. Tamer selection/rank progression and crew
+  offers still belong to the unfinished match flow.
+- Reference fixtures are streamed into eleven content-addressed gzip shards with
+  a manifest containing SHA-256 hashes and per-file/total battle counts. The native
+  runner checks integrity and counts while reading one battle at a time. Export
+  publishes the manifest only after every shard succeeds, then removes obsolete
+  shards. This preserves prior usable fixtures on failed exports and avoids the
+  monolithic file's GitHub size warning without dropping samples or coverage.
 
-Latest verification: the native test suite passes 87,293,402 assertions.
+Latest verification: the native test suite passes 96,320,540 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Port Underlords (including Knockout)
-   and Auto Chess combat,
-   remaining powers and mechanics.
+1. Port Auto Chess combat and remaining cross-set powers/mechanics.
    Finish hook context side/trait state and
    presentation event metadata. Extend reference battles to real set definitions
    before claiming full combat parity.
-2. Set-defined ability dispatch; port each ruleset with explicit coverage
-   and deterministic full-match trace comparisons.
+2. Complete combat acceptance and replay/event metadata for every ruleset,
+   then integrate deterministic full-match trace comparisons.
 3. Full match state and commands: planning board, economy, round progression, AI,
    offers, carousel, items, Duos and shared health. Special shop offers are pending too.
 4. Native asset pipeline and 3D renderer/animation; production screens and audio.

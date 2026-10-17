@@ -62,7 +62,7 @@ public sealed class CombatUnit
     public bool Leapt { get; internal set; }
     public CombatUnit? Target { get; internal set; }
     internal List<AttackSpeedBuff> SpeedBuffs { get; } = [];
-    internal EquipmentEffects Equipment { get; } = new();
+    internal EquipmentEffects Equipment { get; set; } = new();
     public IReadOnlyList<string> Items { get; internal set; } = Array.Empty<string>();
     public double BaseAttackDamage { get; internal set; }
     public double CriticalChance { get; internal set; }

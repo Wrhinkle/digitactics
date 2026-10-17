@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "battles": 5359,
+  "files": [
+    {
+      "file": "faction-wars-871083911d94a4d4.json.gz",
+      "battles": 262,
+      "sha256": "871083911d94a4d4657da5870744d3c6c3e94a91f70b3e47961b2918e76d4b26"
+    },
+    {
+      "file": "gizmos-11ba0025477e7c55.json.gz",
+      "battles": 400,
+      "sha256": "11ba0025477e7c552bad55ce86539ffecec4b1b42dbcffe1be9cfe350e4964de"
+    },
+    {
+      "file": "fates-54675e62d0bcadc9.json.gz",
+      "battles": 213,
+      "sha256": "54675e62d0bcadc940bcc695c7c4f6da72658ef5c2c3e536679196f293ac02d6"
+    },
+    {
+      "file": "galaxies-2845183ec589c40b.json.gz",
+      "battles": 446,
+      "sha256": "2845183ec589c40b480c5d1e5a2ebdf41401022ee0c89c932bed86214ed014ce"
+    },
+    {
+      "file": "reckoning-70cabeb9a055eb2c.json.gz",
+      "battles": 397,
+      "sha256": "70cabeb9a055eb2ca456422afce031981b97b96ce6f80137754fc6a4474bf619"
+    },
+    {
+      "file": "dragonlands-1301e4b89b5fe625.json.gz",
+      "battles": 378,
+      "sha256": "1301e4b89b5fe625f66e8a3810bc492e3c85a818ac0a4e57af3591d4db1d7059"
+    },
+    {
+      "file": "arcane-4e2615e5694db8f4.json.gz",
+      "battles": 677,
+      "sha256": "4e2615e5694db8f47d1ecaa9737d6df768e15922229b8c27b7f823f8ba8da588"
+    },
+    {
+      "file": "coliseum-92f87b2045f25846.json.gz",
+      "battles": 676,
+      "sha256": "92f87b2045f25846bdc3bdbcacc99fe7f27f59d08365da73ad3d66743a58fcee"
+    },
+    {
+      "file": "underlords-0944d15de6cec505.json.gz",
+      "battles": 953,
+      "sha256": "0944d15de6cec5057a6fc5ac634a68f62126a428c3860369c6b69ef93fe1bb13"
+    },
+    {
+      "file": "autochess-329c2a618b43fbe8.json.gz",
+      "battles": 4,
+      "sha256": "329c2a618b43fbe8e4534fcfec2a8d6d0aa1380c871e11241df6888fbe525229"
+    },
+    {
+      "file": "underlords_ko-6c3f3f4abf1a1aa8.json.gz",
+      "battles": 953,
+      "sha256": "6c3f3f4abf1a1aa880f59cc40cd37c92c292cbc7d3442ef1dc6b4fbab7ba36af"
+    }
+  ]
+}
