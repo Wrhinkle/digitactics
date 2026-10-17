@@ -3,15 +3,15 @@ using DigiTactics.Rules;
 
 internal static class CombatParity
 {
-    public static int Run(string root, ContentCatalog catalog)
+    public static async Task<int> Run(string root, ContentCatalog catalog)
     {
         using var input = File.OpenRead(Path.Combine(root, "tests/fixtures/combat.json.gz"));
         using var decompressed = new System.IO.Compression.GZipStream(input, System.IO.Compression.CompressionMode.Decompress);
-        using var fixtures = JsonDocument.Parse(decompressed);
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        int count = 0;
-        foreach (var trace in fixtures.RootElement.EnumerateArray())
+        int count = 0, battles = 0;
+        await foreach (var trace in JsonSerializer.DeserializeAsyncEnumerable<JsonElement>(decompressed))
         {
+            battles++;
             string name = trace.GetProperty("name").GetString()!;
             var rules = catalog.Variants.Single(v => v.Id == trace.GetProperty("variant").GetString());
             bool hookProbe = trace.TryGetProperty("hookProbe", out var probe) && probe.GetBoolean();
@@ -151,13 +151,16 @@ internal static class CombatParity
                     var actual = combat.ArcaneRewards(team); var expected = arcaneRewards[team];
                     if (actual.ConquestKills != expected.GetProperty("conquestKills").GetInt32() || actual.Coins != expected.GetProperty("coins").GetInt32())
                         throw new InvalidOperationException($"Arcane rewards mismatch {name}/{team}");
+                    if (expected.TryGetProperty("bountyGold", out var bounty)) {
+                        count++; if (actual.BountyGold != bounty.GetInt32()) throw new InvalidOperationException($"Arcane bounty mismatch {name}/{team}");
+                    }
                 }
             double completedTime = combat.Time;
             combat.Step();
             count++;
             if (combat.Time != completedTime) throw new InvalidOperationException("Completed battle advanced another tick.");
         }
-        Console.WriteLine($"Passed {fixtures.RootElement.GetArrayLength()} reference battles ({count} state comparisons).");
+        Console.WriteLine($"Passed {battles} reference battles ({count} state comparisons).");
         return count;
     }
 }

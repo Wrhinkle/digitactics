@@ -162,17 +162,27 @@ The current executable is a migration workbench. It must not replace the public 
   are included. Conquest/coin reward counters are compared independently.
   Catalog schema 12 includes swap/Envoy/laboratory metadata, item ingredients and
   exact self-upgrade mappings. Temporary upgrades and enemy targeting are shared
-  helpers; Arcane preserves its distinct duplicate Blue Buff rule. Arcane held-item
-  hooks, Anomalies, augments and planning/settlement remain pending.
+  helpers; Arcane preserves its distinct duplicate Blue Buff rule. All 29 item-hook
+  definitions now pass 115 further fights, including all 16 contraband items,
+  duplicate stat stacking, tier-order overrides, Syndicate eligibility and bounty
+  counters. Coverage guards require delayed Ascension, repeat Doom shots, bounty
+  rewards, defensive procs and contraband Hex bursts to actually execute. All ten
+  combat augments plus mixed combinations pass 44 Solo/Duos fights, including
+  priority-ordered Second Wind, summons, items and partner ownership.
+  Anomalies and planning/settlement remain pending.
+- Reference fixture export now streams individual battles into a temporary gzip
+  file and replaces the previous fixture only on success. The native runner reads
+  one battle at a time. This removes the V8 single-string limit without dropping
+  recorded samples or reducing comparison coverage.
 
-Latest verification: `./native/build.ps1 -Publish` passes 32,668,895 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 35,646,317 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Finish Arcane items, Anomalies and augments, then the remaining sets, powers
+1. Finish Arcane Anomalies, then the remaining sets, powers
    and mechanics.
    Finish hook context side/trait state and
    presentation event metadata. Extend reference battles to real set definitions

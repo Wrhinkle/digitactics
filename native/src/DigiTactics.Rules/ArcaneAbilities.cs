@@ -2,6 +2,7 @@ namespace DigiTactics.Rules;
 
 internal sealed class ArcaneUnitState
 {
+    internal ArcaneItemState Items { get; } = new();
     internal int Rotation, Progress, AutomatonHits, Wanted, ConquestKills, Coins;
     internal double Automaton, AutomatonDamage, Fire, FireLast, Dominator, Pit, PitHeal, Quick, QuickLow, QuickHigh, Vision, Watcher, WatcherHigh, NunuCooldown;
     internal int FireLevel, QuickLevel, VisionLevel;
@@ -10,12 +11,12 @@ internal sealed class ArcaneUnitState
     internal Dictionary<string, int>? Junk;
 }
 
-public sealed record ArcaneCombatRewards(int ConquestKills, int Coins);
+public sealed record ArcaneCombatRewards(int ConquestKills, int Coins, int BountyGold = 0);
 
 public sealed partial class CombatSimulation
 {
     private static readonly HashSet<string> ArcaneAbilities = ["arc_swap", "arc_rotate", "arc_gamble", "arc_progress"];
-    public ArcaneCombatRewards ArcaneRewards(int team) => new(units.Where(u => u.Team == team).Sum(u => u.Arcane.ConquestKills), units.Where(u => u.Team == team).Sum(u => u.Arcane.Coins));
+    public ArcaneCombatRewards ArcaneRewards(int team) => new(units.Where(u => u.Team == team).Sum(u => u.Arcane.ConquestKills), units.Where(u => u.Team == team).Sum(u => u.Arcane.Coins), units.Where(u => u.Team == team).Sum(u => u.Arcane.Items.BountyGold));
     private bool CastArcaneAbility(CombatUnit u, CombatUnit target, double value)
     {
         switch (u.Line.Ability.Kind)
@@ -55,13 +56,19 @@ public sealed partial class CombatSimulation
 
     private void BindArcane(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
-        foreach (var side in new[] { setup.SideA, setup.SideB })
-            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
-                throw new NotSupportedException("Arcane augments have not been migrated yet.");
-        foreach (var u in units) foreach (var id in u.Items)
-            if (items.TryGetValue(id, out var item) && item.Hooks.Length > 0) throw new NotSupportedException($"Arcane item hooks {id} have not been migrated yet.");
+        for (int team = 0; team < 2; team++) {
+            var side = team == 0 ? setup.SideA : setup.SideB;
+            var entries = team == 0 ? sideA : sideB;
+            var counts = side.NoTraits ? [] : side.Counts ?? (side.Parts is { } parts ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries, side.Augments));
+            int active = counts.Count(p => rules.Traits.Any(t => t.Id == p.Key && TraitRules.Level(t, p.Value) > 0));
+            if (side.Parts is { } partners) foreach (var part in partners) BindArcaneAugments(team, part.Augments ?? [], active, part.Owner, part.PartnerTop);
+            else BindArcaneAugments(team, side.Augments ?? [], active, partnerTop: side.PartnerTop);
+        }
         BindArcaneTraits(sideA, sideB, setup);
+        foreach (var u in units) BindArcaneItems(u, setup.RoundStage);
+        BindSummonedItems = u => BindArcaneItems(u, setup.RoundStage);
         var context = Hooks.Context(CombatHookSource.Mechanic, "anomaly");
+        BindArcaneContraband(context);
         Hooks.Add(context, CombatHook.CombatStart, (_, _) => {
             foreach (var u in units.Where(u => u.Alive && u.Line.Swap)) {
                 if (u.Entry.Row <= 5) u.MaxHealth = UnitValues.Round(u.MaxHealth * 1.1);

@@ -121,9 +121,11 @@ to be a Vulkan renderer or the final game UI.
   breakpoints, and 100 targeted Solo/Duos interactions pass 322 new reference
   battles. Coverage includes every rotating/gamble outcome, laboratory combinations,
   Envoy activation gaps, Belphemon, workshop parts and repeated component upgrades.
-  Item hooks, Anomalies, augments and planning/settlement remain pending.
+  All 29 item-hook definitions and ten combat augments pass 159 further fights,
+  including contraband eligibility/stacking, bounty rewards, delayed procs and
+  owner-scoped Duos augments. Anomalies and planning/settlement remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
-  test runner; comparisons retain all recorded samples.
+  test runner one battle at a time; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.
 
 ## Remaining migration work

@@ -907,6 +907,82 @@ for(const [kind,cast] of Object.entries(arcaneOriginalCasts))DT.SET.abilities[ki
 if(arcaneBranches.rotate.size!==3||arcaneBranches.gamble.size!==4)throw new Error('Arcane ability branches were not all exercised');
 
 
+
+DT.Sets.activate('arcane','hyper');
+const arcaneItemCoverage=new Set();
+const arcaneHookItems=Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].hooks);
+const arcaneItemCases=arcaneHookItems.flatMap(item=>[0,1,2].map(stage=>({name:item,items:[item],stage})));
+for(const item of arcaneHookItems.filter(id=>id.startsWith('arc_k_')&&!id.endsWith('2')))for(const reversed of [false,true])arcaneItemCases.push({name:`order-${item}-${reversed}`,items:reversed?[item+'2',item]:[item,item+'2'],stage:1});
+for(let i=0;i<12;i++)arcaneItemCases.push({name:`mixed-${i}`,items:null,stage:i%3});
+for(const test of arcaneItemCases){
+  const stage=test.stage,cols=stage===2?14:7,pace=cols===14?'normal':'hyper';DT.Sets.activate('arcane',pace);
+  const seed=790000+fixtures.length,pick=DT.makeRng(seed);
+  const syn=DT.SHOP_LINES.filter(l=>l.traits.includes('SYN')),other=DT.SHOP_LINES.filter(l=>!l.traits.includes('SYN'));
+  const entries=()=>Array.from({length:6},(_,i)=>{
+    const pool=i%2===0?syn:other,line=pool[Math.floor(pick()*pool.length)].id;
+    const gear=test.items?[...test.items]:Array.from({length:2},()=>arcaneHookItems[Math.floor(pick()*arcaneHookItems.length)]);
+    if(test.items?.length===1&&i%2===0)gear.push(test.items[0]);
+    return {line,stage,c:i,r:4+i%4,items:gear};
+  });
+  const a=entries(),b=entries(),mech={arcSynHp:100,arcChests:4,arcJunk:['bots','destruct']},roundStage=stage===0?0:stage===1?1:6;
+  const cb=new DT.Combat({units:a,cols,mech},{units:b,cols,mech},{seed,info:{stage:roundStage}});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items}));
+  for(const u of cb.units) {
+    for(const flag of ['ascT','zhonya','mantle'])if(u.state[flag])arcaneItemCoverage.add(flag);
+    if(u.state.doom>13)arcaneItemCoverage.add('doom-repeat');
+    if(u.state.bountyGold>0)arcaneItemCoverage.add('bounty');
+    if(u.state.cb?.tankOn)arcaneItemCoverage.add('tank');
+    if(u.state.cb?.ripped)arcaneItemCoverage.add('ripper');
+    if(u.state.cb?.hexCd>0)arcaneItemCoverage.add('hex-burst');
+  }
+  fixtures.push({name:`arcane-item/${test.name}/${stage}`,variant:`arcane/${pace}`,seed,cols,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    arcaneRewards:[0,1].map(team=>({conquestKills:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.arcConK||0),0),coins:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.coins||0),0),bountyGold:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.bountyGold||0),0)})),
+    setup:{sideA:{arcane:mech},sideB:{arcane:mech},roundStage}});
+}
+
+
+
+DT.Sets.activate('arcane','hyper');
+const arcaneAugments=Object.entries(DT.AUGMENT).filter(([id,a])=>id.startsWith('arc_')&&Object.keys(a.hooks||{}).some(k=>DT.Sets.COMBAT_HOOKS.includes(k))).map(([id])=>id);
+for(const augment of [...arcaneAugments,'mixed'])for(const duos of [false,true])for(const stage of [0,2]){
+  const pace=duos?'normal':'hyper',cols=duos?14:7;DT.Sets.activate('arcane',pace);
+  const seed=840000+fixtures.length,pick=DT.makeRng(seed);
+  function side(team){
+    const parts=[0,1].map(part=>{
+      const owner=team*2+part,chosen=DT.SHOP_LINES.filter(l=>l.traits.includes(part?'SYN':'BR')).slice(0,3);
+      while(chosen.length<6)chosen.push(DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)]);
+      const augs=augment==='mixed'?['arc_a_wind','arc_a_lotus','arc_a_unity','arc_a_giant']:[augment];
+      return {owner,augs:[...augs,...(duos?[part?'duo_sync':'duo_tag']:[])],units:chosen.map((l,i)=>({line:l.id,stage,c:part*7+i,r:4+i%4,owner,
+        items:i%3===0?[]:Array.from({length:i%3},()=>arcaneHookItems[Math.floor(pick()*arcaneHookItems.length)])}))};
+    });
+    const mech={arcSynHp:120,arcSynAug:true,arcChests:5,arcJunk:['flame','bots','destruct']};
+    return duos?{parts,units:parts.flatMap(p=>p.units),augs:parts.flatMap(p=>p.augs),counts:DT.Duos.teamCounts(parts),cols,mech}:{units:parts[0].units,augs:parts[0].augs,cols,mech};
+  }
+  const a=side(0),b=side(1),cb=new DT.Combat(a,b,{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,owner:u.owner}));
+  const effects=a=>({arcane:a.mech,augments:a.augs,...(duos?{parts:a.parts.map(p=>({owner:p.owner,augments:p.augs}))}:{})});
+  for(const u of cb.units) {
+    for(const flag of ['ascT','zhonya','mantle'])if(u.state[flag])arcaneItemCoverage.add(flag);
+    if(u.state.doom>13)arcaneItemCoverage.add('doom-repeat');
+    if(u.state.bountyGold>0)arcaneItemCoverage.add('bounty');
+    if(u.state.cb?.tankOn)arcaneItemCoverage.add('tank');
+    if(u.state.cb?.ripped)arcaneItemCoverage.add('ripper');
+    if(u.state.cb?.hexCd>0)arcaneItemCoverage.add('hex-burst');
+  }
+  fixtures.push({name:`arcane-augment/${augment}/${duos}/${stage}`,variant:`arcane/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    arcaneRewards:[0,1].map(team=>({conquestKills:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.arcConK||0),0),coins:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.coins||0),0),bountyGold:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.bountyGold||0),0)})),
+    setup:{sideA:effects(a),sideB:effects(b)}});
+}
+
+
+for(const flag of ['ascT','zhonya','mantle','doom-repeat','bounty','tank','ripper','hex-burst'])if(!arcaneItemCoverage.has(flag))throw new Error(`Arcane item effect never exercised: ${flag}`);
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
@@ -973,5 +1049,17 @@ for (const duos of [false, true]) {
   for (const name of names) if (!covered.has(name)) throw new Error(`Hook reference never exercised ${name}`);
   DT.SET.hooks = oldSetHooks;
 }
-fs.writeFileSync(path.join(__dirname, '../tests/fixtures/combat.json.gz'), require('node:zlib').gzipSync(JSON.stringify(fixtures, (_key, value) => typeof value === 'number' && !Number.isFinite(value) ? String(value) : value) + '\n'));
-console.log(`Exported ${fixtures.length} reference battles covering shared and production set combat.`);
+// Stream each battle: the complete suite exceeds V8's maximum single-string size.
+// Replace the fixture only after compression succeeds, leaving the previous file intact on failure.
+async function writeFixtures() {
+  const destination=path.join(__dirname,'../tests/fixtures/combat.json.gz');
+  const temporary=destination+'.tmp';
+  const encode=(_key,value)=>typeof value==='number'&&!Number.isFinite(value)?String(value):value;
+  function* chunks(){yield '[';for(let i=0;i<fixtures.length;i++){if(i)yield ',';yield JSON.stringify(fixtures[i],encode);}yield ']\n';}
+  try {
+    await require('node:stream/promises').pipeline(require('node:stream').Readable.from(chunks()),require('node:zlib').createGzip(),fs.createWriteStream(temporary));
+    fs.renameSync(temporary,destination);
+  } catch(error) {fs.rmSync(temporary,{force:true});throw error;}
+  console.log(`Exported ${fixtures.length} reference battles covering shared and production set combat.`);
+}
+writeFixtures().catch(error=>{console.error(error);process.exitCode=1;});
