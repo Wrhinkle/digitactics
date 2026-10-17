@@ -1065,6 +1065,65 @@ for(const edge of ['devour-alone','devour-chain','partners-full','partners-one',
 }
 
 
+
+DT.Sets.activate('coliseum','hyper');
+const coliseumCasters=DT.SHOP_LINES.filter(l=>l.type.startsWith('col_')).flatMap(l=>[null,...(DT.Sets.def('coliseum').forms[l.id]||[]).map(f=>f.id)].map(form=>({line:l.id,form})));
+const coliseumCoverage=new Set();
+function observeColiseum(cb,coverage=coliseumCoverage){
+  for(const u of cb.units){
+    if(u.state.allOutUsed)coverage.add('allout');
+    const inf=u.state.inf;
+    if(inf&&inf.victim!==u)coverage.add('infection-spread');
+    if(inf&&inf.left===0)coverage.add('infection-expire');
+    if(inf&&inf.left>0&&!inf.src.alive)coverage.add('infection-dead-source');
+  }
+}
+for(const test of coliseumCasters)for(const stage of [0,1,2])for(const cols of [7,14]){
+  const pace=cols===7?'hyper':'normal';DT.Sets.activate('coliseum',pace);
+  let accepted=false;
+  for(let attempt=0;attempt<20&&!accepted;attempt++){
+    const coverage=new Set();
+    const seed=1030000+fixtures.length+attempt*10000,pick=DT.makeRng(seed);
+    const entries=main=>Array.from({length:6},(_,i)=>({line:main&&i===0?test.line:DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)].id,
+      stage,c:i,r:4+i%3,items:[],mods:main&&i===0&&test.form?{form:test.form}:{}}));
+    const a=entries(true),b=entries(false),mech={rcAP:stage*35};
+    const cb=new DT.Combat({units:a,cols,noTraits:true,mech},{units:b,cols,noTraits:true,mech},{seed});
+    const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+    while(!cb.done&&tick<2000){cb.step();tick++;observeColiseum(cb,coverage);if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+    if(!cb.events.some(e=>e.type==='cast'&&e.at===0))continue;accepted=true;
+    for(const flag of coverage)coliseumCoverage.add(flag);
+    const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,coliseum:{form:u.mods.form||null}}));
+    fixtures.push({name:`coliseum-ability/${test.line}/${test.form}/${stage}/${cols}`,variant:`coliseum/${pace}`,seed,cols,
+      sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,setup:{sideA:{noTraits:true,coliseum:mech},sideB:{noTraits:true,coliseum:mech}}});
+  }
+  if(!accepted)throw new Error(`Coliseum caster never cast ${test.line}/${test.form}/${stage}/${cols}`);
+}
+
+const coliseumCores=DT.Sets.def('coliseum').powerUps.map(p=>p.id);
+for(const core of [...coliseumCores,'mixed'])for(const stage of [0,1,2])for(const duos of [false,true]){
+  const pace=duos?'normal':'hyper',cols=duos?14:7;DT.Sets.activate('coliseum',pace);
+  const seed=1090000+fixtures.length,pick=DT.makeRng(seed),components=Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].component);
+  function side(team){
+    const parts=[0,1].map(part=>({owner:team*2+part,augs:[],units:Array.from({length:6},(_,i)=>{
+      const line=DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)],forms=DT.Sets.def('coliseum').forms[line.id]||[];
+      return {line:line.id,stage,c:part*7+i,r:4+i%4,owner:team*2+part,
+        items:i%3===0?[]:[components[Math.floor(pick()*components.length)]],mods:{pu:core==='mixed'?coliseumCores[Math.floor(pick()*coliseumCores.length)]:core,
+          ...(forms.length?{form:forms[Math.floor(pick()*forms.length)].id}:{})}};
+    })}));
+    const mech={rcAP:stage*30};
+    return duos?{units:parts.flatMap(p=>p.units),parts,cols,noTraits:true,mech}:{units:parts[0].units,cols,noTraits:true,mech};
+  }
+  const a=side(0),b=side(1),cb=new DT.Combat(a,b,{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;observeColiseum(cb);if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,owner:u.owner,coliseum:{powerUp:u.mods.pu,form:u.mods.form||null}}));
+  const effects=a=>({noTraits:true,coliseum:a.mech,...(duos?{parts:a.parts.map(p=>({owner:p.owner,augments:[]}))}:{})});
+  fixtures.push({name:`coliseum-core/${core}/${stage}/${duos}`,variant:`coliseum/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,setup:{sideA:effects(a),sideB:effects(b)}});
+}
+for(const flag of ['allout','infection-spread','infection-expire','infection-dead-source'])if(!coliseumCoverage.has(flag))throw new Error(`Coliseum lifecycle never exercised: ${flag}`);
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

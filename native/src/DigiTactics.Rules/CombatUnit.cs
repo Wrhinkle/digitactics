@@ -1,7 +1,8 @@
 namespace DigiTactics.Rules;
 
 public sealed record PartnerModifier(string? Bonus, string? Trait = null);
-public sealed record CombatEntry(string Line, int Stage, int Column, int Row, int Uid = 0, int? Owner = null, string[]? Items = null, Dictionary<string, int>? BonusTraits = null, PartnerModifier? Partner = null, double GluttonHealth = 0, double GluttonAbilityPower = 0, string? ArcaneAnomaly = null);
+public sealed record ColiseumModifier(string? Form = null, string? PowerUp = null);
+public sealed record CombatEntry(string Line, int Stage, int Column, int Row, int Uid = 0, int? Owner = null, string[]? Items = null, Dictionary<string, int>? BonusTraits = null, PartnerModifier? Partner = null, double GluttonHealth = 0, double GluttonAbilityPower = 0, string? ArcaneAnomaly = null, ColiseumModifier? Coliseum = null);
 public readonly record struct CombatEvent(double Time, string Type, int Unit, int? Target = null, double Amount = 0);
 public sealed record AttackSpeedBuff(double Value, double Until, bool Infiltrator = false);
 
@@ -18,6 +19,7 @@ public sealed class CombatUnit
     public double TimeRune { get; internal set; }
     internal DragonlandsUnitState Dragonlands { get; } = new();
     internal ReckoningUnitState Reckoning { get; } = new();
+    internal ColiseumUnitState Coliseum { get; } = new();
     internal ArcaneUnitState Arcane { get; } = new();
     internal GizmosUnitState Gizmos { get; } = new();
     internal bool FrenzyActive;

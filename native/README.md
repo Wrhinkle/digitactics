@@ -127,6 +127,10 @@ to be a Vulkan renderer or the final game UI.
   accounting pass 192 further fights, including blocked summons, Devour ordering,
   revives, threshold effects and Fireball's mana boundary. Anomaly offers, utility
   pick grants, persistence and planning/settlement remain pending.
+- Coliseum: six custom abilities across nine casters, six form choices and all
+  24 Digi-Core paths pass 240 further reference battles. These include infection
+  spread/expiration after caster death, All Out recovery, mixed cores and both
+  board widths. Traits, item hooks, augments and planning/settlement remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner one battle at a time; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.
