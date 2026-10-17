@@ -26,6 +26,8 @@ public sealed class PlayerEconomy(EconomyRules rules)
         return true;
     }
 
+    public void ResetStreak() => Streak = 0;
+
     public void Credit(int amount) => Gold = checked(Gold + amount);
 
     public void AddXp(int amount)

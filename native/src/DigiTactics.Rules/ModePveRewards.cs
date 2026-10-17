@@ -4,6 +4,7 @@ public sealed record ModeLootRules(string Policy, string[] Artifacts, string[] C
     string[] ShadowComponents, Dictionary<string, string> ShadowOf, double ShadowChance, Dictionary<string, string>? RadiantOf = null, Dictionary<string, string>? BaseOf = null);
 public sealed class PlayerMechanics
 {
+    public bool UnderlordsFreeRoll { get; set; }
     public bool FatesPartnerSeen { get; set; }
     public double DragonDoots { get; set; }
     public bool DragonStarShop { get; set; }

@@ -5,7 +5,7 @@ public sealed record AugmentDefinition(string Id, int Tier);
 public sealed record OfferRules(OfferDefinition[] Schedule, int[] ArmoryStages, int ArmoryRound, string[]? ArmoryRounds,
     int[] AugmentStages, int AugmentRound, string[]? AugmentRounds, int AugmentRerolls, double[] AugmentTierOdds,
     AugmentDefinition[] Augments, AugmentDefinition[] DuoAugments, string[] Powers, bool CustomArmory, string[] PowerRanks);
-public sealed record PlayerOffer(string Kind, string[] Options, int Rerolls, int? Tier);
+public sealed record PlayerOffer(string Kind, string[] Options, int Rerolls, int? Tier, bool UnderlordsRolled = false);
 
 public interface IMatchOfferHooks
 {

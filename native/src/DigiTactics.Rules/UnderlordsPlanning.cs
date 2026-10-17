@@ -1,11 +1,65 @@
 namespace DigiTactics.Rules;
 
-/// <summary>Tamer power selection creates a persistent roster unit; rank changes update it in place.</summary>
+public sealed record UnderlordsPlanningRules(int PerStage, Dictionary<int, double[]> ItemOdds,
+    int? GoldCap, int? LossStreakCap, int? StreakReset, bool Knockout);
+
+/// <summary>Underlords persistent Tamer, economy, item-offer and combination hooks.</summary>
 public sealed class UnderlordsPlanning(MatchState state)
 {
     private readonly Dictionary<string, UnitLine> lines = state.Rules.Lines.Concat(state.Rules.ExtraLines).ToDictionary(l => l.Id);
     private readonly PlanningAi placement = new(state.Rules);
     private PlanningUnit? Tamer(MatchPlayer player) => player.Roster.Entries.Select(e => e.Unit).FirstOrDefault(u => !string.IsNullOrEmpty(lines[u.Line].Tamer));
+
+    public IncomeBreakdown Income(MatchPlayer player, RoundPosition round, IncomeBreakdown income)
+    {
+        var rules = state.Rules.Underlords!;
+        if (player.Economy.Streak < 0 && rules.LossStreakCap is { } cap)
+            income = income with { Streak = Math.Min(income.Streak, cap) };
+        if (rules.Knockout)
+            income = income with { Base = 6 + (int)Math.Floor(((round.Stage - 1) * rules.PerStage + round.Round - 1) * 1.5) };
+        return income;
+    }
+
+    public void RoundStart(MatchPlayer player, RoundPosition round)
+    {
+        var rules = state.Rules.Underlords!;
+        player.Shop.FreeRolls += 2 * player.Globals.Count(id => id == "ul_g_recruiter");
+        if (player.Mechanics.UnderlordsFreeRoll)
+        {
+            player.Shop.FreeRolls++;
+            player.Mechanics.UnderlordsFreeRoll = false;
+        }
+        if (rules.StreakReset is > 0 && player.Economy.Streak >= rules.StreakReset) player.Economy.ResetStreak();
+        if (rules.GoldCap is > 0 && player.Economy.Gold > rules.GoldCap) player.Economy.Spend(player.Economy.Gold - rules.GoldCap.Value);
+        if (player.Offer is not { Kind: "itemTier", UnderlordsRolled: false } offer) return;
+        player.Offer = offer with { UnderlordsRolled = true };
+        int tier = offer.Tier is null or 0 ? 1 : offer.Tier.Value;
+        if (rules.ItemOdds.TryGetValue((round.Stage - 1) * rules.PerStage + round.Round, out var odds))
+        {
+            double roll = state.Random.Next() * 100;
+            for (int i = 0; i < odds.Length; i++)
+            {
+                if (roll < odds[i]) { tier = i + 1; break; }
+                roll -= odds[i];
+            }
+        }
+        if (player.Globals.Contains("ul_g_smuggler")) tier = Math.Min(5, tier + 1);
+        var pool = state.Rules.Items.Where(i => i.Tier == tier && !i.Component && !i.NoDrop &&
+            !(i.Category == "global" && player.Globals.Contains(i.Id))).Select(i => i.Id).ToArray();
+        for (int i = pool.Length - 1; i > 0; i--)
+        {
+            int j = (int)(state.Random.Next() * (i + 1));
+            (pool[i], pool[j]) = (pool[j], pool[i]);
+        }
+        if (pool.Length > 0) player.Offer = player.Offer with { Tier = tier,
+            Options = pool.Take(player.Globals.Contains("ul_g_riches") ? 4 : 3).ToArray() };
+    }
+
+    public void Combined(MatchPlayer player, PlanningUnit unit)
+    {
+        for (int i = unit.Items.Length - 1; i >= 1; i--) player.GiveItem(unit.Items[i]);
+        if (unit.Items.Length > 1) player.Roster.UpdateUnit(unit with { Items = unit.Items.Take(1).ToArray() });
+    }
 
     public void PowerPicked(MatchPlayer player, string id)
     {

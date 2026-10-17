@@ -1333,3 +1333,24 @@ handlers from power-pick and rank-up events; remaining Underlords planning effec
 and combat-input integration are still pending.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+
+### Underlords economy, item offers and combined equipment
+
+`UnderlordsPlanning` now handles Recruiter free rolls, the pending loss free roll,
+win-streak reset, gold cap, loss-streak income cap and Knockout round income.
+Catalog schema 34 exports their original rule values and round-specific item odds.
+Item offers roll once per offer, apply Smuggler and Riches, exclude owned globals,
+and preserve the original shuffle order and random consumption. Offer rerolls keep
+the rolled tier and marker. Combined units return excess equipment in reverse order,
+respecting inventory capacity, and retain the first item.
+
+2,048 reference cases across standard/Knockout and both paces pass 23,242 checks
+(`--underlords-planning-only`). They cover repeated round-start calls, offers and
+rerolls, duplicate globals, positive/negative streaks, gold above the cap, returned
+item order and full inventories. These are tested mode handlers; production hook
+composition and Underlords round-end rewards still require integration.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+Full regression validation after this change: **158,097,646 native checks passed**, including all 5,699 reference battles.

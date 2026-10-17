@@ -1,8 +1,9 @@
 {
-  "schemaVersion": 33,
+  "schemaVersion": 34,
   "variants": [
     {
       "id": "faction-wars/normal",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -8302,6 +8303,7 @@
     },
     {
       "id": "faction-wars/hyper",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -16587,6 +16589,7 @@
     },
     {
       "id": "fates/normal",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -24878,6 +24881,7 @@
     },
     {
       "id": "fates/hyper",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -33156,6 +33160,7 @@
     },
     {
       "id": "galaxies/normal",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -40646,6 +40651,7 @@
     },
     {
       "id": "galaxies/hyper",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -48132,6 +48138,7 @@
     },
     {
       "id": "gizmos/normal",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -56923,6 +56930,7 @@
     },
     {
       "id": "gizmos/hyper",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -65693,6 +65701,7 @@
     },
     {
       "id": "reckoning/normal",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -76673,6 +76682,7 @@
     },
     {
       "id": "reckoning/hyper",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -87640,6 +87650,7 @@
     },
     {
       "id": "dragonlands/normal",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -95979,6 +95990,7 @@
     },
     {
       "id": "dragonlands/hyper",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -104292,6 +104304,7 @@
     },
     {
       "id": "arcane/normal",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -112948,6 +112961,7 @@
     },
     {
       "id": "arcane/hyper",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -121590,6 +121604,7 @@
     },
     {
       "id": "coliseum/normal",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -130238,6 +130253,7 @@
     },
     {
       "id": "coliseum/hyper",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -138865,6 +138881,77 @@
     },
     {
       "id": "underlords/normal",
+      "underlords": {
+        "perStage": 5,
+        "itemOdds": {
+          "1": [
+            100
+          ],
+          "4": [
+            20,
+            80
+          ],
+          "8": [
+            0,
+            100
+          ],
+          "12": [
+            0,
+            30,
+            70
+          ],
+          "16": [
+            0,
+            0,
+            100
+          ],
+          "20": [
+            0,
+            0,
+            20,
+            80
+          ],
+          "24": [
+            0,
+            0,
+            0,
+            70,
+            30
+          ],
+          "28": [
+            0,
+            0,
+            0,
+            50,
+            50
+          ],
+          "32": [
+            0,
+            0,
+            0,
+            30,
+            70
+          ],
+          "36": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "40": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ]
+        },
+        "goldCap": 100,
+        "lossStreakCap": 2,
+        "streakReset": 8,
+        "knockout": false
+      },
       "gameStart": {
         "gates": [
           [
@@ -146688,6 +146775,77 @@
     },
     {
       "id": "underlords/hyper",
+      "underlords": {
+        "perStage": 5,
+        "itemOdds": {
+          "1": [
+            100
+          ],
+          "4": [
+            20,
+            80
+          ],
+          "8": [
+            0,
+            100
+          ],
+          "12": [
+            0,
+            30,
+            70
+          ],
+          "16": [
+            0,
+            0,
+            100
+          ],
+          "20": [
+            0,
+            0,
+            20,
+            80
+          ],
+          "24": [
+            0,
+            0,
+            0,
+            70,
+            30
+          ],
+          "28": [
+            0,
+            0,
+            0,
+            50,
+            50
+          ],
+          "32": [
+            0,
+            0,
+            0,
+            30,
+            70
+          ],
+          "36": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "40": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ]
+        },
+        "goldCap": 100,
+        "lossStreakCap": 2,
+        "streakReset": 8,
+        "knockout": false
+      },
       "gameStart": {
         "gates": [
           [
@@ -154507,6 +154665,7 @@
     },
     {
       "id": "autochess/normal",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -161974,6 +162133,7 @@
     },
     {
       "id": "autochess/hyper",
+      "underlords": null,
       "gameStart": {
         "gates": [
           [
@@ -169419,6 +169579,142 @@
     },
     {
       "id": "underlords_ko/normal",
+      "underlords": {
+        "perStage": 2,
+        "itemOdds": {
+          "3": [
+            100
+          ],
+          "5": [
+            0,
+            100
+          ],
+          "7": [
+            0,
+            0,
+            100
+          ],
+          "9": [
+            0,
+            0,
+            100
+          ],
+          "11": [
+            0,
+            0,
+            0,
+            100
+          ],
+          "13": [
+            0,
+            0,
+            0,
+            100
+          ],
+          "15": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "17": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "19": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "21": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "23": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "25": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "27": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "29": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "31": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "33": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "35": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "37": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "39": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "41": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ]
+        },
+        "goldCap": 100,
+        "lossStreakCap": 2,
+        "streakReset": 8,
+        "knockout": true
+      },
       "gameStart": {
         "gates": [
           [
@@ -177304,6 +177600,142 @@
     },
     {
       "id": "underlords_ko/hyper",
+      "underlords": {
+        "perStage": 2,
+        "itemOdds": {
+          "3": [
+            100
+          ],
+          "5": [
+            0,
+            100
+          ],
+          "7": [
+            0,
+            0,
+            100
+          ],
+          "9": [
+            0,
+            0,
+            100
+          ],
+          "11": [
+            0,
+            0,
+            0,
+            100
+          ],
+          "13": [
+            0,
+            0,
+            0,
+            100
+          ],
+          "15": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "17": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "19": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "21": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "23": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "25": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "27": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "29": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "31": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "33": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "35": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "37": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "39": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ],
+          "41": [
+            0,
+            0,
+            0,
+            0,
+            100
+          ]
+        },
+        "goldCap": 100,
+        "lossStreakCap": 2,
+        "streakReset": 8,
+        "knockout": true
+      },
       "gameStart": {
         "gates": [
           [
