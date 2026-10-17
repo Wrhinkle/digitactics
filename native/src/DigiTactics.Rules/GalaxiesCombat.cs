@@ -29,7 +29,7 @@ public sealed partial class CombatSimulation
         });
         Hooks.Add(context, CombatHook.Kill, (_, e) => {
             var u = e.Unit!;
-            if (u.Line.Ability.Kind == "excited" && !u.Galaxies.Excited && u.Alive) { u.Galaxies.Excited = true; u.SpeedBuffs.Add(new(0.5, double.PositiveInfinity)); }
+            if (u.Line.Ability.Kind == "excited" && !u.Galaxies.Excited && u.Alive) { u.Galaxies.Excited = true; u.SpeedBuffs.Add(new(0.5, double.PositiveInfinity)); Emit("text", u, text: "Excited"); }
         });
         Hooks.Add(context, CombatHook.UnitTick, (_, e) => {
             var u = e.Unit!; var s = u.Galaxies;
@@ -44,7 +44,7 @@ public sealed partial class CombatSimulation
                 if (!u.Alive) return;
             }
             if (s.CycloneUntil > Time && Time >= s.CycloneNext) {
-                s.CycloneNext += 0.5;
+                s.CycloneNext += 0.5; Burst(u.Cell, 1, u.Team);
                 GalaxyCasting(u, () => { foreach (var enemy in EnemiesNear(u, u.Cell, 1)) {
                     if (s.CycloneHit.Add(enemy.Id)) StunUnit(enemy, 1.5);
                     AbilityDamage(u, enemy, s.CycloneDamage);

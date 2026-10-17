@@ -36,7 +36,7 @@ public sealed partial class CombatSimulation
                     }); break;
                     case "DA": On(CombatHook.Death, (c, e) => {
                         if (!Member(e.Unit!)) return;
-                        foreach (var a in c.Mine.Where(a => a.Alive && a != e.Unit && a.Traits.Contains(id))) { a.AttackDamage += a.BaseAttackDamage * value / 100; a.AbilityPower += value; }
+                        foreach (var a in c.Mine.Where(a => a.Alive && a != e.Unit && a.Traits.Contains(id))) { a.AttackDamage += a.BaseAttackDamage * value / 100; a.AbilityPower += value; Emit("text", a, text: "Dark power"); }
                     }); break;
                     case "XR":
                         On(CombatHook.CombatReady, (c, _) => {
@@ -46,16 +46,17 @@ public sealed partial class CombatSimulation
                             var host = selected[0]; var pilots = selected.Skip(1).ToList();
                             double hp = host.MaxHealth + pilots.Sum(p => p.MaxHealth), ad = host.AttackDamage + pilots.Sum(p => p.AttackDamage);
                             host.MaxHealth = UnitValues.Round(hp * value); host.AttackDamage = ad * value * 0.8; host.Armor += 20; host.MagicResist += 20;
-                            host.Galaxies.Pilots = pilots;
+                            host.Galaxies.Pilots = pilots; Emit("text", host, text: "DigiXros!");
                             foreach (var pilot in pilots) { pilot.Galaxies.Piloting = true; RemoveFromHook(pilot); }
                         }, 2);
                         On(CombatHook.Death, (_, e) => {
-                            var host = e.Unit!; var pilots = host.Galaxies.Pilots; if (pilots is null) return; host.Galaxies.Pilots = null;
+                            var host = e.Unit!; var pilots = host.Galaxies.Pilots; if (pilots is null) return; host.Galaxies.Pilots = null; Emit("text", host, text: "Eject");
                             foreach (var pilot in pilots) {
                                 HexCell? cell = UnitAt(host.Cell) is null ? host.Cell : FreeNeighbor(host, host.Cell);
                                 if (cell is null) continue;
                                 pilot.Galaxies.Piloting = false; pilot.Alive = true; PlaceFromHook(pilot, cell.Value);
                                 pilot.Health = pilot.MaxHealth * 0.6; pilot.Mana = 0; pilot.Target = null;
+                                events.Add(new(Time, "leap", pilot.Id, Cell: host.Cell));
                             }
                         }); break;
                     case "PI": On(CombatHook.Kill, (_, e) => { if (Member(e.Unit!) && !e.Target!.Summoned) pirateKills[e.Unit!.Team]++; }); break;
@@ -79,8 +80,8 @@ public sealed partial class CombatSimulation
                             var u = e.Unit!; var state = u.Galaxies;
                             if (e.IsBurn || state.Overload == 0 || !u.Alive) return;
                             if (++state.OverloadCount < 10) return; state.OverloadCount = 0;
-                            if (u.Health < u.MaxHealth * 0.5) { c.Heal(u, state.Overload); return; }
-                            var target = TargetByDistance(u); if (target is not null) c.Damage(u, target, state.Overload);
+                            if (u.Health < u.MaxHealth * 0.5) { c.Heal(u, state.Overload); c.Text(u, "Overload"); return; }
+                            var target = TargetByDistance(u); if (target is not null) { c.Effect("beam", u, target); c.Damage(u, target, state.Overload); }
                         }
                         On(CombatHook.DamageDealt, Overload); On(CombatHook.DamageTaken, Overload); break;
                     case "ARK": Each(u => { u.AttackSpeed = 0.0001; u.Equipment.CrowdControlImmunity = 999; });
@@ -91,10 +92,10 @@ public sealed partial class CombatSimulation
                         e.Multiplier *= e.Unit!.Traits.Contains("DD") ? armor / 100 : armor / (100 + Math.Max(0, e.Target.MagicResist));
                     }); break;
                     case "BH": Each(u => { double n = Math.Min(9, side.Galaxies?.Bounty?.GetValueOrDefault(u.Line.Id) ?? 0); u.AbilityPower += value * n; u.AttackDamage += u.BaseAttackDamage * 0.03 * n; }); break;
-                    case "BM": On(CombatHook.Attack, (_, e) => { if (!Member(e.Unit!) || !e.Target!.Alive || random.Next() >= value) return; for (int k = 0; k < 2 && e.Target.Alive; k++) GalaxyStrike(e.Unit!, e.Target); }); break;
+                    case "BM": On(CombatHook.Attack, (_, e) => { if (!Member(e.Unit!) || !e.Target!.Alive || random.Next() >= value) return; for (int k = 0; k < 2 && e.Target.Alive; k++) { Emit("hit", e.Unit!, e.Target); GalaxyStrike(e.Unit!, e.Target); } }); break;
                     case "GU": On(CombatHook.Attack, (_, e) => {
                         var u = e.Unit!; if (!Member(u) || ++u.Galaxies.GunnerAttacks % 4 != 0) return;
-                        for (int k = 0; k < value; k++) { var foes = EnemiesOf(u); if (foes.Length == 0) break; GalaxyStrike(u, foes[(int)(random.Next() * foes.Length)]); }
+                        for (int k = 0; k < value; k++) { var foes = EnemiesOf(u); if (foes.Length == 0) break; var target = foes[(int)(random.Next() * foes.Length)]; Emit("shot", u, target); GalaxyStrike(u, target); }
                     }); break;
                     case "BR": Each(u => u.MaxHealth += value); break;
                     case "BO": On(CombatHook.DamageDealt, (_, e) => {

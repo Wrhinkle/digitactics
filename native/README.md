@@ -37,8 +37,9 @@ battles and 137,414 cues covering all Copycat outcomes, traits, items, executes,
 Mirage and Duos. Arcane adds 673 battles and 271,670 cues across abilities,
 traits, contraband, augments and anomalies, including mana-boundary and lone
 Devour cases. Coliseum adds 672 battles and 283,616 cues across abilities,
-forms, Digi-Cores, traits and items. Galaxies/Underlords visual cues and the
-production renderer remain unfinished.
+forms, Digi-Cores, traits and items. Galaxies adds 442 battles and 104,242 cues
+across abilities, trait strikes, DigiXros ejection, items and Galaxy modifiers.
+Underlords visual cues and the production renderer remain unfinished.
 
 ## Boundaries
 

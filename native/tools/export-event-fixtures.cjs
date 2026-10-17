@@ -57,14 +57,14 @@ for (const item of core) for (const stage of [0, 2])
 Object.assign(DT.Combat.prototype, originalHooks);
 const directory = path.join(__dirname, '../tests/fixtures/combat');
 const manifest = JSON.parse(fs.readFileSync(path.join(directory, 'manifest.json')));
-for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos', 'reckoning', 'dragonlands', 'arcane', 'coliseum']) {
+for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos', 'reckoning', 'dragonlands', 'arcane', 'coliseum', 'galaxies']) {
   const shard = manifest.files.find(f => f.file.startsWith(`${setId}-`));
   const compressed = fs.readFileSync(path.join(directory, shard.file));
   if (require('node:crypto').createHash('sha256').update(compressed).digest('hex') !== shard.sha256)
     throw new Error(`${setId} gameplay fixture integrity failure`);
   const corpus = JSON.parse(require('node:zlib').gunzipSync(compressed));
   if (corpus.length !== shard.battles) throw new Error(`${setId} gameplay fixture count mismatch`);
-  for (const trace of corpus.filter(t => (t.name.startsWith('fates-') || t.name.startsWith('faction-') || t.name.startsWith('autochess/') || t.name.startsWith('gizmos-') || t.name.startsWith('reckoning-') || t.name.startsWith('dragonlands-') || t.name.startsWith('arcane-') || t.name.startsWith('coliseum-')) && !t.summonItemProbe && !t.observerSummonProbe)) {
+  for (const trace of corpus.filter(t => (t.name.startsWith('fates-') || t.name.startsWith('faction-') || t.name.startsWith('autochess/') || t.name.startsWith('gizmos-') || t.name.startsWith('reckoning-') || t.name.startsWith('dragonlands-') || t.name.startsWith('arcane-') || t.name.startsWith('coliseum-') || t.name.startsWith('galaxies-')) && !t.summonItemProbe && !t.observerSummonProbe)) {
     const [set, pace] = trace.variant.split('/'); DT.Sets.activate(set, pace);
     const setup = trace.setup || { sideA: { augments: trace.augsA }, sideB: { augments: trace.augsB } };
     const buffs = b => b && ({ as: b.attackSpeed, armor: b.armor, mana: b.mana });
@@ -72,9 +72,9 @@ for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos', 'reckoning'
       const units = entries.map(u => ({ ...u, c: u.column, r: u.row,
         mods: { ...(u.partner ? { partner: true, bonus: u.partner.bonus, trait: u.partner.trait } : {}), form: u.coliseum?.form, pu: u.coliseum?.powerUp, arcAnom: u.arcaneAnomaly, glutHp: u.gluttonHealth, glutAp: u.gluttonAbilityPower } }));
       const result = { units, cols: trace.cols, noTraits: effects.noTraits, augs: effects.augments, globals: effects.globals,
-        counts: effects.counts, mech: effects.fates || effects.gizmos || effects.dragonlands || effects.arcane || effects.coliseum, buffs: buffs(effects.buffs), partnerTop: effects.partnerTop };
+        counts: effects.counts, mech: effects.galaxies || effects.fates || effects.gizmos || effects.dragonlands || effects.arcane || effects.coliseum, buffs: buffs(effects.buffs), partnerTop: effects.partnerTop };
       if (effects.parts) {
-        result.parts = effects.parts.map(p => ({ owner: p.owner, augs: p.augments, globals: p.globals, mech: p.gizmos || p.dragonlands || p.arcane || p.coliseum, buffs: buffs(p.buffs), partnerTop: p.partnerTop,
+        result.parts = effects.parts.map(p => ({ owner: p.owner, augs: p.augments, globals: p.globals, mech: p.galaxies || p.gizmos || p.dragonlands || p.arcane || p.coliseum, buffs: buffs(p.buffs), partnerTop: p.partnerTop,
           units: units.filter(u => u.owner === p.owner) }));
         result.counts = DT.Duos.teamCounts(result.parts);
       }
@@ -99,6 +99,7 @@ for (const kind of ['Physical', 'Magic', 'True'])
   if (!allEvents.some(e => e.kind === kind)) throw new Error(`No damage cue coverage: ${kind}`);
 if (!allEvents.some(e => e.critical) || !allEvents.some(e => e.big)) throw new Error('Missing critical or amplified effect coverage');
 for (const [prefix, labels] of [
+  ['galaxies-', ['Riposte', 'Isolated', 'Plumage', 'Frenzy', 'Chosen', 'Incoming', 'Digivolve!', 'Cyclone', 'Time stop', 'Critter', 'Rescued', 'Finished', 'Eject', 'Overload', 'Dark power', 'DigiXros!', 'Rebirth', 'Construct', 'Disarmed', 'Blown away', 'Blocked', 'Excited']],
   ['fates-', ['+1 gold', '+2 AP', 'Ascend', 'Frenzy', 'Frozen', 'Full Moon', 'Guardian Wing', 'Lone Blade', 'Pumped Up', 'Push-ups', 'Rewind', 'Rocket Fist', 'Showtime', 'Soulmon', 'Spirit Rush', 'Stasis', 'Tankmon', 'Trap Claw', 'Zephyr']],
   ['coliseum-', ['Mega Mech', 'Max Spirit', 'Luchador!', 'Supreme', 'Bulk Up', 'Spirit Evolution', 'Overdrive', 'Ascension', 'All Out', 'Vanish', 'Stasis']],
   ['arcane-', [...Object.values(DT.ArcaneInfo.ANOM).map(a => a.short), 'Unleashed', 'Overload', 'Chained', 'Wanted', 'Bounty', 'Surge', 'Flare', 'Rockets', 'Shield', 'Coin', 'Jackpot', 'Second Wind', 'Rage', 'Ascend', 'Devour', 'Spare Body', 'Finished', 'Last Chance', 'Vanish', 'Ascended', 'Time Stop', 'Hazard Tank', 'Feral', 'Jackpot!']],

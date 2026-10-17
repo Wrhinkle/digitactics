@@ -280,11 +280,14 @@ Coliseum adds 672 battles and 283,616 cues across its six custom abilities, six
 forms, 24 Digi-Cores, traits and items. Named-effect guards include Mega Mech,
 Supreme, Luchador, Bulk Up, Spirit Evolution, Overdrive, Ascension, All Out,
 Vanish and Stasis. Form/core selections, stored Royal Court AP, Supreme selection
-and round state are retained in replay. The suite totals 3,302 battles and
-1,246,996 cues. Galaxies and Underlords presentation callbacks and complete replay
-coverage remain pending; this is not a renderer.
+and round state are retained in replay. Galaxies adds 442 battles and 104,242
+cues across all 52 ability types, trait strikes, DigiXros assembly/ejection,
+items and Galaxy modifiers. Replay retains bounty state; named-effect guards
+cover transformations, rescue, overload, ejection and defensive item triggers.
+The suite totals 3,744 battles and 1,351,238 cues. Underlords presentation
+callbacks and complete replay coverage remain pending; this is not a renderer.
 
-Latest verification: the native test suite passes 102,011,307 assertions.
+Latest verification: the native test suite passes 102,115,991 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
