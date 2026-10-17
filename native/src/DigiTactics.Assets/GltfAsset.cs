@@ -51,6 +51,14 @@ public sealed class GltfAsset : IDisposable
         return binary.AsMemory(start, length);
     }
 
+    public PngImage Image(int index)
+    {
+        var image = Root.GetProperty("images")[index];
+        if (image.GetProperty("mimeType").GetString() != "image/png")
+            throw new InvalidDataException("Image has not been converted for native loading.");
+        return PngImage.Decode(BufferView(image.GetProperty("bufferView").GetInt32()).Span);
+    }
+
     public double[] AccessorElement(int index, int element)
     {
         var accessor = Root.GetProperty("accessors")[index];

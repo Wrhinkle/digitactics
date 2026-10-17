@@ -6,12 +6,13 @@ WebView, JavaScript interpreter or browser runs inside it.
 
 ## Build and run
 
-Windows x64, .NET SDK 10.0.402, Node.js for the build-time content exporter,
+Windows x64, .NET SDK 10.0.402, Node.js and Python with Pillow for the build-time content exporter,
 and an OpenGL 4.5 capable graphics driver are required.
 
 From the repository root:
 
 ```powershell
+python -m pip install -r native/tools/requirements.txt
 ./native/build.ps1 -Publish
 ./native/artifacts/win-x64/DigiTactics.Desktop.exe
 ```
@@ -46,12 +47,15 @@ all 5,699 gameplay reference battles. A separate presentation module projects
 world positions, target-facing angles, viewer mirroring and death visibility;
 282,124 checks compare it with the original renderer across 22 scene traces.
 The asset exporter decodes meshopt at build time and packs 718 embedded GLB models
-(about 136 MB), preserving textures, skins, animations, per-model options and credits.
+with embedded RGBA8 PNG textures (about 295 MB), preserving skins, animations,
+per-model options and credits.
 All 5,232 unit forms resolve through the original model mappings. Native loading is
 checked against 992,532 sampled Three.js accessor values, and the packaged executable
 verifies every model payload and rig. Native skeletal sampling now handles node
 hierarchies, linear/step tracks, quaternion interpolation and skin matrices, with
-2,609,044 reference/repair checks across 718 rigs. WebP decoding, GPU rendering,
+2,609,044 reference/repair checks across 718 rigs. The build converts 1,142 textures
+with Pillow; the C# PNG decoder matches every decoded pixel hash, including alpha.
+Python and Pillow are build dependencies only. GPU rendering,
 animation blending/fallback motions and production screens remain unfinished.
 
 ## Boundaries

@@ -328,10 +328,14 @@ the previous valid key/bind pose for 35 corrupt keys and reconstructs four inver
 binds from rest-pose joint transforms. Invalid original transforms are excluded from
 reference equality; repaired instances instead undergo finite world/palette checks
 throughout every clip. Packaged smoke now constructs every rig too.
-This does not establish rendering parity: WebP upload, material handling, animation
+The texture pipeline now converts all 1,142 embedded images to RGBA8 PNG at build
+time. Native C# decoding verifies PNG checksums, reverses scanline filters and
+checks the decoded dimensions and pixel hashes against Pillow's source decoding.
+The packaged smoke also decodes every image. Python/Pillow are not runtime dependencies.
+This does not establish rendering parity: GPU texture upload, material handling, animation
 blending, authored fallback motions, normalization and GPU drawing remain unfinished.
 
-Latest verification: the native test suite passes 121,066,389 assertions.
+Latest verification: the native test suite passes 121,067,531 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

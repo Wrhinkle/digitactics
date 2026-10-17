@@ -96,6 +96,7 @@ async function main() {
   }
   fs.writeFileSync(path.join(root, 'native/content/models.json'), JSON.stringify({schemaVersion: 1, assets, sources, variants}) + '\n');
   fs.writeFileSync(path.join(root, 'native/tests/fixtures/models.json.gz'), gzipSync(JSON.stringify(probes, (_key, value) => typeof value === 'number' && !Number.isFinite(value) ? String(value) : value)));
+  require('node:child_process').execFileSync('python', [path.join(__dirname, 'prepare-textures.py')], {stdio: 'inherit'});
   console.log(`Exported ${Object.keys(assets).length} native model assets and ${Object.keys(sources).length} mappings.`);
 }
 main().catch(e => {console.error(e); process.exitCode = 1;});

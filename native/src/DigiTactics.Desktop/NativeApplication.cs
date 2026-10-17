@@ -21,8 +21,10 @@ public static class NativeApplication
                 if (model.Root.GetProperty("asset"u8).GetProperty("version"u8).GetString() != "2.0")
                     throw new InvalidDataException($"Unsupported packaged model: {asset}");
                 _ = GltfRig.Load(model);
+                if (model.Root.TryGetProperty("images"u8, out var images))
+                    for (int i = 0; i < images.GetArrayLength(); i++) _ = model.Image(i);
             }
-            Console.WriteLine($"Native asset smoke passed: {models.Assets.Count} verified model payloads and rigs.");
+            Console.WriteLine($"Native asset smoke passed: {models.Assets.Count} verified model payloads, rigs and textures.");
         }
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
