@@ -5,16 +5,32 @@ const { load } = require('../../tools/headless.cjs');
 const DT = load({ strict: true });
 const variants = [];
 const rolls = [];
+const unitStats = [];
 for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   DT.Sets.activate(set.id, pace);
   const rules = DT.HYPER;
-  const lines = DT.SHOP_LINES.map(l => ({
+  const lines = DT.SHOP_LINES.map(l => {
+    const role = DT.ROLES[DT.roleOf(l)] || DT.BASE_ROLES.Striker;
+    return {
     id: l.id, tier: l.tier, price: l.price || l.tier, copies: l.combine || rules.copies || 3,
     forms: l.forms, traits: l.traits, attribute: l.attr,
-  }));
+    slots: l.slots || 1,
+    sellPremium: set.id === 'dragonlands' && l.slots === 2 ? Math.max(0, (l.price || l.tier) - l.tier) : 0,
+    combat: {
+      health: role.hp, attackDamage: role.ad, attackSpeed: l.as || role.as,
+      range: l.range || role.range, armor: l.armor ?? role.armor, magicResist: l.mr ?? role.mr,
+      maxMana: l.mana || role.mana, startMana: l.startMana ?? role.startMana,
+      healthMultiplier: l.hpMul || 1, attackMultiplier: l.adMul || 1,
+    },
+    ability: { kind: l.type, baseValue: DT.abilityBase(l.type) },
+  }; });
   const id = `${set.id}/${pace}`;
   variants.push({ id, name: set.name, pace, lines, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
     rerollCost: rules.rerollCost, shopSize: rules.shopSize || 5 });
+  for (const line of DT.SHOP_LINES) for (let stage = 0; stage < 3; stage++) {
+    unitStats.push({ variant: id, line: line.id, stage, stats: DT.unitStats(line, stage),
+      ability: DT.abilityValue(line, stage), sell: DT.sellValue({ line: line.id, stage, items: [] }) });
+  }
   for (const seed of [0, 1, 143, 4294967295]) {
     const g = Object.create(DT.Game.prototype);
     g.rng = DT.makeRng(seed);
@@ -51,7 +67,8 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 1, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 2, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
+fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');
 console.log(`Exported ${variants.length} ruleset/pace catalogs and ${rolls.length} shop parity traces.`);

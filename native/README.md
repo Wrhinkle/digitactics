@@ -23,7 +23,7 @@ For manual development, run dotnet commands from `native/` so `global.json` appl
 
 The sandbox starts with 50 gold. Buy units, refresh the shop, combine copies,
 sell units, reset the sandbox, and select any of the 22 ruleset/pace catalogs.
-Selling in this sandbox refunds purchase cost; set-specific sell hooks are pending.
+Selling uses the original star/tier discount rules, including Dragonlands price premiums.
 
 ## Boundaries
 
@@ -35,7 +35,7 @@ Selling in this sandbox refunds purchase cost; set-specific sell hooks are pendi
   Views issue commands to the rules layer. They cannot mutate its inventory directly.
 - `tools/export-content.cjs`: build-time adapter to the legacy catalog and reference
   engine. Node is a development dependency only. This exporter deliberately extracts
-  shop definitions; it does not claim to migrate executable set hooks.
+  shop definitions and combat templates; it does not migrate executable set hooks.
 - `tests`: standalone C# regression runner and checked-in reference traces from the
   shipping JavaScript engine. Exceptions fail the process and build.
 - `content`: schema-versioned generated catalog. Edit the exporter or canonical
@@ -54,6 +54,10 @@ to be a Vulkan renderer or the final game UI.
 - Shared-pool weighting, tier fallback, empty eligible pools and player-specific
   three-star exclusions; two-copy and three-copy evolution chains.
 - Atomic sandbox purchases, bench capacity, repeated purchases and invalid slots.
+- 3,996 unit-form reference cases for stats, ability scaling and selling prices.
+- 1,200 damage reference cases covering mitigation, shields, attribute advantages,
+  amplifier ordering, burn mana suppression and hook-supplied modifiers.
+  Full combat event dispatch and set hooks remain unported.
 - 15,680 Solo/Duos hex-distance comparisons and 200 movement/target-selection
   traces, including occupied cells and deterministic tie-breaking.
 - Headless native renderer smoke mode and self-contained Windows packaging.

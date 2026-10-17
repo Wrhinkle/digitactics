@@ -11,6 +11,7 @@ function Invoke-Checked([string]$Program, [string[]]$Arguments) {
 Push-Location $nativeRoot
 try {
     Invoke-Checked 'node' @('tools/export-content.cjs')
+    Invoke-Checked 'node' @('tools/export-damage-fixtures.cjs')
     Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Desktop', '--locked-mode')
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--', $nativeRoot)
     Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore')

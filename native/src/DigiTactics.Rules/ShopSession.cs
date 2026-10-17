@@ -56,9 +56,8 @@ public sealed class ShopSession
         var unit = Roster.Remove(unitId);
         if (unit is null) return false;
         var line = lines[unit.Line];
-        int copies = (int)Math.Pow(line.Copies, unit.Stage);
-        // Sandbox liquidation returns purchase cost; set-specific sell hooks are not migrated yet.
-        Gold += line.Price * copies;
+        int copies = UnitValues.Copies(line, unit.Stage);
+        Gold += UnitValues.SellValue(line, unit.Stage);
         pool.Return(unit.Line, copies);
         return true;
     }

@@ -78,4 +78,38 @@ foreach (var trace in fixture.RootElement.GetProperty("grids").EnumerateArray())
             "Combat movement/target tie-breaking diverged from JavaScript.");
     }
 }
-Console.WriteLine($"Passed {assertions} native checks: RNG, 88 shop traces, 200 movement traces, Solo/Duos hex geometry, and roster/pool/purchase rules across {catalog.Variants.Length} variants.");
+using var unitFixtures = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests/fixtures/unit-stats.json")));
+int forms = 0;
+foreach (var trace in unitFixtures.RootElement.EnumerateArray())
+{
+    var rules = catalog.Variants.Single(v => v.Id == trace.GetProperty("variant").GetString());
+    var line = rules.Lines.Single(l => l.Id == trace.GetProperty("line").GetString());
+    int stage = trace.GetProperty("stage").GetInt32();
+    var stats = UnitValues.Stats(line, stage);
+    var expected = trace.GetProperty("stats");
+    Check(stats.MaxHealth == expected.GetProperty("maxHp").GetDouble(), "Unit health scaling mismatch.");
+    Check(stats.AttackDamage == expected.GetProperty("ad").GetDouble(), "Unit attack scaling mismatch.");
+    Check(stats.AttackSpeed == expected.GetProperty("as").GetDouble(), "Unit attack speed mismatch.");
+    Check(stats.Range == expected.GetProperty("range").GetInt32(), "Unit range mismatch.");
+    Check(stats.Armor == expected.GetProperty("armor").GetDouble(), "Unit armor mismatch.");
+    Check(stats.MagicResist == expected.GetProperty("mr").GetDouble(), "Unit magic resistance mismatch.");
+    Check(stats.MaxMana == expected.GetProperty("maxMana").GetDouble(), "Unit mana cap mismatch.");
+    Check(stats.StartMana == expected.GetProperty("mana").GetDouble(), "Unit initial mana mismatch.");
+    Check(UnitValues.AbilityValue(line, stage) == trace.GetProperty("ability").GetDouble(), "Ability scaling mismatch.");
+    Check(UnitValues.SellValue(line, stage) == trace.GetProperty("sell").GetInt32(), $"Sell value mismatch: {rules.Id}/{line.Id}/{stage}.");
+    forms++;
+}
+using var damageFixtures = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests/fixtures/damage.json")));
+foreach (var trace in damageFixtures.RootElement.EnumerateArray())
+{
+    var request = trace.GetProperty("request").Deserialize<DamageRequest>(new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+    var actual = DamageRules.Resolve(request);
+    var expected = trace.GetProperty("expected");
+    // The reference records HP/shield differences, which can lose sub-ulp precision through subtraction.
+    bool Close(double a, double b) => Math.Abs(a - b) <= 1e-10 * Math.Max(1, Math.Abs(b));
+    Check(Close(actual.Amount, expected.GetProperty("amount").GetDouble()), "Damage amount mismatch.");
+    Check(Close(actual.ShieldAbsorbed, expected.GetProperty("shieldAbsorbed").GetDouble()), "Shield absorption mismatch.");
+    Check(Close(actual.HealthDamage, expected.GetProperty("healthDamage").GetDouble()), "Health damage mismatch.");
+    Check(actual.ManaAfter == expected.GetProperty("manaAfter").GetDouble(), "Damage mana gain mismatch.");
+}
+Console.WriteLine($"Passed {assertions} native checks: RNG, shop, movement, {forms} unit forms, 1,200 damage traces, Solo/Duos geometry, and roster/pool/purchase rules across {catalog.Variants.Length} variants.");
