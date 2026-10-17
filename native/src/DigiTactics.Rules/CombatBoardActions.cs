@@ -14,7 +14,7 @@ public sealed partial class CombatSimulation
     {
         if (!lines.TryGetValue(lineId, out var line) || !InBounds(cell) || UnitAt(cell) is not null) return null;
         if (team is < 0 or > 1) throw new ArgumentOutOfRangeException(nameof(team));
-        if (!SupportedAbilities.Contains(line.Ability.Kind)) throw new NotSupportedException($"Ability {line.Ability.Kind} has not been migrated.");
+        if (!SupportsAbility(line.Ability.Kind)) throw new NotSupportedException($"Ability {line.Ability.Kind} has not been migrated.");
         options ??= new();
         var entry = new CombatEntry(lineId, stage, cell.Column, team == 0 ? cell.Row : grid.Rows - 1 - cell.Row,
             -1, options.Owner, options.Items);

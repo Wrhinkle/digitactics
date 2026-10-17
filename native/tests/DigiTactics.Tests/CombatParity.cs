@@ -5,7 +5,9 @@ internal static class CombatParity
 {
     public static int Run(string root, ContentCatalog catalog)
     {
-        using var fixtures = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests/fixtures/combat.json")));
+        using var input = File.OpenRead(Path.Combine(root, "tests/fixtures/combat.json.gz"));
+        using var decompressed = new System.IO.Compression.GZipStream(input, System.IO.Compression.CompressionMode.Decompress);
+        using var fixtures = JsonDocument.Parse(decompressed);
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         int count = 0;
         foreach (var trace in fixtures.RootElement.EnumerateArray())
@@ -52,7 +54,7 @@ internal static class CombatParity
                         if (Math.Abs(actual - value) > 1e-8 * Math.Max(1, Math.Abs(value)))
                             throw new InvalidOperationException($"Combat {name}, tick {tick}, unit {unit.Id}: {field} expected {value:R}, got {actual:R}");
                     }
-                    Compare("stage", unit.Stage);
+                    Compare("stage", unit.Stage); Compare("blossomKills", unit.BlossomKills); Compare("timeRune", unit.TimeRune);
                     count++;
                     if (unit.Summoned != expected.GetProperty("summoned").GetBoolean()) throw new InvalidOperationException($"Summon state mismatch {name}/{tick}");
                     Compare("hp", unit.Health); Compare("mana", unit.Mana); Compare("shield", unit.Shield);

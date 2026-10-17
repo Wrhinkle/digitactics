@@ -43,14 +43,18 @@ public sealed partial class CombatSimulation
             int index = grid.Index(cell);
             if (occupancy[index] is not null) continue;
             var line = lines[entry.Line];
-            if (!SupportedAbilities.Contains(line.Ability.Kind))
+            if (!SupportsAbility(line.Ability.Kind))
                 throw new NotSupportedException($"Ability {line.Ability.Kind} has not been migrated yet.");
             var unit = new CombatUnit(units.Count, entry, line, team, cell, random.Next());
             unit.Traits = TraitRules.UnitTraits(entry, rules);
             unit.Equipment.Apply(unit, items, thiefPool, random);
             units.Add(unit); occupancy[index] = unit;
         }
-        if (setup is not null) FactionWarsCombat.Bind(this, rules, sideA, sideB, setup);
+        if (setup is not null)
+        {
+            if (rules.Id.StartsWith("fates/", StringComparison.Ordinal)) FatesCombat.Bind(this, rules, sideA, sideB, setup);
+            else FactionWarsCombat.Bind(this, rules, sideA, sideB, setup);
+        }
         configureHooks?.Invoke(Hooks);
         for (int team = 0; team < 2; team++)
         {
@@ -159,7 +163,7 @@ public sealed partial class CombatSimulation
         Emit("attack", unit, target);
         if (unit.Blind) { unit.Blind = false; Emit("miss", unit); return; }
         unit.Mana = Math.Min(unit.MaxMana, unit.Mana + 10 + p.Shojin); unit.Attacks++;
-        if (unit.AttackSpeedPerAttack != 0 && unit.AttackSpeedStacks < 12) unit.AttackSpeedStacks++;
+        if (unit.AttackSpeedPerAttack != 0 && unit.AttackSpeedStacks < unit.AttackSpeedStackLimit) unit.AttackSpeedStacks++;
         if (p.Rage != 0) unit.RageStacks++;
         unit.AttackDamage += unit.BaseAttackDamage * p.Kraken;
         if (p.Titan) TitanStack(unit);

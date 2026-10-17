@@ -80,6 +80,11 @@ to be a Vulkan renderer or the final game UI.
 - Non-shop combat definitions, runtime stage growth, fractional ranges and summons
   with owner/equipment/stat multipliers. Hook probes verify same-tick summon updates,
   rejected-spawn RNG behavior and board movement against the original engine.
+- Fates: 105 reference fights cover seven custom abilities, 28 traits/all 62
+  breakpoints, both Fallen paths and Partner combat modifiers. Fates completed-item
+  and augment hooks, Partner shop offers and planning effects remain pending.
+- Full combat traces are gzip-compressed in source control and decompressed by the
+  test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.
 
 ## Remaining migration work

@@ -1,6 +1,7 @@
 namespace DigiTactics.Rules;
 
-public sealed record CombatEntry(string Line, int Stage, int Column, int Row, int Uid = 0, int? Owner = null, string[]? Items = null, Dictionary<string, int>? BonusTraits = null);
+public sealed record PartnerModifier(string? Bonus);
+public sealed record CombatEntry(string Line, int Stage, int Column, int Row, int Uid = 0, int? Owner = null, string[]? Items = null, Dictionary<string, int>? BonusTraits = null, PartnerModifier? Partner = null);
 public readonly record struct CombatEvent(double Time, string Type, int Unit, int? Target = null, double Amount = 0);
 public readonly record struct AttackSpeedBuff(double Value, double Until);
 
@@ -13,9 +14,14 @@ public sealed class CombatUnit
     public int Team { get; }
     public int Stage { get; internal set; }
     public bool Summoned { get; internal set; }
+    public int BlossomKills { get; internal set; }
+    public double TimeRune { get; internal set; }
+    internal bool FrenzyActive;
     public IReadOnlyList<string> Traits { get; internal set; } = Array.Empty<string>();
     internal double PerHexAmplification, BonusAgainstBurning, AttackSpeedPerAttack;
     internal int AttackSpeedStacks;
+    internal int AttackSpeedStackLimit = 12;
+    internal double CharmUntil;
     internal bool AbilityBurn;
     public HexCell Cell { get; internal set; }
     public bool Alive { get; internal set; } = true;

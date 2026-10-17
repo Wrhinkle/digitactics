@@ -46,7 +46,7 @@ public sealed class HexGrid
     public MovementStep? StepTowardEnemy(HexCell start, double range, ReadOnlySpan<HexCell> enemies, ReadOnlySpan<bool> occupied)
     {
         if (occupied.Length != Count) throw new ArgumentException("Occupancy size differs from grid.", nameof(occupied));
-        ArgumentOutOfRangeException.ThrowIfLessThan(range, 1);
+        ArgumentOutOfRangeException.ThrowIfNegative(range);
         foreach (var enemy in enemies) Index(enemy);
         int origin = Index(start);
         Array.Fill(previous, -2);

@@ -59,14 +59,23 @@ The current executable is a migration workbench. It must not replace the public 
   spawns, dynamic unit counts and same-tick updates against the legacy engine.
   Summoned item-hook rebinding and presentation movement metadata remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 2,210,213 assertions, compiles
+- Fates combat: seven custom abilities; all 28 traits at all 62 breakpoints;
+  both Fallen paths; persisted Deva/Blossom inputs; Partner HP/AP/AD/mana modifiers;
+  time-rune recovery and summon-based traits. 105 additional production-reference
+  fights compare counts, runtime stages, summons, rune state, kill counters and
+  combat state. Partner shop generation, planning rewards, Fates augment/item hooks
+  and Duos mechanic-state merging remain pending.
+- Combat reference traces use deterministic gzip storage to avoid checking in an
+  increasingly large plaintext file. Tests decompress and compare the full data.
+
+Latest verification: `./native/build.ps1 -Publish` passes 3,134,508 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Extend production binding beyond Faction Wars traits/combat augments to the
+1. Extend production binding beyond Faction Wars and Fates trait/ability coverage to the
    remaining sets, item hooks, powers and mechanics.
    Finish hook context side/trait state, summoned-item binding and
    presentation event metadata. Extend reference battles to real set definitions

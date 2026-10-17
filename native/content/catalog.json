@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 6,
+  "schemaVersion": 7,
   "variants": [
     {
       "id": "faction-wars/normal",
@@ -3696,6 +3696,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -8688,6 +8689,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -13221,6 +13223,82 @@
           }
         }
       ],
+      "partner": {
+        "odds": [
+          null,
+          [
+            100,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            100,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            100,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            40,
+            60,
+            0,
+            0,
+            0
+          ],
+          [
+            20,
+            50,
+            30,
+            0,
+            0
+          ],
+          [
+            10,
+            45,
+            45,
+            0,
+            0
+          ],
+          [
+            0,
+            30,
+            40,
+            30,
+            0
+          ],
+          [
+            0,
+            20,
+            40,
+            40,
+            0
+          ],
+          [
+            0,
+            0,
+            30,
+            40,
+            30
+          ]
+        ],
+        "chance": 0.33,
+        "seekerChance": 0.75,
+        "hp": 200,
+        "bonusHp": 300,
+        "bonusAp": 40,
+        "bonusAd": 0.2,
+        "bonusMana": 0.2,
+        "fromLevel": 4
+      },
       "poolSizes": [
         0,
         29,
@@ -17933,6 +18011,82 @@
           }
         }
       ],
+      "partner": {
+        "odds": [
+          null,
+          [
+            100,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            100,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            100,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            40,
+            60,
+            0,
+            0,
+            0
+          ],
+          [
+            20,
+            50,
+            30,
+            0,
+            0
+          ],
+          [
+            10,
+            45,
+            45,
+            0,
+            0
+          ],
+          [
+            0,
+            30,
+            40,
+            30,
+            0
+          ],
+          [
+            0,
+            20,
+            40,
+            40,
+            0
+          ],
+          [
+            0,
+            0,
+            30,
+            40,
+            30
+          ]
+        ],
+        "chance": 0.33,
+        "seekerChance": 0.75,
+        "hp": 200,
+        "bonusHp": 300,
+        "bonusAp": 40,
+        "bonusAd": 0.2,
+        "bonusMana": 0.2,
+        "fromLevel": 4
+      },
       "poolSizes": [
         0,
         30,
@@ -22514,6 +22668,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         29,
@@ -26846,6 +27001,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         29,
@@ -30936,6 +31092,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -35618,6 +35775,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -40943,6 +41101,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -46807,6 +46966,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -52288,6 +52448,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -57021,6 +57182,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -61705,6 +61867,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -66551,6 +66714,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -71703,6 +71867,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -76610,6 +76775,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -81601,6 +81767,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -86271,6 +86438,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -90851,6 +91019,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         45,
@@ -95356,6 +95525,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         45,
@@ -99951,6 +100121,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,
@@ -104621,6 +104792,7 @@
           }
         }
       ],
+      "partner": null,
       "poolSizes": [
         0,
         30,

@@ -80,7 +80,9 @@ public sealed partial class CombatSimulation
             case "line":
                 foreach (var enemy in LineTargets(unit, target)) AbilityDamage(unit, enemy, value);
                 break;
-            default: throw new NotSupportedException(unit.Line.Ability.Kind);
+            default:
+                if (!CastSetAbility(unit, target, value)) throw new NotSupportedException(unit.Line.Ability.Kind);
+                break;
         }
         if (Hooks.Has(CombatHook.Cast, unit, CombatHook.AnyCast))
             Hooks.Fire(CombatHook.Cast, unit, new() { Target = target, Value = UnitValues.AbilityValue(unit.Line, unit.Stage) * castPower / 100 }, CombatHook.AnyCast);

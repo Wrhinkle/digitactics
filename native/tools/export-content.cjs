@@ -27,7 +27,7 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const lines = DT.SHOP_LINES.map(exportLine);
   const extraLines = Object.values(DT.LINE).filter(l => !l.shop).map(exportLine);
   const id = `${set.id}/${pace}`;
-  variants.push({ id, name: set.name, pace, lines, extraLines, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
+  variants.push({ id, name: set.name, pace, lines, extraLines, partner: DT.Sets.def(set.id).partner || null, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
     rerollCost: rules.rerollCost, shopSize: rules.shopSize || 5,
     items: Object.entries(DT.ITEMS).map(([id, item]) => ({ id, stats: item.stats || {}, passives: item.p || {}, hooks: Object.keys(item.hooks || {}), emblem: item.emblem || null })),
     coreItems: DT.CORE_ITEMS,
@@ -73,7 +73,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 6, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 7, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');

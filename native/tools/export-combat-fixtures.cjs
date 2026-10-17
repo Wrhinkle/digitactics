@@ -9,7 +9,7 @@ DT.Combat.prototype.has = () => false;
 const kinds = ['nuke', 'aoe', 'stun', 'slam', 'shield', 'heal', 'barrage', 'drain', 'weaken', 'rally', 'line', 'execute', 'chain', 'dash'];
 const snapshots = cb => cb.units.map(u => ({ id: u.id, hp: u.hp, mana: u.mana, shield: u.shield, c: u.c, r: u.r,
   alive: u.alive, target: u.target ? u.target.id : null, atkCd: u.atkCd, moveCd: u.moveCd,
-  stun: u.stun, lock: u.lock, dealt: u.dealt, taken: u.taken, healed: u.healed, nAtk: u.nAtk, maxHp: u.maxHp, ad: u.ad, as: u.as, ap: u.ap, armor: u.armor, mr: u.mr, maxMana: u.maxMana, items: u.items, stage: u.stage, summoned: !!u.summoned }));
+  stun: u.stun, lock: u.lock, dealt: u.dealt, taken: u.taken, healed: u.healed, nAtk: u.nAtk, maxHp: u.maxHp, ad: u.ad, as: u.as, ap: u.ap, armor: u.armor, mr: u.mr, maxMana: u.maxMana, items: u.items, stage: u.stage, summoned: !!u.summoned, blossomKills: u.state.blossom || 0, timeRune: u.state.rune || 0 }));
 const fixtures = [];
 const exercised = new Set();
 for (const kind of kinds) {
@@ -95,6 +95,54 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) fo
 // Real legacy dispatch with controlled hook definitions: source ordering, owner filtering,
 // recursion, timed callbacks and mutable damage events are compared alongside fight state.
 Object.assign(DT.Combat.prototype, originalHooks);
+// Fates custom casts use the actual ability registry and mechanic (including lethal time runes).
+for (const kind of ['grow', 'blossom', 'burst', 'frenzy', 'lullaby', 'showstopper', 'rewind']) for (const stage of [0, 1, 2]) for (const cols of [7, 14]) {
+  const pace = cols === 7 ? 'normal' : 'hyper';
+  DT.Sets.activate('fates', pace);
+  const primary = DT.SHOP_LINES.find(l => l.type === kind);
+  if (!primary) throw new Error(`No Fates ability ${kind}`);
+  const pool = DT.SHOP_LINES.filter(l => kinds.includes(l.type));
+  const seed = 12000 + fixtures.length, pick = DT.makeRng(seed);
+  const entries = main => Array.from({ length: 5 }, (_, i) => ({ line: main && i === 0 ? primary.id : pool[Math.floor(pick() * pool.length)].id,
+    stage, c: i, r: 4 + i % 2, items: [] }));
+  const sideA = entries(true), sideB = entries(false);
+  const cb = new DT.Combat({ units: sideA, noTraits: true, cols }, { units: sideB, noTraits: true, cols }, { seed });
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  if (!cb.events.some(e => e.type === 'cast' && e.at === 0)) throw new Error(`Unexercised Fates cast ${kind}/${stage}/${cols}`);
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+  fixtures.push({ name: `fates-ability/${kind}/${stage}/${cols}`, variant: `fates/${pace}`, seed, cols,
+    sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t,
+    setup: { sideA: { noTraits: true }, sideB: { noTraits: true } } });
+}
+
+DT.Sets.activate('fates', 'hyper');
+const fatesTraits = Object.entries(DT.TRAITS).map(([id, t]) => ({ id, bp: [...t.bp] }));
+for (const { id, bp } of fatesTraits) for (let level = 0; level < bp.length; level++) for (const fallen of id === 'FALLEN' ? ['dark', 'holy'] : ['dark']) {
+  const pace = level % 2 ? 'normal' : 'hyper';
+  DT.Sets.activate('fates', pace);
+  const cols = level % 2 ? 14 : 7, seed = 14000 + fixtures.length, pick = DT.makeRng(seed);
+  const own = DT.SHOP_LINES.filter(l => l.traits.includes(id)).slice(0, bp[level]);
+  const selected = [];
+  while (selected.length < Math.max(4, own.length)) { const l = DT.SHOP_LINES[Math.floor(pick() * DT.SHOP_LINES.length)]; if (!selected.includes(l)) selected.push(l); }
+  const components = Object.keys(DT.ITEMS).filter(id => DT.ITEMS[id].component && !DT.ITEMS[id].hooks);
+  const entries = lines => lines.map((l, i) => ({ line: l.id, stage: level % 3, c: i % cols, r: 4 + Math.floor(i / cols),
+    items: i % 3 ? [] : [components[0]], owner: i % 2 }));
+  const sideA = entries(own), sideB = entries(selected);
+  if (own.length < bp[level]) sideA[0].bonusTraits = { [id]: bp[level] - own.length };
+  sideA[0].mods = { partner: true, bonus: ['hp', 'ap', 'ad', 'mana'][fixtures.length % 4] };
+  const mech = { deva: level * 3, fallen, blossom: 12 };
+  const cb = new DT.Combat({ units: sideA, cols, mech }, { units: sideB, cols, mech }, { seed });
+  if (DT.traitLevel(id, cb.traitCounts[0][id]) !== level + 1) throw new Error(`Missing Fates breakpoint ${id}/${level}`);
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, owner: u.owner, items: u.items, bonusTraits: u.bonusTraits, partner: u.mods?.partner ? { bonus: u.mods.bonus } : null }));
+  fixtures.push({ name: `fates-trait/${id}/${level}/${fallen}`, variant: `fates/${pace}`, seed, cols,
+    sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
+    traitCounts: cb.traitCounts, setup: { sideA: { fates: mech }, sideB: { fates: mech } } });
+}
 DT.Sets.activate('faction-wars', 'hyper');
 const productionTraits = Object.entries(DT.TRAITS).map(([id, t]) => ({ id, bp: [...t.bp] }));
 for (const { id, bp } of productionTraits) for (let level = 0; level < bp.length; level++) {
@@ -142,7 +190,7 @@ for (const augment of [...combatAugments, 'crest', 'counting-edge']) {
   const samples = [{ tick: 0, units: snapshots(cb) }];
   let tick = 0;
   while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
-  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items, bonusTraits: u.bonusTraits }));
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items, bonusTraits: u.bonusTraits, partner: u.mods?.partner ? { bonus: u.mods.bonus } : null }));
   fixtures.push({ name: `faction-augment/${augment}`, variant: 'faction-wars/hyper', seed, cols: 7,
     sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
     augsA: augs, augsB: [], traitCounts: cb.traitCounts });
@@ -243,5 +291,5 @@ for (const duos of [false, true]) {
   for (const name of names) if (!covered.has(name)) throw new Error(`Hook reference never exercised ${name}`);
   DT.SET.hooks = oldSetHooks;
 }
-fs.writeFileSync(path.join(__dirname, '../tests/fixtures/combat.json'), JSON.stringify(fixtures) + '\n');
+fs.writeFileSync(path.join(__dirname, '../tests/fixtures/combat.json.gz'), require('node:zlib').gzipSync(JSON.stringify(fixtures) + '\n'));
 console.log(`Exported ${fixtures.length} shared-kernel reference battles covering ${kinds.length} ability types.`);

@@ -1,9 +1,10 @@
 namespace DigiTactics.Rules;
 
+public sealed record FatesState(int Deva = 0, string? Fallen = null, double Blossom = 0);
 public sealed record CombatBuffs(double AttackSpeed = 0, double Armor = 0, double Mana = 0);
 public sealed record CombatPartner(int Owner, string[]? Augments = null, CombatBuffs? Buffs = null, double PartnerTop = 0);
 public sealed record CombatSideEffects(bool NoTraits = false, Dictionary<string, int>? Counts = null, string[]? Augments = null,
-    CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0);
+    CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0, FatesState? Fates = null);
 public sealed record CombatSetup(CombatSideEffects SideA, CombatSideEffects SideB);
 
 public static class TraitRules
@@ -86,6 +87,8 @@ public static class TraitRules
                     var definition = rules.Traits.Single(t => t.Id == trait);
                     if (definition.Kind == "family" && counts[trait] >= definition.Breakpoints[0]) counts[trait]++;
                 }
+        if (rules.Id.StartsWith("fates/", StringComparison.Ordinal) && counts.TryGetValue("NINJA", out int ninja) && ninja != 1 && ninja != 4)
+            counts["NINJA"] = 0;
         return counts;
     }
 }
