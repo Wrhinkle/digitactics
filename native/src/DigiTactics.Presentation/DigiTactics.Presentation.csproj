@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../DigiTactics.Rules/DigiTactics.Rules.csproj" />
+  </ItemGroup>
+</Project>

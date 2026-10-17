@@ -4,6 +4,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../DigiTactics.Presentation/DigiTactics.Presentation.csproj" />
     <ProjectReference Include="../DigiTactics.Rules/DigiTactics.Rules.csproj" />
     <PackageReference Include="Ahwoo.Brutal.Glfw" Version="2026.10.4" />
     <PackageReference Include="Ahwoo.Brutal.ImGui.Backends" Version="2026.10.2" />

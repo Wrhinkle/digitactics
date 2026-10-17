@@ -297,9 +297,15 @@ The 5,699 gameplay traces compare these four values at every captured sample,
 including 210,720 samples in transit (8,296 stunned and 36,967 fallen), and travel
 durations of 0.2, 0.25, 0.3 and 0.4 seconds. Instant placement resets interpolation,
 while dead units retain their last travel state, matching the original engine.
-World-space interpolation, model animation and production rendering remain pending.
+The new Presentation assembly converts this travel state into world-space positions,
+target-facing angles, mirrored viewer teams and death visibility. Each scene owns
+its event cursor and death times; it reuses a visible-unit buffer and does not mutate
+combat. A build-time fixture adapter executes the original render3d.js methods with
+GPU/DOM work stubbed, checking 282,124 outputs across 22 seven-/fourteen-column scene
+traces. This is scene projection only: GPU drawing, model animation, effects and
+production screens remain pending.
 
-Latest verification: the native test suite passes 116,840,185 assertions.
+Latest verification: the native test suite passes 117,122,309 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

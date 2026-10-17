@@ -42,11 +42,16 @@ across abilities, trait strikes, DigiXros ejection, items and Galaxy modifiers.
 Underlords and Knockout add 1,898 battles and 1,333,172 cues across abilities,
 hero passives, alliances, items and all eight Tamer builds at every rank. The
 simulation now retains movement origins, elapsed time and durations, checked in
-all 5,699 gameplay reference battles. Rendering that travel and model animation
-remain unfinished.
+all 5,699 gameplay reference battles. A separate presentation module projects
+world positions, target-facing angles, viewer mirroring and death visibility;
+282,124 checks compare it with the original renderer across 22 scene traces.
+GPU rendering, model animation and production screens remain unfinished.
 
 ## Boundaries
 
+- `src/DigiTactics.Presentation`: arena geometry and per-battle visible unit state.
+  Reads the simulation and consumes presentation cues without changing gameplay;
+  contains no graphics or window APIs.
 - `src/DigiTactics.Rules`: deterministic C# rules. No graphics, filesystem, clocks,
   networking, BRUTAL native calls, or global active-ruleset state in simulation objects.
   Content loading is a separate boundary. Match instances own their rules, random
