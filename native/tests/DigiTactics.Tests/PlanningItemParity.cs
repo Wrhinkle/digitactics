@@ -49,6 +49,7 @@ internal static class PlanningItemParity
     }
     private sealed class Hooks(bool underlords) : IMatchItemHooks
     {
+        public void Combined(MatchPlayer player, PlanningUnit unit, IReadOnlyList<PlanningUnit> sources) => throw new InvalidOperationException("Unexpected combine");
         public bool Deny { get; set; }
         public string UseConsumable(MatchPlayer player, int itemIndex, PlanningUnit unit)
         { string id = player.Items[itemIndex]; player.Items.RemoveAt(itemIndex); return "used:" + id; }

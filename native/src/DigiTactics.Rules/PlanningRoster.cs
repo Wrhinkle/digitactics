@@ -93,7 +93,7 @@ public sealed class PlanningRoster
 
     public IReadOnlyList<PlanningUnit> Combine(bool boardLocked, Action<string> giveItem,
         PlanningUnit? extra = null, int maxStage = 2,
-        Action<PlanningUnit, IReadOnlyList<PlanningUnit>>? onCombine = null)
+        Action<PlanningUnit, IReadOnlyList<PlanningUnit>>? onCombine = null, bool discardOverflow = false)
     {
         List<PlanningUnit> evolved = [];
         while (true)
@@ -117,7 +117,7 @@ public sealed class PlanningRoster
             evolved.Add(up);
             onCombine?.Invoke(up, copies.Select(e => e.Unit).ToArray());
         }
-        if (extra is not null && !AddToBench(extra)) throw new InvalidOperationException("Unplaceable merge overflow.");
+        if (extra is not null && !AddToBench(extra) && !discardOverflow) throw new InvalidOperationException("Unplaceable merge overflow.");
         return evolved;
     }
 

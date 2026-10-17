@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 132,803,465 assertions.
+Latest verification: the native test suite passes 134,590,337 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -575,5 +575,25 @@ including random-stream advancement and empty candidate lists.
 paces of all eight affected sets. The 132,768 checks cover all eligible held item
 IDs, empty equipment, multiple equipped items, full inventories, result codes,
 returned items and RNG. Export also checks that Gizmos radiant flags still match
-the catalog's radiant category. Copy consumables and other mode mechanics remain
-pending, as does complete desktop match integration.
+the catalog's radiant category. Other mode mechanics and complete desktop match
+integration remain pending.
+
+## Unit-copy consumables
+
+The native inventory command now implements Gizmos Copy Data, Galaxies Copier,
+Fates Copy Data, Dragonlands standard/lesser duplicators, Arcane standard/lesser
+copiers and the Auto Chess Digi-Egg. Copies reserve the correct number of pool
+units, preserve each mode's rejection order and tier limits, and run ordered merge
+callbacks before clearing personal max-star shop offers. Auto Chess copies the
+target's current form; other copiers create a base form. Galaxies retains its ID
+allocation even when a full-bench copy is rejected.
+
+12 reference traces exercise original equip/use/combine methods across both paces
+of all six affected sets, producing 1,786,872 checks. They cover every shop and
+non-shop line, stage limits, exhausted pools, full benches, combat board locks,
+chained merges, item overflow, pool and shop state, merge callback IDs and source
+order, next-unit IDs and RNG. The original Galaxies/Auto Chess full-bench test
+counts locked board units even though merging excludes them; native behavior
+retains the resulting discarded-extra/pool-reservation behavior. Mode-specific
+combine callback effects still require the concrete match hook implementation.
+Remaining consumables, custom offers and full desktop match integration are pending.

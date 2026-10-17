@@ -4,13 +4,18 @@ namespace DigiTactics.Rules;
 public sealed class ModeItemConsumables(MatchState state)
 {
     private readonly Dictionary<string, ItemDefinition> items = state.Rules.Items.ToDictionary(i => i.Id);
+    private readonly Dictionary<string, UnitLine> shopLines = state.Rules.Lines.ToDictionary(l => l.Id);
     private LootRules Rules => state.Rules.Loot!;
     private string Policy => Rules.Mode!.Policy;
 
     /// <returns>Null delegates an unimplemented mechanic to the required match hooks.</returns>
-    public string? TryUse(MatchPlayer player, int index, PlanningUnit unit)
+    public string? TryUse(MatchPlayer player, int index, PlanningUnit unit, bool boardLocked,
+        Action<PlanningUnit, IReadOnlyList<PlanningUnit>> onCombine)
     {
         string id = player.Items[index];
+        if (id is "giz_copy" or "gal_copier" or "fat_copy" or "drg_dup" or "drg_dup_lesser" or
+            "arc_copier" or "arc_copier_small" or "ac_digiegg")
+            return Copy(player, index, unit, boardLocked, onCombine);
         if (id is "remover" or "giz_remover" or "gal_remover" or "fat_remover" or
             "drg_remover" or "arc_remover" or "col_remover" or "rec_remover")
             return GiveBack(player, index, unit, false);
@@ -25,6 +30,41 @@ public sealed class ModeItemConsumables(MatchState state)
         equipped[slot] = equipped[slot].Replace("giz_", "giz_oc_", StringComparison.Ordinal);
         player.Items.RemoveAt(index);
         player.Roster.UpdateUnit(unit with { Items = equipped });
+        return id;
+    }
+
+    private string Copy(MatchPlayer player, int index, PlanningUnit target, bool boardLocked,
+        Action<PlanningUnit, IReadOnlyList<PlanningUnit>> onCombine)
+    {
+        string id = player.Items[index];
+        int tierLimit = id switch { "giz_copy" => 4, "drg_dup_lesser" or "arc_copier_small" => 3,
+            "drg_dup" or "arc_copier" => 5, _ => int.MaxValue };
+        if (!shopLines.TryGetValue(target.Line, out var line) || line.Tier > tierLimit) return "none";
+        bool egg = id == "ac_digiegg";
+        if (egg && target.Stage >= 2) return "maxed";
+        int stage = egg ? target.Stage : 0;
+        int need = egg ? (int)Math.Pow(line.Copies, stage) : 1;
+        int free = player.Roster.FreeBenchSlot;
+        if (id == "giz_copy" && free < 0) return "benchFull";
+        if (state.Pool.Remaining(line.Id) < need) return egg ? "poolEmpty" : "none";
+        // Galaxies allocates an ID even when the subsequent bench check rejects the copy.
+        PlanningUnit? copy = id == "gal_copier" ? state.CreateUnit(line.Id, stage) : null;
+        if (free < 0)
+        {
+            bool canOverflow = id == "gal_copier" || egg;
+            int same = player.Roster.Entries.Count(e => e.Unit.Line == line.Id && e.Unit.Stage == stage);
+            if (!canOverflow || same < line.Copies - 1)
+                return id is "gal_copier" or "fat_copy" ? "none" : "benchFull";
+        }
+        player.Items.RemoveAt(index);
+        state.Pool.Take(line.Id, need);
+        copy ??= state.CreateUnit(line.Id, stage);
+        if (free >= 0) player.Roster.AddToBench(copy);
+        // The original full-bench check includes locked board units; combine excludes them.
+        // In that case an unmerged extra is discarded, with the pool reservation retained.
+        player.Roster.Combine(boardLocked, player.GiveItem, free < 0 ? copy : null,
+            onCombine: onCombine, discardOverflow: true);
+        player.Shop.ClearMaxed();
         return id;
     }
 

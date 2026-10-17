@@ -4,6 +4,7 @@ public interface IMatchItemHooks
 {
     string UseConsumable(MatchPlayer player, int itemIndex, PlanningUnit unit);
     string? EquipVeto(MatchPlayer player, PlanningUnit unit, string item, string? combined);
+    void Combined(MatchPlayer player, PlanningUnit unit, IReadOnlyList<PlanningUnit> sources);
 }
 
 /// <summary>Inventory commands preserve rejection order and only combine components on a unit.</summary>
@@ -33,7 +34,8 @@ public sealed class PlanningItems(Ruleset rules, IMatchItemHooks hooks, ModeItem
         string id = player.Items[itemIndex];
         if (!items.TryGetValue(id, out var item)) return "none";
         var unit = entry.Unit;
-        if (item.Consumable) return consumables?.TryUse(player, itemIndex, unit) ?? hooks.UseConsumable(player, itemIndex, unit);
+        if (item.Consumable) return consumables?.TryUse(player, itemIndex, unit, boardLocked,
+            (up, from) => hooks.Combined(player, up, from)) ?? hooks.UseConsumable(player, itemIndex, unit);
         if (item.Category == "global") { player.Items.RemoveAt(itemIndex); player.Globals.Add(id); return id; }
         if (item.Emblem is { } trait && Traits(unit).Contains(trait)) return "hasTrait";
         if (!HoldsItems(unit)) return "cantHold";

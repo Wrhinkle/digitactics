@@ -39,6 +39,7 @@ internal static class ConsumableParity
     }
     private sealed class Hooks : IMatchItemHooks
     {
+        public void Combined(MatchPlayer player, PlanningUnit unit, IReadOnlyList<PlanningUnit> sources) => throw new InvalidOperationException("Unexpected combine");
         public string UseConsumable(MatchPlayer player, int itemIndex, PlanningUnit unit) => throw new InvalidOperationException("Native consumable unexpectedly delegated");
         public string? EquipVeto(MatchPlayer player, PlanningUnit unit, string item, string? combined) => null;
     }
