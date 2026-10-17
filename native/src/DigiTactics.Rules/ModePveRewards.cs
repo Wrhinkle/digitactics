@@ -4,6 +4,7 @@ public sealed record ModeLootRules(string Policy, string[] Artifacts, string[] C
     string[] ShadowComponents, Dictionary<string, string> ShadowOf, double ShadowChance, Dictionary<string, string>? RadiantOf = null, Dictionary<string, string>? BaseOf = null);
 public sealed class PlayerMechanics
 {
+    public ReckoningPlanningState Reckoning { get; } = new();
     public GizmosPlanningState Gizmos { get; } = new();
     public double UnderlordsBeastKills { get; set; }
     public double UnderlordsDuel { get; set; }

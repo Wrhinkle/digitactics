@@ -1,8 +1,9 @@
 {
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "variants": [
     {
       "id": "faction-wars/normal",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -8303,6 +8304,7 @@
     },
     {
       "id": "faction-wars/hyper",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -16589,6 +16591,7 @@
     },
     {
       "id": "fates/normal",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -24881,6 +24884,7 @@
     },
     {
       "id": "fates/hyper",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -33160,6 +33164,7 @@
     },
     {
       "id": "galaxies/normal",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -40651,6 +40656,7 @@
     },
     {
       "id": "galaxies/hyper",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -48138,6 +48144,7 @@
     },
     {
       "id": "gizmos/normal",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -56930,6 +56937,7 @@
     },
     {
       "id": "gizmos/hyper",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -65701,6 +65709,10 @@
     },
     {
       "id": "reckoning/normal",
+      "reckoning": {
+        "blessAt": 40,
+        "blessGold": 4
+      },
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -76682,6 +76694,10 @@
     },
     {
       "id": "reckoning/hyper",
+      "reckoning": {
+        "blessAt": 8,
+        "blessGold": 2
+      },
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -87650,6 +87666,7 @@
     },
     {
       "id": "dragonlands/normal",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -95990,6 +96007,7 @@
     },
     {
       "id": "dragonlands/hyper",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -104304,6 +104322,7 @@
     },
     {
       "id": "arcane/normal",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -112961,6 +112980,7 @@
     },
     {
       "id": "arcane/hyper",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -121604,6 +121624,7 @@
     },
     {
       "id": "coliseum/normal",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -130253,6 +130274,7 @@
     },
     {
       "id": "coliseum/hyper",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -138881,6 +138903,7 @@
     },
     {
       "id": "underlords/normal",
+      "reckoning": null,
       "underlords": {
         "perStage": 5,
         "itemOdds": {
@@ -146775,6 +146798,7 @@
     },
     {
       "id": "underlords/hyper",
+      "reckoning": null,
       "underlords": {
         "perStage": 5,
         "itemOdds": {
@@ -154665,6 +154689,7 @@
     },
     {
       "id": "autochess/normal",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -162133,6 +162158,7 @@
     },
     {
       "id": "autochess/hyper",
+      "reckoning": null,
       "underlords": null,
       "gameStart": {
         "gates": [
@@ -169579,6 +169605,7 @@
     },
     {
       "id": "underlords_ko/normal",
+      "reckoning": null,
       "underlords": {
         "perStage": 2,
         "itemOdds": {
@@ -177600,6 +177627,7 @@
     },
     {
       "id": "underlords_ko/hyper",
+      "reckoning": null,
       "underlords": {
         "perStage": 2,
         "itemOdds": {

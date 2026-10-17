@@ -1407,3 +1407,25 @@ The full production match controller still needs to register these handlers and
 project their persistent state into subsequent battles.
 
 Validation: **159,889,824 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+### Reckoning planning and AI
+
+`ReckoningPlanning` handles Dragon Kin egg creation and hatching, deferred Radiant
+Blessings, augment rewards, income and Darkness loss damage. Catalog schema 35
+exports the pace-specific Blessing threshold and gold. Eggs drop individually so
+AI collection preserves original inventory limits, orb IDs and random draws.
+
+AI crafting consumes Shadow components in inventory order, crafts egg emblems at
+trait breakpoints, chooses Tome rewards from four shuffled options and refunds up
+to three removers. Holder rankings and trait counts retain the original snapshot
+timing across crafting passes.
+
+1,536 original-engine planning traces pass 58,160 checks; 1,024 AI traces pass
+103,560 checks. Coverage includes existing offers/carousels delaying Blessings,
+multiple eggs, human/AI collection, inventory capacity, stage-dependent crafting,
+Tome/remover guard limits, persistent roster/shop/pool state and RNG continuity.
+Use `--reckoning-planning-only` and `--reckoning-ai-only` for targeted checks.
+Production match-controller registration and full application acceptance remain
+outstanding; this module is not a completed game release.
+
+Validation: **160,051,544 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
