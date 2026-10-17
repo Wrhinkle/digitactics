@@ -17,12 +17,12 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
     slots: l.slots || 1,
     sellPremium: set.id === 'dragonlands' && l.slots === 2 ? Math.max(0, (l.price || l.tier) - l.tier) : 0,
     combat: {
-      health: role.hp, attackDamage: role.ad, attackSpeed: l.as || role.as,
+      leap: !!(l.leap != null ? l.leap : role.leap), health: role.hp, attackDamage: role.ad, attackSpeed: l.as || role.as,
       range: l.range || role.range, armor: l.armor ?? role.armor, magicResist: l.mr ?? role.mr,
       maxMana: l.mana || role.mana, startMana: l.startMana ?? role.startMana,
       healthMultiplier: l.hpMul || 1, attackMultiplier: l.adMul || 1,
     },
-    ability: { kind: l.type, baseValue: DT.abilityBase(l.type) },
+    ability: { kind: l.type, baseValue: DT.abilityBase(l.type), radius: l.radius || 0, shots: l.shots || 4, names: l.abil },
   }; });
   const id = `${set.id}/${pace}`;
   variants.push({ id, name: set.name, pace, lines, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,

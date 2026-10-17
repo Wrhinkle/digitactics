@@ -16,17 +16,24 @@ The current executable is a migration workbench. It must not replace the public 
   mitigation, damage reduction cap, shield absorption, and mana gained from damage.
   Effect activity and hook-supplied values are inputs; hook implementations are pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 73,848 assertions, compiles
+- Shared combat kernel: fixed tick, ordered unit updates, attacks, mana, movement,
+  leaps, cast locks, stun, weakening, shields, healing, death and battle outcomes.
+- All 14 shared ability types are exercised in 88 reference battles across star
+  levels and Solo/Duos widths. State is compared throughout each fight, including
+  target selection, cooldowns, HP/mana/shields and damage totals. Equipment and
+  set hooks are deliberately disabled in these reference cases.
+
+Latest verification: `./native/build.ps1 -Publish` passes 419,579 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Combat lifecycle: unit runtime state, ordered events, fixed tick, basic attacks,
-   movement, mana, cast timing, damage side effects, healing, death and end conditions.
-   Build isolated reference duels and team battles before migrating item/trait hooks.
-2. Ability dispatch and stable hook ordering; port each ruleset with explicit coverage
+1. Integrate equipment stats and passive effects, effect timers, full combat event
+   metadata and stable hook dispatch into the verified combat kernel. Extend the
+   reference battles to enable real items and hooks before claiming full combat parity.
+2. Set-defined ability dispatch; port each ruleset with explicit coverage
    and deterministic full-match trace comparisons.
 3. Full match state and commands: planning board, economy, round progression, AI,
    offers, carousel, items, Duos and shared health. Special shop offers are pending too.

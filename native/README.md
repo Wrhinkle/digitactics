@@ -58,6 +58,9 @@ to be a Vulkan renderer or the final game UI.
 - 1,200 damage reference cases covering mitigation, shields, attribute advantages,
   amplifier ordering, burn mana suppression and hook-supplied modifiers.
   Full combat event dispatch and set hooks remain unported.
+- 88 shared-kernel reference battles exercise all 14 shared abilities, all star
+  levels, Solo/Duos widths, empty sides, overlapping placements and time limits.
+  Equipment and set hooks are disabled for these isolated comparisons.
 - 15,680 Solo/Duos hex-distance comparisons and 200 movement/target-selection
   traces, including occupied cells and deterministic tie-breaking.
 - Headless native renderer smoke mode and self-contained Windows packaging.
@@ -67,7 +70,7 @@ to be a Vulkan renderer or the final game UI.
 1. Full match state: board placement, economy, rounds, all set hooks, AI, carousel,
    items, augments, rewards, and Duos transfers. Keep shop parity tests as the lower
    layer; add complete command-log fixtures before porting each behavior.
-2. Combat simulation: hex movement, target selection, damage, timed effects, abilities,
+2. Complete combat simulation: equipment, full timed effects, custom abilities,
    traits and deterministic replay hashes. Compare identical seeds and command logs,
    including every set-specific hook, against the original engine.
 3. Native 3D pipeline: glTF import, materials, skeletal animation, cameras, lighting,
