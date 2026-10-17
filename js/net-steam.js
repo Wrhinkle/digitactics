@@ -29,7 +29,7 @@ import { logKey } from './net-firebase.js';
 import * as Guard from './net-guard.js';
 
 const GAME_KEY = 'digitactics';
-export const PROTO_VERSION = '8'; // 8: expanded roster forms and model assignments across sets
+export const PROTO_VERSION = '9'; // 9: player-specific three-star shop exclusions
 const HOST_GONE_MS = 6000;
 const CHUNK = 150; // log entries per snapshot message (Steam messages max out at 512 KB)
 const keyIndex = (k) => (k ? parseInt(String(k).slice(1), 10) : -1);

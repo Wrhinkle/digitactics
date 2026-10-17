@@ -168,7 +168,7 @@
       this.isPvE = this.roundType === 'pve';
       if (this.roundType === 'carousel') this.startCarousel();
       else {
-        for (const p of this.players) { this.makeOffer(p); this.fireGame('onRoundStart', p, {}); }
+        for (const p of this.players) { this.makeOffer(p); this.fireGame('onRoundStart', p, {}); this.clearMaxedShop(p); }
         this.planAI();
       }
     }
@@ -366,7 +366,23 @@
       if (DT.LINE[unit.line].shop) this.pool[unit.line] += DT.unitCopies(unit);
     }
 
-    rollSlot(level, oddsOverride) {
+    shopEligible(p, lineId) {
+      return !p.allUnits().some((u) => u.line === lineId && u.stage >= 2);
+    }
+
+    // Release existing offers as soon as a player owns a three-star copy, including locked shops.
+    clearMaxedShop(p) {
+      for (let i = 0; i < p.shop.length; i++) {
+        const id = p.shop[i];
+        if (id && !this.shopEligible(p, id)) {
+          this.pool[id] += 1;
+          p.shop[i] = null;
+          if (p.shopMeta) p.shopMeta[i] = null;
+        }
+      }
+    }
+
+    rollSlot(level, oddsOverride, p) {
       const table = DT.SHOP_ODDS;
       const odds = oddsOverride || table[Math.min(table.length - 1, level)];
       let roll = this.rng() * 100;
@@ -376,7 +392,7 @@
         roll -= odds[i];
       }
       for (let t = tier; t >= 1; t--) {
-        const lines = DT.SHOP_LINES.filter((l) => l.tier === t && this.pool[l.id] > 0);
+        const lines = DT.SHOP_LINES.filter((l) => l.tier === t && this.pool[l.id] > 0 && (!p || this.shopEligible(p, l.id)));
         const total = lines.reduce((s, l) => s + this.pool[l.id], 0);
         if (!total) continue;
         let x = this.rng() * total;
@@ -399,8 +415,9 @@
         level = e.level; odds = e.odds; size = Math.max(1, Math.min(8, e.size | 0));
         if (size !== p.shop.length) p.shop = new Array(size).fill(null);
       }
-      for (let i = 0; i < p.shop.length; i++) p.shop[i] = this.rollSlot(level, odds);
+      for (let i = 0; i < p.shop.length; i++) p.shop[i] = this.rollSlot(level, odds, p);
       if (this.hasHook('onShopRolled', p)) this.fireGame('onShopRolled', p, { shop: p.shop });
+      this.clearMaxedShop(p);
     }
 
     reroll(p) {
@@ -425,6 +442,7 @@
     canBuy(p, slot) {
       const id = p.shop[slot];
       if (!id) return 'empty';
+      if (!this.shopEligible(p, id)) return 'empty';
       if (p.gold < this.shopCost(p, slot)) return 'gold';
       if (p.freeBenchSlot() >= 0) return 'ok';
       const pool = this.boardLocked(p) ? p.bench.filter(Boolean) : p.allUnits();
@@ -497,6 +515,7 @@
         const free = p.freeBenchSlot();
         if (free >= 0) p.bench[free] = extra;
       }
+      this.clearMaxedShop(p);
       return evolved;
     }
 
@@ -1705,6 +1724,7 @@
           this.fireGame('onRankUp', p, { rank: p.power.rank });
         }
         this.fireGame('onRoundStart', p, {});
+        this.clearMaxedShop(p);
       }
       this.phase = 'planning';
       if (this.roundType === 'carousel') this.startCarousel();

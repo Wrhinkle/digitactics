@@ -52675,7 +52675,7 @@ void main() {
 
   // js/net-steam.js
   var GAME_KEY = "digitactics";
-  var PROTO_VERSION = "8";
+  var PROTO_VERSION = "9";
   var HOST_GONE_MS = 6e3;
   var CHUNK2 = 150;
   var keyIndex = (k) => k ? parseInt(String(k).slice(1), 10) : -1;

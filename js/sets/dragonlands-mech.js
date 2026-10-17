@@ -893,7 +893,7 @@
         if (p.mech.starShop) {
           p.mech.starShop = 0;
           const odds = DT.SHOP_ODDS[Math.min(DT.SHOP_ODDS.length - 1, p.level)];
-          const list = shopLines((l) => l.traits.includes('STAR') && odds[l.tier - 1] > 0 && g.pool[l.id] > 0 && l.id !== shop[0]);
+          const list = shopLines((l) => l.traits.includes('STAR') && odds[l.tier - 1] > 0 && g.pool[l.id] > 0 && g.shopEligible(p, l.id) && l.id !== shop[0]);
           if (list.length) {
             const id = c.pick(list).id;
             if (shop[0]) g.pool[shop[0]] += 1;
@@ -908,7 +908,7 @@
           for (let i = 0; i < shop.length; i++) {
             const L = shop[i] && DT.LINE[shop[i]];
             if (!isDragonLine(L) || c.rng() >= cut.chance) continue;
-            const list = shopLines((l) => l.tier === L.tier && !isDragonLine(l) && g.pool[l.id] > 0);
+            const list = shopLines((l) => l.tier === L.tier && !isDragonLine(l) && g.pool[l.id] > 0 && g.shopEligible(p, l.id));
             const total = list.reduce((n, l) => n + g.pool[l.id], 0);
             if (!total) continue;
             let x = c.rng() * total, id = list[list.length - 1].id;

@@ -636,7 +636,7 @@
   function loadedDice(c, u, idx) {
     const p = c.player, g = c.game;
     const tr = DT.LINE[u.line].traits;
-    const share = (l) => l.traits.some((t) => tr.includes(t));
+    const share = (l) => g.shopEligible(p, l.id) && l.traits.some((t) => tr.includes(t));
     if (!DT.SHOP_LINES.some((l) => share(l) && g.pool[l.id] > 0)) return 'none';
     const id = p.items[idx];
     p.items.splice(idx, 1);
@@ -710,7 +710,7 @@
     let roll = c.rng() * 100, tier = 1;
     for (let k = 0; k < odds.length; k++) { if (roll < odds[k]) { tier = k + 1; break; } roll -= odds[k]; }
     let lines = [];
-    for (let t = tier; t >= 1 && !lines.length; t--) lines = DT.SHOP_LINES.filter((l) => l.tier === t && g.pool[l.id] >= 3);
+    for (let t = tier; t >= 1 && !lines.length; t--) lines = DT.SHOP_LINES.filter((l) => l.tier === t && g.pool[l.id] >= 3 && g.shopEligible(p, l.id));
     if (!lines.length) return false;
     const L = c.pick(lines);
     const slot = Math.floor(c.rng() * p.shop.length);
