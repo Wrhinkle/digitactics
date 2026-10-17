@@ -31,6 +31,35 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const roundTypes = stage => Array.from({ length: rules.roundsInStage(stage) }, (_, i) => rules.roundType(stage, i + 1));
   const schedule = { opening: roundTypes(1), repeating: roundTypes(2),
     overrides: String(rules.roundType) === knownTypes[2] ? { '3-1': 'carousel' } : {} };
+  const stageLossSources = [
+    '(stage) => TFT_STAGE_DAMAGE[Math.min(stage, TFT_STAGE_DAMAGE.length - 1)]',
+    '(stage) => (stage <= 4 ? 2 : stage <= 7 ? 4 : 6)',
+    '(stage) => [0, 0, 2, 3, 4, 6, 9, 13, 150][Math.min(stage, 8)]',
+    '(stage) => [0, 1, 1, 2, 2, 3, 3, 4, 5][Math.min(stage, 8)]',
+    '(stage) => Math.floor(((stage - 1) * 5 + 3) / 10)',
+    '(stage) => (stage <= 2 ? 2 : stage <= 4 ? 3 : stage <= 6 ? 4 : 5)',
+    '(stage) => (stage <= 2 ? 0 : Math.min(stage - 2, 6))', '() => 1',
+  ];
+  const unitLossSources = [ 'null', '(u) => [1, 1, 2][u.stage] || 1', '() => 1',
+    '(u, stage) => (stage >= 4 && (u.stage >= 2 || u.line.tier >= 5) ? 1 : 0)',
+    '(u, stage) => (u.line.tamer ? (stage >= 7 ? 2 : 1) : Math.floor(1 + unitPower(u) / 3))',
+    '(u) => Math.floor(1 + (u.line.tier + 2 * u.stage) / 3)',
+  ];
+  const pveLossSources = [ 'null', '(stage) => (stage === 1 ? 0 : null)',
+    '(stage) => (stage === 1 ? 1 : null)', '() => 1',
+    '(stage) => (stage === 1 || stage === 4 ? 0 : null)',
+    '(stage) => (stage === 1 ? 1 : stage === 4 ? 0 : null)', '() => 0',
+  ];
+  const lossIndex = stageLossSources.indexOf(String(rules.lossDamage));
+  const unitLossIndex = unitLossSources.indexOf(String(rules.unitDamage));
+  if (lossIndex < 0 || unitLossIndex < 0 || !pveLossSources.includes(String(rules.pveLossDamage)))
+    throw new Error(`Unmapped match loss formula: ${set.id}/${pace}`);
+  const loss = { stageDamage: lossIndex === 4 ? [] : Array.from({ length: 9 }, (_, stage) => rules.lossDamage(stage)),
+    underlordsRoundDamage: lossIndex === 4,
+    unitDamage: ['none','stars','one','galaxies','underlords','autochess'][unitLossIndex],
+    pveDamage: rules.pveLossDamage ? rules.pveLossDamage(8) : null,
+    pveOverrides: Object.fromEntries([1,4].filter(stage => rules.pveLossDamage && rules.pveLossDamage(stage) != null)
+      .map(stage => [stage, rules.pveLossDamage(stage)])) };
   const economy = {
     startHp: rules.startHp, startGold: rules.startGold ?? 3,
     levelByStage: rules.levelByStage, incomeByStage: rules.incomeByStage,
@@ -60,7 +89,7 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const lines = DT.SHOP_LINES.map(exportLine);
   const extraLines = Object.values(DT.LINE).filter(l => !l.shop).map(exportLine);
   const id = `${set.id}/${pace}`;
-  variants.push({ id, economy, schedule, name: set.name, pace, lines, extraLines, partner: DT.Sets.def(set.id).partner || null, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
+  variants.push({ id, economy, schedule, loss, duo: DT.Duos.rules(rules), name: set.name, pace, lines, extraLines, partner: DT.Sets.def(set.id).partner || null, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
     tamers: DT.Sets.def(set.id).ulTamers || {},
     forms: Object.fromEntries(Object.entries(DT.Sets.def(set.id).forms || {}).map(([line, forms]) => [line, forms.map(f => ({ id:f.id, name:f.name, description:f.desc, trait:f.trait || null }))])),
     dragonTraitLimits: Object.fromEntries(['normal','hyper','default'].map(p => [p, DT.Sets.rulesFor(set.id, p === 'default' ? undefined : p).drgTraitMax || 0])), pveMultipliers: rules.pveMul || [], rerollCost: rules.rerollCost, shopSize: rules.shopSize || 5,
@@ -110,7 +139,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 17, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 18, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');

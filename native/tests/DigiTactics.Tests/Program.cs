@@ -5,11 +5,12 @@ string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("na
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
 if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
+if (args.Contains("--match-only")) { MatchStateParity.Run(root, catalog); return; }
 if (args.Contains("--planning-only")) { PlanningParity.Run(root, catalog); PlanningShopParity.Run(root, catalog); return; }
 if (args.Contains("--economy-only")) { EconomyParity.Run(root, catalog); return; }
 if (args.Contains("--choreography-only")) { ChoreographyParity.Run(root, catalog); return; }
 using var fixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests/fixtures/parity.json")));
-int assertions = EconomyParity.Run(root, catalog) + PlanningParity.Run(root, catalog) + PlanningShopParity.Run(root, catalog);
+int assertions = MatchStateParity.Run(root, catalog) + EconomyParity.Run(root, catalog) + PlanningParity.Run(root, catalog) + PlanningShopParity.Run(root, catalog);
 void Check(bool condition, string message)
 {
     assertions++;

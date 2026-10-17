@@ -15,6 +15,11 @@ public sealed class ShopPool
     }
 
     public int Remaining(string id) => remaining[id];
+    public void Take(string id, int count = 1)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
+        remaining[id] = Math.Max(0, remaining[id] - count);
+    }
     public void Return(string id, int count = 1)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(count);

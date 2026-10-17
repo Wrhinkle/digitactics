@@ -287,3 +287,19 @@ Reference fixtures exercise 15,400 planning commands and 8,800 two-player shop
 commands across all 22 variants. Set-specific planning/shop hooks are deliberately
 disabled in these reference traces; hook implementations, special offers and the
 full match coordinator still need integration. The desktop still uses its sandbox.
+
+## Match state, pairing and elimination
+
+`MatchState` owns player economies, ordered rosters and shops sharing one seeded
+pool. Solo and Duos pairing preserves human rematch avoidance, ghost opponents,
+custom team validation and stable team member order. Team health synchronizes
+individual hook deltas, applies Team Guard rounding, and eliminates partners
+together. Eliminations preserve tie ordering, placements, spectating behavior and
+return owned units, offers and reserved unit drops to the pool.
+
+`MatchLossRules` preserves stage damage, surviving-unit damage, PvE overrides and
+Duos scaling for every mode, including unbounded Underlords stage progression.
+Original-engine fixtures cover 132 seeded match-state sequences and every unit
+form's loss values at selected stages including 1000 (796,076 comparisons). Match settlement
+hooks, rewards, round orchestration, offers, AI and desktop integration remain
+unfinished; this does not yet establish playable full-match parity.
