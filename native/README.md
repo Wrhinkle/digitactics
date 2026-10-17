@@ -646,3 +646,26 @@ pending; these APIs do not claim a complete playable match.
 Validation: the full native suite passes 144,522,592 checks, including 5,699
 reference battles. The self-contained Windows package passes the BRUTAL asset,
 texture, purchase UI and battle-rendering smoke tests.
+
+## AI leveling and shopping execution
+
+`AiShopping` now buys XP toward the standard stage/round targets or Hyper's
+stage-based target, preserving the 20-purchase guard and maximum level. Shopping
+runs an initial buy pass, then at most 15 rerolls while free rolls or the original
+gold reserve permit. A full bench triggers one weakest-unit sale and purchase
+retry. Bench cleanup stops at six units or when no sellable unit remains.
+
+Purchases, combinations and sales use `PlanningShopCommands` and its required
+mechanic hooks. Capacity and eligible partner demand are evaluated live. Reroll
+execution is a required callback so mode-specific shop refresh can be composed
+with the shared AI loop. Offer choice and on-AI-turn hooks must precede shopping;
+portal transfers must precede bench cleanup, followed by arrangement, equipment
+and final arrangement. The production dispatcher still needs those connections.
+
+72 original-game traces across all 22 variants provide 669,795 passing checks for
+gold, XP, shop reservations, free/paid rerolls, ordered benches, pool counts and
+RNG. Base traces isolate generic shop behavior; six additional Coliseum traces
+use its concrete purchase/combine/sale handlers and compare form modifiers and
+core refunds. Other special shop metadata/pricing handlers remain pending.
+The targeted suite runs with `--ai-shopping-only` and is included in the full
+suite. This milestone does not claim full AI turn or production match completion.
