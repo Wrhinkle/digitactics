@@ -89,7 +89,7 @@ public sealed partial class CombatSimulation
                     case "PHA": Each(u => u.Reckoning.Phantom = value);
                         On(CombatHook.Lethal, (_, e) => {
                             var u = e.Unit!; var s = u.Reckoning; if (s.Phantom == 0 || s.PhantomUsed || u.Summoned || u.Health > 0) return;
-                            s.PhantomUsed = s.PhantomRisen = true; u.Health = Math.Max(1, u.MaxHealth * s.Phantom); u.InvulnerableUntil = Time + 1; u.Stun = Math.Max(u.Stun, 1); u.BurnSource = null;
+                            s.PhantomUsed = s.PhantomRisen = true; u.Health = Math.Max(1, u.MaxHealth * s.Phantom); u.InvulnerableUntil = Time + 1; u.Stun = Math.Max(u.Stun, 1); u.BurnSource = null; u.BurnUntil = 0; u.BurnAccumulated = 0;
                         });
                         On(CombatHook.BeforeDamage, (_, e) => { if (e.Unit!.Reckoning.PhantomRisen) e.Multiplier *= 1.2; });
                         On(CombatHook.BeforeDamageTaken, (_, e) => { if (e.Target!.Reckoning.PhantomRisen) e.Multiplier *= 1.3; }); break;

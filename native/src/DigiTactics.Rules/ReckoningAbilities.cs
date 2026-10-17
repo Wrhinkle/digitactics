@@ -5,6 +5,9 @@ internal sealed class ReckoningUnitState
     internal double Trickster, Night, NightDamage, Day, Phantom, Cavalier, CavalierUntil, Ranger, RangerNext, Renewer, Skirmisher;
     internal bool NightUsed, DayUsed, PhantomUsed, PhantomRisen, Legion, LegionHeal;
     internal int Spellweaver, Cannoneer;
+    internal bool Feather, Risk, Jewel, Justice, Eclipse;
+    internal double RiskAt, Store, RevengeAt, FrostUntil, AllyFrostUntil, FractureUntil;
+    internal AttackSpeedBuff? Rapid;
     internal CombatUnit? Pet, Possessor, CurseSource;
     internal double PossessUntil, Decay, DecayNext, ShroudMax, CurseNext;
     internal double Lunar { get; set; }
@@ -66,9 +69,26 @@ public sealed partial class CombatSimulation
     private void BindReckoning(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
         foreach (var side in new[] { setup.SideA, setup.SideB })
-            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
+            if ((side.Augments?.Any(id => id != "rec_a_xanti") ?? false) || (side.Parts?.Any(p => (p.Augments?.Any(id => id != "rec_a_xanti") ?? false)) ?? false))
                 throw new NotSupportedException("Reckoning augments have not been migrated yet.");
+        for (int team = 0; team < 2; team++)
+        {
+            var side = team == 0 ? setup.SideA : setup.SideB;
+            void BindAntibody(string[] ids, int? owner = null) {
+                foreach (string id in ids) if (id == "rec_a_xanti") {
+                    var augment = Hooks.Context(CombatHookSource.Augment, id, team, owner: owner);
+                    Hooks.Add(augment, CombatHook.CombatStart, (c, _) => {
+                        foreach (var u in c.Mine) if (u.Items.Any(item => items.TryGetValue(item, out var definition) && definition.Category == "shadow")) u.MaxHealth += 150;
+                    });
+                }
+            }
+            if (side.Parts is { } parts) foreach (var part in parts) BindAntibody(part.Augments ?? [], part.Owner);
+            else BindAntibody(side.Augments ?? []);
+        }
         BindReckoningTraits(sideA, sideB, setup);
+        double Drawback(CombatUnit u) => ((u.Team == 0 ? setup.SideA : setup.SideB).Augments ?? []).Contains("rec_a_xanti") ? 0.5 : 1;
+        foreach (var u in units) BindReckoningItems(u, Drawback(u));
+        BindSummonedItems = u => BindReckoningItems(u, Drawback(u));
         var context = Hooks.Context(CombatHookSource.Mechanic, "shadow");
         Hooks.Add(context, CombatHook.CombatStart, (_, _) => {
             if (setup.RoundType != "pve" || rules.PveMultipliers is not { Length: > 0 } multipliers) return;

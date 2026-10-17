@@ -105,7 +105,9 @@ to be a Vulkan renderer or the final game UI.
   possession decay, Respite and PvE scaling pass 30 additional reference battles.
   All 27 traits and 61 breakpoints pass 130 more reference battles, including
   Sentinel, Chimera inheritance, revival and Royal Rival activation/deactivation.
-  Item hooks, augments and planning/economy rules remain pending.
+  All 60 held-item hook definitions and X-Antibody pass 192 further reference
+  fights with duplicate/mixed equipment, inherited items and Shadow drawbacks.
+  Other augments and planning/economy rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

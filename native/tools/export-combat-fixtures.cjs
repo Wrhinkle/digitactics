@@ -598,6 +598,30 @@ for(const rival of royalRivals) for(const both of [false,true]) for(const stage 
     sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts});
 }
 
+DT.Sets.activate('reckoning', 'hyper');
+const reckoningHookItems = Object.keys(DT.ITEMS).filter(id => DT.ITEMS[id].hooks);
+const reckoningItemCases = reckoningHookItems.flatMap(item => [0, 1, 2].map(stage => ({ item, stage }))).concat(Array.from({ length: 12 }, (_, n) => ({ item: null, stage: n % 3 })));
+for (const { item, stage } of reckoningItemCases) {
+  const pace = stage === 0 ? 'normal' : 'hyper';
+  DT.Sets.activate('reckoning', pace);
+  const cols = stage === 2 ? 14 : 7, seed = 340000 + fixtures.length, pick = DT.makeRng(seed);
+  const candidates = DT.SHOP_LINES;
+  const entries = () => Array.from({ length: 6 }, (_, i) => ({ line: candidates[Math.floor(pick() * candidates.length)].id,
+    stage, c: i, r: 4 + i % 2,
+    items: item ? (i === 0 ? [item, item] : [item]) : Array.from({ length: 3 }, () => reckoningHookItems[Math.floor(pick() * reckoningHookItems.length)]) }));
+  const sideA = entries(), sideB = entries();
+  const augs = stage === 1 ? ['rec_a_xanti'] : [];
+  const cb = new DT.Combat({ units: sideA, cols, augs }, { units: sideB, cols, augs }, { seed });
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+  fixtures.push({ name: `reckoning-item/${item || 'mixed'}/${stage}/${seed}`, variant: `reckoning/${pace}`, seed, cols,
+    sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
+    traitCounts: cb.traitCounts, setup:{sideA:{augments:augs},sideB:{augments:augs}} });
+}
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
@@ -664,5 +688,5 @@ for (const duos of [false, true]) {
   for (const name of names) if (!covered.has(name)) throw new Error(`Hook reference never exercised ${name}`);
   DT.SET.hooks = oldSetHooks;
 }
-fs.writeFileSync(path.join(__dirname, '../tests/fixtures/combat.json.gz'), require('node:zlib').gzipSync(JSON.stringify(fixtures) + '\n'));
+fs.writeFileSync(path.join(__dirname, '../tests/fixtures/combat.json.gz'), require('node:zlib').gzipSync(JSON.stringify(fixtures, (_key, value) => typeof value === 'number' && !Number.isFinite(value) ? String(value) : value) + '\n'));
 console.log(`Exported ${fixtures.length} reference battles covering shared and production set combat.`);

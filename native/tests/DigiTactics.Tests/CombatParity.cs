@@ -67,7 +67,15 @@ internal static class CombatParity
                     void Compare(string field, double actual)
                     {
                         count++;
-                        double value = expected.GetProperty(field).GetDouble();
+                        var encoded = expected.GetProperty(field);
+                        double value = encoded.ValueKind == JsonValueKind.String ? encoded.GetString() switch {
+                            "Infinity" => double.PositiveInfinity, "-Infinity" => double.NegativeInfinity, "NaN" => double.NaN,
+                            _ => throw new InvalidDataException($"Invalid numeric fixture {name}/{field}")
+                        } : encoded.GetDouble();
+                        if (!double.IsFinite(value) || !double.IsFinite(actual)) {
+                            if (!actual.Equals(value)) throw new InvalidOperationException($"Non-finite combat state {name}/{tick}/{unit.Id}/{field}: expected {value}, got {actual}");
+                            return;
+                        }
                         if (Math.Abs(actual - value) > 1e-8 * Math.Max(1, Math.Abs(value)))
                             throw new InvalidOperationException($"Combat {name}, tick {tick}, unit {unit.Id}: {field} expected {value:R}, got {actual:R}");
                     }
