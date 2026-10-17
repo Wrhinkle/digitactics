@@ -8,9 +8,9 @@ internal static class AiTurnParity
         private readonly Ruleset rules = state.Rules;
         private readonly ColiseumPlanning coliseum = new(state);
         public List<int> Events { get; } = [];
-        public void TurnStarted(MatchPlayer p, RoundPosition r) { Events.Add(p.Id); if(concrete)coliseum.AiTurn(p); }
+        public void TurnStarted(MatchPlayer p, RoundPosition r, MatchPhase phase) { Events.Add(p.Id); if(concrete)coliseum.AiTurn(p); }
         public int BaseCapacity(MatchPlayer p) => p.Economy.Level;
-        public int Capacity(MatchPlayer p) => p.Economy.Level + p.Roster.TeamSizeBonus;
+        public int Capacity(MatchPlayer p, int stage) => p.Economy.Level + p.Roster.TeamSizeBonus;
         public bool CanPlace(MatchPlayer p, PlanningUnit u, UnitSpot s) => true;
         public bool HasEquipRules(MatchPlayer p) => rules.Id.StartsWith("underlords",StringComparison.Ordinal);
         public void Reroll(MatchPlayer p) => p.Shop.Reroll();

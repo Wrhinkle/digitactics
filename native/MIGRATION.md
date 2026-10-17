@@ -1668,3 +1668,29 @@ locks and both augment/upgrade and Tamer offers. Production round/AI/settlement
 composition, battle projection and native match UI integration remain outstanding.
 
 Validation: **167,714,256 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+### Composed AI turns and Duos ranking metadata
+
+`MatchAi(state, offers, units)` now supplies `MatchAiEffects`, routing each mode's
+AI preparation through the shared inventory and unit lifecycle. The dispatcher
+uses live capacity rules and installed shop hooks. Turn callbacks receive the
+actual phase and capacity queries receive the current stage, including calls made
+outside normal planning. No current mode adds a placement veto; Underlords remains
+the mode with equipment restrictions.
+
+132 original-engine traces cover 16,632 AI turns across all 22 variants, three
+seeds, Solo/Duos, and 18 sequential planning/combat/carousel contexts. Real match
+initialization, offer selection/pick effects, Wisps, consumables, shopping, shop
+hooks, transfers, merges, bench trimming, equipment and arrangement run together.
+710,579 checks pass (`--composed-ai-only`), including player state, inventory,
+roster order/modifiers, shared pools, IDs and final RNG continuity.
+
+These integrated tests exposed missing shared Duos augment tags/tiers in the
+catalog's AI metadata. Shared augments live outside the mode's own enumerable
+augment entries; the exporter now includes them explicitly. This fixes decisions
+such as choosing Shared Interest versus Bank. The offer-effect fixture likewise
+now includes every shared Duos augment: 25,024 scenarios and 6,044,656 checks pass.
+Production round transitions, settlement dispatch, combat projection and native
+match UI still need integration; these results are not full-game acceptance.
+
+Validation: **170,296,419 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.

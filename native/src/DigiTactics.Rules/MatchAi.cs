@@ -2,11 +2,11 @@ namespace DigiTactics.Rules;
 
 public interface IMatchAiHooks
 {
-    void TurnStarted(MatchPlayer player, RoundPosition round);
+    void TurnStarted(MatchPlayer player, RoundPosition round, MatchPhase phase);
     // Rules team size plus persistent team bonus; arrangement adds equipment itself.
     int BaseCapacity(MatchPlayer player);
     // Live cap including equipped team-size items and on-team-size hooks.
-    int Capacity(MatchPlayer player);
+    int Capacity(MatchPlayer player, int stage);
     bool CanPlace(MatchPlayer player, PlanningUnit unit, UnitSpot spot);
     bool HasEquipRules(MatchPlayer player);
     void Reroll(MatchPlayer player);
@@ -25,6 +25,9 @@ public sealed class MatchAi
     private readonly AiInventory inventory;
     private readonly Dictionary<string, UnitLine> shopLines;
 
+    public MatchAi(MatchState state, MatchOffers offers, MatchUnitLifecycle units)
+        : this(state, offers, units.Shop, units.Items, units.Portal, new MatchAiEffects(state, units)) { }
+
     public MatchAi(MatchState state, MatchOffers offers, PlanningShopCommands shop, PlanningItems items, MatchPortal portal, IMatchAiHooks hooks)
     {
         this.state = state; this.offers = offers; this.portal = portal; this.hooks = hooks;
@@ -39,8 +42,8 @@ public sealed class MatchAi
     {
         if (player.Offer is { } offer)
             offers.Choose(player, choices.Select(player, offer, round.Stage), phase == MatchPhase.Combat && player.IsHuman);
-        hooks.TurnStarted(player, round);
-        shopping.Shop(player, phase, round.Stage, round.Round, () => hooks.Capacity(player),
+        hooks.TurnStarted(player, round, phase);
+        shopping.Shop(player, phase, round.Stage, round.Round, () => hooks.Capacity(player, round.Stage),
             line => portal.PartnerCopies(player, line, 0), () => hooks.Reroll(player));
         if (state.Duos) portal.AiTurn(player, phase, roundType);
         shopping.TrimBench(player, phase);

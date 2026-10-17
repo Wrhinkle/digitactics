@@ -1,7 +1,7 @@
 const fs=require('node:fs'),path=require('node:path'),zlib=require('node:zlib'),DT=require('../../tools/headless.cjs').load({strict:true}),traces=[];
 for(const set of DT.Sets.pickable())for(const pace of ['normal','hyper'])for(const duo of [false,true]){
  DT.Sets.activate(set.id,pace);const R=DT.HYPER;
- const picks=[...Object.keys(DT.AUGMENT).map(id=>({id,kind:set.id==='gizmos'?'upgrade':'augment'})),...Object.keys(DT.POWER).map(id=>({id,kind:'ul_tamer'}))];
+ const picks=[...[...new Set([...Object.keys(DT.AUGMENT),...DT.Duos.AUGMENTS.map(a=>a.id)])].map(id=>({id,kind:set.id==='gizmos'?'upgrade':'augment'})),...Object.keys(DT.POWER).map(id=>({id,kind:'ul_tamer'}))];
  for(const {id,kind} of picks)for(let n=0;n<16;n++){
   const seed=31+n*71,human=n%2===0,g=Object.create(DT.Game.prototype);
   Object.assign(g,{R,set:DT.SET,uid:0,rng:DT.makeRng(seed),phase:n%3===0?'combat':'planning',stage:3,round:1,roundType:'pvp',duo,D:DT.Duos.rules(R),mech:{},pool:Object.fromEntries(DT.SHOP_LINES.map(l=>[l.id,DT.POOL_SIZE[l.tier]]))});

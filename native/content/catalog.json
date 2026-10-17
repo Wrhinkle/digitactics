@@ -126,6 +126,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:pocket": {
           "tier": 1,
           "tags": [
@@ -8504,6 +8581,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:pocket": {
           "tier": 1,
           "tags": [
@@ -16792,6 +16946,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:fat_envelope": {
           "tier": 1,
           "tags": [
@@ -25086,6 +25317,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:fat_envelope": {
           "tier": 1,
           "tags": [
@@ -33428,6 +33736,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:gal_a_cash": {
           "tier": 1,
           "tags": [
@@ -40921,6 +41306,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:gal_a_cash": {
           "tier": 1,
           "tags": [
@@ -48404,6 +48866,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:giz_a_spare": {
           "tier": 1,
           "tags": [
@@ -57198,6 +57737,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:giz_a_spare": {
           "tier": 1,
           "tags": [
@@ -65919,6 +66535,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:rec_a_coins": {
           "tier": 1,
           "tags": [
@@ -76905,6 +77598,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:rec_a_coins": {
           "tier": 1,
           "tags": [
@@ -87878,6 +88648,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:drg_hoard": {
           "tier": 1,
           "tags": [
@@ -96217,6 +97064,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:drg_hoard": {
           "tier": 1,
           "tags": [
@@ -104572,6 +105496,83 @@
         "u_dual": "any"
       },
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:arc_a_coins": {
           "tier": 1,
           "tags": [
@@ -113231,6 +114232,83 @@
         "u_dual": "any"
       },
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:arc_a_coins": {
           "tier": 1,
           "tags": [
@@ -121837,6 +122915,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:col_a_coins": {
           "tier": 1,
           "tags": [
@@ -130488,6 +131643,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "augment:col_a_coins": {
           "tier": 1,
           "tags": [
@@ -139188,6 +140420,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "power:ul_anessa_dark": {
           "tier": 2,
           "tags": [
@@ -147084,6 +148393,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "power:ul_anessa_dark": {
           "tier": 2,
           "tags": [
@@ -154905,7 +156291,85 @@
         "shadowChance": 0
       },
       "anomalyTags": {},
-      "offerAi": {},
+      "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        }
+      },
       "economy": {
         "startHp": 100,
         "startGold": 1,
@@ -162375,7 +163839,85 @@
         "shadowChance": 0
       },
       "anomalyTags": {},
-      "offerAi": {},
+      "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        }
+      },
       "economy": {
         "startHp": 20,
         "startGold": 3,
@@ -169959,6 +171501,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "power:ul_anessa_dark": {
           "tier": 2,
           "tags": [
@@ -177982,6 +179601,83 @@
       },
       "anomalyTags": {},
       "offerAi": {
+        "augment:duo_wide_portal": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_proud": {
+          "tier": 1,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_gear": {
+          "tier": 1,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_interest": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_care": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_ace": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_tag": {
+          "tier": 2,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_crest_link": {
+          "tier": 2,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
+        "augment:duo_guard": {
+          "tier": 2,
+          "tags": [
+            "econ"
+          ],
+          "tamer": null
+        },
+        "augment:duo_sync": {
+          "tier": 3,
+          "tags": [
+            "combat"
+          ],
+          "tamer": null
+        },
+        "augment:duo_trove": {
+          "tier": 3,
+          "tags": [
+            "items"
+          ],
+          "tamer": null
+        },
         "power:ul_anessa_dark": {
           "tier": 2,
           "tags": [
