@@ -9,6 +9,12 @@ public sealed class PlayerMechanics
     public int UnderlordsSilver { get; set; }
     public bool UnderlordsFreeRoll { get; set; }
     public bool FatesPartnerSeen { get; set; }
+    public int DragonStarRounds { get; set; }
+    public int DragonLagoon { get; set; }
+    public int DragonLagoonPaid { get; set; }
+    public int DragonTrainingKills { get; set; }
+    public int DragonAxe { get; set; }
+    public int DragonInvestor { get; set; }
     public int DragonBank { get; set; }
     public bool DragonHpFull { get; set; }
     public bool DragonCalculatedRoll { get; set; }

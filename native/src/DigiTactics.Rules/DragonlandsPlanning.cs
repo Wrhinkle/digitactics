@@ -6,6 +6,86 @@ public sealed class DragonlandsPlanning(MatchState state)
     private readonly HashSet<string> golden = state.Rules.Items.Where(i => i.Category == "gold").Select(i => i.Id).ToHashSet();
     private readonly MatchLoot loot = new(state);
 
+    public int RoundEnd(RoundEndContext context)
+    {
+        var player = context.Player;
+        var mechanic = player.Mechanics;
+        var rewards = context.Match.Combat?.DragonlandsRewards(context.Team) ?? new(0, 0, 0);
+        int gold = 0;
+        // Trait callbacks precede player augments and the set mechanic, in count order.
+        foreach (var count in context.Traits)
+        {
+            var trait = state.Rules.Traits.FirstOrDefault(t => t.Id == count.Key);
+            if (trait is null) continue;
+            int level = TraitRules.Level(trait, count.Value);
+            if (level == 0) continue;
+            switch (count.Key)
+            {
+                case "STAR":
+                    mechanic.DragonStarRounds++;
+                    if (mechanic.DragonStarRounds % 3 == 0)
+                    {
+                        gold += (int)trait.Parameters["gold"][level - 1];
+                        mechanic.DragonStarShop = true;
+                    }
+                    break;
+                case "LAGOON":
+                    mechanic.DragonLagoon += rewards.Lagoon;
+                    while (mechanic.DragonLagoon >= 20)
+                    {
+                        mechanic.DragonLagoon -= 20;
+                        mechanic.DragonLagoonPaid++;
+                        gold += (int)trait.Parameters["gold"][level - 1];
+                        if (mechanic.DragonLagoonPaid % 3 == 0) player.GiveItem(loot.RandomComponent()!);
+                    }
+                    break;
+                case "STARCALL":
+                    if (rewards.Wish != 0) player.Health = Math.Min(state.Rules.Economy!.StartHp, player.Health + rewards.Wish);
+                    break;
+                case "CORE":
+                    mechanic.DragonDoots = Math.Min(20, mechanic.DragonDoots + rewards.Doots);
+                    break;
+            }
+        }
+        foreach (string augment in player.Augments)
+        {
+            if (augment == "drg_calcloss" && !context.Won && !context.Pve)
+            {
+                gold += 2;
+                mechanic.DragonCalculatedRoll = true;
+            }
+            if (augment == "drg_training") mechanic.DragonTrainingKills = Math.Min(40, mechanic.DragonTrainingKills + rewards.CtKills);
+        }
+        gold += rewards.Gold;
+        if (rewards.Axe != 0)
+        {
+            mechanic.DragonAxe += rewards.Axe;
+            while (mechanic.DragonAxe >= 50)
+            {
+                mechanic.DragonAxe -= 50;
+                gold += 4;
+                player.GiveItem(loot.RandomComponent()!);
+            }
+        }
+        if (rewards.Investor != 0)
+        {
+            mechanic.DragonInvestor += rewards.Investor;
+            if (mechanic.DragonInvestor >= 4)
+            {
+                mechanic.DragonInvestor = 0;
+                if (player.Roster.Entries.Select(e => e.Unit).FirstOrDefault(u => u.Items.Contains("drg_g_investor")) is { } holder)
+                {
+                    var items = (string[])holder.Items.Clone();
+                    items[Array.IndexOf(items, "drg_g_investor")] = "drg_g_diamond";
+                    player.Roster.UpdateUnit(holder with { Items = items });
+                }
+                player.GiveItem("drg_dup");
+                gold += 8;
+            }
+        }
+        return gold;
+    }
+
     public void RoundStart(MatchPlayer player)
     {
         var mechanic = player.Mechanics;

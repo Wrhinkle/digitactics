@@ -1391,3 +1391,23 @@ bench stripping, full inventory, 138 actual item-grant cases, 42 Crown-grant cas
 and augment/treasure offers. Persistent fields are ready for the combat projection;
 Dragonlands post-combat and on-pick effects and production hook composition remain
 unfinished. Self-contained Windows publish and packaged BRUTAL smoke checks passed.
+
+
+### Dragonlands post-combat rewards
+
+`DragonlandsPlanning.RoundEnd` applies active traits in their original count order,
+then owned augments, then the set mechanic. Stargazer progress schedules its third-
+round shop bonus; Lagoon converts casts into gold/components; Starcaller heals;
+Digi-Core and combat-training gains retain their caps. Calculated Loss schedules a
+free roll. Golden equipment pays combat gold, accumulates Treasure Axe attacks,
+and upgrades the first owned Investor to Diamond Hands while granting its reward.
+The original shared team counters remain shared when a Duos owner view filters
+units. Missing combat still permits callbacks that depend only on persistent state.
+
+24 actual original-engine battles cover all seven combat reward counters with
+nonzero outcomes. 5,760 settlement cases pass 51,912 checks
+(`--dragon-settlement-only`), including trait activation and ordering, stack caps,
+multiple payouts, missing combat, PvE, owner views, missing/bench/board Investors,
+full inventories, equipment replacement order and subsequent RNG state.
+The Windows package and BRUTAL smoke checks passed. Augment-pick effects and full
+production match-controller composition remain outstanding.

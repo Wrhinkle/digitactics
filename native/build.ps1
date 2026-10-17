@@ -56,6 +56,7 @@ try {
     Invoke-Checked 'node' @('tools/export-underlords-planning.cjs')
     Invoke-Checked 'node' @('tools/export-underlords-settlement.cjs')
     Invoke-Checked 'node' @('tools/export-dragon-planning.cjs')
+    Invoke-Checked 'node' @('tools/export-dragon-settlement.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
