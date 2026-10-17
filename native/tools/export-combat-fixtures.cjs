@@ -772,6 +772,42 @@ for (const [id, bp] of dragonTraits) for (let level = 0; level < bp.length; leve
 
 
 
+
+// Dragonlands augment effects, retained training kills and owner-scoped Duos state.
+DT.Sets.activate('dragonlands', 'hyper');
+const dragonAugments=Object.entries(DT.AUGMENT).filter(([id,a])=>id.startsWith('drg_')&&Object.keys(a.hooks||{}).some(k=>DT.Sets.COMBAT_HOOKS.includes(k))).map(([id])=>id);
+for(const augment of [...dragonAugments,'mixed']) for(const duos of [false,true]) for(const stage of [0,1,2]) {
+  const pace=duos?'normal':'hyper',cols=duos?14:7;
+  DT.Sets.activate('dragonlands',pace);
+  const seed=570000+fixtures.length,pick=DT.makeRng(seed),noTraits=augment==='drg_built'&&stage===0;
+  function side(team) {
+    const parts=[0,1].map(part=>{
+      const owner=team*2+part;
+      const chosen=DT.SHOP_LINES.filter(l=>l.traits.includes('STONE')).slice(0,3);
+      const dragon=DT.SHOP_LINES.find(l=>l.slots===2);
+      chosen.push(dragon,stage===2?DT.SHOP_LINES.filter(l=>l.slots===2)[1]:dragon);
+      chosen.push(DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)]);
+      const augs=augment==='mixed'?['drg_training','drg_firstaid','drg_bigfriend','drg_final','drg_electro']:[augment];
+      return {owner,mech:{ctKills:part?60:stage*12,bank:part?15:7,hpFull:stage===2},augs:[...augs,...(duos?[part?'duo_sync':'duo_tag']:[])],
+        units:chosen.map((l,i)=>({line:l.id,stage,c:part*7+[0,1,2,4,5,6][i],r:[4,4,5,4,4,7][i],owner,
+          items:i%3===0?[]:[dragonlandsHookItems[Math.floor(pick()*dragonlandsHookItems.length)]]}))};
+    });
+    return duos?{parts,augs:parts.flatMap(p=>p.augs),units:parts.flatMap(p=>p.units),cols,counts:DT.Duos.teamCounts(parts),mech:parts[0].mech}
+      :{units:parts[0].units,augs:parts[0].augs,cols,mech:parts[0].mech};
+  }
+  const a=side(0),b=side(1);if(noTraits){a.noTraits=true;b.noTraits=true;}
+  const cb=new DT.Combat(a,b,{seed,info:{type:'pvp',stage:stage?4:0,pace,mech:{mirage:'executioner'}}});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,owner:u.owner,items:u.items}));
+  const effects=a=>({augments:a.augs,dragonlands:a.mech,noTraits,...(duos?{parts:a.parts.map(p=>({owner:p.owner,augments:p.augs,dragonlands:p.mech}))}:{})});
+  fixtures.push({name:`dragonlands-augment/${augment}/${duos}/${stage}`,variant:`dragonlands/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    dragonRewards:cb.teamFx.map(f=>({gold:f.gold||0,axe:f.axe||0,investor:f.investor||0,lagoon:f.lagoon||0,doots:f.doots||0,wish:f.wish||0,ctKills:f.ctKills||0})),
+    setup:{sideA:effects(a),sideB:effects(b),roundType:'pvp',roundStage:stage?4:0,pace,mirage:'executioner'}});
+}
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

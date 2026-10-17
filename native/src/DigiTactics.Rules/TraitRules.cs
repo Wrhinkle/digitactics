@@ -1,6 +1,6 @@
 namespace DigiTactics.Rules;
 
-public sealed record DragonlandsState(double Bank = 0, bool HpFull = false);
+public sealed record DragonlandsState(double Bank = 0, bool HpFull = false, double CtKills = 0);
 public sealed record GizmosState(double GoldStart = 0);
 public sealed record GalaxiesState(Dictionary<string, int>? Bounty = null);
 public sealed record FatesState(int Deva = 0, string? Fallen = null, double Blossom = 0);

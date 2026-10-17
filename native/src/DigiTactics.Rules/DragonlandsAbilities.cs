@@ -2,19 +2,21 @@ namespace DigiTactics.Rules;
 
 internal sealed class DragonlandsUnitState
 {
-    internal bool Veil;
+    internal bool Veil, Uplink, BigFriend;
+    internal double ElectroCooldown;
     internal double Shroud, XabMana, Jade, MirageZap, RagingUntil, Whisper, ShrunkUntil, Cannon, CannonFlat, Guard, Mode, Swift, Warrior;
     internal bool Statue, MirageExecute, Rage, Slayer, Lagoon, GuardUsed, Mage, MageAgain, ModeDone, Empowered;
     internal int WhisperStacks, CannonAttacks;
 }
 
-public sealed record DragonlandsCombatRewards(int Gold, int Axe, int Investor, int Lagoon = 0, int Doots = 0, int Wish = 0);
+public sealed record DragonlandsCombatRewards(int Gold, int Axe, int Investor, int Lagoon = 0, int Doots = 0, int Wish = 0, int CtKills = 0);
 
 public sealed partial class CombatSimulation
 {
+    private readonly int[] dragonTrainingKills = new int[2];
     private readonly int[] dragonGold = new int[2], dragonAxe = new int[2], dragonInvestor = new int[2];
     private readonly int[] dragonLagoon = new int[2], dragonDoots = new int[2], dragonWish = new int[2];
-    public DragonlandsCombatRewards DragonlandsRewards(int team) => new(dragonGold[team], dragonAxe[team], dragonInvestor[team], dragonLagoon[team], dragonDoots[team], dragonWish[team]);
+    public DragonlandsCombatRewards DragonlandsRewards(int team) => new(dragonGold[team], dragonAxe[team], dragonInvestor[team], dragonLagoon[team], dragonDoots[team], dragonWish[team], dragonTrainingKills[team]);
 
     private bool CastDragonlandsAbility(CombatUnit unit, CombatUnit target, double value)
     {
@@ -40,9 +42,16 @@ public sealed partial class CombatSimulation
 
     private void BindDragonlands(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
-        foreach (var side in new[] { setup.SideA, setup.SideB })
-            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
-                throw new NotSupportedException("Dragonlands augments have not been migrated yet.");
+        for (int team = 0; team < 2; team++)
+        {
+            var side = team == 0 ? setup.SideA : setup.SideB;
+            var entries = team == 0 ? sideA : sideB;
+            var counts = side.NoTraits ? [] : side.Counts ?? (side.Parts is { } parts ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries, side.Augments));
+            var active = rules.Traits.Where(t => TraitRules.Level(t, counts.GetValueOrDefault(t.Id)) > 0).Select(t => t.Id).ToHashSet();
+            if (side.Parts is { } partners) foreach (var part in partners)
+                BindDragonlandsAugments(team, part.Augments ?? [], active, setup.RoundStage, part.Dragonlands, part.Owner, part.PartnerTop);
+            else BindDragonlandsAugments(team, side.Augments ?? [], active, setup.RoundStage, side.Dragonlands, partnerTop: side.PartnerTop);
+        }
         BindDragonlandsTraits(sideA, sideB, setup);
         double Bank(CombatUnit u) => Math.Clamp((u.Team == 0 ? setup.SideA : setup.SideB).Dragonlands?.Bank ?? 0, 0, 15);
         foreach (var unit in units) BindDragonlandsItems(unit, Bank(unit));

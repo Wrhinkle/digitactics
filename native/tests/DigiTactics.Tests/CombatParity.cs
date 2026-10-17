@@ -28,7 +28,7 @@ internal static class CombatParity
                 {
                     var side = team == 0 ? setup!.SideA : setup!.SideB;
                     var entries = team == 0 ? entriesA : entriesB;
-                    var counts = side.Parts is { } parts ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries, side.Augments);
+                    var counts = side.NoTraits ? [] : side.Parts is { } parts ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries, side.Augments);
                     var expectedCounts = trace.GetProperty("traitCounts")[team].Deserialize<Dictionary<string, int>>()!;
                     count++;
                     if (!counts.SequenceEqual(expectedCounts)) throw new InvalidOperationException($"Trait counts/order mismatch {name}/{team}");
@@ -135,6 +135,10 @@ internal static class CombatParity
                     var actual = combat.DragonlandsRewards(team); var expected = dragonRewards[team]; count += 3;
                     if (actual.Gold != expected.GetProperty("gold").GetInt32() || actual.Axe != expected.GetProperty("axe").GetInt32() || actual.Investor != expected.GetProperty("investor").GetInt32())
                         throw new InvalidOperationException($"Dragonlands rewards mismatch {name}/{team}");
+                    if (expected.TryGetProperty("ctKills", out var trainingKills)) {
+                        count++;
+                        if (actual.CtKills != trainingKills.GetInt32()) throw new InvalidOperationException($"Dragonlands training counter mismatch {name}/{team}");
+                    }
                     if (expected.TryGetProperty("lagoon", out var lagoon)) {
                         count += 3;
                         if (actual.Lagoon != lagoon.GetInt32() || actual.Doots != expected.GetProperty("doots").GetInt32() || actual.Wish != expected.GetProperty("wish").GetInt32())

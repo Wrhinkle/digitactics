@@ -144,10 +144,13 @@ The current executable is a migration workbench. It must not replace the public 
   Mage recasts, Starcaller healing/execute outcomes and Lagoon/Core counters.
   Dragon marks count once per distinct shop line, including duplicate copies;
   Normal's Dragon trait limit and all three Monolith positions are covered.
-  Catalog schema 11 stores Dragon marks and pace-specific trait limits. Augments
-  and planning rules remain pending.
+  Catalog schema 11 stores Dragon marks and pace-specific trait limits. All 19
+  combat augments plus mixed combinations pass 120 more Solo/Duos fights, covering
+  all star stages, retained/capped training kills, Dragon execution, partner-owned
+  state, healing amplification, and delayed team buffs. Training reward counters
+  are compared separately. Pick grants and planning/settlement rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 26,156,425 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 29,468,067 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
