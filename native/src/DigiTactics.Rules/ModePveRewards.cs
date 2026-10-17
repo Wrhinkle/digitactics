@@ -9,6 +9,11 @@ public sealed class PlayerMechanics
     public int UnderlordsSilver { get; set; }
     public bool UnderlordsFreeRoll { get; set; }
     public bool FatesPartnerSeen { get; set; }
+    public int DragonBank { get; set; }
+    public bool DragonHpFull { get; set; }
+    public bool DragonCalculatedRoll { get; set; }
+    public string[]? DragonAugmentOptions { get; set; }
+    public bool DragonAugmentRolled { get; set; }
     public double DragonDoots { get; set; }
     public bool DragonStarShop { get; set; }
     public Dictionary<string, int> GalaxiesBounties { get; } = [];

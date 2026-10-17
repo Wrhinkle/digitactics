@@ -1201,3 +1201,21 @@ globals, lethal Aegis thresholds, full inventories and bench-only Rapiers.
 The self-contained Windows publish and packaged BRUTAL smoke checks passed.
 Production dispatcher registration and projecting persistent counters into the
 next combat remain part of the full match-controller integration.
+
+
+### Dragonlands planning and Golden Armor
+
+`DragonlandsPlanning.RoundStart` snapshots capped bank gold and full-health status
+for combat, consumes Calculated Loss free rolls when owned, and preserves the
+one-per-game augment reroll tracking and Treasure Hoard reroll bonus. Golden Armor
+removes golden items from inventory and benched units, counts the active board's
+GOLD trait, and draws missing golden equipment in catalog order with the original
+RNG consumption. Existing board equipment stays equipped; Diamond Hands is never
+drawn and Golden Crown requires the third trait tier.
+
+1,024 original-engine cases across both paces pass 21,504 checks
+(`--dragon-planning-only`), covering repeated calls, trait tiers, owned equipment,
+bench stripping, full inventory, 138 actual item-grant cases, 42 Crown-grant cases,
+and augment/treasure offers. Persistent fields are ready for the combat projection;
+Dragonlands post-combat and on-pick effects and production hook composition remain
+unfinished. Self-contained Windows publish and packaged BRUTAL smoke checks passed.
