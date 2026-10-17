@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 19,
+  "schemaVersion": 20,
   "variants": [
     {
       "id": "faction-wars/normal",
@@ -127,7 +127,25 @@
           "remover",
           "reforger"
         ],
-        "customPve": false
+        "customPve": false,
+        "mode": {
+          "policy": "faction-wars",
+          "artifacts": [],
+          "components": [
+            "sword",
+            "bow",
+            "rod",
+            "tear",
+            "vest",
+            "cloak",
+            "belt",
+            "glove",
+            "egg"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 100,
@@ -6939,7 +6957,25 @@
           "remover",
           "reforger"
         ],
-        "customPve": false
+        "customPve": false,
+        "mode": {
+          "policy": "faction-wars",
+          "artifacts": [],
+          "components": [
+            "sword",
+            "bow",
+            "rod",
+            "tear",
+            "vest",
+            "cloak",
+            "belt",
+            "glove",
+            "egg"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 20,
@@ -13773,7 +13809,36 @@
           "fat_dice",
           "fat_copy"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "fates",
+          "artifacts": [
+            "fat_art_anima",
+            "fat_art_defiance",
+            "fat_art_winter",
+            "fat_art_collector",
+            "fat_art_infinity",
+            "fat_art_manazane",
+            "fat_art_cleaver",
+            "fat_art_randuin",
+            "fat_art_fist",
+            "fat_art_zhonya"
+          ],
+          "components": [
+            "fat_sword",
+            "fat_bow",
+            "fat_rod",
+            "fat_tear",
+            "fat_vest",
+            "fat_cloak",
+            "fat_belt",
+            "fat_glove",
+            "fat_egg"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 100,
@@ -20404,7 +20469,36 @@
           "fat_dice",
           "fat_copy"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "fates",
+          "artifacts": [
+            "fat_art_anima",
+            "fat_art_defiance",
+            "fat_art_winter",
+            "fat_art_collector",
+            "fat_art_infinity",
+            "fat_art_manazane",
+            "fat_art_cleaver",
+            "fat_art_randuin",
+            "fat_art_fist",
+            "fat_art_zhonya"
+          ],
+          "components": [
+            "fat_sword",
+            "fat_bow",
+            "fat_rod",
+            "fat_tear",
+            "fat_vest",
+            "fat_cloak",
+            "fat_belt",
+            "fat_glove",
+            "fat_egg"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 20,
@@ -27052,7 +27146,25 @@
           "gal_remover",
           "gal_reforger"
         ],
-        "customPve": false
+        "customPve": false,
+        "mode": {
+          "policy": "galaxies",
+          "artifacts": [],
+          "components": [
+            "gal_sword",
+            "gal_bow",
+            "gal_rod",
+            "gal_tear",
+            "gal_vest",
+            "gal_cloak",
+            "gal_belt",
+            "gal_glove",
+            "gal_mental"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 100,
@@ -33071,7 +33183,25 @@
           "gal_remover",
           "gal_reforger"
         ],
-        "customPve": false
+        "customPve": false,
+        "mode": {
+          "policy": "galaxies",
+          "artifacts": [],
+          "components": [
+            "gal_sword",
+            "gal_bow",
+            "gal_rod",
+            "gal_tear",
+            "gal_vest",
+            "gal_cloak",
+            "gal_belt",
+            "gal_glove",
+            "gal_mental"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 20,
@@ -39104,7 +39234,25 @@
           "giz_copy",
           "giz_ockit"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "gizmos",
+          "artifacts": [],
+          "components": [
+            "giz_sword",
+            "giz_bow",
+            "giz_rod",
+            "giz_tear",
+            "giz_vest",
+            "giz_cloak",
+            "giz_belt",
+            "giz_glove",
+            "giz_chip"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 100,
@@ -45721,7 +45869,25 @@
           "giz_copy",
           "giz_ockit"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "gizmos",
+          "artifacts": [],
+          "components": [
+            "giz_sword",
+            "giz_bow",
+            "giz_rod",
+            "giz_tear",
+            "giz_vest",
+            "giz_cloak",
+            "giz_belt",
+            "giz_glove",
+            "giz_chip"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 20,
@@ -52360,7 +52526,79 @@
           "rec_remover",
           "rec_tome"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "reckoning",
+          "artifacts": [],
+          "components": [
+            "rec_blade",
+            "rec_bow",
+            "rec_rod",
+            "rec_tear",
+            "rec_vest",
+            "rec_cloak",
+            "rec_belt",
+            "rec_glove",
+            "rec_sblade",
+            "rec_sbow",
+            "rec_srod",
+            "rec_stear",
+            "rec_svest",
+            "rec_scloak",
+            "rec_sbelt",
+            "rec_sglove",
+            "rec_egg"
+          ],
+          "shadowComponents": [
+            "rec_sblade",
+            "rec_sbow",
+            "rec_srod",
+            "rec_stear",
+            "rec_svest",
+            "rec_scloak",
+            "rec_sbelt",
+            "rec_sglove"
+          ],
+          "shadowOf": {
+            "rec_victory_sword": "rec_s_victory_sword",
+            "rec_titan_slayer": "rec_s_titan_slayer",
+            "rec_gunblade": "rec_s_gunblade",
+            "rec_mana_lance": "rec_s_mana_lance",
+            "rec_guardian_feather": "rec_s_guardian_feather",
+            "rec_blood_fang": "rec_s_blood_fang",
+            "rec_war_banner": "rec_s_war_banner",
+            "rec_crit_edge": "rec_s_crit_edge",
+            "rec_rapid_cannon": "rec_s_rapid_cannon",
+            "rec_rage_wing": "rec_s_rage_wing",
+            "rec_volt_disk": "rec_s_volt_disk",
+            "rec_titan_will": "rec_s_titan_will",
+            "rec_twin_shot": "rec_s_twin_shot",
+            "rec_void_portal": "rec_s_void_portal",
+            "rec_armor_breaker": "rec_s_armor_breaker",
+            "rec_ultima_wand": "rec_s_ultima_wand",
+            "rec_seraph_staff": "rec_s_seraph_staff",
+            "rec_iron_locket": "rec_s_iron_locket",
+            "rec_mana_zap": "rec_s_mana_zap",
+            "rec_flame_tome": "rec_s_flame_tome",
+            "rec_jewel_gauntlet": "rec_s_jewel_gauntlet",
+            "rec_mana_overflow": "rec_s_mana_overflow",
+            "rec_frost_heart": "rec_s_frost_heart",
+            "rec_power_chalice": "rec_s_power_chalice",
+            "rec_holy_ring": "rec_s_holy_ring",
+            "rec_justice_hand": "rec_s_justice_hand",
+            "rec_spike_plate": "rec_s_spike_plate",
+            "rec_stone_hide": "rec_s_stone_hide",
+            "rec_flame_core": "rec_s_flame_core",
+            "rec_still_shroud": "rec_s_still_shroud",
+            "rec_dragon_scale": "rec_s_dragon_scale",
+            "rec_wind_ward": "rec_s_wind_ward",
+            "rec_quick_silver": "rec_s_quick_silver",
+            "rec_giga_belt": "rec_s_giga_belt",
+            "rec_trap_claw": "rec_s_trap_claw",
+            "rec_thief_gloves": "rec_s_thief_gloves"
+          },
+          "shadowChance": 0.3
+        }
       },
       "duo": {
         "teamHp": 100,
@@ -60863,7 +61101,79 @@
           "rec_remover",
           "rec_tome"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "reckoning",
+          "artifacts": [],
+          "components": [
+            "rec_blade",
+            "rec_bow",
+            "rec_rod",
+            "rec_tear",
+            "rec_vest",
+            "rec_cloak",
+            "rec_belt",
+            "rec_glove",
+            "rec_sblade",
+            "rec_sbow",
+            "rec_srod",
+            "rec_stear",
+            "rec_svest",
+            "rec_scloak",
+            "rec_sbelt",
+            "rec_sglove",
+            "rec_egg"
+          ],
+          "shadowComponents": [
+            "rec_sblade",
+            "rec_sbow",
+            "rec_srod",
+            "rec_stear",
+            "rec_svest",
+            "rec_scloak",
+            "rec_sbelt",
+            "rec_sglove"
+          ],
+          "shadowOf": {
+            "rec_victory_sword": "rec_s_victory_sword",
+            "rec_titan_slayer": "rec_s_titan_slayer",
+            "rec_gunblade": "rec_s_gunblade",
+            "rec_mana_lance": "rec_s_mana_lance",
+            "rec_guardian_feather": "rec_s_guardian_feather",
+            "rec_blood_fang": "rec_s_blood_fang",
+            "rec_war_banner": "rec_s_war_banner",
+            "rec_crit_edge": "rec_s_crit_edge",
+            "rec_rapid_cannon": "rec_s_rapid_cannon",
+            "rec_rage_wing": "rec_s_rage_wing",
+            "rec_volt_disk": "rec_s_volt_disk",
+            "rec_titan_will": "rec_s_titan_will",
+            "rec_twin_shot": "rec_s_twin_shot",
+            "rec_void_portal": "rec_s_void_portal",
+            "rec_armor_breaker": "rec_s_armor_breaker",
+            "rec_ultima_wand": "rec_s_ultima_wand",
+            "rec_seraph_staff": "rec_s_seraph_staff",
+            "rec_iron_locket": "rec_s_iron_locket",
+            "rec_mana_zap": "rec_s_mana_zap",
+            "rec_flame_tome": "rec_s_flame_tome",
+            "rec_jewel_gauntlet": "rec_s_jewel_gauntlet",
+            "rec_mana_overflow": "rec_s_mana_overflow",
+            "rec_frost_heart": "rec_s_frost_heart",
+            "rec_power_chalice": "rec_s_power_chalice",
+            "rec_holy_ring": "rec_s_holy_ring",
+            "rec_justice_hand": "rec_s_justice_hand",
+            "rec_spike_plate": "rec_s_spike_plate",
+            "rec_stone_hide": "rec_s_stone_hide",
+            "rec_flame_core": "rec_s_flame_core",
+            "rec_still_shroud": "rec_s_still_shroud",
+            "rec_dragon_scale": "rec_s_dragon_scale",
+            "rec_wind_ward": "rec_s_wind_ward",
+            "rec_quick_silver": "rec_s_quick_silver",
+            "rec_giga_belt": "rec_s_giga_belt",
+            "rec_trap_claw": "rec_s_trap_claw",
+            "rec_thief_gloves": "rec_s_thief_gloves"
+          },
+          "shadowChance": 0.3
+        }
       },
       "duo": {
         "teamHp": 20,
@@ -69376,7 +69686,25 @@
           "drg_reforger",
           "drg_dup_lesser"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "dragonlands",
+          "artifacts": [],
+          "components": [
+            "sword",
+            "bow",
+            "rod",
+            "tear",
+            "vest",
+            "cloak",
+            "belt",
+            "glove",
+            "egg"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 100,
@@ -75970,7 +76298,25 @@
           "drg_reforger",
           "drg_dup_lesser"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "dragonlands",
+          "artifacts": [],
+          "components": [
+            "sword",
+            "bow",
+            "rod",
+            "tear",
+            "vest",
+            "cloak",
+            "belt",
+            "glove",
+            "egg"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 20,
@@ -82555,7 +82901,39 @@
           "arc_copier",
           "arc_copier_small"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "arcane",
+          "artifacts": [
+            "arc_regen_core",
+            "arc_doom_seal",
+            "arc_gatling_arm",
+            "arc_bounty_chip",
+            "arc_lone_plate",
+            "arc_infinity_core",
+            "arc_spell_blade",
+            "arc_overkill_cannon",
+            "arc_long_barrel",
+            "arc_scope_visor",
+            "arc_ascension_talisman",
+            "arc_time_stopper"
+          ],
+          "components": [
+            "arc_sword",
+            "arc_bow",
+            "arc_rod",
+            "arc_tear",
+            "arc_vest",
+            "arc_cloak",
+            "arc_belt",
+            "arc_glove",
+            "arc_spat",
+            "arc_pan"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 100,
@@ -89371,7 +89749,39 @@
           "arc_copier",
           "arc_copier_small"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "arcane",
+          "artifacts": [
+            "arc_regen_core",
+            "arc_doom_seal",
+            "arc_gatling_arm",
+            "arc_bounty_chip",
+            "arc_lone_plate",
+            "arc_infinity_core",
+            "arc_spell_blade",
+            "arc_overkill_cannon",
+            "arc_long_barrel",
+            "arc_scope_visor",
+            "arc_ascension_talisman",
+            "arc_time_stopper"
+          ],
+          "components": [
+            "arc_sword",
+            "arc_bow",
+            "arc_rod",
+            "arc_tear",
+            "arc_vest",
+            "arc_cloak",
+            "arc_belt",
+            "arc_glove",
+            "arc_spat",
+            "arc_pan"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 20,
@@ -96205,7 +96615,35 @@
           "col_remover",
           "col_reforger"
         ],
-        "customPve": false
+        "customPve": false,
+        "mode": {
+          "policy": "coliseum",
+          "artifacts": [
+            "col_ar_doom",
+            "col_ar_collector",
+            "col_ar_lichbane",
+            "col_ar_hull",
+            "col_ar_static",
+            "col_ar_hydra",
+            "col_ar_zhonya",
+            "col_ar_infinity"
+          ],
+          "components": [
+            "col_sword",
+            "col_bow",
+            "col_rod",
+            "col_tear",
+            "col_vest",
+            "col_cloak",
+            "col_belt",
+            "col_glove",
+            "col_egg",
+            "col_tag"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 100,
@@ -103025,7 +103463,35 @@
           "col_remover",
           "col_reforger"
         ],
-        "customPve": false
+        "customPve": false,
+        "mode": {
+          "policy": "coliseum",
+          "artifacts": [
+            "col_ar_doom",
+            "col_ar_collector",
+            "col_ar_lichbane",
+            "col_ar_hull",
+            "col_ar_static",
+            "col_ar_hydra",
+            "col_ar_zhonya",
+            "col_ar_infinity"
+          ],
+          "components": [
+            "col_sword",
+            "col_bow",
+            "col_rod",
+            "col_tear",
+            "col_vest",
+            "col_cloak",
+            "col_belt",
+            "col_glove",
+            "col_egg",
+            "col_tag"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 20,
@@ -109834,7 +110300,15 @@
         "specialComponents": [],
         "emblems": [],
         "consumables": [],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "underlords",
+          "artifacts": [],
+          "components": [],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 100,
@@ -116222,7 +116696,15 @@
         "specialComponents": [],
         "emblems": [],
         "consumables": [],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "underlords",
+          "artifacts": [],
+          "components": [],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 20,
@@ -122635,7 +123117,29 @@
         "consumables": [
           "ac_digiegg"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "autochess",
+          "artifacts": [],
+          "components": [
+            "ac_attack_chip",
+            "ac_defense_chip",
+            "ac_speed_chip",
+            "ac_recovery_disk",
+            "ac_vampire_fang",
+            "ac_resist_cape",
+            "ac_mp_chip",
+            "ac_hp_chip",
+            "ac_brain_chip",
+            "ac_power_claw",
+            "ac_hyper_chip",
+            "ac_dark_edge",
+            "ac_holy_ring"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 100,
@@ -128810,7 +129314,29 @@
         "consumables": [
           "ac_digiegg"
         ],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "autochess",
+          "artifacts": [],
+          "components": [
+            "ac_attack_chip",
+            "ac_defense_chip",
+            "ac_speed_chip",
+            "ac_recovery_disk",
+            "ac_vampire_fang",
+            "ac_resist_cape",
+            "ac_mp_chip",
+            "ac_hp_chip",
+            "ac_brain_chip",
+            "ac_power_claw",
+            "ac_hyper_chip",
+            "ac_dark_edge",
+            "ac_holy_ring"
+          ],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 20,
@@ -134962,7 +135488,15 @@
         "specialComponents": [],
         "emblems": [],
         "consumables": [],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "underlords_ko",
+          "artifacts": [],
+          "components": [],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 4,
@@ -141334,7 +141868,15 @@
         "specialComponents": [],
         "emblems": [],
         "consumables": [],
-        "customPve": true
+        "customPve": true,
+        "mode": {
+          "policy": "underlords_ko",
+          "artifacts": [],
+          "components": [],
+          "shadowComponents": [],
+          "shadowOf": {},
+          "shadowChance": 0
+        }
       },
       "duo": {
         "teamHp": 4,

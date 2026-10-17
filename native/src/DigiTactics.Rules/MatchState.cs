@@ -30,6 +30,7 @@ public sealed class MatchPlayer
     public HashSet<string> Augments { get; } = [];
     // Reserved unit drops return to the pool when the owner is eliminated.
     public List<LootOrb> Orbs { get; } = [];
+    public PlayerMechanics Mechanics { get; } = new();
 }
 
 public sealed class MatchTeam(int id, MatchPlayer[] members, int health)

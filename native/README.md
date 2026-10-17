@@ -315,10 +315,26 @@ available to mechanic hooks through the resolved battle and unit records.
 `MatchLoot` implements generic PvE drops, explicit custom drop specs, shared IDs
 and RNG, unit reservations, orb positions, AI auto-collection, item-cap handling,
 bench overflow refunds and three-star offer cleanup. Modes with custom PvE rules
-require their own reward handler; those handlers are still pending. MatchPlayer
+use native mode reward handlers (see the verification below). MatchPlayer
 now stores complete loot orbs instead of only reserved unit names.
 
 Reference checks cover 396 settlement rounds with instrumented hook effects
 (88,754 comparisons), plus 44 generic/custom-spec loot traces (275,848 comparisons).
 These verify orchestration and base loot behavior, not the remaining per-set game
-hooks, real reward policies, offers, AI or full desktop match integration.
+hooks, offers, AI or full desktop match integration.
+
+## Native mode reward policies
+
+All current mode-specific PvE reward generators now run in C#: Fates artifacts,
+Arcane artifacts and consumables, Gizmos Overclock Kits, Reckoning shadow drops,
+Dragonlands treasure outcomes and preferred emblems, Underlords round-scaled gold,
+and Auto Chess tiered choices with pace-adjusted rounds. Auto Chess choices and
+Treasure Dragon outcomes are preserved as typed player mechanic state for later
+planning offers. Generic modes retain the base generator.
+
+132 original-handler traces exercise 15,840 reward calls across all 22 variants,
+three seeds, AI/human collection, occupied boards and full/available benches.
+2,884,584 comparisons verify rewards, orbs, inventories, shops, pool reservations,
+mechanic state and RNG consumption. Selection of Auto Chess reward offers, the
+Treasure Dragon offer, other planning hooks and full round orchestration remain
+pending. The desktop still uses its migration workbench.

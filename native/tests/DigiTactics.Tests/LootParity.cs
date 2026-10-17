@@ -4,9 +4,9 @@ using DigiTactics.Rules;
 
 internal static class LootParity
 {
-    public static int Run(string root, ContentCatalog catalog)
+    public static int Run(string root, ContentCatalog catalog, bool modes = false)
     {
-        using var input = File.OpenRead(Path.Combine(root, "tests/fixtures/loot.json.gz"));
+        using var input = File.OpenRead(Path.Combine(root, modes ? "tests/fixtures/mode-loot.json.gz" : "tests/fixtures/loot.json.gz"));
         using var gzip = new GZipStream(input, CompressionMode.Decompress);
         using var fixture = JsonDocument.Parse(gzip);
         var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
@@ -17,11 +17,17 @@ internal static class LootParity
             string id = trace.GetProperty("variant").GetString()!;
             var source = catalog.Variants.Single(v => v.Id == id);
             // Reference exercises the generic generator plus injected custom specs, not set reward handlers.
-            var rules = source with { Loot = source.Loot! with { CustomPve = false } };
-            var state = new MatchState(rules, 143, [new("Human", true), new("AI", false)]);
+            var rules = modes ? source : source with { Loot = source.Loot! with { CustomPve = false } };
+            var state = new MatchState(rules, modes ? trace.GetProperty("seed").GetUInt32() : 143, [new("Human", true), new("AI", false)]);
             var loot = new MatchLoot(state);
             string lineId = trace.GetProperty("line").GetString()!;
             var line = rules.Lines.Single(l => l.Id == lineId);
+            if (modes) foreach (var player in state.Players)
+            {
+                var unit = state.CreateUnit(lineId, 0); player.Roster.AddToBench(unit);
+                player.Roster.Move(UnitSpot.Bench(0), UnitSpot.Board(3, 4), false, () => 100);
+                state.Pool.Take(lineId);
+            }
             if (trace.GetProperty("full").GetBoolean())
                 foreach (var player in state.Players) for (int j = 0; j < 9; j++)
                 {
@@ -35,6 +41,12 @@ internal static class LootParity
                 for (int i = 0; i < 2; i++)
                 {
                     var player = state.Players[i]; var p = expected.GetProperty("players")[i];
+                    if (modes)
+                    {
+                        var expectedLoot = p.GetProperty("loot").Deserialize<string[]>();
+                        Check(player.Mechanics.AutoChessLoot is null ? expectedLoot is null : expectedLoot is not null && player.Mechanics.AutoChessLoot.SequenceEqual(expectedLoot), id + " Auto Chess options");
+                        Check(player.Mechanics.DragonTreasureWon == p.GetProperty("treasureWon").Deserialize<bool?>(), id + " treasure outcome");
+                    }
                     Check(player.Economy.Gold == p.GetProperty("gold").GetInt32(), id + " gold");
                     Check(player.Items.SequenceEqual(p.GetProperty("items").EnumerateArray().Select(e => e.GetString()!)), id + " inventory");
                     Check(player.Shop.Slots.SequenceEqual(p.GetProperty("shop").EnumerateArray().Select(e => e.GetString())), id + " maxed offers");
@@ -62,7 +74,7 @@ internal static class LootParity
             Check(state.Random.Next() == trace.GetProperty("nextRandom").GetDouble(), id + " RNG consumption");
             Check(loot.Collect(state.Players[0], -1) is null, id + " invalid orb");
         }
-        Console.WriteLine($"Loot parity: {checks:N0} checks across 44 generic/custom drop traces.");
+        Console.WriteLine($"{(modes ? "Mode rewards" : "Loot")} parity: {checks:N0} checks.");
         return checks;
     }
 }

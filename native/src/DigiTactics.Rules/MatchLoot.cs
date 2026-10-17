@@ -1,7 +1,7 @@
 namespace DigiTactics.Rules;
 
 public sealed record LootRules(int ItemCap, string[] StatComponents, string[] SpecialComponents,
-    string[] Emblems, string[] Consumables, bool CustomPve);
+    string[] Emblems, string[] Consumables, bool CustomPve, ModeLootRules? Mode = null);
 public sealed record LootSpec(string Kind = "blue", int Gold = 0, string[]? Items = null, string? Unit = null);
 public sealed record LootOrb(int Id, string Kind, double X, double Z, int Gold, string[] Items, string? Unit);
 
@@ -9,7 +9,7 @@ public sealed record LootOrb(int Id, string Kind, double X, double Z, int Gold, 
 public sealed class MatchLoot(MatchState state)
 {
     private LootRules Rules => state.Rules.Loot!;
-    private string? Pick(IReadOnlyList<string> ids) => ids.Count == 0 ? null : ids[(int)(state.Random.Next() * ids.Count)];
+    internal string? Pick(IReadOnlyList<string> ids) => ids.Count == 0 ? null : ids[(int)(state.Random.Next() * ids.Count)];
     public string? RandomComponent(bool withSpecial = false) => Pick(withSpecial && state.Random.Next() < .1 &&
         Rules.SpecialComponents.Length > 0 ? Rules.SpecialComponents : Rules.StatComponents);
     public string? RandomCompleted() => Pick(state.Rules.CoreItems);
@@ -19,7 +19,7 @@ public sealed class MatchLoot(MatchState state)
         Func<MatchPlayer, bool, IEnumerable<LootSpec>>? custom = null)
     {
         if (custom is not null) return Drop(player, custom(player, won));
-        if (Rules.CustomPve) throw new InvalidOperationException("This mode requires its PvE reward handler.");
+        if (Rules.CustomPve) return Drop(player, new ModePveRewards(state, this).Generate(player, round, won));
         List<LootSpec> specs = [];
         static string[] Item(string? id) => id is null ? [] : [id];
         if (round.Stage == 1)

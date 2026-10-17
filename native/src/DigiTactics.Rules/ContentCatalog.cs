@@ -19,11 +19,11 @@ public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
         var catalog = JsonSerializer.Deserialize<ContentCatalog>(File.ReadAllText(path),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
             ?? throw new InvalidDataException("Missing content catalog.");
-        if (catalog.SchemaVersion != 19 || catalog.Variants.Length == 0)
+        if (catalog.SchemaVersion != 20 || catalog.Variants.Length == 0)
             throw new InvalidDataException("Unsupported or empty content catalog.");
         foreach (var rules in catalog.Variants)
         {
-            if (rules.Loot is null || rules.Duo is null || rules.Loss is null || rules.Economy is not { } economy || rules.Schedule is not { } schedule ||
+            if (rules.Loot is null || rules.Loot.CustomPve && rules.Loot.Mode is null || rules.Duo is null || rules.Loss is null || rules.Economy is not { } economy || rules.Schedule is not { } schedule ||
                 schedule.Opening.Length == 0 || schedule.Repeating.Length == 0 ||
                 schedule.Opening.Concat(schedule.Repeating).Concat(schedule.Overrides.Values).Any(t => t is not ("pvp" or "pve" or "carousel")) ||
                 economy.Xp is null && (economy.LevelByStage is null || economy.LevelByStage.Length < 2) ||

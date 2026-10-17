@@ -15,6 +15,7 @@ try {
     Invoke-Checked 'node' @('tools/export-planning.cjs')
     Invoke-Checked 'node' @('tools/export-match-state.cjs')
     Invoke-Checked 'node' @('tools/export-settlement.cjs')
+    Invoke-Checked 'node' @('tools/export-mode-rewards.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
     Invoke-Checked 'node' @('tools/export-material-fixtures.cjs')

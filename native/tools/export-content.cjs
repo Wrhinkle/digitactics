@@ -91,7 +91,10 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const id = `${set.id}/${pace}`;
   variants.push({ id, economy, schedule, loss,
     loot: { itemCap: rules.itemCap, statComponents: DT.STAT_COMPONENTS, specialComponents: DT.SPECIAL_COMPONENTS || [],
-      emblems: DT.EMBLEM_IDS, consumables: DT.CONSUMABLE_IDS, customPve: !!DT.SET.pveReward }, duo: DT.Duos.rules(rules), name: set.name, pace, lines, extraLines, partner: DT.Sets.def(set.id).partner || null, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
+      emblems: DT.EMBLEM_IDS, consumables: DT.CONSUMABLE_IDS, customPve: !!DT.SET.pveReward,
+      mode: { policy: set.id, artifacts: Object.values(DT.ITEMS).filter(i => i.cat === 'artifact').map(i => i.id),
+        components: DT.COMPONENT_IDS, shadowComponents: (DT.SPECIAL_COMPONENTS || []).filter(id => DT.COMPONENTS[id]?.shadow),
+        shadowOf: DT.Sets.def(set.id).items?.shadowOf || {}, shadowChance: rules.shadowDropChance || 0 } }, duo: DT.Duos.rules(rules), name: set.name, pace, lines, extraLines, partner: DT.Sets.def(set.id).partner || null, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
     tamers: DT.Sets.def(set.id).ulTamers || {},
     forms: Object.fromEntries(Object.entries(DT.Sets.def(set.id).forms || {}).map(([line, forms]) => [line, forms.map(f => ({ id:f.id, name:f.name, description:f.desc, trait:f.trait || null }))])),
     dragonTraitLimits: Object.fromEntries(['normal','hyper','default'].map(p => [p, DT.Sets.rulesFor(set.id, p === 'default' ? undefined : p).drgTraitMax || 0])), pveMultipliers: rules.pveMul || [], rerollCost: rules.rerollCost, shopSize: rules.shopSize || 5,
@@ -141,7 +144,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 19, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 20, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');
