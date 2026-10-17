@@ -11,7 +11,7 @@ The current executable is a migration workbench. It must not replace the public 
 - Deterministic RNG and base shared-shop selection across all 22 set/pace catalogs.
 - Bench combining, owned-three-star exclusions, unit selling including Dragon premiums.
 - Solo/Duos hex geometry and deterministic movement/target tie-breaking.
-- Unit base stats, ability numeric scaling and selling: 3,996 form/pace cases.
+- Unit base stats, ability numeric scaling and selling: 5,232 form/pace cases.
 - Damage math: outgoing modifier order, attribute advantage, overtime, physical/magic
   mitigation, damage reduction cap, shield absorption, and mana gained from damage.
   Effect activity and hook-supplied values are inputs; hook implementations are pending.
@@ -33,7 +33,7 @@ The current executable is a migration workbench. It must not replace the public 
   priorities, Duos owner filtering, recursive-call guard, typed mutable damage events,
   per-source state, global/unit timers, timed buffs, lethal recovery and end callbacks.
   Two additional reference battles enable all 23 hook event types through controlled
-  definitions in the actual legacy dispatcher, checking 126,058 callback entries as
+  definitions in the actual legacy dispatcher, checking the full callback traces as
   well as fight state. These verify infrastructure, not production set definitions.
   Damage-stage tests include armor/reduction changes made inside damage hooks.
 
@@ -51,7 +51,15 @@ The current executable is a migration workbench. It must not replace the public 
   shared items. Duos match flow, portals, shared health and networking are pending.
   Other sets' count-changing hooks are not yet implemented.
 
-Latest verification: `./native/build.ps1 -Publish` passes 2,014,835 assertions, compiles
+- Non-shop combat definitions are now exported alongside shop content (without
+  adding them to shop pools); stats/scaling are checked for all 5,232 unit forms.
+  Runtime stages, fractional attack range, summoning with equipment/owner/stat
+  multipliers, and hook board queries/movement are implemented. Dispatcher probes
+  now grow units and summon during unit timers, checking RNG continuity, rejected
+  spawns, dynamic unit counts and same-tick updates against the legacy engine.
+  Summoned item-hook rebinding and presentation movement metadata remain pending.
+
+Latest verification: `./native/build.ps1 -Publish` passes 2,210,213 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -60,7 +68,7 @@ JavaScript engine; they do not establish whole-match parity.
 
 1. Extend production binding beyond Faction Wars traits/combat augments to the
    remaining sets, item hooks, powers and mechanics.
-   Finish hook context operations (summons, board movement, side/trait state) and
+   Finish hook context side/trait state, summoned-item binding and
    presentation event metadata. Extend reference battles to real set definitions
    before claiming full combat parity.
 2. Set-defined ability dispatch; port each ruleset with explicit coverage

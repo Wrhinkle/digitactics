@@ -54,7 +54,7 @@ to be a Vulkan renderer or the final game UI.
 - Shared-pool weighting, tier fallback, empty eligible pools and player-specific
   three-star exclusions; two-copy and three-copy evolution chains.
 - Atomic sandbox purchases, bench capacity, repeated purchases and invalid slots.
-- 3,996 unit-form reference cases for stats, ability scaling and selling prices.
+- 5,232 unit-form reference cases for stats, ability scaling and selling prices.
 - 1,200 damage reference cases covering mitigation, shields, attribute advantages,
   amplifier ordering, burn mana suppression and hook-supplied modifiers.
   Production hook coverage is tracked below and in `MIGRATION.md`.
@@ -77,6 +77,9 @@ to be a Vulkan renderer or the final game UI.
   and Tag Team. Shared team health, portal commands and round flow remain pending.
 - 15,680 Solo/Duos hex-distance comparisons and 200 movement/target-selection
   traces, including occupied cells and deterministic tie-breaking.
+- Non-shop combat definitions, runtime stage growth, fractional ranges and summons
+  with owner/equipment/stat multipliers. Hook probes verify same-tick summon updates,
+  rejected-spawn RNG behavior and board movement against the original engine.
 - Headless native renderer smoke mode and self-contained Windows packaging.
 
 ## Remaining migration work

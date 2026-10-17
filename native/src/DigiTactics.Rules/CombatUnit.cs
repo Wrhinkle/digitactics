@@ -11,6 +11,8 @@ public sealed class CombatUnit
     public CombatEntry Entry { get; }
     public UnitLine Line { get; }
     public int Team { get; }
+    public int Stage { get; internal set; }
+    public bool Summoned { get; internal set; }
     public IReadOnlyList<string> Traits { get; internal set; } = Array.Empty<string>();
     internal double PerHexAmplification, BonusAgainstBurning, AttackSpeedPerAttack;
     internal int AttackSpeedStacks;
@@ -21,7 +23,7 @@ public sealed class CombatUnit
     public double Health { get; internal set; }
     public double AttackDamage { get; internal set; }
     public double AttackSpeed { get; internal set; }
-    public int Range { get; internal set; }
+    public double Range { get; internal set; }
     public double Armor { get; internal set; }
     public double MagicResist { get; internal set; }
     public double Mana { get; internal set; }
@@ -43,7 +45,7 @@ public sealed class CombatUnit
     internal List<AttackSpeedBuff> SpeedBuffs { get; } = [];
     internal EquipmentEffects Equipment { get; } = new();
     public IReadOnlyList<string> Items { get; internal set; } = Array.Empty<string>();
-    public double BaseAttackDamage { get; }
+    public double BaseAttackDamage { get; internal set; }
     public double CriticalChance { get; internal set; }
     public double CriticalDamage { get; internal set; } = 1.6;
     public double Dodge { get; internal set; }
@@ -62,7 +64,7 @@ public sealed class CombatUnit
 
     internal CombatUnit(int id, CombatEntry entry, UnitLine line, int team, HexCell cell, double random)
     {
-        Id = id; Entry = entry; Line = line; Team = team; Cell = cell;
+        Id = id; Entry = entry; Stage = entry.Stage; Line = line; Team = team; Cell = cell;
         var stats = UnitValues.Stats(line, entry.Stage);
         MaxHealth = Health = stats.MaxHealth;
         BaseAttackDamage = AttackDamage = stats.AttackDamage; AttackSpeed = stats.AttackSpeed; Range = stats.Range;

@@ -43,7 +43,7 @@ public sealed class HexGrid
         return cell.Row * Columns + cell.Column;
     }
 
-    public MovementStep? StepTowardEnemy(HexCell start, int range, ReadOnlySpan<HexCell> enemies, ReadOnlySpan<bool> occupied)
+    public MovementStep? StepTowardEnemy(HexCell start, double range, ReadOnlySpan<HexCell> enemies, ReadOnlySpan<bool> occupied)
     {
         if (occupied.Length != Count) throw new ArgumentException("Occupancy size differs from grid.", nameof(occupied));
         ArgumentOutOfRangeException.ThrowIfLessThan(range, 1);

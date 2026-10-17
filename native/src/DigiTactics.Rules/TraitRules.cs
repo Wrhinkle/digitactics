@@ -10,7 +10,7 @@ public static class TraitRules
 {
     public static string[] UnitTraits(CombatEntry unit, Ruleset rules)
     {
-        var traits = new List<string>(rules.Lines.Single(l => l.Id == unit.Line).Traits);
+        var traits = new List<string>(rules.Lines.Concat(rules.ExtraLines).Single(l => l.Id == unit.Line).Traits);
         foreach (var id in unit.Items ?? [])
         {
             string? emblem = rules.Items.FirstOrDefault(i => i.Id == id)?.Emblem;
@@ -71,6 +71,7 @@ public static class TraitRules
         var bonus = new Dictionary<string, int>();
         foreach (var unit in units)
         {
+            if (!rules.Lines.Any(l => l.Id == unit.Line)) continue;
             if (!lines.TryGetValue(unit.Line, out var traits)) lines[unit.Line] = traits = [];
             foreach (var trait in UnitTraits(unit, rules)) if (!traits.Contains(trait)) traits.Add(trait);
             foreach (var pair in unit.BonusTraits ?? []) bonus[pair.Key] = Math.Max(bonus.GetValueOrDefault(pair.Key), pair.Value);

@@ -1,11 +1,11 @@
 namespace DigiTactics.Rules;
 
-public sealed record CombatTemplate(double Health, double AttackDamage, double AttackSpeed, int Range,
+public sealed record CombatTemplate(double Health, double AttackDamage, double AttackSpeed, double Range,
     double Armor, double MagicResist, double MaxMana, double StartMana, double HealthMultiplier, double AttackMultiplier, bool Leap);
 
 public sealed record AbilityTemplate(string Kind, double BaseValue, int Radius, int Shots, string[] Names);
 
-public readonly record struct UnitStats(double MaxHealth, double AttackDamage, double AttackSpeed, int Range,
+public readonly record struct UnitStats(double MaxHealth, double AttackDamage, double AttackSpeed, double Range,
     double Armor, double MagicResist, double MaxMana, double StartMana);
 
 /// <summary>Pure unit formulas, independent of rendering, match state, and currently selected ruleset.</summary>

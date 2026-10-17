@@ -40,6 +40,8 @@ internal static class CombatParity
             {
                 int targetTick = sample.GetProperty("tick").GetInt32();
                 while (tick < targetTick) { combat.Step(); tick++; }
+                count++;
+                if (combat.Units.Count != sample.GetProperty("units").GetArrayLength()) throw new InvalidOperationException($"Unit count mismatch {name}/{tick}");
                 foreach (var expected in sample.GetProperty("units").EnumerateArray())
                 {
                     var unit = combat.Units[expected.GetProperty("id").GetInt32()];
@@ -50,6 +52,9 @@ internal static class CombatParity
                         if (Math.Abs(actual - value) > 1e-8 * Math.Max(1, Math.Abs(value)))
                             throw new InvalidOperationException($"Combat {name}, tick {tick}, unit {unit.Id}: {field} expected {value:R}, got {actual:R}");
                     }
+                    Compare("stage", unit.Stage);
+                    count++;
+                    if (unit.Summoned != expected.GetProperty("summoned").GetBoolean()) throw new InvalidOperationException($"Summon state mismatch {name}/{tick}");
                     Compare("hp", unit.Health); Compare("mana", unit.Mana); Compare("shield", unit.Shield);
                     Compare("c", unit.Cell.Column); Compare("r", unit.Cell.Row);
                     Compare("atkCd", unit.AttackCooldown); Compare("moveCd", unit.MoveCooldown);

@@ -12,7 +12,7 @@ public sealed partial class CombatSimulation
     {
         unit.Mana = 0; unit.CastLock = 0.35;
         double castPower = unit.AbilityPower;
-        double value = UnitValues.AbilityValue(unit.Line, unit.Entry.Stage) * unit.AbilityPower / 100;
+        double value = UnitValues.AbilityValue(unit.Line, unit.Stage) * unit.AbilityPower / 100;
         int radius = unit.Line.Ability.Radius == 0 ? 1 : unit.Line.Ability.Radius;
         Emit("cast", unit);
         AfterCast(unit);
@@ -23,7 +23,7 @@ public sealed partial class CombatSimulation
                 foreach (var enemy in EnemiesNear(unit, target.Cell, radius)) AbilityDamage(unit, enemy, value);
                 break;
             case "stun":
-                StunUnit(target, 1.5 + unit.Entry.Stage * 0.25);
+                StunUnit(target, 1.5 + unit.Stage * 0.25);
                 AbilityDamage(unit, target, value); break;
             case "slam":
                 foreach (var enemy in EnemiesNear(unit, unit.Cell, radius))
@@ -34,11 +34,11 @@ public sealed partial class CombatSimulation
                 foreach (var enemy in EnemiesNear(unit, unit.Cell, 2)) enemy.Target = unit;
                 break;
             case "heal":
-                foreach (var ally in units.Where(e => e.Alive && e.Team == unit.Team).OrderBy(e => e.Health / e.MaxHealth).Take(unit.Entry.Stage + 1).ToArray())
+                foreach (var ally in units.Where(e => e.Alive && e.Team == unit.Team).OrderBy(e => e.Health / e.MaxHealth).Take(unit.Stage + 1).ToArray())
                     Heal(ally, value);
                 break;
             case "barrage":
-                for (int i = 0; i < unit.Line.Ability.Shots + unit.Entry.Stage; i++)
+                for (int i = 0; i < unit.Line.Ability.Shots + unit.Stage; i++)
                 {
                     var enemies = units.Where(e => e.Alive && e.Team != unit.Team).ToArray();
                     if (enemies.Length == 0) break;
@@ -56,7 +56,7 @@ public sealed partial class CombatSimulation
                 break;
             case "rally":
                 foreach (var ally in units.Where(e => e.Alive && e.Team == unit.Team).OrderBy(e => e.Health / e.MaxHealth).ThenBy(e => e.Id)
-                    .Take(unit.Entry.Stage >= 2 ? 3 : 2).ToArray())
+                    .Take(unit.Stage >= 2 ? 3 : 2).ToArray())
                 { ally.Shield += value; ally.SpeedBuffs.Add(new(0.3, Time + 4)); Emit("shield", ally); }
                 break;
             case "execute": AbilityDamage(unit, target, target.Health < target.MaxHealth * 0.5 ? value * 2 : value); break;
@@ -69,7 +69,7 @@ public sealed partial class CombatSimulation
             case "chain":
                 var hit = new HashSet<int>();
                 CombatUnit? current = target;
-                for (int i = 0; i <= unit.Entry.Stage + 2 && current is not null; i++)
+                for (int i = 0; i <= unit.Stage + 2 && current is not null; i++)
                 {
                     hit.Add(current.Id); AbilityDamage(unit, current, value); value *= 0.8;
                     var origin = current.Cell;
@@ -83,7 +83,7 @@ public sealed partial class CombatSimulation
             default: throw new NotSupportedException(unit.Line.Ability.Kind);
         }
         if (Hooks.Has(CombatHook.Cast, unit, CombatHook.AnyCast))
-            Hooks.Fire(CombatHook.Cast, unit, new() { Target = target, Value = UnitValues.AbilityValue(unit.Line, unit.Entry.Stage) * castPower / 100 }, CombatHook.AnyCast);
+            Hooks.Fire(CombatHook.Cast, unit, new() { Target = target, Value = UnitValues.AbilityValue(unit.Line, unit.Stage) * castPower / 100 }, CombatHook.AnyCast);
     }
 
     private List<CombatUnit> LineTargets(CombatUnit unit, CombatUnit target)

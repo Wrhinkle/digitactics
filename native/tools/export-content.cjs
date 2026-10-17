@@ -9,7 +9,7 @@ const unitStats = [];
 for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   DT.Sets.activate(set.id, pace);
   const rules = DT.HYPER;
-  const lines = DT.SHOP_LINES.map(l => {
+  const exportLine = l => {
     const role = DT.ROLES[DT.roleOf(l)] || DT.BASE_ROLES.Striker;
     return {
     id: l.id, tier: l.tier, price: l.price || l.tier, copies: l.combine || rules.copies || 3,
@@ -23,15 +23,17 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
       healthMultiplier: l.hpMul || 1, attackMultiplier: l.adMul || 1,
     },
     ability: { kind: l.type, baseValue: DT.abilityBase(l.type), radius: l.radius || 0, shots: l.shots || 4, names: l.abil },
-  }; });
+  }; };
+  const lines = DT.SHOP_LINES.map(exportLine);
+  const extraLines = Object.values(DT.LINE).filter(l => !l.shop).map(exportLine);
   const id = `${set.id}/${pace}`;
-  variants.push({ id, name: set.name, pace, lines, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
+  variants.push({ id, name: set.name, pace, lines, extraLines, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
     rerollCost: rules.rerollCost, shopSize: rules.shopSize || 5,
     items: Object.entries(DT.ITEMS).map(([id, item]) => ({ id, stats: item.stats || {}, passives: item.p || {}, hooks: Object.keys(item.hooks || {}), emblem: item.emblem || null })),
     coreItems: DT.CORE_ITEMS,
     traits: Object.entries(DT.TRAITS).map(([id, trait]) => ({ id, kind: trait.kind, duo: trait.duo ?? 'sum', breakpoints: trait.bp, values: trait.lv,
       parameters: Object.fromEntries(Object.entries(trait).filter(([key, value]) => !['bp', 'lv'].includes(key) && Array.isArray(value) && value.every(x => typeof x === 'number'))) })) });
-  for (const line of DT.SHOP_LINES) for (let stage = 0; stage < 3; stage++) {
+  for (const line of Object.values(DT.LINE)) for (let stage = 0; stage < 3; stage++) {
     unitStats.push({ variant: id, line: line.id, stage, stats: DT.unitStats(line, stage),
       ability: DT.abilityValue(line, stage), sell: DT.sellValue({ line: line.id, stage, items: [] }) });
   }
@@ -71,7 +73,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 5, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 6, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');

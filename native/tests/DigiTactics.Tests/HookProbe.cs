@@ -20,6 +20,20 @@ internal static class HookProbe
                             c.After(0.2, () => c.Heal(unit, 5), unit);
                         }
                     if (hook == CombatHook.CombatReady && id == "probe_item") c.Shield(c.Holder!, 10);
+                    if (hook == CombatHook.CombatReady && id == "probe_augment")
+                    {
+                        var unit = c.Mine.FirstOrDefault();
+                        if (unit is not null) c.Grow(unit);
+                        c.After(0.1, () => {
+                            if (unit is null || c.FreeCellNear(unit) is not { } cell) return;
+                            var summoned = c.Summon(c.Team!.Value, unit.Line.Id, 0, cell, new(["thief_glove"], 0.8, 1.1, unit.Entry.Owner))
+                                ?? throw new InvalidOperationException("Native summon failed.");
+                            if (c.Summon(c.Team.Value, unit.Line.Id, 0, cell) is not null ||
+                                c.Summon(c.Team.Value, unit.Line.Id, 0, new(-1, 0)) is not null ||
+                                c.Summon(c.Team.Value, "missing", 0, new(0, 0)) is not null) throw new InvalidOperationException("Invalid summon accepted.");
+                            if (c.FreeCellNear(summoned) is { } move) c.Move(summoned, move, 0.2);
+                        }, unit);
+                    }
                     if (hook == CombatHook.Shield && id == "probe_trait") c.Shield(e.Unit!, 1);
                     if (hook == CombatHook.BeforeDamage) { e.Multiplier *= 1.02; c.Buff(e.Target!, CombatStat.Armor, 0.5, 0.1); }
                     if (hook == CombatHook.BeforeDamageTaken) { e.Multiplier *= 0.99; e.Reduction += 0.01; c.Buff(e.Unit!, CombatStat.Armor, 0.25, 0.1); c.Buff(e.Unit!, CombatStat.DamageReduction, 0.001, 0.1); }

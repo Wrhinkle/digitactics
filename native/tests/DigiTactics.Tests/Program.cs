@@ -71,7 +71,7 @@ foreach (var trace in fixture.RootElement.GetProperty("grids").EnumerateArray())
     {
         var enemies = path.GetProperty("enemies").EnumerateArray().Select(e => grid[e.GetInt32()]).ToArray();
         var occupied = path.GetProperty("occupied").EnumerateArray().Select(e => e.GetBoolean()).ToArray();
-        var result = grid.StepTowardEnemy(grid[path.GetProperty("start").GetInt32()], path.GetProperty("range").GetInt32(), enemies, occupied);
+        var result = grid.StepTowardEnemy(grid[path.GetProperty("start").GetInt32()], path.GetProperty("range").GetDouble(), enemies, occupied);
         var expected = path.GetProperty("expected");
         Check(expected.ValueKind == JsonValueKind.Null ? result is null : result is { } step &&
             grid.Index(step.Cell) == expected.GetProperty("step").GetInt32() && step.TargetIndex == expected.GetProperty("target").GetInt32(),
@@ -83,14 +83,14 @@ int forms = 0;
 foreach (var trace in unitFixtures.RootElement.EnumerateArray())
 {
     var rules = catalog.Variants.Single(v => v.Id == trace.GetProperty("variant").GetString());
-    var line = rules.Lines.Single(l => l.Id == trace.GetProperty("line").GetString());
+    var line = rules.Lines.Concat(rules.ExtraLines).Single(l => l.Id == trace.GetProperty("line").GetString());
     int stage = trace.GetProperty("stage").GetInt32();
     var stats = UnitValues.Stats(line, stage);
     var expected = trace.GetProperty("stats");
     Check(stats.MaxHealth == expected.GetProperty("maxHp").GetDouble(), "Unit health scaling mismatch.");
     Check(stats.AttackDamage == expected.GetProperty("ad").GetDouble(), "Unit attack scaling mismatch.");
     Check(stats.AttackSpeed == expected.GetProperty("as").GetDouble(), "Unit attack speed mismatch.");
-    Check(stats.Range == expected.GetProperty("range").GetInt32(), "Unit range mismatch.");
+    Check(stats.Range == expected.GetProperty("range").GetDouble(), "Unit range mismatch.");
     Check(stats.Armor == expected.GetProperty("armor").GetDouble(), "Unit armor mismatch.");
     Check(stats.MagicResist == expected.GetProperty("mr").GetDouble(), "Unit magic resistance mismatch.");
     Check(stats.MaxMana == expected.GetProperty("maxMana").GetDouble(), "Unit mana cap mismatch.");

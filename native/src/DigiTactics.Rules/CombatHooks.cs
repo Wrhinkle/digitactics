@@ -56,6 +56,14 @@ public sealed class CombatHookContext
     { target.Weakness = Math.Max(target.WeakUntil > Time ? target.Weakness : 0, fraction); target.WeakUntil = Time + duration; }
     public void Kill(CombatUnit unit, CombatUnit? source = null) { if (unit.Alive) Combat.Kill(unit, source); }
     public void CastAgain(CombatUnit unit, CombatUnit target) => Combat.CastAgain(unit, target);
+    public CombatUnit? Summon(int team, string line, int stage, HexCell cell, SummonOptions? options = null) => Combat.Summon(team, line, stage, cell, options);
+    public bool Move(CombatUnit unit, HexCell cell, double duration = 0.25) => Combat.MoveFromHook(unit, cell, duration);
+    public bool Place(CombatUnit unit, HexCell cell) => Combat.PlaceFromHook(unit, cell);
+    public void Remove(CombatUnit unit) => Combat.RemoveFromHook(unit);
+    public CombatUnit? UnitAt(HexCell cell) => Combat.UnitAt(cell);
+    public HexCell? FreeCellNear(CombatUnit unit, HexCell? toward = null) => Combat.FreeCellNear(unit, toward);
+    public IReadOnlyList<CombatUnit> Adjacent(CombatUnit unit) => Combat.Adjacent(unit);
+    public void Grow(CombatUnit unit) => Combat.Grow(unit);
     public IEnumerable<CombatUnit> Mine => Combat.Units.Where(u => u.Team == Team && (Owner is null || u.Entry.Owner == Owner));
 }
 
@@ -124,9 +132,12 @@ public sealed class CombatHookRegistry
     internal void FireTeam(CombatHook hook, int team, CombatHookEvent e)
     {
         Run(teams.GetValueOrDefault((team, hook)), e);
-        foreach (var unit in combat.Units)
+        for (int i = 0; i < combat.Units.Count; i++)
+        {
+            var unit = combat.Units[i];
             if (unit.Team == team && (unit.Alive || hook == CombatHook.CombatEnd) && holders.TryGetValue((unit.Id, hook), out var list))
             { e.Unit = unit; Run(list, e); }
+        }
     }
     internal void FireGlobal(CombatHook hook, CombatHookEvent e) => Run(global.GetValueOrDefault(hook), e);
 }

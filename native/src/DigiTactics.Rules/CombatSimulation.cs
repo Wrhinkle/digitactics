@@ -5,6 +5,10 @@ public sealed partial class CombatSimulation
 {
     public const double Tick = 1.0 / 30;
     private readonly List<CombatUnit> units = [];
+    private readonly Ruleset rules;
+    private readonly Dictionary<string, UnitLine> lines;
+    private readonly Dictionary<string, ItemDefinition> items;
+    private readonly string[] thiefPool;
     private readonly List<CombatEvent> events = [];
     private readonly HexGrid grid;
     private readonly CombatUnit?[] occupancy;
@@ -25,13 +29,14 @@ public sealed partial class CombatSimulation
     public CombatSimulation(Ruleset rules, CombatEntry[] sideA, CombatEntry[] sideB, uint seed,
         int columns = 7, double overtimeStart = 30, double timeLimit = 45, Action<CombatHookRegistry>? configureHooks = null, bool duos = false, CombatSetup? setup = null)
     {
+        this.rules = rules;
         grid = new(columns, 8); occupancy = new CombatUnit?[grid.Count]; occupied = new bool[grid.Count];
         random = new(seed); this.overtimeStart = overtimeStart; this.timeLimit = timeLimit;
         Units = units.AsReadOnly(); Events = events.AsReadOnly();
         Hooks = new(this, duos || setup?.SideA.Parts is not null || setup?.SideB.Parts is not null);
-        var lines = rules.Lines.ToDictionary(l => l.Id);
-        var items = rules.Items.ToDictionary(i => i.Id);
-        var thiefPool = rules.CoreItems.Where(id => !items[id].Passives.TryGetValue("thief", out var flag) || !flag.GetBoolean()).ToArray();
+        lines = rules.Lines.Concat(rules.ExtraLines).ToDictionary(l => l.Id);
+        items = rules.Items.ToDictionary(i => i.Id);
+        thiefPool = rules.CoreItems.Where(id => !items[id].Passives.TryGetValue("thief", out var flag) || !flag.GetBoolean()).ToArray();
         for (int team = 0; team < 2; team++) foreach (var entry in team == 0 ? sideA : sideB)
         {
             var cell = team == 0 ? new HexCell(entry.Column, entry.Row) : new(columns - 1 - entry.Column, 7 - entry.Row);
@@ -69,7 +74,7 @@ public sealed partial class CombatSimulation
     {
         if (Done) return;
         Time += Tick;
-        foreach (var unit in units) if (unit.Alive) Update(unit);
+        for (int i = 0; i < units.Count; i++) if (units[i].Alive) Update(units[i]);
         for (int team = 0; team < 2; team++) Hooks.FireTeam(CombatHook.Tick, team, new() { DeltaTime = Tick });
         Hooks.FireGlobal(CombatHook.Tick, new() { DeltaTime = Tick });
         RunTimers(timers);

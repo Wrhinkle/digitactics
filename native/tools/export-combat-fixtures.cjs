@@ -9,7 +9,7 @@ DT.Combat.prototype.has = () => false;
 const kinds = ['nuke', 'aoe', 'stun', 'slam', 'shield', 'heal', 'barrage', 'drain', 'weaken', 'rally', 'line', 'execute', 'chain', 'dash'];
 const snapshots = cb => cb.units.map(u => ({ id: u.id, hp: u.hp, mana: u.mana, shield: u.shield, c: u.c, r: u.r,
   alive: u.alive, target: u.target ? u.target.id : null, atkCd: u.atkCd, moveCd: u.moveCd,
-  stun: u.stun, lock: u.lock, dealt: u.dealt, taken: u.taken, healed: u.healed, nAtk: u.nAtk, maxHp: u.maxHp, ad: u.ad, as: u.as, ap: u.ap, armor: u.armor, mr: u.mr, maxMana: u.maxMana, items: u.items }));
+  stun: u.stun, lock: u.lock, dealt: u.dealt, taken: u.taken, healed: u.healed, nAtk: u.nAtk, maxHp: u.maxHp, ad: u.ad, as: u.as, ap: u.ap, armor: u.armor, mr: u.mr, maxMana: u.maxMana, items: u.items, stage: u.stage, summoned: !!u.summoned }));
 const fixtures = [];
 const exercised = new Set();
 for (const kind of kinds) {
@@ -192,6 +192,21 @@ for (const duos of [false, true]) {
         }
       }
       if (name === 'onCombatReady' && id === 'probe_item') c.shield(c.unit, 10);
+      if (name === 'onCombatReady' && id === 'probe_augment') {
+        const u = c.mine[0];
+        if (u) { u.stage++; u.maxHp = Math.round(u.maxHp * 1.5); u.ad *= 1.5; u.baseAd *= 1.5; }
+        c.after(0.1, () => {
+          if (!u) return;
+          const cell = c.freeCellNear(u);
+          if (!cell) return;
+          const summoned = c.summon(c.team, u.line.id, 0, cell.c, cell.r, { owner: u.owner, items: ['thief_glove'], hpMul: 0.8, adMul: 1.1 });
+          if (!summoned) throw new Error('Reference summon failed');
+          // Occupied/out-of-board/unknown summons must not consume RNG.
+          if (c.summon(c.team, u.line.id, 0, cell.c, cell.r) || c.summon(c.team, u.line.id, 0, -1, 0) || c.summon(c.team, 'missing', 0, 0, 0)) throw new Error('Invalid summon accepted');
+          const move = c.freeCellNear(summoned);
+          if (move) c.move(summoned, move.c, move.r, 0.2);
+        }, u);
+      }
       if (name === 'onShield' && id === 'probe_trait') c.shield(e.unit, 1);
       if (name === 'onBeforeDamage') { e.mult *= 1.02; c.buff(e.target, 'armor', 0.5, 0.1); }
       if (name === 'onBeforeDamageTaken') { e.mult *= 0.99; e.dr += 0.01; c.buff(e.unit, 'armor', 0.25, 0.1); c.buff(e.unit, 'dr', 0.001, 0.1); }
