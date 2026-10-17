@@ -11,6 +11,9 @@ public sealed partial class CombatSimulation
         BindUnderlordsTraits(sideA, sideB, setup);
         for (int team = 0; team < 2; team++) {
             var side = team == 0 ? setup.SideA : setup.SideB;
+            underlordsSummoningStone[team] = side.Globals?.Contains("ul_g_stone") ?? false;
+            if (side.Parts is { } partners) foreach (var part in partners) BindUnderlordsGlobals(team, part.Globals ?? [], part.Owner);
+            else BindUnderlordsGlobals(team, side.Globals ?? []);
             void BindAugments(string[] ids, int? owner, double partnerTop) {
                 foreach (string id in ids) {
                     var augment = Hooks.Context(CombatHookSource.Augment, id, team, owner: owner);
@@ -20,8 +23,8 @@ public sealed partial class CombatSimulation
             if (side.Parts is { } parts) foreach (var part in parts) BindAugments(part.Augments ?? [], part.Owner, part.PartnerTop);
             else BindAugments(side.Augments ?? [], null, side.PartnerTop);
         }
-        foreach (var u in units) foreach (var id in u.Items)
-            if (items.TryGetValue(id, out var item) && item.Hooks.Length > 0) throw new NotSupportedException($"Underlords item {id} is still being migrated.");
+        foreach (var u in units) BindUnderlordsItems(u);
+        BindSummonedItems = BindUnderlordsItems;
         var context = Hooks.Context(CombatHookSource.Mechanic, "tamers");
         void On(CombatHook hook, Action<CombatHookContext, CombatHookEvent> action, int order = 0) => Hooks.Add(context, hook, action, order);
         On(CombatHook.CombatStart, (c, _) => {

@@ -210,16 +210,22 @@ The current executable is a migration workbench. It must not replace the public 
   cases. These cover Legend's priority-ordered membership, Phantom's Rogue
   inheritance, merged partner counts, Shaman's two dragon helpers, Spirit's Delta
   Strike, Undead/Sage saves and accumulated Beast HP. Reward comparisons also run
-  with alliances enabled. Shared Duos combat augments are supported. Held/global
-  items, Tamers and planning/settlement remain pending; items with unported
-  callbacks still reject explicitly. Global-item/Tamer-only state will be added
-  with those binders.
+  with alliances enabled. Shared Duos combat augments are supported. All 39 held-item
+  hook definitions, the three global combat-hook definitions and Summoning Stone
+  now pass 378 additional battles across both modes, all star stages and Solo/Duos.
+  Tests include duplicate equipment, Meepo's inherited items, observer callbacks on
+  summoned holders, reflection guards, Necro/Horn summons, defensive triggers,
+  mixed loadouts and repeated owner-scoped globals. Coverage guards require delayed
+  effects, both item summons and item-carrying clones to occur. Summoning Stone
+  reads merged-side globals and applies before clone scaling. The other global
+  identities are accepted as combat no-ops; their offer/economy/settlement behavior,
+  item grants/transfers, Tamers and full match planning remain pending.
 - Reference fixture export now streams individual battles into a temporary gzip
   file and replaces the previous fixture only on success. The native runner reads
   one battle at a time. This removes the V8 single-string limit without dropping
   recorded samples or reducing comparison coverage.
 
-Latest verification: the native test suite passes 72,549,763 assertions.
+Latest verification: the native test suite passes 87,293,402 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

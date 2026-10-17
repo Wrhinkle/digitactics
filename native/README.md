@@ -143,8 +143,11 @@ to be a Vulkan renderer or the final game UI.
   Eclipse, Refraction and combat reward counters are included. All 26 alliances
   at 50 breakpoints pass 200 further battles; 36 Duos cases exercise merged counts,
   Legend membership, Phantom's Rogue inheritance, Shaman summons and Spirit's
-  Delta Strike. Held/global items, Tamers and planning/settlement remain pending;
-  unsupported item hooks still reject explicitly.
+  Delta Strike. All 39 held-item hooks and four global combat effects pass 378
+  further battles, including duplicate items, Meepo inheritance, summoned observer
+  hooks, reflection, item summons and owner-scoped globals. Other globals retain
+  their combat no-op behavior. Item grants/transfers, global economy/settlement,
+  Tamers and full match planning remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner one battle at a time; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

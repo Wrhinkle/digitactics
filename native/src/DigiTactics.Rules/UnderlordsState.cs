@@ -2,6 +2,7 @@ namespace DigiTactics.Rules;
 
 internal sealed class UnderlordsUnitState
 {
+    internal UnderlordsItemState Items { get; } = new();
     internal Dictionary<string, double> EffectUntil { get; } = [];
     internal bool Fell, Sage;
     internal double VoidCooldown;

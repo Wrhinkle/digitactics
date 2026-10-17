@@ -19,6 +19,7 @@ public sealed partial class CombatSimulation
         var u = Summon(source.Team, id, Math.Clamp(stage, 0, 2), cell.Value, options);
         if (u is null) return null;
         if (u.Line.Ability.Kind == "ul_passive") { u.MaxMana = 0; u.Mana = 0; }
+        if (underlordsSummoningStone[u.Team]) { u.MaxHealth = UnitValues.Round(u.MaxHealth * 1.3); u.Health = u.MaxHealth; u.AttackSpeed *= 1.3; }
         if (scale != 0) { u.MaxHealth = UnitValues.Round(u.MaxHealth * scale); u.Health = u.MaxHealth; u.AttackDamage *= scale; u.BaseAttackDamage = u.AttackDamage; }
         return u;
     }

@@ -1352,6 +1352,45 @@ for(const set of ['underlords','underlords_ko'])for(const trait of ['LEGEND','SH
 for(const key of ['ulRogue','ulFell','ulSage','ulVoidCd','ul_s_hatchling','ul_s_blackdragon','spirit'])if(!ulAllianceCoverage.has(key))throw new Error(`Underlords alliance not exercised: ${key}`);
 
 
+
+DT.Sets.activate('underlords','hyper');
+const ulHeldItems=Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].hooks&&DT.ITEMS[id].cat!=='global');
+const ulGlobalItems=Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].cat==='global');
+const ulItemCases=[...ulHeldItems.map(item=>({name:item,item})),...ulGlobalItems.map(global=>({name:global,global})),...Array.from({length:12},(_,i)=>({name:`mixed-${i}`,mixed:true}))];
+const ulItemCoverage=new Set();
+for(const set of ['underlords','underlords_ko'])for(const test of ulItemCases)for(const stage of [0,1,2]){
+  const duos=stage===2,cols=duos?14:7,pace=duos?'normal':'hyper';DT.Sets.activate(set,pace);
+  const seed=2400000+fixtures.length,pick=DT.makeRng(seed);
+  function side(team){
+    const parts=[0,1].map(part=>{
+      const owner=team*2+part;
+      const lines=['ul_meepo','ul_lycan','ul_luna','ul_bristleback','ul_treant','ul_lich'];
+      const globals=test.global?[test.global]:test.mixed?['ul_g_stone','ul_g_ristul','ul_g_assault','ul_g_chivalry']:[];
+      return {owner,globals,augs:duos?[part?'duo_sync':'duo_tag']:[],units:lines.map((line,i)=>({line:team===0?line:DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)].id,
+        stage,c:part*7+i,r:4+i%4,owner,items:test.item?(i%2?[test.item]:[test.item,test.item]):Array.from({length:2},()=>ulHeldItems[Math.floor(pick()*ulHeldItems.length)])}))};
+    });
+    const mech={ulDuel:20,ulBeastKills:10};
+    return duos?{parts,units:parts.flatMap(p=>p.units),augs:parts.flatMap(p=>p.augs),globals:parts.flatMap(p=>p.globals),counts:DT.Duos.teamCounts(parts),cols,mech}
+      :{units:parts[0].units,globals:parts[0].globals,augs:parts[0].augs,cols,mech};
+  }
+  const a=side(0),b=side(1),cb=new DT.Combat(a,b,{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  for(const u of cb.units){
+    for(const key of ['ulBlinkAt','ulEulCd','ulPipe','ulMek','ulRefresh','ulVyseCd','ulHorn','ulSatanicCd','ulShiva','ulGraveDone'])if(u.state[key])ulItemCoverage.add(key);
+    if(u.summoned)ulItemCoverage.add(u.line.id);
+    if(u.summoned&&u.items.includes('ul_euls'))ulItemCoverage.add('summoned-euls');
+  }
+  const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,owner:u.owner,items:u.items}));
+  const effects=a=>({underlords:a.mech,globals:a.globals,augments:a.augs,...(duos?{parts:a.parts.map(p=>({owner:p.owner,augments:p.augs,globals:p.globals}))}:{})});
+  fixtures.push({name:`underlords-item/${set}/${test.name}/${stage}`,variant:`${set}/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    underlordsRewards:underlordsRewardsSnapshot(cb),setup:{sideA:effects(a),sideB:effects(b)}});
+}
+for(const key of ['ulBlinkAt','ulEulCd','ulPipe','ulMek','ulRefresh','ulVyseCd','ulHorn','ulSatanicCd','ulShiva','ulGraveDone','ul_s_bruiser','ul_s_thunderhide','summoned-euls'])
+  if(!ulItemCoverage.has(key))throw new Error(`Underlords item effect not exercised: ${key}`);
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
