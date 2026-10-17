@@ -57,7 +57,7 @@ to be a Vulkan renderer or the final game UI.
 - 3,996 unit-form reference cases for stats, ability scaling and selling prices.
 - 1,200 damage reference cases covering mitigation, shields, attribute advantages,
   amplifier ordering, burn mana suppression and hook-supplied modifiers.
-  Production set hook definitions remain unported.
+  Production hook coverage is tracked below and in `MIGRATION.md`.
 - 88 shared-kernel reference battles exercise all 14 shared abilities, all star
   levels, Solo/Duos widths, empty sides, overlapping placements and time limits.
   Equipment is disabled for those isolated comparisons. Another 116 battles cover
@@ -67,7 +67,12 @@ to be a Vulkan renderer or the final game UI.
 - Two hook-enabled reference battles verify all 23 callback types, priority/source
   ordering, Duos ownership, nested callbacks, timers, temporary buffs and damage-stage
   mutations. Controlled hook definitions exercise the real legacy dispatcher; native
-  production traits/items/augments/powers/mechanics are still pending.
+  production binding is being migrated separately.
+- Faction Wars: 84 production-hook fights cover all 29 traits at all 70 breakpoints,
+  12 combat augments, Crest and counting edge cases (duplicate lines, repeated
+  emblems and bonus traits). These compare the actual production hooks with native
+  implementations. Other sets, powers, planning effects and Duos partner setup remain
+  pending.
 - 15,680 Solo/Duos hex-distance comparisons and 200 movement/target-selection
   traces, including occupied cells and deterministic tie-breaking.
 - Headless native renderer smoke mode and self-contained Windows packaging.

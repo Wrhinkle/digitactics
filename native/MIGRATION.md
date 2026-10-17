@@ -37,14 +37,23 @@ The current executable is a migration workbench. It must not replace the public 
   well as fight state. These verify infrastructure, not production set definitions.
   Damage-stage tests include armor/reduction changes made inside damage hooks.
 
-Latest verification: `./native/build.ps1 -Publish` passes 1,324,841 assertions, compiles
+- Production Faction Wars combat traits: all 29 traits and all 70 breakpoints,
+  including ordered trait counting, emblems, duplicate-line unions and bonus counts.
+  Twelve combat augments plus Crest's count modifier are implemented. Another 84
+  reference fights use the real production hooks and compare throughout each fight;
+  trait count values and insertion order are checked separately. Shared equipment is
+  enabled. Faction Wars planning rewards, Tamer powers and Duos partner side effects
+  remain pending; this is not a whole-set or whole-match completion claim.
+
+Latest verification: `./native/build.ps1 -Publish` passes 1,803,899 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Bind production trait/item/augment/power/mechanic definitions to the dispatcher.
+1. Extend production binding beyond Faction Wars traits/combat augments to the
+   remaining sets, item hooks, powers and mechanics.
    Finish hook context operations (summons, board movement, side/trait state) and
    presentation event metadata. Extend reference battles to real set definitions
    before claiming full combat parity.

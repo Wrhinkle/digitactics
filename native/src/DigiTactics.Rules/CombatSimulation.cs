@@ -20,9 +20,10 @@ public sealed partial class CombatSimulation
     public int Columns => grid.Columns;
     public CombatHookRegistry Hooks { get; }
     private bool ended;
+    internal double[] HealingAmplification { get; } = new double[2];
 
     public CombatSimulation(Ruleset rules, CombatEntry[] sideA, CombatEntry[] sideB, uint seed,
-        int columns = 7, double overtimeStart = 30, double timeLimit = 45, Action<CombatHookRegistry>? configureHooks = null, bool duos = false)
+        int columns = 7, double overtimeStart = 30, double timeLimit = 45, Action<CombatHookRegistry>? configureHooks = null, bool duos = false, CombatSetup? setup = null)
     {
         grid = new(columns, 8); occupancy = new CombatUnit?[grid.Count]; occupied = new bool[grid.Count];
         random = new(seed); this.overtimeStart = overtimeStart; this.timeLimit = timeLimit;
@@ -40,9 +41,11 @@ public sealed partial class CombatSimulation
             if (!SupportedAbilities.Contains(line.Ability.Kind))
                 throw new NotSupportedException($"Ability {line.Ability.Kind} has not been migrated yet.");
             var unit = new CombatUnit(units.Count, entry, line, team, cell, random.Next());
+            unit.Traits = TraitRules.UnitTraits(entry, rules);
             unit.Equipment.Apply(unit, items, thiefPool, random);
             units.Add(unit); occupancy[index] = unit;
         }
+        if (setup is not null) FactionWarsCombat.Bind(this, rules, sideA, sideB, setup);
         configureHooks?.Invoke(Hooks);
         for (int team = 0; team < 2; team++) Hooks.FireTeam(CombatHook.CombatStart, team, new());
         Hooks.FireGlobal(CombatHook.CombatStart, new());
@@ -141,10 +144,11 @@ public sealed partial class CombatSimulation
     private void Attack(CombatUnit unit, CombatUnit target)
     {
         var p = unit.Equipment;
-        unit.AttackCooldown = 1 / (unit.AttackSpeed * Math.Min(1 + p.Rage * unit.RageStacks + unit.SpeedBuffs.Sum(b => b.Value), 4));
+        unit.AttackCooldown = 1 / (unit.AttackSpeed * Math.Min(1 + p.Rage * unit.RageStacks + unit.AttackSpeedPerAttack * unit.AttackSpeedStacks + unit.SpeedBuffs.Sum(b => b.Value), 4));
         Emit("attack", unit, target);
         if (unit.Blind) { unit.Blind = false; Emit("miss", unit); return; }
         unit.Mana = Math.Min(unit.MaxMana, unit.Mana + 10 + p.Shojin); unit.Attacks++;
+        if (unit.AttackSpeedPerAttack != 0 && unit.AttackSpeedStacks < 12) unit.AttackSpeedStacks++;
         if (p.Rage != 0) unit.RageStacks++;
         unit.AttackDamage += unit.BaseAttackDamage * p.Kraken;
         if (p.Titan) TitanStack(unit);
@@ -181,7 +185,7 @@ public sealed partial class CombatSimulation
     private double Damage(CombatUnit source, CombatUnit target, double amount, DamageKind kind, bool isBurn = false, bool critical = false)
     {
         if (!target.Alive || target.InvulnerableUntil > Time) return 0;
-        var request = new DamageRequest(new(source.Line.Attribute, source.Equipment.Amp, source.WeakUntil > Time, source.Weakness, GiantSlayer: source.Equipment.Slayer, GuardBreaker: source.Equipment.GuardBreaker),
+        var request = new DamageRequest(new(source.Line.Attribute, source.Equipment.Amp, source.WeakUntil > Time, source.Weakness, source.BonusAgainstBurning, source.PerHexAmplification, GiantSlayer: source.Equipment.Slayer, GuardBreaker: source.Equipment.GuardBreaker),
             new(target.Line.Attribute, target.MaxHealth, target.Armor, target.MagicResist, target.Shield, target.Mana, target.MaxMana, target.Equipment.Reduction, target.Gargoyle, target.VeilUntil > Time ? target.Veil : 0, target.ShredUntil > Time ? target.Shred : 0, target.BurnUntil > Time),
             kind, amount, source.Cell.DistanceTo(target.Cell), Time > overtimeStart ? 1 + (Time - overtimeStart) * 0.2 : 1, IsBurn: isBurn);
         double outgoing = DamageRules.OutgoingMultiplier(request);
@@ -228,6 +232,7 @@ public sealed partial class CombatSimulation
     {
         if (!unit.Alive || amount <= 0) return;
         if (unit.WoundUntil > Time) amount *= 0.67;
+        amount *= 1 + HealingAmplification[unit.Team];
         double before = unit.Health; unit.Health = Math.Min(unit.MaxHealth, unit.Health + amount);
         unit.Healed += unit.Health - before;
         if (!quiet && unit.Health > before) Emit("heal", unit, amount: UnitValues.Round(unit.Health - before));

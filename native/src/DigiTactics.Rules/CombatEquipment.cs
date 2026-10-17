@@ -88,6 +88,8 @@ public sealed partial class CombatSimulation
     private double AbilityDamage(CombatUnit source, CombatUnit target, double value)
     {
         bool critical = source.Equipment.AbilityCrit && source.CriticalChance > 0 && random.Next() < source.CriticalChance;
-        return Damage(source, target, critical ? value * source.CriticalDamage : value, DamageKind.Magic, critical: critical);
+        double result = Damage(source, target, critical ? value * source.CriticalDamage : value, DamageKind.Magic, critical: critical);
+        if (source.AbilityBurn && target.Alive) ApplyBurn(source, target);
+        return result;
     }
 }

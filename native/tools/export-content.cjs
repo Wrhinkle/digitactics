@@ -27,8 +27,10 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const id = `${set.id}/${pace}`;
   variants.push({ id, name: set.name, pace, lines, poolSizes: DT.POOL_SIZE, odds: DT.SHOP_ODDS,
     rerollCost: rules.rerollCost, shopSize: rules.shopSize || 5,
-    items: Object.entries(DT.ITEMS).map(([id, item]) => ({ id, stats: item.stats || {}, passives: item.p || {}, hooks: Object.keys(item.hooks || {}) })),
-    coreItems: DT.CORE_ITEMS });
+    items: Object.entries(DT.ITEMS).map(([id, item]) => ({ id, stats: item.stats || {}, passives: item.p || {}, hooks: Object.keys(item.hooks || {}), emblem: item.emblem || null })),
+    coreItems: DT.CORE_ITEMS,
+    traits: Object.entries(DT.TRAITS).map(([id, trait]) => ({ id, kind: trait.kind, breakpoints: trait.bp, values: trait.lv,
+      parameters: Object.fromEntries(Object.entries(trait).filter(([key, value]) => !['bp', 'lv'].includes(key) && Array.isArray(value) && value.every(x => typeof x === 'number'))) })) });
   for (const line of DT.SHOP_LINES) for (let stage = 0; stage < 3; stage++) {
     unitStats.push({ variant: id, line: line.id, stage, stats: DT.unitStats(line, stage),
       ability: DT.abilityValue(line, stage), sell: DT.sellValue({ line: line.id, stage, items: [] }) });
@@ -69,7 +71,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 3, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 4, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');

@@ -95,6 +95,58 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) fo
 // Real legacy dispatch with controlled hook definitions: source ordering, owner filtering,
 // recursion, timed callbacks and mutable damage events are compared alongside fight state.
 Object.assign(DT.Combat.prototype, originalHooks);
+DT.Sets.activate('faction-wars', 'hyper');
+const productionTraits = Object.entries(DT.TRAITS).map(([id, t]) => ({ id, bp: [...t.bp] }));
+for (const { id, bp } of productionTraits) for (let level = 0; level < bp.length; level++) {
+  const pace = level % 2 ? 'normal' : 'hyper';
+  DT.Sets.activate('faction-wars', pace);
+  const cols = level % 2 ? 14 : 7;
+  const seed = 3200 + fixtures.length, pick = DT.makeRng(seed);
+  const own = DT.SHOP_LINES.filter(l => l.traits.includes(id)).slice(0, bp[level]);
+  if (own.length < bp[level]) throw new Error(`Not enough distinct lines for ${id}/${level}`);
+  const rival = DT.SHOP_LINES;
+  const selected = [];
+  while (selected.length < own.length) { const l = rival[Math.floor(pick() * rival.length)]; if (!selected.includes(l)) selected.push(l); }
+  const entries = lines => lines.map((l, i) => ({ line: l.id, stage: level % 3, c: i % cols, r: 4 + Math.floor(i / cols),
+    items: [DT.CORE_ITEMS[Math.floor(pick() * DT.CORE_ITEMS.length)]], owner: i % 2 }));
+  const sideA = entries(own), sideB = entries(selected);
+  const cb = new DT.Combat({ units: sideA, cols }, { units: sideB, cols }, { seed });
+  if (DT.traitLevel(id, cb.traitCounts[0][id]) !== level + 1) throw new Error(`Missing breakpoint ${id}/${level}`);
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, owner: u.owner, items: u.items }));
+  fixtures.push({ name: `faction-trait/${id}/${level}`, variant: `faction-wars/${pace}`, seed, cols,
+    sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
+    traitCounts: cb.traitCounts });
+}
+
+// Augments and counting edge cases use the production definitions, including Crest's counting hook.
+DT.Sets.activate('faction-wars', 'hyper');
+const combatAugments = Object.entries(DT.AUGMENT).filter(([id, a]) => Object.keys(a.hooks || {}).some(k => DT.Sets.COMBAT_HOOKS.includes(k))).map(([id]) => id);
+for (const augment of [...combatAugments, 'crest', 'counting-edge']) {
+  const seed = 7700 + fixtures.length;
+  const pick = DT.makeRng(seed);
+  const lines = ['agumon', 'guilmon', 'salamon', 'woodmon', 'hackmon', 'dracmon'];
+  const entries = () => lines.map((line, i) => ({ line, stage: 1, c: i, r: 4 + i % 3, items: i % 2 ? [] : [DT.CORE_ITEMS[Math.floor(pick() * DT.CORE_ITEMS.length)]] }));
+  const sideA = entries(), sideB = entries();
+  if (augment === 'counting-edge') {
+    sideA[1].line = sideA[0].line;
+    const emblem = trait => Object.keys(DT.ITEMS).find(id => DT.ITEMS[id].emblem === trait);
+    sideA[0].items = [emblem('INS'), emblem('INS')]; sideA[1].items = [emblem('HB')];
+    sideA[0].bonusTraits = { DR: 1, JT: 2 }; sideA[1].bonusTraits = { DR: 2, JT: 1 };
+    for (const id of [...sideA[0].items, ...sideA[1].items]) if (!DT.ITEMS[id]) throw new Error(`Missing emblem ${id}`);
+  }
+  const augs = augment === 'counting-edge' ? ['crest'] : [augment];
+  const cb = new DT.Combat({ units: sideA, augs }, { units: sideB, augs: [] }, { seed });
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items, bonusTraits: u.bonusTraits }));
+  fixtures.push({ name: `faction-augment/${augment}`, variant: 'faction-wars/hyper', seed, cols: 7,
+    sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
+    augsA: augs, augsB: [], traitCounts: cb.traitCounts });
+}
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
