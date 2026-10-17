@@ -25,6 +25,11 @@ The sandbox starts with 50 gold. Buy units, refresh the shop, combine copies,
 sell units, reset the sandbox, and select any of the 22 ruleset/pace catalogs.
 Selling uses the original star/tier discount rules, including Dragonlands price premiums.
 
+The shared combat presentation stream is checked against 156 original-engine battles
+(42,626 ordered cues), including cast names, projectiles, bursts, critical damage,
+leap origins and shared item effects. Set-specific visual cues and the production
+renderer remain unfinished.
+
 ## Boundaries
 
 - `src/DigiTactics.Rules`: deterministic C# rules. No graphics, filesystem, clocks,

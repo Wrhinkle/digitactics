@@ -172,8 +172,8 @@ public sealed partial class CombatSimulation
         double speed = 1 + p.Rage * unit.RageStacks + unit.AttackSpeedPerAttack * unit.AttackSpeedStacks;
         foreach (var buff in unit.SpeedBuffs) speed += buff.Value;
         unit.AttackCooldown = 1 / (unit.AttackSpeed * Math.Min(speed, 4));
-        Emit("attack", unit, target);
-        if (unit.Blind) { unit.Blind = false; Emit("miss", unit); return; }
+        Emit(unit.Range > 1 ? "shot" : "hit", unit, target);
+        if (unit.Blind) { unit.Blind = false; Emit("text", unit, text: "Miss"); return; }
         unit.Mana = Math.Min(unit.MaxMana, unit.Mana + 10 + p.Shojin); unit.Attacks++;
         if (unit.AttackSpeedPerAttack != 0 && unit.AttackSpeedStacks < unit.AttackSpeedStackLimit) unit.AttackSpeedStacks++;
         if (p.Rage != 0) unit.RageStacks++;
@@ -185,7 +185,7 @@ public sealed partial class CombatSimulation
             target.ThornCooldown = Time + 1.5;
             foreach (var enemy in EnemiesNear(target, target.Cell, 1)) Damage(target, enemy, target.Equipment.Thorns, DamageKind.Magic);
         }
-        if (target.Dodge > 0 && random.Next() < target.Dodge) { Emit("dodge", target); return; }
+        if (target.Dodge > 0 && random.Next() < target.Dodge) { Emit("text", target, text: "Dodge"); return; }
         double amount = unit.AttackDamage;
         bool critical = unit.CriticalChance > 0 && random.Next() < unit.CriticalChance;
         if (critical) amount *= unit.CriticalDamage;
@@ -196,7 +196,7 @@ public sealed partial class CombatSimulation
         if (p.Split != 0)
         {
             var other = EnemiesNear(unit, target.Cell, 2).Where(e => e != target).OrderBy(e => target.Cell.DistanceTo(e.Cell)).FirstOrDefault();
-            if (other is not null) Damage(unit, other, amount * p.Split, DamageKind.Physical, critical: critical);
+            if (other is not null) { Emit("shot", unit, other); Damage(unit, other, amount * p.Split, DamageKind.Physical, critical: critical); }
         }
         if (p.Volt != 0 && unit.Attacks % 3 == 0)
         {
@@ -204,7 +204,7 @@ public sealed partial class CombatSimulation
             for (int k = 0; k < 3 && pool.Count > 0; k++)
             {
                 int index = (int)(random.Next() * pool.Count); var enemy = pool[index]; pool.RemoveAt(index);
-                Damage(unit, enemy, p.Volt, DamageKind.Magic);
+                Emit("beam", unit, enemy); Damage(unit, enemy, p.Volt, DamageKind.Magic);
             }
         }
     }
@@ -240,7 +240,7 @@ public sealed partial class CombatSimulation
         source.Dealt += result.Amount; target.Taken += result.Amount;
         if (source.Omnivamp > 0 && source.Alive) Heal(source, result.Amount * source.Omnivamp, true);
         if (source.Equipment.Burn && !isBurn) ApplyBurn(source, target);
-        Emit("damage", target, source, UnitValues.Round(result.Amount));
+        Emit("damage", target, source, UnitValues.Round(result.Amount), kind: kind, critical: critical);
         if (target.Health <= 0 && Hooks.Has(CombatHook.Lethal, target))
             Hooks.Fire(CombatHook.Lethal, target, new() { Source = source, Amount = result.Amount, Kind = kind });
         if (target.Health <= 0) Kill(target, source);
@@ -267,6 +267,11 @@ public sealed partial class CombatSimulation
             Hooks.Fire(CombatHook.Heal, unit, new() { Amount = unit.Health - before }, CombatHook.AnyHeal);
     }
 
-    private void Emit(string type, CombatUnit unit, CombatUnit? target = null, double amount = 0) =>
-        events.Add(new(Time, type, unit.Id, target?.Id, amount));
+    private void Emit(string type, CombatUnit unit, CombatUnit? target = null, double amount = 0,
+        DamageKind? kind = null, bool critical = false, string? text = null, bool big = false) =>
+        events.Add(new(Time, type, unit.Id, target?.Id, amount, kind, critical, text,
+            type == "leap" ? unit.Cell : null, Big: big));
+
+    private void Burst(HexCell cell, int radius, int team) =>
+        events.Add(new(Time, "burst", -1, Cell: cell, Radius: radius, Team: team));
 }

@@ -3,7 +3,11 @@ namespace DigiTactics.Rules;
 public sealed record PartnerModifier(string? Bonus, string? Trait = null);
 public sealed record ColiseumModifier(string? Form = null, string? PowerUp = null);
 public sealed record CombatEntry(string Line, int Stage, int Column, int Row, int Uid = 0, int? Owner = null, string[]? Items = null, Dictionary<string, int>? BonusTraits = null, PartnerModifier? Partner = null, double GluttonHealth = 0, double GluttonAbilityPower = 0, string? ArcaneAnomaly = null, ColiseumModifier? Coliseum = null);
-public readonly record struct CombatEvent(double Time, string Type, int Unit, int? Target = null, double Amount = 0);
+/// <summary>Immutable presentation cue in simulation order. Unit is the subject (or -1 for an area burst);
+/// Target is the recipient for projectiles and the source for damage/death. Cell captures an area center
+/// or pre-move leap origin. Text holds a cast name or floating label; Big selects the amplified effect.</summary>
+public readonly record struct CombatEvent(double Time, string Type, int Unit, int? Target = null, double Amount = 0, DamageKind? Kind = null, bool Critical = false,
+    string? Text = null, HexCell? Cell = null, int Radius = 0, int? Team = null, bool Big = false);
 public sealed record AttackSpeedBuff(double Value, double Until, bool Infiltrator = false);
 
 /// <summary>Runtime state belongs to one battle; content definitions are shared and never modified.</summary>

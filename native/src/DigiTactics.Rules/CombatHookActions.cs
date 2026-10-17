@@ -73,7 +73,7 @@ public sealed partial class CombatSimulation
     internal bool HookEvery(CombatUnit unit, string key, double period) => Every(unit, key, period);
     internal void CastAgain(CombatUnit unit, CombatUnit target) { if (unit.Alive) Cast(unit, target); }
 
-    internal void AddShield(CombatUnit unit, double amount)
+    internal void AddShield(CombatUnit unit, double amount, bool cue = true)
     {
         if (amount > 0)
         {
@@ -81,7 +81,7 @@ public sealed partial class CombatSimulation
             if (Hooks.Has(CombatHook.Shield, unit, CombatHook.AnyShield))
                 Hooks.Fire(CombatHook.Shield, unit, new() { Amount = amount }, CombatHook.AnyShield);
         }
-        Emit("shield", unit);
+        if (cue) Emit("shield", unit);
     }
 
     internal void Kill(CombatUnit unit, CombatUnit? source)

@@ -112,5 +112,6 @@ foreach (var trace in damageFixtures.RootElement.EnumerateArray())
     Check(Close(actual.HealthDamage, expected.GetProperty("healthDamage").GetDouble()), "Health damage mismatch.");
     Check(actual.ManaAfter == expected.GetProperty("manaAfter").GetDouble(), "Damage mana gain mismatch.");
 }
+assertions += CombatEventParity.Run(root, catalog);
 assertions += await CombatParity.Run(root, catalog);
 Console.WriteLine($"Passed {assertions} native checks: reference battles, RNG, shop, movement, {forms} unit forms, 1,200 damage traces, Solo/Duos geometry, and roster/pool/purchase rules across {catalog.Variants.Length} variants.");

@@ -29,8 +29,11 @@ public sealed partial class CombatSimulation
         if (p.ManaRegen != 0 && Every(unit, "mana", 3)) unit.Mana = Math.Min(unit.MaxMana, unit.Mana + p.ManaRegen);
         if (p.Crown && !unit.CrownApplied && Time >= 8) { unit.CrownApplied = true; unit.AbilityPower += 30; }
         if (p.Redemption && Every(unit, "redemption", 5))
+        {
             foreach (var ally in units) if (ally.Alive && ally.Team == unit.Team && ally.Cell.DistanceTo(unit.Cell) <= 2)
                 Heal(ally, 80 + (ally.MaxHealth - ally.Health) * 0.1);
+            Burst(unit.Cell, 2, 1 - unit.Team);
+        }
         if (p.Sunfire && Every(unit, "sunfire", 2))
         {
             var enemy = EnemiesNear(unit, unit.Cell, 2).OrderBy(e => unit.Cell.DistanceTo(e.Cell)).FirstOrDefault();
@@ -53,7 +56,7 @@ public sealed partial class CombatSimulation
 
     private void StunUnit(CombatUnit unit, double duration)
     {
-        if (Time < unit.Equipment.CrowdControlImmunity) { Emit("immune", unit); return; }
+        if (Time < unit.Equipment.CrowdControlImmunity) { Emit("text", unit, text: "Immune"); return; }
         unit.Stun = Math.Max(unit.Stun, duration);
     }
 
@@ -82,7 +85,7 @@ public sealed partial class CombatSimulation
         if (p.BlueBuff) unit.Mana = 20;
         foreach (var enemy in units)
             if (enemy.Alive && enemy.Team != unit.Team && enemy.Equipment.Zap != 0 && enemy.Cell.DistanceTo(unit.Cell) <= 2)
-                Damage(enemy, unit, enemy.Equipment.Zap, DamageKind.Magic);
+                { Emit("beam", enemy, unit); Damage(enemy, unit, enemy.Equipment.Zap, DamageKind.Magic); }
     }
 
     private double AbilityDamage(CombatUnit source, CombatUnit target, double value)

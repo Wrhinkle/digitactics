@@ -11,23 +11,26 @@ public sealed partial class CombatSimulation
         double castPower = unit.AbilityPower;
         double value = UnitValues.AbilityValue(unit.Line, unit.Stage) * unit.AbilityPower / 100;
         int radius = unit.Line.Ability.Radius == 0 ? 1 : unit.Line.Ability.Radius;
-        Emit("cast", unit);
+        Emit("cast", unit, text: unit.Line.Ability.Names.ElementAtOrDefault(unit.Stage));
         AfterCast(unit);
         switch (unit.Line.Ability.Kind)
         {
-            case "nuke": AbilityDamage(unit, target, value); break;
+            case "nuke": Emit("beam", unit, target); AbilityDamage(unit, target, value); break;
             case "aoe":
+                Burst(target.Cell, radius, unit.Team);
                 foreach (var enemy in EnemiesNear(unit, target.Cell, radius)) AbilityDamage(unit, enemy, value);
                 break;
             case "stun":
+                Emit("beam", unit, target);
                 StunUnit(target, 1.5 + unit.Stage * 0.25);
                 AbilityDamage(unit, target, value); break;
             case "slam":
+                Burst(unit.Cell, radius, unit.Team);
                 foreach (var enemy in EnemiesNear(unit, unit.Cell, radius))
                 { StunUnit(enemy, 1); AbilityDamage(unit, enemy, value); }
                 break;
             case "shield":
-                AddShield(unit, value); Emit("shield", unit);
+                AddShield(unit, value, cue: false); Emit("shield", unit);
                 foreach (var enemy in EnemiesNear(unit, unit.Cell, 2)) enemy.Target = unit;
                 break;
             case "heal":
@@ -39,43 +42,47 @@ public sealed partial class CombatSimulation
                 {
                     var enemies = units.Where(e => e.Alive && e.Team != unit.Team).ToArray();
                     if (enemies.Length == 0) break;
-                    AbilityDamage(unit, enemies[(int)(random.Next() * enemies.Length)], value);
+                    var victim = enemies[(int)(random.Next() * enemies.Length)];
+                    Emit("shot", unit, victim, big: true); AbilityDamage(unit, victim, value);
                 }
                 break;
             case "drain":
                 double total = 0;
                 var hits = unit.Line.Ability.Radius > 0 ? EnemiesNear(unit, target.Cell, unit.Line.Ability.Radius) : [target];
+                if (unit.Line.Ability.Radius > 0) Burst(target.Cell, unit.Line.Ability.Radius, unit.Team);
+                else Emit("beam", unit, target);
                 foreach (var enemy in hits) total += AbilityDamage(unit, enemy, value);
                 Heal(unit, total * 0.6); break;
             case "weaken":
+                Emit("beam", unit, target);
                 AbilityDamage(unit, target, value);
                 if (target.Alive) { target.Weakness = Math.Max(target.WeakUntil > Time ? target.Weakness : 0, 0.3); target.WeakUntil = Time + 4; }
                 break;
             case "rally":
                 foreach (var ally in units.Where(e => e.Alive && e.Team == unit.Team).OrderBy(e => e.Health / e.MaxHealth).ThenBy(e => e.Id)
                     .Take(unit.Stage >= 2 ? 3 : 2).ToArray())
-                { AddShield(ally, value); ally.SpeedBuffs.Add(new(0.3, Time + 4)); Emit("shield", ally); }
+                { AddShield(ally, value, cue: false); ally.SpeedBuffs.Add(new(0.3, Time + 4)); Emit("shield", ally); }
                 break;
-            case "execute": AbilityDamage(unit, target, target.Health < target.MaxHealth * 0.5 ? value * 2 : value); break;
+            case "execute": Emit(unit.Cell.DistanceTo(target.Cell) <= 1 ? "hit" : "beam", unit, target, big: true); AbilityDamage(unit, target, target.Health < target.MaxHealth * 0.5 ? value * 2 : value); break;
             case "dash":
                 var weakest = units.Where(e => e.Alive && e.Team != unit.Team).OrderBy(e => e.Health).FirstOrDefault();
                 if (weakest is null) break;
                 if (unit.Cell.DistanceTo(weakest.Cell) > 1 && FreeNeighbor(weakest, unit.Cell) is { } cell)
                 { Emit("leap", unit); Place(unit, cell); }
-                unit.Target = weakest; AbilityDamage(unit, weakest, value); break;
+                unit.Target = weakest; Emit("hit", unit, weakest, big: true); AbilityDamage(unit, weakest, value); break;
             case "chain":
                 var hit = new HashSet<int>();
                 CombatUnit? current = target;
                 for (int i = 0; i <= unit.Stage + 2 && current is not null; i++)
                 {
-                    hit.Add(current.Id); AbilityDamage(unit, current, value); value *= 0.8;
+                    hit.Add(current.Id); Emit("beam", unit, current); AbilityDamage(unit, current, value); value *= 0.8;
                     var origin = current.Cell;
                     current = units.Where(e => e.Alive && e.Team != unit.Team && !hit.Contains(e.Id) && origin.DistanceTo(e.Cell) <= 3)
                         .OrderBy(e => origin.DistanceTo(e.Cell)).FirstOrDefault();
                 }
                 break;
             case "line":
-                foreach (var enemy in LineTargets(unit, target)) AbilityDamage(unit, enemy, value);
+                foreach (var enemy in LineTargets(unit, target)) { Emit("beam", unit, enemy); AbilityDamage(unit, enemy, value); }
                 break;
             default:
                 if (!CastSetAbility(unit, target, value)) throw new NotSupportedException(unit.Line.Ability.Kind);
