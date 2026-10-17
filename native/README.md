@@ -1387,3 +1387,23 @@ and RNG all match. Full match-controller registration and Arcane post-combat
 progression remain outstanding.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+
+### Arcane post-combat progression
+
+`ArcanePlanning.RoundEnd` processes Academy sponsorship gifts, Syndicate Shimmer,
+Conquest progress/chests and High Roller coins in trait-count order, followed by
+Anomaly-finding rewards and board equipment payouts. Conquest chest gold credits
+the economy directly; other payouts return as settlement bonus gold. Shimmer uses
+the pace and current loss streak, and Academy only grants newly reached tiers.
+Owner-filtered combat units drive Conquest, coins, bounty and Anomaly kill rewards.
+Shield payout lookup requires the matching board UID and team in that filtered view.
+
+24 original-engine battles exercise all four combat reward counters with nonzero
+results. 5,760 cases pass 34,632 checks (`--arcane-settlement-only`), including
+missing combat, PvE, trait order/tiers, full inventory, empty sponsorship, preloaded
+progress, multiple chests, streak thresholds, owner views and unmatched shield UIDs.
+The full production match controller still needs to register these handlers and
+project their persistent state into subsequent battles.
+
+Validation: **159,889,824 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.

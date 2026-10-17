@@ -5,6 +5,10 @@ namespace DigiTactics.Rules;
 
 public sealed class ArcanePlanningState
 {
+    public int AcademyLevel { get; set; }
+    public double Conquest { get; set; }
+    public int Chests { get; set; }
+    public int FindKills { get; set; }
     public int Shimmer { get; set; }
     public bool SyndicateAugment { get; set; }
     public int MarketsQueued { get; set; }
@@ -35,6 +39,67 @@ public sealed class ArcanePlanning(MatchState state) : IMatchShopHooks
         for (int i = list.Length - 1; i > 0; i--) { int j = (int)(state.Random.Next() * (i + 1)); (list[i], list[j]) = (list[j], list[i]); }
         return list;
     }
+    public int RoundEnd(RoundEndContext context)
+    {
+        var player = context.Player; var m = player.Mechanics.Arcane;
+        bool hasCombat = context.Match.Combat is not null;
+        var mine = hasCombat ? context.Units.Where(u => u.Survivor.Team == context.Team).Select(u =>
+            u.State ?? throw new InvalidOperationException("An Arcane result is missing unit state.")).ToArray() : [];
+        int gold = 0;
+        foreach (var count in context.Traits)
+        {
+            var trait = state.Rules.Traits.FirstOrDefault(t => t.Id == count.Key);
+            if (trait is null) continue;
+            int level = TraitRules.Level(trait, count.Value);
+            if (level == 0) continue;
+            switch (count.Key)
+            {
+                case "ACA":
+                    while (m.AcademyLevel < level && state.ArcaneSponsor.Length > 0)
+                    {
+                        m.AcademyLevel++;
+                        player.GiveItem(loot.Pick(state.ArcaneSponsor)!);
+                    }
+                    break;
+                case "SYN" when !context.Pve:
+                    m.SyndicateLevel = level;
+                    double gain = trait.Parameters[player.Economy.Streak <= -3 ? "streakGain" : "gain"][level - 1];
+                    AddShimmer(m, (int)UnitValues.Round((state.Rules.Pace == "normal" ? .55 : 1) * gain));
+                    break;
+                case "CON" when hasCombat:
+                    m.Conquest += mine.Sum(u => u.Arcane.ConquestKills) * trait.Parameters["mult"][level - 1];
+                    while (m.Conquest >= 10)
+                    {
+                        m.Conquest -= 10; m.Chests++;
+                        if (m.Chests % 3 == 0) player.GiveItem(loot.RandomCompleted()!);
+                        else { player.Economy.Credit(2); player.GiveItem(loot.RandomComponent()!); }
+                        if (level >= 3) player.Economy.Credit(2);
+                    }
+                    break;
+                case "HR" when hasCombat:
+                    gold += Math.Min(3, mine.Sum(u => u.Arcane.Coins));
+                    break;
+            }
+        }
+        if (hasCombat && player.Augments.Contains("arc_a_find"))
+        {
+            m.FindKills += mine.Where(u => !string.IsNullOrEmpty(u.Entry.ArcaneAnomaly)).Sum(u => u.Arcane.Anomaly.Kills);
+            while (m.FindKills >= 3) { m.FindKills -= 3; gold++; }
+        }
+        foreach (var entry in player.Roster.Board)
+            foreach (string id in entry.Unit.Items)
+            {
+                if (id == "arc_tamer_crown" && context.Won && state.Random.Next() < .1) gold++;
+                else if (id == "arc_tamer_cape" && state.Random.Next() < .1) gold++;
+                else if (id == "arc_tamer_shield" && hasCombat)
+                {
+                    var unit = context.Units.FirstOrDefault(u => u.Uid == entry.Unit.Id && u.Survivor.Team == context.Team);
+                    if (unit is not null && !unit.Survivor.Alive && state.Random.Next() < .1) gold++;
+                }
+            }
+        return gold + Math.Min(3, mine.Sum(u => u.Arcane.Items.BountyGold));
+    }
+
     public void AiTurn(MatchPlayer player, PlanningItems inventory, MatchPhase phase)
     {
         for (int i = player.Items.Count - 1; i >= 0; i--)
