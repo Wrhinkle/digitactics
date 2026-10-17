@@ -140,9 +140,11 @@ to be a Vulkan renderer or the final game UI.
   and core timed/death mechanics are implemented. Alongside 348 isolated cast
   tests, 744 battles cover every shop hero at every star stage in both modes and
   board widths with mechanics enabled. Summons, poison, leech transfer, Grave,
-  Eclipse, Refraction and combat reward counters are included. Alliances,
-  held/global items, Tamers and planning/settlement remain pending; the current
-  mechanic binder requires NoTraits and rejects unsupported hooks.
+  Eclipse, Refraction and combat reward counters are included. All 26 alliances
+  at 50 breakpoints pass 200 further battles; 36 Duos cases exercise merged counts,
+  Legend membership, Phantom's Rogue inheritance, Shaman summons and Spirit's
+  Delta Strike. Held/global items, Tamers and planning/settlement remain pending;
+  unsupported item hooks still reject explicitly.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner one battle at a time; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

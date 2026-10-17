@@ -1266,6 +1266,10 @@ Object.assign(DT.Combat.prototype,originalHooks);
 
 
 
+const underlordsRewardsSnapshot=cb=>[0,1].map(team=>({
+  kills:cb.units.filter(u=>u.team===team&&!u.summoned&&u.traits.includes('BEAST')).reduce((n,u)=>n+(u.state.ulKills||0),0),
+  gold:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.ulGold||0),0),
+  duel:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.ulDuelWin||0),0)}));
 const ulMechanicCoverage=new Set();
 for(const set of ['underlords','underlords_ko']){
   DT.Sets.activate(set,'hyper');const heroes=DT.SHOP_LINES.map(l=>l.id);
@@ -1288,8 +1292,7 @@ for(const set of ['underlords','underlords_ko']){
       const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items}));
       fixtures.push({name:`underlords-mechanic/${set}/${hero}/${stage}/${cols}`,variant:`${set}/${pace}`,seed,cols,
         sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
-        underlordsRewards:[0,1].map(team=>({kills:cb.units.filter(u=>u.team===team&&!u.summoned&&u.traits.includes('BEAST')).reduce((n,u)=>n+(u.state.ulKills||0),0),
-          gold:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.ulGold||0),0),duel:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.ulDuelWin||0),0)})),
+        underlordsRewards:underlordsRewardsSnapshot(cb),
         setup:{sideA:{noTraits:true,underlords:mech},sideB:{noTraits:true,underlords:mech}}});accepted=true;
     }
     if(!accepted)throw new Error(`Underlords hero not exercised: ${set}/${hero}/${stage}/${cols}`);
@@ -1297,6 +1300,56 @@ for(const set of ['underlords','underlords_ko']){
 }
 for(const key of ['ulGraveDone','ulEclipse','ulLivingArmor','ulStone','ulMeta','ulShifted','ulPois','ul_s_ward','ul_s_bear','ul_s_treant','ul_s_serpent','ul_s_wolf','ul_meepo'])
   if(!ulMechanicCoverage.has(key))throw new Error(`Underlords mechanic not exercised: ${key}`);
+
+
+
+const ulAllianceCoverage=new Set();
+DT.Sets.activate('underlords','hyper');
+const ulAllianceCases=Object.entries(DT.TRAITS).flatMap(([id,t])=>t.bp.map((bp,level)=>({name:`${id}-${level}`,id,bp,level})));
+for(const set of ['underlords','underlords_ko'])for(const test of ulAllianceCases)for(const formation of [0,1]){
+  const pace=formation?'normal':'hyper',cols=formation?14:7;DT.Sets.activate(set,pace);
+  const seed=2100000+fixtures.length,pick=DT.makeRng(seed);
+  const own=DT.SHOP_LINES.filter(l=>l.traits.includes(test.id)).slice(0,test.bp),foes=[];
+  while(foes.length<Math.max(5,own.length)){const line=DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)];if(!foes.includes(line))foes.push(line);}
+  const entries=lines=>lines.map((l,i)=>({line:l.id,stage:(test.level+formation+i)%3,c:i%cols,r:formation?4+i%4:4+Math.floor(i/cols),items:[]}));
+  const a=entries(own),b=entries(foes);if(own.length<test.bp)a[0].bonusTraits={[test.id]:test.bp-own.length};
+  const mech={ulDuel:formation?30:0,ulBeastKills:formation?12.25:0};
+  const cb=new DT.Combat({units:a,cols,mech},{units:b,cols,mech},{seed});
+  if(DT.traitLevel(test.id,cb.traitCounts[0][test.id])!==test.level+1)throw new Error(`Underlords missing breakpoint ${set}/${test.name}`);
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  for(const u of cb.units){for(const key of ['ulRogue','ulFell','ulSage','ulVig','ulVoidCd'])if(u.state[key])ulAllianceCoverage.add(key);if(u.summoned)ulAllianceCoverage.add(u.line.id);}
+  if(cb.events.some(e=>e.text==='Delta Strike'))ulAllianceCoverage.add('spirit');
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,bonusTraits:u.bonusTraits}));
+  fixtures.push({name:`underlords-alliance/${set}/${test.name}/${formation}`,variant:`${set}/${pace}`,seed,cols,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    underlordsRewards:underlordsRewardsSnapshot(cb),
+    setup:{sideA:{underlords:mech},sideB:{underlords:mech}}});
+}
+for(const set of ['underlords','underlords_ko'])for(const trait of ['LEGEND','SHAMAN','ROGUE','SPIRIT','KNIGHT','UNDEAD'])for(const stars of [0,1,2]){
+  DT.Sets.activate(set,'normal');const cols=14,seed=2200000+fixtures.length,pick=DT.makeRng(seed);
+  function side(team){
+    const parts=[0,1].map(part=>{
+      const owner=team*2+part,chosen=DT.SHOP_LINES.filter(l=>l.traits.includes(trait));
+      if(trait==='ROGUE'&&!chosen.some(l=>l.id==='ul_phantom'))chosen.unshift(DT.LINE.ul_phantom);
+      while(chosen.length<6)chosen.push(DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)]);
+      return {owner,augs:[part?'duo_sync':'duo_tag'],units:chosen.slice(0,7).map((l,i)=>({line:l.id,stage:stars,c:part*7+i,r:4+i%3,owner,items:[],
+        ...(trait==='LEGEND'&&i===0?{bonusTraits:{ROGUE:4,SHAMAN:6,UNDEAD:6,DEMON:1,KNIGHT:6,HOLY:4,SPIRIT:3}}:{})}))};
+    });
+    return {parts,units:parts.flatMap(p=>p.units),augs:parts.flatMap(p=>p.augs),counts:DT.Duos.teamCounts(parts),cols,mech:{ulDuel:25,ulBeastKills:14.5}};
+  }
+  const a=side(0),b=side(1),cb=new DT.Combat(a,b,{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  if(cb.events.some(e=>e.text==='Delta Strike'))ulAllianceCoverage.add('spirit');
+  const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,owner:u.owner,items:u.items,bonusTraits:u.bonusTraits}));
+  const effects=a=>({underlords:a.mech,augments:a.augs,parts:a.parts.map(p=>({owner:p.owner,augments:p.augs}))});
+  fixtures.push({name:`underlords-alliance-duos/${set}/${trait}/${stars}`,variant:`${set}/normal`,seed,cols,duos:true,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    underlordsRewards:underlordsRewardsSnapshot(cb),
+    setup:{sideA:effects(a),sideB:effects(b)}});
+}
+for(const key of ['ulRogue','ulFell','ulSage','ulVoidCd','ul_s_hatchling','ul_s_blackdragon','spirit'])if(!ulAllianceCoverage.has(key))throw new Error(`Underlords alliance not exercised: ${key}`);
 
 
 for (const duos of [false, true]) {

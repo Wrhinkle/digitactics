@@ -205,18 +205,23 @@ The current executable is a migration workbench. It must not replace the public 
   guards require key defensive effects, poison, transformations and all summons to
   occur. The summon search preserves the authored seven-column base-cell lookup
   on wider boards. Combat rewards and prior permanent Duel attack damage are
-  carried separately from settlement. Alliances, held/global items, Tamers and
-  planning/settlement remain pending; the binder currently requires NoTraits and
-  rejects augment/partner setup and items with unported callbacks. Rogue inheritance
-  and global-item/Tamer-only state will be added with those binders.
+  carried separately from settlement. All 26 alliances at 50 breakpoints now pass
+  200 further battles across both modes and board widths, plus 36 Duos interaction
+  cases. These cover Legend's priority-ordered membership, Phantom's Rogue
+  inheritance, merged partner counts, Shaman's two dragon helpers, Spirit's Delta
+  Strike, Undead/Sage saves and accumulated Beast HP. Reward comparisons also run
+  with alliances enabled. Shared Duos combat augments are supported. Held/global
+  items, Tamers and planning/settlement remain pending; items with unported
+  callbacks still reject explicitly. Global-item/Tamer-only state will be added
+  with those binders.
 - Reference fixture export now streams individual battles into a temporary gzip
   file and replaces the previous fixture only on success. The native runner reads
   one battle at a time. This removes the V8 single-string limit without dropping
   recorded samples or reducing comparison coverage.
 
-Latest verification: `./native/build.ps1 -Publish` passes 68,932,854 assertions, compiles
-without warnings, renders the workbench, purchases through the native UI, and runs
-the self-contained executable. Fixtures compare against actual methods in the existing
+Latest verification: the native test suite passes 72,549,763 assertions.
+`./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
+purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence

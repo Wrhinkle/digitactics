@@ -10,7 +10,8 @@ public sealed partial class CombatSimulation
             case "ul_drow": foreach (var a in UnderlordsAllies(u, 1)) a.AttackSpeed *= 1 + UnderlordsValue(u, 0.1, 0.2, 0.3); break;
             case "ul_phantom":
                 u.CriticalChance += UnderlordsValue(u, 0.15, 0.2, 0.25); u.CriticalDamage = Math.Max(u.CriticalDamage, UnderlordsValue(u, 2.5, 3.5, 4.5));
-                // Rogue inheritance is bound with alliance counts, once that layer is enabled.
+                int rogue = UnderlordsTraitLevel(u.Team, "ROGUE");
+                if (three && rogue > 0) u.Underlords.Rogue = new(rogue == 1 ? 0.2 : 0.4, rogue == 1 ? 10 : 20);
                 break;
             case "ul_meepo": if (!u.Summoned) UnderlordsSummon(u, "ul_meepo", u.Stage, u, options: new(Items: three ? u.Items.ToArray() : []), scale: 0.45); break;
             case "ul_alchemist": if (three) { c.Buff(u, CombatStat.AttackSpeed, 0.75, 5); u.Equipment.CrowdControlImmunity = Math.Max(u.Equipment.CrowdControlImmunity, 5); } break;

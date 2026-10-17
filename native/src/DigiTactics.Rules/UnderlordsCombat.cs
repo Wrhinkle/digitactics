@@ -1,16 +1,24 @@
 namespace DigiTactics.Rules;
 
-public sealed record UnderlordsState(double UlDuel = 0);
+public sealed record UnderlordsState(double UlDuel = 0, double UlBeastKills = 0);
 public sealed record UnderlordsCombatRewards(double Kills, double Gold, double Duel);
 
 public sealed partial class CombatSimulation
 {
     public UnderlordsCombatRewards UnderlordsRewards(int team) => new(units.Where(u => u.Team == team && !u.Summoned && u.Traits.Contains("BEAST")).Sum(u => u.Underlords.Kills), units.Where(u => u.Team == team).Sum(u => u.Underlords.Gold), units.Where(u => u.Team == team).Sum(u => u.Underlords.DuelWin));
-    private void BindUnderlords(CombatSetup setup)
+    private void BindUnderlords(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
-        foreach (var side in new[] { setup.SideA, setup.SideB }) {
-            if (!side.NoTraits || (side.Augments?.Length ?? 0) > 0 || side.Parts is not null)
-                throw new NotSupportedException("Underlords alliances, augments and partner hooks are still being migrated.");
+        BindUnderlordsTraits(sideA, sideB, setup);
+        for (int team = 0; team < 2; team++) {
+            var side = team == 0 ? setup.SideA : setup.SideB;
+            void BindAugments(string[] ids, int? owner, double partnerTop) {
+                foreach (string id in ids) {
+                    var augment = Hooks.Context(CombatHookSource.Augment, id, team, owner: owner);
+                    if (!DuosCombatAugments.TryBind(Hooks, augment, partnerTop)) throw new NotSupportedException($"Underlords augment {id} has not been migrated.");
+                }
+            }
+            if (side.Parts is { } parts) foreach (var part in parts) BindAugments(part.Augments ?? [], part.Owner, part.PartnerTop);
+            else BindAugments(side.Augments ?? [], null, side.PartnerTop);
         }
         foreach (var u in units) foreach (var id in u.Items)
             if (items.TryGetValue(id, out var item) && item.Hooks.Length > 0) throw new NotSupportedException($"Underlords item {id} is still being migrated.");
@@ -62,6 +70,7 @@ public sealed partial class CombatSimulation
             if (e.Kind == DamageKind.Physical && !e.IsBurn) {
                 if (s.EvadeUntil > Time) { e.Multiplier = 0; return; }
                 if (u.Line.Id == "ul_queenofpain" && u.Stage == 2 && u.Cell.DistanceTo(e.Source!.Cell) <= 2 && c.Random() < 0.25) { e.Multiplier = 0; return; }
+                if (s.Rogue is { } rogue && c.Random() < rogue.Evasion) { e.Multiplier = 0; u.AttackDamage += rogue.AttackDamage; return; }
             }
             if (e.Source!.Summoned && u.Line.Id == "ul_beastmaster" && u.Stage == 2) e.Multiplier *= 0.25;
         });

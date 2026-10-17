@@ -3,6 +3,10 @@ namespace DigiTactics.Rules;
 internal sealed class UnderlordsUnitState
 {
     internal Dictionary<string, double> EffectUntil { get; } = [];
+    internal bool Fell, Sage;
+    internal double VoidCooldown;
+    internal UnderlordsRogue? Rogue;
+    internal UnderlordsVigilant? Vigilant;
     internal bool Metamorphosed, Shifted, LivingArmor, GraveDone, Eclipse, Overload;
     internal double EmpowerUntil, MagicImmuneUntil, StoneUntil, EvadeUntil, Grave, GraveUntil, BashCooldown;
     internal int Napalm, Quill, Refract, RefractHits, Beams, CurseCount, Shift, Fervor;
@@ -48,3 +52,6 @@ internal sealed class UnderlordsZone(CombatUnit source, HexCell cell, double unt
     internal readonly double Until = until, Dps = dps, Armor = armor;
     internal double Next = next;
 }
+
+internal sealed record UnderlordsRogue(double Evasion, double AttackDamage);
+internal sealed record UnderlordsVigilant(int Target, double Amp);
