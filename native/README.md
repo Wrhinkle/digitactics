@@ -601,3 +601,22 @@ The full suite passes 139,309,200 checks; the self-contained Windows package als
 passes the BRUTAL asset, texture, UI and battle-rendering smoke checks. General AI
 shopping, positioning, the composed hook dispatcher and production match
 integration remain pending.
+
+## AI roster preferences and placement search
+
+`PlanningAi` now implements purchase preferences, weakest sellable bench selection,
+trait counts for team selection and ordered free-cell search. Purchase preferences
+include owned copies, trait breakpoints, expensive units, explicit line values
+and partner demand. Bench ranking protects pairs and equipped units, preserving
+stable ties and unit/line sale restrictions. Team-selection counts add a living
+partner's board traits; they intentionally omit augments, as the original AI does.
+Placement search preserves front/back/flank ordering and requires the caller's
+placement rule, so mode restrictions cannot be silently skipped.
+
+19,800 generated roster scenarios across all 22 variants provide 3,178,800 original
+comparisons. They vary capacity, gold, duplicate forms, bonus traits, items,
+unsellable units, partner availability/demand and placement vetoes. Partner portal
+availability and capacity are explicit inputs here; portal orchestration, purchase
+execution, trait scoring, whole-board arrangement and full AI turns remain pending.
+The full native suite passes 142,488,000 checks. The packaged Windows application
+passes the BRUTAL rendering and purchase smoke.
