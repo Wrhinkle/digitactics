@@ -105,6 +105,58 @@ public sealed class GltfRig
         var t = Values("translation", [0, 0, 0]); var r = Values("rotation", [0, 0, 0, 1]); var s = Values("scale", [1, 1, 1]);
         return new(new(t[0], t[1], t[2]), new(r[0], r[1], r[2], r[3]), new(s[0], s[1], s[2]));
     }
+
+    /// <summary>Applies build-time fallback clips, rest poses and weapon parenting for a model source.</summary>
+    public GltfRig Prepare(ModelSource source, string assetRoot)
+    {
+        var motion = source.Motion ?? throw new InvalidDataException("Missing prepared model motion. Run the native asset exporters.");
+        using var bytes = new MemoryStream(ModelCatalog.ReadPayload(assetRoot, motion.File, motion.Sha256, motion.Bytes), writable: false);
+        using var gzip = new System.IO.Compression.GZipStream(bytes, System.IO.Compression.CompressionMode.Decompress);
+        using var json = JsonDocument.Parse(gzip);
+        var root = json.RootElement;
+        if (root.GetProperty("schemaVersion").GetInt32() != 1) throw new InvalidDataException("Unsupported prepared motion schema.");
+        var definitions = root.GetProperty("nodes");
+        if (definitions.GetArrayLength() != Nodes.Length) throw new InvalidDataException("Prepared rig node count differs.");
+        var nodes = new RigNode[Nodes.Length];
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            var value = definitions[i]; int parent = value.GetProperty("parent").GetInt32();
+            if (parent < -1 || parent >= nodes.Length) throw new InvalidDataException("Invalid prepared parent.");
+            var rest = Rest(value);
+            if (!rest.Matrix.IsFinite) throw new InvalidDataException("Nonfinite prepared rest pose.");
+            nodes[i] = new(Nodes[i].Name, parent, rest);
+        }
+        var clips = new List<RigAnimation>();
+        foreach (var clip in root.GetProperty("clips").EnumerateArray())
+        {
+            if (clip.TryGetProperty("authored", out var authored)) { clips.Add(Animations[authored.GetInt32()]); continue; }
+            double duration = clip.GetProperty("duration").GetDouble();
+            if (!double.IsFinite(duration) || duration < 0) throw new InvalidDataException("Invalid prepared clip duration.");
+            var channels = new List<RigChannel>();
+            foreach (var channel in clip.GetProperty("channels").EnumerateArray())
+            {
+                int node = channel.GetProperty("node").GetInt32();
+                if (node < 0 || node >= nodes.Length) throw new InvalidDataException("Invalid prepared channel target.");
+                var path = channel.GetProperty("path").GetString() switch { "position" => AnimationPath.Translation, "scale" => AnimationPath.Scale, "quaternion" => AnimationPath.Rotation, _ => throw new InvalidDataException("Unsupported prepared track.") };
+                var times = channel.GetProperty("times").EnumerateArray().Select(t => t.GetDouble()).ToArray();
+                int width = path == AnimationPath.Rotation ? 4 : 3;
+                var raw = channel.GetProperty("values").EnumerateArray().Select(v => v.GetSingle()).ToArray();
+                if (times.Length == 0 || raw.Length != times.Length * width || raw.Any(v => !float.IsFinite(v))) throw new InvalidDataException("Invalid prepared key values.");
+                var values = new Vector4[times.Length];
+                for (int i = 0; i < times.Length; i++)
+                {
+                    if (!double.IsFinite(times[i]) || times[i] < 0 || i > 0 && times[i] < times[i - 1]) throw new InvalidDataException("Invalid prepared timeline.");
+                    int offset = i * width;
+                    values[i] = new(raw[offset], raw[offset+1], raw[offset+2], width == 4 ? raw[offset+3] : 0);
+                }
+                channels.Add(new(node, path, times, values, false));
+            }
+            clips.Add(new(clip.GetProperty("name").GetString()!, duration, channels.ToArray()));
+        }
+        var prepared = new GltfRig(nodes, Skins, clips.ToArray(), RepairedKeys) { RepairedBindMatrices = RepairedBindMatrices };
+        _ = new RigPose(prepared); // Validate new parenting before it reaches a renderer.
+        return prepared;
+    }
     private static Matrix4D Matrix(double[] a) => Matrix4D.From(a);
     private static Matrix4x4 FloatMatrix(double[] a) => new((float)a[0], (float)a[1], (float)a[2], (float)a[3], (float)a[4], (float)a[5], (float)a[6], (float)a[7], (float)a[8], (float)a[9], (float)a[10], (float)a[11], (float)a[12], (float)a[13], (float)a[14], (float)a[15]);
 }

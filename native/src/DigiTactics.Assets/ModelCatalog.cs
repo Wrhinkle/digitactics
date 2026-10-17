@@ -4,7 +4,8 @@ using System.Text.Json;
 namespace DigiTactics.Assets;
 
 public sealed record ModelAsset(string File, string Sha256, string SourceSha256, long Bytes, int Nodes, int Meshes, int Skins, string[] Animations, int Accessors);
-public sealed record ModelSource(string Asset, JsonElement Metadata);
+public sealed record MotionAsset(string File, string Sha256, long Bytes);
+public sealed record ModelSource(string Asset, JsonElement Metadata, MotionAsset? Motion = null);
 public sealed record ModelCatalog(int SchemaVersion, Dictionary<string, ModelAsset> Assets,
     Dictionary<string, ModelSource> Sources, Dictionary<string, Dictionary<string, string?[]>> Variants)
 {
@@ -26,12 +27,17 @@ public sealed record ModelCatalog(int SchemaVersion, Dictionary<string, ModelAss
     public GltfAsset Open(string root, string asset)
     {
         var entry = Assets[asset];
+        return GltfAsset.LoadCompressed(ReadPayload(root, entry.File, entry.Sha256, entry.Bytes));
+    }
+
+    internal static byte[] ReadPayload(string root, string file, string sha256, long size)
+    {
         string directory = Path.GetFullPath(root) + Path.DirectorySeparatorChar;
-        string path = Path.GetFullPath(Path.Combine(root, entry.File));
+        string path = Path.GetFullPath(Path.Combine(root, file));
         if (!path.StartsWith(directory, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Model path escapes its content root.");
         var bytes = File.ReadAllBytes(path);
-        if (bytes.LongLength != entry.Bytes || !Convert.ToHexString(SHA256.HashData(bytes)).Equals(entry.Sha256, StringComparison.OrdinalIgnoreCase))
-            throw new InvalidDataException($"Model integrity failure: {asset}");
-        return GltfAsset.LoadCompressed(bytes);
+        if (bytes.LongLength != size || !Convert.ToHexString(SHA256.HashData(bytes)).Equals(sha256, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException($"Model integrity failure: {file}");
+        return bytes;
     }
 }

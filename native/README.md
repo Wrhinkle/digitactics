@@ -26,7 +26,7 @@ The sandbox starts with 50 gold. Buy units, refresh the shop, combine copies,
 sell units, reset the sandbox, and select any of the 22 ruleset/pace catalogs.
 Selling uses the original star/tier discount rules, including Dragonlands price premiums.
 Below the shop, an animated native model preview shows the most recently owned unit
-(or the first shop offer when the roster is empty). It uses authored idle clips,
+(or the first shop offer when the roster is empty). It uses authored or fallback idle clips,
 GPU skinning and original textures with provisional preview lighting.
 
 The shared combat presentation stream is checked against 156 original-engine battles
@@ -67,8 +67,12 @@ Native mesh loading assembles all 7,850,058 vertices across 718 assets; 66,228 c
 compare sampled geometry, normalized skin weights and posed bounds with Three.js.
 The workbench draws models with shared vertex/index buffers and GPU bone palettes;
 packaged smoke verifies visible model pixels as well as UI purchase behavior.
-Production material shaders, arena sizing/lighting, animation blending/fallback
-motions and production screens remain unfinished.
+The build also compiles the original motion preparation for all 905 model sources:
+459 fallback clips, adjusted rest poses and six weapon-parenting changes. Native
+sampling passes 1,266,912 reference checks against those prepared scenes. The 667
+deduplicated motion payloads add about 1.6 MB; no JavaScript runs in the app.
+Production material shaders, arena sizing/lighting, action priorities/animation
+blending and production screens remain unfinished.
 
 ## Boundaries
 

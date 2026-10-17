@@ -20,11 +20,13 @@ public static class NativeApplication
                 using var model = models.Open(Path.Combine(AppContext.BaseDirectory, "assets"), asset);
                 if (model.Root.GetProperty("asset"u8).GetProperty("version"u8).GetString() != "2.0")
                     throw new InvalidDataException($"Unsupported packaged model: {asset}");
-                _ = GltfRig.Load(model);
+                var rig = GltfRig.Load(model);
+                foreach (var source in models.Sources.Values.Where(s => s.Asset == asset))
+                    _ = rig.Prepare(source, Path.Combine(AppContext.BaseDirectory, "assets"));
                 if (model.Root.TryGetProperty("images"u8, out var images))
                     for (int i = 0; i < images.GetArrayLength(); i++) _ = model.Image(i);
             }
-            Console.WriteLine($"Native asset smoke passed: {models.Assets.Count} verified model payloads, rigs and textures.");
+            Console.WriteLine($"Native asset smoke passed: {models.Assets.Count} verified model payloads, rigs and textures; {models.Sources.Count} prepared motions.");
         }
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try

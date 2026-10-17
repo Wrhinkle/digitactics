@@ -354,11 +354,21 @@ bounds. Nonfinite original bounds are excluded from reference equality; rig repa
 checks remain separate. Accessor and buffer-view indexing is cached per asset to
 avoid repeated JSON array traversal during mesh loading. Packaged smoke renders
 GeoGreymon and Hagurumon through the shop purchase sequence and checks visible pixels.
-This does not establish rendering parity: production material shaders (including
-normal/roughness/specular maps), transparent depth sorting, animation blending,
-authored fallback motions and arena normalization/lighting remain unfinished.
+The build now invokes the original modelClips preparation and writes native motion
+data for every source, preserving anim=false and fallbackRoles behavior. Authored
+tracks reference the existing repaired native clips; 459 generated fallback clips
+carry explicit node targets and float32 key data. Prepared rest transforms and six
+weapon-parent changes are retained. Content-addressed gzip payloads are verified by
+length/SHA256 and native hierarchy/key validation before use. The 905 source mappings
+share 667 payloads (1,606,946 bytes). Reference fixtures compare selected prepared
+world transforms at rest and four times per valid clip, totaling 1,266,912 checks.
+The workbench uses prepared rigs, and packaged smoke prepares all 905 sources.
+Original nonfinite tracks remain covered by the existing repair checks instead of
+reference equality. This does not establish rendering parity: production material
+shaders (including normal/roughness/specular maps), transparent depth sorting,
+action priorities/blending and arena normalization/lighting remain unfinished.
 
-Latest verification: the native test suite passes 121,159,811 assertions.
+Latest verification: the native test suite passes 122,426,723 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

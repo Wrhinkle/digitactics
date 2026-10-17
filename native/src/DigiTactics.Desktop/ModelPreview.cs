@@ -42,7 +42,8 @@ internal sealed class ModelPreview : IDisposable
         try
         {
             using var asset = catalog.Open(Path.Combine(AppContext.BaseDirectory, "assets"), next.Asset);
-            rig = GltfRig.Load(asset); pose = new RigPose(rig); mesh = GltfMesh.Load(asset);
+            rig = GltfRig.Load(asset).Prepare(next, Path.Combine(AppContext.BaseDirectory, "assets"));
+            pose = new RigPose(rig); mesh = GltfMesh.Load(asset);
             idle = rig.Animations.FirstOrDefault(a => System.Text.RegularExpressions.Regex.IsMatch(a.Name, "idle|wait|stand", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
                 ?? rig.Animations.FirstOrDefault(a => a.Name.Contains("_bn01", StringComparison.OrdinalIgnoreCase)) ?? rig.Animations.FirstOrDefault();
             pose.Sample(idle, 0);
