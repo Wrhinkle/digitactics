@@ -14,6 +14,11 @@ internal static class CombatParity
             battles++;
             string name = trace.GetProperty("name").GetString()!;
             var rules = catalog.Variants.Single(v => v.Id == trace.GetProperty("variant").GetString());
+            if (trace.TryGetProperty("lineManaOverride", out var manaOverride)) {
+                string line = manaOverride.GetProperty("line").GetString()!;
+                double maxMana = manaOverride.GetProperty("maxMana").GetDouble();
+                rules = rules with { Lines = rules.Lines.Select(l => l.Id == line ? l with { Combat = l.Combat with { MaxMana = maxMana } } : l).ToArray() };
+            }
             bool hookProbe = trace.TryGetProperty("hookProbe", out var probe) && probe.GetBoolean();
             bool duos = trace.TryGetProperty("duos", out var duo) && duo.GetBoolean();
             bool production = trace.TryGetProperty("productionTraits", out var traits) && traits.GetBoolean();
@@ -151,6 +156,9 @@ internal static class CombatParity
                     var actual = combat.ArcaneRewards(team); var expected = arcaneRewards[team];
                     if (actual.ConquestKills != expected.GetProperty("conquestKills").GetInt32() || actual.Coins != expected.GetProperty("coins").GetInt32())
                         throw new InvalidOperationException($"Arcane rewards mismatch {name}/{team}");
+                    if (expected.TryGetProperty("anomalyKills", out var anomalyKills)) {
+                        count++; if (actual.AnomalyKills != anomalyKills.GetInt32()) throw new InvalidOperationException($"Arcane anomaly kills mismatch {name}/{team}");
+                    }
                     if (expected.TryGetProperty("bountyGold", out var bounty)) {
                         count++; if (actual.BountyGold != bounty.GetInt32()) throw new InvalidOperationException($"Arcane bounty mismatch {name}/{team}");
                     }

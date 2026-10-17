@@ -983,6 +983,88 @@ for(const augment of [...arcaneAugments,'mixed'])for(const duos of [false,true])
 
 for(const flag of ['ascT','zhonya','mantle','doom-repeat','bounty','tank','ripper','hex-burst'])if(!arcaneItemCoverage.has(flag))throw new Error(`Arcane item effect never exercised: ${flag}`);
 
+
+// Discover every anomaly through the production offer generator, including utility picks.
+DT.Sets.activate('arcane','hyper');
+const anomalyIds=new Set(),anomalyOfferContext={player:{mech:{}},shuffle:a=>a};
+for(let i=0;i<100;i++){
+  const before=anomalyIds.size;
+  for(const id of DT.SET.mechanic.offerKinds.arcAnomaly.options(anomalyOfferContext,[]))anomalyIds.add(id);
+  if(anomalyIds.size===before)break;
+}
+if(anomalyIds.size!==27)throw new Error('Arcane anomaly inventory changed; update native coverage');
+const anomalyCoverage=new Set();
+for(const anomaly of [...anomalyIds,'mixed'])for(const duos of [false,true])for(const stage of [0,1,2]){
+  const pace=duos?'normal':'hyper',cols=duos?14:7;DT.Sets.activate('arcane',pace);
+  const seed=910000+fixtures.length,pick=DT.makeRng(seed),all=[...anomalyIds];
+  function side(team){
+    const parts=[0,1].map(part=>{
+      const owner=team*2+part;
+      const chosen=DT.SHOP_LINES.filter(l=>l.traits.includes(part?'SYN':'BR')).slice(0,3);
+      while(chosen.length<6)chosen.push(DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)]);
+      return {owner,augs:['arc_a_wind','arc_a_lotus',...(duos?[part?'duo_sync':'duo_tag']:[])],units:chosen.map((l,i)=>({line:l.id,stage,c:part*7+i,r:4+i%4,owner,
+        items:i%3===0?[]:Array.from({length:i%3},()=>arcaneHookItems[Math.floor(pick()*arcaneHookItems.length)]),
+        mods:i%2===0||anomaly==='mixed'?{arcAnom:anomaly==='mixed'?all[Math.floor(pick()*all.length)]:anomaly}:{}}))};
+    });
+    const mech={arcSynHp:140,arcChests:2,arcJunk:['flame','bots','destruct']};
+    return duos?{units:parts.flatMap(p=>p.units),parts,augs:parts.flatMap(p=>p.augs),counts:DT.Duos.teamCounts(parts),cols,mech}:{units:parts[0].units,augs:parts[0].augs,cols,mech};
+  }
+  const a=side(0),b=side(1),cb=new DT.Combat(a,b,{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  for(const u of cb.units){
+    if(u.state.lc)anomalyCoverage.add('lastchance');
+    if(u.state.asc)anomalyCoverage.add('ascend');
+    if(u.state.rage)anomalyCoverage.add('berserk');
+    if(u.state.bulwark===false)anomalyCoverage.add('bulwark');
+    if(u.line.id==='arc_s_garurumon')anomalyCoverage.add('partners');
+    if(u.line.id==='arc_s_shellnumemon')anomalyCoverage.add('familiar');
+    if(u.state.anomK>0)anomalyCoverage.add('kills');
+  }
+  const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,owner:u.owner,arcaneAnomaly:u.mods?.arcAnom||null}));
+  const effects=a=>({arcane:a.mech,augments:a.augs,...(duos?{parts:a.parts.map(p=>({owner:p.owner,augments:p.augs}))}:{})});
+  fixtures.push({name:`arcane-anomaly/${anomaly}/${duos}/${stage}`,variant:`arcane/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    arcaneRewards:[0,1].map(team=>({conquestKills:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.arcConK||0),0),coins:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.coins||0),0),bountyGold:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.bountyGold||0),0),anomalyKills:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.anomK||0),0)})),
+    setup:{sideA:effects(a),sideB:effects(b)}});
+}
+for(const flag of ['lastchance','ascend','berserk','bulwark','partners','familiar','kills'])if(!anomalyCoverage.has(flag))throw new Error(`Arcane anomaly effect never exercised: ${flag}`);
+
+
+
+DT.Sets.activate('arcane','hyper');
+const center={c:3,r:5},adjacent=Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})).filter(x=>DT.hexDist(x,center)===1);
+for(const edge of ['devour-alone','devour-chain','partners-full','partners-one','share-partners','link-contraband','fireball-119','fireball-120'])for(const stage of [0,1,2]){
+  const seed=970000+fixtures.length,line='arc_psychemon';
+  const entry=(anomaly,cell,items=[])=>({line,stage,...cell,items,mods:anomaly?{arcAnom:anomaly}:{}});
+  let a;
+  if(edge==='devour-alone')a=[entry('dna_hunger',center)];
+  else if(edge==='devour-chain')a=[entry('dna_hunger',center),entry('dna_hunger',adjacent[0]),entry('dna_power',adjacent[1])];
+  else if(edge.startsWith('partners-'))a=[entry('dna_partners',center),...adjacent.slice(0,edge==='partners-full'?6:5).map(cell=>entry(null,cell))];
+  else if(edge==='share-partners')a=[entry('dna_partners',center),entry('dna_share',adjacent[0]),entry('dna_share',adjacent[1])];
+  else if(edge==='link-contraband')a=[entry('dna_shield',center,['arc_k_bloom2']),entry('dh_lastchance',adjacent[0],['arc_time_stopper']),entry('dna_energy',adjacent[1])];
+  else a=[entry('dh_fireball',{c:3,r:7}),...adjacent.map(cell=>entry(null,cell))];
+  if(edge==='link-contraband')a[0].line='arc_mushroomon';
+  const b=a.map(u=>({...u,items:[...u.items],mods:{...u.mods}}));
+  // Synthetic catalog boundary: current roster caps below 120 mana, but Fireball explicitly supports both branches.
+  const mana=edge.startsWith('fireball-')?Number(edge.split('-')[1]):null,oldMana=DT.LINE[line].mana;
+  if(mana!==null)DT.LINE[line].mana=mana;
+  const cb=new DT.Combat({units:a,noTraits:true},{units:b,noTraits:true},{seed});
+  if(edge==='partners-full'&&cb.units.some(u=>u.summoned))throw new Error('Blocked partner summon unexpectedly succeeded');
+  if(edge==='partners-one'&&cb.units.filter(u=>u.summoned).length!==2)throw new Error('Expected one partner summon per side');
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  if(mana!==null&&!cb.events.some(e=>e.type==='cast'&&e.at===0))throw new Error('Fireball mana boundary never cast');
+  if(oldMana===undefined)delete DT.LINE[line].mana;else DT.LINE[line].mana=oldMana;
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,arcaneAnomaly:u.mods?.arcAnom||null}));
+  fixtures.push({name:`arcane-anomaly-edge/${edge}/${stage}`,variant:'arcane/hyper',seed,cols:7,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,
+    ...(mana!==null?{lineManaOverride:{line,maxMana:mana}}:{}),
+    arcaneRewards:[0,1].map(team=>({conquestKills:0,coins:0,bountyGold:0,anomalyKills:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.anomK||0),0)})),
+    setup:{sideA:{noTraits:true},sideB:{noTraits:true}}});
+}
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

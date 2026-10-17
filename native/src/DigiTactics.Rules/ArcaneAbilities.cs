@@ -2,6 +2,7 @@ namespace DigiTactics.Rules;
 
 internal sealed class ArcaneUnitState
 {
+    internal ArcaneAnomalyState Anomaly { get; } = new();
     internal ArcaneItemState Items { get; } = new();
     internal int Rotation, Progress, AutomatonHits, Wanted, ConquestKills, Coins;
     internal double Automaton, AutomatonDamage, Fire, FireLast, Dominator, Pit, PitHeal, Quick, QuickLow, QuickHigh, Vision, Watcher, WatcherHigh, NunuCooldown;
@@ -11,12 +12,12 @@ internal sealed class ArcaneUnitState
     internal Dictionary<string, int>? Junk;
 }
 
-public sealed record ArcaneCombatRewards(int ConquestKills, int Coins, int BountyGold = 0);
+public sealed record ArcaneCombatRewards(int ConquestKills, int Coins, int BountyGold = 0, int AnomalyKills = 0);
 
 public sealed partial class CombatSimulation
 {
     private static readonly HashSet<string> ArcaneAbilities = ["arc_swap", "arc_rotate", "arc_gamble", "arc_progress"];
-    public ArcaneCombatRewards ArcaneRewards(int team) => new(units.Where(u => u.Team == team).Sum(u => u.Arcane.ConquestKills), units.Where(u => u.Team == team).Sum(u => u.Arcane.Coins), units.Where(u => u.Team == team).Sum(u => u.Arcane.Items.BountyGold));
+    public ArcaneCombatRewards ArcaneRewards(int team) => new(units.Where(u => u.Team == team).Sum(u => u.Arcane.ConquestKills), units.Where(u => u.Team == team).Sum(u => u.Arcane.Coins), units.Where(u => u.Team == team).Sum(u => u.Arcane.Items.BountyGold), units.Where(u => u.Team == team).Sum(u => u.Arcane.Anomaly.Kills));
     private bool CastArcaneAbility(CombatUnit u, CombatUnit target, double value)
     {
         switch (u.Line.Ability.Kind)
@@ -68,12 +69,7 @@ public sealed partial class CombatSimulation
         foreach (var u in units) BindArcaneItems(u, setup.RoundStage);
         BindSummonedItems = u => BindArcaneItems(u, setup.RoundStage);
         var context = Hooks.Context(CombatHookSource.Mechanic, "anomaly");
+        BindArcaneAnomalies(context);
         BindArcaneContraband(context);
-        Hooks.Add(context, CombatHook.CombatStart, (_, _) => {
-            foreach (var u in units.Where(u => u.Alive && u.Line.Swap)) {
-                if (u.Entry.Row <= 5) u.MaxHealth = UnitValues.Round(u.MaxHealth * 1.1);
-                else u.Range = Math.Max(u.Range, 4);
-            }
-        });
     }
 }

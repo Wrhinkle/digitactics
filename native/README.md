@@ -123,7 +123,10 @@ to be a Vulkan renderer or the final game UI.
   Envoy activation gaps, Belphemon, workshop parts and repeated component upgrades.
   All 29 item-hook definitions and ten combat augments pass 159 further fights,
   including contraband eligibility/stacking, bounty rewards, delayed procs and
-  owner-scoped Duos augments. Anomalies and planning/settlement remain pending.
+  owner-scoped Duos augments. All 25 combat Anomalies and utility-identity kill
+  accounting pass 192 further fights, including blocked summons, Devour ordering,
+  revives, threshold effects and Fireball's mana boundary. Anomaly offers, utility
+  pick grants, persistence and planning/settlement remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner one battle at a time; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

@@ -169,21 +169,27 @@ The current executable is a migration workbench. It must not replace the public 
   rewards, defensive procs and contraband Hex bursts to actually execute. All ten
   combat augments plus mixed combinations pass 44 Solo/Duos fights, including
   priority-ordered Second Wind, summons, items and partner ownership.
-  Anomalies and planning/settlement remain pending.
+  All 25 combat Anomalies are implemented, with kill accounting also preserved
+  for the two utility identities. Another 192 fights cover all identities and
+  mixed combinations across Solo/Duos, plus full/one-cell summon spaces, chained
+  Devour, partner/share order, shield/contraband interactions, and synthetic
+  119/120-mana Fireball boundaries. Coverage guards require revives, threshold
+  bonuses, delayed Ascension and both summon species to occur. Anomaly offers,
+  utility pick grants, persistence and planning/settlement remain pending.
 - Reference fixture export now streams individual battles into a temporary gzip
   file and replaces the previous fixture only on success. The native runner reads
   one battle at a time. This removes the V8 single-string limit without dropping
   recorded samples or reducing comparison coverage.
 
-Latest verification: `./native/build.ps1 -Publish` passes 35,646,317 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 40,424,282 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Finish Arcane Anomalies, then the remaining sets, powers
-   and mechanics.
+1. Port Coliseum, Underlords (including Knockout), and Auto Chess combat,
+   remaining powers and mechanics.
    Finish hook context side/trait state and
    presentation event metadata. Extend reference battles to real set definitions
    before claiming full combat parity.
