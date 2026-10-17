@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 135,080,657 assertions.
+Latest verification: the native test suite passes 135,300,525 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -596,7 +596,7 @@ order, next-unit IDs and RNG. The original Galaxies/Auto Chess full-bench test
 counts locked board units even though merging excludes them; native behavior
 retains the resulting discarded-extra/pool-reservation behavior. Mode-specific
 combine callback effects still require the concrete match hook implementation.
-Remaining consumables, custom offers and full desktop match integration are pending.
+Remaining custom offers and full desktop match integration are pending.
 
 ## Shop, path and offer consumables
 
@@ -617,6 +617,25 @@ Six original-handler traces produce 490,320 comparisons across both paces. Cases
 include human/AI players, board/bench targets, all phases, busy offers, item-cap
 boundaries, existing path choices, empty and preserved modifiers, pool exhaustion,
 low/high-tier fallback, personal max-star exclusion, shop reservations and RNG.
-Coliseum core-use/options and the other remaining custom offers still require
-implementation. Full match mechanics, shop metadata and desktop integration remain
+Other custom offers still require implementation. Full match mechanics, shop metadata and desktop integration remain
 pending.
+
+## Coliseum Digi-Core choices
+
+Catalog schema 23 exports ordered Coliseum power-up tags and per-unit choice
+categories. `ColiseumPlanning` owns core use, targeted options, selection and
+refunds, and shares core-return logic with the extractor. Core use requires
+planning, no existing offer and a shop unit. It records the unit ID and opens
+three choices with one reroll. Selection preserves other modifiers, clears the
+pending target and applies the chosen power-up; a missing target or unknown
+power-up returns the core, storing it when the inventory is full.
+
+Two original-handler traces across both paces produce 219,868 checks over every
+Coliseum line. They verify phase and board locks, human/AI use, busy offers,
+existing-power exclusions, reroll exclusions and limits, target removal before
+and after rerolling, preserved modifiers, choice rejection, refunds and RNG.
+The general offer and round-flow exporters now use the original core handlers.
+
+Every catalogued consumable now has a native handler. This does not complete the
+match layer: Coliseum form/gambit choices, other custom offers, concrete game
+hooks, shop metadata and the production desktop match flow remain pending.

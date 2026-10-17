@@ -8,6 +8,7 @@ public sealed class PlayerMechanics
     public bool? DragonTreasureWon { get; set; }
     public string? FatesPath { get; set; }
     public int ColiseumCores { get; set; }
+    public int? ColiseumCoreUnitId { get; set; }
 }
 
 internal sealed class ModePveRewards(MatchState state, MatchLoot loot)

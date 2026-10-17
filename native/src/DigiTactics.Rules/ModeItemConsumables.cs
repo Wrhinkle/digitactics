@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 namespace DigiTactics.Rules;
 
 /// <summary>Mode-specific inventory transformations using the owning match's random stream.</summary>
@@ -7,6 +5,7 @@ public sealed class ModeItemConsumables(MatchState state)
 {
     private readonly Dictionary<string, ItemDefinition> items = state.Rules.Items.ToDictionary(i => i.Id);
     private readonly Dictionary<string, UnitLine> shopLines = state.Rules.Lines.ToDictionary(l => l.Id);
+    private readonly ColiseumPlanning coliseum = new(state);
     private LootRules Rules => state.Rules.Loot!;
     private string Policy => Rules.Mode!.Policy;
 
@@ -44,16 +43,8 @@ public sealed class ModeItemConsumables(MatchState state)
             player.Offer = new("rec_tome", options.Take(4).ToArray(), 0, null);
             return id;
         }
-        if (id == "col_extractor")
-        {
-            if (unit.Mods is not { } mods || !mods.TryGetProperty("pu", out var power) || !Truthy(power)) return "none";
-            player.Items.RemoveAt(index);
-            var remaining = mods.EnumerateObject().Where(p => p.Name != "pu").ToDictionary(p => p.Name, p => p.Value);
-            player.Roster.UpdateUnit(unit with { Mods = remaining.Count == 0 ? null : JsonSerializer.SerializeToElement(remaining) });
-            if (player.Items.Count < Rules.ItemCap) player.GiveItem("col_core");
-            else player.Mechanics.ColiseumCores++;
-            return "extractor";
-        }
+        if (id == "col_core") return coliseum.UseCore(player, index, unit, phase);
+        if (id == "col_extractor") return coliseum.Extract(player, index, unit);
         if (id is "giz_copy" or "gal_copier" or "fat_copy" or "drg_dup" or "drg_dup_lesser" or
             "arc_copier" or "arc_copier_small" or "ac_digiegg")
             return Copy(player, index, unit, boardLocked, onCombine);
@@ -73,14 +64,6 @@ public sealed class ModeItemConsumables(MatchState state)
         player.Roster.UpdateUnit(unit with { Items = equipped });
         return id;
     }
-
-    private static bool Truthy(JsonElement value) => value.ValueKind switch
-    {
-        JsonValueKind.Null or JsonValueKind.Undefined or JsonValueKind.False => false,
-        JsonValueKind.String => value.GetString()!.Length != 0,
-        JsonValueKind.Number => value.GetDouble() != 0,
-        _ => true,
-    };
 
     private string Copy(MatchPlayer player, int index, PlanningUnit target, bool boardLocked,
         Action<PlanningUnit, IReadOnlyList<PlanningUnit>> onCombine)

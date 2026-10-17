@@ -21,6 +21,7 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
 {
     private readonly MatchLoot loot = new(state);
     private readonly ModeOfferRewards modeRewards = new(state);
+    private readonly ColiseumPlanning coliseum = new(state);
     private OfferRules Rules => state.Rules.Offers!;
     private int tierStage = -1, tier;
 
@@ -77,6 +78,9 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             case "rec_bless": case "rec_radiant":
                 modeRewards.GrantRadiant(player, id);
                 break;
+            case "col_core":
+                coliseum.ChooseCore(player, id);
+                break;
             case "rec_tome":
                 player.GiveItem(id);
                 break;
@@ -109,6 +113,7 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             "rec_bless" => modeRewards.RadiantOptions(player, 3, exclude),
             "rec_radiant" => modeRewards.RadiantOptions(player, 4, exclude),
             "rec_tome" => Shuffle(state.Rules.Loot!.Emblems).Take(4).ToArray(),
+            "col_core" => coliseum.CoreOptions(player, exclude),
             "drg_treasure" => modeRewards.TreasureOptions(player, exclude),
             "ac_loot" => player.Mechanics.AutoChessLoot?.ToArray() ?? [],
             _ => hooks.CustomOptions(player, round, definition, exclude),

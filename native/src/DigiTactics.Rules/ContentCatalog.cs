@@ -11,7 +11,7 @@ public sealed record TamerDefinition(string Line, double[] Hp, double[] Ad, doub
 public sealed record FormDefinition(string Id, string Name, string Description, string? Trait = null);
 public sealed record PartnerStats(double Hp, double BonusHp, double BonusAp, double BonusAd, double BonusMana);
 public sealed record Ruleset(string Id, string Name, string Pace, UnitLine[] Lines, int[] PoolSizes, int[]?[] Odds, int RerollCost, int ShopSize,
-    ItemDefinition[] Items, string[] CoreItems, TraitDefinition[] Traits, UnitLine[] ExtraLines, PartnerStats? Partner = null, double[]? PveMultipliers = null, Dictionary<string, int>? DragonTraitLimits = null, Dictionary<string, FormDefinition[]>? Forms = null, Dictionary<string, TamerDefinition>? Tamers = null, EconomyRules? Economy = null, RoundSchedule? Schedule = null, DuoRules? Duo = null, MatchLossRules? Loss = null, LootRules? Loot = null, OfferRules? Offers = null, Dictionary<string, string>? Recipes = null);
+    ItemDefinition[] Items, string[] CoreItems, TraitDefinition[] Traits, UnitLine[] ExtraLines, PartnerStats? Partner = null, double[]? PveMultipliers = null, Dictionary<string, int>? DragonTraitLimits = null, Dictionary<string, FormDefinition[]>? Forms = null, Dictionary<string, TamerDefinition>? Tamers = null, EconomyRules? Economy = null, RoundSchedule? Schedule = null, DuoRules? Duo = null, MatchLossRules? Loss = null, LootRules? Loot = null, OfferRules? Offers = null, Dictionary<string, string>? Recipes = null, ColiseumPlanningRules? Coliseum = null);
 public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
 {
     public static ContentCatalog Load(string path)
@@ -19,7 +19,7 @@ public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
         var catalog = JsonSerializer.Deserialize<ContentCatalog>(File.ReadAllText(path),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
             ?? throw new InvalidDataException("Missing content catalog.");
-        if (catalog.SchemaVersion != 22 || catalog.Variants.Length == 0)
+        if (catalog.SchemaVersion != 23 || catalog.Variants.Length == 0)
             throw new InvalidDataException("Unsupported or empty content catalog.");
         foreach (var rules in catalog.Variants)
         {

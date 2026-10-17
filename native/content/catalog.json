@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 22,
+  "schemaVersion": 23,
   "variants": [
     {
       "id": "faction-wars/normal",
@@ -134,6 +134,7 @@
         "egg+glove": "emblem_assassin",
         "egg+egg": "golden_egg"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [],
         "armoryStages": [],
@@ -7324,6 +7325,7 @@
         "egg+glove": "emblem_assassin",
         "egg+egg": "golden_egg"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [],
         "armoryStages": [
@@ -14539,6 +14541,7 @@
         "fat_egg+fat_glove": "fat_emblem_assassin",
         "fat_egg+fat_egg": "fat_golden_egg"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [],
         "armoryStages": [],
@@ -21601,6 +21604,7 @@
         "fat_egg+fat_glove": "fat_emblem_assassin",
         "fat_egg+fat_egg": "fat_golden_egg"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [],
         "armoryStages": [
@@ -28689,6 +28693,7 @@
         "gal_glove+gal_mental": "emblem_da",
         "gal_mental+gal_mental": "gal_golden"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [],
         "armoryStages": [],
@@ -35062,6 +35067,7 @@
         "gal_glove+gal_mental": "emblem_da",
         "gal_mental+gal_mental": "gal_golden"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [],
         "armoryStages": [
@@ -41451,6 +41457,7 @@
         "giz_chip+giz_glove": "giz_emblem_asn",
         "giz_chip+giz_chip": "giz_golden_chip"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -48668,6 +48675,7 @@
         "giz_chip+giz_glove": "giz_emblem_asn",
         "giz_chip+giz_chip": "giz_golden_chip"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -56012,6 +56020,7 @@
         "rec_sglove+rec_sglove": "rec_s_thief_gloves",
         "rec_glove+rec_sglove": "rec_s_thief_gloves"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -65345,6 +65354,7 @@
         "rec_sglove+rec_sglove": "rec_s_thief_gloves",
         "rec_glove+rec_sglove": "rec_s_thief_gloves"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -74594,6 +74604,7 @@
         "egg+glove": "drg_emblem_assn",
         "egg+egg": "drg_crown"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -81657,6 +81668,7 @@
         "egg+glove": "drg_emblem_assn",
         "egg+egg": "drg_crown"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -88746,6 +88758,7 @@
         "arc_pan+arc_pan": "arc_tamer_shield",
         "arc_pan+arc_spat": "arc_tamer_cape"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -96053,6 +96066,7 @@
         "arc_pan+arc_pan": "arc_tamer_shield",
         "arc_pan+arc_spat": "arc_tamer_cape"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -103386,6 +103400,244 @@
         "col_tag+col_tear": "col_cr_pro",
         "col_rod+col_tag": "col_cr_sor"
       },
+      "coliseum": {
+        "powerUps": [
+          {
+            "id": "burst",
+            "tags": [
+              "ad",
+              "ap"
+            ]
+          },
+          {
+            "id": "xanti",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "dark",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "warp",
+            "tags": [
+              "any"
+            ]
+          },
+          {
+            "id": "armor",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "mode",
+            "tags": [
+              "tank",
+              "ap"
+            ]
+          },
+          {
+            "id": "slide",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "spirit",
+            "tags": [
+              "any"
+            ]
+          },
+          {
+            "id": "deathx",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "biomerge",
+            "tags": [
+              "ad",
+              "ap"
+            ]
+          },
+          {
+            "id": "mega",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "sage",
+            "tags": [
+              "ap"
+            ]
+          },
+          {
+            "id": "golem",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "speed",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "overwrite",
+            "tags": [
+              "ad",
+              "ap"
+            ]
+          },
+          {
+            "id": "matrix",
+            "tags": [
+              "ap"
+            ]
+          },
+          {
+            "id": "overdrive",
+            "tags": [
+              "any"
+            ]
+          },
+          {
+            "id": "atomic",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "thorn",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "glacier",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "inferno",
+            "tags": [
+              "ap"
+            ]
+          },
+          {
+            "id": "hunter",
+            "tags": [
+              "ad",
+              "ap"
+            ]
+          },
+          {
+            "id": "guardian",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "ascend",
+            "tags": [
+              "ad",
+              "ap"
+            ]
+          }
+        ],
+        "unitKinds": {
+          "col_hagurumon": "tank",
+          "col_lunamon": "ap",
+          "col_zubamon": "tank",
+          "col_gabumon": "ad",
+          "col_lobomon": "ad",
+          "col_tsukaimon": "ad",
+          "col_elecmon": "tank",
+          "col_kokuwamon": "ap",
+          "col_armadillomon": "tank",
+          "col_gotsumon": "tank",
+          "col_betamon": "ad",
+          "col_syakomon": "ap",
+          "col_numemon": "tank",
+          "col_goblimon": "tank",
+          "col_monodramon": "ad",
+          "col_wormmon": "ap",
+          "col_demidevimon": "ad",
+          "col_fanbeemon": "ad",
+          "col_falcomon": "ad",
+          "col_kamemon": "tank",
+          "col_patamon": "ap",
+          "col_biyomon": "tank",
+          "col_lopmon": "tank",
+          "col_gaomon": "tank",
+          "col_hawkmon": "ad",
+          "col_ryudamon": "ad",
+          "col_kyubimon": "ap",
+          "col_sistermonnoir": "ad",
+          "col_kuwagamon": "tank",
+          "col_ikkakumon": "ad",
+          "col_labramon": "tank",
+          "col_vegiemon": "ap",
+          "col_lalamon": "tank",
+          "col_tyrannomon": "ad",
+          "col_saberdramon": "tank",
+          "col_reppamon": "ad",
+          "col_sangloupmon": "ad",
+          "col_kotemon": "ad",
+          "col_mamemon": "ap",
+          "col_sistermonciel": "ad",
+          "col_coredramon": "tank",
+          "col_gargomon": "ad",
+          "col_bakemon": "tank",
+          "col_keramon": "ap",
+          "col_geogreymon": "tank",
+          "col_bearmon": "tank",
+          "col_wizardmon": "ap",
+          "col_impmon": "ad",
+          "col_leomon": "tank",
+          "col_salamon": "ap",
+          "col_ravemon": "ad",
+          "col_craniamon": "tank",
+          "col_puppetmon": "ap",
+          "col_justimon": "ad",
+          "col_ophanimon": "ap",
+          "col_piedmon": "ap",
+          "col_myotismon": "ad",
+          "col_hiandromon": "ad",
+          "col_lotosmon": "ap",
+          "col_merukimon": "tank",
+          "col_mech": "tank",
+          "col_root": "tank",
+          "col_spine": "ad",
+          "col_w_gazimon": "ad",
+          "col_w_mushroomon": "ap",
+          "col_w_crabmon": "tank",
+          "col_w_snowgoblimon": "ad",
+          "col_w_monochromon": "tank",
+          "col_w_meramon": "ad",
+          "col_w_hyogamon": "tank",
+          "col_w_unimon": "ad",
+          "col_w_knightmon": "tank",
+          "col_w_triceramon": "tank",
+          "col_w_etemon": "ap",
+          "col_w_skullgreymon": "ad",
+          "col_w_kimeramon": "tank",
+          "col_w_darkdramon": "tank",
+          "col_w_alphamon": "tank",
+          "col_w_omnimon": "ad",
+          "col_w_imperialdramon": "ad",
+          "col_w_millenniummon": "ap",
+          "col_w_apocalymon": "tank"
+        }
+      },
       "offers": {
         "schedule": [],
         "armoryStages": [],
@@ -110640,6 +110892,244 @@
         "col_tag+col_tear": "col_cr_pro",
         "col_rod+col_tag": "col_cr_sor"
       },
+      "coliseum": {
+        "powerUps": [
+          {
+            "id": "burst",
+            "tags": [
+              "ad",
+              "ap"
+            ]
+          },
+          {
+            "id": "xanti",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "dark",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "warp",
+            "tags": [
+              "any"
+            ]
+          },
+          {
+            "id": "armor",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "mode",
+            "tags": [
+              "tank",
+              "ap"
+            ]
+          },
+          {
+            "id": "slide",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "spirit",
+            "tags": [
+              "any"
+            ]
+          },
+          {
+            "id": "deathx",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "biomerge",
+            "tags": [
+              "ad",
+              "ap"
+            ]
+          },
+          {
+            "id": "mega",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "sage",
+            "tags": [
+              "ap"
+            ]
+          },
+          {
+            "id": "golem",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "speed",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "overwrite",
+            "tags": [
+              "ad",
+              "ap"
+            ]
+          },
+          {
+            "id": "matrix",
+            "tags": [
+              "ap"
+            ]
+          },
+          {
+            "id": "overdrive",
+            "tags": [
+              "any"
+            ]
+          },
+          {
+            "id": "atomic",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "thorn",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "glacier",
+            "tags": [
+              "ad"
+            ]
+          },
+          {
+            "id": "inferno",
+            "tags": [
+              "ap"
+            ]
+          },
+          {
+            "id": "hunter",
+            "tags": [
+              "ad",
+              "ap"
+            ]
+          },
+          {
+            "id": "guardian",
+            "tags": [
+              "tank"
+            ]
+          },
+          {
+            "id": "ascend",
+            "tags": [
+              "ad",
+              "ap"
+            ]
+          }
+        ],
+        "unitKinds": {
+          "col_hagurumon": "tank",
+          "col_lunamon": "ap",
+          "col_zubamon": "tank",
+          "col_gabumon": "ad",
+          "col_lobomon": "ad",
+          "col_tsukaimon": "ad",
+          "col_elecmon": "tank",
+          "col_kokuwamon": "ap",
+          "col_armadillomon": "tank",
+          "col_gotsumon": "tank",
+          "col_betamon": "ad",
+          "col_syakomon": "ap",
+          "col_numemon": "tank",
+          "col_goblimon": "tank",
+          "col_monodramon": "ad",
+          "col_wormmon": "ap",
+          "col_demidevimon": "ad",
+          "col_fanbeemon": "ad",
+          "col_falcomon": "ad",
+          "col_kamemon": "tank",
+          "col_patamon": "ap",
+          "col_biyomon": "tank",
+          "col_lopmon": "tank",
+          "col_gaomon": "tank",
+          "col_hawkmon": "ad",
+          "col_ryudamon": "ad",
+          "col_kyubimon": "ap",
+          "col_sistermonnoir": "ad",
+          "col_kuwagamon": "tank",
+          "col_ikkakumon": "ad",
+          "col_labramon": "tank",
+          "col_vegiemon": "ap",
+          "col_lalamon": "tank",
+          "col_tyrannomon": "ad",
+          "col_saberdramon": "tank",
+          "col_reppamon": "ad",
+          "col_sangloupmon": "ad",
+          "col_kotemon": "ad",
+          "col_mamemon": "ap",
+          "col_sistermonciel": "ad",
+          "col_coredramon": "tank",
+          "col_gargomon": "ad",
+          "col_bakemon": "tank",
+          "col_keramon": "ap",
+          "col_geogreymon": "tank",
+          "col_bearmon": "tank",
+          "col_wizardmon": "ap",
+          "col_impmon": "ad",
+          "col_leomon": "tank",
+          "col_salamon": "ap",
+          "col_ravemon": "ad",
+          "col_craniamon": "tank",
+          "col_puppetmon": "ap",
+          "col_justimon": "ad",
+          "col_ophanimon": "ap",
+          "col_piedmon": "ap",
+          "col_myotismon": "ad",
+          "col_hiandromon": "ad",
+          "col_lotosmon": "ap",
+          "col_merukimon": "tank",
+          "col_mech": "tank",
+          "col_root": "tank",
+          "col_spine": "ad",
+          "col_w_gazimon": "ad",
+          "col_w_mushroomon": "ap",
+          "col_w_crabmon": "tank",
+          "col_w_snowgoblimon": "ad",
+          "col_w_monochromon": "tank",
+          "col_w_meramon": "ad",
+          "col_w_hyogamon": "tank",
+          "col_w_unimon": "ad",
+          "col_w_knightmon": "tank",
+          "col_w_triceramon": "tank",
+          "col_w_etemon": "ap",
+          "col_w_skullgreymon": "ad",
+          "col_w_kimeramon": "tank",
+          "col_w_darkdramon": "tank",
+          "col_w_alphamon": "tank",
+          "col_w_omnimon": "ad",
+          "col_w_imperialdramon": "ad",
+          "col_w_millenniummon": "ap",
+          "col_w_apocalymon": "tank"
+        }
+      },
       "offers": {
         "schedule": [],
         "armoryStages": [
@@ -117848,6 +118338,7 @@
         "pveOverrides": {}
       },
       "recipes": {},
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -124567,6 +125058,7 @@
         }
       },
       "recipes": {},
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -131325,6 +131817,7 @@
         "ac_defense_chip+ac_vampire_fang": "ac_iron_helm",
         "ac_resist_cape+ac_resist_cape": "ac_ward_cape"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -137864,6 +138357,7 @@
         "ac_defense_chip+ac_vampire_fang": "ac_iron_helm",
         "ac_resist_cape+ac_resist_cape": "ac_ward_cape"
       },
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -144358,6 +144852,7 @@
         "pveOverrides": {}
       },
       "recipes": {},
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
@@ -151139,6 +151634,7 @@
         "pveOverrides": {}
       },
       "recipes": {},
+      "coliseum": null,
       "offers": {
         "schedule": [
           {
