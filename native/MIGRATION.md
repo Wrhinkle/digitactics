@@ -1261,3 +1261,31 @@ owner filtering. Run with `--galaxies-settlement-only`. Full match dispatcher an
 persistent combat-input integration remain pending.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+## Fates AI consumables and combat persistence
+
+`FatesPlanning.AiTurn` chooses Fallen paths, Copy Data targets and the highest-value
+board target for Loaded Dice in original order. Path RNG is drawn even if a path
+was already chosen. Copy priority counts roster forms below three stars, with
+stable count/tier ties. Dice selection runs after copying/merging and can clear
+Partner metadata from the refreshed shop.
+
+`PlanningItems.UseConsumable` exposes the original direct-use path separately from
+the equipment gesture. Fates AI bypasses the equipment gesture's board lock, while
+the resulting combine operation still respects locked board units. The existing
+Equip command retains its lock checks. Both paths dispatch the same native
+consumable implementations and required combine hooks.
+
+`FatesPlanning.RoundEnd` returns Golden Fang gold and retains Blossom ability power
+(up to 60), using non-summoned allied units from the settlement ownership view.
+Missing combat grants nothing. Combat-input projection and remaining Fates trait /
+augment planning hooks still need integration in the production match controller.
+
+512 AI traces pass 57,008 comparisons across both paces and human/AI combat locks,
+including full benches, existing paths, inventory/pool exhaustion, Partner merges,
+item returns and shop metadata. Twenty real battles and 2,400 reward scenarios add
+7,518 checks for terminal rewards, cap behavior, owner filtering and RNG. Run with
+`--fates-ai-only` or `--fates-settlement-only`. All 3,667,262 shared item regressions
+also pass after the direct-use API change.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.

@@ -55,6 +55,16 @@ public sealed class PlanningItems(Ruleset rules, IMatchItemHooks hooks, ModeItem
     public bool CanHold(MatchPlayer player, PlanningUnit unit, string item) =>
         unit.Items.Length < 3 && HoldsItems(unit) && Veto(player, unit, item, null) is null;
 
+    // Mode AI can use a consumable directly; unlike Equip this does not reject a locked board target.
+    // The consumable's own combine operation still observes combat locks.
+    public string UseConsumable(MatchPlayer player, int itemIndex, int uid, MatchPhase phase)
+    {
+        var unit = player.Roster.Entries.FirstOrDefault(e => e.Unit.Id == uid)?.Unit;
+        if ((uint)itemIndex >= player.Items.Count || unit is null || !items.TryGetValue(player.Items[itemIndex], out var item) || !item.Consumable) return "none";
+        return consumables?.TryUse(player, itemIndex, unit, phase, phase == MatchPhase.Combat && player.IsHuman,
+            (up, from) => hooks.Combined(player, up, from)) ?? hooks.UseConsumable(player, itemIndex, unit);
+    }
+
     public string Equip(MatchPlayer player, int itemIndex, int uid, MatchPhase phase)
     {
         bool boardLocked = phase == MatchPhase.Combat && player.IsHuman;
@@ -64,8 +74,7 @@ public sealed class PlanningItems(Ruleset rules, IMatchItemHooks hooks, ModeItem
         string id = player.Items[itemIndex];
         if (!items.TryGetValue(id, out var item)) return "none";
         var unit = entry.Unit;
-        if (item.Consumable) return consumables?.TryUse(player, itemIndex, unit, phase, boardLocked,
-            (up, from) => hooks.Combined(player, up, from)) ?? hooks.UseConsumable(player, itemIndex, unit);
+        if (item.Consumable) return UseConsumable(player, itemIndex, uid, phase);
         if (item.Category == "global") { player.Items.RemoveAt(itemIndex); player.Globals.Add(id); return id; }
         if (item.Emblem is { } trait && Traits(unit).Contains(trait)) return "hasTrait";
         if (!HoldsItems(unit)) return "cantHold";

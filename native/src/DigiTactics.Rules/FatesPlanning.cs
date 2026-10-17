@@ -8,6 +8,44 @@ public sealed class FatesPlanning(MatchState state) : IMatchShopHooks
     private static readonly string[] Bonuses = ["hp", "ap", "ad", "mana"];
     private readonly Dictionary<string, UnitLine> lines = state.Rules.Lines.ToDictionary(l => l.Id);
     private readonly Dictionary<string, TraitDefinition> traits = state.Rules.Traits.ToDictionary(t => t.Id);
+    private readonly Dictionary<string, UnitLine> allLines = state.Rules.Lines.Concat(state.Rules.ExtraLines).ToDictionary(l => l.Id);
+
+    public int RoundEnd(RoundEndContext context)
+    {
+        if (context.Match.Combat is null) return 0;
+        int gold = 0;
+        foreach (var result in context.Units.Where(u => u.Survivor.Team == context.Team && !u.Survivor.Summoned))
+        {
+            var unit = result.State ?? throw new InvalidOperationException("A Fates result is missing unit state.");
+            if (unit.BlossomKills != 0) context.Player.Mechanics.FatesBlossom = Math.Min(60, context.Player.Mechanics.FatesBlossom + 2 * unit.BlossomKills);
+            gold += unit.CombatGold;
+        }
+        return gold;
+    }
+
+    public void AiTurn(MatchPlayer player, PlanningItems inventory, MatchPhase phase)
+    {
+        string? path = player.Items.Contains("fat_holy") ? state.Random.Next() < .5 ? "fat_holy" : "fat_dark" : player.Items.Contains("fat_dark") ? "fat_dark" : null;
+        if (path is not null && string.IsNullOrEmpty(player.Mechanics.FatesPath))
+        {
+            var fallen = player.Roster.Entries.FirstOrDefault(e => e.Unit.Line == "fat_lopmon")?.Unit;
+            if (fallen is not null) inventory.UseConsumable(player, player.Items.IndexOf(path), fallen.Id, phase);
+        }
+        var units = player.Roster.Entries.Select(e => e.Unit).Where(u => u.Stage < 2).ToArray();
+        int index = player.Items.IndexOf("fat_copy");
+        if (index >= 0)
+        {
+            var counts = units.GroupBy(u => u.Line).ToDictionary(g => g.Key, g => g.Count());
+            var best = units.OrderByDescending(u => counts[u.Line]).ThenByDescending(u => allLines[u.Line].Tier).FirstOrDefault();
+            if (best is not null) inventory.UseConsumable(player, index, best.Id, phase);
+        }
+        index = player.Items.IndexOf("fat_dice");
+        if (index >= 0)
+        {
+            var best = player.Roster.Board.Select(e => e.Unit).OrderByDescending(u => UnitValues.Value(allLines[u.Line], u.Stage)).FirstOrDefault();
+            if (best is not null) inventory.UseConsumable(player, index, best.Id, phase);
+        }
+    }
     public IShopRollHooks ShopHooks(MatchPlayer player, Func<RoundPosition> position) => new RollHooks(this, player, position);
 
     private sealed class RollHooks(FatesPlanning mode, MatchPlayer player, Func<RoundPosition> position) : IShopRollHooks

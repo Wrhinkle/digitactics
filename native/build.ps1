@@ -49,6 +49,8 @@ try {
     Invoke-Checked 'node' @('tools/export-opening-rounds.cjs')
     Invoke-Checked 'node' @('tools/export-galaxies-planning.cjs')
     Invoke-Checked 'node' @('tools/export-galaxies-settlement.cjs')
+    Invoke-Checked 'node' @('tools/export-fates-ai.cjs')
+    Invoke-Checked 'node' @('tools/export-fates-settlement.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')

@@ -12,6 +12,7 @@ public sealed class PlayerMechanics
     public string[]? AutoChessLoot { get; set; }
     public bool? DragonTreasureWon { get; set; }
     public string? FatesPath { get; set; }
+    public int FatesBlossom { get; set; }
     public int ColiseumCores { get; set; }
     public int? ColiseumCoreUnitId { get; set; }
     public int? ColiseumFormUnitId { get; set; }
