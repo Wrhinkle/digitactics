@@ -1,6 +1,6 @@
 namespace DigiTactics.Rules;
 
-public sealed record SummonOptions(string[]? Items = null, double HealthMultiplier = 1, double AttackMultiplier = 1, int? Owner = null);
+public sealed record SummonOptions(string[]? Items = null, double HealthMultiplier = 1, double AttackMultiplier = 1, int? Owner = null, bool NoHooks = false);
 
 public sealed partial class CombatSimulation
 {
@@ -24,6 +24,7 @@ public sealed partial class CombatSimulation
         if (options.HealthMultiplier != 0) unit.MaxHealth = UnitValues.Round(unit.MaxHealth * options.HealthMultiplier);
         if (options.AttackMultiplier != 0) unit.AttackDamage *= options.AttackMultiplier;
         units.Add(unit); occupancy[grid.Index(cell)] = unit;
+        if (!options.NoHooks) BindSummonedItems?.Invoke(unit);
         if (unit.Equipment.Crown) unit.Shield += unit.MaxHealth * 0.25;
         unit.Health = unit.MaxHealth; unit.Mana = Math.Min(unit.MaxMana - 1, unit.Mana);
         Emit("spawn", unit);

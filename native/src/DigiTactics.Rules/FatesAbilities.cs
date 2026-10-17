@@ -59,6 +59,8 @@ internal static class FatesCombat
             if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
                 throw new NotSupportedException("Fates production augments have not been migrated yet.");
         FatesTraits.Bind(combat, rules, sideA, sideB, setup);
+        combat.BindSummonedItems = unit => FatesItems.Bind(combat, rules, unit);
+        foreach (var unit in combat.Units) FatesItems.Bind(combat, rules, unit);
         var mechanic = combat.Hooks.Context(CombatHookSource.Mechanic, "partners");
         combat.Hooks.Add(mechanic, CombatHook.CombatStart, (_, _) => {
             foreach (var u in combat.Units)

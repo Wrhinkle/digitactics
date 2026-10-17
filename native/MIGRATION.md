@@ -57,18 +57,23 @@ The current executable is a migration workbench. It must not replace the public 
   multipliers, and hook board queries/movement are implemented. Dispatcher probes
   now grow units and summon during unit timers, checking RNG continuity, rejected
   spawns, dynamic unit counts and same-tick updates against the legacy engine.
-  Summoned item-hook rebinding and presentation movement metadata remain pending.
+  Fates summoned item-hook rebinding is implemented; presentation movement metadata remains pending.
 
 - Fates combat: seven custom abilities; all 28 traits at all 62 breakpoints;
   both Fallen paths; persisted Deva/Blossom inputs; Partner HP/AP/AD/mana modifiers;
   time-rune recovery and summon-based traits. 105 additional production-reference
   fights compare counts, runtime stages, summons, rune state, kill counters and
-  combat state. Partner shop generation, planning rewards, Fates augment/item hooks
+  combat state. Partner shop generation, planning rewards, Fates augment hooks
   and Duos mechanic-state merging remain pending.
+- All 21 Fates held-item hook definitions are bound once per item ID per holder,
+  including artifacts, deferred damage, lethal protection, execute gold and death
+  summons. Fifty additional fights cover individual/duplicate/mixed equipment with
+  production traits; six more verify summoned item hooks and explicit suppression.
+  Collector gold is recorded for later round settlement, which remains pending.
 - Combat reference traces use deterministic gzip storage to avoid checking in an
   increasingly large plaintext file. Tests decompress and compare the full data.
 
-Latest verification: `./native/build.ps1 -Publish` passes 3,134,508 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 4,114,088 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -77,7 +82,7 @@ JavaScript engine; they do not establish whole-match parity.
 
 1. Extend production binding beyond Faction Wars and Fates trait/ability coverage to the
    remaining sets, item hooks, powers and mechanics.
-   Finish hook context side/trait state, summoned-item binding and
+   Finish hook context side/trait state and
    presentation event metadata. Extend reference battles to real set definitions
    before claiming full combat parity.
 2. Set-defined ability dispatch; port each ruleset with explicit coverage

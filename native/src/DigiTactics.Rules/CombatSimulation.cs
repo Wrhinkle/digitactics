@@ -24,6 +24,7 @@ public sealed partial class CombatSimulation
     public int Columns => grid.Columns;
     public CombatHookRegistry Hooks { get; }
     private bool ended;
+    internal Action<CombatUnit>? BindSummonedItems { get; set; }
     internal double[] HealingAmplification { get; } = new double[2];
 
     public CombatSimulation(Ruleset rules, CombatEntry[] sideA, CombatEntry[] sideB, uint seed,

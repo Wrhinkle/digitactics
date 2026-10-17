@@ -9,7 +9,7 @@ DT.Combat.prototype.has = () => false;
 const kinds = ['nuke', 'aoe', 'stun', 'slam', 'shield', 'heal', 'barrage', 'drain', 'weaken', 'rally', 'line', 'execute', 'chain', 'dash'];
 const snapshots = cb => cb.units.map(u => ({ id: u.id, hp: u.hp, mana: u.mana, shield: u.shield, c: u.c, r: u.r,
   alive: u.alive, target: u.target ? u.target.id : null, atkCd: u.atkCd, moveCd: u.moveCd,
-  stun: u.stun, lock: u.lock, dealt: u.dealt, taken: u.taken, healed: u.healed, nAtk: u.nAtk, maxHp: u.maxHp, ad: u.ad, as: u.as, ap: u.ap, armor: u.armor, mr: u.mr, maxMana: u.maxMana, items: u.items, stage: u.stage, summoned: !!u.summoned, blossomKills: u.state.blossom || 0, timeRune: u.state.rune || 0 }));
+  stun: u.stun, lock: u.lock, dealt: u.dealt, taken: u.taken, healed: u.healed, nAtk: u.nAtk, maxHp: u.maxHp, ad: u.ad, as: u.as, ap: u.ap, armor: u.armor, mr: u.mr, maxMana: u.maxMana, items: u.items, stage: u.stage, summoned: !!u.summoned, blossomKills: u.state.blossom || 0, timeRune: u.state.rune || 0, combatGold: u.state.gold || 0 }));
 const fixtures = [];
 const exercised = new Set();
 for (const kind of kinds) {
@@ -117,6 +117,53 @@ for (const kind of ['grow', 'blossom', 'burst', 'frenzy', 'lullaby', 'showstoppe
     setup: { sideA: { noTraits: true }, sideB: { noTraits: true } } });
 }
 
+DT.Sets.activate('fates', 'hyper');
+const fatesHookItems = Object.keys(DT.ITEMS).filter(id => DT.ITEMS[id].hooks);
+const itemCases = fatesHookItems.flatMap(item => [0, 2].map(stage => ({ item, stage }))).concat(Array.from({ length: 8 }, (_, n) => ({ item: null, stage: n % 3 })));
+for (const { item, stage } of itemCases) {
+  const pace = stage === 0 ? 'normal' : 'hyper';
+  DT.Sets.activate('fates', pace);
+  const cols = stage === 2 ? 14 : 7, seed = 18000 + fixtures.length, pick = DT.makeRng(seed);
+  const candidates = DT.SHOP_LINES;
+  const entries = () => Array.from({ length: 6 }, (_, i) => ({ line: candidates[Math.floor(pick() * candidates.length)].id,
+    stage, c: i, r: 4 + i % 2,
+    items: item ? (i === 0 ? [item, item] : [item]) : Array.from({ length: 3 }, () => fatesHookItems[Math.floor(pick() * fatesHookItems.length)]) }));
+  const sideA = entries(), sideB = entries();
+  const cb = new DT.Combat({ units: sideA, cols }, { units: sideB, cols }, { seed });
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+  fixtures.push({ name: `fates-item/${item || 'mixed'}/${stage}/${seed}`, variant: `fates/${pace}`, seed, cols,
+    sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, productionTraits: true,
+    traitCounts: cb.traitCounts });
+}
+for (const noHooks of [false, true]) for (const stage of [0, 1, 2]) {
+  DT.Sets.activate('fates', 'hyper');
+  const previous = DT.SET.hooks.onCombatReady;
+  DT.SET.hooks.onCombatReady = c => {
+    for (const team of [0, 1]) {
+      const source = c.units.find(u => u.team === team);
+      const cell = c.freeCellNear(source);
+      if (!cell) throw new Error('No summon test cell');
+      c.summon(team, source.line.id, stage, cell.c, cell.r, { items: ['fat_deathblade', 'fat_art_manazane', 'fat_zzrot'], noHooks });
+    }
+  };
+  const entries = () => ['fat_agumon', 'fat_gabumon'].map((line, i) => ({ line, stage, c: i + 2, r: 4, items: [] }));
+  // Use existing exported lines rather than relying on names of Digimon mappings.
+  const names = DT.SHOP_LINES.filter(l => ['nuke', 'barrage'].includes(l.type)).slice(0, 2).map(l => l.id);
+  const sideA = entries().map((u, i) => ({ ...u, line: names[i] })), sideB = sideA.map(u => ({ ...u }));
+  const seed = 2011;
+  const cb = new DT.Combat({ units: sideA, noTraits: true }, { units: sideB, noTraits: true }, { seed });
+  const samples = [{ tick: 0, units: snapshots(cb) }]; let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+  fixtures.push({ name: `fates-summon-items/${stage}/${noHooks}`, variant: 'fates/hyper', seed, cols: 7,
+    sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t,
+    summonItemProbe: true, summonNoHooks: noHooks, summonStage: stage,
+    setup: { sideA: { noTraits: true }, sideB: { noTraits: true } } });
+  if (previous) DT.SET.hooks.onCombatReady = previous; else delete DT.SET.hooks.onCombatReady;
+}
 DT.Sets.activate('fates', 'hyper');
 const fatesTraits = Object.entries(DT.TRAITS).map(([id, t]) => ({ id, bp: [...t.bp] }));
 for (const { id, bp } of fatesTraits) for (let level = 0; level < bp.length; level++) for (const fallen of id === 'FALLEN' ? ['dark', 'holy'] : ['dark']) {

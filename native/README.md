@@ -81,8 +81,11 @@ to be a Vulkan renderer or the final game UI.
   with owner/equipment/stat multipliers. Hook probes verify same-tick summon updates,
   rejected-spawn RNG behavior and board movement against the original engine.
 - Fates: 105 reference fights cover seven custom abilities, 28 traits/all 62
-  breakpoints, both Fallen paths and Partner combat modifiers. Fates completed-item
-  and augment hooks, Partner shop offers and planning effects remain pending.
+  breakpoints, both Fallen paths and Partner combat modifiers. Fates augment hooks,
+  Partner shop offers and planning effects remain pending.
+- Fates held items: all 21 hook definitions, duplicate-item deduplication, artifact
+  effects and summoned holders are exercised in 56 additional reference battles.
+  Post-combat gold settlement is still part of the pending match-flow port.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

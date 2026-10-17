@@ -34,9 +34,26 @@ internal static class CombatParity
                     if (!counts.SequenceEqual(expectedCounts)) throw new InvalidOperationException($"Trait counts/order mismatch {name}/{team}");
                 }
             var hookLog = new List<string>();
+            Action<CombatHookRegistry>? configure = hookProbe ? registry => HookProbe.Configure(registry, duos, hookLog) : null;
+            if (trace.TryGetProperty("summonItemProbe", out var summonProbe) && summonProbe.GetBoolean())
+            {
+                bool noHooks = trace.GetProperty("summonNoHooks").GetBoolean();
+                int stage = trace.GetProperty("summonStage").GetInt32();
+                configure = registry => {
+                    var context = registry.Context(CombatHookSource.Mechanic, "summon-item-probe");
+                    registry.Add(context, CombatHook.CombatReady, (c, _) => {
+                        for (int team = 0; team < 2; team++)
+                        {
+                            var source = c.Combat.Units.First(u => u.Team == team);
+                            var cell = c.FreeCellNear(source) ?? throw new InvalidOperationException("No native summon test cell.");
+                            c.Summon(team, source.Line.Id, stage, cell, new(["fat_deathblade", "fat_art_manazane", "fat_zzrot"], NoHooks: noHooks));
+                        }
+                    });
+                };
+            }
             var combat = new CombatSimulation(rules, entriesA, entriesB, trace.GetProperty("seed").GetUInt32(), trace.GetProperty("cols").GetInt32(),
                 trace.TryGetProperty("overtime", out var ot) ? ot.GetDouble() : 30,
-                trace.TryGetProperty("timeLimit", out var limit) ? limit.GetDouble() : 45, hookProbe ? registry => HookProbe.Configure(registry, duos, hookLog) : null, duos, setup);
+                trace.TryGetProperty("timeLimit", out var limit) ? limit.GetDouble() : 45, configure, duos, setup);
             int tick = 0;
             foreach (var sample in trace.GetProperty("samples").EnumerateArray())
             {
@@ -54,7 +71,7 @@ internal static class CombatParity
                         if (Math.Abs(actual - value) > 1e-8 * Math.Max(1, Math.Abs(value)))
                             throw new InvalidOperationException($"Combat {name}, tick {tick}, unit {unit.Id}: {field} expected {value:R}, got {actual:R}");
                     }
-                    Compare("stage", unit.Stage); Compare("blossomKills", unit.BlossomKills); Compare("timeRune", unit.TimeRune);
+                    Compare("stage", unit.Stage); Compare("blossomKills", unit.BlossomKills); Compare("timeRune", unit.TimeRune); Compare("combatGold", unit.CombatGold);
                     count++;
                     if (unit.Summoned != expected.GetProperty("summoned").GetBoolean()) throw new InvalidOperationException($"Summon state mismatch {name}/{tick}");
                     Compare("hp", unit.Health); Compare("mana", unit.Mana); Compare("shield", unit.Shield);
