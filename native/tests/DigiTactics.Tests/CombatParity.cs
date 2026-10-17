@@ -123,6 +123,8 @@ internal static class CombatParity
                     Compare("hp", unit.Health); Compare("mana", unit.Mana); Compare("shield", unit.Shield);
                     Compare("c", unit.Cell.Column); Compare("r", unit.Cell.Row);
                     Compare("atkCd", unit.AttackCooldown); Compare("moveCd", unit.MoveCooldown);
+                    Compare("fromC", unit.MoveOrigin.Column); Compare("fromR", unit.MoveOrigin.Row);
+                    Compare("moveT", unit.MoveElapsed); Compare("moveDur", unit.MoveDuration);
                     Compare("stun", unit.Stun); Compare("lock", unit.CastLock);
                     Compare("dealt", unit.Dealt); Compare("taken", unit.Taken); Compare("healed", unit.Healed); Compare("nAtk", unit.Attacks);
                     Compare("maxHp", unit.MaxHealth); Compare("ad", unit.AttackDamage); Compare("as", unit.AttackSpeed);

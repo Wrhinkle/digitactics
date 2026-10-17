@@ -68,7 +68,7 @@ public sealed partial class CombatSimulation
                 var weakest = units.Where(e => e.Alive && e.Team != unit.Team).OrderBy(e => e.Health).FirstOrDefault();
                 if (weakest is null) break;
                 if (unit.Cell.DistanceTo(weakest.Cell) > 1 && FreeNeighbor(weakest, unit.Cell) is { } cell)
-                { Emit("leap", unit); Place(unit, cell); }
+                { Emit("leap", unit); Place(unit, cell, 0.2); }
                 unit.Target = weakest; Emit("hit", unit, weakest, big: true); AbilityDamage(unit, weakest, value); break;
             case "chain":
                 var hit = new HashSet<int>();

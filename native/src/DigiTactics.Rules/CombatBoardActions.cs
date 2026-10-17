@@ -36,14 +36,15 @@ public sealed partial class CombatSimulation
         if (!InBounds(cell) || (UnitAt(cell) is { } other && other != unit)) return false;
         if (leap) Emit("leap", unit);
         // Movement duration is presentation-only in the legacy API; it does not change move cooldown.
-        Place(unit, cell);
+        Place(unit, cell, duration);
         return true;
     }
 
     internal bool PlaceFromHook(CombatUnit unit, HexCell cell)
     {
         if (!InBounds(cell) || UnitAt(cell) is not null) return false;
-        unit.Cell = cell; occupancy[grid.Index(cell)] = unit;
+        unit.Cell = unit.MoveOrigin = cell; unit.MoveElapsed = unit.MoveDuration = 1;
+        occupancy[grid.Index(cell)] = unit;
         return true;
     }
 

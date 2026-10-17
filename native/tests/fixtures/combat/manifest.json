@@ -3,59 +3,59 @@
   "battles": 5699,
   "files": [
     {
-      "file": "faction-wars-871083911d94a4d4.json.gz",
+      "file": "faction-wars-0e4ffd6975afff89.json.gz",
       "battles": 262,
-      "sha256": "871083911d94a4d4657da5870744d3c6c3e94a91f70b3e47961b2918e76d4b26"
+      "sha256": "0e4ffd6975afff898cff926c8b7b61f4ce778d31e699fc60005d7c2f74f35d90"
     },
     {
-      "file": "gizmos-11ba0025477e7c55.json.gz",
+      "file": "gizmos-6798eeb945fd357d.json.gz",
       "battles": 400,
-      "sha256": "11ba0025477e7c552bad55ce86539ffecec4b1b42dbcffe1be9cfe350e4964de"
+      "sha256": "6798eeb945fd357dce3599753cb51d86c25bc7c93f17ba7267e76e44d5afeac6"
     },
     {
-      "file": "fates-54675e62d0bcadc9.json.gz",
+      "file": "fates-3dcc7aaa3ce9e6d9.json.gz",
       "battles": 213,
-      "sha256": "54675e62d0bcadc940bcc695c7c4f6da72658ef5c2c3e536679196f293ac02d6"
+      "sha256": "3dcc7aaa3ce9e6d9f3e81c65938388cf943ef370d5b72fa3f2b5f01981801f83"
     },
     {
-      "file": "galaxies-2845183ec589c40b.json.gz",
+      "file": "galaxies-1e459a7eed4ffd8a.json.gz",
       "battles": 446,
-      "sha256": "2845183ec589c40b480c5d1e5a2ebdf41401022ee0c89c932bed86214ed014ce"
+      "sha256": "1e459a7eed4ffd8a1944c6a7c7f1343340202fd47113457af7ea36968b245a2a"
     },
     {
-      "file": "reckoning-70cabeb9a055eb2c.json.gz",
+      "file": "reckoning-93ae3d433c35457d.json.gz",
       "battles": 397,
-      "sha256": "70cabeb9a055eb2ca456422afce031981b97b96ce6f80137754fc6a4474bf619"
+      "sha256": "93ae3d433c35457d4d1e9106c786b54dd577ff7aa2b7374c48f30d500e4caef7"
     },
     {
-      "file": "dragonlands-1301e4b89b5fe625.json.gz",
+      "file": "dragonlands-88d9bf8e01a3e135.json.gz",
       "battles": 378,
-      "sha256": "1301e4b89b5fe625f66e8a3810bc492e3c85a818ac0a4e57af3591d4db1d7059"
+      "sha256": "88d9bf8e01a3e135b97b96d41fc2ccc0d844ec7c6feb3884c1ffc29136a639d6"
     },
     {
-      "file": "arcane-4e2615e5694db8f4.json.gz",
+      "file": "arcane-9700612a941a905e.json.gz",
       "battles": 677,
-      "sha256": "4e2615e5694db8f47d1ecaa9737d6df768e15922229b8c27b7f823f8ba8da588"
+      "sha256": "9700612a941a905e7dce954e266b11c75c0ebb8422053a9ca572a1861631dba2"
     },
     {
-      "file": "coliseum-92f87b2045f25846.json.gz",
+      "file": "coliseum-310e3a710de53dfa.json.gz",
       "battles": 676,
-      "sha256": "92f87b2045f25846bdc3bdbcacc99fe7f27f59d08365da73ad3d66743a58fcee"
+      "sha256": "310e3a710de53dfa1f79337b884aa4722a0a5fd679873b44e686a9fd096fbd28"
     },
     {
-      "file": "underlords-0944d15de6cec505.json.gz",
+      "file": "underlords-5011bd86c435ceed.json.gz",
       "battles": 953,
-      "sha256": "0944d15de6cec5057a6fc5ac634a68f62126a428c3860369c6b69ef93fe1bb13"
+      "sha256": "5011bd86c435ceede26b3cb6f85b3960f5bcc037057abf027f35381b3c2c8b84"
     },
     {
-      "file": "autochess-da83a679031f7d83.json.gz",
+      "file": "autochess-c2ef7973197a87a4.json.gz",
       "battles": 344,
-      "sha256": "da83a679031f7d83baf1225e9259903d19dc4de7ad54392a199ba519cd158d79"
+      "sha256": "c2ef7973197a87a456de9a6328ff7c11abeefa4a601322a79042a2954b67af3f"
     },
     {
-      "file": "underlords_ko-6c3f3f4abf1a1aa8.json.gz",
+      "file": "underlords_ko-d872ae86f33eb714.json.gz",
       "battles": 953,
-      "sha256": "6c3f3f4abf1a1aa880f59cc40cd37c92c292cbc7d3442ef1dc6b4fbab7ba36af"
+      "sha256": "d872ae86f33eb7143f2282bf983083fac8fd698d2ccbd68e7e456f3a4be27f53"
     }
   ]
 }

@@ -41,7 +41,9 @@ forms, Digi-Cores, traits and items. Galaxies adds 442 battles and 104,242 cues
 across abilities, trait strikes, DigiXros ejection, items and Galaxy modifiers.
 Underlords and Knockout add 1,898 battles and 1,333,172 cues across abilities,
 hero passives, alliances, items and all eight Tamer builds at every rank. The
-production renderer and complete movement/animation metadata remain unfinished.
+simulation now retains movement origins, elapsed time and durations, checked in
+all 5,699 gameplay reference battles. Rendering that travel and model animation
+remain unfinished.
 
 ## Boundaries
 

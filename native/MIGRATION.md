@@ -57,7 +57,7 @@ The current executable is a migration workbench. It must not replace the public 
   multipliers, and hook board queries/movement are implemented. Dispatcher probes
   now grow units and summon during unit timers, checking RNG continuity, rejected
   spawns, dynamic unit counts and same-tick updates against the legacy engine.
-  Fates summoned item-hook rebinding is implemented; presentation movement metadata remains pending.
+  Fates summoned item-hook rebinding and presentation movement timers are implemented.
 
 - Fates combat: seven custom abilities; all 28 traits at all 62 breakpoints;
   both Fallen paths; persisted Deva/Blossom inputs; Partner HP/AP/AD/mana modifiers;
@@ -291,10 +291,15 @@ The isolated Underlords cast fixtures retain disabled hook dispatch; production
 fixtures retain the real hooks. Named-effect guards cover passive triggers,
 revivals, summons, defensive effects and every Tamer cooldown cast.
 The suite totals 5,642 battles and 2,684,410 cues across all sets. This verifies
-the recorded presentation stream, not the renderer or complete movement/animation
-metadata; those remain pending.
+the recorded presentation stream, not the renderer. Movement origin, elapsed time
+and duration are now retained separately from board occupancy and action cooldowns.
+The 5,699 gameplay traces compare these four values at every captured sample,
+including 210,720 samples in transit (8,296 stunned and 36,967 fallen), and travel
+durations of 0.2, 0.25, 0.3 and 0.4 seconds. Instant placement resets interpolation,
+while dead units retain their last travel state, matching the original engine.
+World-space interpolation, model animation and production rendering remain pending.
 
-Latest verification: the native test suite passes 103,451,061 assertions.
+Latest verification: the native test suite passes 116,840,185 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

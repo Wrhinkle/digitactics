@@ -40,6 +40,11 @@ public sealed class CombatUnit
     internal double CharmUntil;
     internal bool AbilityBurn;
     public HexCell Cell { get; internal set; }
+    /// <summary>Visual travel origin and timer, independent of board occupancy and action cooldowns.
+    /// Elapsed may exceed duration by one tick; consumers clamp their interpolation fraction.</summary>
+    public HexCell MoveOrigin { get; internal set; }
+    public double MoveElapsed { get; internal set; } = 1;
+    public double MoveDuration { get; internal set; } = 1;
     public bool Alive { get; internal set; } = true;
     public double MaxHealth { get; internal set; }
     public double Health { get; internal set; }
@@ -88,7 +93,7 @@ public sealed class CombatUnit
 
     internal CombatUnit(int id, CombatEntry entry, UnitLine line, int team, HexCell cell, double random)
     {
-        Id = id; Entry = entry; Stage = entry.Stage; Leap = line.Combat.Leap; Line = line; Team = team; Cell = cell;
+        Id = id; Entry = entry; Stage = entry.Stage; Leap = line.Combat.Leap; Line = line; Team = team; Cell = MoveOrigin = cell;
         var stats = UnitValues.Stats(line, entry.Stage);
         MaxHealth = Health = stats.MaxHealth;
         BaseAttackDamage = AttackDamage = stats.AttackDamage; AttackSpeed = stats.AttackSpeed; Range = stats.Range;

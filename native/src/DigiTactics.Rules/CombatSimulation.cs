@@ -114,6 +114,7 @@ public sealed partial class CombatSimulation
         if (unit.Equipment.Regen != 0) Heal(unit, unit.MaxHealth * unit.Equipment.Regen * Tick, true);
         Passives(unit);
         if (!unit.Alive) return;
+        if (unit.MoveElapsed < unit.MoveDuration) unit.MoveElapsed += Tick;
         unit.AttackCooldown -= Tick; unit.MoveCooldown -= Tick;
         if (unit.Stun > 0) { unit.Stun -= Tick; return; }
         if (unit.CastLock > 0) { unit.CastLock -= Tick; return; }
@@ -141,12 +142,14 @@ public sealed partial class CombatSimulation
         for (int i = 0; i < occupancy.Length; i++) occupied[i] = occupancy[i] is not null;
         var step = grid.StepTowardEnemy(unit.Cell, unit.Range, enemies.Select(e => e.Cell).ToArray(), occupied);
         if (step is null) { unit.MoveCooldown = 0.25; return; }
-        Place(unit, step.Value.Cell); unit.MoveCooldown = 0.4; unit.Target = enemies[step.Value.TargetIndex];
+        Place(unit, step.Value.Cell, 0.4); unit.MoveCooldown = 0.4; unit.Target = enemies[step.Value.TargetIndex];
     }
 
-    private void Place(CombatUnit unit, HexCell cell)
+    private void Place(CombatUnit unit, HexCell cell, double duration)
     {
-        occupancy[grid.Index(unit.Cell)] = null; unit.Cell = cell; occupancy[grid.Index(cell)] = unit;
+        occupancy[grid.Index(unit.Cell)] = null;
+        unit.MoveOrigin = unit.Cell; unit.Cell = cell; unit.MoveElapsed = 0; unit.MoveDuration = duration;
+        occupancy[grid.Index(cell)] = unit;
     }
 
     private HexCell? FreeNeighbor(CombatUnit target, HexCell near)
@@ -161,7 +164,7 @@ public sealed partial class CombatSimulation
         {
             var cell = FreeNeighbor(enemy, new(enemy.Cell.Column, unit.Team == 0 ? 0 : 7));
             if (cell is null) continue;
-            Emit("leap", unit); Place(unit, cell.Value); unit.Target = enemy; return;
+            Emit("leap", unit); Place(unit, cell.Value, 0.25); unit.Target = enemy; return;
         }
     }
 
