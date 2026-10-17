@@ -87,6 +87,7 @@ public sealed class MatchState
     public string? DragonMirage { get; set; }
     public string? ArcanePortal { get; set; }
     public string[] ArcaneSponsor { get; set; } = [];
+    public MatchUnitLifecycle? Units { get; internal set; }
     public PlanningUnit CreateUnit(string line, int stage) => new(AllocateId(), line, stage, []);
     internal int AllocateId() => ++uid;
 

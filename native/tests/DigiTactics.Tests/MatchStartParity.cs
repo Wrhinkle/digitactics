@@ -13,6 +13,7 @@ internal static class MatchStartParity
             var rules=catalog.Variants.Single(v=>v.Id==trace.GetProperty("variant").GetString());uint seed=trace.GetProperty("seed").GetUInt32();bool duos=trace.GetProperty("duos").GetBoolean();string c=$"{rules.Id}/{seed}/{duos}";
             var seats=Enumerable.Range(0,8).Select(i=>new MatchSeat($"Player {i}",i is 0 or 3)).ToArray();
             var state=MatchStart.Create(rules,seed,seats,()=>RoundPosition.First,duos,duos?[[0,7],[1,6],[2,5],[3,4]]:null);
+            Check(state.Units is not null,c+" unit lifecycle installed");
             var mech=trace.GetProperty("mechanics");
             void Mechanic(string key,string? actual)=>Check(actual==(mech.TryGetProperty(key,out var e)?e.GetString():null),c+" "+key);
             Mechanic("galaxy",state.Galaxy);Mechanic("mutation",state.GizmosMutation);Mechanic("mirage",state.DragonMirage);Mechanic("treasure",state.TreasureVariant);Mechanic("arcPortal",state.ArcanePortal);

@@ -12,6 +12,7 @@ public static class MatchStart
         Func<RoundPosition> position, bool duos = false, int[][]? teams = null) =>
         new(rules, seed, seats, duos, teams, state =>
         {
+            state.Units = new(state, position);
             Initialize(state);
             new MatchShopRolls(state, position).Install();
         });

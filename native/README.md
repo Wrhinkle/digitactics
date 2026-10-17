@@ -1429,3 +1429,27 @@ Production match-controller registration and full application acceptance remain
 outstanding; this module is not a completed game release.
 
 Validation: **160,051,544 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+### Shared unit lifecycle integration
+
+`MatchStart.Create` now installs `MatchUnitLifecycle` and exposes its shop, item,
+portal and carousel commands through `MatchState.Units`. The roster uses the
+installed lifecycle when a merge caller does not supply an explicit callback,
+covering offer rewards, loot collection, treasure rewards and settlement cleanup.
+Explicit command callbacks use the same mode handlers. Portal/carousel callbacks
+separate owner and partner effects so Proud Partner is not paid twice.
+
+The composed lifecycle preserves Arcane Anomalies, Fates Partner marks, Coliseum
+forms and core refunds, Gizmos Glutton stats, and Underlords' one-item limit. It
+also dispatches mode purchase/sale behavior, Auto Chess sale income and Duos sends.
+Standalone low-level roster tests can still supply their own callbacks.
+
+4,960 original-engine scenarios pass 947,276 checks (`--unit-lifecycle-only`),
+covering all 22 variants in Solo/Duos, direct merges, purchases, offer choices,
+loot, copiers, portals, carousel picks and settlement cleanup. Snapshots check
+unit order/modifiers/items, capped inventory, partner rewards, shop exclusions,
+shared pool counts, IDs and RNG. All 5,808 match-start cases also verify automatic
+lifecycle installation. Full round/offer/AI/settlement dispatch and persistent
+combat projection still need to be composed into the production match controller.
+
+Validation: **161,004,628 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.

@@ -22,6 +22,9 @@ public sealed class PlanningRoster
     private readonly List<PlacedUnit> board = [];
     private readonly PlanningUnit?[] bench = new PlanningUnit?[9];
     private readonly Func<string, int, PlanningUnit> create;
+    // The composed match supplies its lifecycle here. Explicit callbacks remain available
+    // to low-level callers that dispatch the same lifecycle themselves (portal/carousel).
+    internal Action<PlanningUnit, IReadOnlyList<PlanningUnit>>? CombineHandler { get; set; }
     public PlanningRoster(Ruleset rules, Func<string, int, PlanningUnit> create)
     {
         lines = rules.Lines.Concat(rules.ExtraLines).ToDictionary(l => l.Id);
@@ -114,7 +117,7 @@ public sealed class PlanningRoster
             foreach (var copy in copies)
                 if (copy.Spot.Valid) Set(copy.Spot, null); else extra = null;
             Set(anchor.Spot.Valid ? anchor.Spot : UnitSpot.Bench(FreeBenchSlot), up);
-            onCombine?.Invoke(up, copies.Select(e => e.Unit).ToArray());
+            (onCombine ?? CombineHandler)?.Invoke(up, copies.Select(e => e.Unit).ToArray());
             evolved.Add(Entries.FirstOrDefault(e => e.Unit.Id == up.Id)?.Unit ?? up);
         }
         if (extra is not null && !AddToBench(extra) && !discardOverflow) throw new InvalidOperationException("Unplaceable merge overflow.");
