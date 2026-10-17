@@ -130,6 +130,14 @@ public static class TraitRules
                 if (rules.Lines.Single(l => l.Id == lineId).Mark is { } mark) counts[mark] = counts.GetValueOrDefault(mark) + 2;
         if (rules.Id.StartsWith("arcane/", StringComparison.Ordinal) && counts.GetValueOrDefault("EMI") is 2 or 3) counts["EMI"] = 0;
         if (rules.Id.StartsWith("coliseum/", StringComparison.Ordinal) && counts.GetValueOrDefault("MEN") is 2 or 3) counts["MEN"] = 0;
+        if (rules.Id.StartsWith("autochess/", StringComparison.Ordinal)) {
+            if (counts.GetValueOrDefault("WIZARD") >= 2) foreach (var key in counts.Keys.ToArray()) {
+                var trait = rules.Traits.FirstOrDefault(t => t.Id == key);
+                if (key != "WIZARD" && trait is not null && trait.Breakpoints.Any(b => b >= 4 && counts[key] == b - 1)) counts[key]++;
+            }
+            if (counts.GetValueOrDefault("DEMON") >= 2 && counts.GetValueOrDefault("DH") < 2) counts.Remove("DEMON");
+            if (counts.GetValueOrDefault("OLYMPOS") != 0 && counts.Any(p => p.Key != "OLYMPOS" && rules.Traits.Any(t => t.Id == p.Key && t.Kind == "race" && Level(t, p.Value) > 0))) counts.Remove("OLYMPOS");
+        }
         return counts;
     }
 }

@@ -1428,6 +1428,67 @@ for(const key of ['The End of Medicine','Enthrall','Rejuvenating Ritual','Summon
   if(!ulTamerCoverage.has(key))throw new Error(`Tamer effect not exercised: ${key}`);
 
 
+
+DT.Sets.activate('autochess','hyper');
+const acCoverage=new Set(),acCases=[];
+const acCasters=DT.SHOP_LINES.filter(l=>['summon','transform','storm'].includes(l.type)).map(l=>l.id);
+for(const line of acCasters)for(const stage of [0,1,2])for(const cols of [7,14])acCases.push({name:`ability-${line}-${stage}-${cols}`,lines:[line],stage,cols,cast:true,noTraits:true});
+for(const [id,t] of Object.entries(DT.TRAITS))for(let level=0;level<t.bp.length;level++)for(const cols of [7,14]){
+  const lines=DT.SHOP_LINES.filter(l=>l.traits.includes(id)).slice(0,t.bp[level]).map(l=>l.id);
+  acCases.push({name:`trait-${id}-${level}-${cols}`,lines,stage:(level+(cols===14?1:0))%3,cols,trait:id,level,
+    bonus:lines.length<t.bp[level]?{[id]:t.bp[level]-lines.length}:null});
+}
+const acHeldItems=Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].hooks&&!DT.ITEMS[id].relic);
+for(const item of acHeldItems)for(const stage of [0,1,2])for(const cols of [7,14])acCases.push({name:`item-${item}-${stage}-${cols}`,lines:acCasters.slice(0,5),item,stage,cols});
+for(const relic of Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].relic))for(const cols of [7,14])acCases.push({name:`relic-${relic}-${cols}`,lines:acCasters.slice(0,5),globals:[relic],stage:2,cols,duos:cols===14});
+for(let demons=1;demons<=3;demons++)for(let slayers=0;slayers<=2;slayers++)for(const wizard of [false,true]){
+  const lines=['ac_goblimon','ac_floramon','ac_gazimon'].slice(0,demons).concat(['ac_lopmon','ac_guilmon'].slice(0,slayers),wizard?['ac_candlemon','ac_labramon']:[]);
+  for(const cols of [7,14])acCases.push({name:`counts-${demons}-${slayers}-${wizard}-${cols}`,lines,stage:1,cols,duos:cols===14});
+}
+for(const line of DT.SHOP_LINES.filter(l=>l.traits.includes('DRUID')).map(l=>l.id))for(const stage of [0,1,2])for(const level of [0,1,2])
+  acCases.push({name:`druid-cap-${line}-${stage}-${level}`,lines:[line],stage,cols:7,bonus:level?{DRUID:level===1?1:3}:null});
+for(const count of [0,1,2,3,4,5])for(const slayers of [false,true])acCases.push({name:`olympos-wizard-${count}-${slayers}`,
+  lines:['ac_coronamon','ac_labramon','ac_candlemon','ac_psychemon',...(slayers?['ac_lopmon','ac_guilmon']:[])],bonus:{BEAST:count},stage:2,cols:7});
+for(let i=0;i<12;i++)acCases.push({name:`mixed-${i}`,lines:acCasters,stage:i%3,cols:14,duos:true,globals:['ac_r_grace','ac_r_reaper']});
+for(const test of acCases){
+  const cols=test.cols,pace=cols===14?'normal':'hyper';DT.Sets.activate('autochess',pace);let accepted=false;
+  for(let attempt=0;attempt<30&&!accepted;attempt++){
+    const seed=3100000+fixtures.length+attempt*10000,pick=DT.makeRng(seed);
+    function side(team){
+      const parts=[0,1].map(part=>{
+        const owner=team*2+part,chosen=team===0?[...test.lines]:Array.from({length:Math.max(5,test.lines.length)},()=>DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)].id);
+        if(test.cast)while(chosen.length<5)chosen.push(DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)].id);
+        const width=test.duos?7:cols;
+        const units=chosen.map((line,i)=>({line,stage:test.stage,c:part*7+i%width,r:4+Math.floor(i/width),owner,
+          items:test.item?(i%2?[test.item]:[test.item,test.item]):test.name.startsWith('mixed')?Array.from({length:2},()=>acHeldItems[Math.floor(pick()*acHeldItems.length)]):[],
+          ...(team===0&&i===0&&test.bonus?{bonusTraits:test.bonus}:{})}));
+        return {owner,units,globals:test.globals||[],augs:test.duos?[part?'duo_sync':'duo_tag']:[]};
+      });
+      return test.duos?{parts,units:parts.flatMap(p=>p.units),augs:parts.flatMap(p=>p.augs),globals:parts.flatMap(p=>p.globals),counts:DT.Duos.teamCounts(parts),cols}
+        :{units:parts[0].units,globals:parts[0].globals,cols,noTraits:!!test.noTraits};
+    }
+    const a=side(0),b=side(1),cb=new DT.Combat(a,b,{seed});
+    if(test.trait&&DT.traitLevel(test.trait,cb.traitCounts[0][test.trait])!==test.level+1)throw new Error(`Auto Chess missing breakpoint ${test.name}`);
+    const samples=[{tick:0,units:snapshots(cb)}];let tick=0,summonCap=false;
+    while(!cb.done&&tick<2000){
+      cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});
+      const owners=new Map();for(const u of cb.units)if(u.alive&&u.summoned&&u.state.acOwner!=null)owners.set(u.state.acOwner,(owners.get(u.state.acOwner)||0)+1);
+      for(const n of owners.values()){if(n>4)throw new Error('Auto Chess reference exceeded summon cap');if(n===4)summonCap=true;}
+    }
+    if(test.cast&&!cb.events.some(e=>e.type==='cast'&&e.at===0))continue;
+    if(summonCap)acCoverage.add('summon-cap');
+    for(const u of cb.units){for(const key of ['acTf','acRefresh','acStoneCd','acKnCd'])if(u.state[key])acCoverage.add(key);if(u.state.acDruidCap!=null)acCoverage.add(`druid-cap-${u.state.acDruidCap}`);}
+    const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,owner:u.owner,items:u.items,bonusTraits:u.bonusTraits}));
+    const effects=a=>({noTraits:!!a.noTraits,globals:a.globals,augments:a.augs,...(test.duos?{parts:a.parts.map(p=>({owner:p.owner,augments:p.augs,globals:p.globals}))}:{})});
+    fixtures.push({name:`autochess/${test.name}`,variant:`autochess/${pace}`,seed,cols,duos:!!test.duos,
+      sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+      setup:{sideA:effects(a),sideB:effects(b)}});accepted=true;
+  }
+  if(!accepted)throw new Error(`Auto Chess cast never exercised: ${test.name}`);
+}
+for(const key of ['summon-cap','acTf','acRefresh','acStoneCd','acKnCd','druid-cap-0','druid-cap-1'])if(!acCoverage.has(key))throw new Error(`Auto Chess effect not exercised: ${key}`);
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

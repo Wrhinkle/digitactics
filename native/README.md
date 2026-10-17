@@ -152,6 +152,12 @@ to be a Vulkan renderer or the final game UI.
   modes and Solo/Duos, including enthrallment, summons, Yoink, deferred damage,
   poison and escape thresholds. Schema 14 carries authored Tamer stats and item
   tier/hat metadata.
+- Auto Chess: three custom ability types across ten casters, all 25 traits at 51
+  breakpoints, ten item hooks, two combat relics and the Druid strength gate pass
+  340 additional battles. Cases cover Wizard/Demon/Olympos count rules, summon
+  limits, transformation modifiers, duplicate items and Solo/Duos ownership.
+  Schema 15 exports summon counts and transformation data. Loot, Digi-Eggs, relic
+  grants/economy, Priest loss reduction and full-match progression remain pending.
 - Full combat traces are split into content-addressed gzip shards. A manifest
   verifies hashes and battle counts; the runner still reads one battle at a time
   and comparisons retain all recorded samples.

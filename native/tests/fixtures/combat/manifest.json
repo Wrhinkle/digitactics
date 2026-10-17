@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "battles": 5359,
+  "battles": 5699,
   "files": [
     {
       "file": "faction-wars-871083911d94a4d4.json.gz",
@@ -48,9 +48,9 @@
       "sha256": "0944d15de6cec5057a6fc5ac634a68f62126a428c3860369c6b69ef93fe1bb13"
     },
     {
-      "file": "autochess-329c2a618b43fbe8.json.gz",
-      "battles": 4,
-      "sha256": "329c2a618b43fbe8e4534fcfec2a8d6d0aa1380c871e11241df6888fbe525229"
+      "file": "autochess-da83a679031f7d83.json.gz",
+      "battles": 344,
+      "sha256": "da83a679031f7d83baf1225e9259903d19dc4de7ad54392a199ba519cd158d79"
     },
     {
       "file": "underlords_ko-6c3f3f4abf1a1aa8.json.gz",

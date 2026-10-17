@@ -228,6 +228,17 @@ The current executable is a migration workbench. It must not replace the public 
   Catalog schema 14 exports Tamer definitions, unit identity and item tiers/hats;
   setup carries owner-scoped powers. Tamer selection/rank progression and crew
   offers still belong to the unfinished match flow.
+- Auto Chess: all three custom abilities across ten casters, 25 traits at 51
+  breakpoints, ten held-item hooks, two combat relics and the Druid strength gate
+  are implemented. Another 340 reference battles cover casts, breakpoints, every
+  held-item/relic identity, duplicate equipment, Solo/Duos ownership and mixed
+  effects. Targeted cases verify Wizard breakpoint reductions, Demon/Slayer
+  suppression, Olympos race exclusions, all Druid cap levels, transformation data
+  and summon limits; guards require the four-helper cap and defensive effects to
+  occur. Schema 15 carries authored summon counts and transformation modifiers.
+  Priest loss reduction, relic grants/economy, Digi-Egg use, loot/crew offers and
+  full-match progression remain pending. An audit of all active power registries
+  found combat callbacks only on the eight Underlords builds already ported.
 - Reference fixtures are streamed into eleven content-addressed gzip shards with
   a manifest containing SHA-256 hashes and per-file/total battle counts. The native
   runner checks integrity and counts while reading one battle at a time. Export
@@ -235,14 +246,14 @@ The current executable is a migration workbench. It must not replace the public 
   shards. This preserves prior usable fixtures on failed exports and avoids the
   monolithic file's GitHub size warning without dropping samples or coverage.
 
-Latest verification: the native test suite passes 96,320,540 assertions.
+Latest verification: the native test suite passes 100,761,009 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Port Auto Chess combat and remaining cross-set powers/mechanics.
+1. Audit combat registry coverage and remaining cross-set mechanics.
    Finish hook context side/trait state and
    presentation event metadata. Extend reference battles to real set definitions
    before claiming full combat parity.
