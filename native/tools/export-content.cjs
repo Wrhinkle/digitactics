@@ -75,7 +75,7 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
     const role = DT.ROLES[DT.roleOf(l)] || DT.BASE_ROLES.Striker;
     return {
     noSell: !!l.noSell, noItems: !!l.noItems, summonCount: l.summonN || null, transformation: l.tf || null, tamer: l.tamer || null, swap: !!l.swap, envoy: l.envoy || null, experiment: l.exp || null, mark: l.mark || null, rivals: l.rivals || [], summon: l.summon || null, id: l.id, tier: l.tier, price: l.price || l.tier, copies: l.combine || rules.copies || 3,
-    forms: l.forms, traits: l.traits, attribute: l.attr,
+    forms: l.forms, traits: l.traits, attribute: l.attr, ai: { carry: !!l.ai?.carry, tank: l.ai?.tank || 0, damage: l.ai?.dmg || null, place: l.ai?.place || null, value: l.ai?.value || 0 },
     slots: l.slots || 1,
     sellPremium: set.id === 'dragonlands' && l.slots === 2 ? Math.max(0, (l.price || l.tier) - l.tier) : 0,
     combat: {
@@ -92,13 +92,7 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   variants.push({ id, economy, schedule, loss, recipes: DT.RECIPE,
     coliseum: set.id === 'coliseum' ? { coreRounds: rules.coreRounds || [],
       powerUps: DT.Sets.def(set.id).powerUps.map(p => ({ id: p.id, tags: p.tags })),
-      frontliners: Object.values(DT.LINE).filter(l => l.ai && l.ai.tank > 0 && l.ai.tank <= 2).map(l => l.id),
-      unitKinds: Object.fromEntries(Object.values(DT.LINE).map(l => {
-        const ai = l.ai || {};
-        const kind = (!ai.carry && ai.tank > 0) || (ai.place === 'front' && ai.tank > 0 && ai.tank <= 2)
-          ? 'tank' : ai.dmg === 'ap' ? 'ap' : 'ad';
-        return [l.id, kind];
-      })) } : null,
+    } : null,
     offers: { schedule: rules.offers || [], armoryStages: rules.armoryStages || [], armoryRound: rules.armoryRound || 1,
       armoryRounds: rules.armoryRounds, augmentStages: rules.augmentStages || [], augmentRound: rules.augmentRound || 2,
       augmentRounds: rules.augmentRounds, augmentRerolls: rules.augmentRerolls, augmentTierOdds: rules.augmentTierOdds,
@@ -160,7 +154,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 25, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 26, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');

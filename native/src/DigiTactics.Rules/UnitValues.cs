@@ -44,6 +44,7 @@ public static class UnitValues
         int discount = stage switch { 0 => 0, 1 => line.Tier > 1 ? 1 : 0, _ => 1 };
         return checked((line.Tier + line.SellPremium) * copies - discount);
     }
+    public static int Value(UnitLine line, int stage) => checked(line.Tier * Copies(line, stage));
 
     // JavaScript Math.round chooses the larger integer at a midpoint; .NET's default rounds to even.
     public static double Round(double value) => Math.Floor(value + 0.5);

@@ -556,5 +556,27 @@ selection, fans, Gambit state, kill progress and RNG. Contexts vary declared
 win/loss/draw results, trait counts, stages, PvE, full inventory, missing combat
 and the original Duos owner filtering, including ownerless units. These contexts
 exercise the hook; complete-match orchestration remains a separate requirement.
-AI core assignment, the composed hook dispatcher, other mode mechanics and
+The composed hook dispatcher, other mode mechanics and
 production match integration remain pending.
+
+## AI item holders and Coliseum core assignment
+
+Catalog schema 26 exports shared unit AI hints (carry, tank, damage, placement and
+value). Coliseum's duplicate choice-category/front-line tables are removed; its
+core and form logic now reads those hints. `PlanningAi.Holders` ranks the board
+stably by unit value and equipment, prioritizes completed carry builds, selects
+up to two carries and applies the original tank priorities. A unit may occur as
+both carry and tank, as in the reference.
+
+`ColiseumPlanning.AiTurn` assigns at most four cores. It recomputes holders each
+time, skips existing power-ups, falls back to the highest-value eligible board
+unit and preserves unrelated modifiers. Selection uses the original shuffled
+choice list and shared match RNG without opening a human offer.
+
+19,800 board/bench scenarios across all 22 variants provide 858,884 reference
+comparisons. They exercise line/unit no-item flags, stable ties, component versus
+completed equipment, overlapping holder roles, existing modifiers, core counts,
+fallback selection and the four-assignment bound. Existing core/form/shop suites
+also verify the shared-hint migration. General AI inventory allocation, shopping,
+positioning, the composed hook dispatcher and full desktop match integration are
+still pending.

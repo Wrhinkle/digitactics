@@ -4,13 +4,35 @@ using System.Globalization;
 namespace DigiTactics.Rules;
 
 public sealed record ColiseumPowerUp(string Id, string[] Tags);
-public sealed record ColiseumPlanningRules(ColiseumPowerUp[] PowerUps, Dictionary<string, string> UnitKinds, string[] Frontliners, string[] CoreRounds);
+public sealed record ColiseumPlanningRules(ColiseumPowerUp[] PowerUps, string[] CoreRounds);
 
 /// <summary>Digi-Core inventory and choices share the same pending target and refund rules.</summary>
 public sealed class ColiseumPlanning(MatchState state) : IMatchShopHooks
 {
     private ColiseumPlanningRules Rules => state.Rules.Coliseum!;
     private readonly MatchLoot loot = new(state);
+    private readonly PlanningAi ai = new(state.Rules);
+    private readonly Dictionary<string, UnitLine> lines = state.Rules.Lines.Concat(state.Rules.ExtraLines).ToDictionary(l => l.Id);
+    private readonly HashSet<string> shopLines = state.Rules.Lines.Select(l => l.Id).ToHashSet();
+
+    public void AiTurn(MatchPlayer player)
+    {
+        bool Free(PlanningUnit unit) => shopLines.Contains(unit.Line) &&
+            !(unit.Mods is { } mods && mods.TryGetProperty("pu", out var power) && Truthy(power));
+        for (int guard = 0; guard < 4 && player.Items.Contains("col_core"); guard++)
+        {
+            var target = ai.Holders(player).Select(h => h.Unit).FirstOrDefault(Free) ??
+                player.Roster.Board.Select(e => e.Unit).Where(Free).OrderByDescending(u => UnitValues.Value(lines[u.Line], u.Stage)).FirstOrDefault();
+            if (target is null) break;
+            var options = PowerOptions(target, []);
+            if (options.Length == 0) break;
+            player.Items.RemoveAt(player.Items.IndexOf("col_core"));
+            string chosen = options[(int)(state.Random.Next() * options.Length)];
+            var mods = target.Mods?.EnumerateObject().ToDictionary(p => p.Name, p => p.Value) ?? [];
+            mods["pu"] = JsonSerializer.SerializeToElement(chosen);
+            player.Roster.UpdateUnit(target with { Mods = JsonSerializer.SerializeToElement(mods) });
+        }
+    }
 
     public void RoundEnd(RoundEndContext context, int stage)
     {
@@ -182,7 +204,7 @@ public sealed class ColiseumPlanning(MatchState state) : IMatchShopHooks
                 int count = counts.GetValueOrDefault(trait);
                 score += count + (state.Rules.Traits.Single(t => t.Id == trait).Breakpoints.Contains(count + 1) ? 3 : 0);
             }
-            if (form.Id == "ballista" && player.Roster.Board.Count(e => Rules.Frontliners.Contains(e.Unit.Line)) < 2) score += 2;
+            if (form.Id == "ballista" && player.Roster.Board.Count(e => lines[e.Unit.Line].Ai!.Tank is > 0 and <= 2) < 2) score += 2;
             if (score > bestScore) { bestScore = score; best = form; }
         }
         return best ?? throw new InvalidDataException("A form-bearing unit has no forms.");
@@ -259,8 +281,14 @@ public sealed class ColiseumPlanning(MatchState state) : IMatchShopHooks
     public string[] CoreOptions(MatchPlayer player, IReadOnlyList<string> exclude)
     {
         var unit = Target(player);
-        if (unit is null) return [];
-        string kind = Rules.UnitKinds[unit.Line];
+        return unit is null ? [] : PowerOptions(unit, exclude);
+    }
+
+    private string[] PowerOptions(PlanningUnit unit, IReadOnlyList<string> exclude)
+    {
+        var hints = lines[unit.Line].Ai!;
+        string kind = !hints.Carry && hints.Tank > 0 || hints.Place == "front" && hints.Tank is > 0 and <= 2
+            ? "tank" : hints.Damage == "ap" ? "ap" : "ad";
         string? current = unit.Mods is { } mods && mods.TryGetProperty("pu", out var pu) && pu.ValueKind == JsonValueKind.String ? pu.GetString() : null;
         var choices = Rules.PowerUps.Where(p => (p.Tags.Contains(kind) || p.Tags.Contains("any")) &&
             p.Id != current && !exclude.Contains(p.Id)).Select(p => p.Id).ToArray();
