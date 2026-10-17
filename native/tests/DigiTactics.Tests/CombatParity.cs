@@ -145,6 +145,13 @@ internal static class CombatParity
                             throw new InvalidOperationException($"Dragonlands trait counters mismatch {name}/{team}");
                     }
                 }
+            if (trace.TryGetProperty("arcaneRewards", out var arcaneRewards))
+                for (int team = 0; team < 2; team++) {
+                    count += 2;
+                    var actual = combat.ArcaneRewards(team); var expected = arcaneRewards[team];
+                    if (actual.ConquestKills != expected.GetProperty("conquestKills").GetInt32() || actual.Coins != expected.GetProperty("coins").GetInt32())
+                        throw new InvalidOperationException($"Arcane rewards mismatch {name}/{team}");
+                }
             double completedTime = combat.Time;
             combat.Step();
             count++;

@@ -117,6 +117,11 @@ to be a Vulkan renderer or the final game UI.
   All 19 combat augments and mixed combinations pass 120 more Solo/Duos fights,
   including retained training kills and partner-owned state. Pick grants and
   planning/settlement rules remain pending.
+- Arcane: four custom abilities across seven casters, all 26 traits at 69
+  breakpoints, and 100 targeted Solo/Duos interactions pass 322 new reference
+  battles. Coverage includes every rotating/gamble outcome, laboratory combinations,
+  Envoy activation gaps, Belphemon, workshop parts and repeated component upgrades.
+  Item hooks, Anomalies, augments and planning/settlement remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

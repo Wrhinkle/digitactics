@@ -5,9 +5,6 @@ public sealed partial class CombatSimulation
     public static IReadOnlySet<string> SupportedAbilities { get; } = new HashSet<string>
         { "nuke", "aoe", "stun", "slam", "shield", "heal", "barrage", "drain", "weaken", "rally", "line", "execute", "chain", "dash" };
 
-    private CombatUnit[] EnemiesNear(CombatUnit unit, HexCell center, int radius) =>
-        units.Where(e => e.Alive && e.Team != unit.Team && center.DistanceTo(e.Cell) <= radius).ToArray();
-
     private void Cast(CombatUnit unit, CombatUnit target)
     {
         unit.Mana = 0; unit.CastLock = 0.35;

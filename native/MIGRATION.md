@@ -150,15 +150,30 @@ The current executable is a migration workbench. It must not replace the public 
   state, healing amplification, and delayed team buffs. Training reward counters
   are compared separately. Pick grants and planning/settlement rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 29,468,067 assertions, compiles
+
+- Arcane: all four custom ability types across seven casters pass 84 reference
+  fights across three star stages, both board widths and front/back placements.
+  The exporter verifies all three rotating spell branches and all four gamble
+  outcomes actually execute. All 26 traits at 69 breakpoints pass 138 fights;
+  another 100 targeted Solo/Duos fights cover every two/three-member laboratory
+  combination, all Envoy subsets including inactive counts, individual/all Junk
+  King parts, and repeated component upgrades. Chained Belphemon, transformation
+  stats, sponsored items, accumulated Syndicate HP and capped Bagra chest bonuses
+  are included. Conquest/coin reward counters are compared independently.
+  Catalog schema 12 includes swap/Envoy/laboratory metadata, item ingredients and
+  exact self-upgrade mappings. Temporary upgrades and enemy targeting are shared
+  helpers; Arcane preserves its distinct duplicate Blue Buff rule. Arcane held-item
+  hooks, Anomalies, augments and planning/settlement remain pending.
+
+Latest verification: `./native/build.ps1 -Publish` passes 32,668,895 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Extend production binding beyond Faction Wars and Fates trait/ability coverage to the
-   remaining sets, item hooks, powers and mechanics.
+1. Finish Arcane items, Anomalies and augments, then the remaining sets, powers
+   and mechanics.
    Finish hook context side/trait state and
    presentation event metadata. Extend reference battles to real set definitions
    before claiming full combat parity.

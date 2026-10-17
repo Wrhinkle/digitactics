@@ -49,7 +49,7 @@ public sealed partial class CombatSimulation
                 case "giz_a_overload": On(CombatHook.Death, (c, e) => { var u = e.Unit!; if (Has(u, "XA") && !u.Summoned) foreach (var x in EnemiesNear(u, u.Cell, 2)) c.Damage(u, x, u.MaxHealth * 0.25); }); break;
                 case "giz_a_sosmall": Start(u => { if (Has(u, "PET")) { u.Dodge += 0.4; u.AttackSpeed *= 1.1; } }); break;
                 case "giz_a_cutthroat": On(CombatHook.Attack, (_, e) => { var u = e.Unit!; if (Has(u, "ASN") && !u.Gizmos.Cut) { u.Gizmos.Cut = true; e.Target!.Mana = 0; } }); break;
-                case "giz_a_airdrop": Start(u => { if (u.Items.Count >= 2 && rules.CoreItems.Length > 0) ApplyGizmosUpgrade(u, items[rules.CoreItems[(int)(random.Next() * rules.CoreItems.Length)]]); }); break;
+                case "giz_a_airdrop": Start(u => { if (u.Items.Count >= 2 && rules.CoreItems.Length > 0) ApplyTemporaryItemUpgrade(u, items[rules.CoreItems[(int)(random.Next() * rules.CoreItems.Length)]]); }); break;
                 case "giz_a_shrug": Start(u => { if (Has(u, "BRU")) u.Equipment.Regen += 0.025; }); break;
                 case "giz_a_spellblade": On(CombatHook.Cast, (_, e) => { if (Has(e.Unit!, "ARC")) e.Unit!.Gizmos.Spellblade = true; });
                     On(CombatHook.Attack, (c, e) => { var u = e.Unit!; if (u.Gizmos.Spellblade && e.Target!.Alive) { u.Gizmos.Spellblade = false; c.Damage(u, e.Target, u.AbilityPower * 2); } }); break;

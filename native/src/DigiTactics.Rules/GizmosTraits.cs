@@ -55,7 +55,7 @@ public sealed partial class CombatSimulation
                         foreach (var u in members) foreach (var itemId in u.Items) {
                             if (budget <= 0) break;
                             if (!items.TryGetValue(itemId, out var item) || !item.Component || item.Special || item.CompletedFrom is not { Length: > 0 } options) continue;
-                            ApplyGizmosUpgrade(u, items[options[(int)(c.Random() * options.Length)]], item); budget--;
+                            ApplyTemporaryItemUpgrade(u, items[options[(int)(c.Random() * options.Length)]], item); budget--;
                         }
                     }); break;
                     case "PIR": Each(u => u.Equipment.Amp += value); break;

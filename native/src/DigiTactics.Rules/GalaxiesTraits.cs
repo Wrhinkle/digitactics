@@ -80,7 +80,7 @@ public sealed partial class CombatSimulation
                             if (e.IsBurn || state.Overload == 0 || !u.Alive) return;
                             if (++state.OverloadCount < 10) return; state.OverloadCount = 0;
                             if (u.Health < u.MaxHealth * 0.5) { c.Heal(u, state.Overload); return; }
-                            var target = GalaxyTarget(u); if (target is not null) c.Damage(u, target, state.Overload);
+                            var target = TargetByDistance(u); if (target is not null) c.Damage(u, target, state.Overload);
                         }
                         On(CombatHook.DamageDealt, Overload); On(CombatHook.DamageTaken, Overload); break;
                     case "ARK": Each(u => { u.AttackSpeed = 0.0001; u.Equipment.CrowdControlImmunity = 999; });
@@ -94,7 +94,7 @@ public sealed partial class CombatSimulation
                     case "BM": On(CombatHook.Attack, (_, e) => { if (!Member(e.Unit!) || !e.Target!.Alive || random.Next() >= value) return; for (int k = 0; k < 2 && e.Target.Alive; k++) GalaxyStrike(e.Unit!, e.Target); }); break;
                     case "GU": On(CombatHook.Attack, (_, e) => {
                         var u = e.Unit!; if (!Member(u) || ++u.Galaxies.GunnerAttacks % 4 != 0) return;
-                        for (int k = 0; k < value; k++) { var foes = GalaxyEnemies(u); if (foes.Length == 0) break; GalaxyStrike(u, foes[(int)(random.Next() * foes.Length)]); }
+                        for (int k = 0; k < value; k++) { var foes = EnemiesOf(u); if (foes.Length == 0) break; GalaxyStrike(u, foes[(int)(random.Next() * foes.Length)]); }
                     }); break;
                     case "BR": Each(u => u.MaxHealth += value); break;
                     case "BO": On(CombatHook.DamageDealt, (_, e) => {

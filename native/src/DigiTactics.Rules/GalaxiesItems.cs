@@ -50,7 +50,7 @@ public sealed partial class CombatSimulation
                 case "gal_dragonscale": On(CombatHook.BeforeDamageTaken, (_, e) => { if (e.Kind == DamageKind.Magic) e.Multiplier *= 0.6; }); break;
                 case "gal_zephyr": On(CombatHook.CombatStart, (_, _) => {
                     var spot = new HexCell(Columns - 1 - unit.Cell.Column, 7 - unit.Cell.Row);
-                    var target = GalaxyEnemies(unit).OrderBy(x => x.Cell.DistanceTo(spot)).ThenBy(x => x.Id).FirstOrDefault();
+                    var target = EnemiesOf(unit).OrderBy(x => x.Cell.DistanceTo(spot)).ThenBy(x => x.Id).FirstOrDefault();
                     if (target is null || target.Equipment.CrowdControlImmunity != 0) return;
                     target.Stun = Math.Max(target.Stun, 4); target.InvulnerableUntil = Math.Max(target.InvulnerableUntil, 4);
                 }); break;

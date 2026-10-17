@@ -18,6 +18,7 @@ public sealed class CombatUnit
     public double TimeRune { get; internal set; }
     internal DragonlandsUnitState Dragonlands { get; } = new();
     internal ReckoningUnitState Reckoning { get; } = new();
+    internal ArcaneUnitState Arcane { get; } = new();
     internal GizmosUnitState Gizmos { get; } = new();
     internal bool FrenzyActive;
     internal bool FatesGrace;

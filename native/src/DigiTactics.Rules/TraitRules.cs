@@ -1,14 +1,15 @@
 namespace DigiTactics.Rules;
 
+public sealed record ArcaneState(double ArcSynHp = 0, bool ArcSynAug = false, double ArcChests = 0, string[]? ArcJunk = null);
 public sealed record DragonlandsState(double Bank = 0, bool HpFull = false, double CtKills = 0);
 public sealed record GizmosState(double GoldStart = 0);
 public sealed record GalaxiesState(Dictionary<string, int>? Bounty = null);
 public sealed record FatesState(int Deva = 0, string? Fallen = null, double Blossom = 0);
 public sealed record CombatBuffs(double AttackSpeed = 0, double Armor = 0, double Mana = 0);
-public sealed record CombatPartner(int Owner, string[]? Augments = null, CombatBuffs? Buffs = null, double PartnerTop = 0, GizmosState? Gizmos = null, DragonlandsState? Dragonlands = null);
+public sealed record CombatPartner(int Owner, string[]? Augments = null, CombatBuffs? Buffs = null, double PartnerTop = 0, GizmosState? Gizmos = null, DragonlandsState? Dragonlands = null, ArcaneState? Arcane = null);
 public sealed record CombatSideEffects(bool NoTraits = false, Dictionary<string, int>? Counts = null, string[]? Augments = null,
-    CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0, FatesState? Fates = null, GalaxiesState? Galaxies = null, GizmosState? Gizmos = null, DragonlandsState? Dragonlands = null);
-public sealed record CombatSetup(CombatSideEffects SideA, CombatSideEffects SideB, string? Galaxy = null, string? Mutation = null, string? RoundType = null, int RoundStage = 0, string? Mirage = null, string? Pace = null);
+    CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0, FatesState? Fates = null, GalaxiesState? Galaxies = null, GizmosState? Gizmos = null, DragonlandsState? Dragonlands = null, ArcaneState? Arcane = null);
+public sealed record CombatSetup(CombatSideEffects SideA, CombatSideEffects SideB, string? Galaxy = null, string? Mutation = null, string? RoundType = null, int RoundStage = 0, string? Mirage = null, string? Pace = null, string[]? ArcSponsor = null);
 
 public static class TraitRules
 {
@@ -119,6 +120,7 @@ public static class TraitRules
         if (rules.Id.StartsWith("dragonlands/", StringComparison.Ordinal))
             foreach (var lineId in lines.Keys)
                 if (rules.Lines.Single(l => l.Id == lineId).Mark is { } mark) counts[mark] = counts.GetValueOrDefault(mark) + 2;
+        if (rules.Id.StartsWith("arcane/", StringComparison.Ordinal) && counts.GetValueOrDefault("EMI") is 2 or 3) counts["EMI"] = 0;
         return counts;
     }
 }

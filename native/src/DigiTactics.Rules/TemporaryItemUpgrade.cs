@@ -5,7 +5,7 @@ namespace DigiTactics.Rules;
 public sealed partial class CombatSimulation
 {
     // Temporary upgrades add the stat difference but do not equip or register the generated item's hooks.
-    private void ApplyGizmosUpgrade(CombatUnit u, ItemDefinition item, ItemDefinition? component = null)
+    private void ApplyTemporaryItemUpgrade(CombatUnit u, ItemDefinition item, ItemDefinition? component = null, bool preserveExistingBlueBuff = false)
     {
         double S(string key) => item.Stats.GetValueOrDefault(key) - (component?.Stats.GetValueOrDefault(key) ?? 0);
         u.AttackDamage += u.BaseAttackDamage * S("ad"); u.AttackSpeed *= 1 + S("as");
@@ -42,7 +42,7 @@ public sealed partial class CombatSimulation
                     case "guardbreak": u.Equipment.GuardBreaker += n; break;
                     case "vamp": u.Omnivamp += n; break;
                     case "critDmg": u.CriticalDamage += n; break;
-                    default: throw new NotSupportedException($"Gizmos item passive {key} is not supported.");
+                    default: throw new NotSupportedException($"Temporary item passive {key} is not supported.");
                 }
             } else if (value.ValueKind is JsonValueKind.True or JsonValueKind.False) {
                 bool flag = value.GetBoolean();
@@ -51,10 +51,10 @@ public sealed partial class CombatSimulation
                     case "titan": u.Equipment.Titan = flag; break;
                     case "crown": u.Equipment.Crown = flag; break;
                     case "burn": u.Equipment.Burn = flag; break;
-                    case "bluebuff": u.Equipment.BlueBuff = flag; u.MaxMana = Math.Max(20, u.MaxMana - 10); break;
+                    case "bluebuff": if (flag && (!preserveExistingBlueBuff || !u.Equipment.BlueBuff)) u.MaxMana = Math.Max(20, u.MaxMana - 10); u.Equipment.BlueBuff = flag; break;
                     case "redemption": u.Equipment.Redemption = flag; break;
                     case "sunfire": u.Equipment.Sunfire = flag; break;
-                    default: throw new NotSupportedException($"Gizmos item flag {key} is not supported.");
+                    default: throw new NotSupportedException($"Temporary item flag {key} is not supported.");
                 }
             }
         }

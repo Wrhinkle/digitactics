@@ -808,6 +808,105 @@ for(const augment of [...dragonAugments,'mixed']) for(const duos of [false,true]
 }
 
 
+
+// Observe branch coverage without replacing the reference ability behavior.
+DT.Sets.activate('arcane','hyper');
+const arcaneBranches={rotate:new Set(),gamble:new Set()};
+const arcaneOriginalCasts={};
+for(const kind of ['arc_rotate','arc_gamble']) {
+  const ability=DT.SET.abilities[kind];arcaneOriginalCasts[kind]=ability.cast;
+  ability.cast=function(c,u,t,v) {
+    if(kind==='arc_rotate')arcaneBranches.rotate.add((u.state.rot||0)%3);
+    const observed=Object.create(c);
+    observed.rng=()=>{const r=c.rng();if(kind==='arc_gamble')arcaneBranches.gamble.add(r<0.12?'jackpot':r<0.41?'flame':r<0.7?'punch':'chomp');return r;};
+    return arcaneOriginalCasts[kind](observed,u,t,v);
+  };
+}
+DT.Sets.activate('arcane','hyper');
+const arcaneCasters=DT.SHOP_LINES.filter(l=>!kinds.includes(l.type)).map(l=>l.id);
+for(const line of arcaneCasters) for(const stage of [0,1,2]) for(const cols of [7,14]) for(const row of [4,7]) {
+  const pace=cols===7?'hyper':'normal';DT.Sets.activate('arcane',pace);
+  let accepted=false;
+  for(let attempt=0;attempt<20&&!accepted;attempt++) {
+    const seed=640000+fixtures.length+attempt*10000,pick=DT.makeRng(seed);
+    const entries=main=>Array.from({length:6},(_,i)=>({line:main&&i===0?line:DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)].id,
+      stage,c:i,r:i===0?row:4+i%3,items:[]}));
+    const a=entries(true),b=entries(false);
+    const cb=new DT.Combat({units:a,cols,noTraits:true},{units:b,cols,noTraits:true},{seed});
+    const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+    while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+    if(!cb.events.some(e=>e.type==='cast'&&e.at===0))continue;accepted=true;
+    const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items}));
+    fixtures.push({name:`arcane-ability/${line}/${stage}/${cols}/${row}`,variant:`arcane/${pace}`,seed,cols,
+      sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,setup:{sideA:{noTraits:true},sideB:{noTraits:true}}});
+  }
+  if(!accepted)throw new Error(`Arcane caster never cast ${line}/${stage}/${cols}/${row}`);
+}
+
+DT.Sets.activate('arcane','hyper');
+const arcaneTraits=Object.entries(DT.TRAITS).map(([id,t])=>[id,[...t.bp]]);
+for(const [id,bp] of arcaneTraits) for(let level=0;level<bp.length;level++) for(const formation of [0,1]) {
+  const pace=formation?'normal':'hyper',cols=formation?14:7;DT.Sets.activate('arcane',pace);
+  const seed=680000+fixtures.length,pick=DT.makeRng(seed);
+  const components=Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].component&&!DT.COMPONENTS[id]?.special);
+  const own=DT.SHOP_LINES.filter(l=>l.traits.includes(id)).slice(0,bp[level]);
+  const foes=[];while(foes.length<Math.max(5,own.length)){const l=DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)];if(!foes.includes(l))foes.push(l);}
+  const entries=lines=>lines.map((l,i)=>({line:l.id,stage:(level+formation)%3,c:i%cols,r:formation?4+i%4:4+Math.floor(i/cols),
+    items:Array.from({length:i%3},()=>components[Math.floor(pick()*components.length)])}));
+  const a=entries(own),b=entries(foes);
+  if(own.length<bp[level])a[0].bonusTraits={[id]:bp[level]-own.length};
+  const mech={arcSynHp:formation?350:0,arcSynAug:!!formation,arcChests:formation?15:0,arcJunk:formation?['flame','bots','rod','destruct','buster','spare','spare']:[]};
+  const arcSponsor=formation?components.slice(0,3):[];
+  const cb=new DT.Combat({units:a,cols,mech},{units:b,cols,mech},{seed,info:{mech:{arcSponsor}}});
+  if(DT.traitLevel(id,cb.traitCounts[0][id])!==level+1)throw new Error(`Arcane missing breakpoint ${id}/${level}`);
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,bonusTraits:u.bonusTraits}));
+  fixtures.push({name:`arcane-trait/${id}/${level}/${formation}`,variant:`arcane/${pace}`,seed,cols,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    arcaneRewards:[0,1].map(team=>({conquestKills:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.arcConK||0),0),coins:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.coins||0),0)})),
+    setup:{sideA:{arcane:mech},sideB:{arcane:mech},arcSponsor}});
+}
+
+
+
+// Targeted trait interactions: every lab combination, Envoy activation gap,
+// individual workshop parts, and repeated component self-upgrades.
+DT.Sets.activate('arcane','hyper');
+const arcaneSpecial=[];
+const labs=DT.SHOP_LINES.filter(l=>l.exp);
+for(let mask=1;mask<(1<<labs.length);mask++) {
+  const chosen=labs.filter((_,i)=>mask&(1<<i));
+  if(chosen.length===2||chosen.length===3)arcaneSpecial.push({name:`lab-${mask}`,lines:chosen.map(l=>l.id),bonus:{EXP:(chosen.length===2?3:5)-chosen.length}});
+}
+const envoys=DT.SHOP_LINES.filter(l=>l.envoy);
+for(let mask=1;mask<(1<<envoys.length);mask++)arcaneSpecial.push({name:`envoy-${mask}`,lines:envoys.filter((_,i)=>mask&(1<<i)).map(l=>l.id)});
+for(const part of ['flame','bots','rod','destruct','buster','spare','all'])arcaneSpecial.push({name:`workshop-${part}`,lines:['arc_chaosdromon'],mech:{arcJunk:part==='all'?['flame','bots','rod','destruct','buster','spare','spare']:[part]}});
+for(const item of Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].component&&!DT.COMPONENTS[id]?.special))arcaneSpecial.push({name:`scrap-${item}`,lines:DT.SHOP_LINES.filter(l=>l.traits.includes('SCR')).slice(0,4).map(l=>l.id),items:[item,item,item]});
+for(const test of arcaneSpecial)for(const duos of [false,true]){
+  const pace=duos?'normal':'hyper',cols=duos?14:7;DT.Sets.activate('arcane',pace);
+  const seed=720000+fixtures.length,pick=DT.makeRng(seed),mech=test.mech||{};
+  const a=test.lines.map((line,i)=>({line,stage:i%3,c:i,r:4+i%3,items:test.items||[],owner:0}));
+  if(test.bonus)a[0].bonusTraits=test.bonus;
+  const b=Array.from({length:Math.max(5,a.length)},(_,i)=>({line:DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)].id,stage:i%3,c:i,r:4+i%3,items:[],owner:2}));
+  if(duos)for(const [team,list] of [[0,a],[1,b]])for(let i=0;i<3;i++)list.push({line:DT.SHOP_LINES.filter(l=>!l.envoy&&!l.exp)[i].id,stage:1,c:i+7,r:4+i,owner:team*2+1,items:[]});
+  const side=(units,team)=>duos?{units,cols,mech,parts:[0,1].map(part=>({owner:team*2+part,units:units.filter(u=>u.owner===team*2+part),augs:[]}))}:{units,cols,mech};
+  const sideA=side(a,0),sideB=side(b,1);
+  if(duos){sideA.counts=DT.Duos.teamCounts(sideA.parts);sideB.counts=DT.Duos.teamCounts(sideB.parts);}
+  const cb=new DT.Combat(sideA,sideB,{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,owner:u.owner,bonusTraits:u.bonusTraits}));
+  const effects=side=>({arcane:mech,...(duos?{parts:side.parts.map(p=>({owner:p.owner,augments:[]}))}:{})});
+  fixtures.push({name:`arcane-special/${test.name}/${duos}`,variant:`arcane/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    arcaneRewards:[0,1].map(team=>({conquestKills:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.arcConK||0),0),coins:cb.units.filter(u=>u.team===team).reduce((n,u)=>n+(u.state.coins||0),0)})),
+    setup:{sideA:effects(sideA),sideB:effects(sideB)}});
+}
+for(const [kind,cast] of Object.entries(arcaneOriginalCasts))DT.SET.abilities[kind].cast=cast;
+if(arcaneBranches.rotate.size!==3||arcaneBranches.gamble.size!==4)throw new Error('Arcane ability branches were not all exercised');
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
