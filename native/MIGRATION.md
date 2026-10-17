@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 125,545,055 assertions.
+Latest verification: the native test suite passes 127,004,181 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -447,3 +447,15 @@ The original game generates 300 economy transitions and 200 stages per variant;
 99,466 assertions cover all 22 mode/pace combinations. These components are not yet
 wired into the desktop workbench or a complete match coordinator. Planning, shared
 pool ownership, set hooks, AI, rewards, settlement and multiplayer remain pending.
+
+## Planning ownership and shared shops
+
+`PlanningRoster` now preserves ordered board positions, nine bench slots, swaps,
+slot-cap enforcement, team-size items, combat board locks, merge anchors, item
+priority/overflow and inherited unit modifiers. `PlayerShop` connects this roster
+and player economy to a shared `ShopPool`, including paid/free rerolls, locked
+shops, purchase capacity, selling and personal three-star offer removal.
+Reference fixtures exercise 15,400 planning commands and 8,800 two-player shop
+commands across all 22 variants. Set-specific planning/shop hooks are deliberately
+disabled in these reference traces; hook implementations, special offers and the
+full match coordinator still need integration. The desktop still uses its sandbox.

@@ -12,6 +12,7 @@ Push-Location $nativeRoot
 try {
     Invoke-Checked 'node' @('tools/export-content.cjs')
     Invoke-Checked 'node' @('tools/export-economy.cjs')
+    Invoke-Checked 'node' @('tools/export-planning.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
     Invoke-Checked 'node' @('tools/export-material-fixtures.cjs')
