@@ -1,8 +1,85 @@
 {
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "variants": [
     {
       "id": "faction-wars/normal",
+      "wisps": [
+        {
+          "id": "gold",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "comp",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "egg",
+          "base": 2,
+          "minStage": 3
+        },
+        {
+          "id": "copy",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "evolve",
+          "base": 3,
+          "minStage": 3
+        },
+        {
+          "id": "level",
+          "base": 4,
+          "minStage": 3
+        },
+        {
+          "id": "battle",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "iron",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "mana",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "heal",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "gamble",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "pact",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "rolls",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "crest",
+          "base": 3,
+          "minStage": 3
+        },
+        {
+          "id": "fortune",
+          "base": 1,
+          "minStage": 2
+        }
+      ],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -8304,6 +8381,83 @@
     },
     {
       "id": "faction-wars/hyper",
+      "wisps": [
+        {
+          "id": "gold",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "comp",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "egg",
+          "base": 2,
+          "minStage": 3
+        },
+        {
+          "id": "copy",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "evolve",
+          "base": 3,
+          "minStage": 3
+        },
+        {
+          "id": "level",
+          "base": 4,
+          "minStage": 3
+        },
+        {
+          "id": "battle",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "iron",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "mana",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "heal",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "gamble",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "pact",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "rolls",
+          "base": 0,
+          "minStage": 2
+        },
+        {
+          "id": "crest",
+          "base": 3,
+          "minStage": 3
+        },
+        {
+          "id": "fortune",
+          "base": 1,
+          "minStage": 2
+        }
+      ],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -16591,6 +16745,7 @@
     },
     {
       "id": "fates/normal",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -24884,6 +25039,7 @@
     },
     {
       "id": "fates/hyper",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -33164,6 +33320,7 @@
     },
     {
       "id": "galaxies/normal",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -40656,6 +40813,7 @@
     },
     {
       "id": "galaxies/hyper",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -48144,6 +48302,7 @@
     },
     {
       "id": "gizmos/normal",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -56937,6 +57096,7 @@
     },
     {
       "id": "gizmos/hyper",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -65709,6 +65869,7 @@
     },
     {
       "id": "reckoning/normal",
+      "wisps": [],
       "reckoning": {
         "blessAt": 40,
         "blessGold": 4
@@ -76694,6 +76855,7 @@
     },
     {
       "id": "reckoning/hyper",
+      "wisps": [],
       "reckoning": {
         "blessAt": 8,
         "blessGold": 2
@@ -87666,6 +87828,7 @@
     },
     {
       "id": "dragonlands/normal",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -96007,6 +96170,7 @@
     },
     {
       "id": "dragonlands/hyper",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -104322,6 +104486,7 @@
     },
     {
       "id": "arcane/normal",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -112980,6 +113145,7 @@
     },
     {
       "id": "arcane/hyper",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -121624,6 +121790,7 @@
     },
     {
       "id": "coliseum/normal",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -130274,6 +130441,7 @@
     },
     {
       "id": "coliseum/hyper",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -138903,6 +139071,7 @@
     },
     {
       "id": "underlords/normal",
+      "wisps": [],
       "reckoning": null,
       "underlords": {
         "perStage": 5,
@@ -146798,6 +146967,7 @@
     },
     {
       "id": "underlords/hyper",
+      "wisps": [],
       "reckoning": null,
       "underlords": {
         "perStage": 5,
@@ -154689,6 +154859,7 @@
     },
     {
       "id": "autochess/normal",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -162158,6 +162329,7 @@
     },
     {
       "id": "autochess/hyper",
+      "wisps": [],
       "reckoning": null,
       "underlords": null,
       "gameStart": {
@@ -169605,6 +169777,7 @@
     },
     {
       "id": "underlords_ko/normal",
+      "wisps": [],
       "reckoning": null,
       "underlords": {
         "perStage": 2,
@@ -177627,6 +177800,7 @@
     },
     {
       "id": "underlords_ko/hyper",
+      "wisps": [],
       "reckoning": null,
       "underlords": {
         "perStage": 2,

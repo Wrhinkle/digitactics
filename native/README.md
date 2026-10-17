@@ -1453,3 +1453,23 @@ lifecycle installation. Full round/offer/AI/settlement dispatch and persistent
 combat projection still need to be composed into the production match controller.
 
 Validation: **161,004,628 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+### Faction Wars planning and Data Wisps
+
+`FactionWarsPlanning` implements augment pick rewards, income, recurring free
+rolls, Wisp selection/expiry, all 15 Wisp purchases and AI purchase decisions.
+Catalog schema 36 exports Wisp IDs, base costs and minimum stages. Copy/evolve
+Wisps preserve the original roster order, pool reservations, refunds and merge
+behavior; temporary attack speed/armor/mana rewards accumulate in `NextBuffs`.
+Human Wisp actions reject non-planning phases, while the AI hook follows the
+original independent purchase path and its short-circuit RNG consumption.
+
+2,784 original-engine traces pass 2,536,556 checks (`--faction-planning-only`).
+Every Wisp has successful purchases in both paces. Tests include missing Wisps,
+insufficient gold, full inventory/bench, depleted pools, board locks, modifier
+preservation, immediate merges, preferred Crests, boosted shop refreshes, augment
+unit rewards, repeated round-start selection/expiry, IDs and RNG continuity.
+The production controller still needs to register the handlers and expose the
+Wisp action in the native planning UI; combat projection must consume NextBuffs.
+
+Validation: the full native regression suite passed, including all 5,699 reference battles. The expanded full-bench Faction Wars fixture independently passed all 2,536,556 checks. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.

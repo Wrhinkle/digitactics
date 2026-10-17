@@ -89,7 +89,8 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   const lines = DT.SHOP_LINES.map(exportLine);
   const extraLines = Object.values(DT.LINE).filter(l => !l.shop).map(exportLine);
   const id = `${set.id}/${pace}`;
-  variants.push({ id, reckoning: set.id==='reckoning'?{blessAt:rules.blessAt,blessGold:rules.blessGold||0}:null, underlords: set.id.startsWith('underlords') ? {perStage:rules.ulPerStage||5,itemOdds:rules.ulItemOdds||{},goldCap:rules.ulGoldCap??null,lossStreakCap:rules.ulLossStreakCap??null,streakReset:rules.ulStreakReset??null,knockout:!!rules.ulKnockout}:null, gameStart: { gates: rules.gates || [[2,2,2]], galaxies: (DT.Sets.def(set.id).galaxies || []).map(g=>({id:g.id,weight:g.weight||1})), portals: set.id==='arcane'?DT.ArcaneInfo.PORTALS.map(p=>p.id):[] }, dragonShopCut: rules.drgShopCut || null, carousel: { tiersByStage: Array.from({length:5},(_,i)=>rules.carouselTiers(i+1)), itemPolicy: set.id==='reckoning'?'reckoning':typeof rules.carouselItems==='function'?'normal':rules.carouselItems, shadowChance: rules.shadowCarouselChance || 0 }, anomalyTags: set.id==='arcane'?Object.fromEntries(Object.entries(DT.ArcaneInfo.ANOM).map(([id,a])=>[id,a.tag])):{}, offerAi: Object.fromEntries([['augment',Object.values(DT.AUGMENT)],['power',Object.values(DT.POWER)]].flatMap(([kind, list])=>list.map(a=>[`${kind}:${a.id}`,{tier:a.tier||1,tags:a.tags||[],tamer:a.tamer||null}]))), economy, schedule, loss, recipes: DT.RECIPE, itemRoles: DT.ITEM_ROLE,
+  variants.push({ id, wisps: DT.WISPS.map(w=>({id:w.id,base:w.base,minStage:w.minStage})),
+    reckoning: set.id==='reckoning'?{blessAt:rules.blessAt,blessGold:rules.blessGold||0}:null, underlords: set.id.startsWith('underlords') ? {perStage:rules.ulPerStage||5,itemOdds:rules.ulItemOdds||{},goldCap:rules.ulGoldCap??null,lossStreakCap:rules.ulLossStreakCap??null,streakReset:rules.ulStreakReset??null,knockout:!!rules.ulKnockout}:null, gameStart: { gates: rules.gates || [[2,2,2]], galaxies: (DT.Sets.def(set.id).galaxies || []).map(g=>({id:g.id,weight:g.weight||1})), portals: set.id==='arcane'?DT.ArcaneInfo.PORTALS.map(p=>p.id):[] }, dragonShopCut: rules.drgShopCut || null, carousel: { tiersByStage: Array.from({length:5},(_,i)=>rules.carouselTiers(i+1)), itemPolicy: set.id==='reckoning'?'reckoning':typeof rules.carouselItems==='function'?'normal':rules.carouselItems, shadowChance: rules.shadowCarouselChance || 0 }, anomalyTags: set.id==='arcane'?Object.fromEntries(Object.entries(DT.ArcaneInfo.ANOM).map(([id,a])=>[id,a.tag])):{}, offerAi: Object.fromEntries([['augment',Object.values(DT.AUGMENT)],['power',Object.values(DT.POWER)]].flatMap(([kind, list])=>list.map(a=>[`${kind}:${a.id}`,{tier:a.tier||1,tags:a.tags||[],tamer:a.tamer||null}]))), economy, schedule, loss, recipes: DT.RECIPE, itemRoles: DT.ITEM_ROLE,
     coliseum: set.id === 'coliseum' ? { coreRounds: rules.coreRounds || [],
       powerUps: DT.Sets.def(set.id).powerUps.map(p => ({ id: p.id, tags: p.tags })),
     } : null,
@@ -154,7 +155,7 @@ const grids = [7, 14].map(cols => {
 });
 const out = path.join(__dirname, '../content');
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 35, variants }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'catalog.json'), JSON.stringify({ schemaVersion: 36, variants }, null, 2) + '\n');
 fs.mkdirSync(path.join(__dirname, '../tests/fixtures'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/parity.json'), JSON.stringify({ rng, rolls, grids }) + '\n');
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/unit-stats.json'), JSON.stringify(unitStats) + '\n');
