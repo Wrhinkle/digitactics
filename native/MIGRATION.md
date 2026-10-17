@@ -1127,3 +1127,25 @@ The handlers connect through `PlayerShop.RollHooks` and `PlanningShopCommands`;
 registration in the complete production match dispatcher remains pending.
 
 Validation: the self-contained Windows build and all packaged BRUTAL smoke checks pass.
+
+## Dragonlands shop integration
+
+Schema 32 exports the mode/pace-specific Dragon replacement level and chance.
+`DragonlandsShop` applies Doot odds before rolling, then consumes the pending
+Stargazer guarantee, applies Dragon replacements and sets Dragon prices/tags.
+Doot redistribution preserves fractional probabilities and the original choice of
+upper tiers. Stargazer eligibility uses the player's unboosted level and excludes
+the first rolled line; ordinary rolling still honors level boosts and Doots.
+Dragon replacements sample available non-Dragons of the same tier by remaining
+pool copies. All replacements use shared shop reservation ownership and respect
+that player's max-star exclusions. The persistent player state now holds Doots
+and the pending Stargazer flag for later round/combat hook integration.
+
+480 traces cover 5,760 refreshes and 1,662,478 original-engine comparisons across
+normal and hyper. Coverage includes fractional/large/zero Doot counts, boosted
+rolls, free and paid rerolls, exhausted Stargazer/non-Dragon pools, owned max-star
+units, prices, purchases, merges, sales, metadata, pool counts and RNG.
+Run with `--dragon-shops-only`. Production match-dispatcher registration and the
+hooks that award Doots/Stargazer guarantees remain pending.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.

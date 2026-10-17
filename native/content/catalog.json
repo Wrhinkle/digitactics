@@ -1,8 +1,9 @@
 {
-  "schemaVersion": 31,
+  "schemaVersion": 32,
   "variants": [
     {
       "id": "faction-wars/normal",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -8290,6 +8291,7 @@
     },
     {
       "id": "faction-wars/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -16563,6 +16565,7 @@
     },
     {
       "id": "fates/normal",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -24842,6 +24845,7 @@
     },
     {
       "id": "fates/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -33108,6 +33112,7 @@
     },
     {
       "id": "galaxies/normal",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -40525,6 +40530,7 @@
     },
     {
       "id": "galaxies/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -47938,6 +47944,7 @@
     },
     {
       "id": "gizmos/normal",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -56662,6 +56669,7 @@
     },
     {
       "id": "gizmos/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -65365,6 +65373,7 @@
     },
     {
       "id": "reckoning/normal",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -76333,6 +76342,7 @@
     },
     {
       "id": "reckoning/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -87288,6 +87298,10 @@
     },
     {
       "id": "dragonlands/normal",
+      "dragonShopCut": {
+        "level": 8,
+        "chance": 0.6
+      },
       "carousel": {
         "tiersByStage": [
           [
@@ -95612,6 +95626,7 @@
     },
     {
       "id": "dragonlands/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -103913,6 +103928,7 @@
     },
     {
       "id": "arcane/normal",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -112546,6 +112562,7 @@
     },
     {
       "id": "arcane/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -121165,6 +121182,7 @@
     },
     {
       "id": "coliseum/normal",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -129801,6 +129819,7 @@
     },
     {
       "id": "coliseum/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -138416,6 +138435,7 @@
     },
     {
       "id": "underlords/normal",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -146227,6 +146247,7 @@
     },
     {
       "id": "underlords/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -154034,6 +154055,7 @@
     },
     {
       "id": "autochess/normal",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -161489,6 +161511,7 @@
     },
     {
       "id": "autochess/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -168922,6 +168945,7 @@
     },
     {
       "id": "underlords_ko/normal",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [
@@ -176795,6 +176819,7 @@
     },
     {
       "id": "underlords_ko/hyper",
+      "dragonShopCut": null,
       "carousel": {
         "tiersByStage": [
           [

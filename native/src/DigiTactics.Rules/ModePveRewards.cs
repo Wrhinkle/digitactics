@@ -5,6 +5,8 @@ public sealed record ModeLootRules(string Policy, string[] Artifacts, string[] C
 public sealed class PlayerMechanics
 {
     public bool FatesPartnerSeen { get; set; }
+    public double DragonDoots { get; set; }
+    public bool DragonStarShop { get; set; }
     public ArcanePlanningState Arcane { get; } = new();
     public string[]? AutoChessLoot { get; set; }
     public bool? DragonTreasureWon { get; set; }
