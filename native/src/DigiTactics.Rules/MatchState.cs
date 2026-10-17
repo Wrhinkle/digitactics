@@ -56,7 +56,8 @@ public sealed class MatchState
 {
     private int uid;
     private readonly Dictionary<string, UnitLine> shopLines;
-    public MatchState(Ruleset rules, uint seed, IReadOnlyList<MatchSeat> seats, bool duos = false, int[][]? teams = null)
+    public MatchState(Ruleset rules, uint seed, IReadOnlyList<MatchSeat> seats, bool duos = false, int[][]? teams = null,
+        Action<MatchState>? initialize = null)
     {
         if (seats.Count == 0) throw new ArgumentException("A match needs players.", nameof(seats));
         Rules = rules; Random = new(seed); Pool = new(rules, Random);
@@ -66,6 +67,7 @@ public sealed class MatchState
         Teams = Duos ? Array.AsReadOnly(ValidTeams(teams).Select((ids, i) =>
             new MatchTeam(i, ids.Select(id => Players[id]).ToArray(), rules.Duo!.TeamHp)).ToArray()) : Array.Empty<MatchTeam>();
         foreach (var team in Teams) foreach (var player in team.Members) { player.Team = team.Id; player.Health = team.Health; }
+        initialize?.Invoke(this);
         foreach (var player in Players) player.Shop.Refresh();
     }
     public Ruleset Rules { get; }
@@ -78,6 +80,7 @@ public sealed class MatchState
     public bool PlayOut { get; set; }
     public int[]? GizmosGates { get; set; }
     public string? TreasureVariant { get; set; }
+    public string? Galaxy { get; set; }
     public PlanningUnit CreateUnit(string line, int stage) => new(AllocateId(), line, stage, []);
     internal int AllocateId() => ++uid;
 

@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest full regression: 149,797,814 assertions passed before the final shop metadata cleanup; the final changes passed the shop and planning regressions below.
+Latest verification: the native test suite passes 153,375,892 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -1149,3 +1149,27 @@ Run with `--dragon-shops-only`. Production match-dispatcher registration and the
 hooks that award Doots/Stargazer guarantees remain pending.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+## Shared match shop dispatcher
+
+`MatchShopRolls.Install` registers every player's roll handlers and keeps the
+current round available for forced Fates offers. It dispatches Gizmos High End
+Shopping and Golden Ticket, Auto Chess Recruiter, Underlords Higher Class of
+Criminal, Galaxies' server shop, Fates Partners and Dragonlands rolls in original
+augment/global/set order. Ownership is read on each roll so acquiring or removing
+an effect changes subsequent refreshes; duplicate globals retain their stacking.
+
+`MatchState` accepts an initializer after seats/teams exist and before initial
+shop rolls. This permits game-start mechanics and shop registration to share the
+correct RNG sequence without returning and rerolling already-created offers.
+The match also owns the selected Galaxy. Existing isolated callers keep their
+unmodified shop behavior when they omit initialization.
+
+44 reference traces across all 22 variants compare two players' starting shops
+and 7,040 later refreshes, passing 582,288 checks. They cover effect ownership
+changes, duplicate globals, free/paid rolls, level boosts, shop size persistence,
+Partner metadata, Doot/Star state, max-star exclusions, shared pool and RNG.
+Run with `--match-shop-rolls-only`. The full production match controller, game-start
+mechanics and the remaining non-shop dispatcher hooks still need integration.
+
+Validation: 153,375,892 full-suite checks and all packaged BRUTAL smoke checks passed.

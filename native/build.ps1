@@ -44,6 +44,7 @@ try {
     Invoke-Checked 'node' @('tools/export-shop-rolls.cjs')
     Invoke-Checked 'node' @('tools/export-fates-partners.cjs')
     Invoke-Checked 'node' @('tools/export-dragonlands-shops.cjs')
+    Invoke-Checked 'node' @('tools/export-match-shop-rolls.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
