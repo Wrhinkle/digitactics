@@ -1045,3 +1045,27 @@ Existing round regressions pass another 735,775 checks. The production controlle
 still needs to supply the remaining mode hooks and connect combat and presentation.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+## Galaxies persistent planning
+
+`GalaxiesPlanning` adds round-start trade/bigbang free rolls, Cluster's pool-backed
+upgrade at 1-2, Mirror copiers and Superdense/Big Bang team-size items. Bigger
+Galaxy's capacity bonus begins at stage 2. Cluster changes the existing unit's
+stage without a combine event and leaves subsequent max-star shop clearing to
+the round controller, preserving the original order.
+
+Shop commands now have Galaxies handlers for capped per-line Bounty Hunter
+purchase history and Salvage. Salvage runs after sold equipment is returned,
+processes the last matching inventory entry, preserves ingredient order, and
+respects component/emblem/category restrictions and inventory space. AI copier
+use scores eligible roster units once per attempt, uses stable first ties and
+runs the existing item command up to three times, including combat-lock behavior.
+
+1,920 reference cases across all 15 Galaxies, both paces and human/AI seats pass
+616,240 checks. Coverage includes scarce Cluster copies, full benches/inventories,
+duplicate salvage items, bounty caps, max-star shops, purchasing/selling, copier
+choices, ordered roster changes, inventory, shared pool and RNG. Run with
+`--galaxies-planning-only`. Post-combat rewards, combat-state transfer and production
+mode dispatcher registration remain pending.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
