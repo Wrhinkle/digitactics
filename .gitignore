@@ -18,3 +18,8 @@ desktop-steam/update-token.txt
 desktop-steam/update-config.json
 qa/
 *.log
+
+# Native BRUTAL build products
+native/**/bin/
+native/**/obj/
+native/artifacts/

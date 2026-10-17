@@ -1,0 +1,26 @@
+using System.Text.Json;
+
+namespace DigiTactics.Rules;
+
+public sealed record UnitLine(string Id, int Tier, int Price, int Copies, string[] Forms, string[] Traits, string Attribute);
+public sealed record Ruleset(string Id, string Name, string Pace, UnitLine[] Lines, int[] PoolSizes, int[]?[] Odds, int RerollCost, int ShopSize);
+public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
+{
+    public static ContentCatalog Load(string path)
+    {
+        var catalog = JsonSerializer.Deserialize<ContentCatalog>(File.ReadAllText(path),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+            ?? throw new InvalidDataException("Missing content catalog.");
+        if (catalog.SchemaVersion != 1 || catalog.Variants.Length == 0)
+            throw new InvalidDataException("Unsupported or empty content catalog.");
+        foreach (var rules in catalog.Variants)
+        {
+            if (rules.Lines.Select(l => l.Id).Distinct().Count() != rules.Lines.Length)
+                throw new InvalidDataException($"Duplicate unit IDs in {rules.Id}.");
+            foreach (var line in rules.Lines)
+                if (line.Tier <= 0 || line.Tier >= rules.PoolSizes.Length || line.Copies < 2 || line.Forms.Length < 3)
+                    throw new InvalidDataException($"Invalid unit definition: {rules.Id}/{line.Id}.");
+        }
+        return catalog;
+    }
+}
