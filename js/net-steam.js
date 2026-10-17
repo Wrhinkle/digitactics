@@ -29,7 +29,7 @@ import { logKey } from './net-firebase.js';
 import * as Guard from './net-guard.js';
 
 const GAME_KEY = 'digitactics';
-export const PROTO_VERSION = '6'; // 6: validated messages, replay-resistant intents, moderation
+export const PROTO_VERSION = '7'; // 7: pace-aware Auto Chess wild waves (deterministic combat rules)
 const HOST_GONE_MS = 6000;
 const CHUNK = 150; // log entries per snapshot message (Steam messages max out at 512 KB)
 const keyIndex = (k) => (k ? parseInt(String(k).slice(1), 10) : -1);

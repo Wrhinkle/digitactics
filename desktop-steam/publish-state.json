@@ -1,18 +1,18 @@
 {
-  "version": "1.0.10",
-  "date": "2026-10-16T21:56:44.175Z",
-  "sha256": "f276c8f7e4ebe4edc0a9507d6d85646b1c83f1b513ac4560cbdd1d32f2225660",
-  "size": 133629549,
+  "version": "1.0.11",
+  "date": "2026-10-17T00:23:15.124Z",
+  "sha256": "30a4080299b847acb11788bafcd9c103bdd83930532e0bd04745e8103a66a687",
+  "size": 133630801,
   "repo": "Wrhinkle/digitactics",
   "full": {
-    "version": "1.0.10",
-    "file": "DigiTactics-Steam-1.0.10.zip",
-    "size": 283055945,
-    "sha256": "bcf87aee0a1fb9468c6940f4ff2b47c5df68f7288f971c3333ee0b304194ee77",
-    "date": "2026-10-16T21:56:44.175Z"
+    "version": "1.0.11",
+    "file": "DigiTactics-Steam-1.0.11.zip",
+    "size": 283057197,
+    "sha256": "c0914e3bbe9fa702b7e630a1842bb33d69d2c8d833ea58f86aa254f9053977e1",
+    "date": "2026-10-17T00:23:15.124Z"
   },
   "rules": {
-    "proto": "6",
+    "proto": "7",
     "hashes": {
       "js/game.js": "b8d4ef0705aadf3c",
       "js/combat.js": "cdeb10879c03f3aa",
@@ -22,7 +22,7 @@
       "js/items.js": "ad42cc962275e773",
       "js/sets.js": "281b989412b74264",
       "js/net.js": "631af694736360a3",
-      "js/net-steam.js": "baa4425a5a8953b8",
+      "js/net-steam.js": "554a7ddf110e6b9f",
       "js/net-guard.js": "ae232b6e3d868647",
       "js/sets/_template-art.js": "65670715f0cbad8d",
       "js/sets/_template-mech.js": "470c012a1e79c874",
@@ -32,7 +32,7 @@
       "js/sets/arcane.js": "c453ca05546db3d5",
       "js/sets/autochess-art.js": "ce08b972c9273536",
       "js/sets/autochess-mech.js": "480639b31e311aee",
-      "js/sets/autochess.js": "b6ab8dc11e3f5d83",
+      "js/sets/autochess.js": "b2f1b47910e50115",
       "js/sets/coliseum-art.js": "041750cc6d33f0e1",
       "js/sets/coliseum-mech.js": "efef8a4945d7fc48",
       "js/sets/coliseum.js": "f355f0c15c1cf51c",

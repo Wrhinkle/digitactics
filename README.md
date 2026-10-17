@@ -10,7 +10,7 @@ A free, unofficial Digimon autobattler made for fun. Buy Digimon, combine copies
 
 ## Start playing
 
-1. Open **[the latest release](https://github.com/Wrhinkle/digitactics/releases/latest)**. Under **Assets**, download `DigiTactics-Steam-1.0.10.zip` (or the newer version's full zip). The automatic **Source code** downloads are for developers, not the ready-to-play game.
+1. Open **[the latest release](https://github.com/Wrhinkle/digitactics/releases/latest)**. Under **Assets**, download `DigiTactics-Steam-1.0.11.zip` (or the newer version's full zip). The automatic **Source code** downloads are for developers, not the ready-to-play game.
 2. Extract the entire zip to a writable folder. Keep all its files together and launch **`Digi-Tactics.exe`** inside the extracted folder. Do not run it from inside the zip.
 3. For online play, have the Steam desktop client running and signed in before launching. Solo works without an online lobby.
 4. Open **Play**, browse the mode carousel, choose your ruleset and pace, then start solo or open Multiplayer to create/join a lobby.

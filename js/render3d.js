@@ -607,10 +607,14 @@ class Renderer3D {
 
   // ---------- item bench ----------
   drawItems(p, ui) {
+    // The single-board shelf lies inside the combined battlefield. Hide it until planning returns.
+    this.itemsVisible = !this.wide;
     for (let i = 0; i < ITEM_SLOTS; i++) {
       const tok = this.itemTokens[i];
       const id = p.items[i];
       const ped = this.itemPeds[i];
+      ped.visible = this.itemsVisible;
+      if (!this.itemsVisible) { tok.visible = false; continue; }
       ped.material.emissive.set((ui.hoverItem === i && !ui.itemDrag) || (ui.itemDrag && ui.itemDrag.over === i) ? '#2b4a6b' : '#000000');
       if (!id) { tok.visible = false; continue; }
       if (tok.userData.id !== id) {
@@ -635,6 +639,7 @@ class Renderer3D {
 
   // which item token is under the cursor (screen-space, so the floating sprite is easy to grab)
   itemSlotAt(x, y, count) {
+    if (this.itemsVisible === false) return -1;
     let best = -1;
     let bd = 30;
     for (let i = 0; i < Math.min(count, ITEM_SLOTS); i++) {

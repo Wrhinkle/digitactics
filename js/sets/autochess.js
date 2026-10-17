@@ -184,8 +184,10 @@
   // Dota Auto Chess creep rounds: 1, 2, 3, 10, 15, 20, 25, 30, 35, 40, 45, 50 (here x-5 from stage 2, 5 rounds a stage).
   const roundNo = (stage, round) => (stage - 1) * 5 + round;
   const pve = {
-    wave(stage, round) {
-      const n = roundNo(stage, round);
+    wave(stage, round, game) {
+      // Hyper Roll ends each later stage at x-4, with the same creep progression as Normal's x-5.
+      // Without this mapping, every Hyper wild round after 1-3 fell through to the final boss wave.
+      const n = roundNo(stage, game?.pace === 'hyper' && stage > 1 ? 5 : round);
       if (n === 1) return [['ac_w_numemon', 0, 2, 4], ['ac_w_numemon', 0, 4, 4]];
       if (n === 2) return [['ac_w_numemon', 0, 2, 4], ['ac_w_numemon', 0, 4, 4], ['ac_w_gekomon', 0, 3, 6]];
       if (n === 3) return [['ac_w_numemon', 0, 1, 4], ['ac_w_numemon', 0, 3, 4], ['ac_w_numemon', 0, 5, 4], ['ac_w_gekomon', 0, 3, 6]];

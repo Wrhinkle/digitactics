@@ -13,7 +13,7 @@
 
 The current Windows integration uses **Spacewar App ID 480**, a development/sample integration. It is not a Digi-Tactics store listing. Online availability depends on that third-party service and may change. Steam's [Spacewar example documentation](https://partner.steamgames.com/doc/sdk/api/example) describes the sample application; it is not a service guarantee for this project.
 
-Rooms are filtered by the Digi-Tactics game marker and compatible multiplayer protocol. The shipped protocol is **6**. Matching protocol numbers indicate intended compatibility; using the same latest release is recommended. Friends-only and public visibility control room discovery. This is lobby-based multiplayer, with no skill ranking, global queue or project-operated account service.
+Rooms are filtered by the Digi-Tactics game marker and compatible multiplayer protocol. The shipped protocol is **7**. Update every player's game to the latest release to see and join the same rooms. Friends-only and public visibility control room discovery. This is lobby-based multiplayer, with no skill ranking, global queue or project-operated account service.
 
 Each normal lobby has eight seats. Duos groups those into four teams of two, with shared health, partner transfers and a combined battlefield. AI controls empty seats. A disconnected player's seat returns to AI after approximately 20 seconds; a returning player can take an available living seat. A remaining player can take over hosting after the old host disappears. These recovery paths do not guarantee every disconnected match can be recovered.
 

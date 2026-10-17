@@ -677,7 +677,7 @@
       else if (used && used.consumable && typeof res === 'string') toast(`${used.name} used`, 'info');
       else if (res && DT.ITEMS[res] && !DT.ITEMS[res].component && used && used.component) toast(`Made ${itemName(res)}`, 'info');
     } else if (a === 'offer' && res) {
-      toast(g.kind === 'augment' && DT.AUGMENT[res] ? `Augment: ${DT.AUGMENT[res].name}` : g.kind === 'power' && DT.POWER[res] ? `Tamer power: ${DT.POWER[res].name}` : DT.ITEMS[res] ? `Got ${itemName(res)}` : 'Picked', 'info');
+      toast(DT.AUGMENT[res] ? `Augment: ${DT.AUGMENT[res].name}` : DT.POWER[res] ? `Tamer power: ${DT.POWER[res].name}` : DT.ITEMS[res] ? `Got ${itemName(res)}` : 'Picked', 'info');
     } else if (a === 'orb' && res) {
       const bits = [];
       if (res.gold) bits.push(`+${res.gold}g`);
@@ -1421,7 +1421,8 @@
     const c = t.closest('[data-carousel]');
     if (c && game.carousel && game.carouselTurn() === p) return act('carousel', { i: Number(c.dataset.carousel) });
     const o = t.closest('[data-offer]');
-    if (o && p.offer) act('offer', { i: Number(o.dataset.offer), kind: p.offer.kind });
+    // The host already owns the offer kind. Only the choice index belongs on the wire.
+    if (o && p.offer) act('offer', { i: Number(o.dataset.offer) });
   });
 
   $('readyBtn').onclick = ready;

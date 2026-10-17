@@ -471,10 +471,6 @@
   "file": "dorumon_0.96044561.webp",
   "src": "models/files/7059b6386bbd4021a77f162618585d07.glb"
  },
- "dorumon:1": {
-  "file": "dorumon_1.870a0641.webp",
-  "src": "models/files/ef72384761d943c48e2890f125b13f0c.glb"
- },
  "dorumon:2": {
   "file": "dorumon_2.ed474166.webp",
   "src": "models/files/rip_dorugreymon.glb"
@@ -2534,5 +2530,9 @@
  "giz:OmniShoutmon": {
   "file": "giz_OmniShoutmon.e491ac59.webp",
   "src": "models/files/rip_cs_omnishoutmon.glb"
+ },
+ "dorumon:1": {
+  "file": "dorumon_1.c23d0a8f.webp",
+  "src": "models/files/ef72384761d943c48e2890f125b13f0c.glb"
  }
 }

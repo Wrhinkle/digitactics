@@ -42997,10 +42997,16 @@ void main() {
     }
     // ---------- item bench ----------
     drawItems(p, ui2) {
+      this.itemsVisible = !this.wide;
       for (let i = 0; i < ITEM_SLOTS; i++) {
         const tok = this.itemTokens[i];
         const id2 = p.items[i];
         const ped = this.itemPeds[i];
+        ped.visible = this.itemsVisible;
+        if (!this.itemsVisible) {
+          tok.visible = false;
+          continue;
+        }
         ped.material.emissive.set(ui2.hoverItem === i && !ui2.itemDrag || ui2.itemDrag && ui2.itemDrag.over === i ? "#2b4a6b" : "#000000");
         if (!id2) {
           tok.visible = false;
@@ -43027,6 +43033,7 @@ void main() {
     }
     // which item token is under the cursor (screen-space, so the floating sprite is easy to grab)
     itemSlotAt(x, y, count2) {
+      if (this.itemsVisible === false) return -1;
       let best = -1;
       let bd = 30;
       for (let i = 0; i < Math.min(count2, ITEM_SLOTS); i++) {
@@ -50929,7 +50936,7 @@ void main() {
         else if (used && used.consumable && typeof res === "string") toast3(`${used.name} used`, "info");
         else if (res && DT29.ITEMS[res] && !DT29.ITEMS[res].component && used && used.component) toast3(`Made ${itemName(res)}`, "info");
       } else if (a === "offer" && res) {
-        toast3(g2.kind === "augment" && DT29.AUGMENT[res] ? `Augment: ${DT29.AUGMENT[res].name}` : g2.kind === "power" && DT29.POWER[res] ? `Tamer power: ${DT29.POWER[res].name}` : DT29.ITEMS[res] ? `Got ${itemName(res)}` : "Picked", "info");
+        toast3(DT29.AUGMENT[res] ? `Augment: ${DT29.AUGMENT[res].name}` : DT29.POWER[res] ? `Tamer power: ${DT29.POWER[res].name}` : DT29.ITEMS[res] ? `Got ${itemName(res)}` : "Picked", "info");
       } else if (a === "orb" && res) {
         const bits = [];
         if (res.gold) bits.push(`+${res.gold}g`);
@@ -51689,7 +51696,7 @@ void main() {
       const c = t.closest("[data-carousel]");
       if (c && game7.carousel && game7.carouselTurn() === p) return act2("carousel", { i: Number(c.dataset.carousel) });
       const o = t.closest("[data-offer]");
-      if (o && p.offer) act2("offer", { i: Number(o.dataset.offer), kind: p.offer.kind });
+      if (o && p.offer) act2("offer", { i: Number(o.dataset.offer) });
     });
     $7("readyBtn").onclick = ready2;
     $7("players").addEventListener("click", (ev) => {
@@ -52248,7 +52255,7 @@ void main() {
 
   // js/net-steam.js
   var GAME_KEY = "digitactics";
-  var PROTO_VERSION = "6";
+  var PROTO_VERSION = "7";
   var HOST_GONE_MS = 6e3;
   var CHUNK2 = 150;
   var keyIndex = (k) => k ? parseInt(String(k).slice(1), 10) : -1;
