@@ -313,14 +313,25 @@ reads GLB chunks and quantized/interleaved accessors, including skin matrices an
 animation channels. First/last elements of every accessor are checked using the
 vendored Three.js BufferAttribute implementation: 992,532 component values and
 1,335,036 total model checks. Packaged smoke loads and verifies all 718 payloads.
-This does not establish rendering parity: WebP upload, material handling, skeletal
-playback, authored fallback motions and model normalization remain unfinished.
-The source Andiramon and ShineGreymon imports contain nonfinite animation values
-(201 sampled components); conversion preserves these explicitly. The animation
-player must handle them before production acceptance, rather than feeding them
-into bone transforms.
+Native skeletal sampling now loads node hierarchy/rest transforms, skins and clips;
+per-instance poses evaluate translation/scale and quaternion tracks, loop/clamp time,
+compose world transforms and calculate mesh-relative skin palettes. Double-precision
+hierarchy math and the original quaternion interpolation behavior avoid instability
+in tiny-scale imported rigs. Zero-scale hidden attachments receive zero palettes.
+The fixture adapter uses the vendored Three.js AnimationMixer/Matrix4 on all 718 rigs,
+sampling selected node/joint transforms at four times per authored clip plus rest
+poses. It supplies 2,609,044 reference and repair checks. All current source tracks
+are LINEAR; STEP is supported, while CUBICSPLINE and morph targets require conversion.
+Andiramon has one nonfinite animation clip, and ShineGreymon has four nonfinite
+inverse binds (the earlier 201-component finding included both). The runtime holds
+the previous valid key/bind pose for 35 corrupt keys and reconstructs four inverse
+binds from rest-pose joint transforms. Invalid original transforms are excluded from
+reference equality; repaired instances instead undergo finite world/palette checks
+throughout every clip. Packaged smoke now constructs every rig too.
+This does not establish rendering parity: WebP upload, material handling, animation
+blending, authored fallback motions, normalization and GPU drawing remain unfinished.
 
-Latest verification: the native test suite passes 118,457,345 assertions.
+Latest verification: the native test suite passes 121,066,389 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

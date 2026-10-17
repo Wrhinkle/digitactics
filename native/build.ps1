@@ -12,6 +12,7 @@ Push-Location $nativeRoot
 try {
     Invoke-Checked 'node' @('tools/export-content.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
+    Invoke-Checked 'node' @('tools/export-rig-fixtures.cjs')
     Invoke-Checked 'node' @('tools/export-damage-fixtures.cjs')
     Invoke-Checked 'node' @('tools/export-combat-fixtures.cjs')
     Invoke-Checked 'node' @('tools/export-event-fixtures.cjs')

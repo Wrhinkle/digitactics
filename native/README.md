@@ -49,8 +49,10 @@ The asset exporter decodes meshopt at build time and packs 718 embedded GLB mode
 (about 136 MB), preserving textures, skins, animations, per-model options and credits.
 All 5,232 unit forms resolve through the original model mappings. Native loading is
 checked against 992,532 sampled Three.js accessor values, and the packaged executable
-verifies every model payload. WebP decoding, GPU rendering, animation playback and
-production screens remain unfinished.
+verifies every model payload and rig. Native skeletal sampling now handles node
+hierarchies, linear/step tracks, quaternion interpolation and skin matrices, with
+2,609,044 reference/repair checks across 718 rigs. WebP decoding, GPU rendering,
+animation blending/fallback motions and production screens remain unfinished.
 
 ## Boundaries
 

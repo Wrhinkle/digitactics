@@ -113,6 +113,7 @@ foreach (var trace in damageFixtures.RootElement.EnumerateArray())
     Check(actual.ManaAfter == expected.GetProperty("manaAfter").GetDouble(), "Damage mana gain mismatch.");
 }
 assertions += ModelAssetParity.Run(root);
+assertions += RigParity.Run(root);
 assertions += CombatSceneParity.Run(root, catalog);
 assertions += CombatEventParity.Run(root, catalog);
 assertions += await CombatParity.Run(root, catalog);

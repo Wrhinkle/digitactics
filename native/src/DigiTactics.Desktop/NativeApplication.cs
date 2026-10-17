@@ -20,8 +20,9 @@ public static class NativeApplication
                 using var model = models.Open(Path.Combine(AppContext.BaseDirectory, "assets"), asset);
                 if (model.Root.GetProperty("asset"u8).GetProperty("version"u8).GetString() != "2.0")
                     throw new InvalidDataException($"Unsupported packaged model: {asset}");
+                _ = GltfRig.Load(model);
             }
-            Console.WriteLine($"Native asset smoke passed: {models.Assets.Count} verified model payloads.");
+            Console.WriteLine($"Native asset smoke passed: {models.Assets.Count} verified model payloads and rigs.");
         }
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
