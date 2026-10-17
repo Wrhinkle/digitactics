@@ -493,6 +493,36 @@ for (const [id, bp] of gizmoTraits) for (let level = 0; level < bp.length; level
 }
 
 
+DT.Sets.activate('gizmos', 'hyper');
+const gizmoAugments = Object.entries(DT.AUGMENT).filter(([id,a]) => id.startsWith('giz_') && Object.keys(a.hooks || {}).some(k=>DT.Sets.COMBAT_HOOKS.includes(k) || k === 'onCountTraits') || id === 'giz_a_injection').map(([id])=>id);
+for (const augment of gizmoAugments) for (const duos of [false,true]) for (const stage of [0,2]) {
+  const pace = duos ? 'normal' : 'hyper', cols = duos ? 14 : 7;
+  DT.Sets.activate('gizmos',pace);
+  const seed=210000+fixtures.length,pick=DT.makeRng(seed);
+  function side(team) {
+    const parts=[0,1].map(part=>{
+      const owner=team*2+part;
+      const required = {giz_a_runic:'ARC',giz_a_overload:'XA',giz_a_sosmall:'PET',giz_a_cutthroat:'ASN',giz_a_shrug:'BRU',giz_a_spellblade:'ARC',giz_a_stopwatch:'CLOCK',giz_a_smoke:'ASN',giz_a_injection:'XA',giz_a_reserves:'PIR'}[augment] || 'JUNK';
+      const chosen=DT.SHOP_LINES.filter(l=>l.traits.includes(required)).slice(0,4);
+      while(chosen.length<6) chosen.push(DT.SHOP_LINES[Math.floor(pick()*DT.SHOP_LINES.length)]);
+      return {owner,mech:{goldStart:part===0?12:80},augs:part===0?[augment,'duo_tag']:[augment,'duo_sync'],units:chosen.map((l,i)=>({line:l.id,stage,c:part*7+i,r:4+i%3,owner,
+        items:i%3===0?[]:Array.from({length:i%3},()=>gizmosHookItems[Math.floor(pick()*gizmosHookItems.length)])}))};
+    });
+    return duos ? {parts,augs:parts.flatMap(p=>p.augs),units:parts.flatMap(p=>p.units),cols,counts:DT.Duos.teamCounts(parts)} : {units:parts[0].units,augs:[augment],cols};
+  }
+  const a=side(0),b=side(1);
+  a.mech={goldStart:stage===0?12:80};b.mech={goldStart:20};
+  const cb=new DT.Combat(a,b,{seed});
+  const samples=[{tick:0,units:snapshots(cb)}];let tick=0;
+  while(!cb.done&&tick<2000){cb.step();tick++;if(tick%15===0||cb.done)samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.units.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,owner:u.owner,items:u.items}));
+  const effects=a=>duos?{augments:a.augs,parts:a.parts.map(p=>({owner:p.owner,augments:p.augs,gizmos:p.mech}))}:{augments:a.augs};
+  fixtures.push({name:`gizmos-augment/${augment}/${duos}/${stage}`,variant:`gizmos/${pace}`,seed,cols,duos,
+    sideA:convert(a),sideB:convert(b),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,traitCounts:cb.traitCounts,
+    setup:{sideA:{...effects(a),gizmos:a.mech},sideB:{...effects(b),gizmos:b.mech}}});
+}
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

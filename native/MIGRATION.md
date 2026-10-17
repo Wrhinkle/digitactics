@@ -105,9 +105,14 @@ The current executable is a migration workbench. It must not replace the public 
   Transformer modes and persisted Glutton stat inputs. Another 154 reference
   battles cover two formations with component and mixed hook-item loadouts.
   Catalog schema 8 preserves component categories and recipe order for temporary
-  upgrades. Digivice upgrades, feeding commands and planning rules remain pending.
+  upgrades. All 37 combat Digivice upgrades, Injection's trait interaction, Booster/Burst
+  counting, Binary Airdrop and Woodland copies are now implemented. Another 160
+  reference battles cover Solo/Duos at two star levels with merged team upgrades
+  and owner-specific Reserves gold inputs. Shared Shield/Rally casts now dispatch
+  shield hooks, fixing First Aid and Censer interactions. Upgrade picks, grants,
+  feeding commands and planning rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 12,200,973 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 18,160,656 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

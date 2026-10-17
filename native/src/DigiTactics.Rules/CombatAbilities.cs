@@ -30,7 +30,7 @@ public sealed partial class CombatSimulation
                 { StunUnit(enemy, 1); AbilityDamage(unit, enemy, value); }
                 break;
             case "shield":
-                unit.Shield += value; Emit("shield", unit);
+                AddShield(unit, value); Emit("shield", unit);
                 foreach (var enemy in EnemiesNear(unit, unit.Cell, 2)) enemy.Target = unit;
                 break;
             case "heal":
@@ -57,7 +57,7 @@ public sealed partial class CombatSimulation
             case "rally":
                 foreach (var ally in units.Where(e => e.Alive && e.Team == unit.Team).OrderBy(e => e.Health / e.MaxHealth).ThenBy(e => e.Id)
                     .Take(unit.Stage >= 2 ? 3 : 2).ToArray())
-                { ally.Shield += value; ally.SpeedBuffs.Add(new(0.3, Time + 4)); Emit("shield", ally); }
+                { AddShield(ally, value); ally.SpeedBuffs.Add(new(0.3, Time + 4)); Emit("shield", ally); }
                 break;
             case "execute": AbilityDamage(unit, target, target.Health < target.MaxHealth * 0.5 ? value * 2 : value); break;
             case "dash":

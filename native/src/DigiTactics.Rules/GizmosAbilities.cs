@@ -4,7 +4,8 @@ internal sealed class GizmosUnitState
 {
     internal double VisionsUntil, Ward, FrostUntil, Shroud;
     internal double? ArrestBreak;
-    internal bool Backup, Noir, Melee;
+    internal bool Backup, Noir, Melee, Cut, Spellblade, Smoke;
+    internal double CenserUntil;
     internal int Antibody;
     internal double CyberUntil;
 }
@@ -46,9 +47,15 @@ public sealed partial class CombatSimulation
 
     private void BindGizmos(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
-        foreach (var side in new[] { setup.SideA, setup.SideB })
-            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
-                throw new NotSupportedException("Gizmos augments have not been migrated yet.");
+        for (int team = 0; team < 2; team++)
+        {
+            var side = team == 0 ? setup.SideA : setup.SideB;
+            var entries = team == 0 ? sideA : sideB;
+            var counts = side.NoTraits ? [] : side.Counts ?? (side.Parts is { } parts ? TraitRules.TeamCount(rules, entries, parts) : TraitRules.Count(rules, entries, side.Augments));
+            int active = counts.Count(p => rules.Traits.Any(t => t.Id == p.Key && TraitRules.Level(t, p.Value) > 0));
+            if (side.Parts is { } partners) foreach (var part in partners) BindGizmosAugments(team, part.Augments ?? [], active, part.Gizmos, part.Owner, part.PartnerTop);
+            else BindGizmosAugments(team, side.Augments ?? [], active, side.Gizmos, partnerTop: side.PartnerTop);
+        }
         BindGizmosTraits(sideA, sideB, setup);
         foreach (var unit in units) BindGizmosItems(unit);
         BindSummonedItems = BindGizmosItems;

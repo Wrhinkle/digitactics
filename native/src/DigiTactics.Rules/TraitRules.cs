@@ -1,11 +1,12 @@
 namespace DigiTactics.Rules;
 
+public sealed record GizmosState(double GoldStart = 0);
 public sealed record GalaxiesState(Dictionary<string, int>? Bounty = null);
 public sealed record FatesState(int Deva = 0, string? Fallen = null, double Blossom = 0);
 public sealed record CombatBuffs(double AttackSpeed = 0, double Armor = 0, double Mana = 0);
-public sealed record CombatPartner(int Owner, string[]? Augments = null, CombatBuffs? Buffs = null, double PartnerTop = 0);
+public sealed record CombatPartner(int Owner, string[]? Augments = null, CombatBuffs? Buffs = null, double PartnerTop = 0, GizmosState? Gizmos = null);
 public sealed record CombatSideEffects(bool NoTraits = false, Dictionary<string, int>? Counts = null, string[]? Augments = null,
-    CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0, FatesState? Fates = null, GalaxiesState? Galaxies = null);
+    CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0, FatesState? Fates = null, GalaxiesState? Galaxies = null, GizmosState? Gizmos = null);
 public sealed record CombatSetup(CombatSideEffects SideA, CombatSideEffects SideB, string? Galaxy = null, string? Mutation = null);
 
 public static class TraitRules
@@ -89,6 +90,17 @@ public static class TraitRules
                     var definition = rules.Traits.Single(t => t.Id == trait);
                     if (definition.Kind == "family" && counts[trait] >= definition.Breakpoints[0]) counts[trait]++;
                 }
+            if (rules.Id.StartsWith("gizmos/", StringComparison.Ordinal))
+            {
+                if (augment == "giz_a_booster")
+                {
+                    string? best = null;
+                    foreach (var key in counts.Keys)
+                        if (rules.Traits.Any(t => t.Id == key && t.Kind == "origin") && (best is null || counts[key] > counts[best])) best = key;
+                    if (best is not null) counts[best]++;
+                }
+                if (augment == "giz_a_burst") foreach (var key in counts.Keys.ToArray()) if (counts[key] >= 2) counts[key]++;
+            }
             if (augment == "gal_a_stars" && rules.Id.StartsWith("galaxies/", StringComparison.Ordinal))
                 foreach (var trait in counts.Keys.ToArray())
                 {

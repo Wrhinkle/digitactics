@@ -98,7 +98,9 @@ to be a Vulkan renderer or the final game UI.
   standard/overclocked held-item hook definitions, verified by 76 reference battles.
   All 27 traits and 63 breakpoints, Mutation variants, Junkyard conversions,
   Innovator summons and Glutton combat inputs pass 154 more reference battles.
-  Upgrades, feeding commands and planning rules remain pending.
+  All 37 combat upgrades, Injection and Booster/Burst counting pass another 160
+  Solo/Duos battles, including temporary items and Woodland copies.
+  Upgrade picks/grants, feeding commands and planning rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.
