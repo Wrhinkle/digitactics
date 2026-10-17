@@ -11,6 +11,7 @@ public sealed partial class CombatSimulation
     private void Cast(CombatUnit unit, CombatUnit target)
     {
         unit.Mana = 0; unit.CastLock = 0.35;
+        double castPower = unit.AbilityPower;
         double value = UnitValues.AbilityValue(unit.Line, unit.Entry.Stage) * unit.AbilityPower / 100;
         int radius = unit.Line.Ability.Radius == 0 ? 1 : unit.Line.Ability.Radius;
         Emit("cast", unit);
@@ -81,6 +82,8 @@ public sealed partial class CombatSimulation
                 break;
             default: throw new NotSupportedException(unit.Line.Ability.Kind);
         }
+        if (Hooks.Has(CombatHook.Cast, unit, CombatHook.AnyCast))
+            Hooks.Fire(CombatHook.Cast, unit, new() { Target = target, Value = UnitValues.AbilityValue(unit.Line, unit.Entry.Stage) * castPower / 100 }, CombatHook.AnyCast);
     }
 
     private List<CombatUnit> LineTargets(CombatUnit unit, CombatUnit target)

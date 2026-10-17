@@ -12,10 +12,13 @@ internal static class CombatParity
         {
             string name = trace.GetProperty("name").GetString()!;
             var rules = catalog.Variants.Single(v => v.Id == trace.GetProperty("variant").GetString());
+            bool hookProbe = trace.TryGetProperty("hookProbe", out var probe) && probe.GetBoolean();
+            bool duos = trace.TryGetProperty("duos", out var duo) && duo.GetBoolean();
+            var hookLog = new List<string>();
             var combat = new CombatSimulation(rules, trace.GetProperty("sideA").Deserialize<CombatEntry[]>(options)!,
                 trace.GetProperty("sideB").Deserialize<CombatEntry[]>(options)!, trace.GetProperty("seed").GetUInt32(), trace.GetProperty("cols").GetInt32(),
                 trace.TryGetProperty("overtime", out var ot) ? ot.GetDouble() : 30,
-                trace.TryGetProperty("timeLimit", out var limit) ? limit.GetDouble() : 45);
+                trace.TryGetProperty("timeLimit", out var limit) ? limit.GetDouble() : 45, hookProbe ? registry => HookProbe.Configure(registry, duos, hookLog) : null, duos);
             int tick = 0;
             foreach (var sample in trace.GetProperty("samples").EnumerateArray())
             {
@@ -50,6 +53,16 @@ internal static class CombatParity
             count++;
             if (!combat.Done || combat.Winner != trace.GetProperty("winner").GetInt32() || combat.Time != trace.GetProperty("time").GetDouble())
                 throw new InvalidOperationException($"Combat {name}: outcome/time mismatch.");
+            if (hookProbe)
+            {
+                var expectedLog = trace.GetProperty("hookLog").EnumerateArray().Select(x => x.GetString()!).ToArray();
+                count++;
+                if (!hookLog.SequenceEqual(expectedLog))
+                {
+                    int mismatch = Enumerable.Range(0, Math.Min(hookLog.Count, expectedLog.Length)).FirstOrDefault(i => hookLog[i] != expectedLog[i], -1);
+                    throw new InvalidOperationException($"Hook order {name}: expected {expectedLog.Length}, actual {hookLog.Count}; first mismatch {mismatch}: {(mismatch < 0 ? "length" : expectedLog[mismatch] + " / " + hookLog[mismatch])}");
+                }
+            }
             double completedTime = combat.Time;
             combat.Step();
             count++;

@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { load } = require('../../tools/headless.cjs');
 const DT = load({ strict: true });
+const originalHooks = Object.fromEntries(['buildHooks', 'fireTeam', 'fireGlobal', 'has'].map(name => [name, DT.Combat.prototype[name]]));
 for (const name of ['buildHooks', 'fireTeam', 'fireGlobal']) DT.Combat.prototype[name] = function () {};
 DT.Combat.prototype.has = () => false;
 const kinds = ['nuke', 'aoe', 'stun', 'slam', 'shield', 'heal', 'barrage', 'drain', 'weaken', 'rally', 'line', 'execute', 'chain', 'dash'];
@@ -90,6 +91,60 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) fo
   const available = DT.CORE_ITEMS.length ? DT.CORE_ITEMS : Object.keys(DT.ITEMS);
   const loadouts = Array.from({ length: 4 }, () => Array.from({ length: 3 }, () => available[Math.floor(pick() * available.length)]));
   equippedBattle(set.id, pace, loadouts, `mixed/${set.id}/${pace}/${stage}`, stage, stage === 2 ? 14 : 7);
+}
+// Real legacy dispatch with controlled hook definitions: source ordering, owner filtering,
+// recursion, timed callbacks and mutable damage events are compared alongside fight state.
+Object.assign(DT.Combat.prototype, originalHooks);
+for (const duos of [false, true]) {
+  DT.Sets.activate('faction-wars', 'hyper');
+  const log = [];
+  const names = [...DT.Sets.COMBAT_HOOKS, ...DT.Sets.ANY_HOOKS];
+  function hooks(id) {
+    return Object.fromEntries(names.map(name => [name, { order: id === 'probe_early' ? -2 : 0, fn(c, e) {
+      log.push(`${id}:${c.team ?? '-'}:${name}:${e.unit ? e.unit.id : '-'}`);
+      if (name === 'onCombatStart') {
+        for (const u of c.mine) {
+          c.buff(u, 'armor', 2, 0.4);
+          c.after(0.1, () => c.buff(u, 'ad', 3, 0.4));
+          c.after(0.2, () => c.heal(u, 5), u);
+        }
+      }
+      if (name === 'onCombatReady' && id === 'probe_item') c.shield(c.unit, 10);
+      if (name === 'onShield' && id === 'probe_trait') c.shield(e.unit, 1);
+      if (name === 'onBeforeDamage') { e.mult *= 1.02; c.buff(e.target, 'armor', 0.5, 0.1); }
+      if (name === 'onBeforeDamageTaken') { e.mult *= 0.99; e.dr += 0.01; c.buff(e.unit, 'armor', 0.25, 0.1); c.buff(e.unit, 'dr', 0.001, 0.1); }
+      if (name === 'onAttack' && id === 'probe_power') c.buff(e.unit, 'as', 0.1, 0.2);
+      if (name === 'onCast' && id === 'probe_augment' && !c.state.recast) { c.state.recast = true; c.castAgain(e.unit, e.target); }
+      if (name === 'onDamageTaken' && id === 'probe_global') c.heal(e.unit, 3, true);
+      if (name === 'onLethal' && id === 'probe_item' && !c.state.saved) { c.state.saved = true; c.heal(e.unit, e.unit.maxHp * 2); }
+    } }]));
+  }
+  DT.TRAITS.probe_trait = { bp: [1], lv: [1], hooks: hooks('probe_trait') };
+  DT.AUGMENT.probe_augment = { hooks: hooks('probe_augment') };
+  DT.AUGMENT.probe_early = { hooks: hooks('probe_early') };
+  DT.POWER.probe_power = { id: 'probe_power', hooks: hooks('probe_power') };
+  DT.ITEMS.probe_global = { stats: {}, p: {}, hooks: hooks('probe_global') };
+  DT.ITEMS.probe_item = { stats: {}, p: {}, hooks: hooks('probe_item') };
+  const oldSetHooks = DT.SET.hooks;
+  DT.SET.hooks = hooks('probe_mechanic');
+  const cols = duos ? 14 : 7;
+  const entries = () => [0, 1].map(i => ({ line: DT.SHOP_LINES.find(l => l.type === (i ? 'heal' : 'nuke')).id,
+    stage: 0, c: 2 + i, r: 4, owner: i, items: ['probe_item', 'probe_item'] }));
+  function side(units) {
+    const part = owner => ({ owner, augs: ['probe_augment', 'probe_early'], power: { id: 'probe_power' }, globals: ['probe_global'] });
+    return { units, cols, counts: { probe_trait: 1 }, ...part(0), ...(duos ? { parts: [part(0), part(1)] } : {}) };
+  }
+  const sideA = entries(), sideB = entries();
+  const cb = new DT.Combat(side(sideA), side(sideB), { seed: 432 });
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, owner: u.owner, items: u.items }));
+  fixtures.push({ name: `hooks/${duos}`, variant: 'faction-wars/hyper', seed: 432, cols, sideA: convert(sideA), sideB: convert(sideB),
+    samples, tick, winner: cb.winner, time: cb.t, hookProbe: true, duos, hookLog: log });
+  const covered = new Set(log.map(entry => entry.split(':')[2]));
+  for (const name of names) if (!covered.has(name)) throw new Error(`Hook reference never exercised ${name}`);
+  DT.SET.hooks = oldSetHooks;
 }
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/combat.json'), JSON.stringify(fixtures) + '\n');
 console.log(`Exported ${fixtures.length} shared-kernel reference battles covering ${kinds.length} ability types.`);

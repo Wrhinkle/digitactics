@@ -57,13 +57,17 @@ to be a Vulkan renderer or the final game UI.
 - 3,996 unit-form reference cases for stats, ability scaling and selling prices.
 - 1,200 damage reference cases covering mitigation, shields, attribute advantages,
   amplifier ordering, burn mana suppression and hook-supplied modifiers.
-  Full combat event dispatch and set hooks remain unported.
+  Production set hook definitions remain unported.
 - 88 shared-kernel reference battles exercise all 14 shared abilities, all star
   levels, Solo/Duos widths, empty sides, overlapping placements and time limits.
   Equipment is disabled for those isolated comparisons. Another 116 battles cover
   every shared completed item at one and three stars and mixed loadouts across
   every set/pace, including generated Thief Glove items. All 204 battles disable
   set/item hooks; these must still be ported and verified.
+- Two hook-enabled reference battles verify all 23 callback types, priority/source
+  ordering, Duos ownership, nested callbacks, timers, temporary buffs and damage-stage
+  mutations. Controlled hook definitions exercise the real legacy dispatcher; native
+  production traits/items/augments/powers/mechanics are still pending.
 - 15,680 Solo/Duos hex-distance comparisons and 200 movement/target-selection
   traces, including occupied cells and deterministic tie-breaking.
 - Headless native renderer smoke mode and self-contained Windows packaging.

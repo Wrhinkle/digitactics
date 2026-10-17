@@ -18,13 +18,16 @@ public sealed partial class CombatSimulation
     public bool Done { get; private set; }
     public int? Winner { get; private set; }
     public int Columns => grid.Columns;
+    public CombatHookRegistry Hooks { get; }
+    private bool ended;
 
     public CombatSimulation(Ruleset rules, CombatEntry[] sideA, CombatEntry[] sideB, uint seed,
-        int columns = 7, double overtimeStart = 30, double timeLimit = 45)
+        int columns = 7, double overtimeStart = 30, double timeLimit = 45, Action<CombatHookRegistry>? configureHooks = null, bool duos = false)
     {
         grid = new(columns, 8); occupancy = new CombatUnit?[grid.Count]; occupied = new bool[grid.Count];
         random = new(seed); this.overtimeStart = overtimeStart; this.timeLimit = timeLimit;
         Units = units.AsReadOnly(); Events = events.AsReadOnly();
+        Hooks = new(this, duos);
         var lines = rules.Lines.ToDictionary(l => l.Id);
         var items = rules.Items.ToDictionary(i => i.Id);
         var thiefPool = rules.CoreItems.Where(id => !items[id].Passives.TryGetValue("thief", out var flag) || !flag.GetBoolean()).ToArray();
@@ -40,6 +43,11 @@ public sealed partial class CombatSimulation
             unit.Equipment.Apply(unit, items, thiefPool, random);
             units.Add(unit); occupancy[index] = unit;
         }
+        configureHooks?.Invoke(Hooks);
+        for (int team = 0; team < 2; team++) Hooks.FireTeam(CombatHook.CombatStart, team, new());
+        Hooks.FireGlobal(CombatHook.CombatStart, new());
+        for (int team = 0; team < 2; team++) Hooks.FireTeam(CombatHook.CombatReady, team, new());
+        Hooks.FireGlobal(CombatHook.CombatReady, new());
         foreach (var unit in units)
         {
             if (unit.Equipment.Crown) unit.Shield += unit.MaxHealth * 0.25;
@@ -53,18 +61,29 @@ public sealed partial class CombatSimulation
         if (Done) return;
         Time += Tick;
         foreach (var unit in units) if (unit.Alive) Update(unit);
+        for (int team = 0; team < 2; team++) Hooks.FireTeam(CombatHook.Tick, team, new() { DeltaTime = Tick });
+        Hooks.FireGlobal(CombatHook.Tick, new() { DeltaTime = Tick });
+        RunTimers(timers);
         CheckEnd();
     }
 
     private void CheckEnd()
     {
         bool a = units.Any(u => u.Alive && u.Team == 0), b = units.Any(u => u.Alive && u.Team == 1);
-        if (!a || !b || Time >= timeLimit) { Done = true; Winner = a && !b ? 0 : b && !a ? 1 : -1; }
+        if (!a || !b || Time >= timeLimit)
+        {
+            Done = true; Winner = a && !b ? 0 : b && !a ? 1 : -1;
+            if (ended) return;
+            ended = true;
+            for (int team = 0; team < 2; team++) Hooks.FireTeam(CombatHook.CombatEnd, team, new() { Winner = Winner });
+            Hooks.FireGlobal(CombatHook.CombatEnd, new() { Winner = Winner });
+        }
     }
 
     private void Update(CombatUnit unit)
     {
         unit.SpeedBuffs.RemoveAll(b => b.Until <= Time);
+        ExpireBuffs(unit);
         if (unit.Equipment.Regen != 0) Heal(unit, unit.MaxHealth * unit.Equipment.Regen * Tick, true);
         Passives(unit);
         if (!unit.Alive) return;
@@ -82,7 +101,7 @@ public sealed partial class CombatSimulation
         }
         if (target is not null)
         {
-            if (unit.MaxMana > 0 && unit.Mana >= unit.MaxMana) { Cast(unit, target); return; }
+            if (unit.MaxMana > 0 && unit.Mana >= unit.MaxMana && unit.SilenceUntil <= Time) { Cast(unit, target); return; }
             if (unit.AttackCooldown <= 0) Attack(unit, target);
         }
         else Move(unit);
@@ -124,6 +143,7 @@ public sealed partial class CombatSimulation
         var p = unit.Equipment;
         unit.AttackCooldown = 1 / (unit.AttackSpeed * Math.Min(1 + p.Rage * unit.RageStacks + unit.SpeedBuffs.Sum(b => b.Value), 4));
         Emit("attack", unit, target);
+        if (unit.Blind) { unit.Blind = false; Emit("miss", unit); return; }
         unit.Mana = Math.Min(unit.MaxMana, unit.Mana + 10 + p.Shojin); unit.Attacks++;
         if (p.Rage != 0) unit.RageStacks++;
         unit.AttackDamage += unit.BaseAttackDamage * p.Kraken;
@@ -136,13 +156,16 @@ public sealed partial class CombatSimulation
         }
         if (target.Dodge > 0 && random.Next() < target.Dodge) { Emit("dodge", target); return; }
         double amount = unit.AttackDamage;
-        if (unit.CriticalChance > 0 && random.Next() < unit.CriticalChance) amount *= unit.CriticalDamage;
+        bool critical = unit.CriticalChance > 0 && random.Next() < unit.CriticalChance;
+        if (critical) amount *= unit.CriticalDamage;
         if (p.Shred != 0) { target.ShredUntil = Time + 3; target.Shred = p.Shred; }
-        Damage(unit, target, amount, DamageKind.Physical);
+        Damage(unit, target, amount, DamageKind.Physical, critical: critical);
+        if (Hooks.Has(CombatHook.Attack, unit, CombatHook.AnyAttack))
+            Hooks.Fire(CombatHook.Attack, unit, new() { Target = target, Amount = amount, Critical = critical }, CombatHook.AnyAttack);
         if (p.Split != 0)
         {
             var other = EnemiesNear(unit, target.Cell, 2).Where(e => e != target).OrderBy(e => target.Cell.DistanceTo(e.Cell)).FirstOrDefault();
-            if (other is not null) Damage(unit, other, amount * p.Split, DamageKind.Physical);
+            if (other is not null) Damage(unit, other, amount * p.Split, DamageKind.Physical, critical: critical);
         }
         if (p.Volt != 0 && unit.Attacks % 3 == 0)
         {
@@ -155,23 +178,49 @@ public sealed partial class CombatSimulation
         }
     }
 
-    private double Damage(CombatUnit source, CombatUnit target, double amount, DamageKind kind, bool isBurn = false)
+    private double Damage(CombatUnit source, CombatUnit target, double amount, DamageKind kind, bool isBurn = false, bool critical = false)
     {
-        if (!target.Alive) return 0;
+        if (!target.Alive || target.InvulnerableUntil > Time) return 0;
         var request = new DamageRequest(new(source.Line.Attribute, source.Equipment.Amp, source.WeakUntil > Time, source.Weakness, GiantSlayer: source.Equipment.Slayer, GuardBreaker: source.Equipment.GuardBreaker),
             new(target.Line.Attribute, target.MaxHealth, target.Armor, target.MagicResist, target.Shield, target.Mana, target.MaxMana, target.Equipment.Reduction, target.Gargoyle, target.VeilUntil > Time ? target.Veil : 0, target.ShredUntil > Time ? target.Shred : 0, target.BurnUntil > Time),
             kind, amount, source.Cell.DistanceTo(target.Cell), Time > overtimeStart ? 1 + (Time - overtimeStart) * 0.2 : 1, IsBurn: isBurn);
-        var result = DamageRules.Resolve(request);
+        double outgoing = DamageRules.OutgoingMultiplier(request);
+        if (Hooks.Has(CombatHook.BeforeDamage, source))
+        {
+            var e = new CombatHookEvent { Target = target, Amount = amount, Kind = kind, Critical = critical, IsBurn = isBurn,
+                Multiplier = outgoing };
+            Hooks.Fire(CombatHook.BeforeDamage, source, e);
+            outgoing = e.Multiplier;
+        }
+        request = request with { Target = request.Target with { Armor = target.Armor, MagicResist = target.MagicResist,
+            Gargoyle = target.Gargoyle, Veil = target.VeilUntil > Time ? target.Veil : 0, Shred = target.ShredUntil > Time ? target.Shred : 0 } };
+        double mitigated = DamageRules.Mitigate(request, outgoing);
+        if (Hooks.Has(CombatHook.BeforeDamageTaken, target))
+        {
+            var e = new CombatHookEvent { Source = source, Target = target,
+                Amount = mitigated, Kind = kind, Critical = critical, IsBurn = isBurn };
+            Hooks.Fire(CombatHook.BeforeDamageTaken, target, e);
+            request = request with { ExtraReduction = e.Reduction, IncomingMultiplier = e.Multiplier };
+        }
+        request = request with { Target = request.Target with { Reduction = target.Equipment.Reduction, Shield = target.Shield,
+            Mana = target.Mana, MaxMana = target.MaxMana } };
+        var result = DamageRules.ResolveMitigated(request, mitigated);
         target.Shield -= result.ShieldAbsorbed; target.Health -= result.HealthDamage; target.Mana = result.ManaAfter;
         source.Dealt += result.Amount; target.Taken += result.Amount;
         if (source.Omnivamp > 0 && source.Alive) Heal(source, result.Amount * source.Omnivamp, true);
         if (source.Equipment.Burn && !isBurn) ApplyBurn(source, target);
         Emit("damage", target, source, UnitValues.Round(result.Amount));
-        if (target.Health <= 0)
+        if (target.Health <= 0 && Hooks.Has(CombatHook.Lethal, target))
+            Hooks.Fire(CombatHook.Lethal, target, new() { Source = source, Amount = result.Amount, Kind = kind });
+        if (target.Health <= 0) Kill(target, source);
+        else
         {
-            target.Alive = false; target.Health = 0; occupancy[grid.Index(target.Cell)] = null; Emit("death", target, source);
+            CheckLifelines(target);
+            if (Hooks.Has(CombatHook.DamageTaken, target))
+                Hooks.Fire(CombatHook.DamageTaken, target, new() { Source = source, Amount = result.Amount, Kind = kind, Critical = critical, IsBurn = isBurn });
         }
-        else CheckLifelines(target);
+        if (Hooks.Has(CombatHook.DamageDealt, source, CombatHook.AnyDamageDealt))
+            Hooks.Fire(CombatHook.DamageDealt, source, new() { Target = target, Amount = result.Amount, Kind = kind, Critical = critical, IsBurn = isBurn, Killed = !target.Alive }, CombatHook.AnyDamageDealt);
         return result.Amount;
     }
 
@@ -182,6 +231,8 @@ public sealed partial class CombatSimulation
         double before = unit.Health; unit.Health = Math.Min(unit.MaxHealth, unit.Health + amount);
         unit.Healed += unit.Health - before;
         if (!quiet && unit.Health > before) Emit("heal", unit, amount: UnitValues.Round(unit.Health - before));
+        if (unit.Health > before && Hooks.Has(CombatHook.Heal, unit, CombatHook.AnyHeal))
+            Hooks.Fire(CombatHook.Heal, unit, new() { Amount = unit.Health - before }, CombatHook.AnyHeal);
     }
 
     private void Emit(string type, CombatUnit unit, CombatUnit? target = null, double amount = 0) =>

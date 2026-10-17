@@ -23,6 +23,8 @@ public sealed partial class CombatSimulation
                 if (!unit.Alive) return;
             }
         }
+        RunTimers(unit.Scheduled);
+        if (Hooks.Has(CombatHook.UnitTick, unit)) Hooks.Fire(CombatHook.UnitTick, unit, new() { DeltaTime = Tick });
         if (p.Archangel != 0 && Every(unit, "arch", 5)) unit.AbilityPower += p.Archangel;
         if (p.ManaRegen != 0 && Every(unit, "mana", 3)) unit.Mana = Math.Min(unit.MaxMana, unit.Mana + p.ManaRegen);
         if (p.Crown && !unit.CrownApplied && Time >= 8) { unit.CrownApplied = true; unit.AbilityPower += 30; }
@@ -86,6 +88,6 @@ public sealed partial class CombatSimulation
     private double AbilityDamage(CombatUnit source, CombatUnit target, double value)
     {
         bool critical = source.Equipment.AbilityCrit && source.CriticalChance > 0 && random.Next() < source.CriticalChance;
-        return Damage(source, target, critical ? value * source.CriticalDamage : value, DamageKind.Magic);
+        return Damage(source, target, critical ? value * source.CriticalDamage : value, DamageKind.Magic, critical: critical);
     }
 }

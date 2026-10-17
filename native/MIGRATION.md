@@ -29,15 +29,24 @@ The current executable is a migration workbench. It must not replace the public 
   completed item and mixed loadouts in all 22 variants. Item-specific hooks remain
   disabled; the native equipment layer does not yet execute those hooks.
 
-Latest verification: `./native/build.ps1 -Publish` passes 1,309,931 assertions, compiles
+- Combat hook dispatcher and lifecycle integration: source-group ordering, stable
+  priorities, Duos owner filtering, recursive-call guard, typed mutable damage events,
+  per-source state, global/unit timers, timed buffs, lethal recovery and end callbacks.
+  Two additional reference battles enable all 23 hook event types through controlled
+  definitions in the actual legacy dispatcher, checking 126,058 callback entries as
+  well as fight state. These verify infrastructure, not production set definitions.
+  Damage-stage tests include armor/reduction changes made inside damage hooks.
+
+Latest verification: `./native/build.ps1 -Publish` passes 1,324,841 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
 
 ## Next implementation sequence
 
-1. Integrate hook timers, full combat event metadata and stable hook dispatch into
-   the verified combat kernel. Extend reference battles to enable item/set hooks
+1. Bind production trait/item/augment/power/mechanic definitions to the dispatcher.
+   Finish hook context operations (summons, board movement, side/trait state) and
+   presentation event metadata. Extend reference battles to real set definitions
    before claiming full combat parity.
 2. Set-defined ability dispatch; port each ruleset with explicit coverage
    and deterministic full-match trace comparisons.

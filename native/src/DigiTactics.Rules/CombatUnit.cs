@@ -49,6 +49,11 @@ public sealed class CombatUnit
     internal CombatUnit? BurnSource;
     internal double BurnUntil, BurnAccumulated;
     internal bool CrownApplied;
+    public double SilenceUntil { get; internal set; }
+    public double InvulnerableUntil { get; internal set; }
+    public bool Blind { get; internal set; }
+    internal List<ScheduledCombatAction> Scheduled { get; } = [];
+    internal List<TimedCombatBuff> TimedBuffs { get; } = [];
     internal Dictionary<string, double> Timers { get; } = [];
 
     internal CombatUnit(int id, CombatEntry entry, UnitLine line, int team, HexCell cell, double random)
