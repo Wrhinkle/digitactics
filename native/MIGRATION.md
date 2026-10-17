@@ -1354,3 +1354,22 @@ composition and Underlords round-end rewards still require integration.
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
 
 Full regression validation after this change: **158,097,646 native checks passed**, including all 5,699 reference battles.
+
+
+### Underlords post-combat planning state
+
+`UnderlordsPlanning.RoundEnd` now carries Beast kill and Legion duel gains into
+persistent player state, pays Bounty gold, and schedules the loss free roll.
+It processes Silver Lining, Aegis and Vicious Intent in owned-global order before
+the mechanic hook, including duplicate listeners and globals removed mid-dispatch.
+Divine Rapier transfers from the first board holder to a living opponent on a
+non-PvE loss, with the original ghost restriction and inventory-cap behavior.
+Owner-scoped combat results preserve Duos reward attribution.
+
+24 original-engine battles (including summoners) drive 5,760 reward cases and
+46,104 passing checks (`--underlords-settlement-only`). Coverage includes missing
+combat, wins/losses, PvE, ghosts, owner views, absent/dead opponents, duplicate
+globals, lethal Aegis thresholds, full inventories and bench-only Rapiers.
+The self-contained Windows publish and packaged BRUTAL smoke checks passed.
+Production dispatcher registration and projecting persistent counters into the
+next combat remain part of the full match-controller integration.

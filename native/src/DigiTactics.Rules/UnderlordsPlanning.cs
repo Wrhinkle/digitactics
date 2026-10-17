@@ -10,6 +10,55 @@ public sealed class UnderlordsPlanning(MatchState state)
     private readonly PlanningAi placement = new(state.Rules);
     private PlanningUnit? Tamer(MatchPlayer player) => player.Roster.Entries.Select(e => e.Unit).FirstOrDefault(u => !string.IsNullOrEmpty(lines[u.Line].Tamer));
 
+    public int RoundEnd(RoundEndContext context, int stage)
+    {
+        var player = context.Player;
+        var match = context.Match;
+        int? opponentId = context.Team == 0 ? match.B : match.A;
+        var opponent = opponentId is { } id ? state.Players[id] : null;
+        int gold = 0;
+        // The original dispatcher snapshots global listeners before any can remove themselves.
+        foreach (string global in player.Globals.ToArray())
+        {
+            switch (global)
+            {
+                case "ul_g_silver" when !context.Pve:
+                    if (context.Won) player.Mechanics.UnderlordsSilver = Math.Min(3, player.Mechanics.UnderlordsSilver + 1);
+                    else if (player.Mechanics.UnderlordsSilver > 0) { player.Mechanics.UnderlordsSilver--; gold += 2; }
+                    break;
+                case "ul_g_aegis" when !context.Won && match.Combat is not null:
+                    int damage = state.Rules.Loss!.Loss(stage, 1 - context.Team, context.Pve, context.Units.Select(u => u.Survivor));
+                    if (player.Health - damage <= 0)
+                    {
+                        player.Health += damage;
+                        player.Globals.Remove("ul_g_aegis");
+                    }
+                    break;
+                case "ul_g_vicious" when context.Won && !context.Pve && match.Combat is not null && !(match.Ghost && context.Team == 0) && opponent is not null:
+                    opponent.Health -= context.Units.Count(u => u.Survivor.Team == context.Team && u.Survivor.Alive && !u.Survivor.Summoned);
+                    break;
+            }
+        }
+        if (!context.Won && !context.Pve) player.Mechanics.UnderlordsFreeRoll = true;
+        if (match.Combat is null) return gold;
+        foreach (var result in context.Units.Where(u => u.Survivor.Team == context.Team))
+        {
+            var unit = result.State ?? throw new InvalidOperationException("An Underlords result is missing unit state.");
+            if (!unit.Summoned && unit.Traits.Contains("BEAST")) player.Mechanics.UnderlordsBeastKills += unit.Underlords.Kills;
+            player.Mechanics.UnderlordsDuel += unit.Underlords.DuelWin;
+            gold += checked((int)unit.Underlords.Gold);
+        }
+        if (!context.Won && !context.Pve && !(match.Ghost && context.Team == 0) && opponent is { Alive: true } &&
+            player.Roster.Board.Select(e => e.Unit).FirstOrDefault(u => u.Items.Contains("ul_rapier")) is { } holder)
+        {
+            var items = holder.Items.ToList();
+            items.Remove("ul_rapier");
+            player.Roster.UpdateUnit(holder with { Items = items.ToArray() });
+            opponent.GiveItem("ul_rapier");
+        }
+        return gold;
+    }
+
     public IncomeBreakdown Income(MatchPlayer player, RoundPosition round, IncomeBreakdown income)
     {
         var rules = state.Rules.Underlords!;
