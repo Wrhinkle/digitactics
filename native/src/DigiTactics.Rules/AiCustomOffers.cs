@@ -63,8 +63,7 @@ public sealed partial class AiOffers
                     "ac_r_key" => 4, "ac_r_discount" => .5, _ => 1 }) + (id == "ac_r_vault" && player.Economy.Gold >= 40 ? 2 : 0) + (id == "ac_r_key" && stage >= 5 ? 1 : 0);
             case "ac_loot":
                 if (!items.TryGetValue(id, out var loot)) return 0;
-                if (id == "ac_digiegg") return units.Where(u => u.Stage < 2).GroupBy(u => (u.Line, u.Stage)).Any(g =>
-                    state.Rules.Lines.FirstOrDefault(l => l.Id == g.Key.Line) is { } line && g.Count() == line.Copies - 1 && state.Pool.Remaining(line.Id) >= UnitValues.Copies(line, g.Key.Stage)) ? 9 : 3;
+                if (id == "ac_digiegg") return new AutoChessPlanning(state).EggTarget(player) is not null ? 9 : 3;
                 double score = loot.Component ? loot.Tier != 0 ? loot.Tier : 1 : 4 + loot.AiRank * .5;
                 foreach (var holder in holders)
                 {

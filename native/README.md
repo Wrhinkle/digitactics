@@ -884,3 +884,23 @@ in these traces; production mode dispatch and carousel UI remain pending. Run wi
 `--carousel-only`.
 
 Validation: 149,432,188 full-suite checks and packaged BRUTAL smoke tests pass.
+
+## Auto Chess persistent planning hooks
+
+`AutoChessPlanning` implements relic income, Recruiter shop levels (capped at 10),
+Master Key team size, Monopoly Card round rerolls and Bargain Tag sale income.
+Global-list order and repeated entries are preserved. The set's normal-pace base
+income uses the cumulative scheduled round; hyper income remains unchanged.
+
+Digi-Egg AI selects the highest tier/stage eligible near-merge, retaining the first
+roster group on ties and checking the shared pool. It uses the native inventory
+command for up to four eggs, preserving human combat locks and merge behavior.
+Auto Chess loot-offer scoring shares this same target selection.
+
+2,048 reference scenarios across both paces and human/AI seats pass 180,812 checks:
+relic combinations and duplicates, income, shop levels, capacity, sale gold, free
+rolls, egg targets, inventories, ordered rosters, shop clearing, pool counts and
+RNG. Custom offer regression passes another 122,400 checks. Run the new coverage
+with `--autochess-planning-only`. Production mode dispatcher wiring remains pending.
+
+Validation: the self-contained Windows package builds and all BRUTAL smoke checks pass.
