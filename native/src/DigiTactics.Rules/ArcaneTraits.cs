@@ -37,14 +37,14 @@ public sealed partial class CombatSimulation
                             s.AutomatonHits++; s.AutomatonDamage += e.Amount;
                             if (s.AutomatonHits < 12 || !e.Target!.Alive) return;
                             s.AutomatonHits = 0; double damage = s.Automaton + s.AutomatonDamage * 0.25; s.AutomatonDamage = 0;
-                            s.AutomatonBusy = true; c.Damage(e.Unit, e.Target, damage); s.AutomatonBusy = false;
+                            s.AutomatonBusy = true; c.Effect("beam", e.Unit, e.Target); c.Text(e.Unit, "Overload"); c.Damage(e.Unit, e.Target, damage); s.AutomatonBusy = false;
                         }); break;
                     case "BR":
                         CombatUnit? bel = null; int casts = 0;
                         void Free(CombatHookContext c) {
                             if (bel is null || !bel.Arcane.Chained || !bel.Alive) return;
-                            bel.Arcane.Chained = false; bel.Stun = 0;
-                            if (level >= 3) { c.Heal(bel, bel.MaxHealth); foreach (var e in EnemiesNear(bel, bel.Cell, 2)) c.Damage(bel, e, bel.AttackDamage * 2.5); }
+                            bel.Arcane.Chained = false; bel.Stun = 0; c.Text(bel, "Unleashed");
+                            if (level >= 3) { c.Heal(bel, bel.MaxHealth); c.Burst(bel.Cell, 2, bel.Team); foreach (var e in EnemiesNear(bel, bel.Cell, 2)) c.Damage(bel, e, bel.AttackDamage * 2.5); }
                         }
                         Start(c => {
                             double mul = (0.22 + 0.045 * members.Where(u => !u.Summoned).Sum(u => u.Stage + 1)) * value;
@@ -54,7 +54,7 @@ public sealed partial class CombatSimulation
                                 }
                                 if (bel is not null) break;
                             }
-                            if (bel is not null) { bel.Stun = 999; bel.Arcane.Chained = true; }
+                            if (bel is not null) { bel.Stun = 999; bel.Arcane.Chained = true; c.Text(bel, "Chained"); }
                         });
                         On(CombatHook.Cast, (c, e) => { if (bel is not null && bel.Arcane.Chained && Member(e.Unit!) && ++casts >= 5) Free(c); });
                         On(CombatHook.DamageTaken, (c, e) => { if (bel is not null && e.Unit == bel && bel.Arcane.Chained && bel.Health < bel.MaxHealth * 0.65) Free(c); });
@@ -82,11 +82,11 @@ public sealed partial class CombatSimulation
                     case "ENF":
                         Start(c => {
                             foreach (var u in members) { u.Shield += u.MaxHealth * P("sh"); u.Equipment.Amp += value; }
-                            foreach (var e in units.Where(e => e.Team != c.Team && e.Alive).OrderByDescending(e => e.MaxHealth).ThenBy(e => e.Id).Take((int)P("n"))) e.Arcane.Wanted |= 1 << c.Team!.Value;
+                            foreach (var e in units.Where(e => e.Team != c.Team && e.Alive).OrderByDescending(e => e.MaxHealth).ThenBy(e => e.Id).Take((int)P("n"))) { e.Arcane.Wanted |= 1 << c.Team!.Value; c.Text(e, "Wanted"); }
                         });
                         On(CombatHook.AnyDeath, (c, e) => {
                             if (e.Unit!.Team == c.Team || (e.Unit.Arcane.Wanted & (1 << c.Team!.Value)) == 0) return;
-                            foreach (var u in members.Where(u => u.Alive)) u.AttackSpeed *= 1.3;
+                            foreach (var u in members.Where(u => u.Alive)) { u.AttackSpeed *= 1.3; c.Text(u, "Bounty"); }
                         }); break;
                     case "EXP":
                         Start(_ => {
@@ -113,7 +113,7 @@ public sealed partial class CombatSimulation
                         Each(u => { u.Arcane.Fire = value; u.Arcane.FireLevel = level; });
                         On(CombatHook.UnitTick, (c, e) => { var u = e.Unit!; var s = u.Arcane; if (s.Fire == 0 || !c.Every(u, "arcFire", 6)) return;
                             double healing = (u.Taken - s.FireLast) * s.Fire; s.FireLast = u.Taken; if (healing > 0) c.Heal(u, healing);
-                            if (s.FireLevel >= 2) c.Buff(u, CombatStat.AttackSpeed, 0.6, 2);
+                            if (s.FireLevel >= 2) c.Buff(u, CombatStat.AttackSpeed, 0.6, 2); c.Text(u, "Surge");
                         }); break;
                     case "MODE": Each(u => { if (u.Entry.Row <= 5) u.Equipment.Reduction += P("dr"); else u.Equipment.Amp += value; }); break;
                     case "REB":
@@ -123,7 +123,7 @@ public sealed partial class CombatSimulation
                         On(CombatHook.Tick, (c, _) => {
                             if (fired || total == 0 || units.Where(u => u.Alive && u.Team == c.Team).Sum(u => u.Health) > total * 0.75) return;
                             fired = true;
-                            foreach (var u in members.Where(u => u.Alive)) { c.Buff(u, CombatStat.AttackSpeed, 0.6, 5); u.AttackDamage += u.BaseAttackDamage * value; u.AbilityPower += UnitValues.Round(100 * value); }
+                            foreach (var u in members.Where(u => u.Alive)) { c.Buff(u, CombatStat.AttackSpeed, 0.6, 5); u.AttackDamage += u.BaseAttackDamage * value; u.AbilityPower += UnitValues.Round(100 * value); c.Text(u, "Flare"); }
                             if (level >= 3) foreach (var e in units.Where(e => e.Alive && e.Team != c.Team)) c.Stun(e, 2);
                         }); break;
                     case "SCR": Start(c => {
@@ -145,10 +145,10 @@ public sealed partial class CombatSimulation
                     case "HR": On(CombatHook.Cast, (c, e) => {
                         var u = e.Unit!; if (!Member(u)) return;
                         c.Buff(u, CombatStat.DamageReduction, 0.5, 1.5); double roll = c.Random(), k = 1 + u.Stage;
-                        if (roll < 0.3) for (int i = 0; i < 8; i++) { var t = RandomEnemyTarget(u); if (t is null) break; c.Damage(u, t, 35 * k, DamageKind.Physical); }
-                        else if (roll < 0.6) c.Shield(u, 180 * k);
-                        else if (roll < 0.85) u.Arcane.Coins = Math.Min(3, u.Arcane.Coins + 1);
-                        else if (e.Target is { Alive: true }) c.AbilityHit(u, e.Target, e.Value);
+                        if (roll < 0.3) { for (int i = 0; i < 8; i++) { var t = RandomEnemyTarget(u); if (t is null) break; c.Effect("shot", u, t); c.Damage(u, t, 35 * k, DamageKind.Physical); } c.Text(u, "Rockets"); }
+                        else if (roll < 0.6) { c.Shield(u, 180 * k); c.Text(u, "Shield"); }
+                        else if (roll < 0.85) { u.Arcane.Coins = Math.Min(3, u.Arcane.Coins + 1); c.Text(u, "Coin"); }
+                        else { if (e.Target is { Alive: true }) c.AbilityHit(u, e.Target, e.Value); c.Text(u, "Jackpot"); }
                     }); break;
                     case "JUNK":
                         Start(_ => {
@@ -164,14 +164,14 @@ public sealed partial class CombatSimulation
                             var u = e.Unit!; var j = u.Arcane.Junk; if (j is null) return; double k = (1 + u.Stage) * (u.AbilityPower / 100);
                             if (j.ContainsKey("flame") && c.Every(u, "jFlame", 1)) foreach (var t in EnemiesNear(u, u.Cell, 2)) c.Damage(u, t, 30 * k);
                             if (j.ContainsKey("bots") && c.Every(u, "jBots", 3)) c.Heal(u, u.MaxHealth * 0.06);
-                            if (j.ContainsKey("rod") && c.Every(u, "jRod", 5) && TargetByDistance(u, true) is { } far) c.Damage(u, far, 120 * k);
+                            if (j.ContainsKey("rod") && c.Every(u, "jRod", 5) && TargetByDistance(u, true) is { } far) { c.Effect("beam", u, far); c.Damage(u, far, 120 * k); }
                             if (j.ContainsKey("buster") && c.Every(u, "jBust", 3)) { var t = units.Where(t => t.Alive && t.Team != u.Team).OrderByDescending(t => t.Armor + t.MagicResist).FirstOrDefault(); if (t is not null) c.Damage(u, t, 80 * k, DamageKind.True); }
                         });
-                        On(CombatHook.Death, (c, e) => { var u = e.Unit!; if (u.Arcane.Junk?.ContainsKey("destruct") == true) foreach (var t in EnemiesNear(u, u.Cell, 2)) c.Damage(u, t, (u.Armor + u.MagicResist) * 1.6); }); break;
+                        On(CombatHook.Death, (c, e) => { var u = e.Unit!; if (u.Arcane.Junk?.ContainsKey("destruct") == true) { c.Burst(u.Cell, 2, u.Team); foreach (var t in EnemiesNear(u, u.Cell, 2)) c.Damage(u, t, (u.Armor + u.MagicResist) * 1.6); } }); break;
                     case "AMB": Each(u => { u.Equipment.AbilityCrit = true; u.CriticalChance += value; u.CriticalDamage += P("cd"); if (level >= 4) u.Equipment.Reduction += 0.15; }); break;
                     case "ART":
                         Each(u => { u.AttackDamage += u.BaseAttackDamage * value; u.Arcane.Artillery = true; });
-                        On(CombatHook.Attack, (c, e) => { var u = e.Unit!; if (u.Arcane.Artillery && u.Attacks % 4 == 0) foreach (var t in EnemiesNear(u, e.Target!.Cell, 1)) c.Damage(u, t, u.AttackDamage * 1.4, DamageKind.Physical); }); break;
+                        On(CombatHook.Attack, (c, e) => { var u = e.Unit!; if (u.Arcane.Artillery && u.Attacks % 4 == 0) { c.Burst(e.Target!.Cell, 1, u.Team); foreach (var t in EnemiesNear(u, e.Target.Cell, 1)) c.Damage(u, t, u.AttackDamage * 1.4, DamageKind.Physical); } }); break;
                     case "BRU": Start(c => { foreach (var u in c.Mine) u.MaxHealth += 80; foreach (var u in members) u.MaxHealth = UnitValues.Round(u.MaxHealth * (1 + value)); }); break;
                     case "DOM":
                         Each(u => { u.Shield += P("sh"); u.Arcane.Dominator = value; });
@@ -184,7 +184,7 @@ public sealed partial class CombatSimulation
                         });
                         On(CombatHook.DamageTaken, (c, e) => { var u = e.Unit!; var s = u.Arcane;
                             if (s.Pit == 0 || s.PitHealed || u.Health >= u.MaxHealth * 0.5) return;
-                            s.PitHealed = true; for (int k = 1; k <= 4; k++) c.After(0.5 * k, () => c.Heal(u, (u.MaxHealth * s.PitHeal) / 4), u);
+                            s.PitHealed = true; c.Text(u, "Second Wind"); for (int k = 1; k <= 4; k++) c.After(0.5 * k, () => c.Heal(u, (u.MaxHealth * s.PitHeal) / 4), u);
                         }); break;
                     case "QS":
                         Each(u => { u.AttackSpeed *= 1 + value; u.Arcane.Quick = u.Arcane.QuickLow = value; u.Arcane.QuickHigh = P("hi"); u.Arcane.QuickLevel = level; });

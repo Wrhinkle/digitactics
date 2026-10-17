@@ -34,8 +34,10 @@ covering transforms, mutations, summons, relics, defensive effects and Duos stat
 Reckoning adds 392 battles and 128,714 cues, including hook pulls, possession,
 revival, PvE scaling, shadow/radiant item effects and Duos. Dragonlands adds 374
 battles and 137,414 cues covering all Copycat outcomes, traits, items, executes,
-Mirage and Duos. The remaining sets' visual cues and the production renderer
-remain unfinished.
+Mirage and Duos. Arcane adds 673 battles and 271,670 cues across abilities,
+traits, contraband, augments and anomalies, including mana-boundary and lone
+Devour cases. The remaining sets' visual cues and the production renderer remain
+unfinished.
 
 ## Boundaries
 

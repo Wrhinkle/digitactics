@@ -38,7 +38,7 @@ public sealed partial class CombatSimulation
                 }); break;
                 case "arc_shadow_mantle": On(CombatHook.DamageTaken, (_, _) => {
                     if (state.Mantle || u.Health >= u.MaxHealth * 0.6) return;
-                    state.Mantle = true; u.InvulnerableUntil = Time + 1;
+                    state.Mantle = true; u.InvulnerableUntil = Time + 1; Emit("text", u, text: "Vanish");
                 }); break;
                 case "arc_mode_helm": Start(_ => {
                     if (u.Entry.Row <= 5) { u.Armor += 35; u.MagicResist += 35; }
@@ -47,7 +47,7 @@ public sealed partial class CombatSimulation
                 case "arc_doom_seal": On(CombatHook.UnitTick, (c, _) => {
                     if (Time < state.Doom) return;
                     var target = u.Target is { Alive: true } ? u.Target : TargetByDistance(u); if (target is null) return;
-                    state.Doom = Time + 13; c.Damage(u, target, target.MaxHealth * 0.25);
+                    state.Doom = Time + 13; c.Effect("beam", u, target); c.Damage(u, target, target.MaxHealth * 0.25);
                 }); break;
                 case "arc_gatling_arm": Start(_ => u.Range = Math.Min(8, u.Range * 2)); break;
                 case "arc_bounty_chip": On(CombatHook.DamageDealt, (c, e) => {
@@ -78,11 +78,11 @@ public sealed partial class CombatSimulation
                 case "arc_scope_visor": Start(_ => { u.Range = Math.Min(8, u.Range + 2); u.PerHexAmplification += 0.08; }); break;
                 case "arc_ascension_talisman": On(CombatHook.UnitTick, (c, _) => {
                     if (state.Ascended || Time < 20) return;
-                    state.Ascended = true; double add = u.MaxHealth * 0.8; u.MaxHealth += add; c.Heal(u, add); u.Equipment.Amp += 0.8;
+                    state.Ascended = true; double add = u.MaxHealth * 0.8; u.MaxHealth += add; c.Heal(u, add); u.Equipment.Amp += 0.8; c.Text(u, "Ascended");
                 }); break;
                 case "arc_time_stopper": On(CombatHook.DamageTaken, (_, _) => {
                     if (state.TimeStop || u.Health >= u.MaxHealth * 0.4) return;
-                    state.TimeStop = true; u.InvulnerableUntil = Time + 2.5; u.CastLock = Math.Max(u.CastLock, 2.5);
+                    state.TimeStop = true; u.InvulnerableUntil = Time + 2.5; u.CastLock = Math.Max(u.CastLock, 2.5); Emit("text", u, text: "Time Stop");
                 }); break;
                 default: throw new NotSupportedException($"Arcane item {id} has not been migrated.");
             }
@@ -123,9 +123,9 @@ public sealed partial class CombatSimulation
     {
         Hooks.Add(context, CombatHook.DamageTaken, (c, e) => {
             var u = e.Unit!; var s = u.Arcane.Items.Contraband; if (s is null) return;
-            if (s.TankAt != 0 && !s.TankOn && u.Health < u.MaxHealth * 0.5) { s.TankOn = true; c.Shield(u, u.MaxHealth * s.TankAt); }
+            if (s.TankAt != 0 && !s.TankOn && u.Health < u.MaxHealth * 0.5) { s.TankOn = true; c.Shield(u, u.MaxHealth * s.TankAt); c.Text(u, "Hazard Tank"); }
             if (s.RipHeal != 0 && !s.Ripped && u.Health < u.MaxHealth * 0.4) {
-                s.Ripped = true; u.InvulnerableUntil = Time + 0.5; c.Heal(u, u.MaxHealth * s.RipHeal); u.AttackDamage += u.BaseAttackDamage * s.RipAd; u.Omnivamp += s.RipVamp;
+                s.Ripped = true; u.InvulnerableUntil = Time + 0.5; c.Heal(u, u.MaxHealth * s.RipHeal); u.AttackDamage += u.BaseAttackDamage * s.RipAd; u.Omnivamp += s.RipVamp; c.Text(u, "Feral");
             }
             if (s.HexArmor != 0) {
                 if (s.HexHits < 15) { s.HexHits++; u.Armor += s.HexArmor; u.MagicResist += s.HexArmor; }
@@ -152,14 +152,14 @@ public sealed partial class CombatSimulation
             if (s.Virus != 0 && e.Kind == DamageKind.Magic && t.Alive) c.Damage(u, t, e.Amount * s.Virus, DamageKind.True);
             if (s.Saber != 0 && ++s.SaberHits >= 6) {
                 s.SaberHits = 0;
-                foreach (var x in EnemiesOf(u).OrderBy(x => x.Health).ThenBy(x => x.Id).Take(2).ToArray()) c.Damage(u, x, s.Saber, DamageKind.Physical);
+                foreach (var x in EnemiesOf(u).OrderBy(x => x.Health).ThenBy(x => x.Id).Take(2).ToArray()) { c.Effect("beam", u, x); c.Damage(u, x, s.Saber, DamageKind.Physical); }
             }
             s.Busy = false;
         });
         Hooks.Add(context, CombatHook.Cast, (c, e) => {
             var u = e.Unit!; var s = u.Arcane.Items.Contraband; if (s is null || s.Toxins == 0) return;
             var t = e.Target is { Alive: true } ? e.Target : TargetByDistance(u); if (t is null) return;
-            s.Busy = true; for (int k = 0; k < 3 && t.Alive; k++) c.Damage(u, t, s.Toxins); s.Busy = false;
+            s.Busy = true; for (int k = 0; k < 3 && t.Alive; k++) { c.Effect("shot", u, t); c.Damage(u, t, s.Toxins); } s.Busy = false;
         });
     }
 }

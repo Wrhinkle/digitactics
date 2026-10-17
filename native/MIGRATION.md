@@ -271,10 +271,15 @@ callbacks. Dragonlands adds 374 battles and 137,414 cues, covering all five
 Copycat outcomes, Jade/Mirage/Cannoneer bursts, Thunder beams, executions,
 transformation/hero feedback, wishes, Monolith and gold-item labels. Its replay
 setup preserves Mirage, bank balances, Dragon limits, round pace and Duos state.
-The suite now covers 1,957 battles and 691,710 cues. The remaining sets' presentation callbacks
+Arcane adds 673 battles and 271,670 cues across all four custom abilities, traits,
+items/contraband, augments and anomalies. Replay carries sponsor items, stored
+side state, anomaly selections and 119/120-mana boundary overrides. Guards require
+every anomaly label and named trigger to occur; Devour emits its consumption cue
+only when an ally exists. The suite now covers 2,630 battles and 963,380 cues.
+The remaining sets' presentation callbacks
 and complete replay coverage remain pending; this is not a renderer.
 
-Latest verification: the native test suite passes 101,454,676 assertions.
+Latest verification: the native test suite passes 101,727,019 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

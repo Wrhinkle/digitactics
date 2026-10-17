@@ -57,35 +57,38 @@ for (const item of core) for (const stage of [0, 2])
 Object.assign(DT.Combat.prototype, originalHooks);
 const directory = path.join(__dirname, '../tests/fixtures/combat');
 const manifest = JSON.parse(fs.readFileSync(path.join(directory, 'manifest.json')));
-for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos', 'reckoning', 'dragonlands']) {
+for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos', 'reckoning', 'dragonlands', 'arcane']) {
   const shard = manifest.files.find(f => f.file.startsWith(`${setId}-`));
   const compressed = fs.readFileSync(path.join(directory, shard.file));
   if (require('node:crypto').createHash('sha256').update(compressed).digest('hex') !== shard.sha256)
     throw new Error(`${setId} gameplay fixture integrity failure`);
   const corpus = JSON.parse(require('node:zlib').gunzipSync(compressed));
   if (corpus.length !== shard.battles) throw new Error(`${setId} gameplay fixture count mismatch`);
-  for (const trace of corpus.filter(t => (t.name.startsWith('fates-') || t.name.startsWith('faction-') || t.name.startsWith('autochess/') || t.name.startsWith('gizmos-') || t.name.startsWith('reckoning-') || t.name.startsWith('dragonlands-')) && !t.summonItemProbe && !t.observerSummonProbe)) {
+  for (const trace of corpus.filter(t => (t.name.startsWith('fates-') || t.name.startsWith('faction-') || t.name.startsWith('autochess/') || t.name.startsWith('gizmos-') || t.name.startsWith('reckoning-') || t.name.startsWith('dragonlands-') || t.name.startsWith('arcane-')) && !t.summonItemProbe && !t.observerSummonProbe)) {
     const [set, pace] = trace.variant.split('/'); DT.Sets.activate(set, pace);
     const setup = trace.setup || { sideA: { augments: trace.augsA }, sideB: { augments: trace.augsB } };
     const buffs = b => b && ({ as: b.attackSpeed, armor: b.armor, mana: b.mana });
     function side(entries, effects) {
       const units = entries.map(u => ({ ...u, c: u.column, r: u.row,
-        mods: { ...(u.partner ? { partner: true, bonus: u.partner.bonus, trait: u.partner.trait } : {}), glutHp: u.gluttonHealth, glutAp: u.gluttonAbilityPower } }));
+        mods: { ...(u.partner ? { partner: true, bonus: u.partner.bonus, trait: u.partner.trait } : {}), arcAnom: u.arcaneAnomaly, glutHp: u.gluttonHealth, glutAp: u.gluttonAbilityPower } }));
       const result = { units, cols: trace.cols, noTraits: effects.noTraits, augs: effects.augments, globals: effects.globals,
-        counts: effects.counts, mech: effects.fates || effects.gizmos || effects.dragonlands, buffs: buffs(effects.buffs), partnerTop: effects.partnerTop };
+        counts: effects.counts, mech: effects.fates || effects.gizmos || effects.dragonlands || effects.arcane, buffs: buffs(effects.buffs), partnerTop: effects.partnerTop };
       if (effects.parts) {
-        result.parts = effects.parts.map(p => ({ owner: p.owner, augs: p.augments, globals: p.globals, mech: p.gizmos || p.dragonlands, buffs: buffs(p.buffs), partnerTop: p.partnerTop,
+        result.parts = effects.parts.map(p => ({ owner: p.owner, augs: p.augments, globals: p.globals, mech: p.gizmos || p.dragonlands || p.arcane, buffs: buffs(p.buffs), partnerTop: p.partnerTop,
           units: units.filter(u => u.owner === p.owner) }));
         result.counts = DT.Duos.teamCounts(result.parts);
       }
       return result;
     }
-    const cb = new DT.Combat(side(trace.sideA, setup.sideA), side(trace.sideB, setup.sideB), { seed: trace.seed, info: { type: setup.roundType, stage: setup.roundStage, pace: setup.pace, mech: { mutation: setup.mutation, mirage: setup.mirage, galaxy: setup.galaxy } } });
+    const manaLine = trace.lineManaOverride && DT.LINE[trace.lineManaOverride.line];
+    const oldMana = manaLine?.mana; if (manaLine) manaLine.mana = trace.lineManaOverride.maxMana;
+    const cb = new DT.Combat(side(trace.sideA, setup.sideA), side(trace.sideB, setup.sideB), { seed: trace.seed, info: { type: setup.roundType, stage: setup.roundStage, pace: setup.pace, mech: { mutation: setup.mutation, mirage: setup.mirage, galaxy: setup.galaxy, arcSponsor: setup.arcSponsor } } });
     let ticks = 0; while (!cb.done && ticks < 2000) { cb.step(); ticks++; }
+    if (manaLine) { if (oldMana === undefined) delete manaLine.mana; else manaLine.mana = oldMana; }
     if (!cb.done || ticks !== trace.tick || cb.winner !== trace.winner || Math.abs(cb.t - trace.time) > 1e-10)
       throw new Error(`Production replay setup differs from gameplay fixture: ${trace.name}`);
     traces.push({ name: trace.name, variant: trace.variant, seed: trace.seed, cols: trace.cols,
-      sideA: trace.sideA, sideB: trace.sideB, setup, ticks, events: presentationEvents(cb) });
+      sideA: trace.sideA, sideB: trace.sideB, setup, lineManaOverride: trace.lineManaOverride, ticks, events: presentationEvents(cb) });
   }
 }
 for (const kind of kinds) if (!casts.has(kind)) throw new Error(`No cast coverage: ${kind}`);
@@ -97,6 +100,7 @@ for (const kind of ['Physical', 'Magic', 'True'])
 if (!allEvents.some(e => e.critical) || !allEvents.some(e => e.big)) throw new Error('Missing critical or amplified effect coverage');
 for (const [prefix, labels] of [
   ['fates-', ['+1 gold', '+2 AP', 'Ascend', 'Frenzy', 'Frozen', 'Full Moon', 'Guardian Wing', 'Lone Blade', 'Pumped Up', 'Push-ups', 'Rewind', 'Rocket Fist', 'Showtime', 'Soulmon', 'Spirit Rush', 'Stasis', 'Tankmon', 'Trap Claw', 'Zephyr']],
+  ['arcane-', [...Object.values(DT.ArcaneInfo.ANOM).map(a => a.short), 'Unleashed', 'Overload', 'Chained', 'Wanted', 'Bounty', 'Surge', 'Flare', 'Rockets', 'Shield', 'Coin', 'Jackpot', 'Second Wind', 'Rage', 'Ascend', 'Devour', 'Spare Body', 'Finished', 'Last Chance', 'Vanish', 'Ascended', 'Time Stop', 'Hazard Tank', 'Feral', 'Jackpot!']],
   ['dragonlands-', ['Blast', 'Explosion', 'Time Stop', 'Barrage', 'Restore', 'Finished', 'Rage', 'Shrunk', 'Hero', 'Mode Change', 'Wished away', 'Wish', 'Monolith', 'Night Veil', 'Blown away', '+1 gold', '+2 gold']],
   ['reckoning-', ['Sentinel', 'Copy', 'Nightfall', 'Daybreak', 'Kimeramon rises', 'Dragon slain', 'Rises', 'Garurumon', 'Held safe', 'Voidlarva', 'Blown away', 'Revenge', 'Ascended', 'Possessed', 'Go!', 'Blocked', 'Respite']],
   ['gizmos-', ['VIP', 'Arrested', 'Cybernetic', 'Voracious', 'Voidborne', 'Adrenal', 'Synaptic', 'Leeching', 'Metamorphosis', 'Spotlight', 'Built', 'X-Antibody', 'Backup', 'Decoy', 'Blown away', 'Mana cut', 'Smoke Bomb', 'Copy', 'Blocked']],

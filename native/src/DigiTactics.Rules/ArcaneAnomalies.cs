@@ -17,6 +17,36 @@ public sealed partial class CombatSimulation
         "dh_fireball", "dh_laser", "dh_slime", "dh_cooker", "dh_finisher", "dh_cuts", "dh_dragonsoul", "dh_lastchance", "dh_thorns",
         "u_crest", "u_dual"];
 
+    private static readonly Dictionary<string, string> ArcaneAnomalyLabels = new() {
+        ["x_power"] = "X Power",
+        ["x_guard"] = "X Guard",
+        ["x_mind"] = "X Mind",
+        ["x_bulwark"] = "X Bulwark",
+        ["x_berserk"] = "X Berserk",
+        ["x_giant"] = "X Giant",
+        ["x_velocity"] = "X Velocity",
+        ["x_ascend"] = "X Ascension",
+        ["dna_hunger"] = "Devour",
+        ["dna_share"] = "Share",
+        ["dna_power"] = "Absorb",
+        ["dna_energy"] = "Absorb",
+        ["dna_mana"] = "Recycle",
+        ["dna_partners"] = "Partners",
+        ["dna_familiar"] = "Spare Body",
+        ["dna_shield"] = "Link",
+        ["dh_fireball"] = "Fireball",
+        ["dh_laser"] = "Laser Eyes",
+        ["dh_slime"] = "Slime",
+        ["dh_cooker"] = "Meltdown",
+        ["dh_finisher"] = "Finisher",
+        ["dh_cuts"] = "Cuts",
+        ["dh_dragonsoul"] = "Dragon Soul",
+        ["dh_lastchance"] = "Last Chance",
+        ["dh_thorns"] = "Thornskin",
+        ["u_crest"] = "Crest Copy",
+        ["u_dual"] = "Dual Wield",
+    };
+
     private void BindArcaneAnomalies(CombatHookContext context)
     {
         Hooks.Add(context, CombatHook.CombatStart, (c, _) => {
@@ -27,6 +57,7 @@ public sealed partial class CombatSimulation
                     if (u.Entry.Row <= 5) u.MaxHealth = UnitValues.Round(u.MaxHealth * 1.1);
                     else u.Range = Math.Max(u.Range, 4);
                 }
+                if (u.Entry.ArcaneAnomaly is { } id && ArcaneAnomalyLabels.TryGetValue(id, out var label)) c.Text(u, label);
                 switch (u.Entry.ArcaneAnomaly) {
                     case "x_bulwark": u.Armor += 120; u.MagicResist += 120; u.Arcane.Anomaly.Bulwark = true; break;
                     case "x_berserk": case "dna_power": u.AttackDamage += u.BaseAttackDamage * 0.3; if (u.Entry.ArcaneAnomaly == "x_berserk") u.AbilityPower += 30; break;
@@ -56,7 +87,7 @@ public sealed partial class CombatSimulation
                     case "x_mind": u.AbilityPower = (u.AbilityPower + 10) * 1.4; break;
                     case "dna_hunger":
                         var best = units.Where(a => a != u && a.Alive && a.Team == u.Team && !a.Summoned).OrderBy(a => a.Cell.DistanceTo(u.Cell)).ThenBy(a => a.Id).FirstOrDefault();
-                        if (best is not null) { u.MaxHealth += best.MaxHealth * 0.9; u.AttackDamage += best.AttackDamage * 0.9; c.Remove(best); best.Health = 0; Emit("death", best); }
+                        if (best is not null) { u.MaxHealth += best.MaxHealth * 0.9; u.AttackDamage += best.AttackDamage * 0.9; c.Remove(best); best.Health = 0; Emit("death", best); c.Text(u, "Devour"); }
                         break;
                     case "dna_share":
                         foreach (var a in c.Adjacent(u)) if (a.Team == u.Team && a.Alive) {
@@ -71,7 +102,7 @@ public sealed partial class CombatSimulation
             var u = e.Unit!;
             if (u.Entry.ArcaneAnomaly == "x_velocity") u.AttackSpeed *= 1.15;
             else if (u.Entry.ArcaneAnomaly == "dh_fireball") for (int k = 0; k < (u.MaxMana >= 120 ? 2 : 1); k++) {
-                var t = RandomEnemyTarget(u); if (t is null) break;
+                var t = RandomEnemyTarget(u); if (t is null) break; c.Burst(t.Cell, 1, u.Team);
                 foreach (var x in EnemiesNear(u, t.Cell, 1)) { c.Damage(u, x, x.MaxHealth * 0.06, DamageKind.True); c.Burn(u, x); }
             }
         });
@@ -89,7 +120,7 @@ public sealed partial class CombatSimulation
             var u = e.Unit!; var s = u.Arcane.Anomaly;
             switch (u.Entry.ArcaneAnomaly) {
                 case "x_bulwark": if (s.Bulwark && u.Health < u.MaxHealth * 0.5) { s.Bulwark = false; u.Armor -= 80; u.MagicResist -= 80; } break;
-                case "x_berserk": if (!s.Berserk && u.Health < u.MaxHealth * 0.5) { s.Berserk = true; u.AttackDamage += u.BaseAttackDamage * 0.6; u.AbilityPower += 60; } break;
+                case "x_berserk": if (!s.Berserk && u.Health < u.MaxHealth * 0.5) { s.Berserk = true; u.AttackDamage += u.BaseAttackDamage * 0.6; u.AbilityPower += 60; c.Text(u, "Rage"); } break;
                 case "dh_thorns":
                     if (s.ThornCooldown > Time || !(e.Amount > 0)) return;
                     s.ThornCooldown = Time + 1; foreach (var x in EnemiesNear(u, u.Cell, 1)) c.Damage(u, x, e.Amount * 0.4); break;
@@ -98,17 +129,17 @@ public sealed partial class CombatSimulation
         Hooks.Add(context, CombatHook.DamageDealt, (c, e) => {
             var u = e.Unit!; var t = e.Target!; var s = u.Arcane.Anomaly;
             if (u.Entry.ArcaneAnomaly != "dh_finisher" || s.Finishing || !t.Alive || t.Summoned || t.Health >= t.MaxHealth * 0.18) return;
-            s.Finishing = true; c.Damage(u, t, (t.Health + t.Shield) * 3 + 10, DamageKind.True); s.Finishing = false;
+            s.Finishing = true; c.Text(t, "Finished"); c.Damage(u, t, (t.Health + t.Shield) * 3 + 10, DamageKind.True); s.Finishing = false;
         });
         Hooks.Add(context, CombatHook.Lethal, (_, e) => {
             var u = e.Unit!; var s = u.Arcane.Anomaly; if (u.Entry.ArcaneAnomaly != "dh_lastchance" || s.LastChance) return;
-            s.LastChance = true; u.Health = u.MaxHealth; u.AttackSpeed *= 1.5; u.Omnivamp += 0.2; s.Decay = true;
+            s.LastChance = true; u.Health = u.MaxHealth; u.AttackSpeed *= 1.5; u.Omnivamp += 0.2; s.Decay = true; Emit("text", u, text: "Last Chance");
         });
         Hooks.Add(context, CombatHook.Death, (c, e) => {
             var u = e.Unit!; if (u.Entry.ArcaneAnomaly != "dna_familiar") return;
             var s = c.Summon(u.Team, "arc_s_shellnumemon", 0, u.Cell, new(NoHooks: true)); if (s is null) return;
             s.MaxHealth = s.Health = UnitValues.Round(u.MaxHealth); s.Armor = u.Armor; s.MagicResist = u.MagicResist;
-            s.AttackDamage = s.BaseAttackDamage = u.AttackDamage * 0.4;
+            s.AttackDamage = s.BaseAttackDamage = u.AttackDamage * 0.4; c.Text(s, "Spare Body");
         });
         Hooks.Add(context, CombatHook.AnyDeath, (_, e) => {
             var d = e.Unit!;
@@ -130,7 +161,7 @@ public sealed partial class CombatSimulation
         switch (u.Entry.ArcaneAnomaly) {
             case "x_ascend":
                 if (s.Ascended || Time < 10) return;
-                s.Ascended = true; double add = u.MaxHealth * 0.5; u.MaxHealth += add; c.Heal(u, add); u.AttackSpeed *= 1.6; break;
+                s.Ascended = true; double add = u.MaxHealth * 0.5; u.MaxHealth += add; c.Heal(u, add); u.AttackSpeed *= 1.6; c.Text(u, "Ascend"); break;
             case "dna_shield":
                 if (!s.LinkNow && !c.Every(u, "aLink", 8)) return;
                 s.LinkNow = false; double amount = u.MaxHealth * 0.12;
@@ -139,7 +170,7 @@ public sealed partial class CombatSimulation
             case "dh_laser":
                 if (!c.Every(u, "aLaser", 1)) return;
                 var target = u.Target is { Alive: true } ? u.Target : TargetByDistance(u); if (target is null) return;
-                foreach (var t in LineTargets(u, target)) if (u.Cell.DistanceTo(t.Cell) <= 3) { c.Damage(u, t, u.AbilityPower * 0.8); c.Burn(u, t); } break;
+                foreach (var t in LineTargets(u, target)) if (u.Cell.DistanceTo(t.Cell) <= 3) { c.Effect("beam", u, t); c.Damage(u, t, u.AbilityPower * 0.8); c.Burn(u, t); } break;
             case "dh_slime":
                 if (!c.Every(u, "aSlime", 2)) return;
                 double total = 0; foreach (var t in EnemiesNear(u, u.Cell, 1)) total += c.Damage(u, t, u.AbilityPower * 1.1);
