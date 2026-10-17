@@ -5,6 +5,8 @@ namespace DigiTactics.Rules;
 
 public sealed class ArcanePlanningState
 {
+    public int Shimmer { get; set; }
+    public bool SyndicateAugment { get; set; }
     public int MarketsQueued { get; set; }
     public int JunkRounds { get; set; }
     public int MarketsOpened { get; set; }
@@ -21,8 +23,9 @@ public sealed class ArcanePlanningState
 }
 
 /// <summary>Arcane choices mutate persistent planning records; combat consumes their modifiers.</summary>
-public sealed class ArcanePlanning(MatchState state)
+public sealed class ArcanePlanning(MatchState state) : IMatchShopHooks
 {
+    private readonly MatchLoot loot = new(state);
     private readonly PlanningAi ai = new(state.Rules);
     private readonly Dictionary<string, UnitLine> lines = state.Rules.Lines.Concat(state.Rules.ExtraLines).ToDictionary(l => l.Id);
     private readonly Dictionary<string, ItemDefinition> items = state.Rules.Items.ToDictionary(i => i.Id);
@@ -32,6 +35,67 @@ public sealed class ArcanePlanning(MatchState state)
         for (int i = list.Length - 1; i > 0; i--) { int j = (int)(state.Random.Next() * (i + 1)); (list[i], list[j]) = (list[j], list[i]); }
         return list;
     }
+    public static void AddShimmer(ArcanePlanningState mechanic, int amount)
+    {
+        mechanic.Shimmer += amount;
+        while (mechanic.Shimmer >= 100) { mechanic.Shimmer -= 100; mechanic.MarketsQueued++; }
+    }
+
+    public IncomeBreakdown Income(MatchPlayer player, IncomeBreakdown income) =>
+        player.Augments.Contains("arc_a_income") ? income with { Augment = income.Augment + 2 } : income;
+
+    public void AugmentPicked(MatchPlayer player, string id, Action<MatchPlayer> combine)
+    {
+        ArgumentNullException.ThrowIfNull(combine);
+        var m = player.Mechanics.Arcane;
+        string? Artifact() => loot.Pick(state.Rules.Items.Where(i => i.Category == "artifact").Select(i => i.Id).ToArray());
+        switch (id)
+        {
+            case "arc_a_coins": player.Economy.Credit(8); break;
+            case "arc_a_cache": player.GiveItem(loot.RandomComponent()!); player.GiveItem(loot.RandomComponent()!); break;
+            case "arc_a_rolls": player.Shop.FreeRolls++; break;
+            case "arc_a_heart": player.Health += 5; break;
+            case "arc_a_shimmer":
+                m.SyndicateAugment = true;
+                AddShimmer(m, 60);
+                if (state.Pool.Remaining("arc_mushroomon") > 0 && player.Roster.FreeBenchSlot >= 0)
+                {
+                    state.Pool.Take("arc_mushroomon");
+                    player.Roster.AddToBench(state.CreateUnit("arc_mushroomon", 0));
+                }
+                combine(player);
+                break;
+            case "arc_a_bank": player.Economy.Credit(18); break;
+            case "arc_a_trove": player.GiveItem(loot.RandomCompleted()!); player.GiveItem(loot.RandomComponent()!); break;
+            case "arc_a_tag": player.GiveItem("arc_spat"); break;
+            case "arc_a_device": player.GiveItem("arc_pan"); break;
+            case "arc_a_evolve": loot.GiveUnit(player, [2, 3], 1); break;
+            case "arc_a_find": player.Shop.FreeRolls += 6; break;
+            case "arc_a_forge": player.GiveItem(Artifact()!); break;
+            case "arc_a_jackpot": player.Economy.Credit(35); break;
+            case "arc_a_armory": player.GiveItem(loot.RandomCompleted()!); player.GiveItem(loot.RandomCompleted()!); break;
+            case "arc_a_crown": player.GiveItem("arc_tamer_crown"); break;
+            case "arc_a_mega": loot.GiveUnit(player, [4], 1); break;
+            case "arc_a_mutant":
+                player.Economy.Credit(6);
+                if (!string.IsNullOrEmpty(m.Anomaly)) m.PendingAnomaly = true;
+                else m.ExtraAnomalies++;
+                break;
+            case "arc_a_workshop": player.GiveItem(Artifact()!); player.GiveItem(Artifact()!); break;
+            case "arc_a_market": m.MarketPlus = true; AddShimmer(m, 120); break;
+        }
+    }
+
+    public PlanningUnit Bought(MatchPlayer player, PlanningUnit unit, int slot, MatchPhase phase) => unit;
+    public void Sold(MatchPlayer player, PlanningUnit unit) { }
+    public void Combined(MatchPlayer player, PlanningUnit unit, IReadOnlyList<PlanningUnit> sources)
+    {
+        if (!Free(unit) || sources.FirstOrDefault(u => !Free(u)) is not { } source) return;
+        var mods = unit.Mods is { ValueKind: JsonValueKind.Object } existing ? existing.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.Clone()) : [];
+        foreach (var property in source.Mods!.Value.EnumerateObject()) mods[property.Name] = property.Value.Clone();
+        player.Roster.UpdateUnit(unit with { Mods = JsonSerializer.SerializeToElement(mods) });
+    }
+
     public void RoundStart(MatchPlayer player, RoundPosition round, MatchOffers offers)
     {
         var m = player.Mechanics.Arcane;

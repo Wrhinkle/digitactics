@@ -1345,3 +1345,26 @@ parts owned, board/bench/absent Chaosdramon, and subsequent RNG state. The exist
 hook registration and the remaining Arcane planning effects are still outstanding.
 
 Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+
+### Arcane augment picks, Shimmer and inherited Anomalies
+
+`ArcanePlanning.AugmentPicked` implements all Arcane pick rewards, including
+Shimmer's optional Mushroomon grant and unconditional immediate combine, market
+Shimmer, health/gold/rolls/items, reserved Champion-form units, and extra Anomalies.
+Shimmer converts each 100 points into a queued Market. Mutant queues an immediate
+Anomaly when one has already been chosen, otherwise it adds a future extra choice.
+The new income handler applies the recurring income augment.
+
+Arcane now implements the shop-hook interface. Its combine handler retains an
+existing Anomaly; otherwise it copies all modifiers from the first anomalous source
+over the anchor's modifiers, preserving unrelated anchor keys as the original does.
+
+2,400 original-engine cases pass 230,976 checks (`--arcane-augments-only`), covering
+both paces, human/AI board locks, inventory and pool constraints, absent and existing
+Anomalies, Shimmer thresholds, immediate combine counts, inherited modifiers, pool
+state, IDs and RNG. Each case opens the next queued offer to verify the connection
+to round-start behavior. Existing Arcane round and offer checks also pass. Runtime
+match-controller registration, Arcane post-combat and AI hooks remain outstanding.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
