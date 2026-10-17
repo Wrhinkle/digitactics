@@ -16,7 +16,7 @@ public sealed partial class CombatSimulation
                 case "drg_night_veil": On(CombatHook.DamageTaken, (c, _) => {
                     if (u.Dragonlands.Veil || u.Health >= u.MaxHealth * 0.6) return;
                     u.Dragonlands.Veil = true; u.InvulnerableUntil = Time + 1; u.Stun = 0;
-                    u.BurnSource = null; u.BurnUntil = 0; u.BurnAccumulated = 0; c.Buff(u, CombatStat.AttackSpeed, 0.4);
+                    u.BurnSource = null; u.BurnUntil = 0; u.BurnAccumulated = 0; c.Buff(u, CombatStat.AttackSpeed, 0.4); c.Text(u, "Night Veil");
                 }); break;
                 case "drg_herald_banner": Start(_ => { foreach (var a in Row(1)) a.AttackSpeed *= 1.3; }); break;
                 case "drg_chalice": Start(_ => { foreach (var a in Row(1)) a.AbilityPower += 30; }); break;
@@ -46,32 +46,32 @@ public sealed partial class CombatSimulation
                 case "drg_zephyr": Start(c => {
                     var spot = new HexCell(Columns - 1 - u.Cell.Column, 7 - u.Cell.Row);
                     var enemy = units.Where(e => e.Alive && e.Team != u.Team).OrderBy(e => e.Cell.DistanceTo(spot)).FirstOrDefault();
-                    if (enemy is not null) c.Stun(enemy, 4);
+                    if (enemy is not null) { c.Stun(enemy, 4); c.Text(enemy, "Blown away"); }
                 }); break;
                 case "drg_g_axe": Start(_ => u.AttackDamage += u.BaseAttackDamage * 0.03 * bank); On(CombatHook.Attack, (_, _) => dragonAxe[u.Team]++); break;
                 case "drg_g_blade":
                     int bladeGold = 0; Start(_ => u.AttackSpeed *= 1 + 0.03 * bank);
-                    On(CombatHook.Attack, (c, _) => { if (bladeGold >= 3 || c.Random() >= 0.1) return; bladeGold++; dragonGold[u.Team]++; }); break;
+                    On(CombatHook.Attack, (c, _) => { if (bladeGold >= 3 || c.Random() >= 0.1) return; bladeGold++; dragonGold[u.Team]++; c.Text(u, "+1 gold"); }); break;
                 case "drg_g_staff":
                     int staffGold = 0; Start(_ => u.AbilityPower += 4 * bank);
-                    On(CombatHook.Kill, (c, _) => { if (staffGold >= 6 || c.Random() >= 0.8) return; staffGold += 2; dragonGold[u.Team] += 2; }); break;
+                    On(CombatHook.Kill, (c, _) => { if (staffGold >= 6 || c.Random() >= 0.8) return; staffGold += 2; dragonGold[u.Team] += 2; c.Text(u, "+2 gold"); }); break;
                 case "drg_g_mail":
                     int stacks = 0;
-                    On(CombatHook.DamageTaken, (_, _) => { if (stacks >= 40) return; stacks++; u.Armor++; u.MagicResist++; u.MaxHealth += 8; u.Health += 8; if (stacks == 40) dragonGold[u.Team] += 2; }); break;
+                    On(CombatHook.DamageTaken, (_, _) => { if (stacks >= 40) return; stacks++; u.Armor++; u.MagicResist++; u.MaxHealth += 8; u.Health += 8; if (stacks == 40) { dragonGold[u.Team] += 2; Emit("text", u, text: "+2 gold"); } }); break;
                 case "drg_g_gem":
                     bool done = false;
                     On(CombatHook.Tick, (_, _) => {
                         if (done || Time < 15 || !u.Alive) return; done = true;
                         var alive = units.Where(a => a.Alive && a.Team == u.Team && !a.Summoned).ToArray();
                         foreach (var a in alive) a.Equipment.Amp += 0.15 + 0.02 * bank;
-                        dragonGold[u.Team] += alive.Length / 2;
+                        int gold = alive.Length / 2; if (gold > 0) { dragonGold[u.Team] += gold; Emit("text", u, text: $"+{gold} gold"); }
                     }); break;
                 case "drg_g_investor": On(CombatHook.Death, (_, _) => dragonInvestor[u.Team]++); break;
                 case "drg_g_diamond":
                     bool high = false, low = false;
                     On(CombatHook.DamageTaken, (_, _) => {
-                        if (!high && u.Health < u.MaxHealth * 0.66) { high = true; u.InvulnerableUntil = Time + 1; dragonGold[u.Team]++; }
-                        if (!low && u.Health < u.MaxHealth * 0.33) { low = true; u.InvulnerableUntil = Time + 1; dragonGold[u.Team]++; }
+                        if (!high && u.Health < u.MaxHealth * 0.66) { high = true; u.InvulnerableUntil = Time + 1; dragonGold[u.Team]++; Emit("text", u, text: "+1 gold"); }
+                        if (!low && u.Health < u.MaxHealth * 0.33) { low = true; u.InvulnerableUntil = Time + 1; dragonGold[u.Team]++; Emit("text", u, text: "+1 gold"); }
                     }); break;
                 case "drg_g_crown": double next = 0;
                     On(CombatHook.Attack, (c, e) => { if (Time < next || !e.Target!.Alive) return; next = Time + 4; if (bank > 0) c.Damage(u, e.Target, 20 * bank, DamageKind.True); }); break;

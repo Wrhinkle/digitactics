@@ -13,6 +13,7 @@ public sealed record DragonlandsCombatRewards(int Gold, int Axe, int Investor, i
 
 public sealed partial class CombatSimulation
 {
+    private static readonly string[] CopycatNames = ["Blast", "Explosion", "Time Stop", "Barrage", "Restore"];
     private readonly int[] dragonTrainingKills = new int[2];
     private readonly int[] dragonGold = new int[2], dragonAxe = new int[2], dragonInvestor = new int[2];
     private readonly int[] dragonLagoon = new int[2], dragonDoots = new int[2], dragonWish = new int[2];
@@ -21,16 +22,19 @@ public sealed partial class CombatSimulation
     private bool CastDragonlandsAbility(CombatUnit unit, CombatUnit target, double value)
     {
         if (unit.Line.Ability.Kind != "copy") return false;
-        switch ((int)(random.Next() * 5))
+        int choice = (int)(random.Next() * 5);
+        Emit("text", unit, text: CopycatNames[choice]);
+        switch (choice)
         {
-            case 0: AbilityDamage(unit, target, value * 1.4); break;
-            case 1: foreach (var enemy in EnemiesNear(unit, target.Cell, 1)) AbilityDamage(unit, enemy, value); break;
-            case 2: StunUnit(target, 1.5); AbilityDamage(unit, target, value); break;
+            case 0: Emit("beam", unit, target); AbilityDamage(unit, target, value * 1.4); break;
+            case 1: Burst(target.Cell, 1, unit.Team); foreach (var enemy in EnemiesNear(unit, target.Cell, 1)) AbilityDamage(unit, enemy, value); break;
+            case 2: Emit("beam", unit, target); StunUnit(target, 1.5); AbilityDamage(unit, target, value); break;
             case 3:
                 for (int i = 0; i < 5; i++) {
                     var pool = units.Where(e => e.Alive && e.Team != unit.Team).ToArray();
                     if (pool.Length == 0) break;
-                    AbilityDamage(unit, pool[(int)(random.Next() * pool.Length)], value * 0.4);
+                    var enemy = pool[(int)(random.Next() * pool.Length)];
+                    Emit("shot", unit, enemy, big: true); AbilityDamage(unit, enemy, value * 0.4);
                 }
                 break;
             case 4:

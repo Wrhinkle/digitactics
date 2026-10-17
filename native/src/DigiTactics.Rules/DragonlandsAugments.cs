@@ -43,7 +43,7 @@ public sealed partial class CombatSimulation
                     On(CombatHook.DamageDealt, (c, e) => {
                         var u = e.Unit!; var target = e.Target!;
                         if (enabled && u.Line.Slots == 2 && target.Alive && target.Health < target.MaxHealth * 0.18)
-                            c.Damage(u, target, target.Health + target.Shield + 1, DamageKind.True);
+                            { c.Text(target, "Finished"); c.Damage(u, target, target.Health + target.Shield + 1, DamageKind.True); }
                     }); break;
                 case "drg_axiom": On(CombatHook.Kill, (_, e) => { var u = e.Unit!; if (u.Alive) u.Mana = Math.Min(u.MaxMana, u.Mana + 30); }); break;
                 case "drg_bigfriend":

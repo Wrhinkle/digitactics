@@ -32,8 +32,10 @@ battles and 87,541 ordered cues, including traits, items, augments, revival, sum
 labels and Duos effects. Auto Chess and Gizmos add 730 battles and 295,415 cues
 covering transforms, mutations, summons, relics, defensive effects and Duos state.
 Reckoning adds 392 battles and 128,714 cues, including hook pulls, possession,
-revival, PvE scaling, shadow/radiant item effects and Duos. The other sets' visual
-cues and the production renderer remain unfinished.
+revival, PvE scaling, shadow/radiant item effects and Duos. Dragonlands adds 374
+battles and 137,414 cues covering all Copycat outcomes, traits, items, executes,
+Mirage and Duos. The remaining sets' visual cues and the production renderer
+remain unfinished.
 
 ## Boundaries
 
