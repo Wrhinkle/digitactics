@@ -26,6 +26,14 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
     private OfferRules Rules => state.Rules.Offers!;
     private int tierStage = -1, tier;
 
+    public void SetAugmentTier(int stage, int value)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(stage, 1);
+        if (value is < 1 or > 3) throw new ArgumentOutOfRangeException(nameof(value));
+        tierStage = stage;
+        tier = value;
+    }
+
     public OfferDefinition? At(RoundPosition round)
     {
         var scheduled = Rules.Schedule.FirstOrDefault(o => o.Stage == round.Stage && o.Round == round.Round);

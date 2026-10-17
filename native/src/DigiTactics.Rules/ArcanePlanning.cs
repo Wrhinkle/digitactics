@@ -5,6 +5,8 @@ namespace DigiTactics.Rules;
 
 public sealed class ArcanePlanningState
 {
+    public int MarketsQueued { get; set; }
+    public int JunkRounds { get; set; }
     public int MarketsOpened { get; set; }
     public bool MarketPlus { get; set; }
     public int SyndicateLevel { get; set; }
@@ -30,6 +32,35 @@ public sealed class ArcanePlanning(MatchState state)
         for (int i = list.Length - 1; i > 0; i--) { int j = (int)(state.Random.Next() * (i + 1)); (list[i], list[j]) = (list[j], list[i]); }
         return list;
     }
+    public void RoundStart(MatchPlayer player, RoundPosition round, MatchOffers offers)
+    {
+        var m = player.Mechanics.Arcane;
+        if (player.Augments.Contains("arc_a_rolls")) player.Shop.FreeRolls++;
+        if (state.ArcanePortal == "rolls" && round.Round == 1 && round.Stage >= 2) player.Shop.FreeRolls += 2;
+        if (state.ArcanePortal == "golden" && round == new RoundPosition(1, 2)) offers.SetAugmentTier(2, 2);
+        if (state.ArcanePortal == "prismatic" && round == new RoundPosition(4, 1)) offers.SetAugmentTier(4, 3);
+        if (player.Offer is not null) return;
+        if (m.PendingAnomaly)
+        {
+            m.PendingAnomaly = false;
+            var options = AnomalyOptions(player, []);
+            if (options.Length > 0) { player.Offer = new("arcAnomaly", options, 6, null); return; }
+        }
+        if (m.MarketsQueued > 0)
+        {
+            m.MarketsQueued--;
+            m.MarketsOpened++;
+            player.Offer = new("arcMarket", MarketOptions(player, []), 0, null);
+            return;
+        }
+        if (!player.Roster.Entries.Any(e => e.Unit.Line == "arc_chaosdromon")) return;
+        m.JunkRounds++;
+        if (m.JunkRounds < (state.Rules.Pace == "normal" ? 3 : 2)) return;
+        m.JunkRounds = 0;
+        var parts = new[] { "flame", "bots", "rod", "destruct", "buster" };
+        player.Offer = new("arcJunk", Shuffle(parts.Where(id => !m.Junk.Contains(id))).Take(2).Append("spare").ToArray(), 0, null);
+    }
+
     public string[] MarketOptions(MatchPlayer player, IReadOnlyList<string> exclude)
     {
         var m = player.Mechanics.Arcane; int tier = m.MarketsOpened >= 2 ? 2 : 1;

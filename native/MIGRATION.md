@@ -1497,3 +1497,23 @@ both paces, trait tiers, PvE/PvP, both sides, stages, unit tiers/forms and summo
 Both handlers still require production match-controller registration.
 
 Validation: **159,453,608 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+
+### Arcane round-start offers and portal tiers
+
+`ArcanePlanning.RoundStart` now applies recurring augment and portal free rolls,
+forces the Golden/Prismatic portal augment tier through the shared `MatchOffers`
+instance, and opens deferred offers in original priority order: existing offer,
+pending Anomaly, queued Market, then Chaosdramon Junk. Markets advance their tier
+counter before options are drawn. Junk progress pauses while a higher-priority
+offer is active, counts a bench Chaosdramon, uses the pace-specific interval, and
+excludes owned parts while always offering spare parts.
+
+512 original-engine traces run ten rounds with repeated callbacks, passing 51,712
+checks (`--arcane-rounds-only`). They cover both paces, portal tier effects on later
+augment options, pre-existing offers, full anomaly history, market queues, all Junk
+parts owned, board/bench/absent Chaosdramon, and subsequent RNG state. The existing
+136,808 Arcane offer and 529,782 shared offer checks also pass. Production round
+hook registration and the remaining Arcane planning effects are still outstanding.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
