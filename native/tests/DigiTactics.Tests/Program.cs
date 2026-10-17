@@ -115,6 +115,7 @@ foreach (var trace in damageFixtures.RootElement.EnumerateArray())
 assertions += ModelAssetParity.Run(root);
 assertions += TextureParity.Run(root);
 assertions += MaterialParity.Run(root);
+assertions += MeshParity.Run(root);
 assertions += RigParity.Run(root);
 assertions += CombatSceneParity.Run(root, catalog);
 assertions += CombatEventParity.Run(root, catalog);

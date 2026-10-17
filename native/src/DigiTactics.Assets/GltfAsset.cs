@@ -10,8 +10,15 @@ public sealed class GltfAsset : IDisposable
 {
     private readonly JsonDocument document;
     private readonly byte[] binary;
+    private readonly JsonElement[] accessors;
+    private readonly JsonElement[] views;
     public JsonElement Root => document.RootElement;
-    private GltfAsset(JsonDocument document, byte[] binary) { this.document = document; this.binary = binary; }
+    private GltfAsset(JsonDocument document, byte[] binary)
+    {
+        this.document = document; this.binary = binary;
+        accessors = Root.TryGetProperty("accessors", out var a) ? a.EnumerateArray().ToArray() : [];
+        views = Root.TryGetProperty("bufferViews", out var v) ? v.EnumerateArray().ToArray() : [];
+    }
 
     public static GltfAsset LoadCompressed(byte[] bytes)
     {
@@ -43,7 +50,7 @@ public sealed class GltfAsset : IDisposable
 
     public ReadOnlyMemory<byte> BufferView(int index)
     {
-        var view = Root.GetProperty("bufferViews")[index];
+        var view = views[index];
         if (view.GetProperty("buffer").GetInt32() != 0 || view.TryGetProperty("extensions", out var extensions) && extensions.TryGetProperty("EXT_meshopt_compression", out _))
             throw new InvalidDataException("Model has not been converted for native loading.");
         int start = Integer(view, "byteOffset"), length = view.GetProperty("byteLength").GetInt32();
@@ -61,7 +68,7 @@ public sealed class GltfAsset : IDisposable
 
     public double[] AccessorElement(int index, int element)
     {
-        var accessor = Root.GetProperty("accessors")[index];
+        var accessor = accessors[index];
         if (accessor.TryGetProperty("sparse", out _)) throw new NotSupportedException("Sparse accessor conversion is required.");
         if (element < 0 || element >= accessor.GetProperty("count").GetInt32()) throw new ArgumentOutOfRangeException(nameof(element));
         string type = accessor.GetProperty("type").GetString()!;
@@ -71,7 +78,7 @@ public sealed class GltfAsset : IDisposable
         bool normalized = accessor.TryGetProperty("normalized", out var n) && n.GetBoolean();
         var result = new double[components];
         if (!accessor.TryGetProperty("bufferView", out var viewIndex)) return result;
-        int viewId = viewIndex.GetInt32(); var view = Root.GetProperty("bufferViews")[viewId];
+        int viewId = viewIndex.GetInt32(); var view = views[viewId];
         int rows = type.StartsWith("MAT", StringComparison.Ordinal) ? type[3] - '0' : components;
         int columnBytes = type.StartsWith("MAT", StringComparison.Ordinal) ? (rows * size + 3) & ~3 : rows * size;
         int packed = type.StartsWith("MAT", StringComparison.Ordinal) ? columnBytes * rows : columnBytes;

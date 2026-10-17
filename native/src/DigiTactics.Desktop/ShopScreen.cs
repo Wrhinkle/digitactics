@@ -10,6 +10,15 @@ internal sealed class ShopScreen
     private ShopSession session;
     private string status = "Choose a ruleset to explore the native shop and roster.";
     internal int OwnedCount => session.Roster.Units.Count;
+    internal (string Variant, string Line, int Stage)? Preview
+    {
+        get
+        {
+            var owned = session.Roster.Units.LastOrDefault();
+            string? line = owned?.Line ?? session.Slots.FirstOrDefault(id => id is not null);
+            return line is null ? null : (session.Rules.Id, line, owned?.Stage ?? 0);
+        }
+    }
 
     public ShopScreen(ContentCatalog catalog)
     {
@@ -20,10 +29,10 @@ internal sealed class ShopScreen
     public void Draw(int2 size)
     {
         ImGui.SetNextWindowPos(new float2(20, 20));
-        ImGui.SetNextWindowSize(new float2(size.X - 40, size.Y - 40));
+        ImGui.SetNextWindowSize(new float2(size.X - 40, Math.Max(300, size.Y * .53f)));
         ImGui.Begin("Digi-Tactics - native migration"u8, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
         ImGui.Text("DIGI-TACTICS / BRUTAL"u8);
-        ImGui.Text("Shop and roster sandbox. Full matches, 3D rendering and online play are still being ported."u8);
+        ImGui.Text("Shop and model workbench. Full matches, production rendering and online play are still being ported."u8);
         ImGui.Separator();
         if (ImGui.BeginCombo("Ruleset / pace"u8, $"{session.Rules.Name} / {session.Rules.Pace}"))
         {

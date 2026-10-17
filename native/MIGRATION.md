@@ -342,10 +342,23 @@ disposed explicitly; transfers preserve the caller's pixel-store/PBO state.
 Packaged smoke uploads every texture and checks exact pixel readback, actual sampler
 parameters, internal formats and mip dimensions. A non-default pixel-store probe
 also checks transfer isolation and restoration.
-This does not establish rendering parity: material shaders, animation blending,
-authored fallback motions, normalization and GPU model drawing remain unfinished.
+The workbench now renders the first shop offer or most recently owned model below
+the shop. Static vertex/index buffers are shared across mesh instances; GPU bone
+palettes drive authored idle clips. Draws apply source rotation, sidedness, cutout
+thresholds, depth-write behavior and color textures. The preview fits posed bounds
+and uses provisional diffuse lighting, rather than the production arena setup.
+Mesh loading covers 7,850,058 vertices in 2,688 triangle primitives across all 718
+assets. Reference fixtures use the original GLTFParser and SkinnedMesh vertex
+evaluation at two idle times: 66,228 checks cover sampled geometry/weights and posed
+bounds. Nonfinite original bounds are excluded from reference equality; rig repair
+checks remain separate. Accessor and buffer-view indexing is cached per asset to
+avoid repeated JSON array traversal during mesh loading. Packaged smoke renders
+GeoGreymon and Hagurumon through the shop purchase sequence and checks visible pixels.
+This does not establish rendering parity: production material shaders (including
+normal/roughness/specular maps), transparent depth sorting, animation blending,
+authored fallback motions and arena normalization/lighting remain unfinished.
 
-Latest verification: the native test suite passes 121,093,583 assertions.
+Latest verification: the native test suite passes 121,159,811 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

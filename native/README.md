@@ -1,6 +1,6 @@
 # Digi-Tactics native BRUTAL port
 
-This is the first executable migration milestone, not a replacement for v1.0.14.
+This development workbench is not yet a replacement for v1.0.14.
 It is a native C# application using BRUTAL GLFW, OpenGL and ImGui. No Electron,
 WebView, JavaScript interpreter or browser runs inside it.
 
@@ -25,6 +25,9 @@ For manual development, run dotnet commands from `native/` so `global.json` appl
 The sandbox starts with 50 gold. Buy units, refresh the shop, combine copies,
 sell units, reset the sandbox, and select any of the 22 ruleset/pace catalogs.
 Selling uses the original star/tier discount rules, including Dragonlands price premiums.
+Below the shop, an animated native model preview shows the most recently owned unit
+(or the first shop offer when the roster is empty). It uses authored idle clips,
+GPU skinning and original textures with provisional preview lighting.
 
 The shared combat presentation stream is checked against 156 original-engine battles
 (42,626 ordered cues), including cast names, projectiles, bursts, critical damage,
@@ -60,8 +63,12 @@ materials from the original loader, including the game's cutout/unlit correction
 texture color spaces, UV channels, filtering and wrapping (26,052 checks).
 The packaged GPU smoke uploads all 1,142 textures, checks exact pixel readback,
 sampler settings, storage color formats and complete mip chains through BRUTAL OpenGL.
-Model drawing/shaders, animation blending/fallback motions and production screens
-remain unfinished.
+Native mesh loading assembles all 7,850,058 vertices across 718 assets; 66,228 checks
+compare sampled geometry, normalized skin weights and posed bounds with Three.js.
+The workbench draws models with shared vertex/index buffers and GPU bone palettes;
+packaged smoke verifies visible model pixels as well as UI purchase behavior.
+Production material shaders, arena sizing/lighting, animation blending/fallback
+motions and production screens remain unfinished.
 
 ## Boundaries
 

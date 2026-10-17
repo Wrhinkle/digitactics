@@ -46,7 +46,9 @@ public static class NativeApplication
                 ImGui.GetStyle().FontSizeBase = 18;
                 using var platform = new GlfwBackend(window, GlfwBackend.ClientApi.OpenGL);
                 using var renderer = new OpenGlBackend();
+                using var preview = new ModelPreview();
                 var screen = new ShopScreen(catalog);
+                var clock = System.Diagnostics.Stopwatch.StartNew();
                 int frames = 0;
                 while (!window.ShouldClose)
                 {
@@ -62,11 +64,15 @@ public static class NativeApplication
                     }
                     ImGui.NewFrame();
                     screen.Draw(window.Size);
+                    if (screen.Preview is { } selected) preview.Select(selected.Variant, selected.Line, selected.Stage);
                     ImGui.Render();
                     var size = window.FramebufferSize;
                     OpenGl.Viewport(0, 0, size.X, size.Y);
                     OpenGl.ClearColor(new float4(0.025f, 0.035f, 0.06f, 1));
                     OpenGl.Clear(GlClearBit.Color);
+                    preview.Draw(size.X, (int)(size.Y * .42), smoke ? frames / 60.0 : clock.Elapsed.TotalSeconds);
+                    if (smoke && frames == 9) ModelPreview.VerifyVisible(size.X, (int)(size.Y * .42));
+                    OpenGl.Viewport(0, 0, size.X, size.Y);
                     renderer.RenderDrawData(ImGui.GetDrawData());
                     if (smoke && frames == 9 && capture is not null)
                         FrameCapture.SaveBitmap(capture, size.X, size.Y);
@@ -75,6 +81,7 @@ public static class NativeApplication
                     if (smoke && frames >= 10)
                     {
                         if (screen.OwnedCount != 1) throw new InvalidOperationException("Native UI purchase smoke failed.");
+                        if (preview.DrawCalls == 0) throw new InvalidOperationException("Native model drawing smoke failed.");
                         Console.WriteLine($"Native smoke passed: {frames} rendered BRUTAL frames, native UI purchase, {catalog.Variants.Length} catalogs.");
                         break;
                     }
