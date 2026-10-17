@@ -16,6 +16,7 @@ public sealed class CombatUnit
     public bool Summoned { get; internal set; }
     public int BlossomKills { get; internal set; }
     public double TimeRune { get; internal set; }
+    internal GizmosUnitState Gizmos { get; } = new();
     internal bool FrenzyActive;
     internal bool FatesGrace;
     public int CombatGold { get; internal set; }

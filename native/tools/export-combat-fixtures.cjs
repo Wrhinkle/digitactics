@@ -412,6 +412,56 @@ for (const augment of galaxyAugments) for (const duos of [false,true]) for (cons
     setup:{sideA:effects(a),sideB:effects(b)}});
 }
 
+// Every Gizmos custom ability with production mechanic callbacks and no traits/items hooks.
+DT.Sets.activate('gizmos', 'hyper');
+const gizmosKinds = [...new Set(DT.SHOP_LINES.map(l => l.type))].filter(kind => !kinds.includes(kind));
+for (const kind of gizmosKinds) for (const stage of [0, 1, 2]) for (const cols of [7, 14]) {
+  const pace = cols === 7 ? 'normal' : 'hyper'; DT.Sets.activate('gizmos', pace);
+  const primary = DT.SHOP_LINES.find(l => l.type === kind);
+  const galaxy = null;
+  const critItem = Object.keys(DT.ITEMS).find(id => DT.ITEMS[id].component && DT.ITEMS[id].stats.crit);
+  let accepted = false;
+  for (let attempt = 0; attempt < 12 && !accepted; attempt++) {
+    const seed = 130000 + gizmosKinds.indexOf(kind) * 6 + stage * 2 + (cols === 14 ? 1 : 0) + attempt * 100000, pick = DT.makeRng(seed);
+    const entries = main => Array.from({ length: 5 }, (_, i) => ({ line: main && i === 0 ? primary.id : DT.SHOP_LINES[Math.floor(pick() * DT.SHOP_LINES.length)].id,
+      stage, c: i + 1, r: i === 0 ? 6 : 4 + i % 2, items: i === 0 && critItem ? [critItem] : [] }));
+    const sideA = entries(true), sideB = entries(false);
+    const cb = new DT.Combat({ units: sideA, noTraits: true, cols }, { units: sideB, noTraits: true, cols }, { seed, info: { mech: { galaxy } } });
+    const samples = [{ tick: 0, units: snapshots(cb) }]; let tick = 0;
+    while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+    if (!cb.events.some(e => e.type === 'cast' && e.at === 0)) continue;
+    accepted = true;
+    const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+    fixtures.push({ name: `gizmos-ability/${kind}/${stage}/${cols}`, variant: `gizmos/${pace}`, seed, cols,
+      sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, meeps: cb.teamFx.map(fx => fx.meep || 0),
+      setup: { sideA: { noTraits: true }, sideB: { noTraits: true }, galaxy } });
+  }
+  if (!accepted) throw new Error(`Unable to exercise Gizmos ability ${kind}/${stage}/${cols}`);
+}
+
+DT.Sets.activate('gizmos', 'hyper');
+const gizmosHookItems = Object.keys(DT.ITEMS).filter(id => DT.ITEMS[id].hooks);
+const gizmoItemCases = gizmosHookItems.flatMap(item => [0, 2].map(stage => ({ item, stage }))).concat(Array.from({ length: 8 }, (_, n) => ({ item: null, stage: n % 3 })));
+for (const { item, stage } of gizmoItemCases) {
+  const pace = stage === 0 ? 'normal' : 'hyper';
+  DT.Sets.activate('gizmos', pace);
+  const cols = stage === 2 ? 14 : 7, seed = 140000 + fixtures.length, pick = DT.makeRng(seed);
+  const candidates = DT.SHOP_LINES;
+  const entries = () => Array.from({ length: 6 }, (_, i) => ({ line: candidates[Math.floor(pick() * candidates.length)].id,
+    stage, c: i, r: 4 + i % 2,
+    items: item ? (i === 0 ? [item, item] : [item]) : Array.from({ length: 3 }, () => gizmosHookItems[Math.floor(pick() * gizmosHookItems.length)]) }));
+  const sideA = entries(), sideB = entries();
+  const cb = new DT.Combat({ units: sideA, cols, noTraits: true }, { units: sideB, cols, noTraits: true }, { seed });
+  const samples = [{ tick: 0, units: snapshots(cb) }];
+  let tick = 0;
+  while (!cb.done && tick < 2000) { cb.step(); tick++; if (tick % 15 === 0 || cb.done) samples.push({ tick, units: snapshots(cb) }); }
+  const convert = a => a.map(u => ({ line: u.line, stage: u.stage, column: u.c, row: u.r, items: u.items }));
+  fixtures.push({ name: `gizmos-item/${item || 'mixed'}/${stage}/${seed}`, variant: `gizmos/${pace}`, seed, cols,
+    sideA: convert(sideA), sideB: convert(sideB), samples, tick, winner: cb.winner, time: cb.t, setup: {sideA: {noTraits:true},sideB:{noTraits:true}},
+    traitCounts: cb.traitCounts });
+}
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

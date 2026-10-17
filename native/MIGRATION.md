@@ -95,7 +95,14 @@ The current executable is a migration workbench. It must not replace the public 
   ownership with production traits and items. Summons rebind item hooks.
   Consumables, augment grants, rewards and other planning rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 9,721,549 assertions, compiles
+- Gizmos: four custom abilities (Snipe, Grab, Devour, Visions), Colossus immunity,
+  spell wards and the combat mechanic callbacks. All 22 standard/overclocked
+  held-item hook definitions are bound, including backup revival, decoy summons,
+  shroud restoration, ally healing, auras and timed slows. Twenty-four ability
+  battles and 52 item battles compare the production callbacks with traits disabled.
+  Traits, Digivice upgrades, Glutton modifiers and planning rules remain pending.
+
+Latest verification: `./native/build.ps1 -Publish` passes 10,942,972 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

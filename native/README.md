@@ -94,6 +94,9 @@ to be a Vulkan renderer or the final game UI.
   pilot ejection. All 17 held-item hook definitions, nine combat augments, Stars
   counting and shared Duos augments are covered by 82 additional reference fights.
   Consumables, grants, rewards and planning rules remain pending.
+- Gizmos: four custom abilities, Colossus immunity, spell wards and all 22
+  standard/overclocked held-item hook definitions, verified by 76 reference battles.
+  Traits, upgrades, Glutton modifiers and planning rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.
