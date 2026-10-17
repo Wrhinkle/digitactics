@@ -27,8 +27,10 @@ Selling uses the original star/tier discount rules, including Dragonlands price 
 
 The shared combat presentation stream is checked against 156 original-engine battles
 (42,626 ordered cues), including cast names, projectiles, bursts, critical damage,
-leap origins and shared item effects. Set-specific visual cues and the production
-renderer remain unfinished.
+leap origins and shared item effects. Fates and Faction Wars add 305 production
+battles and 87,541 ordered cues, including traits, items, augments, revival, summon
+labels and Duos effects. The other sets' visual cues and the production renderer
+remain unfinished.
 
 ## Boundaries
 

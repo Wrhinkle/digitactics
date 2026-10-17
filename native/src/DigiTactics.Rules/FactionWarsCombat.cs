@@ -48,7 +48,7 @@ internal static class FactionWarsCombat
                         {
                             charged = true;
                             foreach (var u in c.Mine.Where(u => u.Alive && u.Traits.Contains(id)))
-                            { c.Heal(u, u.MaxHealth * Parameter("heal")); u.AttackDamage += u.BaseAttackDamage * value; u.AbilityPower += UnitValues.Round(value * 100); }
+                            { c.Heal(u, u.MaxHealth * Parameter("heal")); u.AttackDamage += u.BaseAttackDamage * value; u.AbilityPower += UnitValues.Round(value * 100); c.Text(u, "DigiSoul"); }
                         }
                         On(CombatHook.Tick, (c, _) => { if (!charged && c.Time >= 10) Charge(c); }, 1);
                         On(CombatHook.Death, (c, _) => { if (!charged) Charge(c); }); break;
@@ -57,7 +57,7 @@ internal static class FactionWarsCombat
                         On(CombatHook.DamageTaken, (c, e) => {
                             var u = e.Unit!;
                             if (!Member(u) || evolved.Contains(u.Id) || u.Health >= u.MaxHealth * 0.5) return;
-                            evolved.Add(u.Id); c.Heal(u, u.MaxHealth * value); c.Buff(u, CombatStat.AttackSpeed, value); u.Equipment.Reduction += Parameter("dr");
+                            evolved.Add(u.Id); c.Heal(u, u.MaxHealth * value); c.Buff(u, CombatStat.AttackSpeed, value); u.Equipment.Reduction += Parameter("dr"); c.Text(u, "Spirit Evolution"); c.Effect("shield", u);
                         }); break;
                     case "XF":
                         On(CombatHook.CombatReady, (c, _) => {
@@ -75,24 +75,24 @@ internal static class FactionWarsCombat
                                 var enemies = combat.Units.Where(u => u.Alive && u.Team != c.Team).ToArray();
                                 if (enemies.Length == 0) break;
                                 var target = enemies[(int)(c.Random() * enemies.Length)];
-                                c.Damage(sources[i % sources.Length], target, value); c.Blind(target);
+                                c.Effect("shot", sources[i % sources.Length], target); c.Damage(sources[i % sources.Length], target, value); c.Blind(target);
                             }
                         }, 2); break;
                     case "FUN":
-                        On(CombatHook.Attack, (c, e) => { if (Member(e.Unit!) && e.Unit!.Attacks % 2 == 0 && e.Target!.Alive) c.Weaken(e.Target, value, 3); }); break;
+                        On(CombatHook.Attack, (c, e) => { if (Member(e.Unit!) && e.Unit!.Attacks % 2 == 0 && e.Target!.Alive) { c.Weaken(e.Target, value, 3); c.Text(e.Target, "Muck"); } }); break;
                     case "KN":
                         On(CombatHook.BeforeDamageTaken, (c, e) => {
                             var u = e.Target!;
                             if (Member(u)) e.Reduction += value * (combat.Units.Any(a => a != u && a.Alive && a.Team == u.Team && Member(a) && a.Cell.DistanceTo(u.Cell) == 1) ? 2 : 1);
                         }); break;
                     case "FL": Each(u => { u.AbilityBurn = true; u.BonusAgainstBurning = value; }); break;
-                    case "FR": On(CombatHook.Attack, (c, e) => { if (Member(e.Unit!) && e.Target!.Alive && c.Random() < value) c.Stun(e.Target, 1); }); break;
+                    case "FR": On(CombatHook.Attack, (c, e) => { if (Member(e.Unit!) && e.Target!.Alive && c.Random() < value) { c.Stun(e.Target, 1); c.Text(e.Target, "Frozen"); } }); break;
                     case "UND":
                         var revived = new HashSet<int>();
                         On(CombatHook.Lethal, (c, e) => {
                             var u = e.Unit!;
                             if (!Member(u) || !revived.Add(u.Id)) return;
-                            u.Health = 1; u.InvulnerableUntil = c.Time + 1; c.After(1, () => c.Heal(u, u.MaxHealth * value), u);
+                            u.Health = 1; u.InvulnerableUntil = c.Time + 1; c.Text(u, "Undying"); c.After(1, () => c.Heal(u, u.MaxHealth * value), u);
                         }); break;
                     case "HB": All(u => { double n = value * (u.Traits.Contains(id) ? 2 : 1); u.Armor += n; u.MagicResist += n; u.AbilityPower += n; }); break;
                     case "FA": On(CombatHook.CombatStart, (c, _) => { foreach (var u in combat.Units.Where(u => u.Team != c.Team)) { u.Armor -= value; u.MagicResist -= value; } }); break;

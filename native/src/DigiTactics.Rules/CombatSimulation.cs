@@ -267,11 +267,11 @@ public sealed partial class CombatSimulation
             Hooks.Fire(CombatHook.Heal, unit, new() { Amount = unit.Health - before }, CombatHook.AnyHeal);
     }
 
-    private void Emit(string type, CombatUnit unit, CombatUnit? target = null, double amount = 0,
+    internal void Emit(string type, CombatUnit unit, CombatUnit? target = null, double amount = 0,
         DamageKind? kind = null, bool critical = false, string? text = null, bool big = false) =>
         events.Add(new(Time, type, unit.Id, target?.Id, amount, kind, critical, text,
             type == "leap" ? unit.Cell : null, Big: big));
 
-    private void Burst(HexCell cell, int radius, int team) =>
+    internal void Burst(HexCell cell, int radius, int team) =>
         events.Add(new(Time, "burst", -1, Cell: cell, Radius: radius, Team: team));
 }

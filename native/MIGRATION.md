@@ -250,10 +250,16 @@ Shared presentation events now retain cast names, projectile/impact types, ampli
 hit flags, damage kind and critical flags, floating labels, area position/radius/team
 and leap origins. A separate 156-battle reference suite compares 42,626 ordered cues
 from all 14 shared abilities and 36 shared items, including criticals and all three
-damage kinds. It also catches duplicate shield cues. Set-specific presentation
-callbacks and their complete replay coverage remain pending; this is not a renderer.
+damage kinds. It also catches duplicate shield cues. Fates and Faction Wars presentation callbacks now add 305 production battles
+with 87,541 ordered cues across abilities, trait breakpoints, items, augments and
+Solo/Duos. Reference replay preserves side modifiers and checks the original
+battle duration/winner; guards require all authored floating labels to occur.
+Fates covers Lunar growth, Ascension, Push-ups, Soulmon, Rewind, shield/revival,
+artifact and bounce-projectile cues. Faction Wars covers DigiSoul, Spirit Evolution,
+Insectoid shots/blind misses, Muck, freezing and Undying. The other sets' presentation
+callbacks and complete replay coverage remain pending; this is not a renderer.
 
-Latest verification: the native test suite passes 100,803,791 assertions.
+Latest verification: the native test suite passes 100,891,637 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

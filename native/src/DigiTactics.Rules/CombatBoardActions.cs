@@ -56,6 +56,6 @@ public sealed partial class CombatSimulation
     {
         if (unit.Stage >= 2) return;
         unit.Stage++; unit.MaxHealth = UnitValues.Round(unit.MaxHealth * 1.5);
-        unit.AttackDamage *= 1.5; unit.BaseAttackDamage *= 1.5;
+        unit.AttackDamage *= 1.5; unit.BaseAttackDamage *= 1.5; Emit("text", unit, text: "Full Moon");
     }
 }

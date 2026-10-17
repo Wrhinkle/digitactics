@@ -15,23 +15,25 @@ public sealed partial class CombatSimulation
                 break;
             case "blossom":
                 var weakest = units.Where(u => u.Alive && u.Team != unit.Team).OrderBy(u => u.Health).FirstOrDefault() ?? target;
-                AbilityDamage(unit, weakest, value);
-                if (!weakest.Alive) unit.BlossomKills++;
+                Emit("beam", unit, weakest); AbilityDamage(unit, weakest, value);
+                if (!weakest.Alive) { unit.BlossomKills++; Emit("text", unit, text: "+2 AP"); }
                 break;
             case "burst":
+                Burst(target.Cell, 1, unit.Team);
                 foreach (var enemy in EnemiesNear(unit, target.Cell, 1)) { StunUnit(enemy, 1.5); AbilityDamage(unit, enemy, value); }
                 break;
             case "frenzy":
                 if (!unit.FrenzyActive)
-                { unit.FrenzyActive = true; unit.SpeedBuffs.Add(new(0.6, double.PositiveInfinity)); unit.Omnivamp += 0.25; }
+                { unit.FrenzyActive = true; unit.SpeedBuffs.Add(new(0.6, double.PositiveInfinity)); unit.Omnivamp += 0.25; Emit("text", unit, text: "Frenzy"); }
                 else Heal(unit, value);
                 Emit("shield", unit); break;
             case "lullaby":
                 foreach (var enemy in units.Where(u => u.Alive && u.Team != unit.Team).OrderByDescending(u => u.Health).ThenBy(u => u.Id).Take(unit.Stage + 2).ToArray())
-                { StunUnit(enemy, 1.5 + unit.Stage * 0.5); AbilityDamage(unit, enemy, value); }
+                { Emit("beam", unit, enemy); StunUnit(enemy, 1.5 + unit.Stage * 0.5); AbilityDamage(unit, enemy, value); }
                 break;
             case "showstopper":
                 double amount = value + target.MaxHealth * (unit.Stage == 0 ? 0.06 : unit.Stage == 1 ? 0.1 : 0.2);
+                Burst(target.Cell, 1, unit.Team);
                 var splash = EnemiesNear(unit, target.Cell, 1).Where(u => u != target).ToArray();
                 AbilityDamage(unit, target, amount);
                 foreach (var enemy in splash) AbilityDamage(unit, enemy, amount * 0.5);
@@ -79,6 +81,7 @@ internal static class FatesCombat
             if (unit.TimeRune == 0 || unit.Health > 0) return;
             double value = unit.TimeRune; unit.TimeRune = 0;
             unit.Health = 1; unit.InvulnerableUntil = c.Time + 2; unit.Stun = Math.Max(unit.Stun, 2);
+            c.Text(unit, "Rewind");
             c.After(2, () => { c.Heal(unit, value); c.Buff(unit, CombatStat.AttackSpeed, 0.3); }, unit);
         });
     }

@@ -17,7 +17,8 @@ internal static class CombatEventParity
             string name = trace.GetProperty("name").GetString()!;
             var rules = catalog.Variants.Single(v => v.Id == trace.GetProperty("variant").GetString());
             var combat = new CombatSimulation(rules, trace.GetProperty("sideA").Deserialize<CombatEntry[]>(options)!,
-                trace.GetProperty("sideB").Deserialize<CombatEntry[]>(options)!, trace.GetProperty("seed").GetUInt32(), trace.GetProperty("cols").GetInt32());
+                trace.GetProperty("sideB").Deserialize<CombatEntry[]>(options)!, trace.GetProperty("seed").GetUInt32(), trace.GetProperty("cols").GetInt32(),
+                setup: trace.TryGetProperty("setup", out var setup) ? setup.Deserialize<CombatSetup>(options) : null);
             for (int i = 0; i < trace.GetProperty("ticks").GetInt32(); i++) combat.Step();
             var expected = trace.GetProperty("events").Deserialize<CombatEvent[]>(options)!;
             checks++;

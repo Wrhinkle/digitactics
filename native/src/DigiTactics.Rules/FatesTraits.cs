@@ -54,12 +54,13 @@ internal static class FatesTraits
                         On(CombatHook.DamageTaken, (_, e) => { var u = e.Unit!; if (Member(u) && !e.IsBurn && u.MaxMana > 0) u.Mana = Math.Min(u.MaxMana, u.Mana + Math.Min(15, e.Amount * 0.06) * value); }); break;
                     case "RONIN": On(CombatHook.CombatReady, (c, _) => { foreach (var u in members) {
                         if (c.Adjacent(u).Any(a => a.Team == u.Team)) continue;
-                        u.Shield += u.MaxHealth * value; if (level >= 2) u.Omnivamp += P("vamp");
+                        u.Shield += u.MaxHealth * value; if (level >= 2) u.Omnivamp += P("vamp"); c.Text(u, "Lone Blade");
                     } }); break;
                     case "SPIRIT":
                         var rushed = new HashSet<int>();
                         On(CombatHook.Cast, (c, e) => { var u = e.Unit!; if (!Member(u) || !rushed.Add(u.Id)) return;
                             foreach (var a in c.Mine.Where(a => a.Alive)) c.Buff(a, CombatStat.AttackSpeed, value * u.MaxMana / 100);
+                            c.Text(u, "Spirit Rush");
                         }); break;
                     case "MAGE":
                         var recast = new HashSet<int>();
@@ -77,7 +78,7 @@ internal static class FatesTraits
                         On(CombatHook.Tick, (c, _) => { if (c.Time < nextHunt) return; nextHunt += P("every");
                             foreach (var u in members.Where(u => u.Alive)) {
                                 var target = combat.Units.Where(e => e.Alive && e.Team != u.Team).OrderBy(e => e.Health / e.MaxHealth).FirstOrDefault();
-                                if (target is null) return; c.Damage(u, target, u.AttackDamage * value, DamageKind.Physical);
+                                if (target is null) return; c.Effect("shot", u, target, big: true); c.Damage(u, target, u.AttackDamage * value, DamageKind.Physical);
                             }
                         }); break;
                     case "KEEPER": On(CombatHook.CombatStart, (c, _) => {
@@ -88,20 +89,20 @@ internal static class FatesTraits
                         var attacks = new Dictionary<int, int>(); var doubles = new Dictionary<int, int>();
                         On(CombatHook.Attack, (c, e) => { var u = e.Unit!; if (!Member(u)) return;
                             int n = attacks.GetValueOrDefault(u.Id) + 1; attacks[u.Id] = n; if (n % 2 != 0) return;
-                            c.Shield(u, u.MaxHealth * value); if (e.Target!.Alive) c.Damage(u, e.Target, e.Amount, DamageKind.Physical, e.Critical);
-                            int s = doubles.GetValueOrDefault(u.Id) + 1; if (s >= 2) { s = 0; u.Mana = u.MaxMana; } doubles[u.Id] = s;
+                            c.Shield(u, u.MaxHealth * value); if (e.Target!.Alive) { c.Effect("shot", u, e.Target); c.Damage(u, e.Target, e.Amount, DamageKind.Physical, e.Critical); }
+                            int s = doubles.GetValueOrDefault(u.Id) + 1; if (s >= 2) { s = 0; u.Mana = u.MaxMana; c.Text(u, "Showtime"); } doubles[u.Id] = s;
                         }); break;
                     case "SHARP":
                         CombatUnit[] Bounces(CombatUnit u, CombatUnit target) => combat.Units.Where(e => e.Alive && e.Team != u.Team && e != target && e.Cell.DistanceTo(target.Cell) <= 2)
                             .OrderBy(e => e.Cell.DistanceTo(target.Cell)).ThenBy(e => e.Id).Take((int)value).ToArray();
-                        On(CombatHook.Attack, (c, e) => { if (Member(e.Unit!)) foreach (var target in Bounces(e.Unit!, e.Target!)) c.Damage(e.Unit!, target, e.Amount * P("frac"), DamageKind.Physical); });
+                        On(CombatHook.Attack, (c, e) => { if (Member(e.Unit!)) foreach (var target in Bounces(e.Unit!, e.Target!)) { c.Effect("shot", e.Target!, target); c.Damage(e.Unit!, target, e.Amount * P("frac"), DamageKind.Physical); } });
                         On(CombatHook.Cast, (c, e) => { var u = e.Unit!;
                             if (!Member(u) || e.Target is null || new[] { "heal", "shield", "rally", "grow", "rewind", "frenzy" }.Contains(u.Line.Ability.Kind)) return;
-                            foreach (var target in Bounces(u, e.Target)) c.AbilityHit(u, target, e.Value * P("frac") * 0.7);
+                            foreach (var target in Bounces(u, e.Target)) { c.Effect("beam", e.Target, target); c.AbilityHit(u, target, e.Value * P("frac") * 0.7); }
                         }); break;
                     case "CELES":
                         var ascending = members.ToDictionary(u => u.Id, _ => new Ascension());
-                        void Ascend(CombatUnit u, double time) { var s = ascending[u.Id]; s.Used = true; s.Until = time + value; u.Stun = 0; }
+                        void Ascend(CombatUnit u, double time) { var s = ascending[u.Id]; s.Used = true; s.Until = time + value; u.Stun = 0; combat.Emit("text", u, text: "Ascend"); combat.Emit("shield", u); }
                         On(CombatHook.Attack, (c, e) => { var u = e.Unit!; if (ascending.TryGetValue(u.Id, out var s) && !s.Used && Member(u) && ++s.Attacks >= 6) Ascend(u, c.Time); });
                         On(CombatHook.DamageTaken, (c, e) => { var u = e.Unit!; if (ascending.TryGetValue(u.Id, out var s) && !s.Used && Member(u) && u.Health < u.MaxHealth * 0.5) Ascend(u, c.Time); });
                         On(CombatHook.BeforeDamage, (c, e) => { if (ascending.TryGetValue(e.Unit!.Id, out var s) && s.Until > c.Time && Member(e.Unit)) e.Multiplier *= 1 + P("amp"); });
@@ -113,10 +114,10 @@ internal static class FatesTraits
                         var pushups = members.ToDictionary(u => u.Id, _ => new Pushups());
                         On(CombatHook.DamageTaken, (c, e) => { var u = e.Unit!;
                             if (!pushups.TryGetValue(u.Id, out var s) || s.Used || !Member(u) || u.Health >= u.MaxHealth * 0.4) return;
-                            s.Used = true; u.InvulnerableUntil = c.Time + 3; u.Stun = Math.Max(u.Stun, 3);
+                            s.Used = true; u.InvulnerableUntil = c.Time + 3; u.Stun = Math.Max(u.Stun, 3); c.Text(u, "Push-ups");
                             for (int k = 1; k <= 6; k++) { int step = k; c.After(0.5 * k, () => {
                                 if (s.Done) return; c.Heal(u, u.MaxHealth * 0.08); c.Buff(u, CombatStat.AttackSpeed, 0.08);
-                                if (u.Health >= u.MaxHealth - 1 || step == 6) { s.Done = s.Pumped = true; u.Stun = 0; u.InvulnerableUntil = Math.Min(u.InvulnerableUntil, c.Time); }
+                                if (u.Health >= u.MaxHealth - 1 || step == 6) { s.Done = s.Pumped = true; u.Stun = 0; u.InvulnerableUntil = Math.Min(u.InvulnerableUntil, c.Time); c.Text(u, "Pumped Up"); }
                             }, u); }
                         });
                         On(CombatHook.BeforeDamage, (_, e) => { if (pushups.TryGetValue(e.Unit!.Id, out var s) && s.Pumped && Member(e.Unit)) e.Multiplier *= 1.2; }); break;
@@ -147,6 +148,7 @@ internal static class FatesTraits
                             if (cell is null) return; double boost = 1 + 0.08 * stars;
                             var shadow = c.Summon(c.Team!.Value, "fat_shadow", (int)value, cell.Value, new(HealthMultiplier: P("hpMul") * boost));
                             if (shadow is null) return; shadow.AttackDamage *= boost; shadow.BaseAttackDamage *= boost;
+                            c.Text(shadow, "Soulmon"); c.Burst(shadow.Cell, 1, c.Team!.Value);
                             double slam = (level == 1 ? 90 : level == 2 ? 180 : 360) * boost;
                             foreach (var enemy in combat.Units.Where(u => u.Alive && u.Team != c.Team && u.Cell.DistanceTo(shadow.Cell) <= 1).ToArray()) { c.Stun(enemy, 1.5); c.Damage(shadow, enemy, slam); }
                         }, 3); break;

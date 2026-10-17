@@ -47,6 +47,9 @@ public sealed class CombatHookContext
     public double Damage(CombatUnit source, CombatUnit target, double amount, DamageKind kind = DamageKind.Magic, bool critical = false) => Combat.HookDamage(source, target, amount, kind, critical);
     public double AbilityHit(CombatUnit source, CombatUnit target, double amount) => Combat.HookAbility(source, target, amount);
     public void Heal(CombatUnit target, double amount, bool quiet = false) => Combat.HookHeal(target, amount, quiet);
+    public void Text(CombatUnit unit, string text) => Combat.Emit("text", unit, text: text);
+    public void Effect(string type, CombatUnit unit, CombatUnit? target = null, bool big = false) => Combat.Emit(type, unit, target, big: big);
+    public void Burst(HexCell cell, int radius, int team) => Combat.Burst(cell, radius, team);
     public void Shield(CombatUnit target, double amount) => Combat.AddShield(target, amount);
     public void Stun(CombatUnit target, double duration) => Combat.HookStun(target, duration);
     public void Burn(CombatUnit source, CombatUnit target) => Combat.HookBurn(source, target);
