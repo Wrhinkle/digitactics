@@ -411,7 +411,7 @@ Captured frames were visually inspected. This is not a complete match or product
 renderer: arena themes, lighting/PBR, transparent depth sorting, particles, audio,
 full unit HUDs and missing-model placeholders still need completion.
 
-Latest verification: the native test suite passes 147,597,875 assertions.
+Latest verification: the native test suite passes 147,845,355 assertions.
 The self-contained publish compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
@@ -963,3 +963,25 @@ pending.
 
 Validation: 147,597,875 full-suite checks and packaged BRUTAL smoke tests pass
 with schema 30.
+
+## Underlords Tamer and starter-crew offers
+
+`MatchOffers` now generates one of each Tamer's two builds in fixed Tamer order,
+using four independent RNG draws. Tamer selection applies a valid power only when
+the player has none, dispatches the shared power-pick hook and combines the roster.
+Tamer rerolls intentionally do not exclude previous builds, matching the source.
+
+Starter-crew options draw from alliances with at least two low-cost shop lines,
+sort each pair, reject duplicates/exclusions and retain the 40-attempt limit.
+Selection shuffles available matching lines, reserves at most five distinct units
+and fills only free bench slots before combining. It preserves board locks and
+max-star shop cleanup.
+
+Sixteen focused traces across Underlords/Knockout, both paces and human/AI seats
+pass 247,528 comparisons of offers, rerolls, powers, hook dispatch, rosters, pool
+counts, shops and RNG. Generic offer/round fixtures now use the actual original
+Underlords offer handlers. Power-pick mechanic effects remain delegated to the
+required hook interface; full match/desktop integration is still pending. Run the
+focused suite with `--underlords-offers-only`.
+
+Validation: 147,845,355 full-suite checks and packaged BRUTAL smoke tests pass.

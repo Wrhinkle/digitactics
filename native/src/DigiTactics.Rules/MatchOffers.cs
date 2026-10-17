@@ -93,6 +93,26 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             case "drg_treasure":
                 modeRewards.ChooseTreasure(player, id, boardLocked);
                 break;
+            case "ul_tamer":
+                if (player.Power is not null || !Rules.Powers.Contains(id)) break;
+                player.Power = new(id);
+                hooks.PowerPicked(player, id);
+                Combine(player, boardLocked);
+                break;
+            case "ul_crew":
+                var alliances = id.Split('+');
+                if (alliances.Length < 2 || !state.Rules.Traits.Any(t => t.Id == alliances[0]) || !state.Rules.Traits.Any(t => t.Id == alliances[1])) break;
+                var crew = Shuffle(state.Rules.Lines.Where(l => l.Tier <= 2 && (l.Traits.Contains(alliances[0]) || l.Traits.Contains(alliances[1])) && state.Pool.Remaining(l.Id) > 0).Select(l => l.Id));
+                int added = 0;
+                foreach (string line in crew)
+                {
+                    if (added >= 5 || player.Roster.FreeBenchSlot < 0) break;
+                    state.Pool.Take(line);
+                    player.Roster.AddToBench(state.CreateUnit(line, 0));
+                    added++;
+                }
+                Combine(player, boardLocked);
+                break;
             case "upgrade":
                 if (!state.Rules.OfferAi!.ContainsKey("augment:" + id)) break;
                 player.Augments.Add(id);
@@ -141,12 +161,28 @@ public sealed class MatchOffers(MatchState state, IMatchOfferHooks hooks)
             "col_form" => coliseum.FormOptions(player),
             "col_gambit" => coliseum.GambitOptions(player),
             "drg_treasure" => modeRewards.TreasureOptions(player, exclude),
+            "ul_tamer" => new[] { new[] { "ul_anessa_dark", "ul_anessa_heal" }, new[] { "ul_hob_fire", "ul_hob_crazy" },
+                new[] { "ul_jules_brawl", "ul_jules_bar" }, new[] { "ul_enno_balm", "ul_enno_rabid" } }.Select(builds => builds[(int)(state.Random.Next() * 2)]).ToArray(),
+            "ul_crew" => CrewOptions(exclude),
             "upgrade" => UpgradeOptions(player, round.Stage, exclude),
             "ac_relic" => Shuffle(state.Rules.Items.Where(i => i.Relic && !player.Globals.Contains(i.Id) && !exclude.Contains(i.Id)).Select(i => i.Id)).Take(3).ToArray(),
             "ac_loot" => player.Mechanics.AutoChessLoot?.ToArray() ?? [],
             _ => hooks.CustomOptions(player, round, definition, exclude),
         };
     }
+    private string[] CrewOptions(IReadOnlyList<string> exclude)
+    {
+        var alliances = state.Rules.Traits.Where(t => state.Rules.Lines.Count(l => l.Tier <= 2 && l.Traits.Contains(t.Id)) >= 2).Select(t => t.Id).ToArray();
+        var result = new List<string>();
+        for (int guard = 0; result.Count < 3 && guard < 40; guard++)
+        {
+            string first = alliances[(int)(state.Random.Next() * alliances.Length)], second = alliances[(int)(state.Random.Next() * alliances.Length)];
+            string id = string.CompareOrdinal(first, second) <= 0 ? first + "+" + second : second + "+" + first;
+            if (first != second && !result.Contains(id) && !exclude.Contains(id)) result.Add(id);
+        }
+        return result.ToArray();
+    }
+
     private string[] UpgradeOptions(MatchPlayer player, int stage, IReadOnlyList<string> exclude)
     {
         int gate = Array.FindIndex(Rules.Schedule, o => o.Kind == "upgrade" && o.Stage == stage);

@@ -9,12 +9,12 @@ internal static class RelicUpgradeParity
         public string[] Armory(MatchPlayer p, RoundPosition r) => throw new NotSupportedException();
         public string[] CustomOptions(MatchPlayer p, RoundPosition r, OfferDefinition d, IReadOnlyList<string> e) => throw new NotSupportedException();
         public void AugmentPicked(MatchPlayer p, string id) => Picks.Add(id);
-        public void PowerPicked(MatchPlayer p, string id) => throw new NotSupportedException();
+        public void PowerPicked(MatchPlayer p, string id) => Picks.Add(id);
         public void CustomChosen(MatchPlayer p, PlayerOffer o, string id) => throw new NotSupportedException();
     }
-    public static int Run(string root, ContentCatalog catalog)
+    public static int Run(string root, ContentCatalog catalog, bool underlords = false)
     {
-        using var input = File.OpenRead(Path.Combine(root, "tests/fixtures/relic-upgrades.json.gz"));
+        using var input = File.OpenRead(Path.Combine(root, underlords ? "tests/fixtures/underlords-offers.json.gz" : "tests/fixtures/relic-upgrades.json.gz"));
         using var gzip = new GZipStream(input, CompressionMode.Decompress); using var fixture = JsonDocument.Parse(gzip);
         int checks = 0; void Check(bool ok, string c) { checks++; if (!ok) throw new InvalidOperationException("Relic/upgrade parity: " + c); }
         static string[] Strings(JsonElement e) => e.EnumerateArray().Select(x => x.GetString()!).ToArray();
@@ -41,11 +41,14 @@ internal static class RelicUpgradeParity
                     }
                 }
                 state.GizmosGates=step.GetProperty("gates").ValueKind==JsonValueKind.Null?null:step.GetProperty("gates").EnumerateArray().Select(e=>e.GetInt32()).ToArray();
-                if(step.GetProperty("fill").GetBoolean()){p.Items.Clear();p.Items.AddRange(Enumerable.Repeat(rules.CoreItems[0],rules.Loot!.ItemCap));}
+                if(step.GetProperty("fill").GetBoolean()){p.Items.Clear();p.Items.AddRange(Enumerable.Repeat(rules.CoreItems.FirstOrDefault() ?? rules.Items[0].Id,rules.Loot!.ItemCap));}
+                if(underlords && (n-1)%7==0)p.Power=null;
                 offers.Make(p,new(1,1));Offer(step.GetProperty("made"));
                 if(step.GetProperty("reroll").ValueKind!=JsonValueKind.Null)Check(offers.Reroll(p,new(1,1))==step.GetProperty("reroll").GetBoolean(),c+" reroll");Offer(step.GetProperty("rolled"));
                 Check(offers.Choose(p,step.GetProperty("choice").GetInt32(),p.IsHuman&&step.GetProperty("phase").GetString()=="combat")==step.GetProperty("selected").GetString(),c+" choice");
-                var after=step.GetProperty("after");Check(p.Items.SequenceEqual(Strings(after.GetProperty("items"))),c+" items");Check(p.Globals.SequenceEqual(Strings(after.GetProperty("globals"))),c+" globals");Check(p.Augments.SequenceEqual(Strings(after.GetProperty("augs"))),c+" augments");Check(p.Shop.FreeRolls==after.GetProperty("freeRolls").GetInt32(),c+" free rolls");Check(hooks.Picks.SequenceEqual(Strings(after.GetProperty("picks"))),c+" picks");Check(p.Shop.Slots.SequenceEqual(after.GetProperty("shop").EnumerateArray().Select(e=>e.GetString())),c+" shop");
+                var after=step.GetProperty("after");
+                if(underlords){var power=after.GetProperty("power");Check(power.ValueKind==JsonValueKind.Null?p.Power is null:p.Power is not null&&p.Power.Id==power.GetProperty("id").GetString()&&p.Power.Rank==power.GetProperty("rank").GetInt32(),c+" power");}
+Check(p.Items.SequenceEqual(Strings(after.GetProperty("items"))),c+" items");Check(p.Globals.SequenceEqual(Strings(after.GetProperty("globals"))),c+" globals");Check(p.Augments.SequenceEqual(Strings(after.GetProperty("augs"))),c+" augments");Check(p.Shop.FreeRolls==after.GetProperty("freeRolls").GetInt32(),c+" free rolls");Check(hooks.Picks.SequenceEqual(Strings(after.GetProperty("picks"))),c+" picks");Check(p.Shop.Slots.SequenceEqual(after.GetProperty("shop").EnumerateArray().Select(e=>e.GetString())),c+" shop");
                 foreach(var pair in after.GetProperty("pool").EnumerateObject())Check(state.Pool.Remaining(pair.Name)==pair.Value.GetInt32(),c+" pool");
                 var board=after.GetProperty("board").EnumerateObject().ToArray();Check(board.Length==p.Roster.Board.Count,c+" board count");
                 void Unit(PlanningUnit? u,JsonElement e){Check(e.ValueKind==JsonValueKind.Null?u is null:u is not null&&u.Id==e.GetProperty("uid").GetInt32()&&u.Stage==e.GetProperty("stage").GetInt32()&&u.Items.SequenceEqual(Strings(e.GetProperty("items"))),c+" unit");}
@@ -54,6 +57,6 @@ internal static class RelicUpgradeParity
             }
             Check(state.Random.Next()==trace.GetProperty("nextRandom").GetDouble(),rules.Id+" RNG");
         }
-        Console.WriteLine($"Relic/upgrade parity: {checks:N0} checks across 8 traces.");return checks;
+        Console.WriteLine($"{(underlords ? "Underlords offers" : "Relic/upgrade")} parity: {checks:N0} checks across {fixture.RootElement.GetArrayLength()} traces.");return checks;
     }
 }
