@@ -71,6 +71,8 @@ internal static class CombatParity
                         if (Math.Abs(actual - value) > 1e-8 * Math.Max(1, Math.Abs(value)))
                             throw new InvalidOperationException($"Combat {name}, tick {tick}, unit {unit.Id}: {field} expected {value:R}, got {actual:R}");
                     }
+                    count++;
+                    if (unit.IsPiloting != expected.GetProperty("piloting").GetBoolean()) throw new InvalidOperationException($"Pilot state mismatch {name}/{tick}");
                     Compare("stage", unit.Stage); Compare("blossomKills", unit.BlossomKills); Compare("timeRune", unit.TimeRune); Compare("combatGold", unit.CombatGold); Compare("range", unit.Range);
                     count++;
                     if (unit.Summoned != expected.GetProperty("summoned").GetBoolean()) throw new InvalidOperationException($"Summon state mismatch {name}/{tick}");
@@ -106,6 +108,9 @@ internal static class CombatParity
             if (trace.TryGetProperty("meeps", out var meeps))
                 for (int team = 0; team < 2; team++)
                 { count++; if (combat.MeepCount(team) != meeps[team].GetInt32()) throw new InvalidOperationException($"Meep count mismatch {name}"); }
+            if (trace.TryGetProperty("pirateKills", out var pirateKills))
+                for (int team = 0; team < 2; team++)
+                { count++; if (combat.PirateKillCount(team) != pirateKills[team].GetInt32()) throw new InvalidOperationException($"Pirate count mismatch {name}"); }
             double completedTime = combat.Time;
             combat.Step();
             count++;

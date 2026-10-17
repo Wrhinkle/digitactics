@@ -9,7 +9,7 @@ DT.Combat.prototype.has = () => false;
 const kinds = ['nuke', 'aoe', 'stun', 'slam', 'shield', 'heal', 'barrage', 'drain', 'weaken', 'rally', 'line', 'execute', 'chain', 'dash'];
 const snapshots = cb => cb.units.map(u => ({ id: u.id, hp: u.hp, mana: u.mana, shield: u.shield, c: u.c, r: u.r,
   alive: u.alive, target: u.target ? u.target.id : null, atkCd: u.atkCd, moveCd: u.moveCd,
-  stun: u.stun, lock: u.lock, dealt: u.dealt, taken: u.taken, healed: u.healed, nAtk: u.nAtk, maxHp: u.maxHp, ad: u.ad, as: u.as, ap: u.ap, armor: u.armor, mr: u.mr, maxMana: u.maxMana, items: u.items, stage: u.stage, summoned: !!u.summoned, blossomKills: u.state.blossom || 0, timeRune: u.state.rune || 0, combatGold: u.state.gold || 0, range: u.range }));
+  stun: u.stun, lock: u.lock, dealt: u.dealt, taken: u.taken, healed: u.healed, nAtk: u.nAtk, maxHp: u.maxHp, ad: u.ad, as: u.as, ap: u.ap, armor: u.armor, mr: u.mr, maxMana: u.maxMana, items: u.items, stage: u.stage, summoned: !!u.summoned, blossomKills: u.state.blossom || 0, timeRune: u.state.rune || 0, combatGold: u.state.gold || 0, range: u.range, piloting: !!u.state.piloting }));
 const fixtures = [];
 const exercised = new Set();
 for (const kind of kinds) {
@@ -329,6 +329,41 @@ for (const kind of galaxiesKinds) for (const stage of [0, 1, 2]) for (const cols
   if (!accepted) throw new Error(`Unable to exercise Galaxies ability ${kind}/${stage}/${cols}`);
 }
 
+// Every Galaxies trait breakpoint with mixed opponents and production ability hooks.
+DT.Sets.activate('galaxies', 'hyper');
+const galaxyTraits = Object.entries(DT.TRAITS).map(([id,t]) => [id, [...t.bp]]);
+for (const [id, bp] of galaxyTraits) for (let level = 0; level < bp.length; level++) {
+  const pace = level % 2 ? 'normal' : 'hyper', cols = level % 2 ? 14 : 7;
+  DT.Sets.activate('galaxies', pace);
+  const seed = 73000 + fixtures.length, pick = DT.makeRng(seed);
+  const components = Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].component);
+  const own = DT.SHOP_LINES.filter(l => l.traits.includes(id)).slice(0, bp[level]);
+  const selected = [];
+  while (selected.length < Math.max(4, own.length)) {
+    const l = DT.SHOP_LINES[Math.floor(pick() * DT.SHOP_LINES.length)];
+    if (!selected.includes(l)) selected.push(l);
+  }
+  const entries = lines => lines.map((l,i) => ({ line:l.id, stage:level % 3, c:i % cols, r:4 + Math.floor(i/cols),
+    items:i % 2 ? [] : [components[Math.floor(pick()*components.length)]] }));
+  const sideA=entries(own), sideB=entries(selected);
+  if (own.length < bp[level]) sideA[0].bonusTraits = {[id]:bp[level]-own.length};
+  const bounty = Object.fromEntries(own.map((l,i)=>[l.id,i*4]));
+  const cb = new DT.Combat({units:sideA,cols,mech:{bounty}}, {units:sideB,cols}, {seed});
+  if (DT.traitLevel(id,cb.traitCounts[0][id]) !== level+1) throw new Error(`Missing Galaxies breakpoint ${id}/${level}`);
+  const samples=[{tick:0,units:snapshots(cb)}]; let tick=0;
+  while (!cb.done && tick<2000) {cb.step();tick++;if(tick%15===0 || cb.done) samples.push({tick,units:snapshots(cb)});}
+  if (id === 'XR') {
+    const pilots = samples[0].units.filter(u=>u.piloting);
+    if (pilots.length !== 2 || pilots.some(p=>!samples.some(s=>s.units[p.id].alive && !s.units[p.id].piloting)))
+      throw new Error('DigiXros reference must exercise fusion and both pilot ejections');
+  }
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,bonusTraits:u.bonusTraits}));
+  fixtures.push({name:`galaxies-trait/${id}/${level}`,variant:`galaxies/${pace}`,seed,cols,
+    sideA:convert(sideA),sideB:convert(sideB),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,
+    traitCounts:cb.traitCounts,meeps:cb.teamFx.map(f=>f.meep||0),pirateKills:cb.teamFx.map(f=>f.pirate||0),
+    setup:{sideA:{galaxies:{bounty}},sideB:{}}});
+}
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];
@@ -396,4 +431,4 @@ for (const duos of [false, true]) {
   DT.SET.hooks = oldSetHooks;
 }
 fs.writeFileSync(path.join(__dirname, '../tests/fixtures/combat.json.gz'), require('node:zlib').gzipSync(JSON.stringify(fixtures) + '\n'));
-console.log(`Exported ${fixtures.length} shared-kernel reference battles covering ${kinds.length} ability types.`);
+console.log(`Exported ${fixtures.length} reference battles covering shared and production set combat.`);

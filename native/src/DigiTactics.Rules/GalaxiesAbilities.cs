@@ -3,6 +3,10 @@ namespace DigiTactics.Rules;
 internal sealed class GalaxiesUnitState
 {
     internal bool Frenzy, Mega, Excited, Casting, Lanterned;
+    internal List<CombatUnit>? Pilots;
+    internal double Overload, ProtectorUntil;
+    internal int OverloadCount, GunnerAttacks, BombedBy = -1;
+    internal double BombedTick;
     internal bool Piloting { get; set; }
     internal double DisarmUntil { get; set; }
     internal double FrenzyUntil, FrenzyPercent, OriginalRange, DreadUntil, DreadDps, ChosenUntil, ChosenBonus, ChosenNext,

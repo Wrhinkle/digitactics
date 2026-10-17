@@ -1,10 +1,11 @@
 namespace DigiTactics.Rules;
 
+public sealed record GalaxiesState(Dictionary<string, int>? Bounty = null);
 public sealed record FatesState(int Deva = 0, string? Fallen = null, double Blossom = 0);
 public sealed record CombatBuffs(double AttackSpeed = 0, double Armor = 0, double Mana = 0);
 public sealed record CombatPartner(int Owner, string[]? Augments = null, CombatBuffs? Buffs = null, double PartnerTop = 0);
 public sealed record CombatSideEffects(bool NoTraits = false, Dictionary<string, int>? Counts = null, string[]? Augments = null,
-    CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0, FatesState? Fates = null);
+    CombatPartner[]? Parts = null, CombatBuffs? Buffs = null, double PartnerTop = 0, FatesState? Fates = null, GalaxiesState? Galaxies = null);
 public sealed record CombatSetup(CombatSideEffects SideA, CombatSideEffects SideB, string? Galaxy = null);
 
 public static class TraitRules

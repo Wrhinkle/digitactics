@@ -2,11 +2,12 @@ namespace DigiTactics.Rules;
 
 public sealed partial class CombatSimulation
 {
-    private void BindGalaxies(CombatSetup setup)
+    private void BindGalaxies(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
         foreach (var side in new[] { setup.SideA, setup.SideB })
-            if (!side.NoTraits || (side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
-                throw new NotSupportedException("Galaxies traits and augments have not been migrated yet.");
+            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
+                throw new NotSupportedException("Galaxies augments have not been migrated yet.");
+        BindGalaxiesTraits(sideA, sideB, setup);
         var context = Hooks.Context(CombatHookSource.Mechanic, "galaxy");
         Hooks.Add(context, CombatHook.CombatStart, (_, _) => {
             if (setup.Galaxy == "darkocean") {

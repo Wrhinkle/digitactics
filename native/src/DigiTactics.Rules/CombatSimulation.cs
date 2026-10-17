@@ -54,7 +54,7 @@ public sealed partial class CombatSimulation
         if (setup is not null)
         {
             if (rules.Id.StartsWith("fates/", StringComparison.Ordinal)) FatesCombat.Bind(this, rules, sideA, sideB, setup);
-            else if (rules.Id.StartsWith("galaxies/", StringComparison.Ordinal)) BindGalaxies(setup);
+            else if (rules.Id.StartsWith("galaxies/", StringComparison.Ordinal)) BindGalaxies(sideA, sideB, setup);
             else FactionWarsCombat.Bind(this, rules, sideA, sideB, setup);
         }
         configureHooks?.Invoke(Hooks);
@@ -110,7 +110,7 @@ public sealed partial class CombatSimulation
         unit.AttackCooldown -= Tick; unit.MoveCooldown -= Tick;
         if (unit.Stun > 0) { unit.Stun -= Tick; return; }
         if (unit.CastLock > 0) { unit.CastLock -= Tick; return; }
-        if (unit.Line.Combat.Leap && !unit.Leapt) { unit.Leapt = true; Leap(unit); unit.CastLock = 0.3; return; }
+        if (unit.Leap && !unit.Leapt) { unit.Leapt = true; Leap(unit); unit.CastLock = 0.3; return; }
         if (unit.MoveCooldown > 0) return;
         var target = unit.Target;
         if (target is null || !target.Alive || unit.Cell.DistanceTo(target.Cell) > unit.Range)
@@ -161,7 +161,10 @@ public sealed partial class CombatSimulation
     private void Attack(CombatUnit unit, CombatUnit target)
     {
         var p = unit.Equipment;
-        unit.AttackCooldown = 1 / (unit.AttackSpeed * Math.Min(1 + p.Rage * unit.RageStacks + unit.AttackSpeedPerAttack * unit.AttackSpeedStacks + unit.SpeedBuffs.Sum(b => b.Value), 4));
+        // Preserve sequential accumulation: rounding can change the attack tick.
+        double speed = 1 + p.Rage * unit.RageStacks + unit.AttackSpeedPerAttack * unit.AttackSpeedStacks;
+        foreach (var buff in unit.SpeedBuffs) speed += buff.Value;
+        unit.AttackCooldown = 1 / (unit.AttackSpeed * Math.Min(speed, 4));
         Emit("attack", unit, target);
         if (unit.Blind) { unit.Blind = false; Emit("miss", unit); return; }
         unit.Mana = Math.Min(unit.MaxMana, unit.Mana + 10 + p.Shojin); unit.Attacks++;

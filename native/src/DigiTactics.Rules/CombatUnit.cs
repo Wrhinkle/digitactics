@@ -3,7 +3,7 @@ namespace DigiTactics.Rules;
 public sealed record PartnerModifier(string? Bonus, string? Trait = null);
 public sealed record CombatEntry(string Line, int Stage, int Column, int Row, int Uid = 0, int? Owner = null, string[]? Items = null, Dictionary<string, int>? BonusTraits = null, PartnerModifier? Partner = null);
 public readonly record struct CombatEvent(double Time, string Type, int Unit, int? Target = null, double Amount = 0);
-public readonly record struct AttackSpeedBuff(double Value, double Until);
+public readonly record struct AttackSpeedBuff(double Value, double Until, bool Infiltrator = false);
 
 /// <summary>Runtime state belongs to one battle; content definitions are shared and never modified.</summary>
 public sealed class CombatUnit
@@ -50,6 +50,8 @@ public sealed class CombatUnit
     public double Taken { get; internal set; }
     public double Healed { get; internal set; }
     public int Attacks { get; internal set; }
+    public bool Leap { get; internal set; }
+    public bool IsPiloting => Galaxies.Piloting;
     public bool Leapt { get; internal set; }
     public CombatUnit? Target { get; internal set; }
     internal List<AttackSpeedBuff> SpeedBuffs { get; } = [];
@@ -74,7 +76,7 @@ public sealed class CombatUnit
 
     internal CombatUnit(int id, CombatEntry entry, UnitLine line, int team, HexCell cell, double random)
     {
-        Id = id; Entry = entry; Stage = entry.Stage; Line = line; Team = team; Cell = cell;
+        Id = id; Entry = entry; Stage = entry.Stage; Leap = line.Combat.Leap; Line = line; Team = team; Cell = cell;
         var stats = UnitValues.Stats(line, entry.Stage);
         MaxHealth = Health = stats.MaxHealth;
         BaseAttackDamage = AttackDamage = stats.AttackDamage; AttackSpeed = stats.AttackSpeed; Range = stats.Range;
