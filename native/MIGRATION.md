@@ -1456,3 +1456,26 @@ The existing 1,333,402 Partner-shop and 7,518 combat-settlement checks also pass
 Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
 Production hook composition and persistent-state combat projection remain pending;
 these handlers do not yet constitute the full production match controller.
+
+
+### Gizmos persistent planning hooks
+
+`GizmosPlanning` implements Gate payouts, Pirate chest dice and loss progression,
+chest payouts, Petit unit grants, Calculated Loss/Hyper Roll/Junkyard rewards,
+Reserves snapshots, free-roll upgrades, and all upgrade-pick rewards. Callback
+order preserves low-gold thresholds before chest payouts, and Reserves captures
+gold before the Gate payout. Petit grants require bench room and an available
+eligible pool copy; a required callback performs the immediate combine.
+
+Glutton selling feeds the first owned Gekomon, caps its health/AP gains and retains
+unrelated modifiers. Glutton combines retain the maximum health and AP from their
+sources. These handlers implement the match shop interface for later composition.
+
+2,048 planning cases pass 191,634 checks, including 1,536 chest gains, 948 Petit
+grants and 1,052 chest payouts (`--gizmos-planning-only`). 4,640 upgrade-pick cases
+pass 418,064 checks (`--gizmos-augments-only`), covering both paces, human/AI board
+locks, inventory caps, prior upgrade counts, equipment carryover, Glutton merges,
+pool state, IDs and RNG. Full production match-controller registration and combat
+projection remain pending.
+
+Validation: self-contained Windows publish and all packaged BRUTAL smoke checks passed.
