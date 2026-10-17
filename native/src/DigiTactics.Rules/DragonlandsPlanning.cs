@@ -6,6 +6,46 @@ public sealed class DragonlandsPlanning(MatchState state)
     private readonly HashSet<string> golden = state.Rules.Items.Where(i => i.Category == "gold").Select(i => i.Id).ToHashSet();
     private readonly MatchLoot loot = new(state);
 
+    // Unit grants combine immediately, before later grants and the offer controller's final combine.
+    public void AugmentPicked(MatchPlayer player, string id, Action<MatchPlayer> combine)
+    {
+        ArgumentNullException.ThrowIfNull(combine);
+        void GiveLine(string lineId)
+        {
+            var line = state.Rules.Lines.Single(l => l.Id == lineId);
+            if (state.Pool.Remaining(lineId) > 0 && player.Roster.FreeBenchSlot >= 0)
+            {
+                state.Pool.Take(lineId);
+                player.Roster.AddToBench(state.CreateUnit(lineId, 0));
+                combine(player);
+            }
+            else player.Economy.Credit(line.Price != 0 ? line.Price : line.Tier);
+        }
+        void Crest(string trait) => player.GiveItem(state.Rules.Items.First(i => i.Emblem == trait).Id);
+        switch (id)
+        {
+            case "drg_hoard": player.Economy.Credit(8); break;
+            case "drg_duplicates": player.GiveItem("drg_dup_lesser"); player.GiveItem("drg_dup_lesser"); break;
+            case "drg_scraps": player.GiveItem(loot.RandomComponent()!); player.Economy.Credit(3); break;
+            case "drg_grabbag": for (int i = 0; i < 3; i++) player.GiveItem(loot.RandomComponent()!); break;
+            case "drg_archives": player.GiveItem(loot.RandomEmblem(player)!); break;
+            case "drg_imperialist": GiveLine("drg_dorumon"); break;
+            case "drg_treasure_hoard": player.Economy.Credit(4); break;
+            case "drg_crest_gold": Crest("GOLD"); GiveLine("drg_kamemon"); break;
+            case "drg_crest_rage": Crest("RAGE"); GiveLine("drg_impmon"); break;
+            case "drg_crest_tamer": Crest("TAMER"); GiveLine("drg_gotsumon"); break;
+            case "drg_crest_mage": Crest("MAGE"); GiveLine("drg_syakomon"); GiveLine("drg_tsukaimon"); break;
+            case "drg_jackpot": player.Economy.Credit(30); break;
+            case "drg_relics": player.GiveItem(loot.Pick(state.Rules.Items.Where(i => i.Category == "radiant").Select(i => i.Id).ToArray())!); break;
+            case "drg_crown": player.GiveItem("drg_crown"); break;
+            case "drg_pact":
+                var dragons = state.Rules.Lines.Where(l => l.Tier == 4 && l.Slots == 2 && state.Pool.Remaining(l.Id) > 0).Select(l => l.Id).ToArray();
+                if (loot.Pick(dragons) is { } dragon) GiveLine(dragon);
+                player.TeamBonus++;
+                break;
+        }
+    }
+
     public int RoundEnd(RoundEndContext context)
     {
         var player = context.Player;

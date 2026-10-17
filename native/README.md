@@ -1239,3 +1239,24 @@ multiple payouts, missing combat, PvE, owner views, missing/bench/board Investor
 full inventories, equipment replacement order and subsequent RNG state.
 The Windows package and BRUTAL smoke checks passed. Augment-pick effects and full
 production match-controller composition remain outstanding.
+
+
+### Dragonlands augment-pick rewards
+
+`DragonlandsPlanning.AugmentPicked` implements all 15 Dragonlands augment pick
+handlers: gold, lesser duplicators, components, board-preferred emblems, crests,
+fixed unit grants, radiant items, Crown and Dragon Pact. Fixed grants reserve one
+pool copy only when a bench slot exists; otherwise they pay the line price without
+allocating a unit ID. Successful grants invoke a required combine callback before
+any later grant, preserving multi-grant merge timing and allowing the production
+controller to dispatch partner-combine effects. Pact draws from available tier-four
+Dragons and grants capacity even when none remain.
+
+2,720 cases cover every Dragonlands augment in both paces, human/AI seats, planning/
+combat board locks, near/full benches, depleted pools, merge chains, inventory caps,
+board-preferred emblems, equipment carryover, callback counts, pool/shop state,
+unit IDs and RNG. All 228,600 checks passed (`--dragon-augments-only`). The production
+offer dispatcher still needs to register this handler with its combined callback;
+these checks validate the complete pick operation against the original engine.
+
+Validation: **158,445,766 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
