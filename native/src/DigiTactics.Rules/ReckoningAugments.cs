@@ -13,7 +13,7 @@ public sealed partial class CombatSimulation
             {
                 case "rec_a_training": Start(u => { u.AttackDamage += u.BaseAttackDamage * 0.1; u.AbilityPower += 10; }); break;
                 case "rec_a_mist": Hooks.Add(context, CombatHook.Death, (c, e) => {
-                    var u = e.Unit!; if (!u.Summoned) foreach (var t in EnemiesNear(u, u.Cell, 2)) c.Damage(u, t, 150);
+                    var u = e.Unit!; if (!u.Summoned) { foreach (var t in EnemiesNear(u, u.Cell, 2)) c.Damage(u, t, 150); c.Burst(u.Cell, 2, u.Team); }
                 }); break;
                 case "rec_a_front": Start(u => { if (u.Entry.Row == 4) { u.Armor += 25; u.MagicResist += 25; u.MaxHealth += 150; } }); break;
                 case "rec_a_nest": Start(u => { if (u.Entry.Row >= 6) u.AttackSpeed *= 1.2; }); break;
@@ -26,7 +26,7 @@ public sealed partial class CombatSimulation
                     Hooks.Add(context, CombatHook.Tick, (_, _) => {
                         if (done || Time < 12) return; done = true;
                         // The original callback affects both partners' surviving units.
-                        foreach (var u in units.Where(u => u.Alive && u.Team == team)) u.Equipment.Amp += 0.35;
+                        foreach (var u in units.Where(u => u.Alive && u.Team == team)) { u.Equipment.Amp += 0.35; Emit("text", u, text: "Ascended"); }
                     }); break;
                 case "rec_a_giant": Start(u => u.MaxHealth = UnitValues.Round(u.MaxHealth * 1.25)); break;
                 // These hooks belong to planning, offers and round settlement.

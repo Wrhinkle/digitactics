@@ -262,10 +262,15 @@ silence, Stone, Divine Shield stacks, item beams, revival, decoys, X-Antibody,
 Overload bursts, Copy, Smoke Bomb and blocked spell feedback. Named-effect guards
 require all of these to occur; production replays include relics, all mutation
 choices, Glutton stats, augment ownership and Duos partner state. The event suite
-now covers 1,191 battles and 425,582 cues. The other sets' presentation callbacks
+also includes 392 Reckoning battles and 128,714 cues: hook-pull leap origins,
+Sentinel and resurrection feedback, possession/pet commands, self-damage kind,
+shadow/radiant item projectiles, Cannoneer and death bursts, spell blocks and
+Respite saves. PvE modifiers and Duos setup are retained in the reference replays.
+Exact event order catches death bursts that occur after damage and its nested
+callbacks. The suite now covers 1,583 battles and 554,296 cues. The other sets' presentation callbacks
 and complete replay coverage remain pending; this is not a renderer.
 
-Latest verification: the native test suite passes 101,187,782 assertions.
+Latest verification: the native test suite passes 101,316,888 assertions.
 `./native/build.ps1 -Publish` compiles without warnings, renders the workbench,
 purchases through the native UI, and runs the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.

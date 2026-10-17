@@ -36,7 +36,7 @@ public sealed partial class CombatSimulation
                             var copy = c.Summon(u.Team, u.Line.Id, Math.Max(0, u.Stage - 1), cell);
                             if (copy is null) return;
                             copy.MaxHealth = UnitValues.Round(copy.MaxHealth * 0.55); copy.Health = copy.MaxHealth;
-                            copy.AttackSpeed *= 1 + u.Reckoning.Trickster; copy.Leap = false;
+                            copy.AttackSpeed *= 1 + u.Reckoning.Trickster; copy.Leap = false; c.Text(copy, "Copy");
                         }); break;
                     case "SER": Each(u => { u.Armor += value; u.MagicResist += value; u.AbilityPower += value; });
                         On(CombatHook.Death, (_, e) => {
@@ -49,13 +49,13 @@ public sealed partial class CombatSimulation
                         On(CombatHook.DamageTaken, (c, e) => {
                             var u = e.Unit!; var s = u.Reckoning; if (s.Night == 0 || s.NightUsed || u.Health >= u.MaxHealth * 0.5) return;
                             s.NightUsed = true; double amount = u.MaxHealth * s.Night; c.Shield(u, amount); u.Equipment.Amp += s.NightDamage; double at = u.Shield;
-                            c.After(8, () => u.Shield = Math.Max(0, u.Shield - Math.Max(0, amount - (at - u.Shield))), u);
+                            c.After(8, () => u.Shield = Math.Max(0, u.Shield - Math.Max(0, amount - (at - u.Shield))), u); c.Text(u, "Nightfall");
                         }); break;
                     case "DAY": Each(u => u.Reckoning.Day = value);
                         On(CombatHook.DamageTaken, (c, e) => {
                             var u = e.Unit!; var s = u.Reckoning; if (s.Day == 0 || s.DayUsed || u.Health >= u.MaxHealth * 0.5) return;
                             s.DayUsed = true; c.Heal(u, u.MaxHealth * s.Day * 0.5); c.After(1, () => c.Heal(u, u.MaxHealth * s.Day * 0.5), u);
-                            foreach (var m in members.Where(m => m.Alive)) m.Equipment.Amp += 0.1;
+                            foreach (var m in members.Where(m => m.Alive)) m.Equipment.Amp += 0.1; c.Text(u, "Daybreak");
                         }); break;
                     case "CHI":
                         int deaths = 0; bool risen = false;
@@ -71,7 +71,7 @@ public sealed partial class CombatSimulation
                             var summon = c.Summon(c.Team!.Value, "rec_kimeramon", 0, cell, new(Items: inherited.ToArray()));
                             if (summon is null) return;
                             summon.MaxHealth = UnitValues.Round(summon.MaxHealth + value * factor - UnitValues.Stats(summon.Line, 0).MaxHealth); summon.Health = summon.MaxHealth;
-                            double ad = P("ad") * factor; summon.AttackDamage = summon.AttackDamage - summon.BaseAttackDamage + ad; summon.BaseAttackDamage = ad;
+                            double ad = P("ad") * factor; summon.AttackDamage = summon.AttackDamage - summon.BaseAttackDamage + ad; summon.BaseAttackDamage = ad; c.Text(summon, "Kimeramon rises");
                         }); break;
                     case "WIT":
                         CombatUnit? leader = null;
@@ -84,12 +84,12 @@ public sealed partial class CombatSimulation
                         On(CombatHook.Cast, (_, e) => { if (leader is { Alive: true } && Member(e.Unit!)) leader.Mana = Math.Min(leader.MaxMana, leader.Mana + e.Unit!.MaxMana * 0.3); }); break;
                     case "DRK": Each(u => u.MaxHealth += value); break;
                     case "HNT": Each(u => u.AbilityPower += value); bool slain = false;
-                        On(CombatHook.Kill, (c, e) => { if (slain || !Member(e.Unit!) || e.Target!.MaxHealth < 1500) return; slain = true; foreach (var u in c.Mine.Where(u => u.Alive)) u.AbilityPower += P("team"); }); break;
+                        On(CombatHook.Kill, (c, e) => { if (slain || !Member(e.Unit!) || e.Target!.MaxHealth < 1500) return; slain = true; foreach (var u in c.Mine.Where(u => u.Alive)) u.AbilityPower += P("team"); c.Text(e.Unit!, "Dragon slain"); }); break;
                     case "IRN": Start(c => { foreach (var u in c.Mine) u.Armor += value; }); break;
                     case "PHA": Each(u => u.Reckoning.Phantom = value);
                         On(CombatHook.Lethal, (_, e) => {
                             var u = e.Unit!; var s = u.Reckoning; if (s.Phantom == 0 || s.PhantomUsed || u.Summoned || u.Health > 0) return;
-                            s.PhantomUsed = s.PhantomRisen = true; u.Health = Math.Max(1, u.MaxHealth * s.Phantom); u.InvulnerableUntil = Time + 1; u.Stun = Math.Max(u.Stun, 1); u.BurnSource = null; u.BurnUntil = 0; u.BurnAccumulated = 0;
+                            s.PhantomUsed = s.PhantomRisen = true; u.Health = Math.Max(1, u.MaxHealth * s.Phantom); u.InvulnerableUntil = Time + 1; u.Stun = Math.Max(u.Stun, 1); u.BurnSource = null; u.BurnUntil = 0; u.BurnAccumulated = 0; Emit("text", u, text: "Rises"); Emit("shield", u);
                         });
                         On(CombatHook.BeforeDamage, (_, e) => { if (e.Unit!.Reckoning.PhantomRisen) e.Multiplier *= 1.2; });
                         On(CombatHook.BeforeDamageTaken, (_, e) => { if (e.Target!.Reckoning.PhantomRisen) e.Multiplier *= 1.3; }); break;
@@ -99,7 +99,7 @@ public sealed partial class CombatSimulation
                             double amount = value * (1 + 0.5 * u.Stage); c.Shield(u, amount);
                             if (holder is not null && speed is not null) holder.SpeedBuffs.RemoveAll(b => ReferenceEquals(b, speed));
                             jumps = Math.Min(5, jumps + 1); speed = new(P("as") * jumps, double.PositiveInfinity); u.SpeedBuffs.Add(speed);
-                            holder = u; given = amount; shieldAt = u.Shield; until = Time + P("dur"); minimum = Time + P("dur") * 0.75;
+                            holder = u; given = amount; shieldAt = u.Shield; until = Time + P("dur"); minimum = Time + P("dur") * 0.75; c.Text(u, "Sentinel");
                         }
                         On(CombatHook.CombatReady, (c, _) => { var u = members.Where(u => u.Alive).OrderByDescending(u => u.Items.Count).ThenByDescending(u => u.AttackSpeed).ThenBy(u => u.Id).FirstOrDefault(); if (u is not null) Give(c, u); }, 3);
                         On(CombatHook.Tick, (c, _) => {
@@ -111,7 +111,7 @@ public sealed partial class CombatSimulation
                             if (next is not null) Give(c, next); else holder = null;
                         }); break;
                     case "RIV": On(CombatHook.BeforeDamage, (_, e) => { if (count == 1 && Member(e.Unit!) && e.Target!.Traits.Any(t => (e.Unit!.Line.Rivals ?? []).Contains(t))) e.Multiplier *= 1 + value; }); break;
-                    case "ETR": Start(c => { foreach (var u in members) if (c.FreeCellNear(u) is { } cell) c.Summon(u.Team, "rec_wolf", u.Stage, cell, new(HealthMultiplier: 0.5 * value, AttackMultiplier: 0.5 * value)); }); break;
+                    case "ETR": Start(c => { foreach (var u in members) if (c.FreeCellNear(u) is { } cell) { var wolf = c.Summon(u.Team, "rec_wolf", u.Stage, cell, new(HealthMultiplier: 0.5 * value, AttackMultiplier: 0.5 * value)); if (wolf is not null) c.Text(wolf, "Garurumon"); } }); break;
                     case "INA": Start(c => { foreach (var u in members) foreach (var a in c.Mine) if (a.Cell.DistanceTo(u.Cell) <= 1) c.Buff(a, CombatStat.DamageReduction, value, 8); }); break;
                     case "ASN": Each(u => { u.CriticalChance += value; u.CriticalDamage += P("cd"); u.Equipment.AbilityCrit = true; }); break;
                     case "BRW": Each(u => u.MaxHealth += value); break;
@@ -133,7 +133,7 @@ public sealed partial class CombatSimulation
                         On(CombatHook.UnitTick, (c, e) => { var u = e.Unit!; if (u.Reckoning.Skirmisher != 0 && c.Every(u, "skr", 1)) u.AttackDamage += u.Reckoning.Skirmisher * (1 + 0.5 * u.Stage); }); break;
                     case "SPW": Each(u => u.AbilityPower += value);
                         On(CombatHook.AnyCast, (_, _) => { foreach (var m in members) if (m.Alive && m.Reckoning.Spellweaver < 10) { m.Reckoning.Spellweaver++; m.AbilityPower += P("per"); } }); break;
-                    case "CAN": On(CombatHook.Attack, (c, e) => { var u = e.Unit!; if (!Member(u) || ++u.Reckoning.Cannoneer % 5 != 0 || !e.Target!.Alive) return; foreach (var target in EnemiesNear(u, e.Target.Cell, 1)) c.Damage(u, target, e.Amount * value, DamageKind.Physical); }); break;
+                    case "CAN": On(CombatHook.Attack, (c, e) => { var u = e.Unit!; if (!Member(u) || ++u.Reckoning.Cannoneer % 5 != 0 || !e.Target!.Alive) return; c.Burst(e.Target.Cell, 1, u.Team); foreach (var target in EnemiesNear(u, e.Target.Cell, 1)) c.Damage(u, target, e.Amount * value, DamageKind.Physical); }); break;
                     default: throw new NotSupportedException($"Reckoning trait {id} has not been migrated.");
                 }
             }

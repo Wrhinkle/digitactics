@@ -60,7 +60,7 @@ public sealed class CombatHookContext
     public void Kill(CombatUnit unit, CombatUnit? source = null) { if (unit.Alive) Combat.Kill(unit, source); }
     public void CastAgain(CombatUnit unit, CombatUnit target) => Combat.CastAgain(unit, target);
     public CombatUnit? Summon(int team, string line, int stage, HexCell cell, SummonOptions? options = null) => Combat.Summon(team, line, stage, cell, options);
-    public bool Move(CombatUnit unit, HexCell cell, double duration = 0.25) => Combat.MoveFromHook(unit, cell, duration);
+    public bool Move(CombatUnit unit, HexCell cell, double duration = 0.25, bool leap = false) => Combat.MoveFromHook(unit, cell, duration, leap);
     public bool Place(CombatUnit unit, HexCell cell) => Combat.PlaceFromHook(unit, cell);
     public void Remove(CombatUnit unit) => Combat.RemoveFromHook(unit);
     public CombatUnit? UnitAt(HexCell cell) => Combat.UnitAt(cell);

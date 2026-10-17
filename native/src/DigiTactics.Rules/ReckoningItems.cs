@@ -5,7 +5,7 @@ public sealed partial class CombatSimulation
     private void ReckoningHurt(CombatUnit u, double amount)
     {
         if (!u.Alive || !(amount > 0)) return;
-        u.Health = Math.Max(1, u.Health - amount); u.Taken += amount; Emit("damage", u, amount: UnitValues.Round(amount));
+        u.Health = Math.Max(1, u.Health - amount); u.Taken += amount; Emit("damage", u, amount: UnitValues.Round(amount), kind: DamageKind.True);
     }
 
     private CombatUnit? ReckoningVoid(CombatUnit holder, HexCell at, bool unstable)
@@ -16,7 +16,7 @@ public sealed partial class CombatSimulation
         if (spawn is null) return null;
         spawn.Leap = false; spawn.Reckoning.Unstable = unstable;
         foreach (var enemy in EnemiesNear(spawn, spawn.Cell, 2)) enemy.Target = spawn;
-        return spawn;
+        Emit("text", spawn, text: "Voidlarva"); return spawn;
     }
 
     private void BindReckoningItems(CombatUnit u, double drawback)
@@ -44,7 +44,7 @@ public sealed partial class CombatSimulation
                 case "rec_guardian_feather": case "rec_s_guardian_feather": case "rec_r_guardian_feather":
                     On(CombatHook.Lethal, (c, _) => {
                         if (u.Reckoning.Feather || u.Health > 0) return;
-                        u.Reckoning.Feather = true; u.Health = 1; u.InvulnerableUntil = Time + 2; u.Stun = Math.Max(u.Stun, 2); u.BurnSource = null; u.BurnUntil = 0; u.BurnAccumulated = 0; u.WeakUntil = 0;
+                        u.Reckoning.Feather = true; u.Health = 1; u.InvulnerableUntil = Time + 2; u.Stun = Math.Max(u.Stun, 2); u.BurnSource = null; u.BurnUntil = 0; u.BurnAccumulated = 0; u.WeakUntil = 0; c.Text(u, "Held safe");
                         c.After(2, () => {
                             double amount = u.MaxHealth * (radiant ? 1 : shadow ? 0.7 : 0.3);
                             u.Health = Math.Min(u.MaxHealth, Math.Max(u.Health, amount)); Emit("heal", u, amount: UnitValues.Round(amount));
@@ -72,15 +72,15 @@ public sealed partial class CombatSimulation
                         if (u.Attacks % 2 != 0) return;
                         var pool = units.Where(t => t.Alive && t.Team != u.Team).ToList(); var picked = new List<CombatUnit>();
                         while (pool.Count > 0 && picked.Count < 4) { int index = (int)(c.Random() * pool.Count); picked.Add(pool[index]); pool.RemoveAt(index); }
-                        foreach (var target in picked) c.Damage(u, target, 80);
+                        foreach (var target in picked) { c.Effect("beam", u, target); c.Damage(u, target, 80); }
                     }); break;
                 case "rec_s_titan_will": On(CombatHook.DamageTaken, (_, e) => u.Reckoning.Store += e.Amount * 0.6);
-                    On(CombatHook.Attack, (c, e) => { var s = u.Reckoning; if (!(s.Store > 0) || Time < (s.RevengeAt != 0 ? s.RevengeAt : 2) || !e.Target!.Alive) return; double amount = s.Store; s.Store = 0; s.RevengeAt = Time + 2; c.Damage(u, e.Target, amount, DamageKind.True); }); break;
+                    On(CombatHook.Attack, (c, e) => { var s = u.Reckoning; if (!(s.Store > 0) || Time < (s.RevengeAt != 0 ? s.RevengeAt : 2) || !e.Target!.Alive) return; double amount = s.Store; s.Store = 0; s.RevengeAt = Time + 2; c.Damage(u, e.Target, amount, DamageKind.True); c.Text(u, "Revenge"); }); break;
                 case "rec_s_twin_shot": Start(_ => u.AttackDamage -= u.BaseAttackDamage * 0.1 * drawback);
                     On(CombatHook.Attack, (c, e) => {
                         var target = e.Target!;
                         var others = EnemiesNear(u, target.Cell, 2).Where(t => t != target).OrderBy(t => t.Cell.DistanceTo(target.Cell)).ThenBy(t => t.Id).Take(2).ToArray();
-                        foreach (var t in others) c.Damage(u, t, e.Amount * 0.7, DamageKind.Physical, e.Critical);
+                        foreach (var t in others) { c.Effect("shot", u, t); c.Damage(u, t, e.Amount * 0.7, DamageKind.Physical, e.Critical); }
                     }); break;
                 case "rec_void_portal": case "rec_s_void_portal": case "rec_r_void_portal":
                     Start(_ => {
@@ -103,7 +103,7 @@ public sealed partial class CombatSimulation
                         else { if (radiant) a.MaxHealth += 200; double amount = radiant ? (u.Stage == 0 ? 450 : u.Stage == 1 ? 600 : 750) : (u.Stage == 0 ? 250 : u.Stage == 1 ? 350 : 450); c.Shield(a, amount); }
                     }
                 }); break;
-                case "rec_s_mana_zap": On(CombatHook.AnyCast, (c, e) => { var t = e.Unit!; if (!u.Alive || t == u || !t.Alive || u.Cell.DistanceTo(t.Cell) > 2) return; c.Damage(u, t, t.MaxMana * (t.Team != u.Team ? 2 : 0.5 * drawback)); u.AbilityPower += 10; }); break;
+                case "rec_s_mana_zap": On(CombatHook.AnyCast, (c, e) => { var t = e.Unit!; if (!u.Alive || t == u || !t.Alive || u.Cell.DistanceTo(t.Cell) > 2) return; c.Effect("beam", u, t); c.Damage(u, t, t.MaxMana * (t.Team != u.Team ? 2 : 0.5 * drawback)); u.AbilityPower += 10; }); break;
                 case "rec_s_flame_tome":
                     On(CombatHook.DamageDealt, (_, e) => { var t = e.Target!; if (e.Kind != DamageKind.Magic || e.IsBurn || !t.Alive) return; if (t.Reckoning.CurseSource is null) t.Reckoning.CurseNext = Time + 1; t.Reckoning.CurseUntil = Time + 8; t.Reckoning.CurseSource = u; t.Reckoning.CurseRate = 0.06; t.WoundUntil = Math.Max(t.WoundUntil, Time + 8); });
                     On(CombatHook.BeforeDamage, (_, e) => { if (e.Kind == DamageKind.Magic && !e.IsBurn) e.Multiplier *= 1 - 0.2 * drawback; }); break;
@@ -118,7 +118,7 @@ public sealed partial class CombatSimulation
                     foreach (var a in Row(shadow ? 2 : 1, !shadow)) { a.AbilityPower += radiant ? 50 : shadow ? 45 : 25; if (radiant) a.Omnivamp += 0.1; }
                     if (shadow) u.AbilityPower -= 20 * drawback;
                 }); break;
-                case "rec_s_holy_ring": On(CombatHook.UnitTick, (c, _) => { if (!c.Every(u, "sring", 5)) return; foreach (var a in units.Where(a => a.Alive && a.Team == u.Team && a != u)) c.Heal(a, (a.MaxHealth - a.Health) * 0.25); ReckoningHurt(u, u.Health * 0.05 * drawback); }); break;
+                case "rec_s_holy_ring": On(CombatHook.UnitTick, (c, _) => { if (!c.Every(u, "sring", 5)) return; foreach (var a in units.Where(a => a.Alive && a.Team == u.Team && a != u)) c.Heal(a, (a.MaxHealth - a.Health) * 0.25); c.Burst(u.Cell, 3, 1 - u.Team); ReckoningHurt(u, u.Health * 0.05 * drawback); }); break;
                 case "rec_s_justice_hand":
                     Start(_ => { u.Reckoning.Justice = true; u.AttackDamage += u.BaseAttackDamage * 0.3; u.AbilityPower += 30; u.Omnivamp += 0.2; });
                     On(CombatHook.Kill, (_, _) => { int k = u.Reckoning.Justice ? -1 : 1; u.Reckoning.Justice = !u.Reckoning.Justice; u.AttackDamage += k * u.BaseAttackDamage * 0.3; u.AbilityPower += k * 30; u.Omnivamp += k * 0.2; }); break;
@@ -142,7 +142,7 @@ public sealed partial class CombatSimulation
                     var at = new HexCell(Columns - 1 - u.Cell.Column, 7 - u.Cell.Row);
                     var enemy = units.Where(t => t.Alive && t.Team != u.Team).OrderBy(t => t.Cell.DistanceTo(at)).FirstOrDefault();
                     if (radiant) foreach (var a in c.Mine) a.AttackSpeed *= 1.1;
-                    if (enemy is null) return; double duration = radiant ? 6 : shadow ? 7 : 4; enemy.Stun = Math.Max(enemy.Stun, duration);
+                    if (enemy is null) return; double duration = radiant ? 6 : shadow ? 7 : 4; enemy.Stun = Math.Max(enemy.Stun, duration); c.Text(enemy, "Blown away");
                     if (shadow) c.After(duration, () => { enemy.AttackDamage += enemy.BaseAttackDamage * 0.3 * drawback; enemy.AbilityPower += 30 * drawback; }, enemy);
                 }); break;
                 case "rec_s_quick_silver": Start(_ => Frail(0.12)); break;

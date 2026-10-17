@@ -57,14 +57,14 @@ for (const item of core) for (const stage of [0, 2])
 Object.assign(DT.Combat.prototype, originalHooks);
 const directory = path.join(__dirname, '../tests/fixtures/combat');
 const manifest = JSON.parse(fs.readFileSync(path.join(directory, 'manifest.json')));
-for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos']) {
+for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos', 'reckoning']) {
   const shard = manifest.files.find(f => f.file.startsWith(`${setId}-`));
   const compressed = fs.readFileSync(path.join(directory, shard.file));
   if (require('node:crypto').createHash('sha256').update(compressed).digest('hex') !== shard.sha256)
     throw new Error(`${setId} gameplay fixture integrity failure`);
   const corpus = JSON.parse(require('node:zlib').gunzipSync(compressed));
   if (corpus.length !== shard.battles) throw new Error(`${setId} gameplay fixture count mismatch`);
-  for (const trace of corpus.filter(t => (t.name.startsWith('fates-') || t.name.startsWith('faction-') || t.name.startsWith('autochess/') || t.name.startsWith('gizmos-')) && !t.summonItemProbe)) {
+  for (const trace of corpus.filter(t => (t.name.startsWith('fates-') || t.name.startsWith('faction-') || t.name.startsWith('autochess/') || t.name.startsWith('gizmos-') || t.name.startsWith('reckoning-')) && !t.summonItemProbe && !t.observerSummonProbe)) {
     const [set, pace] = trace.variant.split('/'); DT.Sets.activate(set, pace);
     const setup = trace.setup || { sideA: { augments: trace.augsA }, sideB: { augments: trace.augsB } };
     const buffs = b => b && ({ as: b.attackSpeed, armor: b.armor, mana: b.mana });
@@ -80,7 +80,7 @@ for (const setId of ['fates', 'faction-wars', 'autochess', 'gizmos']) {
       }
       return result;
     }
-    const cb = new DT.Combat(side(trace.sideA, setup.sideA), side(trace.sideB, setup.sideB), { seed: trace.seed, info: { mech: { mutation: setup.mutation } } });
+    const cb = new DT.Combat(side(trace.sideA, setup.sideA), side(trace.sideB, setup.sideB), { seed: trace.seed, info: { type: setup.roundType, stage: setup.roundStage, mech: { mutation: setup.mutation } } });
     let ticks = 0; while (!cb.done && ticks < 2000) { cb.step(); ticks++; }
     if (!cb.done || ticks !== trace.tick || cb.winner !== trace.winner || Math.abs(cb.t - trace.time) > 1e-10)
       throw new Error(`Production replay setup differs from gameplay fixture: ${trace.name}`);
@@ -97,6 +97,7 @@ for (const kind of ['Physical', 'Magic', 'True'])
 if (!allEvents.some(e => e.critical) || !allEvents.some(e => e.big)) throw new Error('Missing critical or amplified effect coverage');
 for (const [prefix, labels] of [
   ['fates-', ['+1 gold', '+2 AP', 'Ascend', 'Frenzy', 'Frozen', 'Full Moon', 'Guardian Wing', 'Lone Blade', 'Pumped Up', 'Push-ups', 'Rewind', 'Rocket Fist', 'Showtime', 'Soulmon', 'Spirit Rush', 'Stasis', 'Tankmon', 'Trap Claw', 'Zephyr']],
+  ['reckoning-', ['Sentinel', 'Copy', 'Nightfall', 'Daybreak', 'Kimeramon rises', 'Dragon slain', 'Rises', 'Garurumon', 'Held safe', 'Voidlarva', 'Blown away', 'Revenge', 'Ascended', 'Possessed', 'Go!', 'Blocked', 'Respite']],
   ['gizmos-', ['VIP', 'Arrested', 'Cybernetic', 'Voracious', 'Voidborne', 'Adrenal', 'Synaptic', 'Leeching', 'Metamorphosis', 'Spotlight', 'Built', 'X-Antibody', 'Backup', 'Decoy', 'Blown away', 'Mana cut', 'Smoke Bomb', 'Copy', 'Blocked']],
   ['autochess/', ['Silenced', 'Stone', 'Divine Shield', 'Divine Shield x2', 'Divine Shield x3', 'Hexed', 'Refresh', 'Numemon!', 'Bash', 'Transform']],
   ['faction-', ['DigiSoul', 'Spirit Evolution', 'Muck', 'Frozen', 'Undying', 'Miss']],

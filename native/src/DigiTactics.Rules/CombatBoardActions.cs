@@ -31,9 +31,10 @@ public sealed partial class CombatSimulation
         return unit;
     }
 
-    internal bool MoveFromHook(CombatUnit unit, HexCell cell, double duration)
+    internal bool MoveFromHook(CombatUnit unit, HexCell cell, double duration, bool leap = false)
     {
         if (!InBounds(cell) || (UnitAt(cell) is { } other && other != unit)) return false;
+        if (leap) Emit("leap", unit);
         // Movement duration is presentation-only in the legacy API; it does not change move cooldown.
         Place(unit, cell);
         return true;
