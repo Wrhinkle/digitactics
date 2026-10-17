@@ -4,7 +4,9 @@ internal sealed class GizmosUnitState
 {
     internal double VisionsUntil, Ward, FrostUntil, Shroud;
     internal double? ArrestBreak;
-    internal bool Backup;
+    internal bool Backup, Noir, Melee;
+    internal int Antibody;
+    internal double CyberUntil;
 }
 
 public sealed partial class CombatSimulation
@@ -42,11 +44,12 @@ public sealed partial class CombatSimulation
         return true;
     }
 
-    private void BindGizmos(CombatSetup setup)
+    private void BindGizmos(CombatEntry[] sideA, CombatEntry[] sideB, CombatSetup setup)
     {
         foreach (var side in new[] { setup.SideA, setup.SideB })
-            if (!side.NoTraits || (side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
-                throw new NotSupportedException("Gizmos traits and augments have not been migrated yet.");
+            if ((side.Augments?.Length ?? 0) > 0 || (side.Parts?.Any(p => (p.Augments?.Length ?? 0) > 0) ?? false))
+                throw new NotSupportedException("Gizmos augments have not been migrated yet.");
+        BindGizmosTraits(sideA, sideB, setup);
         foreach (var unit in units) BindGizmosItems(unit);
         BindSummonedItems = BindGizmosItems;
         var context = Hooks.Context(CombatHookSource.Mechanic, "gates");

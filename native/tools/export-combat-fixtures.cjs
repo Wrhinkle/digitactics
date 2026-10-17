@@ -462,6 +462,37 @@ for (const { item, stage } of gizmoItemCases) {
 }
 
 
+// Every Gizmos trait breakpoint with mixed opponents and production ability hooks.
+DT.Sets.activate('gizmos', 'hyper');
+const gizmoTraits = Object.entries(DT.TRAITS).map(([id,t]) => [id, [...t.bp]]);
+for (const [id, bp] of gizmoTraits) for (let level = 0; level < bp.length; level++) for (const mutation of (id === 'MUT' ? ['cyber','voracious','voidborne','adrenal','synaptic','leech','meta',null] : [null])) for (const formation of [0,1]) {
+  const pace = level % 2 ? 'normal' : 'hyper', cols = level % 2 ? 14 : 7;
+  DT.Sets.activate('gizmos', pace);
+  const seed = 180000 + fixtures.length, pick = DT.makeRng(seed);
+  const components = Object.keys(DT.ITEMS).filter(id=>DT.ITEMS[id].component);
+  const own = DT.SHOP_LINES.filter(l => l.traits.includes(id)).slice(0, bp[level]);
+  const selected = [];
+  while (selected.length < Math.max(4, own.length)) {
+    const l = DT.SHOP_LINES[Math.floor(pick() * DT.SHOP_LINES.length)];
+    if (!selected.includes(l)) selected.push(l);
+  }
+  const entries = lines => lines.map((l,i) => ({ line:l.id, stage:level % 3, c:i % cols, r:formation ? 4+i%3 : 4+Math.floor(i/cols),
+    items:i % 2 ? [] : [formation && id !== 'JUNK' ? gizmosHookItems[Math.floor(pick()*gizmosHookItems.length)] : components[Math.floor(pick()*components.length)]] }));
+  const sideA=entries(own), sideB=entries(selected);
+  if (own.length < bp[level]) sideA[0].bonusTraits = {[id]:bp[level]-own.length};
+  if (id === 'GLUT') sideA[0].mods = {glutHp:700,glutAp:35};
+  const cb = new DT.Combat({units:sideA,cols}, {units:sideB,cols}, {seed, info:{mech:{mutation}}});
+  if (DT.traitLevel(id,cb.traitCounts[0][id]) !== level+1) throw new Error(`Missing Gizmos breakpoint ${id}/${level}`);
+  const samples=[{tick:0,units:snapshots(cb)}]; let tick=0;
+  while (!cb.done && tick<2000) {cb.step();tick++;if(tick%15===0 || cb.done) samples.push({tick,units:snapshots(cb)});}
+  const convert=a=>a.map(u=>({line:u.line,stage:u.stage,column:u.c,row:u.r,items:u.items,bonusTraits:u.bonusTraits,gluttonHealth:u.mods?.glutHp||0,gluttonAbilityPower:u.mods?.glutAp||0}));
+  fixtures.push({name:`gizmos-trait/${id}/${level}/${mutation}/${formation}`,variant:`gizmos/${pace}`,seed,cols,
+    sideA:convert(sideA),sideB:convert(sideB),samples,tick,winner:cb.winner,time:cb.t,productionTraits:true,
+    traitCounts:cb.traitCounts,meeps:cb.teamFx.map(f=>f.meep||0),pirateKills:cb.teamFx.map(f=>f.pirate||0),
+    setup:{sideA:{},sideB:{},mutation}});
+}
+
+
 for (const duos of [false, true]) {
   DT.Sets.activate('faction-wars', 'hyper');
   const log = [];

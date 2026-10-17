@@ -96,7 +96,9 @@ to be a Vulkan renderer or the final game UI.
   Consumables, grants, rewards and planning rules remain pending.
 - Gizmos: four custom abilities, Colossus immunity, spell wards and all 22
   standard/overclocked held-item hook definitions, verified by 76 reference battles.
-  Traits, upgrades, Glutton modifiers and planning rules remain pending.
+  All 27 traits and 63 breakpoints, Mutation variants, Junkyard conversions,
+  Innovator summons and Glutton combat inputs pass 154 more reference battles.
+  Upgrades, feeding commands and planning rules remain pending.
 - Full combat traces are gzip-compressed in source control and decompressed by the
   test runner; comparisons retain all recorded samples.
 - Headless native renderer smoke mode and self-contained Windows packaging.

@@ -1,7 +1,7 @@
 namespace DigiTactics.Rules;
 
 public sealed record PartnerModifier(string? Bonus, string? Trait = null);
-public sealed record CombatEntry(string Line, int Stage, int Column, int Row, int Uid = 0, int? Owner = null, string[]? Items = null, Dictionary<string, int>? BonusTraits = null, PartnerModifier? Partner = null);
+public sealed record CombatEntry(string Line, int Stage, int Column, int Row, int Uid = 0, int? Owner = null, string[]? Items = null, Dictionary<string, int>? BonusTraits = null, PartnerModifier? Partner = null, double GluttonHealth = 0, double GluttonAbilityPower = 0);
 public readonly record struct CombatEvent(double Time, string Type, int Unit, int? Target = null, double Amount = 0);
 public readonly record struct AttackSpeedBuff(double Value, double Until, bool Infiltrator = false);
 

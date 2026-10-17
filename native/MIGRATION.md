@@ -100,9 +100,14 @@ The current executable is a migration workbench. It must not replace the public 
   held-item hook definitions are bound, including backup revival, decoy summons,
   shroud restoration, ally healing, auras and timed slows. Twenty-four ability
   battles and 52 item battles compare the production callbacks with traits disabled.
-  Traits, Digivice upgrades, Glutton modifiers and planning rules remain pending.
+  All 27 traits across 63 breakpoints are now bound, with all seven Mutation
+  variants plus seeded selection, Junkyard item conversions, Innovator summons,
+  Transformer modes and persisted Glutton stat inputs. Another 154 reference
+  battles cover two formations with component and mixed hook-item loadouts.
+  Catalog schema 8 preserves component categories and recipe order for temporary
+  upgrades. Digivice upgrades, feeding commands and planning rules remain pending.
 
-Latest verification: `./native/build.ps1 -Publish` passes 10,942,972 assertions, compiles
+Latest verification: `./native/build.ps1 -Publish` passes 12,200,973 assertions, compiles
 without warnings, renders the workbench, purchases through the native UI, and runs
 the self-contained executable. Fixtures compare against actual methods in the existing
 JavaScript engine; they do not establish whole-match parity.
