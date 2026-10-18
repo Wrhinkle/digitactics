@@ -59,7 +59,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         new Vector3(material.Emissive[0], material.Emissive[1], material.Emissive[2]) * material.EmissiveIntensity,
                         material.Roughness, material.Metalness, material.Side, additive: material.Blending == 2,
                         vertexColors: material.VertexColors, flatShading: material.FlatShading || !part.HasNormals, alphaTest: material.AlphaTest, wireframe: material.Wireframe,
-                        points: item.Object.Kind == "points" ? PointSprite.Board(material, part.Texture, viewportHeight) : null);
+                        points: item.Object.Kind == "points" ? PointSprite.Board(material, part.Texture, viewportHeight) : null, fog: material.Fog);
                     DrawCalls++;
                 }
                 if (item.Object.Instances is { } instances)

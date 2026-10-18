@@ -11,14 +11,22 @@ internal sealed class ModelRenderer : IDisposable
     private float[] paletteFloats = [];
     public int DrawCalls { get; private set; }
     public FarmLighting? FarmLight { get; set; }
+    public BoardLighting? BoardLight { get; set; }
     public Vector3 FarmEye { get; set; }
     public bool ShadowPass { get; set; }
     public uint ShadowTexture { get; set; }
     public bool ReceiveShadow { get; set; }
-    private void SetFarmLight(Vector3 emissive = default, float roughness = -1, float metalness = 0)
+    private void SetFarmLight(Vector3 emissive = default, float roughness = -1, float metalness = 0, bool fog = true)
     {
-        program.Uniform(15, FarmLight is null ? 0 : 1);
+        program.Uniform(15, BoardLight is not null ? 2 : FarmLight is null ? 0 : 1);
         program.Uniform(16, new Brutal.Numerics.float4((float)(FarmLight?.Hemisphere ?? 0), (float)(FarmLight?.Sun ?? 0), (float)(FarmLight?.Lamp ?? 0), 0));
+        void V(int location, Vector3 value, float w = 0) => program.Uniform(location, new Brutal.Numerics.float4(value.X,value.Y,value.Z,w));
+        if (BoardLight is { } board)
+        {
+            V(33,board.Sky,board.HemisphereIntensity); V(34,board.Ground); V(35,board.Sun,board.SunIntensity); V(36,board.Direction);
+            V(37,BoardLighting.Srgb(board.FogColor)); V(38,new(board.FogNear,board.FogFar,fog ? 1 : 0));
+        }
+        else V(38,Vector3.Zero);
         program.Uniform(17, new Brutal.Numerics.float4(emissive.X, emissive.Y, emissive.Z, 0));
         program.Uniform(18, new Brutal.Numerics.float4(FarmEye.X, FarmEye.Y, FarmEye.Z, 0));
         program.Uniform(19, new Brutal.Numerics.float4(roughness, metalness, 0, 0));
@@ -127,10 +135,10 @@ internal sealed class ModelRenderer : IDisposable
         geometry.Draw();
     }
     public void Dispose() { OpenGl.DeleteBuffers(new[] { bones }); program.Dispose(); }
-    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false, PointSprite? points = null)
+    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false, PointSprite? points = null, bool fog = true)
     {
         program.Use(); Matrix(0, world); Matrix(4, From(camera));
-        SetFarmLight(emissive, roughness, metalness);
+        SetFarmLight(emissive, roughness, metalness, fog);
         program.Uniform(8, 0); program.Uniform(9, flatShading ? 0 : 1); program.Uniform(10, unlit ? 1 : 0); program.Uniform(11, alphaTest);
         program.Uniform(29, vertexColors && geometry.HasColors ? 1 : 0);
         program.Uniform(12, color); program.Uniform(13, texture is null ? 0 : 1); program.Uniform(14, 0f);
@@ -186,14 +194,14 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=8) uniform int skinned;
         layout(location=30) uniform vec4 pointSettings;
         out vec2 texCoord; out vec3 worldPosition; out vec3 worldNormal; out vec4 worldTangent;
-        out vec3 meshColor;
+        out vec3 meshColor; out float eyeDepth;
         void main() {
             mat4 skin = mat4(1);
             if(skinned!=0) skin=bones[int(joints.x)]*weights.x+bones[int(joints.y)]*weights.y+bones[int(joints.z)]*weights.z+bones[int(joints.w)]*weights.w;
             vec4 p=world*skin*vec4(position,1);
             worldPosition=p.xyz; worldNormal=transpose(inverse(mat3(world)))*mat3(skin)*normal;
             worldTangent=vec4(mat3(world)*mat3(skin)*tangent.xyz,tangent.w);
-            texCoord=uv; meshColor=vertexColor; gl_Position=camera*p;
+            texCoord=uv; meshColor=vertexColor; gl_Position=camera*p; eyeDepth=gl_Position.w;
             gl_PointSize=pointSettings.w!=0 ? pointSettings.x*(pointSettings.z!=0 ? pointSettings.y/gl_Position.w : 1) : 1;
             gl_Position.z=2*gl_Position.z-gl_Position.w;
         }
@@ -201,7 +209,7 @@ internal sealed class ModelRenderer : IDisposable
     private const string FragmentShader = """
         #version 450 core
         in vec2 texCoord; in vec3 worldPosition; in vec3 worldNormal; in vec4 worldTangent;
-        in vec3 meshColor;
+        in vec3 meshColor; in float eyeDepth;
         layout(binding=0) uniform sampler2D colorTexture;
         layout(binding=1) uniform sampler2D roughnessTexture;
         layout(binding=2) uniform sampler2D specularTexture;
@@ -229,6 +237,12 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=30) uniform vec4 pointSettings;
         layout(location=31) uniform vec4 pointU;
         layout(location=32) uniform vec4 pointV;
+                layout(location=33) uniform vec4 boardSky;
+        layout(location=34) uniform vec4 boardGround;
+        layout(location=35) uniform vec4 boardSun;
+        layout(location=36) uniform vec4 boardDirection;
+        layout(location=37) uniform vec4 boardFogColor;
+        layout(location=38) uniform vec4 boardFog;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
@@ -292,13 +306,17 @@ internal sealed class ModelRenderer : IDisposable
             vec3 light=unlit!=0?vec3(1):vec3(.35)+vec3(.65)*max(dot(n,normalize(vec3(2,4,3))),0);
             vec3 specular=vec3(0);
             if(farmLighting!=0 && unlit==0) {
+                vec3 sunDirection=farmLighting==2 ? boardDirection.xyz : normalize(vec3(4,9,5));
                 vec3 hemi=mix(toLinear(vec3(74,90,58)/255.0),vec3(1),n.y*.5+.5)*farmIntensity.x;
-                vec3 sun=toLinear(vec3(255,243,220)/255.0)*farmIntensity.y*max(dot(n,normalize(vec3(4,9,5))),0)*sunVisibility();
+                if(farmLighting==2) hemi=mix(boardGround.rgb,boardSky.rgb,n.y*.5+.5)*boardSky.w;
+                vec3 sunColor=farmLighting==2 ? boardSun.rgb*boardSun.w : toLinear(vec3(255,243,220)/255.0)*farmIntensity.y;
+                vec3 sun=sunColor*max(dot(n,sunDirection),0)*sunVisibility();
                 vec3 offset=vec3(1.6,2.1,-3.7)-worldPosition;
                 float distance=length(offset);
                 float attenuation=1.0/max(pow(distance,1.5),.01);
                 attenuation*=pow(clamp(1.0-pow(distance/9.0,4.0),0.0,1.0),2.0);
                 vec3 lamp=toLinear(vec3(255,200,120)/255.0)*farmIntensity.z*attenuation*max(dot(n,normalize(offset)),0);
+                if(farmLighting==2) lamp=vec3(0);
                 light=(hemi+sun+lamp)/3.141592653589793;
                 if(surface.x>=0) {
                     vec3 derivatives=max(abs(dFdx(geometryNormal)),abs(dFdy(geometryNormal)));
@@ -308,7 +326,7 @@ internal sealed class ModelRenderer : IDisposable
                     float specularIntensity=surfaceMaps.z*(surfaceMaps.y!=0?texture(specularTexture,texCoord).a:1);
                     vec3 f0=mix(vec3(.04*specularIntensity),c.rgb,surface.y);
                     float f90=mix(specularIntensity,1,surface.y);
-                    specular=sun*specularGGX(normalize(vec3(4,9,5)),v,n,f0,f90,roughness)
+                    specular=sun*specularGGX(sunDirection,v,n,f0,f90,roughness)
                         +lamp*specularGGX(normalize(offset),v,n,f0,f90,roughness);
                     light*=1-surface.y;
                 }
@@ -317,6 +335,7 @@ internal sealed class ModelRenderer : IDisposable
             if(unlit==0) linear+=materialEmission.rgb*(hasEmissiveMap!=0?texture(emissiveTexture,texCoord).rgb:vec3(1));
             if(farmLighting!=0 && unlit==0) linear+=specular;
             vec3 srgb=mix(12.92*linear,1.055*pow(linear,vec3(1.0/2.4))-.055,step(vec3(.0031308),linear));
+            if(boardFog.z!=0) srgb=mix(srgb,boardFogColor.rgb,smoothstep(boardFog.x,boardFog.y,eyeDepth));
             outputColor=vec4(srgb,c.a);
         }
         """;

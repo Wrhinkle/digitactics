@@ -68,6 +68,24 @@ async function main(){
    });
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-uv.json'),JSON.stringify(uvFixture));
+  const lightingFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
+   for(const spec of THEMES){
+    let controls;
+    const L={hemi:new THREE.HemisphereLight(...spec.hemi),sun:new THREE.DirectionalLight(...spec.sun)};
+    const scene={fog:new THREE.Fog(...spec.fog)};
+    const env=buildEnv({...spec,props:ctx=>{controls=ctx;},surface:null},{L,scene});
+    for(let i=0;i<12;i++){
+     const input={hemi:.3+i*.11,sun:.1+i*.17,flash:i*.3,tintK:i/11,tint:'#469ac2',flashColor:'#f6a74d',dt:i%3===0?.4:1/60};
+     Object.assign(controls.light(),input,{tint:new THREE.Color(input.tint),flashColor:new THREE.Color(input.flashColor)});
+     env.tick(input.dt,i);
+     rows.push({id:spec.id,input,sky:L.hemi.color.toArray(),ground:L.hemi.groundColor.toArray(),sun:L.sun.color.toArray(),hemiIntensity:L.hemi.intensity,sunIntensity:L.sun.intensity,flash:controls.light().flash});
+    }
+    disposeEnv(env);
+   }
+   return rows;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-lighting.json'),JSON.stringify(lightingFixture));
   console.log(`Exported ${manifest.length} board themes, ${manifest.reduce((n,t)=>n+t.instances,0)} scene instances; animation tick counts retained for native port.`);
  }finally{await browser.close();}
 }

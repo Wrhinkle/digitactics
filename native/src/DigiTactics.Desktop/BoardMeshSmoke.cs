@@ -24,6 +24,7 @@ internal static class BoardMeshSmoke
             CheckVertexColors(renderer);
             CheckPoints(renderer);
             CheckLines(renderer);
+            CheckFog(renderer);
             OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
             var camera = Matrix4x4.CreateLookAt(new(0, 25, 28), Vector3.Zero, Vector3.UnitY) * Matrix4x4.CreatePerspectiveFieldOfView(.9f, 1, .1f, 150);
             using var board = new ArenaBoard(7);
@@ -31,6 +32,7 @@ internal static class BoardMeshSmoke
             foreach (string file in Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "content/boards"), "*.json.gz").Order())
             {
                 var scene = BoardScene.Load(file);
+                renderer.BoardLight = new(scene); renderer.FarmEye = new(0,25,28);
                 using var layer = new BoardMeshLayer(scene);
                 ModelRenderer.Begin(cell, cell); OpenGl.Viewport(index % columns * cell, (rows - 1 - index / columns) * cell, cell, cell);
                 int expected = scene.Objects.Where(o => o.Visible).Sum(o => (o.Instances?.Length ?? 1) * (o.Materials.Length == 1 ? 1 : scene.Geometries[o.Geometry].Groups.Length));
@@ -109,5 +111,26 @@ internal static class BoardMeshSmoke
         ModelRenderer.End();
         int visible=Enumerable.Range(0,32*32).Count(i=>pixels[i*4]>250);
         if (visible<14 || visible>18) throw new InvalidOperationException("Native line segment did not rasterize correctly.");
+    }
+
+    private static unsafe void CheckFog(ModelRenderer renderer)
+    {
+        var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/file-island.json.gz"));
+        renderer.BoardLight=new(scene) { FogNear=2,FogFar=6,FogColor=new(0,0,1) };
+        float[] vertices=new float[3*GltfPrimitive.Stride];
+        float[] positions=[-2,-2,0, 2,-2,0, 0,2,0];
+        for(int i=0;i<3;i++) { Array.Copy(positions,i*3,vertices,i*GltfPrimitive.Stride,3); vertices[i*GltfPrimitive.Stride+5]=1; }
+        using var triangle=new GpuPrimitive(new(vertices,[0,1,2],-1,true,false));
+        var camera=Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI/2,1,.1f,100);
+        foreach(var sample in new[] { (2f,true,255,0), (4f,true,128,128), (6f,true,0,255), (6f,false,255,0) })
+        {
+            for(int i=0;i<3;i++) vertices[i*GltfPrimitive.Stride+2]=-sample.Item1;
+            triangle.UpdateVertices(vertices); ModelRenderer.Begin(64,64);
+            renderer.DrawRoom(triangle,Matrix4D.Identity,camera,new(1,0,0,1),null,true,false,true,fog:sample.Item2);
+            byte[] pixel=new byte[4]; fixed(byte* p=pixel) OpenGl.ReadPixels(32,32,1,1,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
+            ModelRenderer.End();
+            if(Math.Abs(pixel[0]-sample.Item3)>1 || pixel[1]>1 || Math.Abs(pixel[2]-sample.Item4)>1) throw new InvalidOperationException("Board fog depth or material opt-out changed.");
+        }
+        renderer.BoardLight=null;
     }
 }

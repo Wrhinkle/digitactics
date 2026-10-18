@@ -51,7 +51,21 @@ internal static class BoardSceneChecks
             Check(Math.Abs(converted[6]-expected[0]) < 2e-5 && Math.Abs(converted[7]-expected[1]) < 2e-5, "Three UV matrix parity");
             Check(BoardMesh.Image(texture).Rgba.SequenceEqual(new byte[] {0,0,255,255,255,0,0,255}), "canvas texture row orientation");
         }
-        Console.WriteLine($"Board scenes: {checks:N0} asset inventory checks passed for {ids.Count} themes and {instances:N0} instances; geometry, materials and references validated.");
+        using var lightingFixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"tests/fixtures/board-lighting.json")));
+        foreach (var row in lightingFixture.RootElement.EnumerateArray())
+        {
+            var lighting = new BoardLighting(BoardScene.Load(Path.Combine(folder,row.GetProperty("id").GetString()+".json.gz")));
+            var input=row.GetProperty("input");
+            lighting.HemisphereMultiplier=input.GetProperty("hemi").GetSingle(); lighting.SunMultiplier=input.GetProperty("sun").GetSingle();
+            lighting.Flash=input.GetProperty("flash").GetSingle(); lighting.TintWeight=input.GetProperty("tintK").GetSingle();
+            lighting.Tint=BoardLighting.Linear(input.GetProperty("tint").GetString()!); lighting.FlashColor=BoardLighting.Linear(input.GetProperty("flashColor").GetString()!);
+            lighting.Update(input.GetProperty("dt").GetSingle());
+            void Near(float a,float b)=>Check(Math.Abs(a-b)<2e-5,"source light controls");
+            void Vector(System.Numerics.Vector3 value,string key) { var e=row.GetProperty(key); Near(value.X,e[0].GetSingle()); Near(value.Y,e[1].GetSingle()); Near(value.Z,e[2].GetSingle()); }
+            Vector(lighting.Sky,"sky"); Vector(lighting.Ground,"ground"); Vector(lighting.Sun,"sun");
+            Near(lighting.HemisphereIntensity,row.GetProperty("hemiIntensity").GetSingle()); Near(lighting.SunIntensity,row.GetProperty("sunIntensity").GetSingle()); Near(lighting.Flash,row.GetProperty("flash").GetSingle());
+        }
+        Console.WriteLine($"Board scenes: {checks:N0} asset and lighting checks passed for {ids.Count} themes and {instances:N0} instances; geometry, materials and references validated.");
         return checks;
     }
 }
