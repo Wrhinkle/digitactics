@@ -37,9 +37,10 @@ internal sealed partial class MatchScreen
         if (!ReferenceEquals(clockSession, Session) || clockRound != Session.Rounds.Position.Label)
         {
             clockSession = Session; clockRound = Session.Rounds.Position.Label;
-            PlanningRemaining = Rules.PlanningSeconds;
+            PlanningRemaining = WatchingAfterElimination ? 4 : Rules.PlanningSeconds;
         }
-        if (!PlanningTimerEnabled || Session.State.Over || !Human.Alive || Session.Rounds.Phase != MatchPhase.Planning || Session.Rounds.RoundType == "carousel") return;
+        if (Session.State.Over || Session.Rounds.Phase != MatchPhase.Planning ||
+            (!WatchingAfterElimination && (!PlanningTimerEnabled || !Human.Alive || Session.Rounds.RoundType == "carousel"))) return;
         int previous = (int)Math.Ceiling(PlanningRemaining);
         PlanningRemaining = Math.Max(0, PlanningRemaining - Math.Max(0,delta));
         if (CountdownCue.Select(previous, PlanningRemaining) is { } cue) audio.Play(cue);
@@ -69,8 +70,8 @@ internal sealed partial class MatchScreen
     }
     private void UpdateResultCountdown(double delta)
     {
-        if (networkRoom is not null || Session is null || Session.State.Over || !Human.Alive ||
-            Session.Rounds.Phase != MatchPhase.Result || resultCountdown is null || Session.Rounds.Results.Count == 0) return;
+        if (networkRoom is not null || Session is null || Session.State.Over || (!Human.Alive && !WatchingAfterElimination) ||
+            Session.Rounds.Phase != MatchPhase.Result || resultCountdown is null || (Session.Rounds.Results.Count == 0 && !WatchingAfterElimination)) return;
         resultCountdown -= Math.Max(0, delta);
         if (resultCountdown <= 0) Next();
     }

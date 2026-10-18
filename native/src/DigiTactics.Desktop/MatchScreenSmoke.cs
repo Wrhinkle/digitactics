@@ -9,7 +9,8 @@ namespace DigiTactics.Desktop;
 internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = null, bool evolutionSmoke = false)
 {
     private readonly GameMenuSmoke gameMenu = new();
-    private bool gameplayVerified;
+    private readonly EliminationSmoke elimination = new();
+    private bool gameplayVerified, eliminationCaptured, spectatingCaptured;
     private readonly Dictionary<int, PauseSmoke> pauseChecks = new() { [9] = new(true), [10] = new(), [11] = new() };
     private readonly PlanningTimerSmoke planningTimer = new();
     private double automaticAdvanceWait;
@@ -73,7 +74,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (!screen.Buttons.TryGetValue(farmCommands[farmIndex], out var target)) return;
             input.AddMousePosEvent(target.X, target.Y); input.AddMouseButtonEvent(0, true); down = true; return;
         }
-        if (index >= commands.Length) { if (cooldown-- > 0) return; gameMenu.Input(screen); cooldown = 3; return; }
+        if (index >= commands.Length) { if (cooldown-- > 0) return; if (!elimination.Done) elimination.Input(screen); else gameMenu.Input(screen); cooldown = 3; return; }
         if (cooldown-- > 0) return;
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
@@ -209,6 +210,10 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     {
         if (gameplayVerified)
         {
+            if (!eliminationCaptured && capture is not null && screen.Buttons.ContainsKey("spectateRemaining"))
+            { FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"eliminated.bmp"),size.X,size.Y); eliminationCaptured = true; }
+            if (!spectatingCaptured && capture is not null && !screen.Buttons.ContainsKey("spectateRemaining") && screen.WatchingAfterElimination && screen.Session!.Rounds.Phase == MatchPhase.Planning)
+            { FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"spectating.bmp"),size.X,size.Y); spectatingCaptured = true; }
             if (gameMenu.Confirming && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"leave-confirm.bmp"),size.X,size.Y);
             return gameMenu.Done;
         }

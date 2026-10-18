@@ -203,7 +203,7 @@ internal sealed partial class MatchScreen : IDisposable
     {
         selectedUnit = null; selectedItem = null; backgroundTime = 0;
         status = "Battle in progress.";
-        Watch(localSeat >= 0 ? localSeat : viewed);
+        Watch(WatchingAfterElimination ? LivingWatchSeat() : localSeat >= 0 ? localSeat : viewed);
         history?.Capture();
         if (Session!.Battles.Count > 0) { audio.Play("fight"); audio.Music("combat"); }
         if (Session.Battles.Count == 0 && networkRoom is null) Finish();
@@ -233,10 +233,10 @@ internal sealed partial class MatchScreen : IDisposable
     private void RoundAdvanced()
     {
         resultCountdown = null;
-        battle?.Dispose(); battle = null; watching = null; combatAudio = null; viewed = localSeat >= 0 ? localSeat : viewed;
+        battle?.Dispose(); battle = null; watching = null; combatAudio = null; viewed = WatchingAfterElimination ? LivingWatchSeat() : localSeat >= 0 ? localSeat : viewed;
         selectedUnit = null; selectedItem = null;
         audio.Play("round");
-        status = "Select a unit, then a hex. Select an item, then its holder.";
+        status = WatchingAfterElimination ? $"Placement #{Human.Placement}. Watching the remaining teams." : "Select a unit, then a hex. Select an item, then its holder.";
     }
     public void Draw(int2 windowSize)
     {
@@ -309,8 +309,8 @@ internal sealed partial class MatchScreen : IDisposable
         var session = Session!;
         Window("Match", 12, 12, size.X - 24, 96, ImGuiWindowFlags.NoTitleBar);
         ImGui.Text($"{Rules.Name}  /  {Rules.Pace}  /  {(session.State.Duos ? "Duos" : "Solo")}     Round {session.Rounds.Position.Label}  -  {session.Rounds.RoundType.ToUpperInvariant()}");
-        ImGui.Text(IsSpectating ? $"Spectating {Human.Name}" : $"{Human.Health} HP     {Human.Economy.Gold} gold     Level {Human.Economy.Level}     Streak {Human.Economy.Streak}");
-        IncomeDisplay();
+        ImGui.Text(WatchingAfterElimination ? $"Placement #{Human.Placement} - spectating {session.State.Players[viewed].Name}" : IsSpectating ? $"Spectating {Human.Name}" : $"{Human.Health} HP     {Human.Economy.Gold} gold     Level {Human.Economy.Level}     Streak {Human.Economy.Streak}");
+        if (Human.Alive) IncomeDisplay();
         ImGui.SameLine(); if (Button("mute", audio.Muted ? "Unmute" : "Mute")) audio.Muted = !audio.Muted;
         ImGui.SameLine(); if (Button("audioSettings", "Sound settings")) showAudio = !showAudio;
         ImGui.SameLine(); if (Button("soundboard", "Soundboard")) { showSoundboard = !showSoundboard; if (showSoundboard) showEmotes = false; }
@@ -318,9 +318,14 @@ internal sealed partial class MatchScreen : IDisposable
         if (networkRoom is not null) { ImGui.SameLine(); if (Button("players", "Players")) showPlayers = !showPlayers; }
         if (session.State.Over)
         {
-            ImGui.Text(IsSpectating ? "Match complete" : $"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
+            ImGui.Text(CanWatchAfterElimination ? $"Eliminated - placement #{Human.Placement}" : IsSpectating ? "Match complete" : $"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
             if (Button("menu", "Main menu")) LeaveMatch();
+            if (Session is not null && CanWatchAfterElimination)
+            {
+                ImGui.SameLine(); if (Button("spectateRemaining", "Spectate remaining teams")) ContinueAfterElimination();
+            }
         }
+        else if (WatchingAfterElimination && session.Rounds.Phase == MatchPhase.Planning) ImGui.Text($"Next battle in {Math.Ceiling(PlanningRemaining)}s");
         else if (IsSpectating) ImGui.Text($"{session.Rounds.Phase} - watching the shared match");
         else if (session.Rounds.Phase == MatchPhase.Planning) { if (networkRoom is not null && session.Rounds.RoundType == "carousel") ImGui.Text("Waiting for carousel picks..."u8); else if (Button("fight", session.Rounds.RoundType == "carousel" ? "Finish carousel" : "Ready for battle")) Fight(); }
         else if (session.Rounds.Phase == MatchPhase.Result) { if (networkRoom is not null) ImGui.Text("Next round starts shortly..."u8); else if (Button("next", "Next round")) Next(); }

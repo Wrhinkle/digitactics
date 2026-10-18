@@ -30,6 +30,7 @@ if (args.Contains("--companion-motion-only")) { CompanionMotionChecks.Run(root);
 if (args.Contains("--companion-playback-only")) { CompanionPlaybackChecks.Run(root); return; }
 if (args.Contains("--farm-choreography-only")) { FarmChoreographyChecks.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
+if (args.Contains("--play-on-only")) { PlayOnChecks.Run(catalog); return; }
 if (args.Contains("--lockstep-only")) { LockstepParity.Run(root, catalog); return; }
 if (args.Contains("--match-replica-only")) { MatchReplicaChecks.Run(catalog); return; }
 if (args.Contains("--match-host-only")) { MatchHostChecks.Run(catalog); return; }
@@ -225,6 +226,7 @@ assertions += ChoreographyParity.Run(root, catalog);
 assertions += AudioCueParity.Run(root, catalog);
 assertions += AudioSettingsChecks.Run();
 assertions += MatchHistoryChecks.Run(root, catalog);
+assertions += PlayOnChecks.Run(catalog);
 assertions += MatchRewardChecks.Run(root, catalog);
 assertions += LegendRewardChecks.Run(root);
 assertions += CosmeticChecks.Run(root);

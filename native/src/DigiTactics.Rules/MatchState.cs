@@ -166,6 +166,15 @@ public sealed class MatchState
         if (!PlayOut && Players.Any(p => p.IsHuman) && !Players.Any(p => p.Alive && p.IsHuman)) Over = true;
     }
 
+    /// <summary>Resume a locally ended match to watch the remaining opponents play to a winner.</summary>
+    public bool PlayOn()
+    {
+        if (!Over || (Duos ? Teams.Count(t => t.Alive) : Players.Count(p => p.Alive)) < 2) return false;
+        Over = false;
+        PlayOut = true;
+        return true;
+    }
+
     private void KnockOut(MatchPlayer player, int placement, Action<MatchPlayer>? onEliminate)
     {
         player.Alive = false; player.Placement = placement;
