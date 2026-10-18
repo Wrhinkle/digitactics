@@ -399,36 +399,6 @@ internal sealed partial class MatchScreen : IDisposable
         }
         ImGui.End();
     }
-    private void AudioControls()
-    {
-        float effects = audio.EffectsVolume, music = audio.MusicVolume;
-        if (ClientSettingsSlider("matchEffectsVolume","Effects volume",ref effects))audio.EffectsVolume=effects;
-        if (ClientMenuActive && ImGui.IsItemDeactivatedAfterEdit()) audio.PlayClient("buy", false);
-        if (ClientSettingsSlider("matchMusicVolume","Music volume",ref music))audio.MusicVolume=music;
-        float board = audio.BoardVolume;
-        if (ClientSettingsSlider("matchBoardVolume","Soundboard volume",ref board))audio.BoardVolume=board;
-        bool muteOthers = audio.MuteOthers;
-        if (ImGui.Checkbox("Mute other players' soundboard"u8, ref muteOthers)) audio.MuteOthers = muteOthers;
-        bool musicOff = audio.MusicOff, muted = audio.Muted;
-        if (ImGui.Checkbox("Music off"u8, ref musicOff)) audio.MusicOff = musicOff;
-        ImGui.SameLine(); if (ImGui.Checkbox("Mute all"u8, ref muted)) audio.Muted = muted;
-        if (audio.Error is { } error) UiText.Wrapped(error);
-        if (audio.MusicController is { } controller)
-        {
-            if(Button("musicLibrary","Manage music...")) showMusicLibrary=true;
-            bool own=audio.MusicSource=="own";
-            if (ImGui.Checkbox("Use my music"u8, ref own)) audio.MusicSource=own?"own":"builtin";
-            if(controller.Library is { } library)
-            {
-                UiText.Wrapped($"{library.Tracks.Count} saved music tracks");
-                if(controller.CurrentTrackId is { } id && library.Tracks.FirstOrDefault(t=>t.Id==id) is { } track) UiText.Wrapped(track.Name);
-                if(own && library.Tracks.Count>0 && Button("nextMusic", "Next track")) controller.Next();
-            }
-            if(controller.Loading) ImGui.Text("Loading music..."u8);
-            if(controller.Error is { } musicError) UiText.Wrapped(musicError);
-        }
-        if (audio.SettingsError is { } settingsError) UiText.Wrapped(settingsError);
-    }
     private void ProfileControls()
     {
         if (profile is null) return;

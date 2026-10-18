@@ -10,6 +10,8 @@ internal sealed class MusicLibraryUiSmoke : IDisposable
     private readonly CustomMusicController controller;
     private readonly AudioSettingsBinding preferences;
     private readonly GameAudio audio;
+    private readonly string[] paths;
+    private MusicSoundControlsSmoke? matchControls;
     private int step,cooldown=3;
     private bool down,done,navigationClick,sourceClick;
     private int sourceStep;
@@ -19,18 +21,20 @@ internal sealed class MusicLibraryUiSmoke : IDisposable
         this.audio=audio;
         directory=Path.Combine(Path.GetTempPath(),"digitactics-music-ui-"+Guid.NewGuid().ToString("N")); Directory.CreateDirectory(directory);
         var profile=new NativeProfileStore(directory); preferences=new(audio,profile,directory);
-        controller=new(audio,profile,Path.Combine(directory,"unused-decoder.exe"));
-        string[] paths=[Path.Combine(directory,"Planning 100% \u03a9.wav"),Path.Combine(directory,"not-audio.txt"),Path.Combine(directory,"Combat ## music.wav")];
+        controller=new(audio,profile,Path.Combine(AppContext.BaseDirectory,"media","ffmpeg.exe"));
+        paths=[Path.Combine(directory,"Planning 100% \u03a9.wav"),Path.Combine(directory,"not-audio.txt"),Path.Combine(directory,"Combat ## music.wav")];
         foreach(string path in paths)
         {
             using var writer=new BinaryWriter(File.Create(path));
-            writer.Write("RIFF"u8); writer.Write(40); writer.Write("WAVEfmt "u8); writer.Write(16); writer.Write((short)1); writer.Write((short)2); writer.Write(44100); writer.Write(176400); writer.Write((short)4); writer.Write((short)16); writer.Write("data"u8); writer.Write(4); writer.Write(0);
+            int bytes=44100*30*4;
+            writer.Write("RIFF"u8); writer.Write(36+bytes); writer.Write("WAVEfmt "u8); writer.Write(16); writer.Write((short)1); writer.Write((short)2); writer.Write(44100); writer.Write(176400); writer.Write((short)4); writer.Write((short)16); writer.Write("data"u8); writer.Write(bytes); writer.Write(new byte[bytes]);
         }
         screen.PickMusicFiles=()=>Task.FromResult(paths);
     }
     public void Input(MatchScreen screen)
     {
         preferences.Update(.1);
+        if(matchControls is not null){matchControls.Input();return;}
         // Completion happens after drawing. Wait for enabled controls and their
         // status-dependent positions to be rendered before using cached centers.
         if(controller.LibraryBusy){cooldown=3;return;}
@@ -59,9 +63,9 @@ internal sealed class MusicLibraryUiSmoke : IDisposable
         if(step==17)
         {
             if(!screen.Buttons.ContainsKey("start") || screen.Buttons.ContainsKey("addMusic")) throw new InvalidOperationException("Library did not close to menu.");
-            preferences.Update(1); preferences.Dispose();
+            preferences.Update(1);
             if(new AudioSettingsStore(Path.Combine(directory,"audio-settings.json")).Settings.Source!="builtin") throw new InvalidOperationException("Music source was not saved.");
-            done=true; return;
+            matchControls=new(screen,audio,controller,paths.Where(path=>path.EndsWith(".wav",StringComparison.Ordinal)).ToArray());return;
         }
         string key=step switch {0=>"musicLibrary",1=>"musicOwn",2=>$"musicUse/{first}/planning",3=>$"musicUse/{second}/combat",4 when sourceStep<2=>sourceStep==0?"musicBuiltin":"musicOwn",4=>$"removeMusic/{first}",5=>"cancelRemoveMusic",6=>$"removeMusic/{first}",7=>$"confirmRemoveMusic/{first}",8=>$"removeMusic/{second}",9=>$"confirmRemoveMusic/{second}",10=>"addMusic",11=>"clearMusic",12=>"cancelClearMusic",13=>"clearMusic",14=>"confirmClearMusic",15=>"closeMusicLibrary",16=>"closeSettings",_=>throw new InvalidOperationException()};
         if(!screen.Buttons.TryGetValue(key,out var point))
@@ -84,17 +88,26 @@ internal sealed class MusicLibraryUiSmoke : IDisposable
     }
     public bool Verify(int2 size,string? capture)
     {
+        if(matchControls is not null)done=matchControls.Verify(size,capture);
         if(step==14 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-clear.bmp"),size.X,size.Y);
         if(step==5 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-remove.bmp"),size.X,size.Y);
         if(step==4 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-library.bmp"),size.X,size.Y);
-        if(done) Console.WriteLine("Music library UI passed: Settings navigation, empty own-source chooser, source switching, multi-file import, literal names, phase assignment persistence, cancel/confirm removal, last-track fallback, cancelled/confirmed bulk clear and saved source.");
+        if(done) Console.WriteLine("Music library UI passed: Settings navigation, empty own-source chooser, source switching, multi-file import, literal names, phase assignment persistence, cancel/confirm removal, last-track fallback, cancelled/confirmed bulk clear and saved source; live-match empty/cancel chooser, playback/Next/mute/source/single-track guards and nested return; "+matchControls!.PreviewEvidence+".");
         return done;
     }
     public void Dispose()
     {
         controller.Dispose(); preferences.Dispose();
+        typeof(GameAudio).GetMethod("DisposeCustomMusic",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic)!.Invoke(audio,null);
         string resolved=Path.GetFullPath(directory);
         if(!resolved.StartsWith(Path.GetFullPath(Path.GetTempPath()),StringComparison.OrdinalIgnoreCase) || !Path.GetFileName(resolved).StartsWith("digitactics-music-ui-",StringComparison.Ordinal)) throw new InvalidOperationException("Unsafe music UI cleanup.");
-        Directory.Delete(resolved,true);
+        // Decoder cancellation releases its verified file lease on a continuation.
+        // Match the routing smoke's bounded wait before removing this test-only save.
+        var cleanup=System.Diagnostics.Stopwatch.StartNew();
+        while(Directory.Exists(resolved))
+        {
+            try{Directory.Delete(resolved,true);break;}
+            catch(IOException)when(cleanup.Elapsed.TotalSeconds<5){Thread.Sleep(10);}
+        }
     }
 }

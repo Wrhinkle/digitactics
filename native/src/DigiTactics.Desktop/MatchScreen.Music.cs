@@ -54,7 +54,7 @@ internal sealed partial class MatchScreen
         ImGui.BeginDisabled(controller.LibraryBusy || musicPicker is not null || controller.Library is null || closeAfterFileOperations);
         if(Button("addMusic","Add audio files...",200,36))BeginMusicSelection();
         ImGui.SameLine();
-        MusicNextEnabled=own&&controller.CurrentTrackId is not null&&!audio.Muted&&!audio.MusicOff&&audio.MusicVolume>.001f&&controller.Library?.Tracks.Count>1;
+        MusicNextEnabled=CanAdvanceMusic(controller);
         ImGui.BeginDisabled(!MusicNextEnabled);
         if(Button("nextMusic","Next track",140,36))controller.Next();
         ImGui.EndDisabled();ImGui.SameLine();

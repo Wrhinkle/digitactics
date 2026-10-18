@@ -25,6 +25,7 @@ internal sealed class CustomMusicController : IDisposable
     public string? Error { get; private set; }
     public string? EditError { get; private set; }
     public string? CurrentTrackId => playlist.Current?.Id;
+    public bool Playing => active;
     public bool Loading => loading is not null || opening is not null || pending is not null;
     public CustomMusicController(GameAudio audio,NativeProfileStore profile,string executable)
     {
