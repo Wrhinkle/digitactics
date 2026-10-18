@@ -9,7 +9,7 @@ public sealed record RewardBreakdown(RewardLine[] Lines, int Total, int Place);
 public sealed record RewardUpdate(string Shop, string Wallet, RewardBreakdown? Award, bool Fresh, int RewardPlace);
 
 /// <summary>Pure legacy Bits/mission calculation. Callers commit all resulting profile domains together.</summary>
-public static class MatchRewards
+public static partial class MatchRewards
 {
     private sealed record Mission(string Id, string Name, int Bits, int Goal, Func<RewardStats, int> Value);
     private static readonly Mission[] Missions = [

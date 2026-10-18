@@ -34,6 +34,7 @@ if (args.Contains("--emotes-only")) { EmoteChecks.Run(root); return; }
 if (args.Contains("--emote-motion-only")) { EmoteMotionChecks.Run(root); return; }
 if (args.Contains("--companion-travel-only")) { CompanionTravelChecks.Run(root); return; }
 if (args.Contains("--recent-players-only")) { RecentPlayerChecks.Run(root); return; }
+if (args.Contains("--profile-summary-only")) { ProfileSummaryChecks.Run(root); return; }
 if (args.Contains("--profile-only")) { LegacyProfileChecks.Run(root); return; }
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
 if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
@@ -48,6 +49,7 @@ if (args.Contains("--play-on-only")) { PlayOnChecks.Run(catalog); return; }
 if (args.Contains("--lockstep-only")) { LockstepParity.Run(root, catalog); return; }
 if (args.Contains("--match-replica-only")) { MatchReplicaChecks.Run(catalog); return; }
 if (args.Contains("--match-host-only")) { MatchHostChecks.Run(catalog); return; }
+if (args.Contains("--postgame-only")) { PostgameChecks.Run(root,catalog); return; }
 if (args.Contains("--history-only")) { MatchHistoryChecks.Run(root, catalog); return; }
 if (args.Contains("--network-history-only")) { NetworkHistoryChecks.Run(catalog); return; }
 if (args.Contains("--rewards-only")) { MatchRewardChecks.Run(root, catalog); LegendRewardChecks.Run(root); return; }
@@ -248,6 +250,7 @@ assertions += await NativeUpdateSessionChecks.Run();
 assertions += await NativeJobChecks.Run();
 assertions += AudioSettingsChecks.Run();
 assertions += MatchHistoryChecks.Run(root, catalog);
+assertions += PostgameChecks.Run(root,catalog);
 assertions += PlayOnChecks.Run(catalog);
 assertions += MusicPlaylistChecks.Run(root);
 assertions += CombatPickingChecks.Run(root);
@@ -266,6 +269,7 @@ assertions += LobbyAuthorityChecks.Run(root);
 assertions += NetworkRoomChecks.Run();
 assertions += TrainingGameChecks.Run(root);
 assertions += LegacyProfileChecks.Run(root);
+assertions += ProfileSummaryChecks.Run(root);
 assertions += MotionParity.Run(root);
 assertions += MeshParity.Run(root);
 assertions += RigParity.Run(root);

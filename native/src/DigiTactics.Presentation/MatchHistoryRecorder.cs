@@ -20,6 +20,10 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
     public RewardBreakdown? Award { get; private set; }
     public LegendReward? LegendAward { get; private set; }
     public string? Error { get; private set; }
+    public HistoryMatch? Match => pending;
+    public long XpGained { get; private set; }
+    public bool LeveledUp { get; private set; }
+    public bool FreshAward { get; private set; }
     public void Capture()
     {
         if (pending is not null) return;
@@ -70,11 +74,13 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
             }
             string? previous = profile.Storage.GetValueOrDefault("dt.client.v1");
             string updated = MatchHistory.Append(previous, result with { Bits = rewards.Award?.Total });
+            var levelBefore = TamerProgress.Read(previous);
+            var levelAfter = TamerProgress.Read(updated);
             if (multiplayer && !MatchAlreadyRecorded(previous, result.Key))
                 updated = RecentPlayers.Remember(updated, recordedName, encountered, result.At)!;
             if (updated != previous) changes["dt.client.v1"] = updated;
             saved = changes.Count == 0 || profile.UpdateStorage(changes);
-            if (saved) { Award = rewards.Award; LegendAward = legend?.Award; }
+            if (saved) { Award = rewards.Award; LegendAward = legend?.Award; XpGained = levelAfter.Total - levelBefore.Total; LeveledUp = levelAfter.Level > levelBefore.Level; FreshAward = rewards.Fresh; }
             Error = saved ? null : profile.Error;
         }
         catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException)
