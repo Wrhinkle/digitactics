@@ -40,6 +40,10 @@ internal sealed class ArenaEnvironment : IDisposable
         if(scene is null) SetTheme("file-island");
         double delta=previousTime is { } previous?Math.Clamp(Time-previous,0,.1):0;
         previousTime=Time; meshes!.Update(Time,delta,!planning);
+        if(meshes.LightningColor is {} flashColor)
+        {
+            lighting!.FlashColor=flashColor;lighting.Flash=meshes.LightningFlash;lighting.Update(0);
+        }
         bool wide=columns>7;
         meshes!.Root=Matrix4D.Compose(new(0,0,0),new(0,0,0,1),new(wide?1.8:1,1,1));
         lighting!.FogNear=wide?65:scene!.Fog[1].GetSingle(); lighting.FogFar=wide?120:scene!.Fog[2].GetSingle();

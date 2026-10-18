@@ -7,8 +7,9 @@ async function main(){
  const engine=require('../../tools/headless.cjs').load({strict:true}),rng=engine.makeRng.toString(),distance=engine.hexDist.toString();
  const layout=render.slice(render.indexOf('const SQ3'),render.indexOf('// placeholder color:')).replace('export const LAYOUT','const LAYOUT');
  const module="import * as THREE from '/vendor/three/build/three.module.js';import {mergeGeometries} from '/vendor/three/addons/utils/BufferGeometryUtils.js';import {extraThemes} from '/js/boards-extra.js';import {mysteryBoards} from '/js/mystery-boards.js';"
-  +`const DT={BENCH:9,CELLS:Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})),makeRng:${rng},hexDist:${distance}},COLS=7,ROWS=8,BENCH=9;const LAYOUT=(()=>{`+layout+';return LAYOUT;})();'
+  +`const DT={BENCH:9,CELLS:Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})),makeRng:seed=>{const next=(${rng})(seed);const r=()=>{r.calls++;return next();};r.calls=0;return r;},hexDist:${distance}},COLS=7,ROWS=8,BENCH=9;const LAYOUT=(()=>{`+layout+';return LAYOUT;})();'
   +source.slice(source.indexOf('const { cellWorld'),source.indexOf('// ---------- renderer integration ----------'))
+   .replace('spec.props(ctx);','spec.props(ctx); g.traverse(o=>{if(o.userData.nativeMotion?.lightning)Object.assign(o.userData.nativeMotion.lightning,{delaySeed:spec.id.length*101+spec.id.charCodeAt(0),delayCalls:ctx.rng.calls});});')
    .replace('const base = Float32Array.from(pos.array);','const base = Float32Array.from(pos.array); m.userData.nativeMotion={kind:"sea",amp,speed};')
    .replace('const pts = new THREE.Points(geo, mat);','const pts = new THREE.Points(geo, mat); pts.userData.nativeMotion={kind:"particles",box,velocity:v,wobble,speeds:Array.from(spd)};')
    .replace(/const cm = inst\(ctx, new THREE.OctahedronGeometry\(0.45, 0\)[^\n]+;/,line=>line+' cm.userData.nativeMotion={kind:"island-crystals",items:crystals.map(c=>({...c}))};')
@@ -34,6 +35,9 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8')
+  .replace('const bolts = [0, 1, 2].map(() => {','const bolts = [0, 1, 2].map(boltIndex => {')
+  .replace('const m = new THREE.Mesh(merge(parts), mat);','const m = new THREE.Mesh(merge(parts), mat); if(ctx.spec.id==="spiral-mountain") m.userData.nativeMotion={kind:"spiral-lightning",lightning:{index:boltIndex,spots:spots.map(p=>[p.x,p.y||0,p.z]),flash,flashColor}};')
+  .replace('const lit = ctx.light();','for(const b of bolts)if(b.userData.nativeMotion?.lightning)b.userData.nativeMotion.lightning.boltCalls=rng.calls; const lit = ctx.light();')
   .replace('const sp = { v: 1 };','const sp = { v: 1 }; rocks.nativeKind="spiral-rocks";')
   .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
@@ -214,6 +218,19 @@ async function main(){
    const result={motions:objects.map(o=>o.userData.nativeMotion),frames};disposeEnv(env);return result;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-spiral.json.gz'),zlib.gzipSync(JSON.stringify(spiralFixture)));
+  const lightningFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),spec=THEMES.find(s=>s.id==='spiral-mountain');
+   const L={hemi:new THREE.HemisphereLight(...spec.hemi),sun:new THREE.DirectionalLight(...spec.sun)},env=buildEnv(spec,{L}),bolts=[],frames=[];
+   env.group.traverse(o=>{if(o.userData.nativeMotion?.lightning)bolts.push(o);});
+   env.signal({phase:'planning',stage:1,won:false,evo:0});env.tick(0,0);let time=0;
+   for(let frame=0;frame<1600;frame++){
+    const delta=[1/60,.033,0,.1][frame%4],combat=Math.floor(frame/200)%2===1;time+=delta;
+    env.signal({phase:combat?'combat':'planning',stage:1,won:false,evo:0});env.tick(delta,time);env.group.updateMatrixWorld(true);
+    frames.push({time,delta,combat,flash:L.hemi.intensity-spec.hemi[2],bolts:bolts.map(o=>({visible:o.visible,matrix:o.matrixWorld.toArray()}))});
+   }
+   const result={config:bolts[0].userData.nativeMotion.lightning,frames};disposeEnv(env);return result;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-lightning.json.gz'),zlib.gzipSync(JSON.stringify(lightningFixture)));
   const particleFixture=await page.evaluate(async()=>{
    const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
    for(const spec of THEMES){

@@ -27,6 +27,7 @@ internal static class BoardMeshSmoke
             CheckFog(renderer);
             CheckParticleMotion(renderer);
             CheckPropMotion(renderer);
+            CheckLightning(renderer);
             using(var arena=new ArenaEnvironment())
             {
                 var rules=DigiTactics.Rules.ContentCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/catalog.json")).Variants[0];
@@ -244,6 +245,31 @@ internal static class BoardMeshSmoke
             if(Math.Abs(pixels[i]-expected[i])>1) throw new InvalidOperationException($"Board sky color/orientation mismatch: {scene.Id}, byte {i}: {pixels[i]} vs {expected[i]}.");
     }
 
+    private static unsafe void CheckLightning(ModelRenderer renderer)
+    {
+        var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/spiral-mountain.json.gz"));
+        var bolts=scene.Objects.Where(o=>o.Motion?.Lightning is not null).ToArray();
+        if(bolts.Length!=3) throw new InvalidOperationException("Missing lightning meshes.");
+        using var layer=new BoardMeshLayer(scene with {Objects=bolts});
+        layer.Update(.016,.016,true);
+        var overview=Matrix4x4.CreateLookAt(new(0,25,28),Vector3.Zero,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
+        ModelRenderer.Begin(256,256);OpenGl.ClearColor(new(0,0,0,1));OpenGl.Clear(GlClearBit.Color);
+        layer.Draw(renderer,overview,true,256);
+        var pixels=new byte[256*256*4];fixed(byte* p=pixels)OpenGl.ReadPixels(0,0,256,256,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
+        ModelRenderer.End();
+        int lit=Enumerable.Range(0,256*256).Count(i=>pixels[i*4]+pixels[i*4+1]+pixels[i*4+2]>10);
+        if(layer.DrawCalls!=1 || lit<5)throw new InvalidOperationException($"Combat lightning did not reach the framebuffer: {layer.DrawCalls} draws, {lit} lit pixels.");
+        layer.Update(.1,.084,true);layer.Draw(renderer,BattleView.Camera(256,256,7),true,256);
+        if(layer.DrawCalls!=0)throw new InvalidOperationException("Lightning flicker gap did not hide the bolt.");
+        using var arena=new ArenaEnvironment();arena.SetTheme("spiral-mountain");
+        var camera=BattleView.Camera(256,256,7);var eye=BattleView.CameraEye(256,256,7);
+        arena.Draw(renderer,camera,eye,7,true,0,0,256,256,(_,_)=>{});
+        float initial=renderer.BoardLight!.HemisphereIntensity;
+        arena.Time=.016;arena.Draw(renderer,camera,eye,7,false,0,0,256,256,(_,_)=>{});
+        if(renderer.BoardLight!.HemisphereIntensity<initial+1)throw new InvalidOperationException("Lightning flash did not reach scene lighting.");
+        renderer.BoardLight=null;renderer.ShadowTexture=0;
+        Console.WriteLine($"Lightning GPU: {lit} lit pixels, flicker gap and scene flash verified.");
+    }
     private static unsafe void CheckPropMotion(ModelRenderer renderer)
     {
         foreach(var (theme,kind) in new[] {

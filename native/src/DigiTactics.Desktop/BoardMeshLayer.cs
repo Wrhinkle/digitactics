@@ -1,5 +1,6 @@
 using System.Numerics;
 using DigiTactics.Assets;
+using DigiTactics.Presentation;
 
 namespace DigiTactics.Desktop;
 
@@ -14,6 +15,9 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly List<(GpuPrimitive Geometry,float[] Vertices,BoardMotion Motion)> animatedGeometry=[];
     private readonly List<(GpuPrimitive Geometry,float[] Vertices,float[] Initial,string Kind)> animatedUv=[];
     private double time;
+    private BoardLightning? lightning;
+    public float LightningFlash=>(float)(lightning?.Flash??0);
+    public Vector3? LightningColor { get; private set; }
     private readonly Dictionary<BoardObject,BoardSpiralMotion> spirals=[];
     public int DrawCalls { get; private set; }
     public Matrix4D Root { get; set; } = Matrix4D.Identity;
@@ -26,6 +30,11 @@ internal sealed class BoardMeshLayer : IDisposable
             var cache = new Dictionary<string, Part[]>();
             foreach (var obj in scene.Objects)
             {
+                if(lightning is null && obj.Motion?.Lightning is {} data)
+                {
+                    lightning=new(data.Spots,data.Flash,data.DelaySeed,data.DelayCalls,data.BoltCalls);
+                    LightningColor=BoardLighting.Linear(data.FlashColor);
+                }
                 if(obj.Motion is { Spirals:not null } spiral) spirals.Add(obj,new(spiral));
                 uint topology = obj.Kind switch { "mesh" => Brutal.OpenGlApi.OpenGl.GL_TRIANGLES, "lines" => Brutal.OpenGlApi.OpenGl.GL_LINES, "lineStrip" => Brutal.OpenGlApi.OpenGl.GL_LINE_STRIP, "points" => Brutal.OpenGlApi.OpenGl.GL_POINTS, _ => throw new NotSupportedException("Board object: " + obj.Kind) };
                 string key = obj.Kind + ":" + obj.Geometry + ":" + string.Join(',', obj.Materials);
@@ -50,6 +59,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public void Update(double seconds,double delta=0,bool combat=false)
     {
         time=seconds;
+        lightning?.Advance(delta,time,combat);
         foreach(var spiral in spirals.Values) spiral.Advance(delta,time,combat);
         foreach(var uv in animatedUv)
         {
@@ -69,9 +79,12 @@ internal sealed class BoardMeshLayer : IDisposable
         DrawCalls = 0;
         foreach (var item in objects)
         {
-            if (!item.Object.Visible) continue;
+            var bolt=item.Object.Motion?.Lightning;
+            if(bolt is not null) { if(lightning is not { Visible:true } || lightning.Active!=bolt.Index) continue; }
+            else if (!item.Object.Visible) continue;
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = Matrix4D.From(item.Object.Matrix) * Root;
+            if(bolt is not null) world=new CompanionTransform(new(lightning!.X,lightning.Y,lightning.Z),new(0,lightning.Yaw,0),new(1,1,1)).Matrix*Root;
             if(item.Object.Motion is { Kind:"rotating-parent" } rotating) world=BoardSceneMotion.RotatingParent(rotating,time)*Root;
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
             if(item.Object.Motion is { Kind:"beach-surf" } surf)
