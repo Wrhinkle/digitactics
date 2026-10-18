@@ -4,6 +4,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Ahwoo.BRUTAL.Sdl" Version="2026.10.2" />
     <ProjectReference Include="../DigiTactics.Assets/DigiTactics.Assets.csproj" />
     <ProjectReference Include="../DigiTactics.Presentation/DigiTactics.Presentation.csproj" />
     <ProjectReference Include="../DigiTactics.Rules/DigiTactics.Rules.csproj" />
@@ -13,5 +14,6 @@
   <ItemGroup>
     <Content Include="../../artifacts/model-content/**" Link="assets/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../content/**" Link="content/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../artifacts/audio-content/**" Link="audio/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,11 @@ function Invoke-Checked([string]$Program, [string[]]$Arguments) {
 }
 Push-Location $nativeRoot
 try {
+    $audioTools = Join-Path $nativeRoot 'artifacts/audio-tools'
+    if (-not (Test-Path (Join-Path $audioTools 'node_modules/playwright/package.json'))) {
+        Invoke-Checked 'npm.cmd' @('install', '--prefix', $audioTools, 'playwright@1.56.1', '--no-audit', '--no-fund')
+    }
+    Invoke-Checked 'node' @('tools/export-audio.cjs')
     Invoke-Checked 'node' @('tools/export-content.cjs')
     Invoke-Checked 'node' @('tools/export-display.cjs')
     Invoke-Checked 'node' @('tools/export-economy.cjs')

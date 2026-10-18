@@ -1700,3 +1700,36 @@ GPU and diagnostic rendering smoke checks passed. Packaged Solo and Duos match U
 click-through tests passed through five rounds, including mirrored PvP; planning,
 PvE and Duos PvP captures were visually inspected. Gameplay code was unchanged in
 this UI milestone; the preceding full rules suite passed 189,671,496 checks.
+
+### Native audio playback
+
+The playable desktop now uses BRUTAL SDL for a bounded stereo PCM mixer. The
+build renders the existing WebAudio synthesis offline into 114 assets: action
+and combat cues, cast elements/star levels, cosmetic stings, soundboard clips,
+the victory jingle and both complete original music tracks. No browser or
+JavaScript runtime is shipped for playback. Music changes phase with a fade,
+loops after its intro, and retains the final notes/reverb over the next loop.
+The menu has effects/music volume controls; a match has a mute button. A missing
+audio device leaves gameplay available.
+
+`build.ps1` installs pinned Playwright build tooling into ignored artifacts and
+uses installed Microsoft Edge for offline synthesis. The exporter checks source
+and asset hashes before reusing its cache. Generated audio lives in
+`native/artifacts/audio-content` and is copied into the desktop output. To render
+it independently: `node native/tools/export-audio.cjs`. `--audio-smoke` checks
+all PCM assets and music loop bounds, effect rate limiting and consumption of
+silent PCM by an actual BRUTAL SDL playback stream. It requires an audio device
+(or SDL's dummy audio driver). Graphical smoke runs use zero playback volume.
+
+This audio integration is still in progress: full cast-element/ultimate cue
+routing, soundboard/cosmetic UI and network events, custom music, phase resume
+positions, focus handling, device reconnect and persistent/migrated settings
+remain to be completed. Reward cards and base unit stat tooltips are now present;
+mode progress panels and the other production UI/release requirements above are
+still outstanding.
+
+Audio validation: 114 generated assets passed finite-sample, non-silence and
+no-clipping checks. Cache hashes verified on the next exporter invocation.
+Packaged audio checks passed, including a forced loop rollover with release tail,
+rate limiting and SDL queue consumption. Packaged Solo/Duos click-through checks
+passed. A separate Duos run with an unavailable SDL audio driver also passed.

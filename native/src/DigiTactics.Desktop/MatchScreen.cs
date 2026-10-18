@@ -9,11 +9,12 @@ internal sealed class MatchScreen : IDisposable
 {
     private readonly ContentCatalog catalog;
     private readonly uint? seed;
+    private readonly GameAudio audio;
     private readonly DisplayText text = new();
     private PlanningView planning = new();
     private BattleView? battle;
     private MatchBattle? watching;
-    private int variant, viewed;
+    private int variant, viewed, audioEvent;
     private bool duos;
     private int? selectedUnit, selectedItem;
     private string status = "Select a unit, then a hex. Select an item, then its holder.";
@@ -33,7 +34,7 @@ internal sealed class MatchScreen : IDisposable
     private int Width => Math.Max(300, size.X - 470);
     private int Height => Math.Max(240, size.Y - 335);
     private const ImGuiWindowFlags Fixed = ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
-    public MatchScreen(ContentCatalog catalog, uint? seed = null, bool duos = false) { this.catalog = catalog; this.seed = seed; this.duos = duos; }
+    public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false) { this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; }
     private void Window(string name, float x, float y, float width, float height, ImGuiWindowFlags flags = 0)
     {
         ImGui.SetNextWindowPos(new(x, y)); ImGui.SetNextWindowSize(new(width, height)); ImGui.Begin(name, Fixed | flags);
@@ -72,6 +73,23 @@ internal sealed class MatchScreen : IDisposable
     private MatchActionResult? Act(string action, object? args = null)
     {
         var result = Session!.Actions.Apply(0, action, JsonSerializer.SerializeToElement(args ?? new { }));
+        string? sound = result switch
+        {
+            MatchActionResult.Flag { Value: false } when action != "lock" => "error",
+            MatchActionResult.Code when action == "offer" => "pick",
+            MatchActionResult.Code code when action == "equip" && Rules.Items.Any(item => item.Id == code.Value) => "equip",
+            MatchActionResult.Evolutions { Units.Count: > 0 } => "digivolve",
+            MatchActionResult.Evolutions => "buy",
+            MatchActionResult.Orb => "orb",
+            MatchActionResult.Transfer => "pick",
+            MatchActionResult.Flag { Value: true } => action switch
+            {
+                "sell" => "sell", "move" => "place", "reroll" => "reroll", "buyXp" => "levelup",
+                "offer" or "carousel" or "wisp" => "pick", "equip" or "swapItems" => "equip", _ => null
+            },
+            _ => null
+        };
+        if (sound is not null) audio.Play(sound);
         status = result switch
         {
             MatchActionResult.Flag { Value: true } => "Done.",
@@ -113,6 +131,18 @@ internal sealed class MatchScreen : IDisposable
         if (Session.Rounds.Phase == MatchPhase.Combat)
         {
             battle?.Advance(delta); backgroundTime += Math.Min(delta, .25);
+            if (watching is not null)
+                while (audioEvent < watching.Combat.Events.Count)
+                {
+                    var cue = watching.Combat.Events[audioEvent++];
+                    string? sound = cue.Type switch
+                    {
+                        "hit" => cue.Big ? "hit_big" : "hit_normal",
+                        "shot" or "death" or "shield" => cue.Type,
+                        _ => null
+                    };
+                    if (sound is not null) audio.Play(sound);
+                }
             while (backgroundTime >= CombatSimulation.Tick)
             {
                 foreach (var match in Session.Battles) if (match != watching) match.Combat.Step();
@@ -132,6 +162,7 @@ internal sealed class MatchScreen : IDisposable
             !m.Ghost && m.TeamB is { } tb && Session.State.Teams[tb].Members.Any(p => p.Id == player)) ?? Session.Battles.FirstOrDefault();
         if (next == watching) return;
         battle?.Dispose(); battle = null; watching = next;
+        audioEvent = next?.Combat.Events.Count ?? 0;
         if (next is not null)
         {
             bool mirror = next.B == player || next.TeamB is { } team && Session.State.Teams[team].Members.Any(p => p.Id == player);
@@ -143,13 +174,25 @@ internal sealed class MatchScreen : IDisposable
         selectedUnit = null; selectedItem = null; backgroundTime = 0;
         status = "Battle in progress.";
         Session!.StartCombat(); Watch(0);
+        if (Session.Battles.Count > 0) { audio.Play("fight"); audio.Music("combat"); }
         if (Session.Battles.Count == 0) Finish();
     }
-    private void Finish() { Session!.FinishCombat(); CompletedRounds++; status = "Round complete."; }
+    private void Finish()
+    {
+        Session!.FinishCombat(); CompletedRounds++; status = "Round complete.";
+        var own = Session.Battles.FirstOrDefault(m => m.A == 0 || m.B == 0 ||
+            m.TeamA is { } a && Session.State.Teams[a].Members.Any(p => p.Id == 0) ||
+            m.TeamB is { } b && Session.State.Teams[b].Members.Any(p => p.Id == 0));
+        bool sideB = own?.B == 0 || own?.TeamB is { } team && Session.State.Teams[team].Members.Any(p => p.Id == 0);
+        audio.Play(Session.State.Over ? Human.Placement == 1 ? "champion" : "gameover" :
+            own?.Combat.Winner is null or -1 ? "round" : own.Combat.Winner == (sideB ? 1 : 0) ? "win" : "loss");
+        audio.Music(Session.State.Over ? null : "planning");
+    }
     private void Next()
     {
         battle?.Dispose(); battle = null; watching = null; viewed = 0;
         Session!.Advance(); selectedUnit = null; selectedItem = null;
+        audio.Play("round");
         status = "Select a unit, then a hex. Select an item, then its holder.";
     }
     public void Draw(int2 windowSize)
@@ -178,11 +221,13 @@ internal sealed class MatchScreen : IDisposable
             ImGui.EndCombo();
         }
         ImGui.TextWrapped(duos ? "Team up with an AI partner. Share health and send units or items through your portal." : "Face seven AI Tamers. Your choices decide the team.");
+        AudioControls();
         if (Button("start", "Start match", 220, 48))
         {
             Session = new(Rules, seed ?? (uint)Random.Shared.Next(1, int.MaxValue), Enumerable.Range(0, 8).Select(i => new MatchSeat(i == 0 ? "You" : $"Tamer {i}", i == 0)).ToArray(), duos);
             viewed = 0; CompletedRounds = 0;
             selectedUnit = null; selectedItem = null; backgroundTime = 0;
+            audio.Music("planning");
             status = "Select a unit, then a hex. Select an item, then its holder.";
         }
         ImGui.End();
@@ -193,10 +238,11 @@ internal sealed class MatchScreen : IDisposable
         Window("Match", 12, 12, size.X - 24, 96, ImGuiWindowFlags.NoTitleBar);
         ImGui.Text($"{Rules.Name}  /  {Rules.Pace}  /  {(session.State.Duos ? "Duos" : "Solo")}     Round {session.Rounds.Position.Label}  -  {session.Rounds.RoundType.ToUpperInvariant()}");
         ImGui.Text($"{Human.Health} HP     {Human.Economy.Gold} gold     Level {Human.Economy.Level}     Streak {Human.Economy.Streak}");
+        ImGui.SameLine(); if (Button("mute", audio.Muted ? "Unmute" : "Mute")) audio.Muted = !audio.Muted;
         if (session.State.Over)
         {
             ImGui.Text($"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
-            if (Button("menu", "Main menu")) { Session = null; battle?.Dispose(); battle = null; watching = null; planning.Dispose(); planning = new(); }
+            if (Button("menu", "Main menu")) { Session = null; audio.Music(null); battle?.Dispose(); battle = null; watching = null; planning.Dispose(); planning = new(); }
         }
         else if (session.Rounds.Phase == MatchPhase.Planning) { if (Button("fight", session.Rounds.RoundType == "carousel" ? "Finish carousel" : "Ready for battle")) Fight(); }
         else if (session.Rounds.Phase == MatchPhase.Result) { if (Button("next", "Next round")) Next(); }
@@ -218,6 +264,13 @@ internal sealed class MatchScreen : IDisposable
             if (unit is not null) UnitTooltip(unit.Line, unit.Stage);
         }
         ImGui.End();
+    }
+    private void AudioControls()
+    {
+        float effects = audio.EffectsVolume, music = audio.MusicVolume;
+        if (ImGui.SliderFloat("Effects volume"u8, ref effects, 0, 1)) audio.EffectsVolume = effects;
+        if (ImGui.SliderFloat("Music volume"u8, ref music, 0, 1)) audio.MusicVolume = music;
+        if (audio.Error is { } error) ImGui.TextWrapped(error);
     }
     private void Sidebar()
     {

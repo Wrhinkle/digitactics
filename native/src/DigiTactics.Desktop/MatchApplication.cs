@@ -35,7 +35,9 @@ internal static class MatchApplication
                 style.Colors[(int)ImGuiCol.ButtonHovered] = new(.13f, .38f, .47f, 1);
                 style.Colors[(int)ImGuiCol.ButtonActive] = new(.12f, .5f, .48f, 1);
                 using var platform = new GlfwBackend(window, GlfwBackend.ClientApi.OpenGL);
-                using var renderer = new OpenGlBackend(); using var screen = new MatchScreen(catalog, smoke ? 143u : null, duos);
+                using var audio = new GameAudio();
+                audio.EffectsVolume = smoke ? 0 : .8f; audio.MusicVolume = smoke ? 0 : .6f;
+                using var renderer = new OpenGlBackend(); using var screen = new MatchScreen(catalog, audio, smoke ? 143u : null, duos);
                 var driver = smoke ? new MatchScreenSmoke() : null;
                 var clock = System.Diagnostics.Stopwatch.StartNew(); double last = 0;
                 for (int frame = 0; !window.ShouldClose; frame++)
@@ -44,6 +46,7 @@ internal static class MatchApplication
                     ImGui.NewFrame(); double now = clock.Elapsed.TotalSeconds;
                     screen.Update(smoke ? CombatSimulation.Tick : Math.Clamp(now - last, 0, .1)); last = now;
                     screen.Draw(window.Size); ImGui.Render();
+                    audio.Update();
                     var size = window.FramebufferSize;
                     OpenGl.Viewport(0, 0, size.X, size.Y); OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
                     screen.Render(size); OpenGl.Viewport(0, 0, size.X, size.Y); renderer.RenderDrawData(ImGui.GetDrawData());

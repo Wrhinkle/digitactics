@@ -26,6 +26,17 @@
           "CommunityToolkit.HighPerformance": "8.4.2"
         }
       },
+      "Ahwoo.BRUTAL.Sdl": {
+        "type": "Direct",
+        "requested": "[2026.10.2, )",
+        "resolved": "2026.10.2",
+        "contentHash": "1r+dssq2AgYk1kj+lpXtSPmQSEBww2dOTa+FRHQh9IRwdHIg8b73/wYLYHj8NGI+m3LwuNodxuwurRyAy6LsTg==",
+        "dependencies": {
+          "Ahwoo.BRUTAL.Core": "2026.10.1",
+          "Ahwoo.BRUTAL.Interop": "2026.10.1",
+          "Ahwoo.BRUTAL.Logging": "2026.10.2"
+        }
+      },
       "Ahwoo.BRUTAL.Collections": {
         "type": "Transitive",
         "resolved": "2026.10.1",
@@ -57,6 +68,14 @@
           "Ahwoo.BRUTAL.Numerics": "2026.10.1",
           "Ahwoo.BRUTAL.Strings": "2026.10.1",
           "CommunityToolkit.HighPerformance": "8.4.2"
+        }
+      },
+      "Ahwoo.BRUTAL.Interop": {
+        "type": "Transitive",
+        "resolved": "2026.10.1",
+        "contentHash": "II3gRgjwbT6KdiPGEGsoT818lLjP86geLbiK1xo8p1Uukp25FKVF2rtccXsmHjbEkqDnlPBGrnDEBT1Cyi+org==",
+        "dependencies": {
+          "Ahwoo.BRUTAL.Core": "2026.10.1"
         }
       },
       "Ahwoo.BRUTAL.Localization": {
@@ -291,6 +310,17 @@
           "Ahwoo.BRUTAL.Core": "2026.10.1",
           "Ahwoo.BRUTAL.Logging": "2026.10.2",
           "Ahwoo.BRUTAL.Numerics": "2026.10.1"
+        }
+      },
+      "Ahwoo.BRUTAL.Sdl": {
+        "type": "Direct",
+        "requested": "[2026.10.2, )",
+        "resolved": "2026.10.2",
+        "contentHash": "1r+dssq2AgYk1kj+lpXtSPmQSEBww2dOTa+FRHQh9IRwdHIg8b73/wYLYHj8NGI+m3LwuNodxuwurRyAy6LsTg==",
+        "dependencies": {
+          "Ahwoo.BRUTAL.Core": "2026.10.1",
+          "Ahwoo.BRUTAL.Interop": "2026.10.1",
+          "Ahwoo.BRUTAL.Logging": "2026.10.2"
         }
       },
       "Ahwoo.BRUTAL.ImGui": {
