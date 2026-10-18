@@ -10,6 +10,7 @@ internal sealed class DisplayText
         File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "content/display.json")), new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     public DisplayEntry Get(string variant, string id) => variants[variant].GetValueOrDefault(id) ?? new(id, "");
     public DisplayEntry Ability(string variant, string line, int stage) => variants[variant][$"ability:{line}:{stage}"];
+    public DisplayEntry TraitBreakpoint(string variant, string trait, int index) => variants[variant][$"trait:{trait}:{index}"];
     public string ConsumablePreview(Ruleset rules, string id, int heldItems, int benchItems)
     {
         string? kind = Get(rules.Id, id).Preview;

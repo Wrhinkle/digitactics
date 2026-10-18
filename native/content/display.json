@@ -394,6 +394,286 @@
       "name": "Support",
       "description": "Your team's healing is stronger. Every 4 seconds, each Support heals the lowest-health ally."
     },
+    "trait:DR:0": {
+      "name": "2",
+      "description": "+200 HP"
+    },
+    "trait:DR:1": {
+      "name": "4",
+      "description": "+450 HP"
+    },
+    "trait:DR:2": {
+      "name": "6",
+      "description": "+800 HP"
+    },
+    "trait:NSp:0": {
+      "name": "2",
+      "description": "+30% AS"
+    },
+    "trait:NSp:1": {
+      "name": "4",
+      "description": "+55% AS"
+    },
+    "trait:NSp:2": {
+      "name": "6",
+      "description": "+90% AS"
+    },
+    "trait:JT:0": {
+      "name": "2",
+      "description": "2.5% HP/s"
+    },
+    "trait:JT:1": {
+      "name": "4",
+      "description": "5% HP/s"
+    },
+    "trait:WG:0": {
+      "name": "2",
+      "description": "15% dodge"
+    },
+    "trait:WG:1": {
+      "name": "3",
+      "description": "28% dodge"
+    },
+    "trait:DS:0": {
+      "name": "2",
+      "description": "35% HP shield"
+    },
+    "trait:DS:1": {
+      "name": "4",
+      "description": "60% HP shield"
+    },
+    "trait:ME:0": {
+      "name": "2",
+      "description": "-18% dmg taken"
+    },
+    "trait:ME:1": {
+      "name": "4",
+      "description": "-32% dmg taken"
+    },
+    "trait:NSo:0": {
+      "name": "2",
+      "description": "15% omnivamp"
+    },
+    "trait:NSo:1": {
+      "name": "4",
+      "description": "25% omnivamp"
+    },
+    "trait:VB:0": {
+      "name": "2",
+      "description": "+8 mana"
+    },
+    "trait:VB:1": {
+      "name": "3",
+      "description": "+20 mana"
+    },
+    "trait:DL:0": {
+      "name": "1",
+      "description": "+25 AP"
+    },
+    "trait:DL:1": {
+      "name": "2",
+      "description": "+50 AP and 15% more damage"
+    },
+    "trait:DL:2": {
+      "name": "3",
+      "description": "+80 AP, 30% more damage, and abilities burn the targets"
+    },
+    "trait:RK:0": {
+      "name": "1",
+      "description": "5% more damage and 5% max HP per active trait"
+    },
+    "trait:RK:1": {
+      "name": "2",
+      "description": "7% more damage and 7% max HP per active trait"
+    },
+    "trait:RK:2": {
+      "name": "3",
+      "description": "9% more damage and 9% max HP per active trait"
+    },
+    "trait:DATS:0": {
+      "name": "2",
+      "description": "Heal 12% max HP, +12% AD and +12 AP"
+    },
+    "trait:DATS:1": {
+      "name": "3",
+      "description": "Heal 20% max HP, +25% AD and +25 AP"
+    },
+    "trait:DATS:2": {
+      "name": "4",
+      "description": "Heal 30% max HP, +45% AD and +45 AP"
+    },
+    "trait:LW:0": {
+      "name": "2",
+      "description": "Heals 30% max HP, gains 30% attack speed and takes 12% less damage"
+    },
+    "trait:XF:0": {
+      "name": "2",
+      "description": "Gain 12% of the other Xros Fusion Digimon's combined max HP and attack damage"
+    },
+    "trait:XF:1": {
+      "name": "3",
+      "description": "Gain 14% of the other Xros Fusion Digimon's combined max HP and attack damage"
+    },
+    "trait:XF:2": {
+      "name": "4",
+      "description": "Gain 15% of the other Xros Fusion Digimon's combined max HP and attack damage"
+    },
+    "trait:INS:0": {
+      "name": "2",
+      "description": "1 bite for 30 magic damage every 2 seconds"
+    },
+    "trait:INS:1": {
+      "name": "3",
+      "description": "2 bites for 45 magic damage every 2 seconds"
+    },
+    "trait:INS:2": {
+      "name": "4",
+      "description": "3 bites for 60 magic damage every 2 seconds"
+    },
+    "trait:FUN:0": {
+      "name": "2",
+      "description": "Muck: the target deals 45% less damage. +1 gold after every combat"
+    },
+    "trait:FUN:1": {
+      "name": "4",
+      "description": "Muck: the target deals 60% less damage. +2 gold after every combat"
+    },
+    "trait:KN:0": {
+      "name": "2",
+      "description": "12% less damage, 24% next to another Knight"
+    },
+    "trait:KN:1": {
+      "name": "3",
+      "description": "17% less damage, 34% next to another Knight"
+    },
+    "trait:FL:0": {
+      "name": "2",
+      "description": "burn, +15% vs burning"
+    },
+    "trait:FL:1": {
+      "name": "4",
+      "description": "burn, +30% vs burning"
+    },
+    "trait:FR:0": {
+      "name": "2",
+      "description": "30% freeze chance"
+    },
+    "trait:FR:1": {
+      "name": "3",
+      "description": "50% freeze chance"
+    },
+    "trait:UND:0": {
+      "name": "2",
+      "description": "Cheats death once, then heals 5% max HP"
+    },
+    "trait:UND:1": {
+      "name": "3",
+      "description": "Cheats death once, then heals 10% max HP"
+    },
+    "trait:HB:0": {
+      "name": "2",
+      "description": "+4 armor/MR/AP (x2 own)"
+    },
+    "trait:HB:1": {
+      "name": "3",
+      "description": "+10 armor/MR/AP (x2 own)"
+    },
+    "trait:FA:0": {
+      "name": "2",
+      "description": "enemies -6 armor/MR"
+    },
+    "trait:FA:1": {
+      "name": "3",
+      "description": "enemies -12 armor/MR"
+    },
+    "trait:FA:2": {
+      "name": "4",
+      "description": "enemies -20 armor/MR"
+    },
+    "trait:Guardian:0": {
+      "name": "2",
+      "description": "+25 armor/MR"
+    },
+    "trait:Guardian:1": {
+      "name": "4",
+      "description": "+50 armor/MR"
+    },
+    "trait:Guardian:2": {
+      "name": "6",
+      "description": "+90 armor/MR"
+    },
+    "trait:Striker:0": {
+      "name": "2",
+      "description": "+25% AD"
+    },
+    "trait:Striker:1": {
+      "name": "4",
+      "description": "+45% AD"
+    },
+    "trait:Striker:2": {
+      "name": "6",
+      "description": "+75% AD"
+    },
+    "trait:Sniper:0": {
+      "name": "2",
+      "description": "+5%/hex"
+    },
+    "trait:Sniper:1": {
+      "name": "4",
+      "description": "+9%/hex"
+    },
+    "trait:Sniper:2": {
+      "name": "6",
+      "description": "+13%/hex"
+    },
+    "trait:Mystic:0": {
+      "name": "2",
+      "description": "+20 AP"
+    },
+    "trait:Mystic:1": {
+      "name": "4",
+      "description": "+40 AP"
+    },
+    "trait:Mystic:2": {
+      "name": "6",
+      "description": "+70 AP"
+    },
+    "trait:Assassin:0": {
+      "name": "2",
+      "description": "25% crit"
+    },
+    "trait:Assassin:1": {
+      "name": "4",
+      "description": "50% crit"
+    },
+    "trait:Bruiser:0": {
+      "name": "2",
+      "description": "+20% max HP"
+    },
+    "trait:Bruiser:1": {
+      "name": "4",
+      "description": "+40% max HP"
+    },
+    "trait:Duelist:0": {
+      "name": "2",
+      "description": "+6% AS per attack"
+    },
+    "trait:Duelist:1": {
+      "name": "4",
+      "description": "+9% AS per attack"
+    },
+    "trait:Duelist:2": {
+      "name": "6",
+      "description": "+13% AS per attack"
+    },
+    "trait:Support:0": {
+      "name": "2",
+      "description": "All healing on your team +10%. Every 4s each Support heals the lowest-health ally for 2.5% of its max HP"
+    },
+    "trait:Support:1": {
+      "name": "4",
+      "description": "All healing on your team +25%. Every 4s each Support heals the lowest-health ally for 5% of its max HP"
+    },
     "ability:agumon:0": {
       "name": "Pepper Breath",
       "description": "Deals 260 magic damage to the target."
@@ -2025,6 +2305,286 @@
     "Support": {
       "name": "Support",
       "description": "Your team's healing is stronger. Every 4 seconds, each Support heals the lowest-health ally."
+    },
+    "trait:DR:0": {
+      "name": "2",
+      "description": "+200 HP"
+    },
+    "trait:DR:1": {
+      "name": "4",
+      "description": "+450 HP"
+    },
+    "trait:DR:2": {
+      "name": "6",
+      "description": "+800 HP"
+    },
+    "trait:NSp:0": {
+      "name": "2",
+      "description": "+30% AS"
+    },
+    "trait:NSp:1": {
+      "name": "4",
+      "description": "+55% AS"
+    },
+    "trait:NSp:2": {
+      "name": "6",
+      "description": "+90% AS"
+    },
+    "trait:JT:0": {
+      "name": "2",
+      "description": "2.5% HP/s"
+    },
+    "trait:JT:1": {
+      "name": "4",
+      "description": "5% HP/s"
+    },
+    "trait:WG:0": {
+      "name": "2",
+      "description": "15% dodge"
+    },
+    "trait:WG:1": {
+      "name": "3",
+      "description": "28% dodge"
+    },
+    "trait:DS:0": {
+      "name": "2",
+      "description": "35% HP shield"
+    },
+    "trait:DS:1": {
+      "name": "4",
+      "description": "60% HP shield"
+    },
+    "trait:ME:0": {
+      "name": "2",
+      "description": "-18% dmg taken"
+    },
+    "trait:ME:1": {
+      "name": "4",
+      "description": "-32% dmg taken"
+    },
+    "trait:NSo:0": {
+      "name": "2",
+      "description": "15% omnivamp"
+    },
+    "trait:NSo:1": {
+      "name": "4",
+      "description": "25% omnivamp"
+    },
+    "trait:VB:0": {
+      "name": "2",
+      "description": "+8 mana"
+    },
+    "trait:VB:1": {
+      "name": "3",
+      "description": "+20 mana"
+    },
+    "trait:DL:0": {
+      "name": "1",
+      "description": "+25 AP"
+    },
+    "trait:DL:1": {
+      "name": "2",
+      "description": "+50 AP and 15% more damage"
+    },
+    "trait:DL:2": {
+      "name": "3",
+      "description": "+80 AP, 30% more damage, and abilities burn the targets"
+    },
+    "trait:RK:0": {
+      "name": "1",
+      "description": "5% more damage and 5% max HP per active trait"
+    },
+    "trait:RK:1": {
+      "name": "2",
+      "description": "7% more damage and 7% max HP per active trait"
+    },
+    "trait:RK:2": {
+      "name": "3",
+      "description": "9% more damage and 9% max HP per active trait"
+    },
+    "trait:DATS:0": {
+      "name": "2",
+      "description": "Heal 12% max HP, +12% AD and +12 AP"
+    },
+    "trait:DATS:1": {
+      "name": "3",
+      "description": "Heal 20% max HP, +25% AD and +25 AP"
+    },
+    "trait:DATS:2": {
+      "name": "4",
+      "description": "Heal 30% max HP, +45% AD and +45 AP"
+    },
+    "trait:LW:0": {
+      "name": "2",
+      "description": "Heals 30% max HP, gains 30% attack speed and takes 12% less damage"
+    },
+    "trait:XF:0": {
+      "name": "2",
+      "description": "Gain 12% of the other Xros Fusion Digimon's combined max HP and attack damage"
+    },
+    "trait:XF:1": {
+      "name": "3",
+      "description": "Gain 14% of the other Xros Fusion Digimon's combined max HP and attack damage"
+    },
+    "trait:XF:2": {
+      "name": "4",
+      "description": "Gain 15% of the other Xros Fusion Digimon's combined max HP and attack damage"
+    },
+    "trait:INS:0": {
+      "name": "2",
+      "description": "1 bite for 30 magic damage every 2 seconds"
+    },
+    "trait:INS:1": {
+      "name": "3",
+      "description": "2 bites for 45 magic damage every 2 seconds"
+    },
+    "trait:INS:2": {
+      "name": "4",
+      "description": "3 bites for 60 magic damage every 2 seconds"
+    },
+    "trait:FUN:0": {
+      "name": "2",
+      "description": "Muck: the target deals 45% less damage. +1 gold after every combat"
+    },
+    "trait:FUN:1": {
+      "name": "4",
+      "description": "Muck: the target deals 60% less damage. +2 gold after every combat"
+    },
+    "trait:KN:0": {
+      "name": "2",
+      "description": "12% less damage, 24% next to another Knight"
+    },
+    "trait:KN:1": {
+      "name": "3",
+      "description": "17% less damage, 34% next to another Knight"
+    },
+    "trait:FL:0": {
+      "name": "2",
+      "description": "burn, +15% vs burning"
+    },
+    "trait:FL:1": {
+      "name": "4",
+      "description": "burn, +30% vs burning"
+    },
+    "trait:FR:0": {
+      "name": "2",
+      "description": "30% freeze chance"
+    },
+    "trait:FR:1": {
+      "name": "3",
+      "description": "50% freeze chance"
+    },
+    "trait:UND:0": {
+      "name": "2",
+      "description": "Cheats death once, then heals 5% max HP"
+    },
+    "trait:UND:1": {
+      "name": "3",
+      "description": "Cheats death once, then heals 10% max HP"
+    },
+    "trait:HB:0": {
+      "name": "2",
+      "description": "+4 armor/MR/AP (x2 own)"
+    },
+    "trait:HB:1": {
+      "name": "3",
+      "description": "+10 armor/MR/AP (x2 own)"
+    },
+    "trait:FA:0": {
+      "name": "2",
+      "description": "enemies -6 armor/MR"
+    },
+    "trait:FA:1": {
+      "name": "3",
+      "description": "enemies -12 armor/MR"
+    },
+    "trait:FA:2": {
+      "name": "4",
+      "description": "enemies -20 armor/MR"
+    },
+    "trait:Guardian:0": {
+      "name": "2",
+      "description": "+25 armor/MR"
+    },
+    "trait:Guardian:1": {
+      "name": "4",
+      "description": "+50 armor/MR"
+    },
+    "trait:Guardian:2": {
+      "name": "6",
+      "description": "+90 armor/MR"
+    },
+    "trait:Striker:0": {
+      "name": "2",
+      "description": "+25% AD"
+    },
+    "trait:Striker:1": {
+      "name": "4",
+      "description": "+45% AD"
+    },
+    "trait:Striker:2": {
+      "name": "6",
+      "description": "+75% AD"
+    },
+    "trait:Sniper:0": {
+      "name": "2",
+      "description": "+5%/hex"
+    },
+    "trait:Sniper:1": {
+      "name": "4",
+      "description": "+9%/hex"
+    },
+    "trait:Sniper:2": {
+      "name": "6",
+      "description": "+13%/hex"
+    },
+    "trait:Mystic:0": {
+      "name": "2",
+      "description": "+20 AP"
+    },
+    "trait:Mystic:1": {
+      "name": "4",
+      "description": "+40 AP"
+    },
+    "trait:Mystic:2": {
+      "name": "6",
+      "description": "+70 AP"
+    },
+    "trait:Assassin:0": {
+      "name": "2",
+      "description": "25% crit"
+    },
+    "trait:Assassin:1": {
+      "name": "4",
+      "description": "50% crit"
+    },
+    "trait:Bruiser:0": {
+      "name": "2",
+      "description": "+20% max HP"
+    },
+    "trait:Bruiser:1": {
+      "name": "4",
+      "description": "+40% max HP"
+    },
+    "trait:Duelist:0": {
+      "name": "2",
+      "description": "+6% AS per attack"
+    },
+    "trait:Duelist:1": {
+      "name": "4",
+      "description": "+9% AS per attack"
+    },
+    "trait:Duelist:2": {
+      "name": "6",
+      "description": "+13% AS per attack"
+    },
+    "trait:Support:0": {
+      "name": "2",
+      "description": "All healing on your team +10%. Every 4s each Support heals the lowest-health ally for 2.5% of its max HP"
+    },
+    "trait:Support:1": {
+      "name": "4",
+      "description": "All healing on your team +25%. Every 4s each Support heals the lowest-health ally for 5% of its max HP"
     },
     "ability:agumon:0": {
       "name": "Pepper Breath",
@@ -3730,6 +4290,254 @@
       "name": "Vanguard",
       "description": "Vanguards gain armor."
     },
+    "trait:OCEAN:0": {
+      "name": "3",
+      "description": "Soulmon (Rookie form)"
+    },
+    "trait:OCEAN:1": {
+      "name": "6",
+      "description": "Soulmon (Champion form)"
+    },
+    "trait:OCEAN:2": {
+      "name": "9",
+      "description": "Soulmon (final form)"
+    },
+    "trait:CELES:0": {
+      "name": "2",
+      "description": "ascend 3s, -35% damage taken, +35% damage"
+    },
+    "trait:CELES:1": {
+      "name": "4",
+      "description": "ascend 6s, -42% damage taken, +42% damage"
+    },
+    "trait:CELES:2": {
+      "name": "6",
+      "description": "ascend 10s, -50% damage taken, +50% damage"
+    },
+    "trait:NIGHT:0": {
+      "name": "2",
+      "description": "all allies +12 AP"
+    },
+    "trait:NIGHT:1": {
+      "name": "4",
+      "description": "all allies +15 AP, Nightfall +35 more"
+    },
+    "trait:FOREST:0": {
+      "name": "3",
+      "description": "+4 armor/MR, +2 AD/AP per stack"
+    },
+    "trait:FOREST:1": {
+      "name": "6",
+      "description": "+9 armor/MR, +3 AD/AP per stack"
+    },
+    "trait:FOREST:2": {
+      "name": "9",
+      "description": "+16 armor/MR, +7 AD/AP per stack"
+    },
+    "trait:PILGRIM:0": {
+      "name": "2",
+      "description": "+30% mana gained"
+    },
+    "trait:PILGRIM:1": {
+      "name": "4",
+      "description": "+55% mana gained"
+    },
+    "trait:PILGRIM:2": {
+      "name": "6",
+      "description": "+85% mana gained"
+    },
+    "trait:RONIN:0": {
+      "name": "1",
+      "description": "50% HP shield alone"
+    },
+    "trait:RONIN:1": {
+      "name": "2",
+      "description": "50% HP shield alone, 50% omnivamp"
+    },
+    "trait:TREASURE:0": {
+      "name": "3",
+      "description": "30% dodge, tokens pay out on wins"
+    },
+    "trait:TREASURE:1": {
+      "name": "6",
+      "description": "40% dodge, tokens pay out on wins, +3 gold per win"
+    },
+    "trait:LUNAR:0": {
+      "name": "3",
+      "description": "1 Lunar Digimon digivolves for the combat"
+    },
+    "trait:LUNAR:1": {
+      "name": "5",
+      "description": "2 Lunar Digimon digivolve for the combat"
+    },
+    "trait:NINJA:0": {
+      "name": "1",
+      "description": "the one Shinobi gains +35% AD and +35 AP"
+    },
+    "trait:NINJA:1": {
+      "name": "4",
+      "description": "all 4 gain +60% AD and +60 AP"
+    },
+    "trait:SPIRIT:0": {
+      "name": "2",
+      "description": "allies +20% of the caster's max mana as attack speed"
+    },
+    "trait:SPIRIT:1": {
+      "name": "4",
+      "description": "allies +42% of the caster's max mana as attack speed"
+    },
+    "trait:DEVA:0": {
+      "name": "3",
+      "description": "+220 HP and +20 AP, +10% per PvP win (max 5)"
+    },
+    "trait:DEVA:1": {
+      "name": "6",
+      "description": "+450 HP and +40 AP, +10% per PvP win (max 5)"
+    },
+    "trait:DEVA:2": {
+      "name": "9",
+      "description": "+700 HP and +70 AP, +10% per PvP win (max 5)"
+    },
+    "trait:SOVEREIGN:0": {
+      "name": "1",
+      "description": "two guards with 40% of its max HP"
+    },
+    "trait:BANCHO:0": {
+      "name": "1",
+      "description": "push-up break below 40% HP"
+    },
+    "trait:FALLEN:0": {
+      "name": "1",
+      "description": "choose a path after 3 combats"
+    },
+    "trait:FORGE:0": {
+      "name": "1",
+      "description": "an artifact every 4 forge points"
+    },
+    "trait:STYLE:0": {
+      "name": "1",
+      "description": "double shots and shields, casts on style"
+    },
+    "trait:ADEPT:0": {
+      "name": "2",
+      "description": "enemies -50% attack speed for 1.2s"
+    },
+    "trait:ADEPT:1": {
+      "name": "3",
+      "description": "enemies -50% attack speed for 2.5s"
+    },
+    "trait:ASSASSIN:0": {
+      "name": "2",
+      "description": "+15% crit, +30% crit damage"
+    },
+    "trait:ASSASSIN:1": {
+      "name": "4",
+      "description": "+30% crit, +60% crit damage"
+    },
+    "trait:BRAWLER:0": {
+      "name": "2",
+      "description": "+300 max HP"
+    },
+    "trait:BRAWLER:1": {
+      "name": "4",
+      "description": "+650 max HP"
+    },
+    "trait:BRAWLER:2": {
+      "name": "6",
+      "description": "+1000 max HP"
+    },
+    "trait:CHARMER:0": {
+      "name": "2",
+      "description": "-55% AD for 8s"
+    },
+    "trait:CHARMER:1": {
+      "name": "4",
+      "description": "-90% AD for 8s"
+    },
+    "trait:DUELIST:0": {
+      "name": "2",
+      "description": "+12% attack speed per attack"
+    },
+    "trait:DUELIST:1": {
+      "name": "4",
+      "description": "+18% attack speed per attack"
+    },
+    "trait:DUELIST:2": {
+      "name": "6",
+      "description": "+26% attack speed per attack"
+    },
+    "trait:HUNTER:0": {
+      "name": "2",
+      "description": "every 3.5s, a 140% AD strike"
+    },
+    "trait:HUNTER:1": {
+      "name": "3",
+      "description": "every 3s, a 170% AD strike"
+    },
+    "trait:HUNTER:2": {
+      "name": "4",
+      "description": "every 2.5s, a 200% AD strike"
+    },
+    "trait:KEEPER:0": {
+      "name": "2",
+      "description": "140 shield for 8s"
+    },
+    "trait:KEEPER:1": {
+      "name": "4",
+      "description": "240 shield for 10s"
+    },
+    "trait:MAGE:0": {
+      "name": "3",
+      "description": "cast twice at 65% AP"
+    },
+    "trait:MAGE:1": {
+      "name": "5",
+      "description": "cast twice at 85% AP"
+    },
+    "trait:MAGE:2": {
+      "name": "7",
+      "description": "cast twice at 110% AP"
+    },
+    "trait:WARDER:0": {
+      "name": "2",
+      "description": "all allies +14 MR"
+    },
+    "trait:WARDER:1": {
+      "name": "4",
+      "description": "all allies +32 MR"
+    },
+    "trait:SHADE:0": {
+      "name": "2",
+      "description": "+90 magic damage every 3rd attack"
+    },
+    "trait:SHADE:1": {
+      "name": "3",
+      "description": "+220 magic damage every 3rd attack"
+    },
+    "trait:SHARP:0": {
+      "name": "2",
+      "description": "1 bounce for 50% damage"
+    },
+    "trait:SHARP:1": {
+      "name": "4",
+      "description": "2 bounces for 55% damage"
+    },
+    "trait:SHARP:2": {
+      "name": "6",
+      "description": "3 bounces for 60% damage"
+    },
+    "trait:VANGUARD:0": {
+      "name": "2",
+      "description": "+60 armor"
+    },
+    "trait:VANGUARD:1": {
+      "name": "4",
+      "description": "+140 armor"
+    },
+    "trait:VANGUARD:2": {
+      "name": "6",
+      "description": "+260 armor"
+    },
     "ability:fat_lunamon:0": {
       "name": "Luna Claw",
       "description": "Dashes to the lowest-health enemy and strikes for 210 magic damage."
@@ -5298,6 +6106,254 @@
       "name": "Vanguard",
       "description": "Vanguards gain armor."
     },
+    "trait:OCEAN:0": {
+      "name": "3",
+      "description": "Soulmon (Rookie form)"
+    },
+    "trait:OCEAN:1": {
+      "name": "6",
+      "description": "Soulmon (Champion form)"
+    },
+    "trait:OCEAN:2": {
+      "name": "9",
+      "description": "Soulmon (final form)"
+    },
+    "trait:CELES:0": {
+      "name": "2",
+      "description": "ascend 3s, -35% damage taken, +35% damage"
+    },
+    "trait:CELES:1": {
+      "name": "4",
+      "description": "ascend 6s, -42% damage taken, +42% damage"
+    },
+    "trait:CELES:2": {
+      "name": "6",
+      "description": "ascend 10s, -50% damage taken, +50% damage"
+    },
+    "trait:NIGHT:0": {
+      "name": "2",
+      "description": "all allies +12 AP"
+    },
+    "trait:NIGHT:1": {
+      "name": "4",
+      "description": "all allies +15 AP, Nightfall +35 more"
+    },
+    "trait:FOREST:0": {
+      "name": "3",
+      "description": "+4 armor/MR, +2 AD/AP per stack"
+    },
+    "trait:FOREST:1": {
+      "name": "6",
+      "description": "+9 armor/MR, +3 AD/AP per stack"
+    },
+    "trait:FOREST:2": {
+      "name": "9",
+      "description": "+16 armor/MR, +7 AD/AP per stack"
+    },
+    "trait:PILGRIM:0": {
+      "name": "2",
+      "description": "+30% mana gained"
+    },
+    "trait:PILGRIM:1": {
+      "name": "4",
+      "description": "+55% mana gained"
+    },
+    "trait:PILGRIM:2": {
+      "name": "6",
+      "description": "+85% mana gained"
+    },
+    "trait:RONIN:0": {
+      "name": "1",
+      "description": "50% HP shield alone"
+    },
+    "trait:RONIN:1": {
+      "name": "2",
+      "description": "50% HP shield alone, 50% omnivamp"
+    },
+    "trait:TREASURE:0": {
+      "name": "3",
+      "description": "30% dodge, tokens pay out on wins"
+    },
+    "trait:TREASURE:1": {
+      "name": "6",
+      "description": "40% dodge, tokens pay out on wins, +3 gold per win"
+    },
+    "trait:LUNAR:0": {
+      "name": "3",
+      "description": "1 Lunar Digimon digivolves for the combat"
+    },
+    "trait:LUNAR:1": {
+      "name": "5",
+      "description": "2 Lunar Digimon digivolve for the combat"
+    },
+    "trait:NINJA:0": {
+      "name": "1",
+      "description": "the one Shinobi gains +35% AD and +35 AP"
+    },
+    "trait:NINJA:1": {
+      "name": "4",
+      "description": "all 4 gain +60% AD and +60 AP"
+    },
+    "trait:SPIRIT:0": {
+      "name": "2",
+      "description": "allies +20% of the caster's max mana as attack speed"
+    },
+    "trait:SPIRIT:1": {
+      "name": "4",
+      "description": "allies +42% of the caster's max mana as attack speed"
+    },
+    "trait:DEVA:0": {
+      "name": "3",
+      "description": "+220 HP and +20 AP, +10% per PvP win (max 5)"
+    },
+    "trait:DEVA:1": {
+      "name": "6",
+      "description": "+450 HP and +40 AP, +10% per PvP win (max 5)"
+    },
+    "trait:DEVA:2": {
+      "name": "9",
+      "description": "+700 HP and +70 AP, +10% per PvP win (max 5)"
+    },
+    "trait:SOVEREIGN:0": {
+      "name": "1",
+      "description": "two guards with 40% of its max HP"
+    },
+    "trait:BANCHO:0": {
+      "name": "1",
+      "description": "push-up break below 40% HP"
+    },
+    "trait:FALLEN:0": {
+      "name": "1",
+      "description": "choose a path after 3 combats"
+    },
+    "trait:FORGE:0": {
+      "name": "1",
+      "description": "an artifact every 4 forge points"
+    },
+    "trait:STYLE:0": {
+      "name": "1",
+      "description": "double shots and shields, casts on style"
+    },
+    "trait:ADEPT:0": {
+      "name": "2",
+      "description": "enemies -50% attack speed for 1.2s"
+    },
+    "trait:ADEPT:1": {
+      "name": "3",
+      "description": "enemies -50% attack speed for 2.5s"
+    },
+    "trait:ASSASSIN:0": {
+      "name": "2",
+      "description": "+15% crit, +30% crit damage"
+    },
+    "trait:ASSASSIN:1": {
+      "name": "4",
+      "description": "+30% crit, +60% crit damage"
+    },
+    "trait:BRAWLER:0": {
+      "name": "2",
+      "description": "+300 max HP"
+    },
+    "trait:BRAWLER:1": {
+      "name": "4",
+      "description": "+650 max HP"
+    },
+    "trait:BRAWLER:2": {
+      "name": "6",
+      "description": "+1000 max HP"
+    },
+    "trait:CHARMER:0": {
+      "name": "2",
+      "description": "-55% AD for 8s"
+    },
+    "trait:CHARMER:1": {
+      "name": "4",
+      "description": "-90% AD for 8s"
+    },
+    "trait:DUELIST:0": {
+      "name": "2",
+      "description": "+12% attack speed per attack"
+    },
+    "trait:DUELIST:1": {
+      "name": "4",
+      "description": "+18% attack speed per attack"
+    },
+    "trait:DUELIST:2": {
+      "name": "6",
+      "description": "+26% attack speed per attack"
+    },
+    "trait:HUNTER:0": {
+      "name": "2",
+      "description": "every 3.5s, a 140% AD strike"
+    },
+    "trait:HUNTER:1": {
+      "name": "3",
+      "description": "every 3s, a 170% AD strike"
+    },
+    "trait:HUNTER:2": {
+      "name": "4",
+      "description": "every 2.5s, a 200% AD strike"
+    },
+    "trait:KEEPER:0": {
+      "name": "2",
+      "description": "140 shield for 8s"
+    },
+    "trait:KEEPER:1": {
+      "name": "4",
+      "description": "240 shield for 10s"
+    },
+    "trait:MAGE:0": {
+      "name": "3",
+      "description": "cast twice at 65% AP"
+    },
+    "trait:MAGE:1": {
+      "name": "5",
+      "description": "cast twice at 85% AP"
+    },
+    "trait:MAGE:2": {
+      "name": "7",
+      "description": "cast twice at 110% AP"
+    },
+    "trait:WARDER:0": {
+      "name": "2",
+      "description": "all allies +14 MR"
+    },
+    "trait:WARDER:1": {
+      "name": "4",
+      "description": "all allies +32 MR"
+    },
+    "trait:SHADE:0": {
+      "name": "2",
+      "description": "+90 magic damage every 3rd attack"
+    },
+    "trait:SHADE:1": {
+      "name": "3",
+      "description": "+220 magic damage every 3rd attack"
+    },
+    "trait:SHARP:0": {
+      "name": "2",
+      "description": "1 bounce for 50% damage"
+    },
+    "trait:SHARP:1": {
+      "name": "4",
+      "description": "2 bounces for 55% damage"
+    },
+    "trait:SHARP:2": {
+      "name": "6",
+      "description": "3 bounces for 60% damage"
+    },
+    "trait:VANGUARD:0": {
+      "name": "2",
+      "description": "+60 armor"
+    },
+    "trait:VANGUARD:1": {
+      "name": "4",
+      "description": "+140 armor"
+    },
+    "trait:VANGUARD:2": {
+      "name": "6",
+      "description": "+260 armor"
+    },
     "ability:fat_lunamon:0": {
       "name": "Luna Claw",
       "description": "Dashes to the lowest-health enemy and strikes for 210 magic damage."
@@ -6786,6 +7842,198 @@
       "name": "Vanguards",
       "description": "Vanguards gain armor."
     },
+    "trait:DD:0": {
+      "name": "3",
+      "description": "12 mana shared per cast"
+    },
+    "trait:DD:1": {
+      "name": "6",
+      "description": "25 mana shared per cast"
+    },
+    "trait:DA:0": {
+      "name": "2",
+      "description": "+14% AD and +14 AP per fallen ally"
+    },
+    "trait:DA:1": {
+      "name": "4",
+      "description": "+25% AD and +25 AP per fallen ally"
+    },
+    "trait:DA:2": {
+      "name": "6",
+      "description": "+38% AD and +38 AP per fallen ally"
+    },
+    "trait:XR:0": {
+      "name": "3",
+      "description": "fusion with 90% of combined HP and AD"
+    },
+    "trait:PI:0": {
+      "name": "2",
+      "description": "50% for 1 gold"
+    },
+    "trait:PI:1": {
+      "name": "4",
+      "description": "50% for 1 gold, 30% for a component"
+    },
+    "trait:CE:0": {
+      "name": "2",
+      "description": "7% healing from damage"
+    },
+    "trait:CE:1": {
+      "name": "4",
+      "description": "16% healing from damage"
+    },
+    "trait:TK:0": {
+      "name": "2",
+      "description": "+12% AS every 8s"
+    },
+    "trait:TK:1": {
+      "name": "4",
+      "description": "+12% AS every 4s"
+    },
+    "trait:TK:2": {
+      "name": "6",
+      "description": "+12% AS every 2s"
+    },
+    "trait:CY:0": {
+      "name": "3",
+      "description": "+130 HP and +10% AD (x2 with an item)"
+    },
+    "trait:CY:1": {
+      "name": "6",
+      "description": "+260 HP and +20% AD (x2 with an item)"
+    },
+    "trait:RE:0": {
+      "name": "3",
+      "description": "300 shield and +20% damage per adjacent ally"
+    },
+    "trait:RE:1": {
+      "name": "6",
+      "description": "420 shield and +26% damage per adjacent ally"
+    },
+    "trait:AB:0": {
+      "name": "3",
+      "description": "damage ignores 45% of armor and MR"
+    },
+    "trait:VA:0": {
+      "name": "2",
+      "description": "+25% crit, always crit below 50% HP"
+    },
+    "trait:AS:0": {
+      "name": "3",
+      "description": "-15 max mana"
+    },
+    "trait:OV:0": {
+      "name": "2",
+      "description": "120 damage or healing every 10 hits"
+    },
+    "trait:OV:1": {
+      "name": "4",
+      "description": "260 damage or healing every 10 hits"
+    },
+    "trait:OV:2": {
+      "name": "6",
+      "description": "520 damage or healing every 10 hits"
+    },
+    "trait:ARK:0": {
+      "name": "1",
+      "description": "+30 mana per second"
+    },
+    "trait:SV:0": {
+      "name": "1",
+      "description": "attacks deal magic damage (true for DigiDestined)"
+    },
+    "trait:BH:0": {
+      "name": "1",
+      "description": "+6 AP and +3% AD per copy bought"
+    },
+    "trait:BM:0": {
+      "name": "3",
+      "description": "30% chance for 2 extra strikes"
+    },
+    "trait:BM:1": {
+      "name": "6",
+      "description": "55% chance for 2 extra strikes"
+    },
+    "trait:GU:0": {
+      "name": "2",
+      "description": "4 extra shots"
+    },
+    "trait:GU:1": {
+      "name": "4",
+      "description": "7 extra shots"
+    },
+    "trait:BR:0": {
+      "name": "2",
+      "description": "+200 HP"
+    },
+    "trait:BR:1": {
+      "name": "4",
+      "description": "+420 HP"
+    },
+    "trait:BO:0": {
+      "name": "2",
+      "description": "ability hits stun for 1.5s"
+    },
+    "trait:IN:0": {
+      "name": "2",
+      "description": "+30% AS for 6s"
+    },
+    "trait:IN:1": {
+      "name": "4",
+      "description": "+60% AS for 6s"
+    },
+    "trait:IN:2": {
+      "name": "6",
+      "description": "+110% AS for 6s"
+    },
+    "trait:HA:0": {
+      "name": "2",
+      "description": "+50% mana cost"
+    },
+    "trait:MY:0": {
+      "name": "2",
+      "description": "+35 MR"
+    },
+    "trait:MY:1": {
+      "name": "4",
+      "description": "+80 MR"
+    },
+    "trait:PR:0": {
+      "name": "2",
+      "description": "15% max HP shield on cast"
+    },
+    "trait:PR:1": {
+      "name": "4",
+      "description": "25% max HP shield on cast"
+    },
+    "trait:SN:0": {
+      "name": "2",
+      "description": "+6% damage per hex"
+    },
+    "trait:SN:1": {
+      "name": "4",
+      "description": "+12% damage per hex"
+    },
+    "trait:SO:0": {
+      "name": "2",
+      "description": "+18 AP"
+    },
+    "trait:SO:1": {
+      "name": "4",
+      "description": "+35 AP"
+    },
+    "trait:SO:2": {
+      "name": "6",
+      "description": "+60 AP"
+    },
+    "trait:VG:0": {
+      "name": "2",
+      "description": "+60 armor"
+    },
+    "trait:VG:1": {
+      "name": "4",
+      "description": "+140 armor"
+    },
     "ability:gal_hawkmon:0": {
       "name": "Feather Slash",
       "description": "Shoots the farthest enemy for 370 magic damage."
@@ -8189,6 +9437,198 @@
     "VG": {
       "name": "Vanguards",
       "description": "Vanguards gain armor."
+    },
+    "trait:DD:0": {
+      "name": "3",
+      "description": "12 mana shared per cast"
+    },
+    "trait:DD:1": {
+      "name": "6",
+      "description": "25 mana shared per cast"
+    },
+    "trait:DA:0": {
+      "name": "2",
+      "description": "+14% AD and +14 AP per fallen ally"
+    },
+    "trait:DA:1": {
+      "name": "4",
+      "description": "+25% AD and +25 AP per fallen ally"
+    },
+    "trait:DA:2": {
+      "name": "6",
+      "description": "+38% AD and +38 AP per fallen ally"
+    },
+    "trait:XR:0": {
+      "name": "3",
+      "description": "fusion with 90% of combined HP and AD"
+    },
+    "trait:PI:0": {
+      "name": "2",
+      "description": "50% for 1 gold"
+    },
+    "trait:PI:1": {
+      "name": "4",
+      "description": "50% for 1 gold, 30% for a component"
+    },
+    "trait:CE:0": {
+      "name": "2",
+      "description": "7% healing from damage"
+    },
+    "trait:CE:1": {
+      "name": "4",
+      "description": "16% healing from damage"
+    },
+    "trait:TK:0": {
+      "name": "2",
+      "description": "+12% AS every 8s"
+    },
+    "trait:TK:1": {
+      "name": "4",
+      "description": "+12% AS every 4s"
+    },
+    "trait:TK:2": {
+      "name": "6",
+      "description": "+12% AS every 2s"
+    },
+    "trait:CY:0": {
+      "name": "3",
+      "description": "+130 HP and +10% AD (x2 with an item)"
+    },
+    "trait:CY:1": {
+      "name": "6",
+      "description": "+260 HP and +20% AD (x2 with an item)"
+    },
+    "trait:RE:0": {
+      "name": "3",
+      "description": "300 shield and +20% damage per adjacent ally"
+    },
+    "trait:RE:1": {
+      "name": "6",
+      "description": "420 shield and +26% damage per adjacent ally"
+    },
+    "trait:AB:0": {
+      "name": "3",
+      "description": "damage ignores 45% of armor and MR"
+    },
+    "trait:VA:0": {
+      "name": "2",
+      "description": "+25% crit, always crit below 50% HP"
+    },
+    "trait:AS:0": {
+      "name": "3",
+      "description": "-15 max mana"
+    },
+    "trait:OV:0": {
+      "name": "2",
+      "description": "120 damage or healing every 10 hits"
+    },
+    "trait:OV:1": {
+      "name": "4",
+      "description": "260 damage or healing every 10 hits"
+    },
+    "trait:OV:2": {
+      "name": "6",
+      "description": "520 damage or healing every 10 hits"
+    },
+    "trait:ARK:0": {
+      "name": "1",
+      "description": "+30 mana per second"
+    },
+    "trait:SV:0": {
+      "name": "1",
+      "description": "attacks deal magic damage (true for DigiDestined)"
+    },
+    "trait:BH:0": {
+      "name": "1",
+      "description": "+6 AP and +3% AD per copy bought"
+    },
+    "trait:BM:0": {
+      "name": "3",
+      "description": "30% chance for 2 extra strikes"
+    },
+    "trait:BM:1": {
+      "name": "6",
+      "description": "55% chance for 2 extra strikes"
+    },
+    "trait:GU:0": {
+      "name": "2",
+      "description": "4 extra shots"
+    },
+    "trait:GU:1": {
+      "name": "4",
+      "description": "7 extra shots"
+    },
+    "trait:BR:0": {
+      "name": "2",
+      "description": "+200 HP"
+    },
+    "trait:BR:1": {
+      "name": "4",
+      "description": "+420 HP"
+    },
+    "trait:BO:0": {
+      "name": "2",
+      "description": "ability hits stun for 1.5s"
+    },
+    "trait:IN:0": {
+      "name": "2",
+      "description": "+30% AS for 6s"
+    },
+    "trait:IN:1": {
+      "name": "4",
+      "description": "+60% AS for 6s"
+    },
+    "trait:IN:2": {
+      "name": "6",
+      "description": "+110% AS for 6s"
+    },
+    "trait:HA:0": {
+      "name": "2",
+      "description": "+50% mana cost"
+    },
+    "trait:MY:0": {
+      "name": "2",
+      "description": "+35 MR"
+    },
+    "trait:MY:1": {
+      "name": "4",
+      "description": "+80 MR"
+    },
+    "trait:PR:0": {
+      "name": "2",
+      "description": "15% max HP shield on cast"
+    },
+    "trait:PR:1": {
+      "name": "4",
+      "description": "25% max HP shield on cast"
+    },
+    "trait:SN:0": {
+      "name": "2",
+      "description": "+6% damage per hex"
+    },
+    "trait:SN:1": {
+      "name": "4",
+      "description": "+12% damage per hex"
+    },
+    "trait:SO:0": {
+      "name": "2",
+      "description": "+18 AP"
+    },
+    "trait:SO:1": {
+      "name": "4",
+      "description": "+35 AP"
+    },
+    "trait:SO:2": {
+      "name": "6",
+      "description": "+60 AP"
+    },
+    "trait:VG:0": {
+      "name": "2",
+      "description": "+60 armor"
+    },
+    "trait:VG:1": {
+      "name": "4",
+      "description": "+140 armor"
     },
     "ability:gal_hawkmon:0": {
       "name": "Feather Slash",
@@ -9761,6 +11201,258 @@
     "TWIN": {
       "name": "Twinshot",
       "description": "Twinshots gain attack damage, and each basic attack has a chance to hit twice."
+    },
+    "trait:MASQ:0": {
+      "name": "3",
+      "description": "+130 HP, +12 AP (VIP x1.5)"
+    },
+    "trait:MASQ:1": {
+      "name": "5",
+      "description": "+300 HP, +30 AP (VIP x1.5)"
+    },
+    "trait:MASQ:2": {
+      "name": "7",
+      "description": "+550 HP, +50 AP (VIP x1.5)"
+    },
+    "trait:DB:0": {
+      "name": "2",
+      "description": "stun the biggest enemy"
+    },
+    "trait:DB:1": {
+      "name": "4",
+      "description": "stun 2 enemies, +15% AS"
+    },
+    "trait:CLOCK:0": {
+      "name": "2",
+      "description": "team +18% AS, +3% per upgrade"
+    },
+    "trait:CLOCK:1": {
+      "name": "4",
+      "description": "team +42% AS, +5% per upgrade"
+    },
+    "trait:DM:0": {
+      "name": "3",
+      "description": "2 weakest Dark Masters: +40 armor/MR, 16% omnivamp"
+    },
+    "trait:DM:1": {
+      "name": "5",
+      "description": "all Dark Masters: +50 armor/MR, 20% omnivamp"
+    },
+    "trait:DM:2": {
+      "name": "7",
+      "description": "whole team: +75 armor/MR, 30% omnivamp"
+    },
+    "trait:JUNK:0": {
+      "name": "2",
+      "description": "15 shield per component, 1 component upgraded, +15 armor/MR"
+    },
+    "trait:JUNK:1": {
+      "name": "4",
+      "description": "25 shield per component, 2 components upgraded, +30 armor/MR"
+    },
+    "trait:JUNK:2": {
+      "name": "6",
+      "description": "40 shield per component, 4 components upgraded, +50 armor/MR"
+    },
+    "trait:PIR:0": {
+      "name": "3",
+      "description": "+18% damage, normal dice"
+    },
+    "trait:PIR:1": {
+      "name": "5",
+      "description": "+28% damage, lucky dice"
+    },
+    "trait:CD:0": {
+      "name": "2",
+      "description": "100 shield, +15 magic on hit"
+    },
+    "trait:CD:1": {
+      "name": "4",
+      "description": "170 shield, +30 magic on hit"
+    },
+    "trait:CD:2": {
+      "name": "6",
+      "description": "290 shield, +50 magic on hit"
+    },
+    "trait:MUT:0": {
+      "name": "3",
+      "description": "mutation"
+    },
+    "trait:MUT:1": {
+      "name": "5",
+      "description": "strong mutation"
+    },
+    "trait:PET:0": {
+      "name": "3",
+      "description": "20% dodge, a free Petit each round"
+    },
+    "trait:PET:1": {
+      "name": "6",
+      "description": "35% dodge, a free Petit each round, -20% mana"
+    },
+    "trait:XA:0": {
+      "name": "3",
+      "description": "+15% AS, 1.5% HP/s for 8s"
+    },
+    "trait:XA:1": {
+      "name": "5",
+      "description": "+30% AS, 2.5% HP/s for 8s"
+    },
+    "trait:XA:2": {
+      "name": "7",
+      "description": "+50% AS, 4% HP/s for 8s"
+    },
+    "trait:SIS:0": {
+      "name": "1",
+      "description": "own bonus"
+    },
+    "trait:SIS:1": {
+      "name": "2",
+      "description": "both bonuses, +15% damage"
+    },
+    "trait:IDOL:0": {
+      "name": "1",
+      "description": "spotlight: +15% damage"
+    },
+    "trait:IDOL:1": {
+      "name": "2",
+      "description": "+5 mana/s"
+    },
+    "trait:IDOL:2": {
+      "name": "3",
+      "description": "+20% omnivamp"
+    },
+    "trait:GLUT:0": {
+      "name": "1",
+      "description": "grows when you sell"
+    },
+    "trait:TRANS:0": {
+      "name": "1",
+      "description": "melee in front, ranged in back"
+    },
+    "trait:MIND:0": {
+      "name": "1",
+      "description": "+30 mana to 2 allies"
+    },
+    "trait:ARC:0": {
+      "name": "2",
+      "description": "team +20 AP"
+    },
+    "trait:ARC:1": {
+      "name": "4",
+      "description": "team +20 AP, Arcanists +40 more"
+    },
+    "trait:ARC:2": {
+      "name": "6",
+      "description": "team +50 AP, Arcanists +50 more"
+    },
+    "trait:ASN:0": {
+      "name": "2",
+      "description": "+15% crit, +25% crit damage"
+    },
+    "trait:ASN:1": {
+      "name": "4",
+      "description": "+35% crit, +45% crit damage"
+    },
+    "trait:ASN:2": {
+      "name": "6",
+      "description": "+55% crit, +70% crit damage"
+    },
+    "trait:BG:0": {
+      "name": "2",
+      "description": "+30 armor, 80 shield and taunt"
+    },
+    "trait:BG:1": {
+      "name": "4",
+      "description": "+70 armor, 220 shield and taunt"
+    },
+    "trait:BRU:0": {
+      "name": "2",
+      "description": "team +100 HP, Bruisers +200"
+    },
+    "trait:BRU:1": {
+      "name": "4",
+      "description": "team +200 HP, Bruisers +400"
+    },
+    "trait:BRU:2": {
+      "name": "6",
+      "description": "team +350 HP, Bruisers +700"
+    },
+    "trait:CHAL:0": {
+      "name": "2",
+      "description": "+25% AS, doubled after a takedown"
+    },
+    "trait:CHAL:1": {
+      "name": "4",
+      "description": "+50% AS, doubled after a takedown"
+    },
+    "trait:CHAL:2": {
+      "name": "6",
+      "description": "+80% AS, doubled after a takedown"
+    },
+    "trait:COL:0": {
+      "name": "2",
+      "description": "-15% damage taken"
+    },
+    "trait:COL:1": {
+      "name": "3",
+      "description": "-20% damage taken, +25% max HP"
+    },
+    "trait:ENCH:0": {
+      "name": "2",
+      "description": "team +10 MR, +6% healing, Enchanters +10 AP"
+    },
+    "trait:ENCH:1": {
+      "name": "3",
+      "description": "team +20 MR, +12% healing, Enchanters +20 AP"
+    },
+    "trait:ENCH:2": {
+      "name": "4",
+      "description": "team +30 MR, +18% healing, Enchanters +30 AP"
+    },
+    "trait:INNO:0": {
+      "name": "3",
+      "description": "Tankmon"
+    },
+    "trait:INNO:1": {
+      "name": "5",
+      "description": "Megadramon"
+    },
+    "trait:INNO:2": {
+      "name": "7",
+      "description": "Metallicdramon"
+    },
+    "trait:SCH:0": {
+      "name": "2",
+      "description": "team +4 mana every 2s"
+    },
+    "trait:SCH:1": {
+      "name": "4",
+      "description": "team +10 mana every 2s"
+    },
+    "trait:SNI:0": {
+      "name": "2",
+      "description": "+10% damage per hex"
+    },
+    "trait:SNI:1": {
+      "name": "4",
+      "description": "+20% damage per hex"
+    },
+    "trait:STR:0": {
+      "name": "2",
+      "description": "+35% AD"
+    },
+    "trait:STR:1": {
+      "name": "4",
+      "description": "+80% AD"
+    },
+    "trait:TWIN:0": {
+      "name": "2",
+      "description": "+5% AD, 40% double hit"
+    },
+    "trait:TWIN:1": {
+      "name": "4",
+      "description": "+30% AD, 70% double hit"
     },
     "ability:giz_meramon:0": {
       "name": "Burning Fist",
@@ -11645,6 +13337,258 @@
     "TWIN": {
       "name": "Twinshot",
       "description": "Twinshots gain attack damage, and each basic attack has a chance to hit twice."
+    },
+    "trait:MASQ:0": {
+      "name": "3",
+      "description": "+130 HP, +12 AP (VIP x1.5)"
+    },
+    "trait:MASQ:1": {
+      "name": "5",
+      "description": "+300 HP, +30 AP (VIP x1.5)"
+    },
+    "trait:MASQ:2": {
+      "name": "7",
+      "description": "+550 HP, +50 AP (VIP x1.5)"
+    },
+    "trait:DB:0": {
+      "name": "2",
+      "description": "stun the biggest enemy"
+    },
+    "trait:DB:1": {
+      "name": "4",
+      "description": "stun 2 enemies, +15% AS"
+    },
+    "trait:CLOCK:0": {
+      "name": "2",
+      "description": "team +18% AS, +3% per upgrade"
+    },
+    "trait:CLOCK:1": {
+      "name": "4",
+      "description": "team +42% AS, +5% per upgrade"
+    },
+    "trait:DM:0": {
+      "name": "3",
+      "description": "2 weakest Dark Masters: +40 armor/MR, 16% omnivamp"
+    },
+    "trait:DM:1": {
+      "name": "5",
+      "description": "all Dark Masters: +50 armor/MR, 20% omnivamp"
+    },
+    "trait:DM:2": {
+      "name": "7",
+      "description": "whole team: +75 armor/MR, 30% omnivamp"
+    },
+    "trait:JUNK:0": {
+      "name": "2",
+      "description": "15 shield per component, 1 component upgraded, +15 armor/MR"
+    },
+    "trait:JUNK:1": {
+      "name": "4",
+      "description": "25 shield per component, 2 components upgraded, +30 armor/MR"
+    },
+    "trait:JUNK:2": {
+      "name": "6",
+      "description": "40 shield per component, 4 components upgraded, +50 armor/MR"
+    },
+    "trait:PIR:0": {
+      "name": "3",
+      "description": "+18% damage, normal dice"
+    },
+    "trait:PIR:1": {
+      "name": "5",
+      "description": "+28% damage, lucky dice"
+    },
+    "trait:CD:0": {
+      "name": "2",
+      "description": "100 shield, +15 magic on hit"
+    },
+    "trait:CD:1": {
+      "name": "4",
+      "description": "170 shield, +30 magic on hit"
+    },
+    "trait:CD:2": {
+      "name": "6",
+      "description": "290 shield, +50 magic on hit"
+    },
+    "trait:MUT:0": {
+      "name": "3",
+      "description": "mutation"
+    },
+    "trait:MUT:1": {
+      "name": "5",
+      "description": "strong mutation"
+    },
+    "trait:PET:0": {
+      "name": "3",
+      "description": "20% dodge, a free Petit each round"
+    },
+    "trait:PET:1": {
+      "name": "6",
+      "description": "35% dodge, a free Petit each round, -20% mana"
+    },
+    "trait:XA:0": {
+      "name": "3",
+      "description": "+15% AS, 1.5% HP/s for 8s"
+    },
+    "trait:XA:1": {
+      "name": "5",
+      "description": "+30% AS, 2.5% HP/s for 8s"
+    },
+    "trait:XA:2": {
+      "name": "7",
+      "description": "+50% AS, 4% HP/s for 8s"
+    },
+    "trait:SIS:0": {
+      "name": "1",
+      "description": "own bonus"
+    },
+    "trait:SIS:1": {
+      "name": "2",
+      "description": "both bonuses, +15% damage"
+    },
+    "trait:IDOL:0": {
+      "name": "1",
+      "description": "spotlight: +15% damage"
+    },
+    "trait:IDOL:1": {
+      "name": "2",
+      "description": "+5 mana/s"
+    },
+    "trait:IDOL:2": {
+      "name": "3",
+      "description": "+20% omnivamp"
+    },
+    "trait:GLUT:0": {
+      "name": "1",
+      "description": "grows when you sell"
+    },
+    "trait:TRANS:0": {
+      "name": "1",
+      "description": "melee in front, ranged in back"
+    },
+    "trait:MIND:0": {
+      "name": "1",
+      "description": "+30 mana to 2 allies"
+    },
+    "trait:ARC:0": {
+      "name": "2",
+      "description": "team +20 AP"
+    },
+    "trait:ARC:1": {
+      "name": "4",
+      "description": "team +20 AP, Arcanists +40 more"
+    },
+    "trait:ARC:2": {
+      "name": "6",
+      "description": "team +50 AP, Arcanists +50 more"
+    },
+    "trait:ASN:0": {
+      "name": "2",
+      "description": "+15% crit, +25% crit damage"
+    },
+    "trait:ASN:1": {
+      "name": "4",
+      "description": "+35% crit, +45% crit damage"
+    },
+    "trait:ASN:2": {
+      "name": "6",
+      "description": "+55% crit, +70% crit damage"
+    },
+    "trait:BG:0": {
+      "name": "2",
+      "description": "+30 armor, 80 shield and taunt"
+    },
+    "trait:BG:1": {
+      "name": "4",
+      "description": "+70 armor, 220 shield and taunt"
+    },
+    "trait:BRU:0": {
+      "name": "2",
+      "description": "team +100 HP, Bruisers +200"
+    },
+    "trait:BRU:1": {
+      "name": "4",
+      "description": "team +200 HP, Bruisers +400"
+    },
+    "trait:BRU:2": {
+      "name": "6",
+      "description": "team +350 HP, Bruisers +700"
+    },
+    "trait:CHAL:0": {
+      "name": "2",
+      "description": "+25% AS, doubled after a takedown"
+    },
+    "trait:CHAL:1": {
+      "name": "4",
+      "description": "+50% AS, doubled after a takedown"
+    },
+    "trait:CHAL:2": {
+      "name": "6",
+      "description": "+80% AS, doubled after a takedown"
+    },
+    "trait:COL:0": {
+      "name": "2",
+      "description": "-15% damage taken"
+    },
+    "trait:COL:1": {
+      "name": "3",
+      "description": "-20% damage taken, +25% max HP"
+    },
+    "trait:ENCH:0": {
+      "name": "2",
+      "description": "team +10 MR, +6% healing, Enchanters +10 AP"
+    },
+    "trait:ENCH:1": {
+      "name": "3",
+      "description": "team +20 MR, +12% healing, Enchanters +20 AP"
+    },
+    "trait:ENCH:2": {
+      "name": "4",
+      "description": "team +30 MR, +18% healing, Enchanters +30 AP"
+    },
+    "trait:INNO:0": {
+      "name": "3",
+      "description": "Tankmon"
+    },
+    "trait:INNO:1": {
+      "name": "5",
+      "description": "Megadramon"
+    },
+    "trait:INNO:2": {
+      "name": "7",
+      "description": "Metallicdramon"
+    },
+    "trait:SCH:0": {
+      "name": "2",
+      "description": "team +4 mana every 2s"
+    },
+    "trait:SCH:1": {
+      "name": "4",
+      "description": "team +10 mana every 2s"
+    },
+    "trait:SNI:0": {
+      "name": "2",
+      "description": "+10% damage per hex"
+    },
+    "trait:SNI:1": {
+      "name": "4",
+      "description": "+20% damage per hex"
+    },
+    "trait:STR:0": {
+      "name": "2",
+      "description": "+35% AD"
+    },
+    "trait:STR:1": {
+      "name": "4",
+      "description": "+80% AD"
+    },
+    "trait:TWIN:0": {
+      "name": "2",
+      "description": "+5% AD, 40% double hit"
+    },
+    "trait:TWIN:1": {
+      "name": "4",
+      "description": "+30% AD, 70% double hit"
     },
     "ability:giz_meramon:0": {
       "name": "Burning Fist",
@@ -13700,6 +15644,250 @@
     "CAN": {
       "name": "Cannoneer",
       "description": "Every 5th basic attack of a Cannoneer also fires a cannon shot that deals a share of that attack's damage to the target and enemies next to it."
+    },
+    "trait:DSP:0": {
+      "name": "2",
+      "description": "+15% AD and +15 AP for Dark Spore Digimon; each Shadow item they hold adds 20% to this (up to 4)"
+    },
+    "trait:DSP:1": {
+      "name": "4",
+      "description": "+30% AD and +30 AP for Dark Spore Digimon; each Shadow item they hold adds 20% to this (up to 4)"
+    },
+    "trait:DSP:2": {
+      "name": "6",
+      "description": "+55% AD and +55 AP for Dark Spore Digimon; each Shadow item they hold adds 20% to this (up to 4)"
+    },
+    "trait:TRK:0": {
+      "name": "3",
+      "description": "Tricksters gain 10% attack speed; a knocked-out Trickster sends in a copy one form lower"
+    },
+    "trait:TRK:1": {
+      "name": "5",
+      "description": "Tricksters gain 25% attack speed; a knocked-out Trickster sends in a copy one form lower"
+    },
+    "trait:TRK:2": {
+      "name": "7",
+      "description": "Tricksters gain 55% attack speed; a knocked-out Trickster sends in a copy one form lower"
+    },
+    "trait:SER:0": {
+      "name": "3",
+      "description": "Seraphic Digimon gain 14 armor, magic resist and ability power"
+    },
+    "trait:SER:1": {
+      "name": "5",
+      "description": "Seraphic Digimon gain 28 armor, magic resist and ability power"
+    },
+    "trait:SER:2": {
+      "name": "7",
+      "description": "Seraphic Digimon gain 50 armor, magic resist and ability power"
+    },
+    "trait:NGT:0": {
+      "name": "2",
+      "description": "Below 50% HP once: a 25% max HP shield for 8s and 15% more damage"
+    },
+    "trait:NGT:1": {
+      "name": "4",
+      "description": "Below 50% HP once: a 45% max HP shield for 8s and 25% more damage"
+    },
+    "trait:NGT:2": {
+      "name": "6",
+      "description": "Below 50% HP once: a 70% max HP shield for 8s and 35% more damage"
+    },
+    "trait:DAY:0": {
+      "name": "2",
+      "description": "Below 50% HP once: heal 20% max HP over 1 second; all Daybreak Digimon gain 8% damage"
+    },
+    "trait:DAY:1": {
+      "name": "4",
+      "description": "Below 50% HP once: heal 30% max HP over 1 second; all Daybreak Digimon gain 8% damage"
+    },
+    "trait:DAY:2": {
+      "name": "6",
+      "description": "Below 50% HP once: heal 50% max HP over 1 second; all Daybreak Digimon gain 8% damage"
+    },
+    "trait:CHI:0": {
+      "name": "3",
+      "description": "After 3 knockouts, Kimeramon rises with 1200 HP and 100 AD (more for higher Chimera forms)"
+    },
+    "trait:CHI:1": {
+      "name": "4",
+      "description": "After 3 knockouts, Kimeramon rises with 1800 HP and 150 AD (more for higher Chimera forms)"
+    },
+    "trait:CHI:2": {
+      "name": "5",
+      "description": "After 3 knockouts, Kimeramon rises with 2500 HP and 200 AD (more for higher Chimera forms)"
+    },
+    "trait:WIT:0": {
+      "name": "3",
+      "description": "Leader +80 AP, 30% mana share"
+    },
+    "trait:DRK:0": {
+      "name": "3",
+      "description": "Dragon Kin gain 200 max HP. After each PvP combat, gain a Digi-Egg that hatches into loot"
+    },
+    "trait:DRK:1": {
+      "name": "5",
+      "description": "Dragon Kin gain 400 max HP. After each PvP combat, gain a golden Digi-Egg that hatches into loot"
+    },
+    "trait:HNT:0": {
+      "name": "2",
+      "description": "Dragon Hunters gain 30 AP; after their first knockout of a 1500+ HP enemy, your team gains 20 AP"
+    },
+    "trait:HNT:1": {
+      "name": "4",
+      "description": "Dragon Hunters gain 70 AP; after their first knockout of a 1500+ HP enemy, your team gains 50 AP"
+    },
+    "trait:IRN:0": {
+      "name": "2",
+      "description": "team +55 armor"
+    },
+    "trait:IRN:1": {
+      "name": "3",
+      "description": "team +120 armor"
+    },
+    "trait:PHA:0": {
+      "name": "2",
+      "description": "rise with 6% HP"
+    },
+    "trait:PHA:1": {
+      "name": "3",
+      "description": "rise with 14% HP"
+    },
+    "trait:PHA:2": {
+      "name": "4",
+      "description": "rise with 28% HP"
+    },
+    "trait:SEN:0": {
+      "name": "3",
+      "description": "A 120 shield (more at higher forms) that lasts 4s, then jumps; its holder gains 10% attack speed per jump so far (up to 5)"
+    },
+    "trait:SEN:1": {
+      "name": "5",
+      "description": "A 350 shield (more at higher forms) that lasts 3s, then jumps; its holder gains 20% attack speed per jump so far (up to 5)"
+    },
+    "trait:RIV:0": {
+      "name": "1",
+      "description": "+20% damage vs rivals (exactly 1)"
+    },
+    "trait:ETR:0": {
+      "name": "1",
+      "description": "Garurumon fights beside it"
+    },
+    "trait:INA:0": {
+      "name": "1",
+      "description": "33% less damage for 8s nearby"
+    },
+    "trait:ASN:0": {
+      "name": "2",
+      "description": "10% crit chance and 15% crit damage; abilities can crit"
+    },
+    "trait:ASN:1": {
+      "name": "4",
+      "description": "25% crit chance and 35% crit damage; abilities can crit"
+    },
+    "trait:BRW:0": {
+      "name": "2",
+      "description": "+250 HP"
+    },
+    "trait:BRW:1": {
+      "name": "4",
+      "description": "+650 HP"
+    },
+    "trait:CAV:0": {
+      "name": "2",
+      "description": "Take 10% less damage, 20% for the first 4s and for 3s after each ability"
+    },
+    "trait:CAV:1": {
+      "name": "3",
+      "description": "Take 14% less damage, 28% for the first 4s and for 3s after each ability"
+    },
+    "trait:CAV:2": {
+      "name": "4",
+      "description": "Take 18% less damage, 36% for the first 4s and for 3s after each ability"
+    },
+    "trait:INV:0": {
+      "name": "2",
+      "description": "team +3 mana per attack"
+    },
+    "trait:INV:1": {
+      "name": "4",
+      "description": "team +6 mana per attack"
+    },
+    "trait:KNT:0": {
+      "name": "2",
+      "description": "Every Digimon on your team takes 15 less damage from each hit"
+    },
+    "trait:KNT:1": {
+      "name": "4",
+      "description": "Every Digimon on your team takes 30 less damage from each hit"
+    },
+    "trait:KNT:2": {
+      "name": "6",
+      "description": "Every Digimon on your team takes 50 less damage from each hit"
+    },
+    "trait:LEG:0": {
+      "name": "2",
+      "description": "20% attack speed; the first attack after an ability heals for 50% of its damage"
+    },
+    "trait:LEG:1": {
+      "name": "4",
+      "description": "45% attack speed; the first attack after an ability heals for 50% of its damage"
+    },
+    "trait:LEG:2": {
+      "name": "6",
+      "description": "80% attack speed; the first attack after an ability heals for 50% of its damage"
+    },
+    "trait:MYS:0": {
+      "name": "2",
+      "description": "team +20 MR"
+    },
+    "trait:MYS:1": {
+      "name": "3",
+      "description": "team +40 MR"
+    },
+    "trait:MYS:2": {
+      "name": "4",
+      "description": "team +70 MR"
+    },
+    "trait:RNG:0": {
+      "name": "2",
+      "description": "70% attack speed for 4s at 4s, 12s, 20s..."
+    },
+    "trait:RNG:1": {
+      "name": "4",
+      "description": "150% attack speed for 4s at 4s, 12s, 20s..."
+    },
+    "trait:REN:0": {
+      "name": "2",
+      "description": "Heal 2.5% max HP per second, or gain 2.5% max mana per second at full HP"
+    },
+    "trait:REN:1": {
+      "name": "4",
+      "description": "Heal 5% max HP per second, or gain 5% max mana per second at full HP"
+    },
+    "trait:SKR:0": {
+      "name": "3",
+      "description": "A 25% max HP shield at the start, +3 AD every second (more at higher forms)"
+    },
+    "trait:SKR:1": {
+      "name": "6",
+      "description": "A 45% max HP shield at the start, +6 AD every second (more at higher forms)"
+    },
+    "trait:SPW:0": {
+      "name": "2",
+      "description": "+30 AP, +4 AP each time any Digimon casts (up to 10 times)"
+    },
+    "trait:SPW:1": {
+      "name": "4",
+      "description": "+65 AP, +7 AP each time any Digimon casts (up to 10 times)"
+    },
+    "trait:CAN:0": {
+      "name": "2",
+      "description": "Every 5th attack: 200% of the attack's damage to the target and enemies next to it"
+    },
+    "trait:CAN:1": {
+      "name": "4",
+      "description": "Every 5th attack: 450% of the attack's damage to the target and enemies next to it"
     },
     "ability:rec_zubamon:0": {
       "name": "Twenty Dive",
@@ -17412,6 +19600,250 @@
       "name": "Cannoneer",
       "description": "Every 5th basic attack of a Cannoneer also fires a cannon shot that deals a share of that attack's damage to the target and enemies next to it."
     },
+    "trait:DSP:0": {
+      "name": "2",
+      "description": "+15% AD and +15 AP for Dark Spore Digimon; each Shadow item they hold adds 20% to this (up to 4)"
+    },
+    "trait:DSP:1": {
+      "name": "4",
+      "description": "+30% AD and +30 AP for Dark Spore Digimon; each Shadow item they hold adds 20% to this (up to 4)"
+    },
+    "trait:DSP:2": {
+      "name": "6",
+      "description": "+55% AD and +55 AP for Dark Spore Digimon; each Shadow item they hold adds 20% to this (up to 4)"
+    },
+    "trait:TRK:0": {
+      "name": "3",
+      "description": "Tricksters gain 10% attack speed; a knocked-out Trickster sends in a copy one form lower"
+    },
+    "trait:TRK:1": {
+      "name": "5",
+      "description": "Tricksters gain 25% attack speed; a knocked-out Trickster sends in a copy one form lower"
+    },
+    "trait:TRK:2": {
+      "name": "7",
+      "description": "Tricksters gain 55% attack speed; a knocked-out Trickster sends in a copy one form lower"
+    },
+    "trait:SER:0": {
+      "name": "3",
+      "description": "Seraphic Digimon gain 14 armor, magic resist and ability power"
+    },
+    "trait:SER:1": {
+      "name": "5",
+      "description": "Seraphic Digimon gain 28 armor, magic resist and ability power"
+    },
+    "trait:SER:2": {
+      "name": "7",
+      "description": "Seraphic Digimon gain 50 armor, magic resist and ability power"
+    },
+    "trait:NGT:0": {
+      "name": "2",
+      "description": "Below 50% HP once: a 25% max HP shield for 8s and 15% more damage"
+    },
+    "trait:NGT:1": {
+      "name": "4",
+      "description": "Below 50% HP once: a 45% max HP shield for 8s and 25% more damage"
+    },
+    "trait:NGT:2": {
+      "name": "6",
+      "description": "Below 50% HP once: a 70% max HP shield for 8s and 35% more damage"
+    },
+    "trait:DAY:0": {
+      "name": "2",
+      "description": "Below 50% HP once: heal 20% max HP over 1 second; all Daybreak Digimon gain 8% damage"
+    },
+    "trait:DAY:1": {
+      "name": "4",
+      "description": "Below 50% HP once: heal 30% max HP over 1 second; all Daybreak Digimon gain 8% damage"
+    },
+    "trait:DAY:2": {
+      "name": "6",
+      "description": "Below 50% HP once: heal 50% max HP over 1 second; all Daybreak Digimon gain 8% damage"
+    },
+    "trait:CHI:0": {
+      "name": "3",
+      "description": "After 3 knockouts, Kimeramon rises with 1200 HP and 100 AD (more for higher Chimera forms)"
+    },
+    "trait:CHI:1": {
+      "name": "4",
+      "description": "After 3 knockouts, Kimeramon rises with 1800 HP and 150 AD (more for higher Chimera forms)"
+    },
+    "trait:CHI:2": {
+      "name": "5",
+      "description": "After 3 knockouts, Kimeramon rises with 2500 HP and 200 AD (more for higher Chimera forms)"
+    },
+    "trait:WIT:0": {
+      "name": "3",
+      "description": "Leader +80 AP, 30% mana share"
+    },
+    "trait:DRK:0": {
+      "name": "3",
+      "description": "Dragon Kin gain 200 max HP. After each PvP combat, gain a Digi-Egg that hatches into loot"
+    },
+    "trait:DRK:1": {
+      "name": "5",
+      "description": "Dragon Kin gain 400 max HP. After each PvP combat, gain a golden Digi-Egg that hatches into loot"
+    },
+    "trait:HNT:0": {
+      "name": "2",
+      "description": "Dragon Hunters gain 30 AP; after their first knockout of a 1500+ HP enemy, your team gains 20 AP"
+    },
+    "trait:HNT:1": {
+      "name": "4",
+      "description": "Dragon Hunters gain 70 AP; after their first knockout of a 1500+ HP enemy, your team gains 50 AP"
+    },
+    "trait:IRN:0": {
+      "name": "2",
+      "description": "team +55 armor"
+    },
+    "trait:IRN:1": {
+      "name": "3",
+      "description": "team +120 armor"
+    },
+    "trait:PHA:0": {
+      "name": "2",
+      "description": "rise with 6% HP"
+    },
+    "trait:PHA:1": {
+      "name": "3",
+      "description": "rise with 14% HP"
+    },
+    "trait:PHA:2": {
+      "name": "4",
+      "description": "rise with 28% HP"
+    },
+    "trait:SEN:0": {
+      "name": "3",
+      "description": "A 120 shield (more at higher forms) that lasts 4s, then jumps; its holder gains 10% attack speed per jump so far (up to 5)"
+    },
+    "trait:SEN:1": {
+      "name": "5",
+      "description": "A 350 shield (more at higher forms) that lasts 3s, then jumps; its holder gains 20% attack speed per jump so far (up to 5)"
+    },
+    "trait:RIV:0": {
+      "name": "1",
+      "description": "+20% damage vs rivals (exactly 1)"
+    },
+    "trait:ETR:0": {
+      "name": "1",
+      "description": "Garurumon fights beside it"
+    },
+    "trait:INA:0": {
+      "name": "1",
+      "description": "33% less damage for 8s nearby"
+    },
+    "trait:ASN:0": {
+      "name": "2",
+      "description": "10% crit chance and 15% crit damage; abilities can crit"
+    },
+    "trait:ASN:1": {
+      "name": "4",
+      "description": "25% crit chance and 35% crit damage; abilities can crit"
+    },
+    "trait:BRW:0": {
+      "name": "2",
+      "description": "+250 HP"
+    },
+    "trait:BRW:1": {
+      "name": "4",
+      "description": "+650 HP"
+    },
+    "trait:CAV:0": {
+      "name": "2",
+      "description": "Take 10% less damage, 20% for the first 4s and for 3s after each ability"
+    },
+    "trait:CAV:1": {
+      "name": "3",
+      "description": "Take 14% less damage, 28% for the first 4s and for 3s after each ability"
+    },
+    "trait:CAV:2": {
+      "name": "4",
+      "description": "Take 18% less damage, 36% for the first 4s and for 3s after each ability"
+    },
+    "trait:INV:0": {
+      "name": "2",
+      "description": "team +3 mana per attack"
+    },
+    "trait:INV:1": {
+      "name": "4",
+      "description": "team +6 mana per attack"
+    },
+    "trait:KNT:0": {
+      "name": "2",
+      "description": "Every Digimon on your team takes 15 less damage from each hit"
+    },
+    "trait:KNT:1": {
+      "name": "4",
+      "description": "Every Digimon on your team takes 30 less damage from each hit"
+    },
+    "trait:KNT:2": {
+      "name": "6",
+      "description": "Every Digimon on your team takes 50 less damage from each hit"
+    },
+    "trait:LEG:0": {
+      "name": "2",
+      "description": "20% attack speed; the first attack after an ability heals for 50% of its damage"
+    },
+    "trait:LEG:1": {
+      "name": "4",
+      "description": "45% attack speed; the first attack after an ability heals for 50% of its damage"
+    },
+    "trait:LEG:2": {
+      "name": "6",
+      "description": "80% attack speed; the first attack after an ability heals for 50% of its damage"
+    },
+    "trait:MYS:0": {
+      "name": "2",
+      "description": "team +20 MR"
+    },
+    "trait:MYS:1": {
+      "name": "3",
+      "description": "team +40 MR"
+    },
+    "trait:MYS:2": {
+      "name": "4",
+      "description": "team +70 MR"
+    },
+    "trait:RNG:0": {
+      "name": "2",
+      "description": "70% attack speed for 4s at 4s, 12s, 20s..."
+    },
+    "trait:RNG:1": {
+      "name": "4",
+      "description": "150% attack speed for 4s at 4s, 12s, 20s..."
+    },
+    "trait:REN:0": {
+      "name": "2",
+      "description": "Heal 2.5% max HP per second, or gain 2.5% max mana per second at full HP"
+    },
+    "trait:REN:1": {
+      "name": "4",
+      "description": "Heal 5% max HP per second, or gain 5% max mana per second at full HP"
+    },
+    "trait:SKR:0": {
+      "name": "3",
+      "description": "A 25% max HP shield at the start, +3 AD every second (more at higher forms)"
+    },
+    "trait:SKR:1": {
+      "name": "6",
+      "description": "A 45% max HP shield at the start, +6 AD every second (more at higher forms)"
+    },
+    "trait:SPW:0": {
+      "name": "2",
+      "description": "+30 AP, +4 AP each time any Digimon casts (up to 10 times)"
+    },
+    "trait:SPW:1": {
+      "name": "4",
+      "description": "+65 AP, +7 AP each time any Digimon casts (up to 10 times)"
+    },
+    "trait:CAN:0": {
+      "name": "2",
+      "description": "Every 5th attack: 200% of the attack's damage to the target and enemies next to it"
+    },
+    "trait:CAN:1": {
+      "name": "4",
+      "description": "Every 5th attack: 450% of the attack's damage to the target and enemies next to it"
+    },
     "ability:rec_zubamon:0": {
       "name": "Twenty Dive",
       "description": "Deals 180 magic damage to the target, healing for 60% of damage dealt."
@@ -20876,6 +23308,294 @@
       "name": "Monolith",
       "description": "Ebonwumon's line empowers 3 hexes on your side: the middle two of your front row's inner hexes and the center of your third row. Digimon that start combat there take 20% less damage."
     },
+    "trait:STAR:0": {
+      "name": "3",
+      "description": "team +10 AP, Star Orb 1 gold"
+    },
+    "trait:STAR:1": {
+      "name": "5",
+      "description": "team +25 AP, Star Orb 2 gold"
+    },
+    "trait:STAR:2": {
+      "name": "7",
+      "description": "team +45 AP, Star Orb 3 gold"
+    },
+    "trait:XAB:0": {
+      "name": "1",
+      "description": "100% of each bonus"
+    },
+    "trait:XAB:1": {
+      "name": "2",
+      "description": "120% of each bonus"
+    },
+    "trait:XAB:2": {
+      "name": "3",
+      "description": "140% of each bonus"
+    },
+    "trait:XAB:3": {
+      "name": "4",
+      "description": "160% of each bonus"
+    },
+    "trait:XAB:4": {
+      "name": "5",
+      "description": "180% of each bonus"
+    },
+    "trait:XAB:5": {
+      "name": "6",
+      "description": "200% of each bonus"
+    },
+    "trait:STONE:0": {
+      "name": "3",
+      "description": "1 statue, 0.8% HP/2s, +8% AS"
+    },
+    "trait:STONE:1": {
+      "name": "5",
+      "description": "2 statues, 2% HP/2s, +20% AS"
+    },
+    "trait:STONE:2": {
+      "name": "7",
+      "description": "3 statues, 3.5% HP/2s, +35% AS"
+    },
+    "trait:MIRAGE:0": {
+      "name": "2",
+      "description": "Dancer 22% dodge +25% AS / Warlord +22% AD and HP / Overload 130 / Executioner 30% crit"
+    },
+    "trait:MIRAGE:1": {
+      "name": "4",
+      "description": "Dancer 32% dodge +45% AS / Warlord +40% AD and HP / Overload 240 / Executioner 45% crit"
+    },
+    "trait:MIRAGE:2": {
+      "name": "6",
+      "description": "Dancer 45% dodge +65% AS / Warlord +60% AD and HP / Overload 400 / Executioner 65% crit"
+    },
+    "trait:RAGE:0": {
+      "name": "3",
+      "description": "rage: +45% AS, 10% omnivamp"
+    },
+    "trait:RAGE:1": {
+      "name": "5",
+      "description": "rage: +75% AS, 20% omnivamp"
+    },
+    "trait:RAGE:2": {
+      "name": "7",
+      "description": "rage: +115% AS, 35% omnivamp"
+    },
+    "trait:SLAYER:0": {
+      "name": "2",
+      "description": "-20% dmg from big foes, +20% dmg without a Dragon"
+    },
+    "trait:SLAYER:1": {
+      "name": "4",
+      "description": "-20% dmg from big foes, +50% dmg without a Dragon"
+    },
+    "trait:GOLD:0": {
+      "name": "3",
+      "description": "+20 armor/MR, 1 golden item"
+    },
+    "trait:GOLD:1": {
+      "name": "5",
+      "description": "+40 armor/MR, 2 golden items"
+    },
+    "trait:GOLD:2": {
+      "name": "7",
+      "description": "+60 armor/MR, 4 golden items, Golden Crown possible"
+    },
+    "trait:THUNDER:0": {
+      "name": "2",
+      "description": "8% max HP true dmg, +30% AS"
+    },
+    "trait:THUNDER:1": {
+      "name": "4",
+      "description": "20% max HP true dmg, +60% AS"
+    },
+    "trait:THUNDER:2": {
+      "name": "6",
+      "description": "35% max HP true dmg, +110% AS"
+    },
+    "trait:WHISPER:0": {
+      "name": "2",
+      "description": "shrink -40% armor/MR, +1.2% AD and +1 AP per hit"
+    },
+    "trait:WHISPER:1": {
+      "name": "4",
+      "description": "shrink -40% armor/MR, +2% AD and +2 AP per hit"
+    },
+    "trait:WHISPER:2": {
+      "name": "6",
+      "description": "shrink -40% armor/MR, +3.5% AD and +4 AP per hit"
+    },
+    "trait:LAGOON:0": {
+      "name": "3",
+      "description": "+15 AP, +12% AS, Seastone 1 gold"
+    },
+    "trait:LAGOON:1": {
+      "name": "5",
+      "description": "+35 AP, +32% AS, Seastone 2 gold"
+    },
+    "trait:LAGOON:2": {
+      "name": "7",
+      "description": "+60 AP, +60% AS, Seastone 3 gold"
+    },
+    "trait:ASSN:0": {
+      "name": "2",
+      "description": "+25% crit, +15% crit damage, +8% damage"
+    },
+    "trait:ASSN:1": {
+      "name": "4",
+      "description": "+45% crit, +40% crit damage, +15% damage"
+    },
+    "trait:BRUISER:0": {
+      "name": "2",
+      "description": "team +120 HP (x2 Bruisers)"
+    },
+    "trait:BRUISER:1": {
+      "name": "4",
+      "description": "team +250 HP (x2 Bruisers)"
+    },
+    "trait:BRUISER:2": {
+      "name": "6",
+      "description": "team +450 HP (x2 Bruisers)"
+    },
+    "trait:CANNON:0": {
+      "name": "2",
+      "description": "cannon for 120% AD + 60"
+    },
+    "trait:CANNON:1": {
+      "name": "3",
+      "description": "cannon for 200% AD + 120"
+    },
+    "trait:CANNON:2": {
+      "name": "4",
+      "description": "cannon for 280% AD + 200"
+    },
+    "trait:RIDER:0": {
+      "name": "2",
+      "description": "+30 armor/MR (x2 for 4s)"
+    },
+    "trait:RIDER:1": {
+      "name": "3",
+      "description": "+50 armor/MR (x2 for 4s)"
+    },
+    "trait:RIDER:2": {
+      "name": "4",
+      "description": "+75 armor/MR (x2 for 4s)"
+    },
+    "trait:TAMER:0": {
+      "name": "2",
+      "description": "Hero +350 HP, +30 AP"
+    },
+    "trait:TAMER:1": {
+      "name": "4",
+      "description": "Hero +750 HP, +55 AP"
+    },
+    "trait:TAMER:2": {
+      "name": "6",
+      "description": "Hero +1250 HP, +85 AP"
+    },
+    "trait:EVOKER:0": {
+      "name": "2",
+      "description": "+1 mana per cast"
+    },
+    "trait:EVOKER:1": {
+      "name": "3",
+      "description": "+2 mana per cast"
+    },
+    "trait:EVOKER:2": {
+      "name": "4",
+      "description": "+3.5 mana per cast"
+    },
+    "trait:GUARD:0": {
+      "name": "2",
+      "description": "20% max HP shield"
+    },
+    "trait:GUARD:1": {
+      "name": "4",
+      "description": "35% max HP shield"
+    },
+    "trait:GUARD:2": {
+      "name": "6",
+      "description": "55% max HP shield"
+    },
+    "trait:MAGE:0": {
+      "name": "3",
+      "description": "cast twice at 55% AP"
+    },
+    "trait:MAGE:1": {
+      "name": "5",
+      "description": "cast twice at 70% AP"
+    },
+    "trait:MAGE:2": {
+      "name": "7",
+      "description": "cast twice at 85% AP"
+    },
+    "trait:MYSTIC:0": {
+      "name": "2",
+      "description": "team +12 MR"
+    },
+    "trait:MYSTIC:1": {
+      "name": "3",
+      "description": "team +25 MR"
+    },
+    "trait:MYSTIC:2": {
+      "name": "4",
+      "description": "team +45 MR"
+    },
+    "trait:MODE:0": {
+      "name": "2",
+      "description": "+18% max HP on first cast"
+    },
+    "trait:MODE:1": {
+      "name": "4",
+      "description": "+35% max HP on first cast"
+    },
+    "trait:SWIFT:0": {
+      "name": "2",
+      "description": "+1 range, +10% AS per hex"
+    },
+    "trait:SWIFT:1": {
+      "name": "4",
+      "description": "+1 range, +20% AS per hex"
+    },
+    "trait:WARRIOR:0": {
+      "name": "2",
+      "description": "+80% on the powered attack"
+    },
+    "trait:WARRIOR:1": {
+      "name": "4",
+      "description": "+175% on the powered attack"
+    },
+    "trait:WARRIOR:2": {
+      "name": "6",
+      "description": "+300% on the powered attack"
+    },
+    "trait:DRAGON:0": {
+      "name": "1",
+      "description": "Dragons +550 HP"
+    },
+    "trait:DRAGON:1": {
+      "name": "2",
+      "description": "Dragons +550 HP, +20 armor and MR"
+    },
+    "trait:DRAGON:2": {
+      "name": "3",
+      "description": "Dragons +550 HP, +20 armor and MR, 10% more damage (Hyper Roll only; Normal: no bonus)"
+    },
+    "trait:STARCALL:0": {
+      "name": "1",
+      "description": "Heals your Tamer, or deletes an enemy at full HP"
+    },
+    "trait:COPYCAT:0": {
+      "name": "1",
+      "description": "Random ability each cast"
+    },
+    "trait:CORE:0": {
+      "name": "1",
+      "description": "Digi-Cores raise your shop odds"
+    },
+    "trait:MONO:0": {
+      "name": "1",
+      "description": "Empowered hexes: 20% less damage"
+    },
     "ability:drg_gazimon:0": {
       "name": "Electric Stun Blast",
       "description": "Deals 260 magic damage to the target."
@@ -22435,6 +25155,294 @@
     "MONO": {
       "name": "Monolith",
       "description": "Ebonwumon's line empowers 3 hexes on your side: the middle two of your front row's inner hexes and the center of your third row. Digimon that start combat there take 20% less damage."
+    },
+    "trait:STAR:0": {
+      "name": "3",
+      "description": "team +10 AP, Star Orb 1 gold"
+    },
+    "trait:STAR:1": {
+      "name": "5",
+      "description": "team +25 AP, Star Orb 2 gold"
+    },
+    "trait:STAR:2": {
+      "name": "7",
+      "description": "team +45 AP, Star Orb 3 gold"
+    },
+    "trait:XAB:0": {
+      "name": "1",
+      "description": "100% of each bonus"
+    },
+    "trait:XAB:1": {
+      "name": "2",
+      "description": "120% of each bonus"
+    },
+    "trait:XAB:2": {
+      "name": "3",
+      "description": "140% of each bonus"
+    },
+    "trait:XAB:3": {
+      "name": "4",
+      "description": "160% of each bonus"
+    },
+    "trait:XAB:4": {
+      "name": "5",
+      "description": "180% of each bonus"
+    },
+    "trait:XAB:5": {
+      "name": "6",
+      "description": "200% of each bonus"
+    },
+    "trait:STONE:0": {
+      "name": "3",
+      "description": "1 statue, 0.8% HP/2s, +8% AS"
+    },
+    "trait:STONE:1": {
+      "name": "5",
+      "description": "2 statues, 2% HP/2s, +20% AS"
+    },
+    "trait:STONE:2": {
+      "name": "7",
+      "description": "3 statues, 3.5% HP/2s, +35% AS"
+    },
+    "trait:MIRAGE:0": {
+      "name": "2",
+      "description": "Dancer 22% dodge +25% AS / Warlord +22% AD and HP / Overload 130 / Executioner 30% crit"
+    },
+    "trait:MIRAGE:1": {
+      "name": "4",
+      "description": "Dancer 32% dodge +45% AS / Warlord +40% AD and HP / Overload 240 / Executioner 45% crit"
+    },
+    "trait:MIRAGE:2": {
+      "name": "6",
+      "description": "Dancer 45% dodge +65% AS / Warlord +60% AD and HP / Overload 400 / Executioner 65% crit"
+    },
+    "trait:RAGE:0": {
+      "name": "3",
+      "description": "rage: +45% AS, 10% omnivamp"
+    },
+    "trait:RAGE:1": {
+      "name": "5",
+      "description": "rage: +75% AS, 20% omnivamp"
+    },
+    "trait:RAGE:2": {
+      "name": "7",
+      "description": "rage: +115% AS, 35% omnivamp"
+    },
+    "trait:SLAYER:0": {
+      "name": "2",
+      "description": "-20% dmg from big foes, +20% dmg without a Dragon"
+    },
+    "trait:SLAYER:1": {
+      "name": "4",
+      "description": "-20% dmg from big foes, +50% dmg without a Dragon"
+    },
+    "trait:GOLD:0": {
+      "name": "3",
+      "description": "+20 armor/MR, 1 golden item"
+    },
+    "trait:GOLD:1": {
+      "name": "5",
+      "description": "+40 armor/MR, 2 golden items"
+    },
+    "trait:GOLD:2": {
+      "name": "7",
+      "description": "+60 armor/MR, 4 golden items, Golden Crown possible"
+    },
+    "trait:THUNDER:0": {
+      "name": "2",
+      "description": "8% max HP true dmg, +30% AS"
+    },
+    "trait:THUNDER:1": {
+      "name": "4",
+      "description": "20% max HP true dmg, +60% AS"
+    },
+    "trait:THUNDER:2": {
+      "name": "6",
+      "description": "35% max HP true dmg, +110% AS"
+    },
+    "trait:WHISPER:0": {
+      "name": "2",
+      "description": "shrink -40% armor/MR, +1.2% AD and +1 AP per hit"
+    },
+    "trait:WHISPER:1": {
+      "name": "4",
+      "description": "shrink -40% armor/MR, +2% AD and +2 AP per hit"
+    },
+    "trait:WHISPER:2": {
+      "name": "6",
+      "description": "shrink -40% armor/MR, +3.5% AD and +4 AP per hit"
+    },
+    "trait:LAGOON:0": {
+      "name": "3",
+      "description": "+15 AP, +12% AS, Seastone 1 gold"
+    },
+    "trait:LAGOON:1": {
+      "name": "5",
+      "description": "+35 AP, +32% AS, Seastone 2 gold"
+    },
+    "trait:LAGOON:2": {
+      "name": "7",
+      "description": "+60 AP, +60% AS, Seastone 3 gold"
+    },
+    "trait:ASSN:0": {
+      "name": "2",
+      "description": "+25% crit, +15% crit damage, +8% damage"
+    },
+    "trait:ASSN:1": {
+      "name": "4",
+      "description": "+45% crit, +40% crit damage, +15% damage"
+    },
+    "trait:BRUISER:0": {
+      "name": "2",
+      "description": "team +120 HP (x2 Bruisers)"
+    },
+    "trait:BRUISER:1": {
+      "name": "4",
+      "description": "team +250 HP (x2 Bruisers)"
+    },
+    "trait:BRUISER:2": {
+      "name": "6",
+      "description": "team +450 HP (x2 Bruisers)"
+    },
+    "trait:CANNON:0": {
+      "name": "2",
+      "description": "cannon for 120% AD + 60"
+    },
+    "trait:CANNON:1": {
+      "name": "3",
+      "description": "cannon for 200% AD + 120"
+    },
+    "trait:CANNON:2": {
+      "name": "4",
+      "description": "cannon for 280% AD + 200"
+    },
+    "trait:RIDER:0": {
+      "name": "2",
+      "description": "+30 armor/MR (x2 for 4s)"
+    },
+    "trait:RIDER:1": {
+      "name": "3",
+      "description": "+50 armor/MR (x2 for 4s)"
+    },
+    "trait:RIDER:2": {
+      "name": "4",
+      "description": "+75 armor/MR (x2 for 4s)"
+    },
+    "trait:TAMER:0": {
+      "name": "2",
+      "description": "Hero +350 HP, +30 AP"
+    },
+    "trait:TAMER:1": {
+      "name": "4",
+      "description": "Hero +750 HP, +55 AP"
+    },
+    "trait:TAMER:2": {
+      "name": "6",
+      "description": "Hero +1250 HP, +85 AP"
+    },
+    "trait:EVOKER:0": {
+      "name": "2",
+      "description": "+1 mana per cast"
+    },
+    "trait:EVOKER:1": {
+      "name": "3",
+      "description": "+2 mana per cast"
+    },
+    "trait:EVOKER:2": {
+      "name": "4",
+      "description": "+3.5 mana per cast"
+    },
+    "trait:GUARD:0": {
+      "name": "2",
+      "description": "20% max HP shield"
+    },
+    "trait:GUARD:1": {
+      "name": "4",
+      "description": "35% max HP shield"
+    },
+    "trait:GUARD:2": {
+      "name": "6",
+      "description": "55% max HP shield"
+    },
+    "trait:MAGE:0": {
+      "name": "3",
+      "description": "cast twice at 55% AP"
+    },
+    "trait:MAGE:1": {
+      "name": "5",
+      "description": "cast twice at 70% AP"
+    },
+    "trait:MAGE:2": {
+      "name": "7",
+      "description": "cast twice at 85% AP"
+    },
+    "trait:MYSTIC:0": {
+      "name": "2",
+      "description": "team +12 MR"
+    },
+    "trait:MYSTIC:1": {
+      "name": "3",
+      "description": "team +25 MR"
+    },
+    "trait:MYSTIC:2": {
+      "name": "4",
+      "description": "team +45 MR"
+    },
+    "trait:MODE:0": {
+      "name": "2",
+      "description": "+18% max HP on first cast"
+    },
+    "trait:MODE:1": {
+      "name": "4",
+      "description": "+35% max HP on first cast"
+    },
+    "trait:SWIFT:0": {
+      "name": "2",
+      "description": "+1 range, +10% AS per hex"
+    },
+    "trait:SWIFT:1": {
+      "name": "4",
+      "description": "+1 range, +20% AS per hex"
+    },
+    "trait:WARRIOR:0": {
+      "name": "2",
+      "description": "+80% on the powered attack"
+    },
+    "trait:WARRIOR:1": {
+      "name": "4",
+      "description": "+175% on the powered attack"
+    },
+    "trait:WARRIOR:2": {
+      "name": "6",
+      "description": "+300% on the powered attack"
+    },
+    "trait:DRAGON:0": {
+      "name": "1",
+      "description": "Dragons +550 HP"
+    },
+    "trait:DRAGON:1": {
+      "name": "2",
+      "description": "Dragons +550 HP, +20 armor and MR"
+    },
+    "trait:DRAGON:2": {
+      "name": "3",
+      "description": "Dragons +550 HP, +20 armor and MR, 10% more damage (Hyper Roll only; Normal: no bonus)"
+    },
+    "trait:STARCALL:0": {
+      "name": "1",
+      "description": "Heals your Tamer, or deletes an enemy at full HP"
+    },
+    "trait:COPYCAT:0": {
+      "name": "1",
+      "description": "Random ability each cast"
+    },
+    "trait:CORE:0": {
+      "name": "1",
+      "description": "Digi-Cores raise your shop odds"
+    },
+    "trait:MONO:0": {
+      "name": "1",
+      "description": "Empowered hexes: 20% less damage"
     },
     "ability:drg_gazimon:0": {
       "name": "Electric Stun Blast",
@@ -24047,6 +27055,282 @@
     "WAT": {
       "name": "Watcher",
       "description": "Watchers take less damage, more while above 50% HP."
+    },
+    "trait:ACA:0": {
+      "name": "3",
+      "description": "3% HP and damage per sponsored copy (x2 on Academy). Academy +12% HP and damage. +1 sponsored item"
+    },
+    "trait:ACA:1": {
+      "name": "4",
+      "description": "4% HP and damage per sponsored copy (x2 on Academy). Academy +17% HP and damage. +1 sponsored item"
+    },
+    "trait:ACA:2": {
+      "name": "5",
+      "description": "6% HP and damage per sponsored copy (x2 on Academy). Academy +24% HP and damage. +1 sponsored item"
+    },
+    "trait:AUT:0": {
+      "name": "2",
+      "description": "+25 armor and MR. Blast: 180 magic damage + 25% of damage dealt"
+    },
+    "trait:AUT:1": {
+      "name": "4",
+      "description": "+55 armor and MR. Blast: 420 magic damage + 25% of damage dealt"
+    },
+    "trait:BR:0": {
+      "name": "3",
+      "description": "Summon Belphemon (power x1)"
+    },
+    "trait:BR:1": {
+      "name": "4",
+      "description": "Belphemon power x1.15; Dark Area deals 15% more damage"
+    },
+    "trait:BR:2": {
+      "name": "5",
+      "description": "Belphemon power x1.3; heals to full and erupts when freed"
+    },
+    "trait:SYN:0": {
+      "name": "3",
+      "description": "+6% HP, 8% omnivamp. 30 Shimmer per combat (60 on a 3+ loss streak). Pass: +80 HP"
+    },
+    "trait:SYN:1": {
+      "name": "4",
+      "description": "+10% HP, 12% omnivamp. 30 Shimmer per combat (75 on a 3+ loss streak). Pass: +140 HP"
+    },
+    "trait:SYN:2": {
+      "name": "5",
+      "description": "+14% HP, 15% omnivamp. 40 Shimmer per combat (95 on a 3+ loss streak). Pass: +220 HP"
+    },
+    "trait:SYN:3": {
+      "name": "6",
+      "description": "+20% HP, 20% omnivamp. 50 Shimmer per combat (120 on a 3+ loss streak). Pass: +320 HP"
+    },
+    "trait:CON:0": {
+      "name": "2",
+      "description": "+15% AD and AP, 1x Conquest"
+    },
+    "trait:CON:1": {
+      "name": "4",
+      "description": "+24% AD and AP, 3x Conquest"
+    },
+    "trait:CON:2": {
+      "name": "6",
+      "description": "+34% AD and AP, 6x Conquest"
+    },
+    "trait:EMI:0": {
+      "name": "1",
+      "description": "Exactly 1 Envoy: gain its bonus"
+    },
+    "trait:EMI:1": {
+      "name": "4",
+      "description": "All 4: every bonus; Envoys +250 HP and 20% damage"
+    },
+    "trait:ENF:0": {
+      "name": "2",
+      "description": "12% max HP shield, 12% more damage, 1 Wanted"
+    },
+    "trait:ENF:1": {
+      "name": "4",
+      "description": "18% max HP shield, 20% more damage, 2 Wanted"
+    },
+    "trait:ENF:2": {
+      "name": "6",
+      "description": "25% max HP shield, 32% more damage, 4 Wanted"
+    },
+    "trait:EXP:0": {
+      "name": "3",
+      "description": "2 Lab Digimon, +100 HP each"
+    },
+    "trait:EXP:1": {
+      "name": "5",
+      "description": "3 Lab Digimon, +350 HP each"
+    },
+    "trait:FAM:0": {
+      "name": "2",
+      "description": "25% less max mana, 12% less damage taken"
+    },
+    "trait:FAM:1": {
+      "name": "3",
+      "description": "35% less max mana, 12% less damage taken, +20% AS"
+    },
+    "trait:FIRE:0": {
+      "name": "2",
+      "description": "Surge heals 30% of damage taken"
+    },
+    "trait:FIRE:1": {
+      "name": "3",
+      "description": "Surge heals 45% of damage taken, +60% AS for 2s"
+    },
+    "trait:MODE:0": {
+      "name": "2",
+      "description": "Front: 8% less damage. Back: 12% more damage"
+    },
+    "trait:MODE:1": {
+      "name": "3",
+      "description": "Front: 14% less damage. Back: 20% more damage"
+    },
+    "trait:MODE:2": {
+      "name": "4",
+      "description": "Front: 22% less damage. Back: 30% more damage"
+    },
+    "trait:REB:0": {
+      "name": "3",
+      "description": "+7% HP. Flare: +10% AD and AP"
+    },
+    "trait:REB:1": {
+      "name": "5",
+      "description": "+12% HP. Flare: +22% AD and AP"
+    },
+    "trait:REB:2": {
+      "name": "7",
+      "description": "+16% HP. Flare: +32% AD and AP, stun all enemies 2s"
+    },
+    "trait:SCR:0": {
+      "name": "2",
+      "description": "150 shield + 20 per component. 1 component act as full items"
+    },
+    "trait:SCR:1": {
+      "name": "4",
+      "description": "280 shield + 30 per component. 3 components act as full items"
+    },
+    "trait:SCR:2": {
+      "name": "6",
+      "description": "450 shield + 40 per component. All components act as full items"
+    },
+    "trait:HR:0": {
+      "name": "1",
+      "description": "Roll a bonus on every cast"
+    },
+    "trait:JUNK:0": {
+      "name": "1",
+      "description": "Workshop upgrade every 2 rounds"
+    },
+    "trait:AMB:0": {
+      "name": "2",
+      "description": "Abilities crit. +25% crit, +15% crit damage"
+    },
+    "trait:AMB:1": {
+      "name": "3",
+      "description": "Abilities crit. +35% crit, +25% crit damage"
+    },
+    "trait:AMB:2": {
+      "name": "4",
+      "description": "Abilities crit. +45% crit, +30% crit damage"
+    },
+    "trait:AMB:3": {
+      "name": "5",
+      "description": "Abilities crit. +55% crit, +35% crit damage, 15% less damage taken"
+    },
+    "trait:ART:0": {
+      "name": "2",
+      "description": "+22% AD. Shell every 4th attack"
+    },
+    "trait:ART:1": {
+      "name": "4",
+      "description": "+50% AD. Shell every 4th attack"
+    },
+    "trait:BRU:0": {
+      "name": "2",
+      "description": "Team +80 HP. Bruisers +10% max HP"
+    },
+    "trait:BRU:1": {
+      "name": "4",
+      "description": "Team +80 HP. Bruisers +22% max HP"
+    },
+    "trait:BRU:2": {
+      "name": "6",
+      "description": "Team +80 HP. Bruisers +40% max HP"
+    },
+    "trait:DOM:0": {
+      "name": "2",
+      "description": "300 shield. Cast: AP equal to 25% of mana spent"
+    },
+    "trait:DOM:1": {
+      "name": "4",
+      "description": "480 shield. Cast: AP equal to 45% of mana spent"
+    },
+    "trait:DOM:2": {
+      "name": "6",
+      "description": "700 shield. Cast: AP equal to 65% of mana spent"
+    },
+    "trait:PIT:0": {
+      "name": "2",
+      "description": "10% omnivamp, +4% true damage, heal 10% at 50% HP"
+    },
+    "trait:PIT:1": {
+      "name": "4",
+      "description": "10% omnivamp, +8% true damage, heal 25% at 50% HP"
+    },
+    "trait:PIT:2": {
+      "name": "6",
+      "description": "10% omnivamp, +14% true damage, heal 40% at 50% HP"
+    },
+    "trait:QS:0": {
+      "name": "2",
+      "description": "25% to 65% attack speed"
+    },
+    "trait:QS:1": {
+      "name": "3",
+      "description": "35% to 85% attack speed"
+    },
+    "trait:QS:2": {
+      "name": "4",
+      "description": "45% to 105% attack speed, 200 shield on takedown"
+    },
+    "trait:SEN:0": {
+      "name": "2",
+      "description": "Team +5 armor and MR, Sentinels +15"
+    },
+    "trait:SEN:1": {
+      "name": "4",
+      "description": "Team +10 armor and MR, Sentinels +30"
+    },
+    "trait:SEN:2": {
+      "name": "6",
+      "description": "Team +18 armor and MR, Sentinels +54"
+    },
+    "trait:SNI:0": {
+      "name": "2",
+      "description": "8% more damage, +5% per hex"
+    },
+    "trait:SNI:1": {
+      "name": "4",
+      "description": "22% more damage, +8% per hex"
+    },
+    "trait:SOR:0": {
+      "name": "2",
+      "description": "Team +8 AP, Sorcerers +15 AP"
+    },
+    "trait:SOR:1": {
+      "name": "4",
+      "description": "Team +8 AP, Sorcerers +35 AP"
+    },
+    "trait:SOR:2": {
+      "name": "6",
+      "description": "Team +8 AP, Sorcerers +60 AP; abilities weaken 20%"
+    },
+    "trait:VIS:0": {
+      "name": "2",
+      "description": "35% more mana"
+    },
+    "trait:VIS:1": {
+      "name": "4",
+      "description": "65% more mana"
+    },
+    "trait:VIS:2": {
+      "name": "6",
+      "description": "100% more mana; ability damage heals an ally"
+    },
+    "trait:WAT:0": {
+      "name": "2",
+      "description": "10% less damage, 20% above 50% HP"
+    },
+    "trait:WAT:1": {
+      "name": "4",
+      "description": "18% less damage, 30% above 50% HP"
+    },
+    "trait:WAT:2": {
+      "name": "6",
+      "description": "28% less damage, 40% above 50% HP"
     },
     "ability:arc_kokuwamon:0": {
       "name": "Electro Strike",
@@ -26184,6 +29468,282 @@
       "name": "Watcher",
       "description": "Watchers take less damage, more while above 50% HP."
     },
+    "trait:ACA:0": {
+      "name": "3",
+      "description": "3% HP and damage per sponsored copy (x2 on Academy). Academy +12% HP and damage. +1 sponsored item"
+    },
+    "trait:ACA:1": {
+      "name": "4",
+      "description": "4% HP and damage per sponsored copy (x2 on Academy). Academy +17% HP and damage. +1 sponsored item"
+    },
+    "trait:ACA:2": {
+      "name": "5",
+      "description": "6% HP and damage per sponsored copy (x2 on Academy). Academy +24% HP and damage. +1 sponsored item"
+    },
+    "trait:AUT:0": {
+      "name": "2",
+      "description": "+25 armor and MR. Blast: 180 magic damage + 25% of damage dealt"
+    },
+    "trait:AUT:1": {
+      "name": "4",
+      "description": "+55 armor and MR. Blast: 420 magic damage + 25% of damage dealt"
+    },
+    "trait:BR:0": {
+      "name": "3",
+      "description": "Summon Belphemon (power x1)"
+    },
+    "trait:BR:1": {
+      "name": "4",
+      "description": "Belphemon power x1.15; Dark Area deals 15% more damage"
+    },
+    "trait:BR:2": {
+      "name": "5",
+      "description": "Belphemon power x1.3; heals to full and erupts when freed"
+    },
+    "trait:SYN:0": {
+      "name": "3",
+      "description": "+6% HP, 8% omnivamp. 30 Shimmer per combat (60 on a 3+ loss streak). Pass: +80 HP"
+    },
+    "trait:SYN:1": {
+      "name": "4",
+      "description": "+10% HP, 12% omnivamp. 30 Shimmer per combat (75 on a 3+ loss streak). Pass: +140 HP"
+    },
+    "trait:SYN:2": {
+      "name": "5",
+      "description": "+14% HP, 15% omnivamp. 40 Shimmer per combat (95 on a 3+ loss streak). Pass: +220 HP"
+    },
+    "trait:SYN:3": {
+      "name": "6",
+      "description": "+20% HP, 20% omnivamp. 50 Shimmer per combat (120 on a 3+ loss streak). Pass: +320 HP"
+    },
+    "trait:CON:0": {
+      "name": "2",
+      "description": "+15% AD and AP, 1x Conquest"
+    },
+    "trait:CON:1": {
+      "name": "4",
+      "description": "+24% AD and AP, 3x Conquest"
+    },
+    "trait:CON:2": {
+      "name": "6",
+      "description": "+34% AD and AP, 6x Conquest"
+    },
+    "trait:EMI:0": {
+      "name": "1",
+      "description": "Exactly 1 Envoy: gain its bonus"
+    },
+    "trait:EMI:1": {
+      "name": "4",
+      "description": "All 4: every bonus; Envoys +250 HP and 20% damage"
+    },
+    "trait:ENF:0": {
+      "name": "2",
+      "description": "12% max HP shield, 12% more damage, 1 Wanted"
+    },
+    "trait:ENF:1": {
+      "name": "4",
+      "description": "18% max HP shield, 20% more damage, 2 Wanted"
+    },
+    "trait:ENF:2": {
+      "name": "6",
+      "description": "25% max HP shield, 32% more damage, 4 Wanted"
+    },
+    "trait:EXP:0": {
+      "name": "3",
+      "description": "2 Lab Digimon, +100 HP each"
+    },
+    "trait:EXP:1": {
+      "name": "5",
+      "description": "3 Lab Digimon, +350 HP each"
+    },
+    "trait:FAM:0": {
+      "name": "2",
+      "description": "25% less max mana, 12% less damage taken"
+    },
+    "trait:FAM:1": {
+      "name": "3",
+      "description": "35% less max mana, 12% less damage taken, +20% AS"
+    },
+    "trait:FIRE:0": {
+      "name": "2",
+      "description": "Surge heals 30% of damage taken"
+    },
+    "trait:FIRE:1": {
+      "name": "3",
+      "description": "Surge heals 45% of damage taken, +60% AS for 2s"
+    },
+    "trait:MODE:0": {
+      "name": "2",
+      "description": "Front: 8% less damage. Back: 12% more damage"
+    },
+    "trait:MODE:1": {
+      "name": "3",
+      "description": "Front: 14% less damage. Back: 20% more damage"
+    },
+    "trait:MODE:2": {
+      "name": "4",
+      "description": "Front: 22% less damage. Back: 30% more damage"
+    },
+    "trait:REB:0": {
+      "name": "3",
+      "description": "+7% HP. Flare: +10% AD and AP"
+    },
+    "trait:REB:1": {
+      "name": "5",
+      "description": "+12% HP. Flare: +22% AD and AP"
+    },
+    "trait:REB:2": {
+      "name": "7",
+      "description": "+16% HP. Flare: +32% AD and AP, stun all enemies 2s"
+    },
+    "trait:SCR:0": {
+      "name": "2",
+      "description": "150 shield + 20 per component. 1 component act as full items"
+    },
+    "trait:SCR:1": {
+      "name": "4",
+      "description": "280 shield + 30 per component. 3 components act as full items"
+    },
+    "trait:SCR:2": {
+      "name": "6",
+      "description": "450 shield + 40 per component. All components act as full items"
+    },
+    "trait:HR:0": {
+      "name": "1",
+      "description": "Roll a bonus on every cast"
+    },
+    "trait:JUNK:0": {
+      "name": "1",
+      "description": "Workshop upgrade every 2 rounds"
+    },
+    "trait:AMB:0": {
+      "name": "2",
+      "description": "Abilities crit. +25% crit, +15% crit damage"
+    },
+    "trait:AMB:1": {
+      "name": "3",
+      "description": "Abilities crit. +35% crit, +25% crit damage"
+    },
+    "trait:AMB:2": {
+      "name": "4",
+      "description": "Abilities crit. +45% crit, +30% crit damage"
+    },
+    "trait:AMB:3": {
+      "name": "5",
+      "description": "Abilities crit. +55% crit, +35% crit damage, 15% less damage taken"
+    },
+    "trait:ART:0": {
+      "name": "2",
+      "description": "+22% AD. Shell every 4th attack"
+    },
+    "trait:ART:1": {
+      "name": "4",
+      "description": "+50% AD. Shell every 4th attack"
+    },
+    "trait:BRU:0": {
+      "name": "2",
+      "description": "Team +80 HP. Bruisers +10% max HP"
+    },
+    "trait:BRU:1": {
+      "name": "4",
+      "description": "Team +80 HP. Bruisers +22% max HP"
+    },
+    "trait:BRU:2": {
+      "name": "6",
+      "description": "Team +80 HP. Bruisers +40% max HP"
+    },
+    "trait:DOM:0": {
+      "name": "2",
+      "description": "300 shield. Cast: AP equal to 25% of mana spent"
+    },
+    "trait:DOM:1": {
+      "name": "4",
+      "description": "480 shield. Cast: AP equal to 45% of mana spent"
+    },
+    "trait:DOM:2": {
+      "name": "6",
+      "description": "700 shield. Cast: AP equal to 65% of mana spent"
+    },
+    "trait:PIT:0": {
+      "name": "2",
+      "description": "10% omnivamp, +4% true damage, heal 10% at 50% HP"
+    },
+    "trait:PIT:1": {
+      "name": "4",
+      "description": "10% omnivamp, +8% true damage, heal 25% at 50% HP"
+    },
+    "trait:PIT:2": {
+      "name": "6",
+      "description": "10% omnivamp, +14% true damage, heal 40% at 50% HP"
+    },
+    "trait:QS:0": {
+      "name": "2",
+      "description": "25% to 65% attack speed"
+    },
+    "trait:QS:1": {
+      "name": "3",
+      "description": "35% to 85% attack speed"
+    },
+    "trait:QS:2": {
+      "name": "4",
+      "description": "45% to 105% attack speed, 200 shield on takedown"
+    },
+    "trait:SEN:0": {
+      "name": "2",
+      "description": "Team +5 armor and MR, Sentinels +15"
+    },
+    "trait:SEN:1": {
+      "name": "4",
+      "description": "Team +10 armor and MR, Sentinels +30"
+    },
+    "trait:SEN:2": {
+      "name": "6",
+      "description": "Team +18 armor and MR, Sentinels +54"
+    },
+    "trait:SNI:0": {
+      "name": "2",
+      "description": "8% more damage, +5% per hex"
+    },
+    "trait:SNI:1": {
+      "name": "4",
+      "description": "22% more damage, +8% per hex"
+    },
+    "trait:SOR:0": {
+      "name": "2",
+      "description": "Team +8 AP, Sorcerers +15 AP"
+    },
+    "trait:SOR:1": {
+      "name": "4",
+      "description": "Team +8 AP, Sorcerers +35 AP"
+    },
+    "trait:SOR:2": {
+      "name": "6",
+      "description": "Team +8 AP, Sorcerers +60 AP; abilities weaken 20%"
+    },
+    "trait:VIS:0": {
+      "name": "2",
+      "description": "35% more mana"
+    },
+    "trait:VIS:1": {
+      "name": "4",
+      "description": "65% more mana"
+    },
+    "trait:VIS:2": {
+      "name": "6",
+      "description": "100% more mana; ability damage heals an ally"
+    },
+    "trait:WAT:0": {
+      "name": "2",
+      "description": "10% less damage, 20% above 50% HP"
+    },
+    "trait:WAT:1": {
+      "name": "4",
+      "description": "18% less damage, 30% above 50% HP"
+    },
+    "trait:WAT:2": {
+      "name": "6",
+      "description": "28% less damage, 40% above 50% HP"
+    },
     "ability:arc_kokuwamon:0": {
       "name": "Electro Strike",
       "description": "Slams the ground, dealing 120 magic damage to enemies within 1 hex and stunning them for 1s."
@@ -28228,6 +31788,306 @@
       "name": "Strategist",
       "description": "At the start of combat, allies in your front two rows gain a shield and allies in your back two rows deal more damage. Strategists gain triple."
     },
+    "trait:BA:0": {
+      "name": "3",
+      "description": "3 Potential: abilities deal 27% more damage, +150 max HP"
+    },
+    "trait:BA:1": {
+      "name": "5",
+      "description": "5 Potential: abilities deal 45% more damage, +250 max HP"
+    },
+    "trait:BA:2": {
+      "name": "7",
+      "description": "7 Potential: abilities deal 63% more damage, +350 max HP"
+    },
+    "trait:CG:0": {
+      "name": "3",
+      "description": "+80 HP, +4% damage. Earn Gem Power from kills and losses"
+    },
+    "trait:CG:1": {
+      "name": "5",
+      "description": "+150 HP, +9% damage. Also: every 8 kills, gain a component (the count then rolls 6-10)"
+    },
+    "trait:CG:2": {
+      "name": "7",
+      "description": "+280 HP, +18% damage. Also: every 8 kills a component; cash-outs are worth 30% more"
+    },
+    "trait:MEN:0": {
+      "name": "1",
+      "description": "Exactly 1 Sensei: your whole team gains its lesson"
+    },
+    "trait:MEN:1": {
+      "name": "4",
+      "description": "Exactly 4 Sensei: the Sensei gain every lesson and 10 ability power"
+    },
+    "trait:MECH:0": {
+      "name": "3",
+      "description": "Machinedramon joins the fight"
+    },
+    "trait:MECH:1": {
+      "name": "5",
+      "description": "Blade Protocol 1: Machinedramon gains 15% attack damage and its attacks also hit a second enemy for 30%"
+    },
+    "trait:MECH:2": {
+      "name": "7",
+      "description": "Blade Protocol 2: also 25% omnivamp and 20% less damage taken"
+    },
+    "trait:MT:0": {
+      "name": "1",
+      "description": "Pick a partner for Labramon"
+    },
+    "trait:RC:0": {
+      "name": "1",
+      "description": "Draw a Bounty card every round; Street Crew deal 12% extra true damage"
+    },
+    "trait:RM:0": {
+      "name": "1",
+      "description": "Lotosmon brings 2 plants (4 at three stars)"
+    },
+    "trait:SF:0": {
+      "name": "2",
+      "description": "+150 HP, +2.5% AD/AP per second, 12% true damage at 8 stacks"
+    },
+    "trait:SF:1": {
+      "name": "4",
+      "description": "+300 HP, +4% AD/AP per second, 18% true damage at 8 stacks"
+    },
+    "trait:SF:2": {
+      "name": "6",
+      "description": "+500 HP, +6% AD/AP per second, 25% true damage at 8 stacks"
+    },
+    "trait:SM:0": {
+      "name": "1",
+      "description": "Pick an arm for Justimon"
+    },
+    "trait:SG:0": {
+      "name": "2",
+      "description": "Each Star Ward bonus x1"
+    },
+    "trait:SG:1": {
+      "name": "3",
+      "description": "Each Star Ward bonus x1.05"
+    },
+    "trait:SG:2": {
+      "name": "4",
+      "description": "Each Star Ward bonus x1.1"
+    },
+    "trait:SG:3": {
+      "name": "5",
+      "description": "Each Star Ward bonus x1.12"
+    },
+    "trait:SG:4": {
+      "name": "6",
+      "description": "Each Star Ward bonus x1.14"
+    },
+    "trait:SG:5": {
+      "name": "7",
+      "description": "Each Star Ward bonus x1.16"
+    },
+    "trait:SG:6": {
+      "name": "8",
+      "description": "Each Star Ward bonus x1.2"
+    },
+    "trait:SC:0": {
+      "name": "2",
+      "description": "+10% damage; the Supreme deals +12% and finishes enemies below 10% HP"
+    },
+    "trait:SC:1": {
+      "name": "3",
+      "description": "+24% damage; the Supreme deals +32% and finishes enemies below 10% HP"
+    },
+    "trait:SC:2": {
+      "name": "4",
+      "description": "+30% damage; the Supreme deals +50% and finishes enemies below 10% HP; two Supremes"
+    },
+    "trait:CH:0": {
+      "name": "1",
+      "description": "Wins bring fans; fans block damage on a loss"
+    },
+    "trait:CREW:0": {
+      "name": "2",
+      "description": "+4% max HP and attack speed; rockets every 400 damage"
+    },
+    "trait:CREW:1": {
+      "name": "3",
+      "description": "+8% max HP and attack speed; rockets every 400 damage"
+    },
+    "trait:CREW:2": {
+      "name": "4",
+      "description": "+10% max HP and attack speed; rockets every 400 damage"
+    },
+    "trait:CREW:3": {
+      "name": "5",
+      "description": "+13% max HP and attack speed; rockets every 400 damage"
+    },
+    "trait:WR:0": {
+      "name": "2",
+      "description": "The Shadow Realm deals 27% of Phantom damage every 4 seconds"
+    },
+    "trait:WR:1": {
+      "name": "4",
+      "description": "The Shadow Realm deals 33% of Phantom damage every 4 seconds"
+    },
+    "trait:WR:2": {
+      "name": "6",
+      "description": "The Shadow Realm deals 48% of Phantom damage every 4 seconds"
+    },
+    "trait:LU:0": {
+      "name": "2",
+      "description": "+10% AD, heal 15%"
+    },
+    "trait:LU:1": {
+      "name": "4",
+      "description": "+35% AD, heal 35%"
+    },
+    "trait:BAS:0": {
+      "name": "2",
+      "description": "Bastions +10 armor and MR (double for 10 seconds)"
+    },
+    "trait:BAS:1": {
+      "name": "4",
+      "description": "Bastions +22 armor and MR (double for 10 seconds)"
+    },
+    "trait:BAS:2": {
+      "name": "6",
+      "description": "Bastions +40 armor and MR (double for 10 seconds); others +25 more"
+    },
+    "trait:DUE:0": {
+      "name": "2",
+      "description": "+8% attack speed per attack (12 stacks)"
+    },
+    "trait:DUE:1": {
+      "name": "4",
+      "description": "+14% attack speed per attack (12 stacks)"
+    },
+    "trait:DUE:2": {
+      "name": "6",
+      "description": "+18% attack speed per attack (12 stacks); 12% less damage taken"
+    },
+    "trait:EDG:0": {
+      "name": "2",
+      "description": "+22% AD, 10% omnivamp"
+    },
+    "trait:EDG:1": {
+      "name": "4",
+      "description": "+35% AD, 12% omnivamp"
+    },
+    "trait:EDG:2": {
+      "name": "6",
+      "description": "+60% AD, 15% omnivamp"
+    },
+    "trait:EXE:0": {
+      "name": "2",
+      "description": "+35% crit, +15% crit damage"
+    },
+    "trait:EXE:1": {
+      "name": "3",
+      "description": "+50% crit, +22% crit damage"
+    },
+    "trait:EXE:2": {
+      "name": "4",
+      "description": "+55% crit, +25% crit damage"
+    },
+    "trait:EXE:3": {
+      "name": "5",
+      "description": "+60% crit, +30% crit damage"
+    },
+    "trait:HEV:0": {
+      "name": "2",
+      "description": "+12% max HP, AD +1.2% of max HP"
+    },
+    "trait:HEV:1": {
+      "name": "4",
+      "description": "+25% max HP, AD +2% of max HP"
+    },
+    "trait:HEV:2": {
+      "name": "6",
+      "description": "+40% max HP, AD +3% of max HP"
+    },
+    "trait:JUG:0": {
+      "name": "2",
+      "description": "-8% damage taken (-16% above 50% HP)"
+    },
+    "trait:JUG:1": {
+      "name": "4",
+      "description": "-10% damage taken (-18% above 50% HP)"
+    },
+    "trait:JUG:2": {
+      "name": "6",
+      "description": "-13% damage taken (-21% above 50% HP)"
+    },
+    "trait:PRO:0": {
+      "name": "2",
+      "description": "Prodigies +5 mana per second"
+    },
+    "trait:PRO:1": {
+      "name": "3",
+      "description": "Prodigies +7 mana per second"
+    },
+    "trait:PRO:2": {
+      "name": "4",
+      "description": "Prodigies +9 mana per second"
+    },
+    "trait:PRO:3": {
+      "name": "5",
+      "description": "Prodigies +11 mana per second; their ability damage heals an ally for 12%"
+    },
+    "trait:PRT:0": {
+      "name": "2",
+      "description": "11% max HP shield"
+    },
+    "trait:PRT:1": {
+      "name": "4",
+      "description": "19% max HP shield"
+    },
+    "trait:PRT:2": {
+      "name": "6",
+      "description": "30% max HP shield"
+    },
+    "trait:SNI:0": {
+      "name": "2",
+      "description": "+15% damage, +3% per hex"
+    },
+    "trait:SNI:1": {
+      "name": "3",
+      "description": "+20% damage, +6% per hex"
+    },
+    "trait:SNI:2": {
+      "name": "4",
+      "description": "+26% damage, +7% per hex"
+    },
+    "trait:SNI:3": {
+      "name": "5",
+      "description": "+24% damage, +8% per hex"
+    },
+    "trait:SOR:0": {
+      "name": "2",
+      "description": "+18 AP, 8% max HP burst"
+    },
+    "trait:SOR:1": {
+      "name": "4",
+      "description": "+38 AP, 10% max HP burst"
+    },
+    "trait:SOR:2": {
+      "name": "6",
+      "description": "+65 AP, 12% max HP burst"
+    },
+    "trait:STR:0": {
+      "name": "2",
+      "description": "front 120 shield, back +3% damage"
+    },
+    "trait:STR:1": {
+      "name": "3",
+      "description": "front 160 shield, back +5% damage"
+    },
+    "trait:STR:2": {
+      "name": "4",
+      "description": "front 250 shield, back +8% damage"
+    },
+    "trait:STR:3": {
+      "name": "5",
+      "description": "front 340 shield, back +12% damage"
+    },
     "ability:col_hagurumon:0": {
       "name": "Cog Crusher",
       "description": "Strikes the target for 210 magic damage, doubled if it is below 50% HP."
@@ -29948,6 +33808,306 @@
       "name": "Strategist",
       "description": "At the start of combat, allies in your front two rows gain a shield and allies in your back two rows deal more damage. Strategists gain triple."
     },
+    "trait:BA:0": {
+      "name": "3",
+      "description": "3 Potential: abilities deal 27% more damage, +150 max HP"
+    },
+    "trait:BA:1": {
+      "name": "5",
+      "description": "5 Potential: abilities deal 45% more damage, +250 max HP"
+    },
+    "trait:BA:2": {
+      "name": "7",
+      "description": "7 Potential: abilities deal 63% more damage, +350 max HP"
+    },
+    "trait:CG:0": {
+      "name": "3",
+      "description": "+80 HP, +4% damage. Earn Gem Power from kills and losses"
+    },
+    "trait:CG:1": {
+      "name": "5",
+      "description": "+150 HP, +9% damage. Also: every 8 kills, gain a component (the count then rolls 6-10)"
+    },
+    "trait:CG:2": {
+      "name": "7",
+      "description": "+280 HP, +18% damage. Also: every 8 kills a component; cash-outs are worth 30% more"
+    },
+    "trait:MEN:0": {
+      "name": "1",
+      "description": "Exactly 1 Sensei: your whole team gains its lesson"
+    },
+    "trait:MEN:1": {
+      "name": "4",
+      "description": "Exactly 4 Sensei: the Sensei gain every lesson and 10 ability power"
+    },
+    "trait:MECH:0": {
+      "name": "3",
+      "description": "Machinedramon joins the fight"
+    },
+    "trait:MECH:1": {
+      "name": "5",
+      "description": "Blade Protocol 1: Machinedramon gains 15% attack damage and its attacks also hit a second enemy for 30%"
+    },
+    "trait:MECH:2": {
+      "name": "7",
+      "description": "Blade Protocol 2: also 25% omnivamp and 20% less damage taken"
+    },
+    "trait:MT:0": {
+      "name": "1",
+      "description": "Pick a partner for Labramon"
+    },
+    "trait:RC:0": {
+      "name": "1",
+      "description": "Draw a Bounty card every round; Street Crew deal 12% extra true damage"
+    },
+    "trait:RM:0": {
+      "name": "1",
+      "description": "Lotosmon brings 2 plants (4 at three stars)"
+    },
+    "trait:SF:0": {
+      "name": "2",
+      "description": "+150 HP, +2.5% AD/AP per second, 12% true damage at 8 stacks"
+    },
+    "trait:SF:1": {
+      "name": "4",
+      "description": "+300 HP, +4% AD/AP per second, 18% true damage at 8 stacks"
+    },
+    "trait:SF:2": {
+      "name": "6",
+      "description": "+500 HP, +6% AD/AP per second, 25% true damage at 8 stacks"
+    },
+    "trait:SM:0": {
+      "name": "1",
+      "description": "Pick an arm for Justimon"
+    },
+    "trait:SG:0": {
+      "name": "2",
+      "description": "Each Star Ward bonus x1"
+    },
+    "trait:SG:1": {
+      "name": "3",
+      "description": "Each Star Ward bonus x1.05"
+    },
+    "trait:SG:2": {
+      "name": "4",
+      "description": "Each Star Ward bonus x1.1"
+    },
+    "trait:SG:3": {
+      "name": "5",
+      "description": "Each Star Ward bonus x1.12"
+    },
+    "trait:SG:4": {
+      "name": "6",
+      "description": "Each Star Ward bonus x1.14"
+    },
+    "trait:SG:5": {
+      "name": "7",
+      "description": "Each Star Ward bonus x1.16"
+    },
+    "trait:SG:6": {
+      "name": "8",
+      "description": "Each Star Ward bonus x1.2"
+    },
+    "trait:SC:0": {
+      "name": "2",
+      "description": "+10% damage; the Supreme deals +12% and finishes enemies below 10% HP"
+    },
+    "trait:SC:1": {
+      "name": "3",
+      "description": "+24% damage; the Supreme deals +32% and finishes enemies below 10% HP"
+    },
+    "trait:SC:2": {
+      "name": "4",
+      "description": "+30% damage; the Supreme deals +50% and finishes enemies below 10% HP; two Supremes"
+    },
+    "trait:CH:0": {
+      "name": "1",
+      "description": "Wins bring fans; fans block damage on a loss"
+    },
+    "trait:CREW:0": {
+      "name": "2",
+      "description": "+4% max HP and attack speed; rockets every 400 damage"
+    },
+    "trait:CREW:1": {
+      "name": "3",
+      "description": "+8% max HP and attack speed; rockets every 400 damage"
+    },
+    "trait:CREW:2": {
+      "name": "4",
+      "description": "+10% max HP and attack speed; rockets every 400 damage"
+    },
+    "trait:CREW:3": {
+      "name": "5",
+      "description": "+13% max HP and attack speed; rockets every 400 damage"
+    },
+    "trait:WR:0": {
+      "name": "2",
+      "description": "The Shadow Realm deals 27% of Phantom damage every 4 seconds"
+    },
+    "trait:WR:1": {
+      "name": "4",
+      "description": "The Shadow Realm deals 33% of Phantom damage every 4 seconds"
+    },
+    "trait:WR:2": {
+      "name": "6",
+      "description": "The Shadow Realm deals 48% of Phantom damage every 4 seconds"
+    },
+    "trait:LU:0": {
+      "name": "2",
+      "description": "+10% AD, heal 15%"
+    },
+    "trait:LU:1": {
+      "name": "4",
+      "description": "+35% AD, heal 35%"
+    },
+    "trait:BAS:0": {
+      "name": "2",
+      "description": "Bastions +10 armor and MR (double for 10 seconds)"
+    },
+    "trait:BAS:1": {
+      "name": "4",
+      "description": "Bastions +22 armor and MR (double for 10 seconds)"
+    },
+    "trait:BAS:2": {
+      "name": "6",
+      "description": "Bastions +40 armor and MR (double for 10 seconds); others +25 more"
+    },
+    "trait:DUE:0": {
+      "name": "2",
+      "description": "+8% attack speed per attack (12 stacks)"
+    },
+    "trait:DUE:1": {
+      "name": "4",
+      "description": "+14% attack speed per attack (12 stacks)"
+    },
+    "trait:DUE:2": {
+      "name": "6",
+      "description": "+18% attack speed per attack (12 stacks); 12% less damage taken"
+    },
+    "trait:EDG:0": {
+      "name": "2",
+      "description": "+22% AD, 10% omnivamp"
+    },
+    "trait:EDG:1": {
+      "name": "4",
+      "description": "+35% AD, 12% omnivamp"
+    },
+    "trait:EDG:2": {
+      "name": "6",
+      "description": "+60% AD, 15% omnivamp"
+    },
+    "trait:EXE:0": {
+      "name": "2",
+      "description": "+35% crit, +15% crit damage"
+    },
+    "trait:EXE:1": {
+      "name": "3",
+      "description": "+50% crit, +22% crit damage"
+    },
+    "trait:EXE:2": {
+      "name": "4",
+      "description": "+55% crit, +25% crit damage"
+    },
+    "trait:EXE:3": {
+      "name": "5",
+      "description": "+60% crit, +30% crit damage"
+    },
+    "trait:HEV:0": {
+      "name": "2",
+      "description": "+12% max HP, AD +1.2% of max HP"
+    },
+    "trait:HEV:1": {
+      "name": "4",
+      "description": "+25% max HP, AD +2% of max HP"
+    },
+    "trait:HEV:2": {
+      "name": "6",
+      "description": "+40% max HP, AD +3% of max HP"
+    },
+    "trait:JUG:0": {
+      "name": "2",
+      "description": "-8% damage taken (-16% above 50% HP)"
+    },
+    "trait:JUG:1": {
+      "name": "4",
+      "description": "-10% damage taken (-18% above 50% HP)"
+    },
+    "trait:JUG:2": {
+      "name": "6",
+      "description": "-13% damage taken (-21% above 50% HP)"
+    },
+    "trait:PRO:0": {
+      "name": "2",
+      "description": "Prodigies +5 mana per second"
+    },
+    "trait:PRO:1": {
+      "name": "3",
+      "description": "Prodigies +7 mana per second"
+    },
+    "trait:PRO:2": {
+      "name": "4",
+      "description": "Prodigies +9 mana per second"
+    },
+    "trait:PRO:3": {
+      "name": "5",
+      "description": "Prodigies +11 mana per second; their ability damage heals an ally for 12%"
+    },
+    "trait:PRT:0": {
+      "name": "2",
+      "description": "11% max HP shield"
+    },
+    "trait:PRT:1": {
+      "name": "4",
+      "description": "19% max HP shield"
+    },
+    "trait:PRT:2": {
+      "name": "6",
+      "description": "30% max HP shield"
+    },
+    "trait:SNI:0": {
+      "name": "2",
+      "description": "+15% damage, +3% per hex"
+    },
+    "trait:SNI:1": {
+      "name": "3",
+      "description": "+20% damage, +6% per hex"
+    },
+    "trait:SNI:2": {
+      "name": "4",
+      "description": "+26% damage, +7% per hex"
+    },
+    "trait:SNI:3": {
+      "name": "5",
+      "description": "+24% damage, +8% per hex"
+    },
+    "trait:SOR:0": {
+      "name": "2",
+      "description": "+18 AP, 8% max HP burst"
+    },
+    "trait:SOR:1": {
+      "name": "4",
+      "description": "+38 AP, 10% max HP burst"
+    },
+    "trait:SOR:2": {
+      "name": "6",
+      "description": "+65 AP, 12% max HP burst"
+    },
+    "trait:STR:0": {
+      "name": "2",
+      "description": "front 120 shield, back +3% damage"
+    },
+    "trait:STR:1": {
+      "name": "3",
+      "description": "front 160 shield, back +5% damage"
+    },
+    "trait:STR:2": {
+      "name": "4",
+      "description": "front 250 shield, back +8% damage"
+    },
+    "trait:STR:3": {
+      "name": "5",
+      "description": "front 340 shield, back +12% damage"
+    },
     "ability:col_hagurumon:0": {
       "name": "Cog Crusher",
       "description": "Strikes the target for 210 magic damage, doubled if it is below 50% HP."
@@ -31617,6 +35777,206 @@
     "METAL": {
       "name": "Metal Empire",
       "description": "Metal Empire Digimon gain armor."
+    },
+    "trait:SHINOBI:0": {
+      "name": "3",
+      "description": "12% crit for 220% damage"
+    },
+    "trait:SHINOBI:1": {
+      "name": "6",
+      "description": "22% crit for 280% damage"
+    },
+    "trait:BEAST:0": {
+      "name": "2",
+      "description": "+200 HP, +6 HP per knockout (x star level)"
+    },
+    "trait:BEAST:1": {
+      "name": "4",
+      "description": "+450 HP, +12 HP per knockout (x star level)"
+    },
+    "trait:ONI:0": {
+      "name": "2",
+      "description": "-30% enemy damage, 80 on apply"
+    },
+    "trait:ONI:1": {
+      "name": "4",
+      "description": "-50% enemy damage, 120 on apply"
+    },
+    "trait:LEGEND:0": {
+      "name": "1",
+      "description": "all alliances, +3% damage and +8% HP per alliance"
+    },
+    "trait:DEMON:0": {
+      "name": "1",
+      "description": "+50% damage per Demon Lord after casting"
+    },
+    "trait:DRAGON:0": {
+      "name": "2",
+      "description": "+15 AP, abilities burn and splash 40%"
+    },
+    "trait:UNDEAD:0": {
+      "name": "3",
+      "description": "heal 150, +6% damage"
+    },
+    "trait:UNDEAD:1": {
+      "name": "6",
+      "description": "heal 150, +6% damage, revive once"
+    },
+    "trait:HOLY:0": {
+      "name": "2",
+      "description": "+15% healing"
+    },
+    "trait:HOLY:1": {
+      "name": "4",
+      "description": "+30% healing"
+    },
+    "trait:NIGHT:0": {
+      "name": "2",
+      "description": "enemies -18 armor"
+    },
+    "trait:NIGHT:1": {
+      "name": "4",
+      "description": "enemies -35 armor"
+    },
+    "trait:NIGHT:2": {
+      "name": "6",
+      "description": "enemies -55 armor"
+    },
+    "trait:PARTNER:0": {
+      "name": "2",
+      "description": "+2 mana per second to all allies"
+    },
+    "trait:PARTNER:1": {
+      "name": "4",
+      "description": "+4 mana per second to all allies"
+    },
+    "trait:PARTNER:2": {
+      "name": "6",
+      "description": "+7 mana per second to all allies"
+    },
+    "trait:HUNTER:0": {
+      "name": "3",
+      "description": "35% chance of 1 extra attack"
+    },
+    "trait:HUNTER:1": {
+      "name": "6",
+      "description": "45% chance of 2 extra attacks"
+    },
+    "trait:KNIGHT:0": {
+      "name": "2",
+      "description": "-15% damage, x2 beside a Knight"
+    },
+    "trait:KNIGHT:1": {
+      "name": "4",
+      "description": "-20% damage, x2 beside a Knight"
+    },
+    "trait:KNIGHT:2": {
+      "name": "6",
+      "description": "-25% damage, x2 beside a Knight"
+    },
+    "trait:WIZARD:0": {
+      "name": "3",
+      "description": "+20% magic damage taken by enemies"
+    },
+    "trait:WIZARD:1": {
+      "name": "6",
+      "description": "+40% magic damage taken by enemies"
+    },
+    "trait:SAGE:0": {
+      "name": "1",
+      "description": "3 s invulnerable at 50% HP"
+    },
+    "trait:TOXIC:0": {
+      "name": "3",
+      "description": "attacks add a poison stack"
+    },
+    "trait:ROGUE:0": {
+      "name": "2",
+      "description": "17% evasion, +8 AD per evade"
+    },
+    "trait:ROGUE:1": {
+      "name": "4",
+      "description": "32% evasion, +16 AD per evade"
+    },
+    "trait:NATURE:0": {
+      "name": "2",
+      "description": "+4 AD per attack (Nature Spirits)"
+    },
+    "trait:NATURE:1": {
+      "name": "4",
+      "description": "+6 AD per attack (and summons)"
+    },
+    "trait:NATURE:2": {
+      "name": "6",
+      "description": "+9 AD per attack (all allies)"
+    },
+    "trait:DEEP:0": {
+      "name": "2",
+      "description": "+30 MR to all allies"
+    },
+    "trait:DEEP:1": {
+      "name": "4",
+      "description": "+55 MR to all allies"
+    },
+    "trait:SHAMAN:0": {
+      "name": "2",
+      "description": "summon a wolf"
+    },
+    "trait:SHAMAN:1": {
+      "name": "4",
+      "description": "summon a wildwing"
+    },
+    "trait:SHAMAN:2": {
+      "name": "6",
+      "description": "summon a black dragon"
+    },
+    "trait:SPIRIT:0": {
+      "name": "3",
+      "description": "Delta strike: 130 x star per Spirit"
+    },
+    "trait:SUMMONER:0": {
+      "name": "2",
+      "description": "summons +20% damage"
+    },
+    "trait:SUMMONER:1": {
+      "name": "4",
+      "description": "summons +40% damage"
+    },
+    "trait:BLADE:0": {
+      "name": "3",
+      "description": "+10% damage per adjacent enemy"
+    },
+    "trait:BLADE:1": {
+      "name": "6",
+      "description": "+22% damage per adjacent enemy"
+    },
+    "trait:JUNGLE:0": {
+      "name": "2",
+      "description": "+25% AS (others +8%)"
+    },
+    "trait:JUNGLE:1": {
+      "name": "4",
+      "description": "+50% AS (others +16%)"
+    },
+    "trait:WIND:0": {
+      "name": "2",
+      "description": "Wind Guardians focus casters, +40% next hit"
+    },
+    "trait:WIND:1": {
+      "name": "4",
+      "description": "all allies focus casters, +50% next hit"
+    },
+    "trait:DARK:0": {
+      "name": "3",
+      "description": "25%: +1% max HP true damage"
+    },
+    "trait:METAL:0": {
+      "name": "3",
+      "description": "+45 armor"
+    },
+    "trait:METAL:1": {
+      "name": "6",
+      "description": "+100 armor"
     },
     "ability:ul_antimage:0": {
       "name": "Little Horn",
@@ -34432,6 +38792,206 @@
       "name": "Metal Empire",
       "description": "Metal Empire Digimon gain armor."
     },
+    "trait:SHINOBI:0": {
+      "name": "3",
+      "description": "12% crit for 220% damage"
+    },
+    "trait:SHINOBI:1": {
+      "name": "6",
+      "description": "22% crit for 280% damage"
+    },
+    "trait:BEAST:0": {
+      "name": "2",
+      "description": "+200 HP, +6 HP per knockout (x star level)"
+    },
+    "trait:BEAST:1": {
+      "name": "4",
+      "description": "+450 HP, +12 HP per knockout (x star level)"
+    },
+    "trait:ONI:0": {
+      "name": "2",
+      "description": "-30% enemy damage, 80 on apply"
+    },
+    "trait:ONI:1": {
+      "name": "4",
+      "description": "-50% enemy damage, 120 on apply"
+    },
+    "trait:LEGEND:0": {
+      "name": "1",
+      "description": "all alliances, +3% damage and +8% HP per alliance"
+    },
+    "trait:DEMON:0": {
+      "name": "1",
+      "description": "+50% damage per Demon Lord after casting"
+    },
+    "trait:DRAGON:0": {
+      "name": "2",
+      "description": "+15 AP, abilities burn and splash 40%"
+    },
+    "trait:UNDEAD:0": {
+      "name": "3",
+      "description": "heal 150, +6% damage"
+    },
+    "trait:UNDEAD:1": {
+      "name": "6",
+      "description": "heal 150, +6% damage, revive once"
+    },
+    "trait:HOLY:0": {
+      "name": "2",
+      "description": "+15% healing"
+    },
+    "trait:HOLY:1": {
+      "name": "4",
+      "description": "+30% healing"
+    },
+    "trait:NIGHT:0": {
+      "name": "2",
+      "description": "enemies -18 armor"
+    },
+    "trait:NIGHT:1": {
+      "name": "4",
+      "description": "enemies -35 armor"
+    },
+    "trait:NIGHT:2": {
+      "name": "6",
+      "description": "enemies -55 armor"
+    },
+    "trait:PARTNER:0": {
+      "name": "2",
+      "description": "+2 mana per second to all allies"
+    },
+    "trait:PARTNER:1": {
+      "name": "4",
+      "description": "+4 mana per second to all allies"
+    },
+    "trait:PARTNER:2": {
+      "name": "6",
+      "description": "+7 mana per second to all allies"
+    },
+    "trait:HUNTER:0": {
+      "name": "3",
+      "description": "35% chance of 1 extra attack"
+    },
+    "trait:HUNTER:1": {
+      "name": "6",
+      "description": "45% chance of 2 extra attacks"
+    },
+    "trait:KNIGHT:0": {
+      "name": "2",
+      "description": "-15% damage, x2 beside a Knight"
+    },
+    "trait:KNIGHT:1": {
+      "name": "4",
+      "description": "-20% damage, x2 beside a Knight"
+    },
+    "trait:KNIGHT:2": {
+      "name": "6",
+      "description": "-25% damage, x2 beside a Knight"
+    },
+    "trait:WIZARD:0": {
+      "name": "3",
+      "description": "+20% magic damage taken by enemies"
+    },
+    "trait:WIZARD:1": {
+      "name": "6",
+      "description": "+40% magic damage taken by enemies"
+    },
+    "trait:SAGE:0": {
+      "name": "1",
+      "description": "3 s invulnerable at 50% HP"
+    },
+    "trait:TOXIC:0": {
+      "name": "3",
+      "description": "attacks add a poison stack"
+    },
+    "trait:ROGUE:0": {
+      "name": "2",
+      "description": "17% evasion, +8 AD per evade"
+    },
+    "trait:ROGUE:1": {
+      "name": "4",
+      "description": "32% evasion, +16 AD per evade"
+    },
+    "trait:NATURE:0": {
+      "name": "2",
+      "description": "+4 AD per attack (Nature Spirits)"
+    },
+    "trait:NATURE:1": {
+      "name": "4",
+      "description": "+6 AD per attack (and summons)"
+    },
+    "trait:NATURE:2": {
+      "name": "6",
+      "description": "+9 AD per attack (all allies)"
+    },
+    "trait:DEEP:0": {
+      "name": "2",
+      "description": "+30 MR to all allies"
+    },
+    "trait:DEEP:1": {
+      "name": "4",
+      "description": "+55 MR to all allies"
+    },
+    "trait:SHAMAN:0": {
+      "name": "2",
+      "description": "summon a wolf"
+    },
+    "trait:SHAMAN:1": {
+      "name": "4",
+      "description": "summon a wildwing"
+    },
+    "trait:SHAMAN:2": {
+      "name": "6",
+      "description": "summon a black dragon"
+    },
+    "trait:SPIRIT:0": {
+      "name": "3",
+      "description": "Delta strike: 130 x star per Spirit"
+    },
+    "trait:SUMMONER:0": {
+      "name": "2",
+      "description": "summons +20% damage"
+    },
+    "trait:SUMMONER:1": {
+      "name": "4",
+      "description": "summons +40% damage"
+    },
+    "trait:BLADE:0": {
+      "name": "3",
+      "description": "+10% damage per adjacent enemy"
+    },
+    "trait:BLADE:1": {
+      "name": "6",
+      "description": "+22% damage per adjacent enemy"
+    },
+    "trait:JUNGLE:0": {
+      "name": "2",
+      "description": "+25% AS (others +8%)"
+    },
+    "trait:JUNGLE:1": {
+      "name": "4",
+      "description": "+50% AS (others +16%)"
+    },
+    "trait:WIND:0": {
+      "name": "2",
+      "description": "Wind Guardians focus casters, +40% next hit"
+    },
+    "trait:WIND:1": {
+      "name": "4",
+      "description": "all allies focus casters, +50% next hit"
+    },
+    "trait:DARK:0": {
+      "name": "3",
+      "description": "25%: +1% max HP true damage"
+    },
+    "trait:METAL:0": {
+      "name": "3",
+      "description": "+45 armor"
+    },
+    "trait:METAL:1": {
+      "name": "6",
+      "description": "+100 armor"
+    },
     "ability:ul_antimage:0": {
       "name": "Little Horn",
       "description": "Mana Break (passive): attacks burn 10 mana and deal half of it as magic damage."
@@ -37194,6 +41754,210 @@
       "name": "Wizard",
       "description": "Rule change: every other race and class that needs 4 or more units needs one fewer (for example Fairy 6 needs 5). Wizards also gain ability power."
     },
+    "trait:BEAST:0": {
+      "name": "2",
+      "description": "+8% AD to all allies"
+    },
+    "trait:BEAST:1": {
+      "name": "4",
+      "description": "+16% AD to all allies"
+    },
+    "trait:BEAST:2": {
+      "name": "6",
+      "description": "+26% AD to all allies"
+    },
+    "trait:DRAGON:0": {
+      "name": "3",
+      "description": "Dragons start with 70% mana"
+    },
+    "trait:UNDEAD:0": {
+      "name": "2",
+      "description": "enemies -15 armor"
+    },
+    "trait:UNDEAD:1": {
+      "name": "4",
+      "description": "enemies -22 armor"
+    },
+    "trait:UNDEAD:2": {
+      "name": "6",
+      "description": "enemies -35 armor"
+    },
+    "trait:DEMON:0": {
+      "name": "1",
+      "description": "+40% of each attack as true damage"
+    },
+    "trait:FAIRY:0": {
+      "name": "3",
+      "description": "Fairies +28% dodge"
+    },
+    "trait:FAIRY:1": {
+      "name": "6",
+      "description": "Fairies +42% dodge"
+    },
+    "trait:FAIRY:2": {
+      "name": "9",
+      "description": "Fairies +56% dodge"
+    },
+    "trait:HUMAN:0": {
+      "name": "2",
+      "description": "18% chance to silence on attack"
+    },
+    "trait:HUMAN:1": {
+      "name": "4",
+      "description": "25% chance to silence on attack"
+    },
+    "trait:HUMAN:2": {
+      "name": "6",
+      "description": "32% chance to silence on attack"
+    },
+    "trait:MACHINE:0": {
+      "name": "3",
+      "description": "one random ally: +25 armor, 1% HP/s"
+    },
+    "trait:MACHINE:1": {
+      "name": "6",
+      "description": "all allies: +30 armor, 1.2% HP/s"
+    },
+    "trait:DINO:0": {
+      "name": "2",
+      "description": "Dinosaurs +220 HP"
+    },
+    "trait:DINO:1": {
+      "name": "4",
+      "description": "Dinosaurs +260 HP"
+    },
+    "trait:INSECT:0": {
+      "name": "2",
+      "description": "Insects +25% AS"
+    },
+    "trait:INSECT:1": {
+      "name": "4",
+      "description": "Insects +25% AS, all allies +3% AS"
+    },
+    "trait:ELEMENTAL:0": {
+      "name": "2",
+      "description": "Elementals: +15 armor/MR, 30% to stone melee attackers"
+    },
+    "trait:ELEMENTAL:1": {
+      "name": "4",
+      "description": "Elementals: +15 armor/MR; all allies: 40% to stone melee attackers"
+    },
+    "trait:AQUAN:0": {
+      "name": "2",
+      "description": "all allies +22 MR"
+    },
+    "trait:AQUAN:1": {
+      "name": "4",
+      "description": "all allies +50 MR"
+    },
+    "trait:CYBORG:0": {
+      "name": "1",
+      "description": "Cyborgs +1 range, +10% AD"
+    },
+    "trait:OLYMPOS:0": {
+      "name": "1",
+      "description": "all allies +2 mana per attack"
+    },
+    "trait:OLYMPOS:1": {
+      "name": "2",
+      "description": "all allies +2.5 mana per attack"
+    },
+    "trait:WARRIOR:0": {
+      "name": "3",
+      "description": "Warriors +20 armor"
+    },
+    "trait:WARRIOR:1": {
+      "name": "6",
+      "description": "Warriors +45 armor"
+    },
+    "trait:WARRIOR:2": {
+      "name": "9",
+      "description": "Warriors +80 armor"
+    },
+    "trait:MAGE:0": {
+      "name": "3",
+      "description": "+14% magic damage"
+    },
+    "trait:MAGE:1": {
+      "name": "6",
+      "description": "+36% magic damage"
+    },
+    "trait:HUNTER:0": {
+      "name": "3",
+      "description": "Hunters +22% AD"
+    },
+    "trait:HUNTER:1": {
+      "name": "6",
+      "description": "Hunters +50% AD"
+    },
+    "trait:ASSASSIN:0": {
+      "name": "3",
+      "description": "Assassins: 7% crit for 190% damage"
+    },
+    "trait:ASSASSIN:1": {
+      "name": "6",
+      "description": "Assassins: 13% crit for 230% damage"
+    },
+    "trait:KNIGHT:0": {
+      "name": "2",
+      "description": "1 roll: 30% for an 18% damage shield"
+    },
+    "trait:KNIGHT:1": {
+      "name": "4",
+      "description": "2 rolls (shields stack)"
+    },
+    "trait:KNIGHT:2": {
+      "name": "6",
+      "description": "3 rolls (shields stack)"
+    },
+    "trait:DRUID:0": {
+      "name": "2",
+      "description": "heal lowest ally 3% max HP every 4s"
+    },
+    "trait:DRUID:1": {
+      "name": "4",
+      "description": "heal lowest ally 5% max HP every 4s"
+    },
+    "trait:MECH:0": {
+      "name": "2",
+      "description": "Mechs regen 1.5% HP/s"
+    },
+    "trait:MECH:1": {
+      "name": "4",
+      "description": "Mechs regen 3.5% HP/s"
+    },
+    "trait:SHAMAN:0": {
+      "name": "2",
+      "description": "hex a random enemy for 4s"
+    },
+    "trait:WARLOCK:0": {
+      "name": "3",
+      "description": "all allies +4% lifesteal"
+    },
+    "trait:WARLOCK:1": {
+      "name": "6",
+      "description": "all allies +9% lifesteal"
+    },
+    "trait:DH:0": {
+      "name": "1",
+      "description": "cancel enemy Demons; Demon Slayers +15% AS, +25% damage to Demons"
+    },
+    "trait:DH:1": {
+      "name": "2",
+      "description": "your Demon trait works with any number of Demons; Demon Slayers +25% AS, +40% damage to Demons"
+    },
+    "trait:PRIEST:0": {
+      "name": "1",
+      "description": "-20% Tamer damage, +10% healing"
+    },
+    "trait:PRIEST:1": {
+      "name": "2",
+      "description": "-35% Tamer damage, +25% healing"
+    },
+    "trait:WIZARD:0": {
+      "name": "2",
+      "description": "breakpoints of 4+ need 1 fewer; Wizards +35 AP"
+    },
     "ability:ac_lopmon:0": {
       "name": "Blazing Ice",
       "description": "Strikes the target for 210 magic damage, doubled if it is below 50% HP."
@@ -38567,6 +43331,210 @@
     "WIZARD": {
       "name": "Wizard",
       "description": "Rule change: every other race and class that needs 4 or more units needs one fewer (for example Fairy 6 needs 5). Wizards also gain ability power."
+    },
+    "trait:BEAST:0": {
+      "name": "2",
+      "description": "+8% AD to all allies"
+    },
+    "trait:BEAST:1": {
+      "name": "4",
+      "description": "+16% AD to all allies"
+    },
+    "trait:BEAST:2": {
+      "name": "6",
+      "description": "+26% AD to all allies"
+    },
+    "trait:DRAGON:0": {
+      "name": "3",
+      "description": "Dragons start with 70% mana"
+    },
+    "trait:UNDEAD:0": {
+      "name": "2",
+      "description": "enemies -15 armor"
+    },
+    "trait:UNDEAD:1": {
+      "name": "4",
+      "description": "enemies -22 armor"
+    },
+    "trait:UNDEAD:2": {
+      "name": "6",
+      "description": "enemies -35 armor"
+    },
+    "trait:DEMON:0": {
+      "name": "1",
+      "description": "+40% of each attack as true damage"
+    },
+    "trait:FAIRY:0": {
+      "name": "3",
+      "description": "Fairies +28% dodge"
+    },
+    "trait:FAIRY:1": {
+      "name": "6",
+      "description": "Fairies +42% dodge"
+    },
+    "trait:FAIRY:2": {
+      "name": "9",
+      "description": "Fairies +56% dodge"
+    },
+    "trait:HUMAN:0": {
+      "name": "2",
+      "description": "18% chance to silence on attack"
+    },
+    "trait:HUMAN:1": {
+      "name": "4",
+      "description": "25% chance to silence on attack"
+    },
+    "trait:HUMAN:2": {
+      "name": "6",
+      "description": "32% chance to silence on attack"
+    },
+    "trait:MACHINE:0": {
+      "name": "3",
+      "description": "one random ally: +25 armor, 1% HP/s"
+    },
+    "trait:MACHINE:1": {
+      "name": "6",
+      "description": "all allies: +30 armor, 1.2% HP/s"
+    },
+    "trait:DINO:0": {
+      "name": "2",
+      "description": "Dinosaurs +220 HP"
+    },
+    "trait:DINO:1": {
+      "name": "4",
+      "description": "Dinosaurs +260 HP"
+    },
+    "trait:INSECT:0": {
+      "name": "2",
+      "description": "Insects +25% AS"
+    },
+    "trait:INSECT:1": {
+      "name": "4",
+      "description": "Insects +25% AS, all allies +3% AS"
+    },
+    "trait:ELEMENTAL:0": {
+      "name": "2",
+      "description": "Elementals: +15 armor/MR, 30% to stone melee attackers"
+    },
+    "trait:ELEMENTAL:1": {
+      "name": "4",
+      "description": "Elementals: +15 armor/MR; all allies: 40% to stone melee attackers"
+    },
+    "trait:AQUAN:0": {
+      "name": "2",
+      "description": "all allies +22 MR"
+    },
+    "trait:AQUAN:1": {
+      "name": "4",
+      "description": "all allies +50 MR"
+    },
+    "trait:CYBORG:0": {
+      "name": "1",
+      "description": "Cyborgs +1 range, +10% AD"
+    },
+    "trait:OLYMPOS:0": {
+      "name": "1",
+      "description": "all allies +2 mana per attack"
+    },
+    "trait:OLYMPOS:1": {
+      "name": "2",
+      "description": "all allies +2.5 mana per attack"
+    },
+    "trait:WARRIOR:0": {
+      "name": "3",
+      "description": "Warriors +20 armor"
+    },
+    "trait:WARRIOR:1": {
+      "name": "6",
+      "description": "Warriors +45 armor"
+    },
+    "trait:WARRIOR:2": {
+      "name": "9",
+      "description": "Warriors +80 armor"
+    },
+    "trait:MAGE:0": {
+      "name": "3",
+      "description": "+14% magic damage"
+    },
+    "trait:MAGE:1": {
+      "name": "6",
+      "description": "+36% magic damage"
+    },
+    "trait:HUNTER:0": {
+      "name": "3",
+      "description": "Hunters +22% AD"
+    },
+    "trait:HUNTER:1": {
+      "name": "6",
+      "description": "Hunters +50% AD"
+    },
+    "trait:ASSASSIN:0": {
+      "name": "3",
+      "description": "Assassins: 7% crit for 190% damage"
+    },
+    "trait:ASSASSIN:1": {
+      "name": "6",
+      "description": "Assassins: 13% crit for 230% damage"
+    },
+    "trait:KNIGHT:0": {
+      "name": "2",
+      "description": "1 roll: 30% for an 18% damage shield"
+    },
+    "trait:KNIGHT:1": {
+      "name": "4",
+      "description": "2 rolls (shields stack)"
+    },
+    "trait:KNIGHT:2": {
+      "name": "6",
+      "description": "3 rolls (shields stack)"
+    },
+    "trait:DRUID:0": {
+      "name": "2",
+      "description": "heal lowest ally 3% max HP every 4s"
+    },
+    "trait:DRUID:1": {
+      "name": "4",
+      "description": "heal lowest ally 5% max HP every 4s"
+    },
+    "trait:MECH:0": {
+      "name": "2",
+      "description": "Mechs regen 1.5% HP/s"
+    },
+    "trait:MECH:1": {
+      "name": "4",
+      "description": "Mechs regen 3.5% HP/s"
+    },
+    "trait:SHAMAN:0": {
+      "name": "2",
+      "description": "hex a random enemy for 4s"
+    },
+    "trait:WARLOCK:0": {
+      "name": "3",
+      "description": "all allies +4% lifesteal"
+    },
+    "trait:WARLOCK:1": {
+      "name": "6",
+      "description": "all allies +9% lifesteal"
+    },
+    "trait:DH:0": {
+      "name": "1",
+      "description": "cancel enemy Demons; Demon Slayers +15% AS, +25% damage to Demons"
+    },
+    "trait:DH:1": {
+      "name": "2",
+      "description": "your Demon trait works with any number of Demons; Demon Slayers +25% AS, +40% damage to Demons"
+    },
+    "trait:PRIEST:0": {
+      "name": "1",
+      "description": "-20% Tamer damage, +10% healing"
+    },
+    "trait:PRIEST:1": {
+      "name": "2",
+      "description": "-35% Tamer damage, +25% healing"
+    },
+    "trait:WIZARD:0": {
+      "name": "2",
+      "description": "breakpoints of 4+ need 1 fewer; Wizards +35 AP"
     },
     "ability:ac_lopmon:0": {
       "name": "Blazing Ice",
@@ -39993,6 +44961,206 @@
     "METAL": {
       "name": "Metal Empire",
       "description": "Metal Empire Digimon gain armor."
+    },
+    "trait:SHINOBI:0": {
+      "name": "3",
+      "description": "12% crit for 220% damage"
+    },
+    "trait:SHINOBI:1": {
+      "name": "6",
+      "description": "22% crit for 280% damage"
+    },
+    "trait:BEAST:0": {
+      "name": "2",
+      "description": "+200 HP, +6 HP per knockout (x star level)"
+    },
+    "trait:BEAST:1": {
+      "name": "4",
+      "description": "+450 HP, +12 HP per knockout (x star level)"
+    },
+    "trait:ONI:0": {
+      "name": "2",
+      "description": "-30% enemy damage, 80 on apply"
+    },
+    "trait:ONI:1": {
+      "name": "4",
+      "description": "-50% enemy damage, 120 on apply"
+    },
+    "trait:LEGEND:0": {
+      "name": "1",
+      "description": "all alliances, +3% damage and +8% HP per alliance"
+    },
+    "trait:DEMON:0": {
+      "name": "1",
+      "description": "+50% damage per Demon Lord after casting"
+    },
+    "trait:DRAGON:0": {
+      "name": "2",
+      "description": "+15 AP, abilities burn and splash 40%"
+    },
+    "trait:UNDEAD:0": {
+      "name": "3",
+      "description": "heal 150, +6% damage"
+    },
+    "trait:UNDEAD:1": {
+      "name": "6",
+      "description": "heal 150, +6% damage, revive once"
+    },
+    "trait:HOLY:0": {
+      "name": "2",
+      "description": "+15% healing"
+    },
+    "trait:HOLY:1": {
+      "name": "4",
+      "description": "+30% healing"
+    },
+    "trait:NIGHT:0": {
+      "name": "2",
+      "description": "enemies -18 armor"
+    },
+    "trait:NIGHT:1": {
+      "name": "4",
+      "description": "enemies -35 armor"
+    },
+    "trait:NIGHT:2": {
+      "name": "6",
+      "description": "enemies -55 armor"
+    },
+    "trait:PARTNER:0": {
+      "name": "2",
+      "description": "+2 mana per second to all allies"
+    },
+    "trait:PARTNER:1": {
+      "name": "4",
+      "description": "+4 mana per second to all allies"
+    },
+    "trait:PARTNER:2": {
+      "name": "6",
+      "description": "+7 mana per second to all allies"
+    },
+    "trait:HUNTER:0": {
+      "name": "3",
+      "description": "35% chance of 1 extra attack"
+    },
+    "trait:HUNTER:1": {
+      "name": "6",
+      "description": "45% chance of 2 extra attacks"
+    },
+    "trait:KNIGHT:0": {
+      "name": "2",
+      "description": "-15% damage, x2 beside a Knight"
+    },
+    "trait:KNIGHT:1": {
+      "name": "4",
+      "description": "-20% damage, x2 beside a Knight"
+    },
+    "trait:KNIGHT:2": {
+      "name": "6",
+      "description": "-25% damage, x2 beside a Knight"
+    },
+    "trait:WIZARD:0": {
+      "name": "3",
+      "description": "+20% magic damage taken by enemies"
+    },
+    "trait:WIZARD:1": {
+      "name": "6",
+      "description": "+40% magic damage taken by enemies"
+    },
+    "trait:SAGE:0": {
+      "name": "1",
+      "description": "3 s invulnerable at 50% HP"
+    },
+    "trait:TOXIC:0": {
+      "name": "3",
+      "description": "attacks add a poison stack"
+    },
+    "trait:ROGUE:0": {
+      "name": "2",
+      "description": "17% evasion, +8 AD per evade"
+    },
+    "trait:ROGUE:1": {
+      "name": "4",
+      "description": "32% evasion, +16 AD per evade"
+    },
+    "trait:NATURE:0": {
+      "name": "2",
+      "description": "+4 AD per attack (Nature Spirits)"
+    },
+    "trait:NATURE:1": {
+      "name": "4",
+      "description": "+6 AD per attack (and summons)"
+    },
+    "trait:NATURE:2": {
+      "name": "6",
+      "description": "+9 AD per attack (all allies)"
+    },
+    "trait:DEEP:0": {
+      "name": "2",
+      "description": "+30 MR to all allies"
+    },
+    "trait:DEEP:1": {
+      "name": "4",
+      "description": "+55 MR to all allies"
+    },
+    "trait:SHAMAN:0": {
+      "name": "2",
+      "description": "summon a wolf"
+    },
+    "trait:SHAMAN:1": {
+      "name": "4",
+      "description": "summon a wildwing"
+    },
+    "trait:SHAMAN:2": {
+      "name": "6",
+      "description": "summon a black dragon"
+    },
+    "trait:SPIRIT:0": {
+      "name": "3",
+      "description": "Delta strike: 130 x star per Spirit"
+    },
+    "trait:SUMMONER:0": {
+      "name": "2",
+      "description": "summons +20% damage"
+    },
+    "trait:SUMMONER:1": {
+      "name": "4",
+      "description": "summons +40% damage"
+    },
+    "trait:BLADE:0": {
+      "name": "3",
+      "description": "+10% damage per adjacent enemy"
+    },
+    "trait:BLADE:1": {
+      "name": "6",
+      "description": "+22% damage per adjacent enemy"
+    },
+    "trait:JUNGLE:0": {
+      "name": "2",
+      "description": "+25% AS (others +8%)"
+    },
+    "trait:JUNGLE:1": {
+      "name": "4",
+      "description": "+50% AS (others +16%)"
+    },
+    "trait:WIND:0": {
+      "name": "2",
+      "description": "Wind Guardians focus casters, +40% next hit"
+    },
+    "trait:WIND:1": {
+      "name": "4",
+      "description": "all allies focus casters, +50% next hit"
+    },
+    "trait:DARK:0": {
+      "name": "3",
+      "description": "25%: +1% max HP true damage"
+    },
+    "trait:METAL:0": {
+      "name": "3",
+      "description": "+45 armor"
+    },
+    "trait:METAL:1": {
+      "name": "6",
+      "description": "+100 armor"
     },
     "ability:ul_antimage:0": {
       "name": "Little Horn",
@@ -42807,6 +47975,206 @@
     "METAL": {
       "name": "Metal Empire",
       "description": "Metal Empire Digimon gain armor."
+    },
+    "trait:SHINOBI:0": {
+      "name": "3",
+      "description": "12% crit for 220% damage"
+    },
+    "trait:SHINOBI:1": {
+      "name": "6",
+      "description": "22% crit for 280% damage"
+    },
+    "trait:BEAST:0": {
+      "name": "2",
+      "description": "+200 HP, +6 HP per knockout (x star level)"
+    },
+    "trait:BEAST:1": {
+      "name": "4",
+      "description": "+450 HP, +12 HP per knockout (x star level)"
+    },
+    "trait:ONI:0": {
+      "name": "2",
+      "description": "-30% enemy damage, 80 on apply"
+    },
+    "trait:ONI:1": {
+      "name": "4",
+      "description": "-50% enemy damage, 120 on apply"
+    },
+    "trait:LEGEND:0": {
+      "name": "1",
+      "description": "all alliances, +3% damage and +8% HP per alliance"
+    },
+    "trait:DEMON:0": {
+      "name": "1",
+      "description": "+50% damage per Demon Lord after casting"
+    },
+    "trait:DRAGON:0": {
+      "name": "2",
+      "description": "+15 AP, abilities burn and splash 40%"
+    },
+    "trait:UNDEAD:0": {
+      "name": "3",
+      "description": "heal 150, +6% damage"
+    },
+    "trait:UNDEAD:1": {
+      "name": "6",
+      "description": "heal 150, +6% damage, revive once"
+    },
+    "trait:HOLY:0": {
+      "name": "2",
+      "description": "+15% healing"
+    },
+    "trait:HOLY:1": {
+      "name": "4",
+      "description": "+30% healing"
+    },
+    "trait:NIGHT:0": {
+      "name": "2",
+      "description": "enemies -18 armor"
+    },
+    "trait:NIGHT:1": {
+      "name": "4",
+      "description": "enemies -35 armor"
+    },
+    "trait:NIGHT:2": {
+      "name": "6",
+      "description": "enemies -55 armor"
+    },
+    "trait:PARTNER:0": {
+      "name": "2",
+      "description": "+2 mana per second to all allies"
+    },
+    "trait:PARTNER:1": {
+      "name": "4",
+      "description": "+4 mana per second to all allies"
+    },
+    "trait:PARTNER:2": {
+      "name": "6",
+      "description": "+7 mana per second to all allies"
+    },
+    "trait:HUNTER:0": {
+      "name": "3",
+      "description": "35% chance of 1 extra attack"
+    },
+    "trait:HUNTER:1": {
+      "name": "6",
+      "description": "45% chance of 2 extra attacks"
+    },
+    "trait:KNIGHT:0": {
+      "name": "2",
+      "description": "-15% damage, x2 beside a Knight"
+    },
+    "trait:KNIGHT:1": {
+      "name": "4",
+      "description": "-20% damage, x2 beside a Knight"
+    },
+    "trait:KNIGHT:2": {
+      "name": "6",
+      "description": "-25% damage, x2 beside a Knight"
+    },
+    "trait:WIZARD:0": {
+      "name": "3",
+      "description": "+20% magic damage taken by enemies"
+    },
+    "trait:WIZARD:1": {
+      "name": "6",
+      "description": "+40% magic damage taken by enemies"
+    },
+    "trait:SAGE:0": {
+      "name": "1",
+      "description": "3 s invulnerable at 50% HP"
+    },
+    "trait:TOXIC:0": {
+      "name": "3",
+      "description": "attacks add a poison stack"
+    },
+    "trait:ROGUE:0": {
+      "name": "2",
+      "description": "17% evasion, +8 AD per evade"
+    },
+    "trait:ROGUE:1": {
+      "name": "4",
+      "description": "32% evasion, +16 AD per evade"
+    },
+    "trait:NATURE:0": {
+      "name": "2",
+      "description": "+4 AD per attack (Nature Spirits)"
+    },
+    "trait:NATURE:1": {
+      "name": "4",
+      "description": "+6 AD per attack (and summons)"
+    },
+    "trait:NATURE:2": {
+      "name": "6",
+      "description": "+9 AD per attack (all allies)"
+    },
+    "trait:DEEP:0": {
+      "name": "2",
+      "description": "+30 MR to all allies"
+    },
+    "trait:DEEP:1": {
+      "name": "4",
+      "description": "+55 MR to all allies"
+    },
+    "trait:SHAMAN:0": {
+      "name": "2",
+      "description": "summon a wolf"
+    },
+    "trait:SHAMAN:1": {
+      "name": "4",
+      "description": "summon a wildwing"
+    },
+    "trait:SHAMAN:2": {
+      "name": "6",
+      "description": "summon a black dragon"
+    },
+    "trait:SPIRIT:0": {
+      "name": "3",
+      "description": "Delta strike: 130 x star per Spirit"
+    },
+    "trait:SUMMONER:0": {
+      "name": "2",
+      "description": "summons +20% damage"
+    },
+    "trait:SUMMONER:1": {
+      "name": "4",
+      "description": "summons +40% damage"
+    },
+    "trait:BLADE:0": {
+      "name": "3",
+      "description": "+10% damage per adjacent enemy"
+    },
+    "trait:BLADE:1": {
+      "name": "6",
+      "description": "+22% damage per adjacent enemy"
+    },
+    "trait:JUNGLE:0": {
+      "name": "2",
+      "description": "+25% AS (others +8%)"
+    },
+    "trait:JUNGLE:1": {
+      "name": "4",
+      "description": "+50% AS (others +16%)"
+    },
+    "trait:WIND:0": {
+      "name": "2",
+      "description": "Wind Guardians focus casters, +40% next hit"
+    },
+    "trait:WIND:1": {
+      "name": "4",
+      "description": "all allies focus casters, +50% next hit"
+    },
+    "trait:DARK:0": {
+      "name": "3",
+      "description": "25%: +1% max HP true damage"
+    },
+    "trait:METAL:0": {
+      "name": "3",
+      "description": "+45 armor"
+    },
+    "trait:METAL:1": {
+      "name": "6",
+      "description": "+100 armor"
     },
     "ability:ul_antimage:0": {
       "name": "Little Horn",

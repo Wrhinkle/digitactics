@@ -8,9 +8,11 @@ internal sealed partial class MatchScreen
 {
     internal IReadOnlyDictionary<string,int> DisplayedTraits { get; private set; } = new Dictionary<string,int>();
     internal bool CombinedTraits { get; private set; }
+    internal int TraitTooltipLevels { get; private set; }
 
     private void TraitSidebar(MatchPlayer player)
     {
+        TraitTooltipLevels = 0;
         CombinedTraits = Session!.State.Duos && Session.Rounds.RoundType == "pvp" && player.Team is not null;
         var counts = CombinedTraits
             ? Session.CombatProjection.Team(Session.State.Teams[player.Team!.Value]).Effects.Counts!
@@ -30,12 +32,23 @@ internal sealed partial class MatchScreen
             ImGui.PushStyleColor(ImGuiCol.Text, color);
             UiText.Wrapped($"{Name(row.Trait.Id)}  {(next > 0 ? $"{row.Count}/{next}" : row.Count.ToString())}");
             ImGui.PopStyleColor();
+            var min = ImGui.GetItemRectMin(); var max = ImGui.GetItemRectMax();
+            Buttons["trait/" + row.Trait.Id] = new((min.X + max.X) / 2, (min.Y + max.Y) / 2);
             if (ImGui.IsItemHovered())
             {
                 ImGui.SetNextWindowSize(new(340,0)); ImGui.BeginTooltip();
                 ImGui.Text(Name(row.Trait.Id));
                 ImGui.Text("Breakpoints: " + string.Join(" / ", row.Trait.Breakpoints));
                 UiText.Wrapped(text.Get(Rules.Id, row.Trait.Id).Description);
+                ImGui.Separator();
+                for (int i = 0; i < row.Trait.Breakpoints.Length; i++)
+                {
+                    var effect = text.TraitBreakpoint(Rules.Id, row.Trait.Id, i);
+                    ImGui.PushStyleColor(ImGuiCol.Text, i < row.Level ? new ImColor8(255,220,140) : new ImColor8(145,155,170));
+                    UiText.Wrapped($"({effect.Name}) {effect.Description}");
+                    ImGui.PopStyleColor();
+                    TraitTooltipLevels++;
+                }
                 ImGui.EndTooltip();
             }
         }

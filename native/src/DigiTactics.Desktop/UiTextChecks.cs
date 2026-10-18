@@ -18,6 +18,16 @@ internal static class UiTextChecks
                     abilities++;
                 }
         Console.WriteLine($"Ability display coverage passed: {abilities} forms across {catalog.Variants.Length} rulesets.");
+        int breakpoints = 0;
+        foreach (var rules in catalog.Variants)
+            foreach (var trait in rules.Traits)
+                for (int i = 0; i < trait.Breakpoints.Length; i++)
+                {
+                    if (display.TraitBreakpoint(rules.Id, trait.Id, i).Name != trait.Breakpoints[i].ToString(System.Globalization.CultureInfo.InvariantCulture))
+                        throw new InvalidOperationException($"Trait breakpoint display mismatch: {rules.Id}/{trait.Id}/{i}");
+                    breakpoints++;
+                }
+        Console.WriteLine($"Trait breakpoint display coverage passed: {breakpoints} levels.");
         var cases = System.Text.Json.JsonSerializer.Deserialize<ConsumableCase[]>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "content/consumable-preview-cases.json")), new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         foreach (var sample in cases)
         {

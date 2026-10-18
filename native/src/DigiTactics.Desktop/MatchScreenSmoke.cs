@@ -33,6 +33,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private bool switchingScout;
     private int chartStep;
     private bool combinedTraitsVerified;
+    private int traitHoverStep;
+    private string hoveredTrait = "";
     private int dragStep, draggedId;
     private readonly ArenaDropSmoke dropSmoke = new();
     private bool dropsVerified;
@@ -64,6 +66,17 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (cooldown-- > 0 || index >= commands.Length) return;
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
+        if (index == 9 && traitHoverStep < 2)
+        {
+            if (traitHoverStep == 0)
+            {
+                hoveredTrait = screen.DisplayedTraits.Keys.First();
+                var target = screen.Buttons["trait/" + hoveredTrait]; ImGui.GetIO().AddMousePosEvent(target.X, target.Y);
+            }
+            else if (screen.TraitTooltipLevels != screen.Session!.State.Rules.Traits.Single(trait => trait.Id == hoveredTrait).Breakpoints.Length)
+                throw new InvalidOperationException("Trait hover omitted breakpoint effect text.");
+            traitHoverStep++; cooldown = 3; return;
+        }
         if (index == 20 && chartStep < 7)
         {
             var chartIo = ImGui.GetIO();
@@ -152,6 +165,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (index == 9 && traitHoverStep == 1 && cooldown == 1 && capture is not null)
+            FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "trait-tooltip.bmp"), size.X, size.Y);
         if (index == 20 && cooldown == 1 && screen.ChartCombat is { } chartCombat)
         {
             var session = screen.Session!;

@@ -1,5 +1,8 @@
 const fs = require('fs'), path = require('path');
 const DT = require('../../tools/headless.cjs').load({ strict: true });
+const breakpointSource = fs.readFileSync(path.join(__dirname, '../../js/ui.js'), 'utf8').match(/const bpText = (\(T, i\) => \{[\s\S]*?\n  \});/);
+if (!breakpointSource) throw new Error('Original trait breakpoint formatter could not be located.');
+const breakpointText = require('vm').runInNewContext(breakpointSource[1]);
 const variants = {};
 const consumableCases = [];
 for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
@@ -20,6 +23,9 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
     }
   }
   for (const [id, v] of Object.entries(DT.TRAITS)) add(id, v);
+  for (const [id, trait] of Object.entries(DT.TRAITS)) trait.bp.forEach((count, index) => {
+    add(`trait:${id}:${index}`, { name: String(count), desc: breakpointText(trait, index) });
+  });
   for (const line of Object.values(DT.LINE)) for (let stage = 0; stage < line.forms.length; stage++) {
     add(`ability:${line.id}:${stage}`, { name: line.abil[stage], desc: DT.abilityText(line, stage) });
   }
