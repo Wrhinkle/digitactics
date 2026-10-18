@@ -45,6 +45,22 @@ internal sealed class CameraSmoke
             case 9:
                 if (camera.Zoom != 1 || camera.Yaw != 0 || camera.Target != new Vector3(0, 0, 1.8f) || camera.Pitch != Math.Atan2(16.5, 15.5))
                     throw new InvalidOperationException("Arena reset did not restore the original view.");
+                io.AddMousePosEvent(5,5); io.AddKeyEvent(ImGuiKey.Equal,true); break;
+            case 10: io.AddKeyEvent(ImGuiKey.Equal,false); break;
+            case 11:
+                if (Math.Abs(camera.Zoom-.8)>1e-7) throw new InvalidOperationException("Keyboard zoom-in did not use the original centered factor.");
+                io.AddKeyEvent(ImGuiKey.Minus,true); break;
+            case 12: io.AddKeyEvent(ImGuiKey.Minus,false); break;
+            case 13:
+                if (Math.Abs(camera.Zoom-1)>1e-7) throw new InvalidOperationException("Keyboard zoom-out did not reverse centered zoom-in.");
+                io.AddKeyEvent(ImGuiKey.KeypadAdd,true); break;
+            case 14: io.AddKeyEvent(ImGuiKey.KeypadAdd,false); break;
+            case 15:
+                if (Math.Abs(camera.Zoom-.8)>1e-7) throw new InvalidOperationException("Keypad zoom did not work outside the arena.");
+                io.AddKeyEvent(ImGuiKey.R,true); break;
+            case 16: io.AddKeyEvent(ImGuiKey.R,false); break;
+            case 17:
+                if (camera.Zoom != 1 || camera.Target != new Vector3(0,0,1.8f)) throw new InvalidOperationException("Keyboard reset outside the arena failed.");
                 return true;
         }
         return false;

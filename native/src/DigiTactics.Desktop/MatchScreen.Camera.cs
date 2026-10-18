@@ -8,12 +8,21 @@ internal sealed partial class MatchScreen
 {
     private (ImGuiMouseButton Button, float2 Start, float2 Last, bool Moved)? cameraDrag;
     internal ArenaCamera CameraState => arenaEnvironment.Camera;
+    private void CameraShortcuts()
+    {
+        var camera = arenaEnvironment.Camera;
+        int columns = battle?.Combat.Columns ?? 7;
+        if (ImGui.IsKeyPressed(ImGuiKey.R)) camera.Reset();
+        if (ImGui.IsKeyPressed(ImGuiKey.Equal) || ImGui.IsKeyPressed(ImGuiKey.KeypadAdd) || ImGui.IsKeyPressed(ImGuiKey.KeypadEqual))
+            camera.ZoomAt(Width / 2f, Height / 2f, .8, Width, Height, columns);
+        if (ImGui.IsKeyPressed(ImGuiKey.Minus) || ImGui.IsKeyPressed(ImGuiKey.KeypadSubtract))
+            camera.ZoomAt(Width / 2f, Height / 2f, 1.25, Width, Height, columns);
+    }
     private bool CameraNavigation(bool inside, UnitSpot? spot, int shelfHover)
     {
         var mouse = ImGui.GetMousePos();
         int columns = battle?.Combat.Columns ?? 7;
         var camera = arenaEnvironment.Camera;
-        if (inside && !ImGui.GetIO().WantTextInput && ImGui.IsKeyPressed(ImGuiKey.R)) camera.Reset();
         if (inside && ImGui.GetIO().MouseWheel != 0)
             camera.ZoomAt(mouse.X - Left, mouse.Y - Top, Math.Exp(-ImGui.GetIO().MouseWheel * .15), Width, Height, columns);
         if (inside && cameraDrag is null && itemDrag is null && arenaDrag is null)

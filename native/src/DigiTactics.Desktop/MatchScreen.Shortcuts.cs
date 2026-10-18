@@ -8,7 +8,9 @@ internal sealed partial class MatchScreen
     private int? hoveredOwnedUnit;
     private void MatchShortcuts()
     {
-        if (Session is null || Session.State.Over || IsSpectating || !Human.Alive || ImGui.GetIO().WantTextInput || showAudio || showPlayers) return;
+        if (Session is null || ImGui.GetIO().WantTextInput || showAudio || showPlayers) return;
+        CameraShortcuts();
+        if (Session.State.Over || IsSpectating || !Human.Alive) return;
         if (ImGui.IsKeyPressed(ImGuiKey.D, false)) Act("reroll");
         if (ImGui.IsKeyPressed(ImGuiKey.F, false)) Act("buyXp");
         if (ImGui.IsKeyPressed(ImGuiKey.E, false) && hoveredOwnedUnit is { } uid && !arenaDragMoved && !itemDragMoved)
