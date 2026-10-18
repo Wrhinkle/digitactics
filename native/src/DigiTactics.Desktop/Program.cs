@@ -68,6 +68,7 @@ try
         return 0;
     }
     if (args.Contains("--audio-smoke")) { GameAudio.Smoke(); return 0; }
+    if (args.Contains("--audio-settings-smoke")) { AudioSettingsSmoke.Run(); return 0; }
     var catalog = ContentCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content", "catalog.json"));
     int captureIndex = Array.IndexOf(args, "--capture");
     string? capture = captureIndex >= 0 && captureIndex + 1 < args.Length ? args[captureIndex + 1] : null;

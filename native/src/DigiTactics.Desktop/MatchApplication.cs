@@ -38,8 +38,9 @@ internal static class MatchApplication
                 using var platform = new GlfwBackend(window, GlfwBackend.ClientApi.OpenGL);
                 using var audio = new GameAudio();
                 audio.EffectsVolume = smoke ? 0 : .8f; audio.MusicVolume = smoke ? 0 : .6f; audio.BoardVolume = smoke ? 0 : .8f;
-                using var preferences = smoke ? null : new AudioSettingsBinding(audio);
-                var profile = smoke && profileDirectory is null ? null : new NativeProfileStore(profileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native"));
+                string saveDirectory = profileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native");
+                var profile = smoke && profileDirectory is null ? null : new NativeProfileStore(saveDirectory);
+                using var preferences = smoke ? null : new AudioSettingsBinding(audio, profile!, saveDirectory);
                 using var farmPointer = farmPointerSmoke ? new FarmPointerSmoke(profile!, profileDirectory!) : null;
                 using var renderer = new OpenGlBackend(); using var screen = new MatchScreen(catalog, audio, smoke ? 143u : null, duos, profile);
                 screen.SteamLibraryPath = steamLibrary;

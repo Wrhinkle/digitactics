@@ -40,6 +40,41 @@ internal static class AudioSettingsChecks
                 Check(!extended.Save(new()) && extended.Error is not null, "write contention is reported without crashing");
             Check(extended.Save(new()) && extended.Error is null, "retry after contention");
             Check(Directory.GetFiles(directory, "*.tmp").Length == 0, "temporary files cleaned");
+            string importedPath = Path.Combine(directory, "imported.json");
+            var migrated = new AudioSettingsStore(importedPath);
+            var legacy = new Dictionary<string, string> { ["dt.audio.v1"] = "{\"music\":0.1,\"sfx\":0.2,\"board\":0.3,\"muted\":true,\"musicOff\":true,\"muteOthers\":true,\"source\":\"own\",\"future\":{\"keep\":7}}" };
+            string original = legacy["dt.audio.v1"];
+            Check(migrated.ImportLegacy(legacy) && migrated.Settings == new AudioSettings(.1f, .2f, true, true, .3f, true), "all six legacy controls imported");
+            Check(legacy["dt.audio.v1"] == original && new AudioSettingsStore(importedPath).Settings == migrated.Settings, "source unchanged and imported values survive restart");
+            Check(migrated.Save(migrated.Settings with { Music = .7f }), "native edits after import");
+            string edited = File.ReadAllText(importedPath);
+            var importedDoc = JsonNode.Parse(edited)!;
+            Check(importedDoc["audio"]!["source"]!.GetValue<string>() == "own" && importedDoc["audio"]!["future"]!["keep"]!.GetValue<int>() == 7, "unsupported music source and future fields preserved");
+            Check(!migrated.ImportLegacy(legacy) && !new AudioSettingsStore(importedPath).ImportLegacy(legacy) && File.ReadAllText(importedPath) == edited, "migration does not overwrite native preferences");
+            foreach (string mode in new[] { "off", "effects", "all" })
+            {
+                var older = new AudioSettingsStore(Path.Combine(directory, "old-" + mode + ".json"));
+                Check(older.ImportLegacy(new Dictionary<string,string> { ["dt.sound"] = mode }) && older.Settings == new AudioSettings(Muted: mode == "off", MusicOff: mode == "effects"), "old mode " + mode);
+            }
+            string retryPath = Path.Combine(directory, "retry-import.json");
+            var retry = new AudioSettingsStore(retryPath);
+            using (var guard = new FileStream(retryPath + ".lock", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                Check(!retry.ImportLegacy(legacy) && !retry.HasSavedSettings && !File.Exists(retryPath) && retry.Settings == new AudioSettings(), "failed import leaves native settings untouched");
+            Check(retry.ImportLegacy(legacy) && retry.Error is null, "import retries after lock release");
+            foreach (string badAudio in new[] { "{", "[]", "{\"music\":2}", "{\"board\":\"loud\"}", "{\"muteOthers\":3}" })
+            {
+                string badPath = Path.Combine(directory, Guid.NewGuid() + ".json");
+                var badImport = new AudioSettingsStore(badPath);
+                Check(!badImport.ImportLegacy(new Dictionary<string,string> { ["dt.audio.v1"] = badAudio }) && badImport.Error is not null && !File.Exists(badPath), "invalid imported audio does not create native settings");
+            }
+            var empty = new AudioSettingsStore(Path.Combine(directory, "empty-import.json"));
+            Check(!empty.ImportLegacy(new Dictionary<string,string>()) && !empty.HasSavedSettings && empty.Error is null, "unrelated profile does not force preferences");
+            var partial = new AudioSettingsStore(Path.Combine(directory, "partial-import.json"));
+            Check(partial.ImportLegacy(new Dictionary<string,string> { ["dt.audio.v1"] = "{\"music\":0.2}" }) && partial.Settings == new AudioSettings(Music: .2f), "partial backup keeps original defaults");
+            var existingBad = new AudioSettingsStore(path);
+            File.WriteAllText(path, "external edit");
+            Check(!existingBad.Save(new()), "external edit detected");
+            Check(!existingBad.ImportLegacy(legacy) && File.ReadAllText(path) == "external edit", "readonly settings cannot be overwritten by import");
         }
         finally
         {

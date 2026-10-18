@@ -15,6 +15,7 @@ public sealed class AudioSettingsStore
     public AudioSettings Settings { get; private set; } = new();
     public string? Error { get; private set; }
     public bool ReadOnly { get; private set; }
+    public bool HasSavedSettings => loadedText is not null;
     public AudioSettingsStore(string path)
     {
         this.path = Path.GetFullPath(path);
@@ -26,20 +27,43 @@ public sealed class AudioSettingsStore
             if (document["version"]?.GetValue<int>() != 1) throw new JsonException("Unsupported settings version.");
             var audio = document["audio"] as JsonObject;
             if (document["audio"] is not null && audio is null) throw new JsonException("Invalid audio settings.");
-            Settings = new(audio?["music"]?.GetValue<float>() ?? .6f, audio?["sfx"]?.GetValue<float>() ?? .8f,
-                audio?["muted"]?.GetValue<bool>() ?? false, audio?["musicOff"]?.GetValue<bool>() ?? false,
-                audio?["board"]?.GetValue<float>() ?? .8f, audio?["muteOthers"]?.GetValue<bool>() ?? false);
+            Settings = ReadAudio(audio);
             Validate(Settings);
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException or FormatException)
         { Settings = new(); ReadOnly = true; Error = "Settings could not be loaded. The original file has been preserved: " + error.Message; }
+    }
+    private static AudioSettings ReadAudio(JsonObject? audio) => new(audio?["music"]?.GetValue<float>() ?? .6f, audio?["sfx"]?.GetValue<float>() ?? .8f,
+        audio?["muted"]?.GetValue<bool>() ?? false, audio?["musicOff"]?.GetValue<bool>() ?? false,
+        audio?["board"]?.GetValue<float>() ?? .8f, audio?["muteOthers"]?.GetValue<bool>() ?? false);
+    /// <summary>Imports only before native preferences exist. The archived source and unrecognized fields are preserved.</summary>
+    public bool ImportLegacy(IReadOnlyDictionary<string, string> storage)
+    {
+        if (ReadOnly || HasSavedSettings) return false;
+        if (!storage.ContainsKey("dt.audio.v1") && !storage.ContainsKey("dt.sound")) return false;
+        try
+        {
+            JsonNode? parsed = storage.TryGetValue("dt.audio.v1", out string? raw) ? JsonNode.Parse(raw) : null;
+            var audio = parsed as JsonObject;
+            if (parsed is not null && audio is null) throw new JsonException("Legacy audio settings must be an object.");
+            if (audio is null)
+            {
+                string? mode = storage.GetValueOrDefault("dt.sound");
+                audio = new JsonObject { ["muted"] = mode == "off", ["musicOff"] = mode == "effects" };
+            }
+            var settings = ReadAudio(audio); Validate(settings);
+            return Save(settings, audio);
+        }
+        catch (Exception error) when (error is JsonException or InvalidOperationException or FormatException or OverflowException)
+        { Error = "Imported audio preferences could not be applied. Your backup was preserved: " + error.Message; return false; }
     }
     private static void Validate(AudioSettings settings)
     {
         if (!float.IsFinite(settings.Music) || !float.IsFinite(settings.Effects) || !float.IsFinite(settings.Board) || settings.Music is < 0 or > 1 || settings.Effects is < 0 or > 1 || settings.Board is < 0 or > 1)
             throw new JsonException("Audio volume must be between 0 and 1.");
     }
-    public bool Save(AudioSettings settings)
+    public bool Save(AudioSettings settings) => Save(settings, null);
+    private bool Save(AudioSettings settings, JsonObject? imported)
     {
         if (ReadOnly) return false;
         string? temporary = null;
@@ -51,6 +75,7 @@ public sealed class AudioSettingsStore
             string? current = File.Exists(path) ? File.ReadAllText(path) : null;
             if (current != loadedText) { ReadOnly = true; Error = "Settings changed in another app instance. Restart to load them; your saved file was preserved."; return false; }
             var next = (JsonObject)document.DeepClone();
+            if (imported is not null) next["audio"] = imported.DeepClone();
             var audio = next["audio"] as JsonObject ?? new JsonObject();
             if (next["audio"] is null) next["audio"] = audio;
             audio["music"] = settings.Music; audio["sfx"] = settings.Effects;
