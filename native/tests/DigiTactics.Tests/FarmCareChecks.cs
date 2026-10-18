@@ -11,7 +11,7 @@ internal static class FarmCareChecks
         using var file = File.OpenRead(Path.Combine(root, "tests/fixtures/farm-care.json.gz"));
         using var gzip = new GZipStream(file, CompressionMode.Decompress);
         using var fixture = JsonDocument.Parse(gzip);
-        int checks = 0;
+        int checks = FarmEventChecks.Run();
         foreach (var test in fixture.RootElement.EnumerateArray())
         {
             var result = FarmCare.Apply(test.GetProperty("farm").GetRawText(), test.GetProperty("wallet").GetRawText(), test.GetProperty("legend").GetRawText(), test.GetProperty("time").GetInt64(),

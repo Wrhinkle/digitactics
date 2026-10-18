@@ -109,6 +109,8 @@ internal sealed partial class FarmView : IDisposable
     }
     public void React(string? id, string role) { if (id is not null && actors.TryGetValue(id, out var actor)) actor.Animator.Play(role); }
     public void StartTraining(string id) => choreography.StartTraining(id);
+    public (double X, double Z)? Position(string id) => actors.TryGetValue(id, out var actor) ? (actor.Resident.X, actor.Resident.Z) : null;
+    public void Toilet(string id) => choreography.Toilet(id);
     public string? NearestPlaymate(string? id) => id is null ? null : choreography.NearestPlaymate(id);
     public void FinishTraining(string id, double score) => choreography.FinishTraining(id, score);
     public void Care(string? id, FarmCareAction action, string? option, JsonObject receipt, string? before)

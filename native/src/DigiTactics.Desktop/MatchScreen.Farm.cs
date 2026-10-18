@@ -12,6 +12,8 @@ internal sealed partial class MatchScreen
     private bool farmManagement;
     private FarmView? farmView;
     private string? farmViewError;
+    private bool farmWasVisible;
+    private readonly List<(string Text, double Remaining)> farmNotices = [];
     private int FarmSceneWidth => Math.Max(250, (int)(size.X * .54f) - 24);
     private int FarmSceneHeight => Math.Max(200, size.Y - 150);
     public int FarmDrawCalls => farmView?.DrawCalls ?? 0;
@@ -38,15 +40,54 @@ internal sealed partial class MatchScreen
     }
     private void UpdateFarmView(double delta)
     {
+        for (int i = farmNotices.Count - 1; i >= 0; i--)
+        {
+            var notice = farmNotices[i];
+            if (notice.Remaining <= delta) farmNotices.RemoveAt(i);
+            else farmNotices[i] = (notice.Text, notice.Remaining - delta);
+        }
+        if (!showFarm) farmWasVisible = false;
         if (!showFarm || farm?.Save is null || farm.Error is not null) return;
         try
         {
             farmView ??= new();
             farmView.Sync(farm.Save, profile!.Storage.GetValueOrDefault("dt.legendevo.v1"), profile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
+            FarmEvents(farm.DrainEvents(), !farmWasVisible); farmWasVisible = true;
             farmView.Update(delta); farmViewError = null;
         }
         catch (Exception error) when (error is InvalidDataException or IOException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
         { farmViewError = "Room view unavailable: " + error.Message; }
+    }
+    private void FarmEvents(JsonObject[] events, bool away)
+    {
+        void Notice(string text) { farmNotices.Add((text, 4.2)); if (farmNotices.Count > 5) farmNotices.RemoveAt(0); }
+        if (away)
+        {
+            var parts = new List<string>();
+            foreach (var (type, singular, plural) in new[] { ("poop", "poop", "poops"), ("toilet", "toilet trip", "toilet trips"), ("sick", "got sick", "got sick"), ("mistake", "care mistake", "care mistakes") })
+            {
+                int count = events.Count(e => e["type"]?.GetValue<string>() == type);
+                if (count > 0) parts.Add($"{count} {(count == 1 ? singular : plural)}");
+            }
+            if (parts.Count > 0) Notice("While you were away: " + string.Join(", ", parts) + ".");
+            return;
+        }
+        foreach (var e in events)
+        {
+            string id = e["id"]!.GetValue<string>();
+            string name = CosmeticCollection.Item("legend", id)?.Name ?? id;
+            string? why = e["why"]?.GetValue<string>();
+            switch (e["type"]?.GetValue<string>())
+            {
+                case "poop": audio.Play("place"); break;
+                case "toilet": farmView?.Toilet(id); break;
+                case "sick": Notice($"{name} got sick{(why == "dirty" ? " from the dirty room" : "")}. Use a bandage or medicine."); break;
+                case "tantrum": Notice($"{name} is throwing a tantrum! Scold it."); farmView?.React(id, "taunt"); break;
+                case "mistake":
+                    string reason = why switch { "hungry" => "was hungry too long", "sad" => "was sad too long", "lights" => "was sleepy with the lights on", "tantrum" => "had a tantrum nobody handled", "sick" => "was sick too long", _ => "" };
+                    Notice($"Care mistake: {name} {reason}."); break;
+            }
+        }
     }
     private void FarmPanel()
     {
@@ -76,6 +117,7 @@ internal sealed partial class MatchScreen
         if (Button("closeFarm", "Back")) showFarm = false;
         if (farm!.Error is { } farmError) { CollectionText(farmError); if (Button("retryFarm", "Retry saving farm")) farm.Refresh(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()); ImGui.End(); return; }
         if (farm.Message is { Length: > 0 } message) CollectionText(message);
+        foreach (var notice in farmNotices) CollectionText(notice.Text);
         try
         {
             if (farm.Save is null) { ImGui.End(); return; }

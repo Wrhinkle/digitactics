@@ -79,6 +79,11 @@ public sealed class FarmChoreography(Func<double>? random = null)
         if (!residents.TryGetValue(id, out var a)) return;
         a.GoingToBed = false; WalkTo(a, 3, 1.8, () => a.View.Yaw = .6);
     }
+    public void Toilet(string id)
+    {
+        if (!residents.TryGetValue(id, out var a)) return;
+        WalkTo(a, 3.3, -2.2, () => { a.View.Play("happy"); a.Busy = 1.2; });
+    }
     public void FinishTraining(string id, double score)
     {
         if (!residents.TryGetValue(id, out var a)) return;
