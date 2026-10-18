@@ -9,6 +9,11 @@ internal static class UiTextChecks
     private sealed record ConsumableCase(string Variant, string Id, int Held, int Bench, string Text);
     public static void Run(ContentCatalog catalog)
     {
+        (int? Previous, double Seconds, string? Cue)[] countdownCases =
+        [ (null,30,null), (null,5.01,null), (6,5,"tick_normal"), (5,4.01,null), (5,4,"tick_normal"),
+          (2,1,"tick_last"), (1,.01,null), (1,0,null), (0,-1,null), (null,1,"tick_last"), (30,3,"tick_normal") ];
+        foreach (var sample in countdownCases)
+            if (CountdownCue.Select(sample.Previous,sample.Seconds) != sample.Cue) throw new InvalidOperationException("Countdown cue boundary/repeat mismatch.");
         IncomePreviewChecks.Run(catalog);
         PlayerRoundResultChecks.Run(catalog);
         var display = new DisplayText(); int abilities = 0;

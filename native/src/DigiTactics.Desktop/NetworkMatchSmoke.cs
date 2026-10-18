@@ -21,6 +21,8 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private bool companionRendered;
     private bool arenaEmoteRendered;
     private bool danceRendered;
+    private int networkMenuStep;
+    private double menuCountdown;
     private int travelStep;
     private double travelX, travelZ;
     private readonly bool spectator;
@@ -71,6 +73,23 @@ internal sealed class NetworkMatchSmoke : IDisposable
             if (screen.Buttons.TryGetValue(socialCommands[socialStep], out var socialPoint))
             { ImGui.GetIO().AddMousePosEvent(socialPoint.X, socialPoint.Y); ImGui.GetIO().AddMouseButtonEvent(0, true); down = true; }
             return;
+        }
+        if (!spectator && stage == 0 && screen.Session?.Rounds.RoundType != "carousel" && networkMenuStep < 4)
+        {
+            var io = ImGui.GetIO();
+            if (networkMenuStep == 0)
+            {
+                menuCountdown = screen.NetworkPlanningRemaining ?? throw new InvalidOperationException("Missing online countdown before opening menu.");
+                var menuPoint = screen.Buttons["gameMenu"]; io.AddMousePosEvent(menuPoint.X,menuPoint.Y); io.AddMouseButtonEvent(0,true);
+            }
+            else if (networkMenuStep == 2)
+            {
+                if (screen.IsPaused || screen.Buttons.ContainsKey("menuPause") || screen.NetworkPlanningRemaining is not { } left || left >= menuCountdown)
+                    throw new InvalidOperationException("Online menu stopped the countdown or exposed pause.");
+                var resumePoint = screen.Buttons["resume"]; io.AddMousePosEvent(resumePoint.X,resumePoint.Y); io.AddMouseButtonEvent(0,true);
+            }
+            else io.AddMouseButtonEvent(0,false);
+            networkMenuStep++; cooldown = 3; return;
         }
         if (!spectator && stage == 0 && screen.Session?.Rounds.RoundType != "carousel" && travelStep < 3)
         {

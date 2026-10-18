@@ -7,6 +7,25 @@ internal sealed partial class MatchScreen
 {
     internal double? NetworkPlanningDuration => networkReplica?.Match?.PlanMs / 1000;
     internal double? NetworkPlanningRemaining { get; private set; }
+    private int? networkCountdownSecond;
+    private long? networkCountdownPhase;
+    private MatchPlanningSession? networkCountdownSession;
+    private void UpdateNetworkCountdown()
+    {
+        NetworkPlanningRemaining = null;
+        if (networkRoom is null || networkReplica?.Match is not { } match || Session is null || Session.State.Over || !Human.Alive ||
+            Session.Rounds.Phase != MatchPhase.Planning || Session.Rounds.RoundType == "carousel")
+        {
+            networkCountdownSecond = null; networkCountdownPhase = null; networkCountdownSession = null; return;
+        }
+        if (!ReferenceEquals(networkCountdownSession, Session) || networkCountdownPhase != match.PhaseAt)
+        {
+            networkCountdownSession = Session; networkCountdownPhase = match.PhaseAt; networkCountdownSecond = null;
+        }
+        NetworkPlanningRemaining = Math.Max(0,(match.PhaseAt + match.PlanMs - networkRoom.ServerTime(networkClock())) / 1000);
+        if (CountdownCue.Select(networkCountdownSecond, NetworkPlanningRemaining.Value) is { } cue) audio.Play(cue);
+        networkCountdownSecond = (int)Math.Ceiling(NetworkPlanningRemaining.Value);
+    }
     private double? resultCountdown;
     private MatchPlanningSession? clockSession;
     private string? clockRound;
@@ -23,20 +42,17 @@ internal sealed partial class MatchScreen
         if (!PlanningTimerEnabled || Session.State.Over || !Human.Alive || Session.Rounds.Phase != MatchPhase.Planning || Session.Rounds.RoundType == "carousel") return;
         int previous = (int)Math.Ceiling(PlanningRemaining);
         PlanningRemaining = Math.Max(0, PlanningRemaining - Math.Max(0,delta));
-        int remaining = (int)Math.Ceiling(PlanningRemaining);
-        if (remaining != previous && remaining is > 0 and <= 5) audio.Play(remaining == 1 ? "tick_last" : "tick_normal");
+        if (CountdownCue.Select(previous, PlanningRemaining) is { } cue) audio.Play(cue);
         if (PlanningRemaining <= 0) Fight();
     }
     private void PlanningTimerControls()
     {
-        NetworkPlanningRemaining = null;
         if (Session!.State.Over || !Human.Alive) return;
         if (networkRoom is not null)
         {
-            if (networkReplica?.Match is { } match && Session.Rounds.Phase == MatchPhase.Planning && Session.Rounds.RoundType != "carousel")
+            if (NetworkPlanningRemaining is { } remaining)
             {
-                NetworkPlanningRemaining = Math.Max(0,(match.PhaseAt + match.PlanMs - networkRoom.ServerTime(networkClock())) / 1000);
-                ImGui.SameLine(); ImGui.Text($"{Math.Ceiling(NetworkPlanningRemaining.Value)}s");
+                ImGui.SameLine(); ImGui.Text($"{Math.Ceiling(remaining)}s");
             }
             return;
         }
