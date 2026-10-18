@@ -1915,3 +1915,12 @@ planning rounds; combat projection and settlement dispatch still need integratio
 followed by production UI, multiplayer, migration and release acceptance.
 
 Validation: **171,422,706 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+
+### Continued acceptance: music metadata and original rigid parts
+
+Built-in music now carries original source titles and planning/combat metadata. Root independently reviewed nine final captures at normal, minimum, and short sizes plus all three passing UI logs (artifacts/root-music-metadata-review.json). The short Sound panel exposes complete status via scrolling while Close remains fixed. This does not establish listening quality or native OS file-chooser behavior. The normal build now checks all nine exported title/phase/duration/PCM metadata cases.
+
+The first three DW1 rigid-part repairs passed 5,645 source checks and expanded native all-node parity. Root independently inspected 216 role poses and six fitted texture views (artifacts/model-visual-audit-after-0e702/root-dw1-first-three-review.json); no gross detachment/stretching was observed, with continuous transition acceptance still separately scoped. The normal build now runs the rigid-part regression.
+
+Root additionally inspected 900 poses and 30 fitted material views for frozen-v3 sources 0891-0905. Materials were coherent in the inspected views; several cinematic actions leave diagnostic cells, and those remain live-board investigation holds, not full-model approvals (artifacts/model-visual-audit-v3/reviews-0891-0905.json). Remaining roster, carousel, source-material and assembly work is active. No release was published from this checkpoint.

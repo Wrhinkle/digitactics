@@ -23,6 +23,7 @@ try {
     }
     Invoke-Checked 'node' @('../tools/build.cjs', (Join-Path $audioTools 'node_modules/esbuild'))
     Invoke-Checked 'node' @('tools/export-audio.cjs')
+    Invoke-Checked 'node' @('tools/test-audio-metadata.cjs')
     Invoke-Checked 'node' @('tools/test-mystery-sounds.cjs','artifacts/audio-content')
     Invoke-Checked 'node' @('../tests/profile-backup.cjs')
     Invoke-Checked 'node' @('tools/export-cosmetics.cjs')
@@ -175,6 +176,7 @@ try {
     Invoke-Checked 'node' @('tools/test-model-body-scale.cjs', 'biyomon:0')
     Invoke-Checked 'node' @('tools/test-model-body-scale.cjs', 'candlemon:1')
     Invoke-Checked 'node' @('tools/test-model-clam-scale.cjs')
+    Invoke-Checked 'node' @('tools/test-model-rigid-parts.cjs')
     Invoke-Checked 'node' @('tools/test-model-living-motion.cjs')
     Invoke-Checked 'node' @('tools/test-model-softbody.cjs')
     Invoke-Checked 'node' @('tools/test-model-fallback-anatomy.cjs')
