@@ -103,6 +103,58 @@ def repair(entry, apply):
             "material": entry["material"], "albedoImage": entry["albedoImage"]}
 
 
+def alpha_repair(entry, apply):
+    """Restore only reviewed embedded cutouts; never infer alpha from a color."""
+    path = (ROOT / entry["asset"]).resolve()
+    if not path.is_relative_to(ROOT / "models"):
+        raise ValueError("Repair asset must stay inside models/")
+    original = path.read_bytes()
+    actual_hash = hashlib.sha256(original).hexdigest()
+    if actual_hash == entry["repairedSha256"]:
+        return {"asset": entry["asset"], "state": "correct", "sha256": actual_hash}
+    if actual_hash != entry["originalSha256"]:
+        raise ValueError("Cutout asset differs from its reviewed original")
+    document, chunks = read_glb(original)
+    matches = [material for material in document["materials"] if material.get("name") == entry["material"]]
+    if len(matches) != 1:
+        raise ValueError("Expected exactly one reviewed cutout material")
+    material = matches[0]
+    if material.get("alphaMode") != entry.get("originalAlphaMode") or "alphaCutoff" in material:
+        raise ValueError("Original cutout mode differs from reviewed mode")
+    texture = material.get("pbrMetallicRoughness", {}).get("baseColorTexture")
+    if not texture or image_name(document, texture["index"]) != entry["albedoImage"]:
+        raise ValueError("Cutout diffuse binding differs from reviewed image")
+    before = copy.deepcopy(document)
+    if "originalBaseColorAlpha" in entry:
+        factor = material["pbrMetallicRoughness"].get("baseColorFactor")
+        if not factor or factor[3] != entry["originalBaseColorAlpha"]:
+            raise ValueError("Original opacity differs from reviewed factor")
+        factor[3] = 1
+    material["alphaMode"] = "MASK"
+    material["alphaCutoff"] = .5
+    expected = copy.deepcopy(before)
+    expected_material = next(m for m in expected["materials"] if m.get("name") == entry["material"])
+    expected_material.update(alphaMode="MASK", alphaCutoff=.5)
+    if "originalBaseColorAlpha" in entry:
+        expected_material["pbrMetallicRoughness"]["baseColorFactor"][3] = 1
+    result = write_glb(document, chunks)
+    actual, actual_chunks = read_glb(result)
+    if actual != expected or actual_chunks != chunks:
+        raise ValueError("Cutout repair changed unrelated GLB data")
+    if hashlib.sha256(result).hexdigest() != entry["repairedSha256"]:
+        raise ValueError("Cutout output differs from verified repair")
+    if not apply:
+        raise ValueError("Reviewed cutout correction is not applied; use --apply")
+    backup = ROOT / "native/artifacts/model-material-originals" / path.name
+    backup.parent.mkdir(parents=True, exist_ok=True)
+    if backup.exists() and backup.read_bytes() != original:
+        raise ValueError("Existing original backup has different bytes")
+    backup.write_bytes(original)
+    path.write_bytes(result)
+    return {"asset": entry["asset"], "state": "repaired", "sha256": entry["repairedSha256"],
+            "preservedBinaryChunks": True, "alphaMode": "MASK", "alphaCutoff": .5}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     operation = parser.add_mutually_exclusive_group()
@@ -111,11 +163,25 @@ def main():
     options = parser.parse_args()
     manifest = json.loads(MANIFEST.read_text())
     rows = [repair(entry, options.apply) for entry in manifest["repairs"]]
-    for entry in manifest.get("sourceRecoveries", []) + manifest.get("geometryRecoveries", []):
+    rows += [alpha_repair(entry, options.apply) for entry in manifest.get("alphaRepairs", [])]
+    for entry in manifest.get("sourceRecoveries", []) + manifest.get("geometryRecoveries", []) + manifest.get("uvRecoveries", []):
         path = (ROOT / entry["asset"]).resolve()
         if not path.is_relative_to(ROOT / "models") or hashlib.sha256(path.read_bytes()).hexdigest() != entry["repairedSha256"]:
             raise ValueError("Recovered source asset differs from its verified repair: " + entry["asset"])
         rows.append({"asset": entry["asset"], "state": "correct", "sha256": entry["repairedSha256"]})
+    mappings = json.loads((ROOT / "models/index.json").read_text())
+    portraits = json.loads((ROOT / "models/portraits/index.json").read_text())
+    for entry in manifest.get("mappingCorrections", []):
+        path = (ROOT / entry["asset"]).resolve()
+        portrait = portraits.get(entry["sourceKey"], {})
+        portrait_path = (ROOT / "models/portraits" / entry["portrait"]).resolve()
+        if (not path.is_relative_to(ROOT / "models") or mappings.get(entry["sourceKey"]) != entry["asset"] or
+                hashlib.sha256(path.read_bytes()).hexdigest() != entry["repairedSha256"] or
+                portrait.get("src") != entry["asset"] or portrait.get("file") != entry["portrait"] or
+                not portrait_path.is_relative_to(ROOT / "models/portraits") or
+                hashlib.sha256(portrait_path.read_bytes()).hexdigest() != entry["portraitSha256"]):
+            raise ValueError("Reviewed model/portrait mapping differs: " + entry["sourceKey"])
+        rows.append({"source": entry["sourceKey"], "asset": entry["asset"], "state": "correct"})
     print(json.dumps({"schemaVersion": 1, "repairs": rows}, indent=2))
 
 

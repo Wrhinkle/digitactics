@@ -110,6 +110,73 @@ that differs from the pinned recovered bytes. Recovery validates all retained
 decoded attributes, rig/animation metadata, source weights and source material
 assignments. Normal builds verify only the checked-in asset hashes.
 
+Leopardmon X's Links import uses the correct original atlases but inverted V
+coordinates. `recover-model-uv.py` matches all 11,982 original DAE triangles and
+their explicit diffuse UV bindings. It preserves U and negates V on only the
+three reviewed UV accessors. All 272 decoded accessors are checked; other data,
+original binary bytes, images, materials, rig and animations are retained.
+The optional tool writes a pinned candidate and proof report without replacing
+the production asset. Its archive, original, source transforms, diffuse bindings
+and output are all checked before writing. The tracked repaired asset is checked
+by the normal `repair-model-materials.py --check` command.
+
+```powershell
+python native/tools/recover-model-uv.py --model leopardmonx --archive C:/path/310676.zip --original C:/path/original.glb --output-dir native/artifacts/leopardmonx-recovery
+```
+
+Five Digimon World imports had explicit transparent pixels in their embedded
+color images but omitted material alpha mode: Birdramon, Cherrymon, DemiMeramon,
+Patamon and Poyomon. The reviewed transparent areas follow the original flame,
+leaf, ear and body-fringe boundaries. Their pinned `alphaRepairs` add only
+`alphaMode: MASK` and `alphaCutoff: 0.5`; every image and binary chunk remains
+unchanged. Poyomon also has alpha 254 pixels, which remain visible. These exact
+asset repairs do not infer transparency from black RGB or modify other models.
+`repair-model-materials.py --apply` reproduces them from their original hashes;
+`--check` requires the exact repaired bytes. Source geometry and animation quality
+remain separate review scopes.
+
+Gammamon has a separate reviewed functional correction in `alphaRepairs`: its
+global 0.6 material opacity exposed the opposite face through its head and body.
+The original source PNG is binary alpha (109 transparent pixels, 1,048,467 opaque),
+while source exports disagree about global opacity: FBX/DAE use 0.5, but OBJ/MTL
+uses image opacity only. The exact-asset correction sets the global factor to 1
+and uses `MASK` with cutoff 0.5, preserving the embedded image and its cutouts.
+This is documented as a functional correction rather than strict reproduction
+of the inconsistent FBX material. Other color factors and material properties
+remain unchanged.
+
+Tsunomon's Digimon World archive includes `Tsunomon.mtl`, but its OBJ references
+the nonexistent `untitled.mtl`. The imported GLB consequently lost its diffuse
+texture and UVs. `recover-model-obj-materials.py` matches all 150 triangles to the
+original OBJ and restores its 233 UV vertices and exact `Tsunomon.png` bytes.
+The original white diffuse factor comes from the supplied MTL. Every existing
+attribute and index remains bit-identical; no seam duplication is needed.
+The helper rejects changed source archives, members, originals and outputs and
+writes a candidate only. Normal builds verify the pinned repaired asset.
+
+```powershell
+python native/tools/recover-model-obj-materials.py --model dw1_tsunomon --archive C:/path/334142.zip --original C:/path/original.glb
+```
+
+Sukamon's import selected the supplied PlatinumSukamon image. The original DAE's
+material name mentions `chr752`, but its actual diffuse sampler resolves to the
+normal `chr313a01.png`. `recover-model-source-atlas.py` follows that full binding
+and checks all 2,604 surviving UV triangles before appending the exact source
+image and changing only the diffuse index. All 185 existing accessors, image
+bytes, rig and animation remain unchanged. The tool writes a pinned candidate.
+
+```powershell
+python native/tools/recover-model-source-atlas.py --model sukamon --archive C:/path/304086.zip --original C:/path/original.glb
+```
+
+`drg:Ravemon` previously selected the archive's `chr778` Burst Mode geometry
+despite declaring the normal form. Its model and portrait now reuse the existing
+normal `chr740` asset, also used by `catalog:CS_Ravemon:chr740`. The separately
+named Burst Mode remains available. The manifest's `mappingCorrections` pins
+the normal asset, mapping and portrait; normal checks detect either model or
+portrait drift. This avoids inventing transparency rules for the mistakenly
+selected Burst effect cards.
+
 Source archive pages:
 
 - [PileVolcamon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324353/)
@@ -121,3 +188,7 @@ Source archive pages:
 - [Grademon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324410/)
 - [Megidramon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324340/)
 - [Neptunemon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324351/)
+- [Leopardmon X](https://models.spriters-resource.com/mobile/digimonlinks/asset/310676/)
+- [Tsunomon](https://models.spriters-resource.com/playstation/digimonworld/asset/334142/)
+- [Sukamon / PlatinumSukamon](https://models.spriters-resource.com/mobile/digimonlinks/asset/304086/)
+- [Ravemon / Burst Mode](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/)

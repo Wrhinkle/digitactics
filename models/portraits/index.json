@@ -1664,8 +1664,8 @@
   "src": "models/files/rip_cs_gatomon.glb"
  },
  "drg:Ravemon": {
-  "file": "drg_Ravemon.28787e15.webp",
-  "src": "models/files/rip_cs_ravemon.glb"
+  "file": "catalog_CS_Ravemon_chr740.662199b3.webp",
+  "src": "models/files/rip_cat_cs_ravemon_chr740.glb"
  },
  "drg:Cyclonemon": {
   "file": "drg_Cyclonemon.7e9251de.webp",

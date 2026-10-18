@@ -452,6 +452,69 @@
         "animationFrames": 0,
         "scope": "Source material restoration only"
       }
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_dw1_tsunomon.glb",
+      "originalSha256": "0b33e8f6145211a6634148cdf72c0a317c4829c191aa9d05993f9b121b673f4a",
+      "repairedSha256": "e7b4d0913c480cccd6578e3aaf37d3b6c614788bb13c2fdfa66beca3674771ce",
+      "archiveSha256": "d13c6a4a9eb27c75c6814613cfa2ffeedd17ffc05a47437b4b1c7db64173ebae",
+      "sourceUrl": "https://models.spriters-resource.com/playstation/digimonworld/asset/334142/",
+      "objSha256": "7e19c7e6ae797dcef74326b5d6d30fb9fc2b7af0ade9847ab5a6ce64f4fd1165",
+      "mtlSha256": "f73f1130717155a96fdcc0023d49f89aee977e78d310591c60e6c96de0101cc6",
+      "atlasSha256": "6d2003398dad3fa8a9d2fa02d61dcd987bfd08b87c2ad08e7a4fa574688051b1",
+      "missingSourceMaterialLibrary": "untitled.mtl",
+      "recoveredMaterialLibrary": "Tsunomon.mtl",
+      "sourceDiffuseBinding": "VRAM_page_#5 -> Tsunomon.png",
+      "matchedTriangles": 150,
+      "maximumNormalizedPositionError": 8.956153004181309e-05,
+      "restoredUvVertices": 233,
+      "uvSeamConflicts": 0,
+      "uvTransform": "U=sourceU, V=1-sourceV",
+      "preservedTopology": true,
+      "preservedOriginalBinaryBytes": true,
+      "preservedExistingAccessorsBitForBit": true,
+      "preservedRigAnimationAndOtherMetadata": true,
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Material/identity correction only",
+        "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_sukamon.glb",
+      "originalSha256": "3f3b60ad528f4770ed3c8e507362d6ece9266f6277f7f324bb7738468eb96991",
+      "repairedSha256": "89e9f909f47e913ec86f83e8e508264eebdaf483f51da9ff346a5f11b033ede4",
+      "archiveSha256": "e3494921b9789f33dddb7b0a8f58c273563048adddb19c995e00fa3fb3dc3ac6",
+      "sourceUrl": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304086/",
+      "daeSha256": "ff028645a3ddcfef1e8021b75e1159dc2cd50ea2431c3bce967e33ef3b718c66",
+      "albedoSha256": "794a9e5a9e82200c71fcdea3953c28265fcb4a9482374019c008b36a4e352706",
+      "replacedBinding": "chr752a01.png -> chr313a01.png",
+      "preservedOriginalBinaryBytes": true,
+      "preservedAllAccessorsBitForBit": true,
+      "preservedRigAnimationsMaterialsExceptDiffuseIndex": true,
+      "verifiedAccessors": 185,
+      "sourceProof": {
+        "matchedTriangles": 2604,
+        "maximumNormalizedPositionError": 0.00012513871653644924,
+        "maximumUvError": 0.0001325420767528812,
+        "sourceMaterialId": "VisualMaterial",
+        "sourceMaterialName": "chr752a01-material",
+        "sourceDiffuse": "chr313a01.png",
+        "sourceUvBinding": "sole interleaved vertex TEXCOORD; no competing UV sets",
+        "sourceUvInput": "GeometrySource2",
+        "sourceToGltfUv": "U=sourceU, V=1-sourceV"
+      },
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Material/identity correction only",
+        "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
+      }
     }
   ],
   "geometryRecoveries": [
@@ -512,6 +575,304 @@
         "status": "VERIFIED",
         "fittedViews": 2,
         "animationFrames": 60
+      }
+    }
+  ],
+  "alphaRepairs": [
+    {
+      "asset": "models/files/rip_dw1_birdramon.glb",
+      "originalSha256": "26c3b599a483e1fcad7c68734dda548003d7c4325c0c137e767bb03a89e65ab1",
+      "repairedSha256": "c751aafdc0cd64703fb14a24c89e7ce1619279185a12546aa521c15a2895417c",
+      "material": "BirdramonPS1_W1.material",
+      "albedoImage": "BirdramonPS1_W1_Tex",
+      "sourceUrl": "https://models.spriters-resource.com/playstation/digimonworld/asset/575887/",
+      "embeddedImageSha256": "03d73819ee731f134bc5c53a99b7fedf6f4253a871047d2da752a9aca0451116",
+      "embeddedAlphaLevels": [
+        0,
+        255
+      ],
+      "transparentPixels": 4799,
+      "operation": "Restore MASK alpha mode and 0.5 cutoff only; existing image alpha is unchanged.",
+      "preservedBinaryChunks": true,
+      "reason": "Reviewed cutout boundary pixels have explicit alpha0 in the embedded original image. Default OPAQUE exposed the stored black/gray RGB instead.",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Material/identity correction only",
+        "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
+      }
+    },
+    {
+      "asset": "models/files/rip_dw1_cherrymon.glb",
+      "originalSha256": "c0ecdfcaf2cc5f06c97f475b4d4e5e448ab2a1885e3e3dd8a8cf97d664d1e933",
+      "repairedSha256": "cf21acb55a4d4ef4da90723682dcee5db03df23bc0af3a9fc371212cb937123e",
+      "material": "Material_0",
+      "albedoImage": "texture",
+      "sourceUrl": "https://models.spriters-resource.com/playstation/digimonworld/asset/536293/",
+      "embeddedImageSha256": "19a6ca9fd7dd2a69b9c4d1939d0ebcd1b2ffbed5f86917fa9f4375f9f665d46a",
+      "embeddedAlphaLevels": [
+        0,
+        255
+      ],
+      "transparentPixels": 7011,
+      "operation": "Restore MASK alpha mode and 0.5 cutoff only; existing image alpha is unchanged.",
+      "preservedBinaryChunks": true,
+      "reason": "Reviewed cutout boundary pixels have explicit alpha0 in the embedded original image. Default OPAQUE exposed the stored black/gray RGB instead.",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Material/identity correction only",
+        "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
+      }
+    },
+    {
+      "asset": "models/files/rip_dw1_demimeramon.glb",
+      "originalSha256": "8176315e8aa425976afc75789c5b11b46e7894c3c6469f713dae2a6be6cd8aae",
+      "repairedSha256": "bada9d6820cb335c880e7843fcf16d2d28d72192058c49087425c9136a630dc8",
+      "material": "PetitMeramon",
+      "albedoImage": "PetitMeramon_Texture",
+      "sourceUrl": "https://models.spriters-resource.com/playstation/digimonworld/asset/336389/",
+      "embeddedImageSha256": "9bd7fb09f90831a7171d4b0930f9816103675bc132db4fd77130522daaf16d8e",
+      "embeddedAlphaLevels": [
+        0,
+        255
+      ],
+      "transparentPixels": 2739,
+      "operation": "Restore MASK alpha mode and 0.5 cutoff only; existing image alpha is unchanged.",
+      "preservedBinaryChunks": true,
+      "reason": "Reviewed cutout boundary pixels have explicit alpha0 in the embedded original image. Default OPAQUE exposed the stored black/gray RGB instead.",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Material/identity correction only",
+        "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
+      }
+    },
+    {
+      "asset": "models/files/rip_dw1_patamon.glb",
+      "originalSha256": "e7a965b4762951f66a9a6908281733432e8b5c71794d45f7ca5784756b54cb4f",
+      "repairedSha256": "89000857c929d18f5b1254417d2f15ddbb5e9691e72ec7862787b09f2718ba42",
+      "material": "PatamonPS1_W1.material",
+      "albedoImage": "PatamonPS1_W1_Tex",
+      "sourceUrl": "https://models.spriters-resource.com/playstation/digimonworld/asset/576038/",
+      "embeddedImageSha256": "a96f0399945cd9255b9a93a1f11e0e448a6eaa939c95e4ee4484e13e830e76cd",
+      "embeddedAlphaLevels": [
+        0,
+        255
+      ],
+      "transparentPixels": 1282,
+      "operation": "Restore MASK alpha mode and 0.5 cutoff only; existing image alpha is unchanged.",
+      "preservedBinaryChunks": true,
+      "reason": "Reviewed cutout boundary pixels have explicit alpha0 in the embedded original image. Default OPAQUE exposed the stored black/gray RGB instead.",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Material/identity correction only",
+        "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
+      }
+    },
+    {
+      "asset": "models/files/rip_dw1_poyomon.glb",
+      "originalSha256": "d066407d0aa65ee007e81b26ff4c39ec5d18a3d9f1431dbb3b93afdf070e25d3",
+      "repairedSha256": "1bd2465dd310dde955de7a9f6bfbb70b176826b14e9f0fedf3a5351e690cdcc1",
+      "material": "Poyomon",
+      "albedoImage": "Poyomon_Body.png",
+      "sourceUrl": "https://models.spriters-resource.com/playstation/digimonworld/asset/334148/",
+      "embeddedImageSha256": "f0c29d586150e893bcec0403f453729fd8d74a53923e6ac5eee0e01801c8b71b",
+      "embeddedAlphaLevels": [
+        0,
+        254,
+        255
+      ],
+      "transparentPixels": 376,
+      "operation": "Restore MASK alpha mode and 0.5 cutoff only; existing image alpha is unchanged.",
+      "preservedBinaryChunks": true,
+      "reason": "Reviewed cutout boundary pixels have explicit alpha0 in the embedded original image. Default OPAQUE exposed the stored black/gray RGB instead.",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Material/identity correction only",
+        "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
+      }
+    },
+    {
+      "asset": "models/files/rip_gammamon.glb",
+      "originalSha256": "1eca4942a6b0b0a2a2851438deaf5727d4e0ab72072924efb5dac96f793ba753",
+      "repairedSha256": "07f62a1689078315150e37ce9b2bfaaa48083a07a09c41bb69d507dca5af2117",
+      "material": "Gammamon",
+      "albedoImage": "Gammamon.png",
+      "originalAlphaMode": "BLEND",
+      "originalBaseColorAlpha": 0.600000023841858,
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonmasters/asset/363290/",
+      "sourceArchiveSha256": "8fa4c627d662c1750ab3e9d726a8e5bb6607afb1c656cc14f0078200e70799a2",
+      "sourceFbxSha256": "4e92fab6b798e0543bd0cca39986224d84829fab4200f91a2e115787b98e8c31",
+      "sourceAlbedoSha256": "9b3eaba320e14c7b43becfd280ef11c0355e18d2f381f90a61419c53602129d0",
+      "embeddedImageSha256": "3e8adaf074a18fdf61a35e01130960131d466e671f7825263dfa8a89e1ff04b0",
+      "sourceAlpha": {
+        "opaquePixels": 1048467,
+        "zeroPixels": 109,
+        "totalPixels": 1048576,
+        "intermediatePixels": 0,
+        "zeroPixelBounds": [
+          32,
+          471,
+          972,
+          996
+        ]
+      },
+      "preservedBinaryChunks": true,
+      "reason": "Reviewed functional correction: global0.6 opacity makes the head/scarf/body see-through. Preserve original image cutouts with MASK0.5 and opaque body factor1. Source FBX/DAE themselves use global0.5 while OBJ/MTL uses image alpha only; this is a documented functional override, not strict FBX reproduction.",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Material/identity correction only",
+        "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
+      }
+    }
+  ],
+  "uvRecoveries": [
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_l_leopardmon_x.glb",
+      "originalSha256": "2666b78200939c69c50aede1092ba615ef80e0e7d852ab3a94533ed3919acdff",
+      "repairedSha256": "5f0ebcbe529b5bb10f7364dabd0d4d9698d69712b478b42228ced1ea8d92c5c4",
+      "archiveSha256": "64424def37d5c9dd4895425c02c5ef3cbc707c525390400e1b3fbddff068294e",
+      "sourceUrl": "https://models.spriters-resource.com/mobile/digimonlinks/asset/310676/",
+      "daeSha256": "cef97c7dbc9be61f58d90ba226eccb37e780b3a684ad2285e1217391a67d071a",
+      "operation": "U unchanged; V = -old V",
+      "preservedOriginalBinaryBytes": true,
+      "preservedOtherAccessorsBitForBit": true,
+      "preservedNonUvMetadata": true,
+      "preservedRigAnimationMaterialsImages": true,
+      "changedUvAccessors": [
+        254,
+        258,
+        262
+      ],
+      "changedUvBufferViews": [
+        9,
+        12,
+        15
+      ],
+      "verifiedAccessors": 272,
+      "meshes": [
+        {
+          "sourceGeometry": "_001_chr717",
+          "sourceMaterial": "chr717_m2_001-material",
+          "sourceDiffuse": "chr717_m2.png",
+          "sourceDiffuseSemantic": "GeometrySource6",
+          "sourceUvSet": 0,
+          "sourceUvInput": "_001_chr717-mesh-map-0",
+          "sourceUvBinding": "explicit diffuse bind_vertex_input",
+          "mesh": "chr717_0",
+          "matchedTriangles": 4852,
+          "maximumNormalizedPositionError": 0.00011338767627585823,
+          "sourceToCurrentAxes": [
+            0,
+            2,
+            1
+          ],
+          "sourceToCurrentSigns": [
+            1,
+            1,
+            -1
+          ],
+          "coincidentTrianglesMatchedByUvs": 0,
+          "originalRelation": "U=sourceU, V=sourceV-1",
+          "originalRelationMaximumError": 1.0059102897646763e-06,
+          "beforeCanonicalUvMaximumError": 3.9921877500000003,
+          "afterCanonicalUvMaximumError": 1.0059102897646763e-06
+        },
+        {
+          "sourceGeometry": "_002_chr717",
+          "sourceMaterial": "chr717_m1_001-material",
+          "sourceDiffuse": "chr717_m1.png",
+          "sourceDiffuseSemantic": "GeometrySource10",
+          "sourceUvSet": 0,
+          "sourceUvInput": "_002_chr717-mesh-map-0",
+          "sourceUvBinding": "explicit diffuse bind_vertex_input",
+          "mesh": "chr717_1",
+          "matchedTriangles": 7052,
+          "maximumNormalizedPositionError": 0.00012287245862441535,
+          "sourceToCurrentAxes": [
+            0,
+            2,
+            1
+          ],
+          "sourceToCurrentSigns": [
+            1,
+            1,
+            -1
+          ],
+          "coincidentTrianglesMatchedByUvs": 2,
+          "originalRelation": "U=sourceU, V=sourceV-1",
+          "originalRelationMaximumError": 1.0224066162578538e-06,
+          "beforeCanonicalUvMaximumError": 2.008071421869873,
+          "afterCanonicalUvMaximumError": 1.0224066162578538e-06
+        },
+        {
+          "sourceGeometry": "_000_sw_ef_lig",
+          "sourceMaterial": "chr717_m3_001-material",
+          "sourceDiffuse": "chr717_m3.png",
+          "sourceDiffuseSemantic": "GeometrySource2",
+          "sourceUvSet": 0,
+          "sourceUvInput": "_000_sw_ef_lig-mesh-map-0",
+          "sourceUvBinding": "explicit diffuse bind_vertex_input",
+          "mesh": "sw_ef_lig_0",
+          "matchedTriangles": 78,
+          "maximumNormalizedPositionError": 8.096116956435418e-05,
+          "sourceToCurrentAxes": [
+            0,
+            2,
+            1
+          ],
+          "sourceToCurrentSigns": [
+            -1,
+            -1,
+            -1
+          ],
+          "coincidentTrianglesMatchedByUvs": 0,
+          "originalRelation": "U=sourceU, V=sourceV-1",
+          "originalRelationMaximumError": 4.601516723767851e-07,
+          "beforeCanonicalUvMaximumError": 1.5623935942382814,
+          "afterCanonicalUvMaximumError": 4.601516723767851e-07
+        }
+      ],
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Material/identity correction only",
+        "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
+      }
+    }
+  ],
+  "mappingCorrections": [
+    {
+      "sourceKey": "drg:Ravemon",
+      "originalAsset": "models/files/rip_cs_ravemon.glb",
+      "originalSourceSha256": "b01388965bf9f8bb77241a035eb9ffeb865e80efc0457659feed29aa69619434",
+      "asset": "models/files/rip_cat_cs_ravemon_chr740.glb",
+      "repairedSha256": "f56e6805e6f837890955cabec82b457969d9aed688ac480b15d7f8a24a91ae70",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/",
+      "sourceArchiveSha256": "91b84a1c423663da61a7d3bf2d91e43ce74d2af565ea2483c7235beddc157e0a",
+      "originalForm": "Ravemon Burst Mode (chr778)",
+      "correctedForm": "Ravemon (chr740)",
+      "portrait": "catalog_CS_Ravemon_chr740.662199b3.webp",
+      "portraitSha256": "a5dfb868c83bee42895009f54131fc3f863292cd293081b5c3807554861bee4b",
+      "reason": "The source key/form says Ravemon but selected the archive Burst Mode asset. Reuse the existing normal Ravemon chr740 asset and matching portrait; preserve separately named Burst variants.",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Material/identity correction only",
+        "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
       }
     }
   ]

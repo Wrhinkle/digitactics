@@ -23,6 +23,26 @@
         "https://en.bandainamcoent.eu/digimon/digimon-story-time-stranger/characters/aegiomon",
         "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604898/"
       ]
+    },
+    {
+      "sourceKey": "drg:Ravemon",
+      "status": "FAIL",
+      "asset": "models/files/rip_cs_ravemon.glb",
+      "assetSha256": "55712138c55a1d00a65ef619cbab30cef1d68bc41abb7cf28f189920c0115612",
+      "sourceSha256": "b01388965bf9f8bb77241a035eb9ffeb865e80efc0457659feed29aa69619434",
+      "declaredForm": "Ravemon",
+      "expectedForm": "Ravemon normal form, source chr740",
+      "observedForm": "Ravemon Burst Mode, source chr778",
+      "review": "Exact archive paths, mesh/material names and fitted views confirm the normal-form key selected Burst Mode. Mapping now reuses the existing correct normal asset and matching portrait. This failure applies only to the original mapping/bytes; fresh corrected-key acceptance is separate.",
+      "evidence": [
+        "docs/MODEL_IDENTITY_RAVEMON.md"
+      ],
+      "evidenceSha256": {
+        "docs/MODEL_IDENTITY_RAVEMON.md": "4b7dba744941aac71ad72542a5e369bad18667662b4045f7926c10cc5d06bfc3"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/"
+      ]
     }
   ]
 }
