@@ -57,6 +57,7 @@ internal static class CompanionModelSmoke
             if (capture is not null) FrameCapture.SaveBitmap(capture, cell * columns, cell * rows);
             if (queuedModels == 0) throw new InvalidOperationException("Companion smoke did not exercise any queued model primitives.");
             Console.WriteLine($"Queued companion transparency: {queuedModels} model primitives rendered.");
+            ModelTransparencyChecks.Run(catalog,companions,normalSource);
             using (var arena = new ArenaCompanionView())
             {
                 var emote = new DigiTactics.Presentation.ActiveEmote(0, "mydance", 1000);
