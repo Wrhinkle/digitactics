@@ -8,6 +8,33 @@ namespace DigiTactics.Desktop;
 internal sealed partial class MatchScreen
 {
     private ArenaCompanionView? arenaCompanion;
+    private ArenaCompanionView? opponentCompanion;
+    private readonly Dictionary<(int Seat, string Name), System.Text.Json.Nodes.JsonObject> aiLooks = [];
+    private int opponentCompanionSeat = -1;
+    internal int OpponentCompanionDrawCalls => opponentCompanion?.DrawCalls ?? 0;
+    private void UpdateOpponentCompanion(double delta)
+    {
+        int seat = Session!.Rounds.Phase != MatchPhase.Planning && watching is { Pve: false } && battle is not null
+            ? battle.Mirrored ? watching.A : watching.B ?? -1 : -1;
+        if (seat < 0) { opponentCompanion?.Dispose(); opponentCompanion = null; opponentCompanionSeat = -1; return; }
+        var player = Session.State.Players[seat];
+        System.Text.Json.Nodes.JsonObject? look = null;
+        if (player.IsHuman && networkRoom is not null)
+        {
+            string? uid = networkRoom.Authority.Lobby?["slots"]?[seat.ToString()]?["uid"]?.GetValue<string>();
+            if (uid is not null) look = networkRoom.Authority.Presence[uid]?["look"] as System.Text.Json.Nodes.JsonObject;
+        }
+        if (look is null)
+        {
+            if (aiLooks.Count > 64) aiLooks.Clear();
+            if (!aiLooks.TryGetValue((seat, player.Name), out look)) aiLooks[(seat, player.Name)] = look = CosmeticLoadouts.Ai(seat, player.Name);
+        }
+        string? key = CosmeticLoadouts.CompanionKey(look);
+        if (key is null) { opponentCompanion?.Dispose(); opponentCompanion = null; opponentCompanionSeat = -1; return; }
+        if (opponentCompanionSeat != seat) { opponentCompanion?.Dispose(); opponentCompanion = new(true); opponentCompanionSeat = seat; }
+        EnsureEmotes(); long now = Environment.TickCount64;
+        opponentCompanion!.Update(key, emotes.At(seat, now), now, delta);
+    }
     private MatchPlanningSession? companionSession;
     private string? companionWallet, companionProgress;
     private string companionKey = "tokomon";
@@ -42,7 +69,9 @@ internal sealed partial class MatchScreen
     }
     private void UpdateArenaCompanion(double delta)
     {
-        if (Session is null || IsSpectating) return;
+        if (Session is null) return;
+        UpdateOpponentCompanion(delta);
+        if (IsSpectating) return;
         if (!ReferenceEquals(companionSession, Session))
         {
             arenaCompanion?.Dispose(); arenaCompanion = new(); companionSession = Session;

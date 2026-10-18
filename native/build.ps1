@@ -32,6 +32,7 @@ try {
     Invoke-Checked 'node' @('tools/export-legend-rewards.cjs')
     Invoke-Checked 'node' @('tools/export-eggs.cjs')
     Invoke-Checked 'node' @('tools/export-evolution.cjs')
+    Invoke-Checked 'node' @('tools/export-loadouts.cjs')
     Invoke-Checked 'node' @('tools/export-farm-simulation.cjs')
     Invoke-Checked 'node' @('tools/export-farm-care.cjs')
     Invoke-Checked 'node' @('tools/export-network-protocol.cjs')

@@ -22,6 +22,30 @@ public static class LegendEvolution
         return JsonSerializer.Deserialize<Catalog>(stream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }
     public static EvolutionForm Form(string id) => Content.Forms[id];
+    public static string? AiForm(string? id, string seed)
+    {
+        if (id is null || CosmeticCollection.Item("legend", id) is null) return null;
+        int depth = new[] { 1, 2, 2, 3, 3 }[CosmeticLoadouts.Hash(seed + "|evo") % 5]; string form = id;
+        for (int d = 0; d < depth; d++)
+        {
+            var kids = Content.Children.GetValueOrDefault(form, []).Where(k => Content.Forms.ContainsKey(k.Form)).ToArray();
+            if (kids.Length == 0) break;
+            form = kids[CosmeticLoadouts.Hash($"{seed}|{d}") % kids.Length].Form;
+        }
+        return form == id ? null : form;
+    }
+    public static string VisualKey(string id, string? form)
+    {
+        if (form is null || form == id || CosmeticCollection.Item("legend", id) is null) return id;
+        var seen = new HashSet<string>(); var remaining = new Stack<string>(); remaining.Push(id);
+        while (remaining.TryPop(out var current))
+        {
+            if (!seen.Add(current)) continue;
+            if (current == form) return id + "@" + form;
+            foreach (var child in Content.Children.GetValueOrDefault(current, [])) remaining.Push(child.Form);
+        }
+        return id;
+    }
     private static double Number(JsonNode node, string key)
     {
         if (node[key] is not JsonValue value) return 0;

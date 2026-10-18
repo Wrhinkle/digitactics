@@ -4,7 +4,7 @@ using DigiTactics.Presentation;
 
 namespace DigiTactics.Desktop;
 
-internal sealed class ArenaCompanionView : IDisposable
+internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
 {
     private readonly ModelCatalog models = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
     private readonly CompanionCatalog companions = CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/companion-models.json"));
@@ -22,8 +22,12 @@ internal sealed class ArenaCompanionView : IDisposable
     {
         if (key != nextKey)
         {
-            model?.Dispose(); var visual = companions.Resolve(nextKey);
-            model = new(models, models.Sources[visual.Source]); animator = model.CreateCompanionAnimator(visual, companions.Fallbacks, yaw: Math.PI);
+            var visual = companions.Resolve(nextKey);
+            var nextModel = new GpuModel(models, models.Sources[visual.Source]);
+            CompanionAnimator nextAnimator;
+            try { nextAnimator = nextModel.CreateCompanionAnimator(visual, companions.Fallbacks, yaw: Math.PI); }
+            catch { nextModel.Dispose(); throw; }
+            model?.Dispose(); model = nextModel; animator = nextAnimator;
             key = nextKey; previous = null; move = null;
         }
         if (emote is not null && emote != previous)
@@ -38,7 +42,8 @@ internal sealed class ArenaCompanionView : IDisposable
                 move = explicitMove ?? (!handled ? role : null); duration = explicitMove is null ? 1600 : 2600;
             }
         }
-        Travel.Update(delta); animator!.Yaw = Travel.Yaw; animator.SetMoving(Travel.Moving); animator.Update(delta);
+        if (!opponent) Travel.Update(delta);
+        animator!.Yaw = opponent ? 0 : Travel.Yaw; animator.SetMoving(!opponent && Travel.Moving); animator.Update(delta);
         overlay = previous is not null && move is not null ? CompanionEmoteMotion.Evaluate(move, now - previous.Started, duration) : null;
     }
     public void Draw(int left, int bottom, int width, int height, int columns)
@@ -46,7 +51,7 @@ internal sealed class ArenaCompanionView : IDisposable
         DrawCalls = 0; if (model is null || animator is null) return;
         ModelRenderer.Begin(width, height, false); Brutal.OpenGlApi.OpenGl.Viewport(left, bottom, width, height);
         var camera = BattleView.Camera(width, height, columns);
-        var placement = model.PlaceCompanion(animator, Travel.X, Travel.Hop(animator.HasRun), Travel.Z, overlay);
+        var placement = model.PlaceCompanion(animator, opponent ? 7.6 : Travel.X, opponent ? 0 : Travel.Hop(animator.HasRun), opponent ? -6.6 : Travel.Z, overlay);
         foreach (bool transparent in new[] { false, true }) { renderer.Draw(model, animator.Pose, placement, camera, transparent); DrawCalls += renderer.DrawCalls; }
         ModelRenderer.End();
     }

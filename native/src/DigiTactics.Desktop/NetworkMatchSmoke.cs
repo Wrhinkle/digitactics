@@ -43,7 +43,10 @@ internal sealed class NetworkMatchSmoke : IDisposable
         host.PublishInit(JsonSerializer.SerializeToElement(new { seed = 143, at = now, planTime = 30, setId = "faction-wars", pace = "hyper", format = duos ? "duos" : "solo", slots = Enumerable.Range(0, 8).Select(i => new { name = i == 1 ? "Guest" : "Tamer " + i, human = i == (spectator ? 0 : 1) }).ToArray() }));
         PumpPackets(); replica = new(host, catalog); controller = new(host, replica, () => now); replica.Pump(now);
         guest.SetPresence(new JsonObject { ["name"] = "Guest" }, false, now); PumpPackets();
-        host.SetPresence(new JsonObject { ["name"] = "Host" }, false, now); PumpPackets();
+        var hostLook = DigiTactics.Storage.CosmeticLoadouts.Ai(0, "Host");
+        host.SetPresence(new JsonObject { ["name"] = "Host", ["look"] = hostLook }, false, now); PumpPackets();
+        if (!JsonNode.DeepEquals(guest.Authority.Presence["123"]?["look"], hostLook))
+            throw new InvalidOperationException("Peer cosmetic loadout was not delivered intact.");
         screen.AttachNetworkMatch(guest, () => now);
     }
     private void PumpPackets()

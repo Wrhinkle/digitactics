@@ -114,7 +114,14 @@ internal sealed partial class MatchScreen
             enteringRoom = null;
         }
         if (steam.Room is not { } room) return;
-        if (now - presenceAt > 5000) { room.SetPresence(new JsonObject { ["name"] = SteamName }, false, now); presenceAt = now; }
+        if (now - presenceAt > 5000)
+        {
+            var presence = new JsonObject { ["name"] = SteamName };
+            try { presence["look"] = CosmeticLoadouts.Local(profile?.Storage.GetValueOrDefault("dt.cosmetics.v1"), profile?.Storage.GetValueOrDefault("dt.legendevo.v1")); }
+            catch (Exception error) when (error is JsonException or InvalidDataException or InvalidOperationException or FormatException)
+            { lobbyMessage = "Appearance could not be shared: " + error.Message; }
+            room.SetPresence(presence, false, now); presenceAt = now;
+        }
         if (profile is not null && now - recentPlayersAt > 5000)
         {
             recentPlayersAt = now;
