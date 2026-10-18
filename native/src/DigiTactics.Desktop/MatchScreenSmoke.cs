@@ -32,7 +32,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     public string Pending => collectionProfile is not null && collectionIndex < collectionCommands.Length ? collectionCommands[collectionIndex]
         : collectionProfile is not null && farmIndex < farmCommands.Length ? farmCommands[farmIndex] : commands.ElementAtOrDefault(index) ?? "verification";
     private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "arenaBench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
-        "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "closeAudio", "mute", "mute"];
+        "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "reconnectAudio", "closeAudio", "mute", "mute"];
     private int index, cooldown = 3, battleFrames, pvpFrames;
     private bool down, planningCaptured, battleCaptured, pvpCaptured;
     private long emoteTime;
@@ -261,6 +261,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (capture is not null && chartStep is 3 or 5)
                 FrameCapture.SaveBitmap(Path.ChangeExtension(capture, screen.ChartMetric == 1 ? "taken.bmp" : "healed.bmp"), size.X, size.Y);
         }
+        if (index == 23 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"audio-settings.bmp"),size.X,size.Y);
         if (index == 22 && cooldown == 1 && offerSmoke.AugmentCapture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "augment.bmp"), size.X, size.Y);
         if (index == 22 && cooldown == 1 && offerSmoke.Capture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "reward.bmp"), size.X, size.Y);
         if (index == 1 && cooldown == 1 && screen.Session!.Units.Carousel.Active)

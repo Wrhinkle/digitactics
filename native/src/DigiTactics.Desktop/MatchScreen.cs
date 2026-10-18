@@ -368,6 +368,7 @@ internal sealed partial class MatchScreen : IDisposable
         if (ImGui.Checkbox("Music off"u8, ref musicOff)) audio.MusicOff = musicOff;
         ImGui.SameLine(); if (ImGui.Checkbox("Mute all"u8, ref muted)) audio.Muted = muted;
         if (audio.Error is { } error) UiText.Wrapped(error);
+        if (Button("reconnectAudio", "Reconnect audio")) audio.Reconnect();
         if (audio.SettingsError is { } settingsError) UiText.Wrapped(settingsError);
     }
     private void ProfileControls()

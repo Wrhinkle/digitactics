@@ -27,6 +27,9 @@ internal sealed unsafe class GameAudio : IDisposable
     private readonly List<Voice> voices = [];
     private readonly float[] buffer = new float[882 * 2];
     private SdlAudioStream stream;
+    private readonly Func<long> deviceClock;
+    private bool audioInitialized, hiddenRequested;
+    private long retryAt;
     private long frame;
     private long duckStart = -1000000, duckEnd = -1000000;
     private float duckFrom = 1;
@@ -50,7 +53,8 @@ internal sealed unsafe class GameAudio : IDisposable
     public int Played { get; private set; }
     public static void Smoke()
     {
-        using var audio = new GameAudio { EffectsVolume = 0, MusicVolume = 0, BoardVolume = 0 };
+        long deviceNow = 0;
+        using var audio = new GameAudio(() => deviceNow) { EffectsVolume = 0, MusicVolume = 0, BoardVolume = 0 };
         if (!audio.Available) throw new InvalidOperationException(audio.Error);
         foreach (var (id, info) in audio.manifest.Clips)
         {
@@ -91,21 +95,67 @@ internal sealed unsafe class GameAudio : IDisposable
             throw new InvalidOperationException("Audio visibility changed saved preferences or failed to resume.");
         Thread.Sleep(100);
         if (Sdl.PInvoke.GetAudioStreamQueued(audio.stream) >= pausedQueue) throw new InvalidOperationException("Resumed audio did not consume PCM.");
-        audio.Update(); audio.Music(null);
+        audio.Update();
+        var beforeReconnect = audio.voices.Select(v => (v.Position,v.TailPosition)).ToArray();
+        if (!audio.Reconnect() || !beforeReconnect.SequenceEqual(audio.voices.Select(v => (v.Position,v.TailPosition))))
+            throw new InvalidOperationException("Manual audio reconnect lost the mixer position.");
+        audio.DeviceFailed("Simulated device loss.");
+        audio.Music("planning");
+        var requested = audio.voices.Single(v => v.Music);
+        if (requested.Target != 1) throw new InvalidOperationException("Music requested during an outage was discarded.");
+        deviceNow = 1999; audio.Update();
+        if (audio.Available || requested.Position != 0) throw new InvalidOperationException("Audio retried too early or advanced during an outage.");
+        deviceNow = 2000; audio.Update();
+        if (!audio.Available || audio.Error is not null || requested.Position == 0 || Sdl.PInvoke.GetAudioStreamQueued(audio.stream) <= 0)
+            throw new InvalidOperationException("Audio failed to recover and queue the requested phase music.");
+        audio.SetHidden(true); audio.DeviceFailed("Simulated hidden device loss.");
+        var hiddenPositions = audio.voices.Select(v => (v.Position,v.TailPosition)).ToArray();
+        deviceNow = 4000; audio.Update();
+        if (!audio.Available || !audio.Suspended || !hiddenPositions.SequenceEqual(audio.voices.Select(v => (v.Position,v.TailPosition))) || Sdl.PInvoke.GetAudioStreamQueued(audio.stream) != 0)
+            throw new InvalidOperationException("Device recovery played audio while the window was hidden.");
+        audio.SetHidden(false); audio.Update();
+        int recoveredQueue = Sdl.PInvoke.GetAudioStreamQueued(audio.stream);
+        Thread.Sleep(100);
+        if (recoveredQueue <= 0 || Sdl.PInvoke.GetAudioStreamQueued(audio.stream) >= recoveredQueue || settings != (audio.Muted,audio.MusicOff,audio.MusicVolume,audio.EffectsVolume,audio.BoardVolume))
+            throw new InvalidOperationException("Recovered device failed to play PCM or changed preferences.");
+        audio.Music(null);
+        Console.WriteLine("Audio recovery passed: real stream replacement, bounded retry after simulated loss, phase music requested offline, hidden recovery and preserved preferences.");
         Console.WriteLine($"Audio smoke passed: {audio.manifest.Clips.Count} PCM assets, loop bounds, rate limiting, visibility pause/resume and BRUTAL SDL playback.");
     }
 
-    public GameAudio()
+    public GameAudio(Func<long>? deviceClock = null)
     {
+        this.deviceClock = deviceClock ?? (() => Environment.TickCount64);
         directory = Path.Combine(AppContext.BaseDirectory, "audio");
         manifest = JsonSerializer.Deserialize<AudioManifest>(File.ReadAllText(Path.Combine(directory, "manifest.json")),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         if (manifest.SampleRate != 44100 || manifest.Channels != 2) throw new InvalidDataException("Unsupported audio asset format.");
-        if (Sdl.PInvoke.InitSubSystem(SdlInitFlags.Audio) == 0) { Error = "Audio device unavailable."; return; }
+        Reconnect();
+    }
+    /// <summary>Replace playback on the current default device without resetting mixer state or preferences.</summary>
+    public bool Reconnect()
+    {
+        retryAt = deviceClock() + 2000;
+        if (!audioInitialized)
+        {
+            if (Sdl.PInvoke.InitSubSystem(SdlInitFlags.Audio) == 0) { Error = "Audio device unavailable. Retrying..."; return false; }
+            audioInitialized = true;
+        }
         var spec = new SdlAudioSpec { format = SdlAudioFormat.F32, channels = 2, freq = manifest.SampleRate };
-        stream = Sdl.PInvoke.OpenAudioDeviceStream(uint.MaxValue, &spec, null, null);
-        if (stream.IsNull()) { Error = "Audio device unavailable."; return; }
-        if (Sdl.PInvoke.ResumeAudioStreamDevice(stream) == 0) { Error = "Audio playback could not start."; stream.Dispose(); stream = default; }
+        var replacement = Sdl.PInvoke.OpenAudioDeviceStream(uint.MaxValue, &spec, null, null);
+        if (replacement.IsNull()) { Error = Available ? "Could not reconnect audio. Existing playback was kept." : "Audio device unavailable. Retrying..."; return false; }
+        // SDL opens a paused stream; hidden windows must leave it paused.
+        if (!hiddenRequested && Sdl.PInvoke.ResumeAudioStreamDevice(replacement) == 0)
+        {
+            replacement.Dispose(); Error = Available ? "Could not reconnect audio. Existing playback was kept." : "Audio playback could not start. Retrying..."; return false;
+        }
+        stream.Dispose(); stream = replacement; Suspended = hiddenRequested; Error = null;
+        return true;
+    }
+    private void DeviceFailed(string error)
+    {
+        stream.Dispose(); stream = default; Suspended = false;
+        Error = error + " Retrying..."; retryAt = deviceClock() + 2000;
     }
     private float[] Load(string id)
     {
@@ -133,8 +183,9 @@ internal sealed unsafe class GameAudio : IDisposable
     {
         if (music == id) return;
         music = id;
+        if (!Available) voices.RemoveAll(v => v.Music);
         foreach (var voice in voices.Where(v => v.Music)) voice.Target = 0;
-        if (id is null || !Available) return;
+        if (id is null) return;
         string key = "music_" + id; var clip = manifest.Clips[key];
         voices.Add(new(Load(key), 0, true, clip.LoopFrame!.Value * 2, clip.EndFrame!.Value * 2) { Target = 1 });
     }
@@ -147,16 +198,18 @@ internal sealed unsafe class GameAudio : IDisposable
     }
     public void SetHidden(bool hidden)
     {
+        hiddenRequested = hidden;
         if (!Available || Suspended == hidden) return;
         byte result = hidden ? Sdl.PInvoke.PauseAudioStreamDevice(stream) : Sdl.PInvoke.ResumeAudioStreamDevice(stream);
-        if (result == 0) { Error = hidden ? "Audio playback could not pause." : "Audio playback could not resume."; return; }
+        if (result == 0) { DeviceFailed(hidden ? "Audio playback could not pause." : "Audio playback could not resume."); return; }
         Suspended = hidden;
     }
     public void Update()
     {
+        if (!Available && deviceClock() >= retryAt) Reconnect();
         if (!Available || Suspended) return;
         int queued = Sdl.PInvoke.GetAudioStreamQueued(stream);
-        if (queued < 0) { Error = "Audio device stopped."; return; }
+        if (queued < 0) { DeviceFailed("Audio device stopped."); return; }
         while (queued < buffer.Length * sizeof(float) * 3)
         {
             Array.Clear(buffer);
@@ -183,9 +236,9 @@ internal sealed unsafe class GameAudio : IDisposable
             voices.RemoveAll(v => !v.Music && v.Position >= v.Samples.Length || v.Music && v.Target == 0 && v.Gain <= 0);
             for (int i = 0; i < buffer.Length; i++) buffer[i] = Math.Clamp(buffer[i], -1, 1);
             fixed (float* ptr = buffer)
-                if (Sdl.PInvoke.PutAudioStreamData(stream, ptr, buffer.Length * sizeof(float)) == 0) { Error = "Audio queue failed."; return; }
+                if (Sdl.PInvoke.PutAudioStreamData(stream, ptr, buffer.Length * sizeof(float)) == 0) { DeviceFailed("Audio queue failed."); return; }
             frame += buffer.Length / 2; queued += buffer.Length * sizeof(float);
         }
     }
-    public void Dispose() { stream.Dispose(); stream = default; Sdl.PInvoke.QuitSubSystem(SdlInitFlags.Audio); }
+    public void Dispose() { stream.Dispose(); stream = default; if (audioInitialized) { Sdl.PInvoke.QuitSubSystem(SdlInitFlags.Audio); audioInitialized = false; } }
 }
