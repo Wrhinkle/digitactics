@@ -50,6 +50,16 @@ public sealed class CombatUnit
     public double Health { get; internal set; }
     public double AttackDamage { get; internal set; }
     public double AttackSpeed { get; internal set; }
+    /// <summary>Current attack rate, including temporary and stacking speed bonuses.</summary>
+    public double EffectiveAttackSpeed
+    {
+        get
+        {
+            double speed = 1 + Equipment.Rage * RageStacks + AttackSpeedPerAttack * AttackSpeedStacks;
+            foreach (var buff in SpeedBuffs) speed += buff.Value;
+            return AttackSpeed * Math.Min(speed, 4);
+        }
+    }
     public double Range { get; internal set; }
     public double Armor { get; internal set; }
     public double MagicResist { get; internal set; }

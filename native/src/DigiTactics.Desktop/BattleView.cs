@@ -100,6 +100,21 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
         return Matrix4x4.CreateLookAt(CameraEye(width,height,columns), new(0, 0, 0), Vector3.UnitY)
             * Matrix4x4.CreatePerspectiveFieldOfView(.72f, (float)width / height, .1f, 100);
     }
+    internal IEnumerable<(CombatUnit Unit, Brutal.Numerics.float2 Point, float Depth)> InspectionTargets(int width, int height)
+    {
+        var camera = board.Camera.Matrix(width, height, Combat.Columns);
+        foreach (var view in choreography.Views)
+        {
+            var unit = Combat.Units[view.UnitId];
+            if (!unit.Alive) continue;
+            var point = Vector4.Transform(new Vector4((float)view.Position.X, (float)view.Position.Y + 2, (float)view.Position.Z, 1), camera);
+            if (point.W <= 0) continue;
+            float x = (point.X / point.W * .5f + .5f) * width;
+            float y = (1 - (point.Y / point.W * .5f + .5f)) * height;
+            if (x >= 0 && x < width && y >= 0 && y < height)
+                yield return (unit, new(x,y), point.Z / point.W);
+        }
+    }
     public void Labels(int width, int height, int windowHeight, int left = 0, int bottom = 0)
     {
         if (width <= 0 || height <= 0) return;

@@ -8,6 +8,8 @@ namespace DigiTactics.Desktop;
 /// <summary>Exercises visible controls through ImGui mouse events, not direct gameplay mutations.</summary>
 internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = null, bool evolutionSmoke = false)
 {
+    private int combatHoverFrames, combatHoverVisible;
+    private bool combatHoverVerified;
     private readonly string[] collectionCommands = evolutionSmoke
         ? ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "evolution/bukamon", "levelLegend", "levelLegend", "feedLegend", "digivolve", "revertLegend", "digivolve", "closeEvolution", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"]
         : ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
@@ -81,6 +83,18 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (traitHoverStep == 1 && screen.TraitTooltipUnits.Count == 0)
                 throw new InvalidOperationException("Trait hover omitted its deployed contributor portraits.");
             traitHoverStep++; cooldown = 3; return;
+        }
+        if (index == 20 && !combatHoverVerified)
+        {
+            if (screen.DetailedCombatUnit is { } inspected)
+            {
+                if (!inspected.Alive || !screen.ChartCombat!.Units.Contains(inspected)) throw new InvalidOperationException("Combat inspection referenced a different or dead battle unit.");
+                if (++combatHoverVisible >= 3) { combatHoverVerified = true; return; }
+            }
+            if (++combatHoverFrames > 30) throw new InvalidOperationException("Combat unit hover did not open live details.");
+            var target = screen.Buttons.First(pair => pair.Key.StartsWith("combatUnit/", StringComparison.Ordinal)).Value;
+            ImGui.GetIO().AddMousePosEvent(target.X,target.Y);
+            return;
         }
         if (index == 20 && chartStep < 7)
         {
@@ -188,6 +202,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         }
         if (index == 9 && traitHoverStep == 1 && cooldown == 1 && capture is not null)
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "trait-tooltip.bmp"), size.X, size.Y);
+        if (index == 20 && !combatHoverVerified && screen.DetailedCombatUnit is not null && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "combat-tooltip.bmp"),size.X,size.Y);
         if (index == 20 && cooldown == 1 && screen.ChartCombat is { } chartCombat)
         {
             var session = screen.Session!;

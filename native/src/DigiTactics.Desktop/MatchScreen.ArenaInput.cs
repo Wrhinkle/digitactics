@@ -25,6 +25,7 @@ internal sealed partial class MatchScreen
 
     private void ArenaPointer()
     {
+        DetailedCombatUnit = null;
         var feedback = arenaEnvironment.Feedback;
         feedback.UnitDragMoved = false; feedback.HoverCell = null; feedback.HoverBench = -1;
         bool editable = Session is not null && !IsSpectating && viewed == localSeat && !Session.State.Over && Human.Alive;
@@ -97,6 +98,7 @@ internal sealed partial class MatchScreen
         {
             ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); UnitDetails(unit); ImGui.EndTooltip();
         }
+        CombatTooltip(inside && shelfHover < 0 && spot is null, mouse);
         planning.DraggedUnit = battle is null && arenaDragMoved ? arenaDrag?.Id : null;
         planning.DragPosition = arenaDragPosition;
         if (battle is not null) { battle.DraggedUnit = arenaDragMoved ? arenaDrag?.Id : null; battle.DragPosition = arenaDragPosition; }
