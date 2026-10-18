@@ -9,6 +9,12 @@ public readonly record struct CombatView(int UnitId, WorldPosition Position, dou
 /// Board occupancy already points to the destination while the visual travels from MoveOrigin.</summary>
 public static class CombatLayout
 {
+    public static WorldPosition Bench(int index, bool wide = false, bool partner = false)
+    {
+        double x = (index - 4) * 1.45;
+        return new(wide ? x * .72 + (partner ? 6.1 : -6.1) : x, 0, 7.55);
+    }
+
     public static WorldPosition Cell(HexCell cell, int columns, bool mirror)
     {
         int c = mirror ? columns - 1 - cell.Column : cell.Column;

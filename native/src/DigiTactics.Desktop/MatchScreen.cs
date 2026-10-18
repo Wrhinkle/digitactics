@@ -35,6 +35,7 @@ internal sealed partial class MatchScreen : IDisposable
     public Dictionary<string, float2> Buttons { get; } = [];
     public int BattleDrawCalls => battle?.DrawCalls ?? 0;
     public int PlanningDrawCalls => planning.DrawCalls;
+    internal IReadOnlySet<int> PlanningRenderedUnits => planning.RenderedUnits;
     public bool WatchingMirrored => battle?.Mirrored ?? false;
     public int BattleColumns => battle?.Combat.Columns ?? 0;
     public int CompletedRounds { get; private set; }
@@ -329,6 +330,17 @@ internal sealed partial class MatchScreen : IDisposable
             ImGui.SetCursorScreenPos(new(Left + point.X - 30, Top + point.Y + 10));
             ImGui.BeginDisabled(viewed != localSeat);
             if (Button($"hex/{column}/{row}", unit is null ? "+" : new string('*', unit.Stage + 1), 60, 25, selectedUnit is not null && selectedUnit == unit?.Id)) Select(spot);
+            ImGui.EndDisabled();
+            if (unit is not null) UnitTooltip(unit.Line, unit.Stage);
+        }
+        for (int i = 0; i < 9; i++)
+        {
+            var point = PlanningView.Bench(i, Width, Height);
+            var unit = Session!.State.Players[viewed].Roster.At(UnitSpot.Bench(i));
+            if (IsSpectating && unit is null) continue;
+            ImGui.SetCursorScreenPos(new(Left + point.X - 25, Top + point.Y + 10));
+            ImGui.BeginDisabled(viewed != localSeat || Session.State.Over || !Human.Alive);
+            if (Button($"arenaBench/{i}", unit is null ? "+" : new string('*', unit.Stage + 1), 50, 25, selectedUnit is not null && selectedUnit == unit?.Id)) Select(UnitSpot.Bench(i));
             ImGui.EndDisabled();
             if (unit is not null) UnitTooltip(unit.Line, unit.Stage);
         }

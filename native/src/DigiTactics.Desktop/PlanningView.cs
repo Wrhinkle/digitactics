@@ -18,12 +18,13 @@ internal sealed class PlanningView : IDisposable
     private readonly Dictionary<ModelSource, GpuModel> models = [];
     private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
     public int DrawCalls { get; private set; }
+    public HashSet<int> RenderedUnits { get; } = [];
     public void Update(Ruleset rules, MatchPlayer player, double delta)
     {
         SceneTime+=Math.Clamp(delta,0,.1);
-        var live = player.Roster.Board.Select(e => e.Unit.Id).ToHashSet();
+        var live = player.Roster.Entries.Select(e => e.Unit.Id).ToHashSet();
         foreach (int id in actors.Keys.Where(id => !live.Contains(id)).ToArray()) actors.Remove(id);
-        foreach (var entry in player.Roster.Board)
+        foreach (var entry in player.Roster.Entries)
         {
             var source = catalog.Resolve(rules.Id, entry.Unit.Line, entry.Unit.Stage);
             if (source is null) continue;
@@ -38,24 +39,33 @@ internal sealed class PlanningView : IDisposable
         foreach (var source in models.Keys.Where(s => !used.Contains(s)).ToArray()) { models[source].Dispose(); models.Remove(source); }
     }
     public static Brutal.Numerics.float2 Cell(int column, int row, int width, int height)
+        => Project(CombatLayout.Cell(new(column, row), 7, false), width, height);
+    public static Brutal.Numerics.float2 Bench(int index, int width, int height)
+        => Project(CombatLayout.Bench(index), width, height);
+    private static Brutal.Numerics.float2 Project(WorldPosition position, int width, int height)
     {
-        var position = CombatLayout.Cell(new(column, row), 7, false);
         var point = Vector4.Transform(new Vector4((float)position.X, .14f, (float)position.Z, 1), BattleView.Camera(width, height, 7));
         return new((point.X / point.W * .5f + .5f) * width, (1 - (point.Y / point.W * .5f + .5f)) * height);
     }
     public void Draw(Ruleset rules, MatchPlayer player, int left, int bottom, int width, int height)
     {
-        var camera = BattleView.Camera(width,height,7); board.SetTheme(BoardTheme); DrawCalls=0;
+        var camera = BattleView.Camera(width,height,7); board.SetTheme(BoardTheme); DrawCalls=0; RenderedUnits.Clear();
         void Units(Matrix4x4 viewCamera,bool transparent)
         {
-            foreach(var entry in player.Roster.Board)
+            foreach(var entry in player.Roster.Entries)
             {
                 if(!actors.TryGetValue(entry.Unit.Id,out var actor)) continue;
-                var position=CombatLayout.Cell(new(entry.Spot.Column,entry.Spot.Row),7,false);
+                var position=entry.Spot.IsBoard
+                    ? CombatLayout.Cell(new(entry.Spot.Column,entry.Spot.Row),7,false)
+                    : CombatLayout.Bench(entry.Spot.Index);
                 var view=new CombatVisual(entry.Unit.Id,position,Math.PI,default,1,0,0,1,null,false);
                 var line=rules.Lines.Concat(rules.ExtraLines).Single(l=>l.Id==entry.Unit.Line);
                 renderer.Draw(actor.Model,actor.Animator.Pose,actor.Model.Place(view,entry.Unit.Stage,line.Tier),viewCamera,transparent);
-                if(!renderer.ShadowPass) DrawCalls+=renderer.DrawCalls;
+                if(!renderer.ShadowPass)
+                {
+                    DrawCalls+=renderer.DrawCalls;
+                    if(renderer.DrawCalls>0) RenderedUnits.Add(entry.Unit.Id);
+                }
             }
         }
         board.Draw(renderer,camera,BattleView.CameraEye(width,height,7),7,true,left,bottom,width,height,Units);

@@ -22,7 +22,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private long farmInitialBits;
     public string Pending => collectionProfile is not null && collectionIndex < collectionCommands.Length ? collectionCommands[collectionIndex]
         : collectionProfile is not null && farmIndex < farmCommands.Length ? farmCommands[farmIndex] : commands.ElementAtOrDefault(index) ?? "verification";
-    private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "bench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
+    private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "arenaBench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
         "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "closeAudio", "mute", "mute"];
     private int index, cooldown = 3, battleFrames, pvpFrames;
     private bool down, planningCaptured, battleCaptured, pvpCaptured;
@@ -114,6 +114,13 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 throw new InvalidOperationException("Match UI buy/place/model smoke failed.");
             if (capture is not null) FrameCapture.SaveBitmap(capture, size.X, size.Y);
             planningCaptured = true;
+        }
+        if (index == 5 && cooldown == 1)
+        {
+            var roster = screen.Session!.State.Players[0].Roster;
+            if (!roster.Entries.Any(e => !e.Spot.IsBoard) || !screen.PlanningRenderedUnits.SetEquals(roster.Entries.Select(e => e.Unit.Id)))
+                throw new InvalidOperationException("Planning scene omitted a purchased bench unit.");
+            if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "bench.bmp"), size.X, size.Y);
         }
         if (index == 10)
         {

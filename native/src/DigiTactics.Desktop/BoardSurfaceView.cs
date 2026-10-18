@@ -53,9 +53,8 @@ internal sealed class BoardSurfaceView : IDisposable
         bool wide=columns>7;
         for(int side=0;side<(wide?2:1);side++) for(int i=0;i<9;i++)
         {
-            double x=(i-4)*1.45;
-            if(wide) x=x*.72+(side==0?-6.1:6.1);
-            Draw(1,materials.Slot,Feedback.Bench(i,side!=0),x,.05,7.55,wide?.72:1);
+            var position=DigiTactics.Presentation.CombatLayout.Bench(i,wide,side!=0);
+            Draw(1,materials.Slot,Feedback.Bench(i,side!=0),position.X,.05,position.Z,wide?.72:1);
         }
         // The original item shelf is hidden while the combined battlefield is active.
         if(!wide) for(int i=0;i<10;i++) Draw(2,materials.Ped,Feedback.Item(i),-7.5-i%2*.95,.08,1.2+i/2*1.5);
