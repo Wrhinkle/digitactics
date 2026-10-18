@@ -635,6 +635,14 @@ class EvidenceChecks(unittest.TestCase):
         self.write(self.args.runtime, runtime)
         self.assertEqual(self.result()["functionalStatus"], "UNVERIFIED")
 
+    def test_rigid_part_generator_is_required_runtime_provenance(self):
+        dependency = "../js/model-rigid-parts.js"
+        self.assertIn(dependency, audit.runtime_source_paths())
+        review, runtime = self.functional_review()
+        runtime["codeHashes"].pop(dependency)
+        self.write(self.args.runtime, runtime)
+        self.assertEqual(self.result()["functionalStatus"], "UNVERIFIED")
+
     def test_functional_approval_requires_explicit_identity_review(self):
         review, runtime = self.functional_review()
         review["functionalScope"]["identityReviewed"] = False

@@ -171,7 +171,7 @@ def verdict(value):
 
 def runtime_source_paths():
     """Dependencies measured by the production full-cycle/transition audit."""
-    return ["../js/model-motion.js", "../js/model-anatomy.js", "src/DigiTactics.Assets/GltfRig.cs", "src/DigiTactics.Assets/ModelAnimator.cs",
+    return ["../js/model-motion.js", "../js/model-anatomy.js", "../js/model-rigid-parts.js", "src/DigiTactics.Assets/GltfRig.cs", "src/DigiTactics.Assets/ModelAnimator.cs",
             "src/DigiTactics.Assets/CombatModelAnimator.cs", "src/DigiTactics.Assets/CompanionLocomotion.cs",
             "src/DigiTactics.Assets/GltfMesh.cs", "src/DigiTactics.Desktop/CombatModelAnimations.cs",
             "src/DigiTactics.Desktop/BattleView.cs", "src/DigiTactics.Desktop/GpuModel.cs",
