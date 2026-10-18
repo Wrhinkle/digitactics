@@ -29,6 +29,7 @@ internal static class BoardMeshSmoke
             CheckPropMotion(renderer);
             CheckLightning(renderer);
         CheckGraveyard(renderer);
+        CheckCity(renderer);
             CheckWindowEmission(renderer);
             CheckTransparentOrder(renderer);
             using(var arena=new ArenaEnvironment())
@@ -318,6 +319,21 @@ internal static class BoardMeshSmoke
         if(darker<100 || !plain.SequenceEqual(restored))throw new InvalidOperationException("City emissive texture or per-draw shader reset failed.");
         Console.WriteLine($"City emissive map: {darker} wall pixels darkened; shader reset verified.");
     }
+    private static void CheckCity(ModelRenderer renderer)
+    {
+        var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/file-city.json.gz"));
+        using var layer=new BoardMeshLayer(scene with {Objects=scene.Objects.Where(o=>o.Motion?.Building is not null).ToArray()},initialStage:7);
+        var camera=BattleView.Camera(256,256,7);
+        ModelRenderer.Begin(256,256);layer.Draw(renderer,camera,false,256);
+        if(layer.DrawCalls!=13)throw new InvalidOperationException("Late-stage city did not initialize all buildings.");
+        for(int i=0;i<240;i++)layer.Update(i/60d,1/60d,stage:1);
+        layer.Draw(renderer,camera,false,256);
+        if(layer.DrawCalls!=3)throw new InvalidOperationException("City buildings did not hide after stage reset.");
+        renderer.ShadowPass=true;
+        try {layer.Draw(renderer,SceneShadowMap.BoardCamera,false,256);if(layer.DrawCalls!=3)throw new InvalidOperationException("Hidden city buildings still cast shadows.");}
+        finally {renderer.ShadowPass=false;ModelRenderer.End();}
+        Console.WriteLine("City GPU: initial stage seven, stage reset and shadow visibility verified.");
+    }
     private static unsafe void CheckGraveyard(ModelRenderer renderer)
     {
         var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/overdell-graveyard.json.gz"));
@@ -388,11 +404,11 @@ internal static class BoardMeshSmoke
             ("flame-temple","temple-lava"),("flame-temple","particles"),
             ("gekomon-castle","underwater-caustics"),("gekomon-castle","underwater-caustics2"),
             ("gekomon-castle","underwater-shafts"),("gekomon-castle","underwater-kelp"),
-            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour"),("witchelny-library","library-pages"),("witchelny-library","library-candles"),("witchelny-library","library-flames"),("witchelny-library","library-halos"),("witchelny-library","library-circle"),("witchelny-library","library-outer"),("knights-coliseum","knights-crowd"),("knights-coliseum","knights-banners"),("knights-coliseum","knights-flashes"),("knights-coliseum","knights-confetti"),("battle-studio","studio-strip"),("battle-studio","studio-led"),("battle-studio","studio-audience"),("battle-studio","studio-sticks"),("battle-studio","studio-beam"),("battle-studio","studio-pool"),("battle-studio","studio-crane"),("battle-studio","studio-confetti"),("trailmon-station","train-cars"),("trailmon-station","train-engine"),("trailmon-station","train-clock"),("trailmon-station","particles"),("overdell-graveyard","graveyard-ghosts"),("server-pyramid","pyramid-beams"),("server-pyramid","pyramid-bands"),("server-pyramid","pyramid-flames")})
+            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour"),("witchelny-library","library-pages"),("witchelny-library","library-candles"),("witchelny-library","library-flames"),("witchelny-library","library-halos"),("witchelny-library","library-circle"),("witchelny-library","library-outer"),("knights-coliseum","knights-crowd"),("knights-coliseum","knights-banners"),("knights-coliseum","knights-flashes"),("knights-coliseum","knights-confetti"),("battle-studio","studio-strip"),("battle-studio","studio-led"),("battle-studio","studio-audience"),("battle-studio","studio-sticks"),("battle-studio","studio-beam"),("battle-studio","studio-pool"),("battle-studio","studio-crane"),("battle-studio","studio-confetti"),("trailmon-station","train-cars"),("trailmon-station","train-engine"),("trailmon-station","train-clock"),("trailmon-station","particles"),("overdell-graveyard","graveyard-ghosts"),("server-pyramid","pyramid-beams"),("server-pyramid","pyramid-bands"),("server-pyramid","pyramid-flames"),("file-city","city-building"),("file-city","city-crops")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
-            if(objects.Length!=(kind=="pyramid-beams"?2:kind=="pyramid-bands"?6:kind is "studio-beam" or "studio-pool"?6:kind is "studio-strip" or "studio-crane"?2:kind=="library-pages"?2:kind=="freeze-aurora"?3:kind=="savanna-gears"?4:kind=="rotating-parent"?2:1)) throw new InvalidOperationException("Missing original animated prop: "+kind);
+            if(objects.Length!=(kind=="city-building"?13:kind=="pyramid-beams"?2:kind=="pyramid-bands"?6:kind is "studio-beam" or "studio-pool"?6:kind is "studio-strip" or "studio-crane"?2:kind=="library-pages"?2:kind=="freeze-aurora"?3:kind=="savanna-gears"?4:kind=="rotating-parent"?2:1)) throw new InvalidOperationException("Missing original animated prop: "+kind);
             using var layer=new BoardMeshLayer(scene with { Objects=objects });
             byte[] Render()
             {

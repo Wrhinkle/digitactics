@@ -16,6 +16,8 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly List<(GpuPrimitive Geometry,float[] Vertices,BoardMotion Motion)> animatedGeometry=[];
     private readonly List<(GpuPrimitive Geometry,float[] Vertices,float[] Initial,string Kind)> animatedUv=[];
     private double time;
+    private int currentStage;
+    private readonly Dictionary<BoardObject,BoardCityBuilding> buildings=[];
     private BoardLightning? lightning;
     private readonly BoardCastleMotion? castle;
     private readonly BoardKowloonMotion? kowloon;
@@ -42,8 +44,10 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly Dictionary<BoardObject,BoardSpiralMotion> spirals=[];
     public int DrawCalls { get; private set; }
     public Matrix4D Root { get; set; } = Matrix4D.Identity;
-    public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false,int initialEvolution=0)
+    public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false,int initialEvolution=0,int initialStage=1)
     {
+        currentStage=initialStage;
+        foreach(var obj in scene.Objects)if(obj.Motion?.Building is {} building)buildings.Add(obj,new(building,initialStage));
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
         if(scene.Id=="server-pyramid")pyramid=new(initialCombat);
         if(scene.Id=="overdell-graveyard")graveyard=new();
@@ -94,7 +98,8 @@ internal sealed class BoardMeshLayer : IDisposable
 
     public void Update(double seconds,double delta=0,bool combat=false,int stage=1,bool won=false,int evolution=0)
     {
-        time=seconds;
+        time=seconds;currentStage=stage;
+        foreach(var building in buildings.Values)building.Advance(delta,stage);
         freeze?.Advance(delta,combat);
         sewer?.Advance(time,won);
         library?.Advance(delta,evolution);
@@ -146,6 +151,8 @@ internal sealed class BoardMeshLayer : IDisposable
             var bolt=item.Object.Motion?.Lightning;
             if(bolt is not null) { if(lightning is not { Visible:true } || lightning.Active!=bolt.Index) continue; }
             else if(item.Object.Motion?.Kind is "knights-confetti" or "studio-confetti"){if(confetti?.Visible!=true)continue;}
+            else if(buildings.TryGetValue(item.Object,out var building)){if(!building.Visible)continue;}
+            else if(item.Object.Motion?.Kind=="city-crops"){if(currentStage<2)continue;}
             else if (!item.Object.Visible) continue;
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = World(item.Object);
@@ -226,13 +233,14 @@ internal sealed class BoardMeshLayer : IDisposable
         foreach (var texture in textures) texture.Dispose(); textures.Clear();
         objects.Clear();
         transparentObjects.Clear();
-        spirals.Clear();
+        spirals.Clear();buildings.Clear();
         animatedGeometry.Clear();
         animatedUv.Clear();
     }
     internal static Matrix4D ConfettiMatrix(BoardConfettiPose p)=>new CompanionTransform(new(p.X,p.Y,p.Z),new(p.Rx,0,p.Rz),new(1,1,1)).Matrix;
     private Matrix4D World(BoardObject obj)
     {
+        if(buildings.TryGetValue(obj,out var building))return building.Matrix*Root;
         if(obj.Motion?.Kind=="pyramid-beams")return pyramid!.Beam(obj.Matrix)*Root;
         if(obj.Motion?.TrainSteam==true)return train!.Steam*Root;
         if(obj.Motion?.Kind=="train-clock")return BoardTrainMotion.Clock(obj.Matrix,time)*Root;

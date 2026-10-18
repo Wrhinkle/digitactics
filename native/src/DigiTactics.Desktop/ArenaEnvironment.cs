@@ -32,7 +32,7 @@ internal sealed class ArenaEnvironment : IDisposable
         if(scene?.Id==id) return;
         var next=BoardScene.Load(Path.Combine(folder,id+".json.gz"));
         BoardMeshLayer? nextMeshes=null; BoardBackground? nextBackground=null; BoardSurfaceView? nextSurfaces=null;
-        try { nextMeshes=new(next,CombatActive??false,Won,Evolution); nextBackground=new(next); nextSurfaces=new(next,geometry.Value,Feedback); }
+        try { nextMeshes=new(next,CombatActive??false,Won,Evolution,Stage); nextBackground=new(next); nextSurfaces=new(next,geometry.Value,Feedback); }
         catch { nextMeshes?.Dispose(); nextBackground?.Dispose(); nextSurfaces?.Dispose(); throw; }
         meshes?.Dispose(); background?.Dispose(); surfaces?.Dispose();
         scene=next; meshes=nextMeshes; background=nextBackground; surfaces=nextSurfaces; lighting=new(next);

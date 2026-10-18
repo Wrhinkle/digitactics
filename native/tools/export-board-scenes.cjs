@@ -37,6 +37,8 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+  .replace('b.m = m; b.k = 0; b.vel = 0;','m.userData.nativeMotion={kind:"city-building",building:{x:b.x,z:b.z,ry:b.ry||0,stage:b.st}}; b.m = m; b.k = 0; b.vel = 0;')
+  .replace(/const cm = inst\(ctx, new THREE.ConeGeometry\(0.25, 0.6, 5\)[^\n]+;/,line=>line+' cm.userData.nativeMotion={kind:"city-crops"};')
   .replace('const blaze = { k: 0, until: -1 };','beams.forEach((b,i)=>b.userData.nativeMotion={kind:"pyramid-beams",speed:i}); const blaze = { k: 0, until: -1 };')
   .replace('bz.map((b, i) => ({ ...b, y: 0.9, ph: i * 2 })),','Object.assign(bz.map((b, i) => ({ ...b, y: 0.9, ph: i * 2 })),{nativePyramid:true}),')
   .replace('bands.push(m);','m.userData.nativeMotion={kind:"pyramid-bands",speed:k}; bands.push(m);')
@@ -396,6 +398,23 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const cityFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
+   for(const initialStage of [1,4,7]){
+    const env=buildEnv(THEMES.find(s=>s.id==='file-city')),objects=[],frames=[];
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('city-'))objects.push(o);});
+    env.signal({phase:'planning',stage:initialStage,won:false,evo:0});env.tick(0,0);env.group.updateMatrixWorld(true);let time=0;
+    const initial=objects.map(o=>({visible:o.visible,matrix:o.matrixWorld.toArray()}));
+    for(let frame=0;frame<800;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],stage=[initialStage,2,4,7,3,1,6,7][Math.floor(frame/100)];time+=delta;
+     env.signal({phase:'planning',stage,won:false,evo:0});env.tick(delta,time);env.group.updateMatrixWorld(true);
+     frames.push({time,delta,stage,objects:objects.map(o=>({visible:o.visible,matrix:o.matrixWorld.toArray()}))});
+    }
+    scenarios.push({initialStage,initial,motions:objects.map(o=>o.userData.nativeMotion),frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-city.json.gz'),zlib.gzipSync(JSON.stringify(cityFixture)));
   const pyramidFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
    for(const initialCombat of [false,true]){
