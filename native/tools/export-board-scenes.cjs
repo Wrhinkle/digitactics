@@ -63,4 +63,3 @@ async function main(){
  }finally{await browser.close();}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});
-

@@ -77,4 +77,3 @@ public sealed record BoardGeometryGroup(int Start, int Count, int MaterialIndex)
 public sealed record BoardObject(string Kind, int Geometry, int[] Materials, double[] Matrix, bool Visible,
     bool CastShadow, bool ReceiveShadow, BoardInstance[]? Instances);
 public sealed record BoardInstance(double[] Matrix, float[] Color);
-
