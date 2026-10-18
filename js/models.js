@@ -8007,6 +8007,13 @@
 });
   // CATALOG-END
 
+  // These roster stages use the exact same local GLB as the extra entry. Keep
+  // its source identity so preparation policies also apply to the roster aliases.
+  for (let stage = 0; stage < 3; stage++) {
+    const key = `kimeramon:${stage}`;
+    DT.MODEL_SOURCES[key] = { ...DT.MODEL_SOURCES['extra:Kimeramon'], ...DT.MODEL_SOURCES[key] };
+  }
+
   // MODEL-OPTIONS: display options merged over the entries above (outside the generated RIPS block so a re-run keeps them).
   // yOffset lifts a model by a fraction of its height (render3d.js), for flyers whose idle swings below their feet.
   // maxFootprint (board units, default 1.9) lets wide wings or long bodies spill past one tile so an evolution is not
