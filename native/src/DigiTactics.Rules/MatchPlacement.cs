@@ -25,4 +25,18 @@ public sealed class MatchPlacement(MatchState state)
 
     public MoveResult Move(MatchPlayer player, UnitSpot from, UnitSpot to, MatchPhase phase, int stage) =>
         player.Roster.Move(from, to, phase == MatchPhase.Combat && player.IsHuman, () => Capacity(player, stage));
+
+    public void AutoFill(MatchPlayer player, int stage)
+    {
+        var planner = new PlanningAi(state.Rules);
+        while (player.Roster.BoardCount < Capacity(player, stage))
+        {
+            var best = player.Roster.Bench.Select((unit, index) => (unit, index))
+                .Where(e => e.unit is not null && player.Roster.BoardCount + lines[e.unit.Line].Slots <= Capacity(player, stage))
+                .OrderByDescending(e => UnitValues.Value(lines[e.unit!.Line], e.unit.Stage)).FirstOrDefault();
+            if (best.unit is null || planner.FreeCell(player, best.unit, (_, _) => true) is not { } spot) break;
+            if (Move(player, UnitSpot.Bench(best.index), spot, MatchPhase.Planning, stage) != MoveResult.Moved)
+                throw new InvalidOperationException("Automatic placement failed after capacity validation.");
+        }
+    }
 }

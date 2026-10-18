@@ -83,9 +83,14 @@ public sealed partial class CombatSimulation
         var p = unit.Equipment;
         if (p.CastSpeed != 0) unit.SpeedBuffs.Add(new(p.CastSpeed, Time + 5));
         if (p.BlueBuff) unit.Mana = 20;
-        foreach (var enemy in units)
+        // Zap damage can trigger death summons. JavaScript's array iterator visits
+        // appended units; use the growing list without invalidating an enumerator.
+        for (int i = 0; i < units.Count; i++)
+        {
+            var enemy = units[i];
             if (enemy.Alive && enemy.Team != unit.Team && enemy.Equipment.Zap != 0 && enemy.Cell.DistanceTo(unit.Cell) <= 2)
                 { Emit("beam", enemy, unit); Damage(enemy, unit, enemy.Equipment.Zap, DamageKind.Magic); }
+        }
     }
 
     private double AbilityDamage(CombatUnit source, CombatUnit target, double value)

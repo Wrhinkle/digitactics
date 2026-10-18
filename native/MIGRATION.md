@@ -4,6 +4,12 @@ The active objective is the complete native port described in `README.md`, inclu
 production UI, rendering, all rulesets, Steam, save migration, packaging and updates.
 The current executable is a migration workbench. It must not replace the public game yet.
 
+Latest integration: native planning, battle preparation, Solo/Duos/PvE combat and
+settlement now run together through match end. 88 complete original-engine matches
+cover 2,571 rounds and 8,799 battles. See the latest README section for current
+verification and outstanding product work; the entries below record migration
+progress chronologically.
+
 ## Completed and verified
 
 - Native BRUTAL GLFW/OpenGL/ImGui host, UI purchase smoke test, renderer capture,

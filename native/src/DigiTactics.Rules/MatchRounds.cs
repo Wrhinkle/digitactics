@@ -87,7 +87,7 @@ public sealed class MatchRounds
     }
     public void BeginCombat()
     {
-        if (state.Over || Phase != MatchPhase.Planning || RoundType == "carousel")
+        if (state.Over || Phase != MatchPhase.Planning)
             throw new InvalidOperationException("The round is not ready for combat.");
         Phase = MatchPhase.Combat;
     }

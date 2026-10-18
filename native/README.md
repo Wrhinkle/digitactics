@@ -1584,3 +1584,40 @@ acceptance. This is an integration milestone, not a production release.
 Validation: **171,463,590 full-suite native checks passed**, including all 5,699
 reference battles. Self-contained Windows publish and packaged BRUTAL smoke checks
 passed.
+
+### Complete native match loop
+
+The native session now owns battle preparation, simulation and settlement.
+`StartCombat` resolves pending offers, collects loot, fills available board slots,
+finishes carousels and constructs Solo, Duos, ghost or individual PvE battles.
+`MatchBattle` retains participants, seeds, combat inputs, trait counts and the
+simulation for presentation and settlement. `FinishCombat` resolves every battle
+and applies persistent rewards before the next round.
+
+Catalog schema 37 adds combat timers and deduplicated PvE formations. The audited
+wave functions become constant after their late-stage branches; stage 10 is the
+last stored stage. Dragonlands keeps separate Classic, Order and Chaos treasure
+bosses. 2,548 original-engine cases verify formation order, coordinates, stars,
+UIDs, timers and array isolation across all variants, all treasure bosses and
+stages through 1,000 (21,322 checks; `--pve-waves-only`).
+
+88 complete original-engine matches now pass 2,908,770 checks
+(`--full-match-only`): 2,571 rounds and 8,799 battles, including 319 ghost fights
+and 4,165 PvE fights. Each mode/pace runs Solo and Duos with two seeds, including
+unattended human turns. Checks cover preparation, combat participants/seeds,
+terminal unit state, winners/timing, traits, economy, offers, shops, loot orbs,
+rosters/modifiers, shared pool, transfers, carousel choices, elimination,
+placements, next IDs and final RNG continuity through match end.
+
+These integrated runs exposed a cast-item iteration crash: Zap damage can cause
+death summons to append combat units. The native loop now visits the growing list,
+matching the original JavaScript array iteration.
+
+The desktop still presents the migration workbench. Production match screens,
+player action routing, audio/visual polish, multiplayer, progress/settings
+migration, packaging/update acceptance and release remain outstanding. Full match
+parity is stronger engine evidence, not full product acceptance.
+
+Validation: **174,393,682 full-suite native checks passed**, including 88 complete
+matches and all 5,699 isolated reference battles. Self-contained Windows publish
+and packaged BRUTAL smoke checks passed.
