@@ -15,6 +15,8 @@ internal sealed partial class GameAudio
             string key="clip_"+(item.Data.TryGetProperty("clip"u8,out var clip)?clip.GetString():item.Id);
             Check(audio.manifest.Clips.ContainsKey(key),"every cosmetic clip exported: "+item.Id);
             var samples=audio.Load(key);Check(samples.Any(v=>Math.Abs(v)>.001f),"audible original synthesis: "+item.Id);
+            if(item.Id.StartsWith("mystery_",StringComparison.Ordinal))
+                Check(audio.manifest.Clips[key].Duration==item.Data.GetProperty("dur"u8).GetDouble(),"authored mystery preview/duck duration: "+item.Id);
         }
         audio.PlayEliminationTheme("ks_gate",true);Check(audio.voices.Count==1&&ReferenceEquals(audio.voices[0].Samples,audio.Load("killscreen_gate_big")),"base theme sting");
         audio.PlayEliminationTheme("mystery_daily_killscreen_1",false);Check(ReferenceEquals(audio.voices[^1].Samples,audio.Load("killscreen_basic_normal")),"mystery original default sting");
@@ -38,6 +40,17 @@ internal sealed partial class GameAudio
         var timer=System.Diagnostics.Stopwatch.StartNew();while(voice.Position==0&&timer.Elapsed.TotalSeconds<2){audio.Update();Thread.Sleep(10);}
         Check(voice.Position>0&&audio.frame>start,"SDL plays scheduled voice after its sample boundary");
         Check(audio.scheduledBoardDucks.Count==0,"consumed schedules are released");
+        foreach(var (kind,id) in new[]{("sound","mystery_daily_sound_1"),("elimsound","mystery_vault_elimsound_8")})
+        {
+            using var preview=new GameAudio(){EffectsVolume=0,MusicVolume=0,BoardVolume=0};
+            Check(preview.Available,"isolated preview audio device");
+            if(kind=="sound")preview.PlayBoard(id);else Check(preview.PlayEliminationSound(id,false,true,0),"secret cadence preview schedules");
+            var rendered=preview.voices.Single();
+            Check(rendered.Board&&ReferenceEquals(rendered.Samples,preview.Load("clip_"+id)),"actual mystery preview uses its exported PCM and board bus: "+id);
+            preview.Update();int queued=Brutal.SdlApi.Sdl.PInvoke.GetAudioStreamQueued(preview.stream);
+            Thread.Sleep(100);
+            Check(rendered.Position>0&&queued>0&&Brutal.SdlApi.Sdl.PInvoke.GetAudioStreamQueued(preview.stream)<queued,"SDL consumes authored preview: "+id);
+        }
         Console.WriteLine($"Elimination audio: {checks} cosmetic coverage, bus, mute, scheduling, ducking and real SDL checks passed.");
     }
 }

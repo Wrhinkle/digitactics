@@ -100,11 +100,88 @@ export const killThemes = rewards('killscreen', s => ({
     c.restore();
   } },
 }));
-export const sounds = kind => rewards(kind, s => ({
-  name:`${s.name} ${kind==='sound'?'Call':'Cadence'}`,icon:'♪',desc:`An original ${s.p?'electronic':'bell-like'} ${kind==='sound'?'call':'victory cadence'}.`,
-  data:{clip:s.id,dur:kind==='sound'?1.5:2.2,stinger:kind==='elimsound'},
-  synth(t,out,E){const notes=kind==='sound'?5:8,step=kind==='sound'?.19:.22;
-    for(let j=0;j<notes;j++){const scale=[0,2,4,7,9],degree=(j*(s.i%4+1)+s.i)%5,base=(kind==='sound'?66:48)+s.p*5+(s.i%7);
-      E.tone(t+j*step,{f:E.note(base+scale[degree]+(j===notes-1?12:0)),type:s.p?'triangle':'sine',dur:.28+(j===notes-1?.35:0),a:.012,dec:.3,vol:.09,out});}
-  },
-}));
+// Forty authored musical gestures, each with its own contour and rhythm. Calls
+// are compact; cadences answer the gesture in a lower register and resolve it.
+// Durations come from the scheduled envelopes, including the engine's release.
+const mysterySoundPhrases = [
+  ['bell',72,[0,4,7,12],[0,.7,1.8,3.2],'Bright bells climb into a warm sunlit answer.'],
+  ['drop',76,[12,7,9,4,0],[0,.55,1.7,2.4,4.1],'Cool droplets tumble through a gently falling phrase.'],
+  ['wood',67,[0,7,4,2,0],[0,1.1,1.65,3,4.25],'Hollow wooden plucks skip with an orchard swing.'],
+  ['spark',79,[0,12,7,12,4],[0,.45,1.9,2.35,4],'Tiny bright flickers blink in a playful call and answer.'],
+  ['flute',74,[7,5,4,0],[0,1.2,2.1,3.7],'A soft flute phrase floats down like falling petals.'],
+  ['felt',64,[0,4,7,4,9,7],[0,.8,1.6,2.9,3.5,4.4],'Rounded mallets weave a sweet, gently syncopated pattern.'],
+  ['drop',70,[7,3,0,5,2],[0,.65,1.2,2.9,4.5],'Low raindrops patter, pause, and answer with a softer drop.'],
+  ['glass',77,[0,7,12,9],[0,1.3,2.2,4.2],'Clear shell-like chimes leave space for a ringing answer.'],
+  ['pluck',69,[0,2,7,12,9],[0,.9,1.8,2.45,4.3],'A light plucked melody lifts and dips like a kite.'],
+  ['wood',72,[0,2,4,7],[0,1.4,2.2,3.9],'Four tender wooden notes grow from a small beginning.'],
+  ['felt',65,[0,7,4,7,12],[0,1.2,2.5,3.1,4.6],'A warm lantern motif rocks between low and high notes.'],
+  ['chime',71,[0,2,4,7,9,12],[0,.6,1.35,2.2,3.1,4.2],'Six colored chimes arch upward with a bright finish.'],
+  ['wood',60,[0,0,7,4,0],[0,.5,1.7,2.8,4.4],'Small rounded knocks skip twice before settling.'],
+  ['glass',81,[12,7,0,4,9],[0,.9,1.9,3.4,4.1],'Fine icy chimes sparkle across a spacious pattern.'],
+  ['flute',76,[12,9,7,5,7],[0,1,2.2,3.1,4.8],'An airy feather-light phrase drifts before turning upward.'],
+  ['pad',68,[0,7,4,9],[0,1.5,2.8,4.4],'Soft layered tones open slowly over still water.'],
+  ['chime',79,[0,12,7,16,12],[0,1.1,2,3.2,4.6],'Distant star chimes jump between luminous registers.'],
+  ['felt',62,[0,3,7,5,3,0],[0,.7,1.8,2.6,3.3,4.7],'A low, cozy mallet phrase curls back toward home.'],
+  ['pluck',67,[0,7,12,7,2,9],[0,.8,1.6,2.4,3.6,4.4],'A turning plucked figure gathers a small gust of momentum.'],
+  ['pad',66,[7,12,9,4,0],[0,1.3,2.5,3.6,5],'A mellow moonlit line rises, hangs, and settles softly.'],
+  ['glass',75,[0,6,12,7,14],[0,.7,1.6,3,4.3],'Faceted glass tones refract into a bright angular answer.'],
+  ['bass',53,[0,7,3,0],[0,1.4,2.6,4.2],'A shadowed low pulse opens into a quiet eclipse chord.'],
+  ['warp',72,[0,7,12,19],[0,.55,1.45,3.3],'Smooth rising glides leave a quick comet trail.'],
+  ['signal',74,[0,0,7,4,12,7],[0,.45,1.4,2.2,3.55,4.3],'A clipped circuit handshake answers in two bright bursts.'],
+  ['metal',58,[0,3,7,0,10],[0,1,2.2,3.6,4.5],'Dark metallic strikes ring with a restrained stone-like weight.'],
+  ['pad',70,[0,7,10,14],[0,1.6,2.9,4.7],'A hazy layered chord drifts through a distant nebula.'],
+  ['spark',77,[0,12,1,13,7],[0,.35,1.1,1.65,3.9],'Short electric chirps jump across a crisp syncopated rhythm.'],
+  ['warp',65,[0,5,12,5,0],[0,.8,2.1,3.3,4.6],'An opening pitch sweep returns through a calm portal answer.'],
+  ['bass',57,[12,7,3,0],[0,.6,1.7,3.8],'A descending meteor figure lands in a rounded low tone.'],
+  ['shimmer',73,[0,1,7,8,12],[0,1.2,2.3,3.1,4.8],'Close shimmering notes shift into a clear mirage response.'],
+  ['chime',78,[0,7,14,12,7],[0,.85,1.6,3.2,4.5],'Pure quartz chimes make a clean, crystalline arch.'],
+  ['bass',50,[12,10,7,3,0],[0,.75,1.7,2.9,4.7],'A measured falling bass phrase gathers gravitational weight.'],
+  ['signal',81,[0,0,7,0,12],[0,.4,1.7,2.6,4],'Two short beeps introduce a clear digital reply.'],
+  ['spark',71,[0,3,7,10,15,19],[0,.5,1.15,1.9,2.8,4.2],'A quick rising burst opens into a bright nova flourish.'],
+  ['metal',70,[0,7,6,12,7],[0,1.05,1.65,3.1,4.6],'Polished metallic taps catch a sharp chromatic glint.'],
+  ['warp',68,[0,4,7,4,0,-5],[0,.7,1.4,2.2,3.3,4.8],'A curling glide pattern spirals down into a soft landing.'],
+  ['pulse',62,[0,7,0,12,7,0],[0,.6,1.9,2.5,3.8,4.4],'A steady low pulse alternates with quick orbital answers.'],
+  ['flute',69,[0,3,2,7,0],[0,1.45,2.25,3.6,5.1],'A breathy phantom phrase appears, bends, and fades away.'],
+  ['shimmer',76,[0,4,9,7,12],[0,1.1,2.4,3.5,4.9],'Layered bright tones ripple upward like an aurora curtain.'],
+  ['bass',55,[12,7,1,0,12],[0,1.25,2.2,3.8,4.8],'A low orbit contracts into a quiet singularity and releases.'],
+];
+const mysterySoundVoices = {
+  bell:{type:'sine',a:.006,dec:.30,vol:.115,ratio:2.76,overtone:.18},
+  drop:{type:'sine',a:.006,dec:.16,vol:.13,fall:.82,ratio:2,overtone:.12},
+  wood:{type:'sine',a:.005,dec:.105,vol:.14,ratio:3.01,overtone:.24,noise:1500},
+  spark:{type:'triangle',a:.006,dec:.11,vol:.085,fall:.93,ratio:2,overtone:.16,noise:4600},
+  flute:{type:'sine',a:.035,dec:.28,vol:.11,ratio:2,overtone:.1,vib:[5,8,.1]},
+  felt:{type:'sine',a:.012,dec:.25,vol:.13,ratio:2,overtone:.22},
+  glass:{type:'sine',a:.007,dec:.33,vol:.105,ratio:3.76,overtone:.19},
+  pluck:{type:'triangle',a:.006,dec:.20,vol:.095,ratio:2,overtone:.13},
+  chime:{type:'sine',a:.008,dec:.38,vol:.105,ratio:4.01,overtone:.12},
+  pad:{type:'triangle',a:.075,dec:.34,vol:.065,ratio:2.005,overtone:.28,vib:[3,5,.15]},
+  bass:{type:'triangle',a:.012,dec:.25,vol:.105,fall:.97,ratio:2,overtone:.18},
+  warp:{type:'sine',a:.018,dec:.26,vol:.105,fall:1.16,ratio:2.01,overtone:.17},
+  signal:{type:'square',a:.006,dec:.10,vol:.045,ratio:1,overtone:1},
+  metal:{type:'sine',a:.006,dec:.19,vol:.115,ratio:3.83,overtone:.21,noise:2400},
+  shimmer:{type:'sine',a:.03,dec:.32,vol:.095,ratio:1.006,overtone:.48,vib:[4,6,.12]},
+  pulse:{type:'square',a:.008,dec:.12,vol:.042,ratio:1,overtone:1.2},
+};
+function mysterySoundEvents(s,kind) {
+  const [voice,root,notes,beats]=mysterySoundPhrases[s.p*20+s.i],v=mysterySoundVoices[voice];
+  const cadence=kind==='elimsound',step=cadence?.18:.16,base=root-(cadence?5:0),gain=cadence?.88:1,events=[];
+  for(let j=0;j<notes.length;j++){
+    const at=beats[j]*step,a=v.a,dec=v.dec*(j===notes.length-1?1.24:1),f=440*Math.pow(2,(base+notes[j]-69)/12),vol=v.vol*gain*(j===0?1:.87);
+    events.push({at,f,type:v.type,a,dec,vol,f2:v.fall?f*v.fall:null,vib:v.vib||null});
+    events.push({at:at+.003,f:f*v.ratio,type:'sine',a:a*.9,dec:dec*.65,vol:vol*v.overtone});
+    if(v.noise)events.push({at,noise:true,type:'bandpass',f:v.noise,a:.006,dec:.035,vol:voice==='wood'?.009:.006,q:.7,rate:1});
+  }
+  if(cadence){
+    const at=(beats[beats.length-1]+.85)*step;
+    for(const [offset,vol] of [[-12,.045],[0,.04],[7,.026],[12,.018]])events.push({at,f:440*Math.pow(2,(base+offset-69)/12),type:'sine',a:.025,dec:.55,vol});
+  }
+  return events;
+}
+export const sounds = kind => rewards(kind, s => {
+  const events=mysterySoundEvents(s,kind),duration=Math.ceil((Math.max(...events.map(e=>e.at+e.a+e.dec+.05))+.08)*100)/100;
+  return {name:`${s.name} ${kind==='sound'?'Call':'Cadence'}`,icon:'♪',desc:mysterySoundPhrases[s.p*20+s.i][4]+(kind==='elimsound'?' A lower answering phrase resolves into a soft victory chord.':''),
+    data:{clip:s.id,dur:duration,stinger:kind==='elimsound'},
+    synth(t,out,E){for(const event of events){const {at,noise,...options}=event;(noise?E.noise:E.tone)(t+at,{...options,out});}},
+  };
+});

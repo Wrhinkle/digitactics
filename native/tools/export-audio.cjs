@@ -4,9 +4,12 @@ const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const { chromium } = require(process.argv[2] || '../artifacts/audio-tools/node_modules/playwright');
 const root = path.resolve(__dirname, '../..');
 const out = path.resolve(process.argv[3] || path.join(__dirname, '../artifacts/audio-content'));
+const mysteryOnly = process.argv.includes('--mystery-only');
+if (mysteryOnly && (!process.argv[3] || process.argv[3].startsWith('--'))) throw Error('--mystery-only requires an explicit isolated output directory.');
+if (mysteryOnly && out === path.resolve(__dirname, '../artifacts/audio-content')) throw Error('--mystery-only cannot replace the full native audio catalog. Choose an isolated output directory.');
 const rate = 44100;
 const source = Object.fromEntries(['audio', 'music', 'soundboard', 'elimsounds', 'mystery-content'].map(id => [id, fs.readFileSync(path.join(root, `js/${id}.js`), 'utf8')]));
-const sourceHash = crypto.createHash('sha256').update(JSON.stringify(source)).update(fs.readFileSync(__filename)).digest('hex');
+const sourceHash = crypto.createHash('sha256').update(JSON.stringify(source)).update(fs.readFileSync(__filename)).update(mysteryOnly?'mystery-only':'full').digest('hex');
 function wave(samples) {
   const bytes = Buffer.from(samples, 'base64');
   const result = Buffer.alloc(44 + bytes.length);
@@ -26,10 +29,10 @@ function wave(samples) {
       return fs.existsSync(file) && crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex') === clip.sha256;
     })) { console.log('Original audio assets verified; render cache is current.'); return; }
   }
-  const browser = await chromium.launch({ channel: 'msedge', headless: true });
+  const browser = await chromium.launch({ channel: 'msedge', headless: true, ...(mysteryOnly||process.argv.includes('--disable-gpu')?{args:['--disable-gpu']}: {}) });
   try {
     const page = await browser.newPage();
-    const manifest = { sampleRate: rate, channels: 2, sourceHash, clips: {} };
+    const manifest = { sampleRate: rate, channels: 2, sourceHash, ...(mysteryOnly?{scope:'mystery-only'}:{}), clips: {} };
     // A fresh page per clip keeps AudioNodes and generated reverb buffers bounded.
     async function render(request, seconds = 5) {
       await page.goto('about:blank');
@@ -91,7 +94,8 @@ function wave(samples) {
     for (let n = 2; n <= 7; n++) requests.push({ key: `coins_${n}`, id: 'coins', options: { n: n * 15 } });
     for (const id of inventory.clips) requests.push({ key: `clip_${id}`, kind: 'clip', id });
     for (const [id, track] of Object.entries(inventory.tracks)) requests.push({ key: `music_${id}`, kind: 'music', id, seconds: track.duration + 4 });
-    for (const request of requests) {
+    const selected = mysteryOnly ? requests.filter(r=>/^clip_mystery_(daily|vault)_(sound|elimsound)_/.test(r.key)) : requests;
+    for (const request of selected) {
       const rendered = await render(request, request.seconds || (request.id === 'champion' ? 15 : 5));
       const { samples, ...metadata } = rendered;
       if (metadata.rms < 0.00001 || metadata.clipped) throw Error(`Invalid audio ${request.key}: ${JSON.stringify(metadata)}`);
@@ -103,7 +107,7 @@ function wave(samples) {
       console.log(`${request.key}: ${(metadata.frames / rate).toFixed(2)}s`);
     }
     fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
-    console.log(`Rendered ${requests.length} original audio assets.`);
+    console.log(`Rendered ${selected.length} original audio assets${mysteryOnly?' (isolated mystery-only audit)':''}.`);
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
 
