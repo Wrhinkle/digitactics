@@ -49,7 +49,47 @@ copy/publish. Refresh companion playback only when the motion source changed.
 Inspect new fitted front/back captures before recording a material fix as
 visually verified; numeric preservation checks do not establish visual quality.
 
+Palmon's Time Stranger import had a separate geometry defect: the historical
+`repair-catalog.mjs` removed `chr348.001` to hide parked attack vines, also
+removing the flower from the same mesh. `recover-model-geometry.py` restores the
+original 1,822 flower triangles, UVs and skin weights from pinned archive
+`606444.zip`. Every selected corner is weighted entirely to the original head,
+hair or flower bones. The 1,780 vine triangles are disjoint; no mixed triangles
+are guessed or discarded. The existing rig, animations, decoded vertex data and
+other meshes remain unchanged. The corrected import cleanup preserves the same
+flower partition on future conversions.
+
+```powershell
+python native/tools/recover-model-geometry.py --model palmon --archive C:/path/606444.zip --apply
+```
+
+The restored flower has its own visual acceptance. It does not establish eye
+shader fidelity or completeness of the missing vine attack. The source archive
+retains the original vine geometry and weights for a separate visibility and
+choreography review; the flower repair does not fabricate an attack animation.
+The manifest records these outstanding scopes alongside the exact repaired hash.
+
+ToyAgumon's Time Stranger import similarly dropped `chr708.003`, which contains
+the torso, forearms and left foot. The original mesh has 5,660 triangles and no
+`J_fire` weights. The same recovery tool restores it with the original atlas,
+UVs and weights; the import cleanup now keeps it. The 302 parked fire triangles
+in the separate surviving body mesh remain excluded by their original weights.
+The existing quantized skin frame is checked against the retained body geometry.
+Its existing spine bind/rest offset of 0.645 mm is preserved, not corrected by
+moving recovered vertices or replacing the rig.
+
+```powershell
+python native/tools/recover-model-geometry.py --model toyagumon --archive C:/path/603392.zip --apply
+```
+
+Both geometry recipes reject changed archives, changed originals and any output
+that differs from the pinned recovered bytes. Recovery validates all retained
+decoded attributes, rig/animation metadata, source weights and source material
+assignments. Normal builds verify only the checked-in asset hashes.
+
 Source archive pages:
 
 - [PileVolcamon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324353/)
 - [Triceramon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324322/)
+- [Palmon](https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606444/)
+- [ToyAgumon](https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603392/)

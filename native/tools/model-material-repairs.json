@@ -107,5 +107,66 @@
         }
       ]
     }
+  ],
+  "geometryRecoveries": [
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cat_ts_palmon_chr348.glb",
+      "originalSha256": "04ff698ebdf33811344a94d6fb728eb406b63884d6b33716ae8531d62f4e2a53",
+      "repairedSha256": "868a034c3ec6dca14733fe5d45ec8b648cbc37d5612b5ae79eb8f37319398e9b",
+      "archiveSha256": "bd783d1eb19c108f52e0631423c22ca0e681d5d05c0350534da84c5329bf9834",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606444/",
+      "sourceDaeSha256": "15bb180ebfd7e9f82b02ee9b07b6bebf95a2f0c9d12374537c605cc781469b9e",
+      "sourceAlbedoSha256": "cd3a6b26549976d8c4b34cf1535e6f0a286213e44f4af1cdc84be101e6a05ad7",
+      "restoredTriangles": 1822,
+      "sourcePositionFrameError": 0.0001175110869664285,
+      "restoredSkinPositionError": 2.1806908179211604e-07,
+      "existingRigAndAnimationsPreserved": true,
+      "restoredSkinPositionTolerance": 1e-05,
+      "existingDecodedAttributesPreserved": true,
+      "remainingRequirements": [
+        "Eye material composition remains unverified.",
+        "Parked vine geometry requires separate attack visibility/choreography review."
+      ],
+      "restoredFlowerTriangles": 1822,
+      "excludedParkedVineTriangles": 1780,
+      "mixedTriangles": 0,
+      "identicalReproductionRuns": 2,
+      "changedInputRejections": 2,
+      "geometryRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 60
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cat_ts_toyagumon_chr708.glb",
+      "originalSha256": "206552528f385504558b1b10f4f221f4a8a246e4d3a41887971b00db42d11900",
+      "repairedSha256": "f50ed4cf8760e37ceb967fcad53076ecc5bf0fd75be0f82be681ac7300cce18a",
+      "archiveSha256": "5d273e2d43409adb6ee51f0f9e5de71b8c21b5e0809c810395f4b7fe23a03d64",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603392/",
+      "sourceDaeSha256": "01b499cd9e207bab88f41d470fc33f32e33601f426ae682d22c0cea3ebee34c9",
+      "sourceAlbedoSha256": "2f6ff2df35c9bddfbad11de41d6b21480fb2bb7cf0eef6bbe5d251c57ae43e5f",
+      "restoredTriangles": 5660,
+      "sourcePositionFrameError": 0.0001122817456098264,
+      "restoredSkinPositionError": 0.0006451111453611436,
+      "existingRigAndAnimationsPreserved": true,
+      "restoredSkinPositionTolerance": 0.0007,
+      "existingDecodedAttributesPreserved": true,
+      "remainingRequirements": [
+        "Grounded movement still uses a fixed-leg hop; add deliberate leg locomotion separately."
+      ],
+      "restoredBodyTriangles": 5660,
+      "restoredFireWeight": 0,
+      "excludedExistingFireTriangles": 302,
+      "identicalReproductionRuns": 2,
+      "changedInputRejections": 2,
+      "geometryRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 60
+      }
+    }
   ]
 }

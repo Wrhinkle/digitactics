@@ -103,7 +103,7 @@ def main():
     options = parser.parse_args()
     manifest = json.loads(MANIFEST.read_text())
     rows = [repair(entry, options.apply) for entry in manifest["repairs"]]
-    for entry in manifest.get("sourceRecoveries", []):
+    for entry in manifest.get("sourceRecoveries", []) + manifest.get("geometryRecoveries", []):
         path = (ROOT / entry["asset"]).resolve()
         if not path.is_relative_to(ROOT / "models") or hashlib.sha256(path.read_bytes()).hexdigest() != entry["repairedSha256"]:
             raise ValueError("Recovered source asset differs from its verified repair: " + entry["asset"])
