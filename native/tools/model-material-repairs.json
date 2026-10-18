@@ -28,5 +28,84 @@
       "albedoImage": "chr677a01.png",
       "reason": "The textured armor surfaces retain atlas UVs and their red/gold albedo is embedded. Separate cube material meshes have no UVs and are not changed by this repair."
     }
+  ],
+  "sourceRecoveries": [
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cs_pilevolcamon.glb",
+      "originalSha256": "5a2663ea3ba36c8888f7b16576a46bbd44f7bb36a6164a280f85c8b5903e67d9",
+      "repairedSha256": "77eb06d0ca779fd6d67ba5b22a40387e094d93a9da906c3868b81e46fde52c8b",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324353/",
+      "archiveSha256": "dfe5d70676668f9e1f96ddfdf5ab406daf7edcf61398edc7602fef5a550ed3e0",
+      "daeSha256": "efcce1d7f5f8ae873fd87e63e52f76e8edc46d54f7e966db9b4e13919c280e4d",
+      "albedoSha256": "03f9ede62cb9fff645e2fa0c4212935d80d32c649d065a35baaaee071e3dc19a",
+      "preservedOriginalTriangleAttributes": true,
+      "preservedRigAndAnimation": true,
+      "meshes": [
+        {
+          "mesh": "chr060_0",
+          "matchedTriangles": 2653,
+          "maximumNormalizedPositionError": 0.00011526913101785256,
+          "ambiguousTriangles": 0,
+          "restoredUvVertices": 7959
+        },
+        {
+          "mesh": "chr060_1",
+          "matchedTriangles": 1931,
+          "maximumNormalizedPositionError": 0.00011288411273483549,
+          "ambiguousTriangles": 0,
+          "existingUvMaximumError": 0.00012970168612191912
+        },
+        {
+          "mesh": "chr060_2",
+          "matchedTriangles": 339,
+          "maximumNormalizedPositionError": 0.0001024198138618696,
+          "ambiguousTriangles": 0,
+          "existingUvMaximumError": 0.00011445756515904293
+        },
+        {
+          "mesh": "chr060_3",
+          "matchedTriangles": 2848,
+          "maximumNormalizedPositionError": 0.00011548355780174042,
+          "ambiguousTriangles": 0,
+          "existingUvMaximumError": 0.00012180581290970743
+        },
+        {
+          "mesh": "chr060_4",
+          "matchedTriangles": 1852,
+          "maximumNormalizedPositionError": 0.00012057141453144516,
+          "ambiguousTriangles": 0,
+          "existingUvMaximumError": 0.00012173875751380486
+        },
+        {
+          "mesh": "chr060_5",
+          "matchedTriangles": 128,
+          "maximumNormalizedPositionError": 9.120593250913196e-05,
+          "ambiguousTriangles": 0,
+          "restoredUvVertices": 384
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cs_triceramon.glb",
+      "originalSha256": "f5f6675ec24c58a1e9d1c6331ea8fcf056fa675a1f26f6a8e3e14f68845f933d",
+      "repairedSha256": "8b16c5e3941670124416e16a985897be317f22050ff81275c3d6b630585ea15e",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324322/",
+      "archiveSha256": "92b53af362f5d024fc2d2903092c7e354a4f7a949c858294eb16fcdc554f30b8",
+      "daeSha256": "d96fdc92637ef1114325c367c492540e2183140f16066a76ac52599c839d0cad",
+      "albedoSha256": "5d27b5dd10bc7db0c2d813f0d3a782cb9efef4ec19fb21de00c73731e2763523",
+      "preservedOriginalTriangleAttributes": true,
+      "preservedRigAndAnimation": true,
+      "meshes": [
+        {
+          "mesh": "chr033_0",
+          "matchedTriangles": 6002,
+          "maximumNormalizedPositionError": 0.00011599660900045097,
+          "ambiguousTriangles": 0,
+          "existingUvMaximumError": 0.00012970168612191912
+        }
+      ]
+    }
   ]
 }

@@ -15,13 +15,14 @@ GROUPS = {
         "Assets/GltfMesh.cs", "Assets/Matrix4D.cs", "Assets/PngImage.cs", "Assets/ModelCatalog.cs",
         "Desktop/ModelRenderer.cs", "Desktop/ModelRenderer.Transparency.cs",
         "Desktop/GpuModel.cs", "Desktop/GpuTexture.cs", "Desktop/GpuPrimitive.cs",
-        "Desktop/ModelVisualAudit.cs",
     ],
+    "capture": ["Desktop/ModelVisualAudit.cs"],
+    "board": ["Desktop/ArenaCamera.cs", "Desktop/BattleView.cs", "Desktop/ArenaEnvironment.cs",
+              "Presentation/CombatScene.cs", "Desktop/GpuModel.cs"],
     "pose": ["Assets/ModelAnimator.cs"],
     "combat": [
         "Assets/CombatModelAnimator.cs", "Assets/CompanionLocomotion.cs", "Presentation/CombatScene.cs",
         "Presentation/CombatChoreography.cs", "Desktop/CombatModelAnimations.cs",
-        "Desktop/BattleView.cs", "Desktop/ArenaEnvironment.cs",
     ],
     "companion": [
         "Assets/CompanionAnimator.cs", "Assets/CompanionMotion.cs",

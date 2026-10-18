@@ -265,9 +265,10 @@ internal static class ModelVisualAudit
         finally { Glfw.Terminate(); }
     }
 
-    public static unsafe void RunBoard(string directory, int index, string role, double peakTime)
+    public static unsafe void RunBoard(string directory, int index, string role, double peakTime, int width = 908, int height = 394, int cellX = 3, int cellY = 4)
     {
-        if (role is not ("attack" or "special" or "win") || peakTime < 0) throw new ArgumentException("Choose attack, special or win and a nonnegative peak time.");
+        if (role is not ("attack" or "special" or "win" or "movement") || peakTime < 0) throw new ArgumentException("Choose attack, special, win or movement and a nonnegative peak time.");
+        if (width < 300 || height < 120 || cellX is < 0 or > 6 || cellY is < 0 or > 7) throw new ArgumentOutOfRangeException(nameof(width));
         Directory.CreateDirectory(directory);
         var runtimeHashes = CaptureHashes(directory);
         var catalog = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
@@ -282,29 +283,40 @@ internal static class ModelVisualAudit
             Glfw.WindowHint(GlfwWindowHint.ContextVersionMajor, 4); Glfw.WindowHint(GlfwWindowHint.ContextVersionMinor, 5); Glfw.WindowHint(GlfwWindowHint.Visible, 0);
             using var window = Glfw.CreateWindow(new GlfwWindow.CreateInfo { Title = "Model board-context audit", Size = new int2(512, 512) }); window.MakeContextCurrent();
             if (!Glad.Initialize(name => Glfw.PInvoke.GetProcAddress(name))) throw new InvalidOperationException("OpenGL initialization failed.");
-            const int width = 960, height = 640;
             using var target = new AuditTarget(width * 3, height);
             using var model = new GpuModel(catalog, source); using var renderer = new ModelRenderer(); using var board = new ArenaEnvironment();
             board.SetTheme("file-island");
             var clip = model.Rig.Animations.FirstOrDefault(clip => clip.Name == role);
             double duration = clip?.Duration ?? 1;
             double finish = role == "attack" ? Math.Min(duration, .55) : role == "special" ? Math.Min(duration, 1.1) : duration;
-            double[] times = [0, peakTime, Math.Max(peakTime, finish) + .25];
-            var camera = BattleView.Camera(width, height, 7); var eye = BattleView.CameraEye(width, height, 7);
-            var location = CombatLayout.Cell(new(3, 4), 7, false);
+            var movement = role == "movement" ? ProductionMovement(model.Rig, key, throughArrival: true) : null;
+            int[] movementFrames = movement is null ? [] : [0, movement.Length / 2, movement.Length - 1];
+            double[] times = movement is null ? [0, peakTime, Math.Max(peakTime, finish) + .25] : movementFrames.Select(frame => movement[frame].Time).ToArray();
+            var camera = board.Camera.Matrix(width, height, 7); var eye = board.Camera.Eye(width, height, 7);
+            var location = CombatLayout.Cell(new(cellX, cellY), 7, false);
             var view = new CombatVisual(0, location, Math.PI, default, 1, 0, 0, 1, null, false);
             for (int frame = 0; frame < times.Length; frame++)
             {
                 var animator = new ModelAnimator(model.Rig); animator.Play(role); double time = 0;
                 while (time + 1e-10 < times[frame]) { double delta = Math.Min(1d / 60, times[frame] - time); animator.Update(delta); time += delta; }
                 animator.Update(0); board.Time = time;
+                RigPose pose = animator.Pose;
+                CombatVisual frameView = view;
+                if (movement is not null)
+                {
+                    var sample = movement[movementFrames[frame]]; pose = sample.Pose;
+                    frameView = view with { Position = new(location.X + sample.Position.X, sample.Position.Y, location.Z + sample.Position.Z), Scale = sample.Scale };
+                }
                 board.Draw(renderer, camera, eye, 7, false, frame * width, 0, width, height,
-                    (renderCamera, transparent) => renderer.Draw(model, animator.Pose, model.Place(view, stage, tier), renderCamera, transparent));
+                    (renderCamera, transparent) => renderer.Draw(model, pose, model.Place(frameView, stage, tier), renderCamera, transparent));
             }
-            string image = $"{index:D4}.board-{role}.png";
+            string stem = $"{index:D4}.board-{role}-{width}x{height}-cell{cellX}-{cellY}";
+            string image = stem + ".png";
             SavePng(Path.Combine(directory, image), width * 3, height);
-            File.WriteAllText(Path.Combine(directory, $"{index:D4}.board-{role}.json"), JsonSerializer.Serialize(new { Source = key, Image = image, Role = role, Times = times, Stage = stage, Tier = tier, Variant = alias?.Variant, Line = alias?.Line,
-                Policy = "ArenaEnvironment + BattleView.Camera + GpuModel.Place + production ModelAnimator", RuntimeHashes = runtimeHashes, Status = "unreviewed" }, new JsonSerializerOptions { WriteIndented = true }));
+            File.WriteAllText(Path.Combine(directory, stem + ".json"), JsonSerializer.Serialize(new { Source = key, Image = image, Role = role, Times = times, Stage = stage, Tier = tier, Variant = alias?.Variant, Line = alias?.Line,
+                BoardContextPolicy = "live-arena-camera/v1", Viewport = new { Width = width, Height = height }, Cell = new { X = cellX, Y = cellY },
+                SamplePhases = movement is null ? new[] { "start", "requested-action-time", "settled" } : new[] { "first-moving-tick", "travel", "first-arrival-tick" },
+                Policy = "ArenaEnvironment.Camera default + GpuModel.Place + production animation; movement uses actual CombatChoreography", RuntimeHashes = runtimeHashes, Status = "unreviewed" }, new JsonSerializerOptions { WriteIndented = true }));
             Console.WriteLine($"Board context evidence: {key}/{role}, {string.Join(", ", times.Select(time => time.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)))} seconds.");
         }
         finally { Glfw.Terminate(); }
@@ -352,7 +364,7 @@ internal static class ModelVisualAudit
             return (pose, actor.Animator.LocomotionKind.ToString());
         }
     }
-    private static Movement[] ProductionMovement(GltfRig rig, string source)
+    private static Movement[] ProductionMovement(GltfRig rig, string source, bool throughArrival = false)
     {
         var rules = ContentCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/catalog.json")).Variants.First();
         var line = rules.Lines.First(line => !line.Combat.Leap);
@@ -360,7 +372,8 @@ internal static class ModelVisualAudit
         var models = new MovementModels(rig, source);
         var choreography = new CombatChoreography(combat, models);
         var collected = new List<Movement>(); WorldPosition origin = default; double started = 0;
-        for (int tick = 0; tick < 300 && collected.Count < Frames; tick++)
+        bool arrived = false;
+        for (int tick = 0; tick < 300 && (throughArrival || collected.Count < Frames); tick++)
         {
             combat.Step(); choreography.Update(CombatSimulation.Tick);
             var unit = combat.Units[0];
@@ -369,8 +382,9 @@ internal static class ModelVisualAudit
             if (collected.Count == 0) { origin = view.Position; started = combat.Time; }
             var snapshot = models.Snapshot(unit.Id);
             collected.Add(new(combat.Time - started, new(view.Position.X - origin.X, view.Position.Y, view.Position.Z - origin.Z), view.Scale, snapshot.Pose, snapshot.Kind));
+            if (throughArrival && unit.MoveElapsed >= unit.MoveDuration) { arrived = true; break; }
         }
-        if (collected.Count != Frames) throw new InvalidOperationException("Could not collect a production movement path.");
+        if (throughArrival ? !arrived || collected.Count < 3 : collected.Count != Frames) throw new InvalidOperationException("Could not collect a production movement path.");
         // Center the complete path without changing travel distance or vertical bob.
         double centerX = (collected.Min(sample => sample.Position.X) + collected.Max(sample => sample.Position.X)) / 2;
         double centerZ = (collected.Min(sample => sample.Position.Z) + collected.Max(sample => sample.Position.Z)) / 2;
