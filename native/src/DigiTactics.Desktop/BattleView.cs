@@ -103,7 +103,7 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     public void Labels(int width, int height, int windowHeight, int left = 0, int bottom = 0)
     {
         if (width <= 0 || height <= 0) return;
-        var camera = Camera(width, height, Combat.Columns); var draw = ImGui.GetForegroundDrawList();
+        var camera = board.Camera.Matrix(width, height, Combat.Columns); var draw = ImGui.GetForegroundDrawList();
         foreach (var view in choreography.Views)
         {
             var unit = Combat.Units[view.UnitId]; if (!unit.Alive) continue;
@@ -121,7 +121,7 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     public void Draw(int width, int height, int left = 0, int bottom = 0)
     {
         if (width <= 0 || height <= 0) return;
-        var camera=Camera(width,height,Combat.Columns); board.SetTheme(BoardTheme); DrawCalls=0;
+        var camera=board.Camera.Matrix(width,height,Combat.Columns); board.SetTheme(BoardTheme); DrawCalls=0;
         bench.RenderedUnits.Clear();
         board.Feedback.Time=Combat.Time;
         boardBursts.Update(Combat.Events,flash=>board.Feedback.Flash(flash.Column,flash.Row,flash.Until,flash.ViewTeam==0?allyBurst:enemyBurst));
@@ -136,7 +136,7 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
                 if(!renderer.ShadowPass) DrawCalls+=renderer.DrawCalls;
             }
         }
-        board.Draw(renderer,camera,CameraEye(width,height,Combat.Columns),Combat.Columns,false,left,bottom,width,height,Units);
+        board.Draw(renderer,camera,board.Camera.Eye(width,height,Combat.Columns),Combat.Columns,false,left,bottom,width,height,Units);
     }
     public void Dispose() { bench.Dispose(); foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
 }

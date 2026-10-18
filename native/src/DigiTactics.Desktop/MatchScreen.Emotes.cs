@@ -44,7 +44,7 @@ internal sealed partial class MatchScreen
         void Draw(int seat, ArenaCompanionView? view)
         {
             if (view is null || emotes.At(seat, now) is not { } emote) return;
-            var p = System.Numerics.Vector4.Transform(new System.Numerics.Vector4(view.Anchor, 1), BattleView.Camera(Width, Height, battle?.Combat.Columns ?? 7));
+            var p = System.Numerics.Vector4.Transform(new System.Numerics.Vector4(view.Anchor, 1), arenaEnvironment.Camera.Matrix(Width, Height, battle?.Combat.Columns ?? 7));
             if (p.W <= 0) return;
             var anchor = EmoteLayout.Anchor((p.X / p.W + 1) * Width / 2, (1 - p.Y / p.W) * Height / 2, false, Width, Height);
             if (!anchor.Visible) return;

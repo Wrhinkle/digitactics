@@ -36,6 +36,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private bool dropsVerified;
     private readonly ItemDragSmoke itemDragSmoke = new();
     private bool itemDragsVerified;
+    private readonly CameraSmoke cameraSmoke = new();
+    private bool cameraVerified;
     public void Input(MatchScreen screen)
     {
         emoteTime+=100;screen.AiEmoteClock=()=>emoteTime;screen.AiEmoteRandom=()=>.01;
@@ -58,6 +60,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (cooldown-- > 0 || index >= commands.Length) return;
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
+        if (index == 9 && !cameraVerified) { cameraVerified = cameraSmoke.Input(screen); cooldown = 3; return; }
         if (index == 22 && !itemDragsVerified) { itemDragsVerified = itemDragSmoke.Input(screen); cooldown = 3; return; }
         if (index == 22 && !dropsVerified) { dropsVerified = dropSmoke.Input(screen); cooldown = 3; return; }
         if (index == 9 && dragStep < 10)

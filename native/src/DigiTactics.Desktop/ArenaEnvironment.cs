@@ -20,6 +20,7 @@ internal sealed class ArenaEnvironment : IDisposable
     public int DrawCalls { get; private set; }
     public BoardSurfaceFeedback Feedback { get; } = new();
     public ItemShelfView Items { get; } = new();
+    public ArenaCamera Camera { get; } = new();
     public double Time { get; set; }
     public bool? CombatActive { get; set; }
     public int Stage { get; set; }=1;
@@ -72,7 +73,7 @@ internal sealed class ArenaEnvironment : IDisposable
             renderer.ReceiveShadow=true; units(camera,false);
             meshes.Draw(renderer,camera,true,height); DrawCalls+=meshes.DrawCalls;
             renderer.ReceiveShadow=true; units(camera,true);
-            Items.Draw(renderer,camera,eye,columns,Time,Feedback);
+            Items.Draw(renderer,camera,eye,columns,Time,Feedback,Camera.Target);
         }
         finally { ModelRenderer.End(); }
     }

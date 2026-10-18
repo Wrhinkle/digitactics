@@ -6,9 +6,9 @@ namespace DigiTactics.Desktop;
 
 internal static class ArenaPicking
 {
-    public static WorldPosition? Ground(float x, float y, int width, int height, int columns)
+    public static WorldPosition? Ground(float x, float y, int width, int height, int columns, ArenaCamera? camera = null)
     {
-        if (width <= 0 || height <= 0 || !Matrix4x4.Invert(BattleView.Camera(width, height, columns), out var inverse)) return null;
+        if (width <= 0 || height <= 0 || !Matrix4x4.Invert(camera?.Matrix(width, height, columns) ?? BattleView.Camera(width, height, columns), out var inverse)) return null;
         float nx = x / width * 2 - 1, ny = 1 - y / height * 2;
         var near = Vector4.Transform(new Vector4(nx, ny, 0, 1), inverse); near /= near.W;
         var far = Vector4.Transform(new Vector4(nx, ny, 1, 1), inverse); far /= far.W;

@@ -181,6 +181,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private void Watch(int player)
     {
+        cameraDrag = null;
         CancelArenaDrag();
         viewed = player;
         if (Session is null || Session.Rounds.Phase == MatchPhase.Planning) return;
@@ -255,7 +256,7 @@ internal sealed partial class MatchScreen : IDisposable
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
         sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;
-        if (Session is null) CancelArenaDrag();
+        if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
         if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
         Header(); if (Session is null) return;
         Roster(); Sidebar();
@@ -263,7 +264,7 @@ internal sealed partial class MatchScreen : IDisposable
         else
         {
             Window("Arena", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-            CompanionPointer(); ArenaPointer(); ImGui.End();
+            ArenaPointer(); ImGui.End();
             battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height);
         }
         CompanionClickMark();
@@ -336,16 +337,16 @@ internal sealed partial class MatchScreen : IDisposable
     private void Board()
     {
         Window("Arena", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-        CompanionPointer(); ArenaPointer();
-        ImGui.Text(viewed == localSeat ? "Drag units between the bench and board. Right-click to move your companion." : $"Scouting {Session!.State.Players[viewed].Name}");
+        ArenaPointer();
+        ImGui.Text(viewed == localSeat ? "Drag units to place. Wheel: zoom. Middle-drag: pan. Right-drag: orbit. R: reset." : $"Scouting {Session!.State.Players[viewed].Name}");
         for (int row = 4; row < 8; row++) for (int column = 0; column < 7; column++)
         {
-            var point = PlanningView.Cell(column, row, Width, Height);
+            var point = planning.Cell(column, row, Width, Height);
             Buttons[$"hex/{column}/{row}"] = new(Left + point.X, Top + point.Y);
         }
         for (int i = 0; i < 9; i++)
         {
-            var point = PlanningView.Bench(i, Width, Height);
+            var point = planning.Bench(i, Width, Height);
             Buttons[$"arenaBench/{i}"] = new(Left + point.X, Top + point.Y);
         }
         ImGui.End();
@@ -536,8 +537,8 @@ internal sealed partial class MatchScreen : IDisposable
         arenaEnvironment.Items.Ruleset = Rules.Id;
         arenaEnvironment.Items.Items = Session.State.Players[viewed].Items;
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
-        if (!IsSpectating) arenaCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7);
-        opponentCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7);
+        if (!IsSpectating) arenaCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7, arenaEnvironment.Camera);
+        opponentCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7, arenaEnvironment.Camera);
     }
     public void Dispose() { DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
 }

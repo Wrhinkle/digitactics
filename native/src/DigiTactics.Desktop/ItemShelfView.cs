@@ -18,10 +18,10 @@ internal sealed class ItemShelfView : IDisposable
     public WorldPosition? DragPosition { get; set; }
     public int DrawCalls { get; private set; }
     public static WorldPosition Position(int index) => new(-7.5 - index % 2 * .95, .62, 1.2 + index / 2 * 1.5);
-    public static Brutal.Numerics.float2 Screen(int index, int width, int height)
+    public static Brutal.Numerics.float2 Screen(int index, int width, int height, ArenaCamera? camera = null)
     {
         var p = Position(index);
-        var clip = Vector4.Transform(new Vector4((float)p.X, (float)p.Y, (float)p.Z, 1), BattleView.Camera(width, height, 7));
+        var clip = Vector4.Transform(new Vector4((float)p.X, (float)p.Y, (float)p.Z, 1), camera?.Matrix(width, height, 7) ?? BattleView.Camera(width, height, 7));
         return new((clip.X / clip.W + 1) * width / 2, (1 - clip.Y / clip.W) * height / 2);
     }
 
@@ -37,13 +37,13 @@ internal sealed class ItemShelfView : IDisposable
         quad = new(new(vertices, [0, 1, 2, 0, 2, 3], -1, true, false));
     }
 
-    public void Draw(ModelRenderer renderer, Matrix4x4 camera, Vector3 eye, int columns, double time, BoardSurfaceFeedback feedback)
+    public void Draw(ModelRenderer renderer, Matrix4x4 camera, Vector3 eye, int columns, double time, BoardSurfaceFeedback feedback, Vector3 target = default)
     {
         DrawCalls = 0;
         var used = new HashSet<string>();
         if (columns == 7 && art.TryGetValue(Ruleset.Split('/')[0], out var icons))
         {
-            var rotation = Quaternion.CreateFromRotationMatrix(Matrix4x4.CreateRotationY(MathF.PI) * Matrix4x4.CreateBillboard(Vector3.Zero, eye, Vector3.UnitY, Vector3.UnitZ));
+            var rotation = Quaternion.CreateFromRotationMatrix(Matrix4x4.CreateRotationY(MathF.PI) * Matrix4x4.CreateBillboard(Vector3.Zero, eye - target, Vector3.UnitY, Vector3.UnitZ));
             for (int i = 0; i < Math.Min(10, Items.Count); i++)
             {
                 if (!icons.TryGetValue(Items[i], out var file)) throw new InvalidDataException($"Missing item artwork: {Ruleset}/{Items[i]}");

@@ -32,18 +32,19 @@ internal sealed partial class MatchScreen
         { arenaDrag = null; arenaDragMoved = false; arenaDragPosition = null; }
         var mouse = ImGui.GetMousePos();
         bool inside = ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem) && mouse.X >= Left && mouse.X < Left + Width && mouse.Y >= Top && mouse.Y < Top + Height;
-        var ground = ArenaPicking.Ground(mouse.X - Left, mouse.Y - Top, Width, Height, battle?.Combat.Columns ?? 7);
+        var ground = ArenaPicking.Ground(mouse.X - Left, mouse.Y - Top, Width, Height, battle?.Combat.Columns ?? 7, arenaEnvironment.Camera);
         var spot = inside && ground is { } p ? ArenaPicking.Spot(p, battle?.Combat.Columns > 7, battle is null) : null;
         int shelfHover = -1; double nearest = 30 * 30;
         if (battle?.Combat.Columns is null or 7)
             for (int i = 0; i < Math.Min(10, Session!.State.Players[viewed].Items.Count); i++)
             {
-                var point = ItemShelfView.Screen(i, Width, Height);
+                var point = ItemShelfView.Screen(i, Width, Height, arenaEnvironment.Camera);
                 Buttons[$"shelfItem/{i}"] = new(Left + point.X, Top + point.Y);
                 double distance = Math.Pow(mouse.X - Left - point.X, 2) + Math.Pow(mouse.Y - Top - point.Y, 2);
                 if (inside && distance < nearest) { nearest = distance; shelfHover = i; }
             }
         feedback.HoverItem = shelfHover;
+        if (CameraNavigation(inside, spot, shelfHover)) { CancelArenaDrag(); return; }
         if (editable && shelfHover >= 0)
         {
             itemDropSlot = shelfHover; spot = null;
