@@ -11,6 +11,8 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly List<GpuPrimitive> geometry = [];
     private readonly List<GpuTexture> textures = [];
     private readonly List<ObjectParts> objects = [];
+    private readonly List<(GpuPrimitive Geometry,float[] Vertices,BoardMotion Motion)> waves=[];
+    private double time;
     public int DrawCalls { get; private set; }
     public Matrix4D Root { get; set; } = Matrix4D.Identity;
     public BoardMeshLayer(BoardScene scene)
@@ -29,6 +31,7 @@ internal sealed class BoardMeshLayer : IDisposable
                     parts = BoardMesh.Create(scene, obj).Select(part =>
                     {
                         var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
+                        if(obj.Motion is { Kind:"sea" } motion) waves.Add((gpu,part.Primitive.Vertices,motion));
                         var material = scene.Materials[part.Material];
                         return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
                     }).ToArray();
@@ -38,6 +41,12 @@ internal sealed class BoardMeshLayer : IDisposable
             }
         }
         catch { Dispose(); throw; }
+    }
+
+    public void Update(double seconds)
+    {
+        time=seconds;
+        foreach(var wave in waves) { BoardSceneMotion.Sea(wave.Vertices,time,wave.Motion); wave.Geometry.UpdateVertices(wave.Vertices); }
     }
 
     public void Draw(ModelRenderer renderer, Matrix4x4 camera, bool transparent, int viewportHeight)
@@ -65,7 +74,12 @@ internal sealed class BoardMeshLayer : IDisposable
                     DrawCalls++;
                 }
                 if (item.Object.Instances is { } instances)
-                    foreach (var instance in instances) Draw(Matrix4D.From(instance.Matrix) * world, instance.Color[0], instance.Color[1], instance.Color[2]);
+                    for(int i=0;i<instances.Length;i++)
+                    {
+                        var instance=instances[i];
+                        var matrix=item.Object.Motion is { Kind:"island-crystals",Items:{ } crystals } ? BoardSceneMotion.Crystal(crystals[i],time) : Matrix4D.From(instance.Matrix);
+                        Draw(matrix*world,instance.Color[0],instance.Color[1],instance.Color[2]);
+                    }
                 else Draw(world, 1, 1, 1);
             }
         }
@@ -76,5 +90,6 @@ internal sealed class BoardMeshLayer : IDisposable
         foreach (var primitive in geometry) primitive.Dispose(); geometry.Clear();
         foreach (var texture in textures) texture.Dispose(); textures.Clear();
         objects.Clear();
+        waves.Clear();
     }
 }

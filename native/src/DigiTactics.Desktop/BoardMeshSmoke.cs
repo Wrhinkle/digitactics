@@ -96,6 +96,11 @@ internal static class BoardMeshSmoke
                     Console.WriteLine($"Board feedback pixels verified: {brighter} pixels brightened.");
                     board.Feedback.ClearFlashes(); board.Feedback.UnitDragMoved=false; board.Feedback.HoverItem=-1;
                     Render(true);
+                    var resting=Pixels(); layer.Update(2.7); Render(true); var moving=Pixels();
+                    int changed=Enumerable.Range(0,cell*cell).Count(i=>Math.Abs(resting[i*4]-moving[i*4])+Math.Abs(resting[i*4+1]-moving[i*4+1])+Math.Abs(resting[i*4+2]-moving[i*4+2])>3);
+                    if(changed<10) throw new InvalidOperationException("Animated board geometry did not change rendered pixels.");
+                    Console.WriteLine($"Board animation pixels verified: {changed} pixels changed.");
+                    layer.Update(0); Render(true);
                 }
                 else Render(true);
                 draws+=expected; index++;

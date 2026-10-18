@@ -143,6 +143,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     public void Update(double delta, double? wallDelta = null)
     {
+        boardSceneTime+=Math.Clamp(wallDelta??delta,0,.1);
         UpdateSteamLobby();
         UpdateNetworkMatch();
         if (farm is not null) farm.ResidentPosition = id => showFarm && training is null ? farmView?.Position(id) : null;

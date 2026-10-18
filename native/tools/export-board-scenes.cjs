@@ -9,6 +9,8 @@ async function main(){
  const module="import * as THREE from '/vendor/three/build/three.module.js';import {mergeGeometries} from '/vendor/three/addons/utils/BufferGeometryUtils.js';import {extraThemes} from '/js/boards-extra.js';import {mysteryBoards} from '/js/mystery-boards.js';"
   +`const DT={BENCH:9,CELLS:Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})),makeRng:${rng},hexDist:${distance}},COLS=7,ROWS=8,BENCH=9;const LAYOUT=(()=>{`+layout+';return LAYOUT;})();'
   +source.slice(source.indexOf('const { cellWorld'),source.indexOf('// ---------- renderer integration ----------'))
+   .replace('const base = Float32Array.from(pos.array);','const base = Float32Array.from(pos.array); m.userData.nativeMotion={kind:"sea",amp,speed};')
+   .replace(/const cm = inst\(ctx, new THREE.OctahedronGeometry\(0.45, 0\)[^\n]+;/,line=>line+' cm.userData.nativeMotion={kind:"island-crystals",items:crystals.map(c=>({...c}))};')
   +'\nexport {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
   +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}'
   +'\nexport const originalHighlight='+render.slice(render.indexOf('  highlight(ui, planning) {'),render.indexOf('  benchPos(i, partner')).trim().replace('highlight(','function(')+';'
@@ -61,7 +63,7 @@ async function main(){
      if(!o.isMesh&&!o.isPoints&&!o.isSprite&&!o.isLine)return;
      const g=o.isSprite?new THREE.PlaneGeometry(1,1):o.geometry;
      let visible=true;for(let parent=o;parent;parent=parent.parent)visible=visible&&parent.visible;
-     const base={kind:o.isPoints?'points':o.isSprite?'sprite':o.isLineSegments?'lines':o.isLine?'lineStrip':'mesh',geometry:geometry(g),materials:[].concat(o.material).map(material),matrix:o.matrixWorld.toArray(),visible,castShadow:o.castShadow,receiveShadow:o.receiveShadow};
+     const base={kind:o.isPoints?'points':o.isSprite?'sprite':o.isLineSegments?'lines':o.isLine?'lineStrip':'mesh',geometry:geometry(g),materials:[].concat(o.material).map(material),matrix:o.matrixWorld.toArray(),visible,castShadow:o.castShadow,receiveShadow:o.receiveShadow,motion:o.userData.nativeMotion||null};
      if(o.isInstancedMesh){base.instances=[];const m=new THREE.Matrix4(),color=new THREE.Color();for(let i=0;i<o.count;i++){o.getMatrixAt(i,m);if(o.instanceColor)o.getColorAt(i,color);base.instances.push({matrix:m.toArray(),color:color.toArray()});}}
      objects.push(base);
     });
@@ -141,6 +143,29 @@ async function main(){
    return rows;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-bursts.json.gz'),zlib.gzipSync(JSON.stringify(bursts)));
+  const motionFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
+   for(const spec of THEMES){
+    const env=buildEnv(spec),moving=[];env.group.traverse(o=>{if(o.userData.nativeMotion)moving.push(o);});
+    for(const time of [0,.016,.37,1,2.7,10,31.25,120]){
+     env.tick(.016,time);
+     for(const o of moving){
+      const motion=o.userData.nativeMotion;
+      if(motion.kind==='sea'){
+       const a=o.geometry.attributes.position.array,vertices=[];
+       for(let i=0;i<a.length/3;i+=13)vertices.push([a[i*3],a[i*3+2],a[i*3+1]]);
+       rows.push({id:spec.id,time,motion,vertices});
+      }else{
+       const matrix=new THREE.Matrix4(),matrices=[];for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+       rows.push({id:spec.id,time,motion,matrices});
+      }
+     }
+    }
+    disposeEnv(env);
+   }
+   return rows;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-motion.json.gz'),zlib.gzipSync(JSON.stringify(motionFixture)));
   console.log(`Exported ${manifest.length} board themes, ${manifest.reduce((n,t)=>n+t.instances,0)} scene instances; animation tick counts retained for native port.`);
  }finally{await browser.close();}
 }

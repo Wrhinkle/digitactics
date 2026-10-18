@@ -80,6 +80,6 @@ internal static class BoardSceneChecks
             }
         }
         Console.WriteLine($"Board scenes: {checks:N0} asset, surface and lighting checks passed for {ids.Count} themes and {instances:N0} instances; geometry, materials and references validated.");
-        return checks+BoardFeedbackChecks.Run(root)+BoardBurstChecks.Run(root);
+        return checks+BoardFeedbackChecks.Run(root)+BoardBurstChecks.Run(root)+BoardMotionChecks.Run(root);
     }
 }

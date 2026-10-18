@@ -19,6 +19,7 @@ internal sealed class ArenaEnvironment : IDisposable
     public string? Theme => scene?.Id;
     public int DrawCalls { get; private set; }
     public BoardSurfaceFeedback Feedback { get; } = new();
+    public double Time { get; set; }
 
     public void SetTheme(string? id)
     {
@@ -35,6 +36,7 @@ internal sealed class ArenaEnvironment : IDisposable
     public void Draw(ModelRenderer renderer,Matrix4x4 camera,Vector3 eye,int columns,bool planning,int left,int bottom,int width,int height,Action<Matrix4x4,bool> units)
     {
         if(scene is null) SetTheme("file-island");
+        meshes!.Update(Time);
         bool wide=columns>7;
         meshes!.Root=Matrix4D.Compose(new(0,0,0),new(0,0,0,1),new(wide?1.8:1,1,1));
         lighting!.FogNear=wide?65:scene!.Fog[1].GetSingle(); lighting.FogFar=wide?120:scene!.Fog[2].GetSingle();

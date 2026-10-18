@@ -8,6 +8,7 @@ internal sealed partial class MatchScreen
     private string? boardWallet;
     private string localBoard="file-island";
     private bool boardLoaded;
+    private double boardSceneTime;
     public int BoardDrawCalls=>battle?.BoardDrawCalls ?? planning.BoardDrawCalls;
     private void SyncBoardTheme()
     {
@@ -20,7 +21,9 @@ internal sealed partial class MatchScreen
             boardWallet=wallet; boardLoaded=true;
         }
         planning.BoardTheme=localBoard;
+        planning.SceneTime=boardSceneTime;
         if(battle is null) return;
+        battle.SceneTime=boardSceneTime;
         string theme=localBoard;
         if(battle.Mirrored && watching is { Pve:false })
         {

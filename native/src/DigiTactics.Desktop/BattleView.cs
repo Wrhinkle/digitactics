@@ -17,6 +17,7 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     private readonly ArenaEnvironment board = new();
     public string BoardTheme { get; set; } = "file-island";
     public int BoardDrawCalls => board.DrawCalls;
+    public double SceneTime { get=>board.Time; set=>board.Time=value; }
     private readonly CombatChoreography choreography;
     private readonly CombatBoardBursts boardBursts;
     private static readonly Vector3 allyBurst=BoardLighting.Linear("#6fd3ff"),enemyBurst=BoardLighting.Linear("#ff7a6a");
@@ -56,6 +57,7 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     public void Update(int unit, double delta) { if (actors.TryGetValue(unit, out var actor)) actor.Animator.Update(delta); }
     public void Advance(double delta)
     {
+        SceneTime+=Math.Clamp(delta,0,.1);
         if (paused) return;
         accumulator += Math.Min(delta, .25);
         while (accumulator >= CombatSimulation.Tick && !Combat.Done) { Combat.Step(); accumulator -= CombatSimulation.Tick; }

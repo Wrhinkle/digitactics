@@ -12,11 +12,13 @@ internal sealed class PlanningView : IDisposable
     private readonly ArenaEnvironment board = new();
     public string BoardTheme { get; set; } = "file-island";
     public int BoardDrawCalls => board.DrawCalls;
+    public double SceneTime { get=>board.Time; set=>board.Time=value; }
     private readonly Dictionary<ModelSource, GpuModel> models = [];
     private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
     public int DrawCalls { get; private set; }
     public void Update(Ruleset rules, MatchPlayer player, double delta)
     {
+        SceneTime+=Math.Clamp(delta,0,.1);
         var live = player.Roster.Board.Select(e => e.Unit.Id).ToHashSet();
         foreach (int id in actors.Keys.Where(id => !live.Contains(id)).ToArray()) actors.Remove(id);
         foreach (var entry in player.Roster.Board)
