@@ -1,4 +1,4 @@
-param([switch]$Publish)
+param([switch]$Publish,[string]$NativeVersion="0.0.0")
 $ErrorActionPreference = 'Stop'
 $nativeRoot = $PSScriptRoot
 $repoRoot = Split-Path -Parent $nativeRoot
@@ -176,30 +176,7 @@ try {
         Invoke-Checked $dotnet $smokeArguments
     }
     if ($Publish) {
-        $destination = Join-Path $nativeRoot 'artifacts\win-x64'
-        Invoke-Checked $dotnet @('publish', 'src/DigiTactics.Desktop', '-c', 'Release', '-r', 'win-x64', '--self-contained', 'true', '-o', $destination)
-        Copy-Item -LiteralPath (Join-Path $nativeRoot 'README.md') -Destination $destination
-        Copy-Item -LiteralPath (Join-Path $repoRoot 'CREDITS.md') -Destination $destination
-        Copy-Item -LiteralPath (Join-Path $repoRoot 'THIRD_PARTY_NOTICES.txt') -Destination $destination
-        # Preserve notices for every pinned BRUTAL package and its bundled native dependencies.
-        $assets = Get-Content 'src/DigiTactics.Desktop/obj/project.assets.json' -Raw | ConvertFrom-Json
-        $packageRoot = $assets.packageFolders.PSObject.Properties.Name | Select-Object -First 1
-        foreach ($library in $assets.libraries.PSObject.Properties) {
-            if ($library.Name -notlike 'Ahwoo.Brutal.*') { continue }
-            $source = Join-Path $packageRoot $library.Value.path
-            $notices = Join-Path $destination ('LICENSES\' + $library.Name.Replace('/', '-'))
-            New-Item -ItemType Directory -Force -Path $notices | Out-Null
-            foreach ($name in @('LICENSE.txt', 'NOTICE.txt', 'CONTRIBUTORS.md', 'LICENSES')) {
-                $item = Join-Path $source $name
-                if (Test-Path -LiteralPath $item) { Copy-Item -LiteralPath $item -Destination $notices -Recurse -Force }
-            }
-            if ($library.Name -like 'Ahwoo.Brutal.Core/*') {
-                Copy-Item -LiteralPath (Join-Path $source 'NOTICE.txt') -Destination $destination
-            }
-        }
-        Invoke-Checked (Join-Path $destination 'DigiTactics.Desktop.exe') @('--smoke')
-        Invoke-Checked (Join-Path $destination 'DigiTactics.Desktop.exe') @('--custom-music-smoke')
-        Invoke-Checked (Join-Path $destination 'DigiTactics.Desktop.exe') @('--music-routing-smoke')
-        Write-Host "Native migration build: $destination"
+        $destination=Join-Path $nativeRoot ('artifacts/releases/'+$NativeVersion+'-'+[Guid]::NewGuid().ToString('N'))
+        & (Join-Path $nativeRoot 'tools/publish-native.ps1') -Destination $destination -Version $NativeVersion
     }
 } finally { Pop-Location; $env:DOTNET_ROOT=$savedDotnetRoot }
