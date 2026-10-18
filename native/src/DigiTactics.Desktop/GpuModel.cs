@@ -16,6 +16,10 @@ internal sealed class GpuModel : IDisposable
     public double Footprint { get; }
     public Matrix4D PreviewPlacement => Normalization * Transform(0, 0, 0, Rotation, 2 / Math.Max(1, Footprint));
     private double Rotation => Number("rotY"u8, 0);
+    public CompanionAnimator CreateCompanionAnimator(CompanionVisual visual, System.Text.Json.JsonElement fallbacks, double height = 1.2, double yaw = 0)
+        => new(Rig, visual, fallbacks, Math.Min(height * visual.Height, 1.5 / Math.Max(Footprint, .01)), Rotation, yaw);
+    public Matrix4D PlaceCompanion(CompanionAnimator animator, double x = 0, double y = 0, double z = 0)
+        => Normalization * animator.Transform.Matrix * Transform(x, y, z, animator.BodyYaw, 1);
 
     public GpuModel(ModelCatalog catalog, ModelSource source)
     {

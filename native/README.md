@@ -2195,3 +2195,30 @@ This is the selection/math layer for the companion animator. Timed step playback
 clip blending, walking transitions and connection to the animated farm scene are
 still pending; no claim of completed farm presentation or production release is
 made by this checkpoint.
+
+### Timed companion animation playback
+
+`CompanionAnimator` now executes reaction sequences with their original durations,
+loop counts and speed, blends idle/run/reaction skeletal tracks, clamps finished
+clips, handles interrupted reactions and smooths facing changes. Procedural
+movement overlays are applied alongside clip playback; static companions receive
+the original idle motion when standing without an active reaction. `GpuModel`
+provides the companion height/footprint placement used by the GPU path.
+
+The reference exporter runs the original LegendView methods and Three.js mixer
+against the prepared models. All 265 base/form visual configurations were checked
+through idle/walk transitions, every reaction, multi-step dances, facing changes
+and rapid interruptions. The 2,909,021 comparisons of sequence state, action time,
+weights, enabled/paused flags, transforms and finite source bone matrices passed.
+Nonfinite matrices from the existing corrupt source clip are excluded from this
+reference comparison; native repair coverage remains in the skeletal suite.
+
+The Windows package was rebuilt. The companion GPU smoke now uses the new
+controller and placement, rather than a single sampled idle pose. All 77 base
+companions rendered visibly after walking, reaction and dance operations; the
+combined animated-pose capture was inspected. The new targeted check is
+`--companion-playback-only`, and its exporter/check also run in the regular build.
+
+Farm movement, themed room construction, care-event choreography and the farm UI
+still need to connect to this controller. The full native port remains active and
+this is not a production release.

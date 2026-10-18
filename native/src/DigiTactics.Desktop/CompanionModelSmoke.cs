@@ -27,11 +27,16 @@ internal static class CompanionModelSmoke
             foreach (var (id, visual) in companions.Bases)
             {
                 using var model = new GpuModel(catalog, catalog.Sources[visual.Source]);
-                var pose = new RigPose(model.Rig); pose.Sample(ModelAnimator.FindIdle(model.Rig), .37);
+                var animator = model.CreateCompanionAnimator(visual, companions.Fallbacks, height: 2);
+                animator.Update(.37); animator.SetMoving(true); animator.Update(.07);
+                animator.Play("happy"); animator.Update(.2); animator.SetMoving(false); animator.Update(.12);
+                animator.Play("dance"); animator.Update(.31);
+                var pose = animator.Pose;
                 int left = index % columns * cell, bottom = (rows - 1 - index / columns) * cell;
                 ModelRenderer.Begin(cell, cell); OpenGl.Viewport(left, bottom, cell, cell);
                 int draws = 0;
-                foreach (bool transparent in new[] { false, true }) { renderer.Draw(model, pose, model.PreviewPlacement, camera, transparent); draws += renderer.DrawCalls; }
+                var placement = model.PlaceCompanion(animator);
+                foreach (bool transparent in new[] { false, true }) { renderer.Draw(model, pose, placement, camera, transparent); draws += renderer.DrawCalls; }
                 ModelRenderer.End();
                 var pixels = new byte[cell * cell * 4];
                 fixed (byte* data = pixels) OpenGl.ReadPixels(left, bottom, cell, cell, OpenGl.GL_RGBA, OpenGl.GL_UNSIGNED_BYTE, data);
@@ -41,7 +46,7 @@ internal static class CompanionModelSmoke
                 index++;
             }
             if (capture is not null) FrameCapture.SaveBitmap(capture, cell * columns, cell * rows);
-            Console.WriteLine($"Companion GPU smoke passed: {index} original companion models rendered with textures and prepared poses.");
+            Console.WriteLine($"Companion GPU smoke passed: {index} original companion models rendered with textures, walking/reaction playback and procedural overlays.");
         }
         finally { Glfw.Terminate(); }
     }
