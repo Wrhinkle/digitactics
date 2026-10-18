@@ -47,6 +47,9 @@ static int64_t nextNumber = 1;
 static struct { int64_t allocated, released, badRelease, badIdentity, badBuffer, sent, sentBytes, accepted, acceptFalse, receiveCalls; uint64_t lastTo; } st;
 static char ifaces[5][64];
 static std::string lastSent;
+static int lastFlags, lastChannel;
+EXPORT int FakeSteam_LastFlags() { return lastFlags; }
+EXPORT int FakeSteam_LastChannel() { return lastChannel; }
 EXPORT bool SteamAPI_ISteamNetworkingUtils_SetGlobalConfigValueInt32(void *, int key, int32_t value) { return key == 104 && value == 0; }
 EXPORT bool SteamAPI_ISteamNetworkingMessages_CloseSessionWithUser(void *, const SteamNetworkingIdentity *id) {
   if (!id) return false;
@@ -107,6 +110,7 @@ EXPORT int SteamAPI_ISteamNetworkingMessages_SendMessageToUser(void *self_, cons
   if (self_ != ifaces[0] || !goodIdentity(id)) return 8; // k_EResultInvalidParam
   if (!data || size == 0 || size > 512 * 1024) { st.badBuffer++; return 8; }
   st.sent++;
+  lastFlags = flags; lastChannel = channel;
   st.sentBytes += size;
   st.lastTo = id->m_steamID64;
   lastSent.assign((const char *)data, size);
