@@ -1,6 +1,7 @@
 using System.Text.Json;
 using DigiTactics.Rules;
 
+if(args.Length==2 && args[0]=="--native-release-artifacts") {await NativeReleaseArtifactChecks.Run(args[1]);return;}
 if(args.Length>=2 && args[0].StartsWith("--native-job-",StringComparison.Ordinal)) {await NativeJobChecks.Child(args);return;}
 if(args.Length==2 && args[0]=="--native-supervisor-child") {await NativeSupervisorChecks.Child(args[1]);return;}
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");

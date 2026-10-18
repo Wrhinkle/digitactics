@@ -6,6 +6,11 @@ $nativeRoot=Split-Path -Parent $PSScriptRoot
 $repoRoot=Split-Path -Parent $nativeRoot
 $Destination=[IO.Path]::GetFullPath($Destination)
 if(Test-Path -LiteralPath $Destination) {throw 'Publish destination must be new; existing packages are never overwritten.'}
+$ancestor=$Destination
+while($ancestor) {
+    if((Test-Path -LiteralPath $ancestor) -and (([IO.File]::GetAttributes($ancestor) -band [IO.FileAttributes]::ReparsePoint) -ne 0)) {throw 'Publish outside linked or cloud-placeholder directories, for example under LOCALAPPDATA/DigiTacticsBuild/releases.'}
+    $ancestor=[IO.Path]::GetDirectoryName($ancestor)
+}
 $sdk=Join-Path $env:LOCALAPPDATA 'DigiTacticsBuild/dotnet/dotnet.exe'
 if(-not(Test-Path -LiteralPath $sdk)) {$sdk=(Get-Command dotnet).Source}
 function Checked([string]$Program,[string[]]$Arguments) {

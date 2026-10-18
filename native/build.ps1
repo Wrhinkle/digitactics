@@ -178,7 +178,7 @@ try {
         Invoke-Checked $dotnet $smokeArguments
     }
     if ($Publish) {
-        $destination=Join-Path $nativeRoot ('artifacts/releases/'+$NativeVersion+'-'+[Guid]::NewGuid().ToString('N'))
+        $destination=Join-Path $env:LOCALAPPDATA ('DigiTacticsBuild/releases/'+$NativeVersion+'-'+[Guid]::NewGuid().ToString('N'))
         & (Join-Path $nativeRoot 'tools/publish-native.ps1') -Destination $destination -Version $NativeVersion
     }
 } finally { Pop-Location; $env:DOTNET_ROOT=$savedDotnetRoot }
