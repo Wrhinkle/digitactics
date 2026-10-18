@@ -23,7 +23,7 @@ internal static class BoardSceneChecks
             Check(scene.Textures.Length == entry.GetProperty("textures").GetInt32(), "texture count");
             Check(scene.TickCount == entry.GetProperty("ticks").GetInt32(), "animation inventory");
             foreach (var obj in scene.Objects) kinds.Add(obj.Kind);
-            foreach (var obj in scene.Objects.Where(o => o.Kind == "mesh"))
+            foreach (var obj in scene.Objects)
             {
                 var parts = BoardMesh.Create(scene, obj);
                 var source = scene.Geometries[obj.Geometry];

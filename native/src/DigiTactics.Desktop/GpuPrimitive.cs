@@ -8,8 +8,10 @@ internal sealed class GpuPrimitive : IDisposable
     private readonly GlBuffer[] buffers = new GlBuffer[4];
     public bool HasColors { get; }
     private readonly int count;
-    public unsafe GpuPrimitive(GltfPrimitive data)
+    private readonly uint topology;
+    public unsafe GpuPrimitive(GltfPrimitive data, uint topology = OpenGl.GL_TRIANGLES)
     {
+        this.topology = topology;
         count = data.Indices.Length;
         HasColors = data.Colors.Length > 0;
         if (HasColors && data.Colors.Length != data.VertexCount * 3) throw new InvalidDataException("Vertex color count mismatch.");
@@ -49,7 +51,7 @@ internal sealed class GpuPrimitive : IDisposable
     {
         array.Bind();
         if (wireframe) OpenGl.Native.glPolygonMode((GlFace)OpenGl.GL_FRONT_AND_BACK, OpenGl.GL_LINE);
-        OpenGl.Native.glDrawElements(OpenGl.GL_TRIANGLES, count, OpenGl.GL_UNSIGNED_INT, null);
+        OpenGl.Native.glDrawElements(topology, count, OpenGl.GL_UNSIGNED_INT, null);
         if (wireframe) OpenGl.Native.glPolygonMode((GlFace)OpenGl.GL_FRONT_AND_BACK, OpenGl.GL_FILL);
     }
     public unsafe void UpdateVertices(float[] vertices)

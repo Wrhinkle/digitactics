@@ -28,6 +28,7 @@ internal sealed class ModelRenderer : IDisposable
         OpenGl.BindTextureUnit(4, 0); program.Uniform(22, new Brutal.Numerics.float4(0, 1, 0, 0));
         program.Uniform(23, ShadowPass ? 1 : 0);
         program.Uniform(29, 0);
+        program.Uniform(30, new Brutal.Numerics.float4(0,0,0,0));
         program.Uniform(24, !ShadowPass && ReceiveShadow && ShadowTexture != 0 ? 1 : 0);
         Matrix(25, From(FarmShadowMap.Camera));
         OpenGl.BindTextureUnit(5, ShadowPass ? 0 : ShadowTexture);
@@ -126,7 +127,7 @@ internal sealed class ModelRenderer : IDisposable
         geometry.Draw();
     }
     public void Dispose() { OpenGl.DeleteBuffers(new[] { bones }); program.Dispose(); }
-    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false)
+    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false, PointSprite? points = null)
     {
         program.Use(); Matrix(0, world); Matrix(4, From(camera));
         SetFarmLight(emissive, roughness, metalness);
@@ -139,7 +140,15 @@ internal sealed class ModelRenderer : IDisposable
         OpenGl.Native.glFrontFace(determinant < 0 ? GlFrontFace.Clockwise : GlFrontFace.CounterClockwise);
         if (transparent) { OpenGl.Native.glEnable(GlCapability.Blend); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, additive ? OpenGl.GL_ONE : OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
         else OpenGl.Native.glDisable(GlCapability.Blend);
+        if (points is not null)
+        {
+            program.Uniform(30, new Brutal.Numerics.float4(points.Size, points.ViewportHeight * .5f, points.Attenuate ? 1 : 0, 1));
+            program.Uniform(31, new Brutal.Numerics.float4(points.U.X, points.U.Y, points.U.Z, 0));
+            program.Uniform(32, new Brutal.Numerics.float4(points.V.X, points.V.Y, points.V.Z, 0));
+            OpenGl.Native.glEnable((GlCapability)OpenGl.GL_PROGRAM_POINT_SIZE);
+        }
         OpenGl.Native.glDepthMask(ShadowPass || depthWrite); geometry.Draw(wireframe);
+        if (points is not null) OpenGl.Native.glDisable((GlCapability)OpenGl.GL_PROGRAM_POINT_SIZE);
     }
     private unsafe void SetSides(int side, int? shadowSide = null)
     {
@@ -175,6 +184,7 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=0) uniform mat4 world;
         layout(location=4) uniform mat4 camera;
         layout(location=8) uniform int skinned;
+        layout(location=30) uniform vec4 pointSettings;
         out vec2 texCoord; out vec3 worldPosition; out vec3 worldNormal; out vec4 worldTangent;
         out vec3 meshColor;
         void main() {
@@ -184,6 +194,7 @@ internal sealed class ModelRenderer : IDisposable
             worldPosition=p.xyz; worldNormal=transpose(inverse(mat3(world)))*mat3(skin)*normal;
             worldTangent=vec4(mat3(world)*mat3(skin)*tangent.xyz,tangent.w);
             texCoord=uv; meshColor=vertexColor; gl_Position=camera*p;
+            gl_PointSize=pointSettings.w!=0 ? pointSettings.x*(pointSettings.z!=0 ? pointSettings.y/gl_Position.w : 1) : 1;
             gl_Position.z=2*gl_Position.z-gl_Position.w;
         }
         """;
@@ -215,6 +226,9 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=24) uniform int receiveShadow;
         layout(location=25) uniform mat4 shadowCamera;
         layout(location=29) uniform int hasVertexColors;
+        layout(location=30) uniform vec4 pointSettings;
+        layout(location=31) uniform vec4 pointU;
+        layout(location=32) uniform vec4 pointV;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
@@ -248,7 +262,9 @@ internal sealed class ModelRenderer : IDisposable
             return (f0*(1-fresnel)+vec3(f90*fresnel))*visibility*distribution;
         }
         void main() {
-            vec4 c=color*(textured!=0?texture(colorTexture,texCoord):vec4(1));
+            vec3 pointUv=vec3(gl_PointCoord.x,1-gl_PointCoord.y,1);
+            vec2 mapUv=pointSettings.w!=0 ? vec2(dot(pointU.xyz,pointUv),dot(pointV.xyz,pointUv)) : texCoord;
+            vec4 c=color*(textured!=0?texture(colorTexture,mapUv):vec4(1));
             if(hasVertexColors!=0) c.rgb*=meshColor;
             if(c.a<cutoff) discard;
             if(shadowPass!=0) { outputColor=vec4(1); return; }

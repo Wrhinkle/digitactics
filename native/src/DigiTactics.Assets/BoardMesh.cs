@@ -5,7 +5,7 @@ public sealed record BoardMesh(int Material, GltfPrimitive Primitive)
 {
     public static BoardMesh[] Create(BoardScene scene, BoardObject obj)
     {
-        if (obj.Kind != "mesh") throw new ArgumentException("Expected board mesh.", nameof(obj));
+        if (obj.Kind is not ("mesh" or "lines" or "lineStrip" or "points")) throw new ArgumentException("Expected board geometry.", nameof(obj));
         var geometry = scene.Geometries[obj.Geometry];
         int count = geometry.Position.Length / 3;
         var indices = geometry.Indices ?? Enumerable.Range(0, count).Select(i => (uint)i).ToArray();

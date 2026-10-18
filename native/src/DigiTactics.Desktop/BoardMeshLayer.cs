@@ -3,10 +3,10 @@ using DigiTactics.Assets;
 
 namespace DigiTactics.Desktop;
 
-/// <summary>Owns board triangle geometry; weather, lines and scene animation are separate layers.</summary>
+/// <summary>Owns board triangle, line and point geometry. Scene animation updates are separate.</summary>
 internal sealed class BoardMeshLayer : IDisposable
 {
-    private sealed record Part(GpuPrimitive Geometry, BoardMaterial Material, bool HasNormals);
+    private sealed record Part(GpuPrimitive Geometry, BoardMaterial Material, bool HasNormals, BoardTexture? Texture);
     private sealed record ObjectParts(BoardObject Object, Part[] Parts);
     private readonly List<GpuPrimitive> geometry = [];
     private readonly List<GpuTexture> textures = [];
@@ -19,15 +19,17 @@ internal sealed class BoardMeshLayer : IDisposable
             foreach (var texture in scene.Textures)
                 textures.Add(new(BoardMesh.Image(texture), new(WrapS: BoardMesh.Wrap(texture.WrapS), WrapT: BoardMesh.Wrap(texture.WrapT)), texture.ColorSpace == "srgb"));
             var cache = new Dictionary<string, Part[]>();
-            foreach (var obj in scene.Objects.Where(o => o.Kind == "mesh"))
+            foreach (var obj in scene.Objects)
             {
-                string key = obj.Geometry + ":" + string.Join(',', obj.Materials);
+                uint topology = obj.Kind switch { "mesh" => Brutal.OpenGlApi.OpenGl.GL_TRIANGLES, "lines" => Brutal.OpenGlApi.OpenGl.GL_LINES, "lineStrip" => Brutal.OpenGlApi.OpenGl.GL_LINE_STRIP, "points" => Brutal.OpenGlApi.OpenGl.GL_POINTS, _ => throw new NotSupportedException("Board object: " + obj.Kind) };
+                string key = obj.Kind + ":" + obj.Geometry + ":" + string.Join(',', obj.Materials);
                 if (!cache.TryGetValue(key, out var parts))
                 {
                     parts = BoardMesh.Create(scene, obj).Select(part =>
                     {
-                        var gpu = new GpuPrimitive(part.Primitive); geometry.Add(gpu);
-                        return new Part(gpu, scene.Materials[part.Material], part.Primitive.HasNormals);
+                        var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
+                        var material = scene.Materials[part.Material];
+                        return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
                     }).ToArray();
                     cache.Add(key, parts);
                 }
@@ -37,7 +39,7 @@ internal sealed class BoardMeshLayer : IDisposable
         catch { Dispose(); throw; }
     }
 
-    public void Draw(ModelRenderer renderer, Matrix4x4 camera, bool transparent)
+    public void Draw(ModelRenderer renderer, Matrix4x4 camera, bool transparent, int viewportHeight)
     {
         DrawCalls = 0;
         foreach (var item in objects)
@@ -56,7 +58,8 @@ internal sealed class BoardMeshLayer : IDisposable
                         material.Map is { } map ? textures[map] : null, material.Unlit, transparent, material.DepthWrite,
                         new Vector3(material.Emissive[0], material.Emissive[1], material.Emissive[2]) * material.EmissiveIntensity,
                         material.Roughness, material.Metalness, material.Side, additive: material.Blending == 2,
-                        vertexColors: material.VertexColors, flatShading: material.FlatShading || !part.HasNormals, alphaTest: material.AlphaTest, wireframe: material.Wireframe);
+                        vertexColors: material.VertexColors, flatShading: material.FlatShading || !part.HasNormals, alphaTest: material.AlphaTest, wireframe: material.Wireframe,
+                        points: item.Object.Kind == "points" ? PointSprite.Board(material, part.Texture, viewportHeight) : null);
                     DrawCalls++;
                 }
                 if (item.Object.Instances is { } instances)
