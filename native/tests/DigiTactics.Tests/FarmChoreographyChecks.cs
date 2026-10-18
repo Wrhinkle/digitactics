@@ -2,6 +2,8 @@ using System.IO.Compression;
 using System.Text.Json;
 using DigiTactics.Presentation;
 using DigiTactics.Assets;
+using DigiTactics.Storage;
+using System.Text.Json.Nodes;
 
 internal static class FarmChoreographyChecks
 {
@@ -151,6 +153,31 @@ internal static class FarmChoreographyChecks
         Check(a.Mode == "idle" && a.View.Yaw == .6, "training arrival faces equipment");
         scene.FinishTraining("a", .6); Check(a.Busy == 1.5 && events.Last()[2] == "happy", "successful training reaction");
         scene.FinishTraining("a", .59); Check(events.Last()[2] == "sad", "low score training reaction");
+        var pairScene = new FarmChoreography(() => .5);
+        pairScene.Add("center",new View("center",true,events),0,0);
+        var left = pairScene.Add("left",new View("left",true,events),-1,0);
+        var right = pairScene.Add("right",new View("right",true,events),1,0);
+        Check(pairScene.NearestPlaymate("center") == "right", "equal-distance playmate uses original last-resident tie rule");
+        right.Needs = right.Needs with { Asleep = true };
+        Check(pairScene.NearestPlaymate("center") == "left", "sleeping playmate excluded");
+        left.Needs = left.Needs with { Sick = true };
+        Check(pairScene.NearestPlaymate("center") is null, "solo play when all others unavailable");
+        right.Needs = right.Needs with { Asleep = false }; right.Busy = 2;
+        Check(pairScene.NearestPlaymate("center") == "right", "manual play permits busy healthy partner");
+        foreach (var (action, receipt, sound) in new (FarmCareAction, string, string?)[] {
+            (FarmCareAction.Feed,"{\"ok\":true}","pick"),
+            (FarmCareAction.Feed,"{\"ok\":false,\"refused\":true}","error"),
+            (FarmCareAction.Feed,"{\"ok\":false}",null),
+            (FarmCareAction.Clean,"{\"ok\":true}","sell"),
+            (FarmCareAction.Cure,"{\"ok\":true}","heal"),
+            (FarmCareAction.Lights,"{\"ok\":true,\"lights\":true}","equip"),
+            (FarmCareAction.Lights,"{\"ok\":true,\"lights\":false}","place"),
+            (FarmCareAction.Scold,"{\"ok\":true,\"unfair\":true}","error"),
+            (FarmCareAction.Scold,"{\"ok\":true}","place"),
+            (FarmCareAction.Play,"{\"ok\":true}","emote"),
+            (FarmCareAction.Play,"{\"ok\":false}",null),
+            (FarmCareAction.Pet,"{\"ok\":false}","emote")
+        }) Check(FarmFeedback.Sound(action, JsonNode.Parse(receipt)!.AsObject()) == sound, "care sound " + action + receipt);
         return checks;
     }
 }

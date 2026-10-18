@@ -1,6 +1,7 @@
 using System.Text.Json.Nodes;
 using Brutal.ImGuiApi;
 using DigiTactics.Storage;
+using DigiTactics.Presentation;
 
 namespace DigiTactics.Desktop;
 
@@ -18,8 +19,13 @@ internal sealed partial class MatchScreen
     private void FarmAct(FarmCareAction action, string? option = null, int pile = 0)
     {
         string? before = farm!.Save;
+        if (action == FarmCareAction.Play && option is null) option = farmView?.NearestPlaymate(farmPet);
         farm.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), action, farmPet, option, pile);
-        if (farm.Error is null && farm.LastResult is { } receipt) farmView?.Care(farmPet, action, option, receipt, before);
+        if (farm.Error is null && farm.LastResult is { } receipt)
+        {
+            farmView?.Care(farmPet, action, option, receipt, before);
+            if (FarmFeedback.Sound(action, receipt) is { } sound) audio.Play(sound);
+        }
     }
     private void UpdateFarmView(double delta)
     {
@@ -43,7 +49,7 @@ internal sealed partial class MatchScreen
                 foreach (var (id, x, y) in farmView.Anchors(FarmSceneWidth, FarmSceneHeight))
                 {
                     ImGui.SetCursorScreenPos(new(12 + x - 25, 70 + y));
-                    if (Button("farmResident/" + id, CosmeticCollection.Item("legend", id)!.Name, active: id == farmPet)) farmPet = id;
+                    if (Button("farmResident/" + id, CosmeticCollection.Item("legend", id)!.Name, active: id == farmPet)) { farmPet = id; FarmAct(FarmCareAction.Pet); }
                 }
             ImGui.End();
         }
@@ -90,7 +96,7 @@ internal sealed partial class MatchScreen
                 if (Button("farmPraise", "Praise")) FarmAct(FarmCareAction.Praise);
                 ImGui.SameLine(); if (Button("farmScold", "Scold")) FarmAct(FarmCareAction.Scold);
                 ImGui.SameLine(); if (Button("farmPet", "Pet")) FarmAct(FarmCareAction.Pet);
-                if (Button("farmPlay", "Play with ball")) FarmAct(FarmCareAction.Play);
+                if (Button("farmPlay", "Play")) FarmAct(FarmCareAction.Play);
                 foreach (string other in residents.Where(x => x != farmPet))
                     if (Button("farmPlay/" + other, "Play with " + CosmeticCollection.Item("legend", other)!.Name)) FarmAct(FarmCareAction.Play, other);
                 foreach (var pile in pet["poop"]!.AsArray()) if (Button("farmPile/" + pile!["k"], "Clean pile " + pile["k"])) FarmAct(FarmCareAction.CleanPile, pile: pile["k"]!.GetValue<int>());

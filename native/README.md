@@ -2453,3 +2453,21 @@ sleep/wake checks. The integrated farm/evolution/Solo flow passed; night meadow
 and integrated farm captures were inspected. Exact CSS interrupted-transition
 shortening and device-scale star sizing still need visual fidelity review.
 Broader UI, care feedback, multiplayer and release acceptance remain unfinished.
+
+### Care sounds and manual play selection
+
+The default Play action now selects the nearest awake, healthy room companion
+before saving the action, preserving the original last-resident tie rule. It
+falls back to solo play only when no eligible partner is present. Explicit
+partner controls remain available. Clicking a resident name now selects and
+pets it, matching the original scene interaction.
+
+Saved care receipts drive original sounds for feeding/refusal, cleaning,
+healing, lights, praise, scolding and play/petting. Failed profile writes cannot
+trigger feedback. Existing training result sounds remain unchanged.
+
+The combined farm suite passes 1,381,772 checks, including nearest-partner ties,
+sleep/sickness eligibility, busy partners, and success/refusal sound selection.
+The rebuilt Windows app passed the integrated farm/evolution/Solo flow and audio
+smoke. Food props, bubbles, rewards and simulation-event presentation remain
+unfinished parts of farm fidelity; the full-port goal remains active.

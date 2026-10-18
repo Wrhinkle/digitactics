@@ -44,6 +44,19 @@ public sealed class FarmChoreography(Func<double>? random = null)
         residents.Add(id, actor); return actor;
     }
     public bool Remove(string id) => residents.Remove(id);
+    public string? NearestPlaymate(string id)
+    {
+        if (!residents.TryGetValue(id, out var a)) return null;
+        FarmResident? nearest = null; double distance = double.PositiveInfinity;
+        foreach (var b in residents.Values)
+        {
+            if (b == a || b.Needs.Asleep || b.Needs.Sick) continue;
+            double dx = b.X - a.X, dz = b.Z - a.Z, next = Math.Sqrt(dx * dx + dz * dz);
+            // Original reduce chooses the later resident when distances tie.
+            if (next <= distance) { distance = next; nearest = b; }
+        }
+        return nearest?.Id;
+    }
     public void Feed(string id)
     {
         if (!residents.TryGetValue(id, out var a)) return;
