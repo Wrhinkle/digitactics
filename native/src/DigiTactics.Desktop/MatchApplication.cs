@@ -52,7 +52,7 @@ internal static class MatchApplication
                 var clock = System.Diagnostics.Stopwatch.StartNew(); double last = 0;
                 for (int frame = 0; !window.ShouldClose; frame++)
                 {
-                    Glfw.PollEvents(); renderer.NewFrame(); platform.NewFrame(); driver?.Input(screen); trainer?.Input(screen); farmPointer?.Input(screen); networkDriver?.Input(screen);
+                    Glfw.PollEvents(); audio.SetHidden(window.IsIconified); renderer.NewFrame(); platform.NewFrame(); driver?.Input(screen); trainer?.Input(screen); farmPointer?.Input(screen); networkDriver?.Input(screen);
                     lobbyDriver?.Input(screen); modeDriver?.Input(screen);
                     ImGui.NewFrame(); double now = clock.Elapsed.TotalSeconds;
                     double delta = smoke ? CombatSimulation.Tick : Math.Clamp(now - last, 0, .1);

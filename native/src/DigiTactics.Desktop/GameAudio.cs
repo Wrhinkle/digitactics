@@ -41,6 +41,7 @@ internal sealed unsafe class GameAudio : IDisposable
     public string? Error { get; private set; }
     public float EffectsVolume { get; set; } = .8f;
     public float MusicVolume { get; set; } = .6f;
+    public bool Suspended { get; private set; }
     public bool Muted { get; set; }
     public bool MusicOff { get; set; }
     public float BoardVolume { get; set; } = .8f;
@@ -75,8 +76,23 @@ internal sealed unsafe class GameAudio : IDisposable
         Thread.Sleep(100);
         if (queued <= 0 || Sdl.PInvoke.GetAudioStreamQueued(audio.stream) >= queued)
             throw new InvalidOperationException("SDL audio did not consume queued PCM.");
-        audio.Music("combat"); audio.Update(); audio.Music(null);
-        Console.WriteLine($"Audio smoke passed: {audio.manifest.Clips.Count} PCM assets, loop bounds, rate limiting and BRUTAL SDL playback.");
+        audio.Music("combat"); audio.Update();
+        audio.SetHidden(true);
+        if (!audio.Suspended) throw new InvalidOperationException("Hidden audio failed to suspend.");
+        var positions = audio.voices.Select(v => (v.Position,v.TailPosition)).ToArray();
+        long pausedFrame = audio.frame;
+        int pausedQueue = Sdl.PInvoke.GetAudioStreamQueued(audio.stream);
+        var settings = (audio.Muted,audio.MusicOff,audio.MusicVolume,audio.EffectsVolume,audio.BoardVolume);
+        audio.SetHidden(true); audio.Update(); Thread.Sleep(100); audio.Update();
+        if (!positions.SequenceEqual(audio.voices.Select(v => (v.Position,v.TailPosition))) || audio.frame != pausedFrame || Sdl.PInvoke.GetAudioStreamQueued(audio.stream) != pausedQueue)
+            throw new InvalidOperationException("Hidden audio advanced its mixer or drained queued PCM.");
+        audio.SetHidden(false); audio.SetHidden(false);
+        if (audio.Suspended || settings != (audio.Muted,audio.MusicOff,audio.MusicVolume,audio.EffectsVolume,audio.BoardVolume))
+            throw new InvalidOperationException("Audio visibility changed saved preferences or failed to resume.");
+        Thread.Sleep(100);
+        if (Sdl.PInvoke.GetAudioStreamQueued(audio.stream) >= pausedQueue) throw new InvalidOperationException("Resumed audio did not consume PCM.");
+        audio.Update(); audio.Music(null);
+        Console.WriteLine($"Audio smoke passed: {audio.manifest.Clips.Count} PCM assets, loop bounds, rate limiting, visibility pause/resume and BRUTAL SDL playback.");
     }
 
     public GameAudio()
@@ -129,9 +145,16 @@ internal sealed unsafe class GameAudio : IDisposable
         duckFrom = MusicDuck(frame); duckStart = frame; duckEnd = frame + (long)((manifest.Clips[key].Duration ?? 1) * manifest.SampleRate);
         voices.Add(new(Load(key), 1, board: true)); Played++;
     }
+    public void SetHidden(bool hidden)
+    {
+        if (!Available || Suspended == hidden) return;
+        byte result = hidden ? Sdl.PInvoke.PauseAudioStreamDevice(stream) : Sdl.PInvoke.ResumeAudioStreamDevice(stream);
+        if (result == 0) { Error = hidden ? "Audio playback could not pause." : "Audio playback could not resume."; return; }
+        Suspended = hidden;
+    }
     public void Update()
     {
-        if (!Available) return;
+        if (!Available || Suspended) return;
         int queued = Sdl.PInvoke.GetAudioStreamQueued(stream);
         if (queued < 0) { Error = "Audio device stopped."; return; }
         while (queued < buffer.Length * sizeof(float) * 3)
