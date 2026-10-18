@@ -14,13 +14,11 @@ internal sealed partial class MatchScreen
         ResultTitle = null; ResultHealthLoss = 0;
         if (Session!.Rounds.Phase != MatchPhase.Result) return;
         var player = Human;
-        bool SideA(MatchRoundResult result) => result.Match.TeamA is { } team ? player.Team == team : result.Match.A == player.Id;
-        bool SideB(MatchRoundResult result) => !result.Match.Ghost && (result.Match.TeamB is { } team ? player.Team == team : result.Match.B == player.Id);
-        var result = Session.Rounds.Results.FirstOrDefault(result => SideA(result) || SideB(result));
-        if (result is null) return;
-        bool a = SideA(result), won = a ? result.AWon : result.BWon, lost = a ? result.BWon : result.AWon;
-        ResultTitle = won ? "Victory" : lost ? "Defeat" : "Draw";
-        ResultHealthLoss = a ? result.DamageA : result.DamageB;
+        var own = PlayerRoundResult.Find(Session.Rounds.Results, player);
+        if (own is null) return;
+        var result = own.Result; bool a = own.SideA, won = own.Won, lost = own.Lost;
+        ResultTitle = own.Title;
+        ResultHealthLoss = own.HealthLoss;
         string opponent = result.Match.Pve ? "Wild Digimon" : Session.State.Players[(a ? result.Match.B : result.Match.A)!.Value].Name;
         Window("Round result", Left + 12, Top + 12, Width - 24, 80, ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoInputs);
         ImGui.PushStyleColor(ImGuiCol.Text, won ? new ImColor8(100,235,170) : lost ? new ImColor8(255,120,120) : new ImColor8(230,235,245));

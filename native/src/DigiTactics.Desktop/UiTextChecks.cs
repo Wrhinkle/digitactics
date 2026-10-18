@@ -9,6 +9,7 @@ internal static class UiTextChecks
     public static void Run(ContentCatalog catalog)
     {
         IncomePreviewChecks.Run(catalog);
+        PlayerRoundResultChecks.Run(catalog);
         var display = new DisplayText(); int abilities = 0;
         foreach (var rules in catalog.Variants)
         {

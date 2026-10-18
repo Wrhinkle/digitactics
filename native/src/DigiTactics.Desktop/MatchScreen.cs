@@ -216,12 +216,8 @@ internal sealed partial class MatchScreen : IDisposable
         CompletedRounds++; status = "Round complete.";
         if (networkRoom is null) history?.Complete(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         if (history?.Error is { } saveError) { status = saveError; profileMessage = saveError; }
-        var own = Session!.Battles.FirstOrDefault(m => m.A == localSeat || m.B == localSeat ||
-            m.TeamA is { } a && Session.State.Teams[a].Members.Any(p => p.Id == localSeat) ||
-            m.TeamB is { } b && Session.State.Teams[b].Members.Any(p => p.Id == localSeat));
-        bool sideB = own?.B == localSeat || own?.TeamB is { } team && Session.State.Teams[team].Members.Any(p => p.Id == localSeat);
-        audio.Play(IsSpectating ? "round" : Session.State.Over ? Human.Placement == 1 ? "champion" : "gameover" :
-            own?.Combat.Winner is null or -1 ? "round" : own.Combat.Winner == (sideB ? 1 : 0) ? "win" : "loss");
+        var own = PlayerRoundResult.Find(Session!.Rounds.Results, Human);
+        audio.Play(IsSpectating ? "round" : Session.State.Over ? Human.Placement == 1 ? "champion" : "gameover" : own?.Sound ?? "round");
         audio.Music(Session.State.Over ? null : "planning");
     }
     private void Next()
