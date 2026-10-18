@@ -7,7 +7,7 @@ using DigiTactics.Storage;
 
 namespace DigiTactics.Desktop;
 
-internal sealed class MatchScreen : IDisposable
+internal sealed partial class MatchScreen : IDisposable
 {
     private readonly ContentCatalog catalog;
     private readonly uint? seed;
@@ -207,7 +207,7 @@ internal sealed class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear();
-        if (Session is null) { Menu(); return; }
+        if (Session is null) { Menu(); if (showCollection) Collection(); return; }
         Header(); if (Session is null) return;
         Roster(); Sidebar();
         if (battle is null) Board();
@@ -226,6 +226,7 @@ internal sealed class MatchScreen : IDisposable
         Window("DIGI-TACTICS", size.X * .25f, size.Y * .12f, size.X * .5f, 560);
         ImGui.Text("Build your team. Digivolve. Be the last Tamer standing."u8); ImGui.Separator();
         ProfileControls();
+        if (profile is not null && Button("collection", "Collection and store")) showCollection = true;
         if (ImGui.BeginCombo("Ruleset / pace"u8, $"{Rules.Name} / {Rules.Pace}"))
         {
             for (int i = 0; i < catalog.Variants.Length; i++) if (ImGui.Selectable($"{catalog.Variants[i].Name} / {catalog.Variants[i].Pace}", variant == i)) variant = i;

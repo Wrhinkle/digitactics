@@ -9,6 +9,7 @@ if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
 if (args.Contains("--history-only")) { MatchHistoryChecks.Run(root, catalog); return; }
 if (args.Contains("--rewards-only")) { MatchRewardChecks.Run(root, catalog); LegendRewardChecks.Run(root); return; }
+if (args.Contains("--cosmetics-only")) { CosmeticChecks.Run(root); return; }
 if (args.Contains("--audio-cues-only")) { AudioCueParity.Run(root, catalog); return; }
 if (args.Contains("--items-only")) { AiInventoryParity.Run(root, catalog); ColiseumCoreParity.Run(root, catalog); SpecialConsumableParity.Run(root, catalog); CopyConsumableParity.Run(root, catalog); ConsumableParity.Run(root, catalog); PlanningItemParity.Run(root, catalog); RadiantOfferParity.Run(root, catalog); return; }
 if (args.Contains("--custom-offers-only")) { ColiseumChoiceParity.Run(root, catalog); CustomOfferParity.Run(root, catalog); return; }
@@ -191,6 +192,7 @@ assertions += AudioSettingsChecks.Run();
 assertions += MatchHistoryChecks.Run(root, catalog);
 assertions += MatchRewardChecks.Run(root, catalog);
 assertions += LegendRewardChecks.Run(root);
+assertions += CosmeticChecks.Run(root);
 assertions += LegacyProfileChecks.Run(root);
 assertions += MotionParity.Run(root);
 assertions += MeshParity.Run(root);

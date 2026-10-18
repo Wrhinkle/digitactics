@@ -1885,3 +1885,34 @@ complete payouts are verified through the native session/storage integration.
 This enables match payouts only. The native cosmetic store, legend management,
 Digi-Farm, custom music, remaining settings and multiplayer are still unfinished;
 the full port is not ready for production release.
+
+
+### Native collection and direct purchases
+
+The menu now opens Collection and store with the original 415 cosmetics across
+seven categories. Imported ownership, free items, linked unlocks and equipped
+items are read from the preserved cosmetic save. Players can equip owned items,
+choose/clear six-slot emote and sound wheels, and confirm direct purchases using
+Bits. Daily featured prices follow the original date hash and rounding. Secret,
+linked and egg-only items cannot be bought directly; owned items cannot be bought
+twice. Wallet debit and ownership are saved in one atomic profile update, keeping
+unknown fields and ownership IDs. Errors leave the existing profile untouched.
+Equipping a Little Legend also determines which legend receives match rewards.
+
+The embedded catalog is exported from the original game in an isolated Edge
+context. The build refreshes the original bundle before export. Native runtime
+code uses only the generated data and C# collection rules. `--cosmetics-only`
+passed 24,991 checks, including 1,345 operations against the original registry,
+1,245 original daily prices, eligibility, duplicate purchases and balance checks.
+
+The rebuilt package passed `--collection-smoke --profile-directory <isolated>`:
+actual mouse clicks opened the store, confirmed a Bukamon purchase and equipped
+it. Disk readback verified 341 Bits from an imported 491, equipped Bukamon and
+preserved unknown imported ownership. The collection screenshot was inspected;
+Solo/Duos match UI checks passed. The collection smoke requires a fresh isolated
+fixture profile with enough Bits and no owned Bukamon.
+
+This is the functional collection foundation. Cosmetic previews and in-match
+visual/audio application, Digi-Egg purchasing, legend evolution controls and the
+Digi-Farm remain to be ported. The current text list still needs the production
+collection layout and interaction polish before release.
