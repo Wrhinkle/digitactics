@@ -26,7 +26,7 @@ public sealed class DanceCatalog
                 e.GetProperty("side").GetInt32(), e.GetProperty("share").GetSingle(), e.GetProperty("index").GetInt32(), e.GetProperty("limit").GetSingle(),D(e.GetProperty("parentRotation")),D(e.GetProperty("restRotation")))).ToArray();
             if (bones.Where((bone, i) => bone.Node < 0 || bone.ParentEntry < -1 || bone.ParentEntry >= i).Any() || bones.Select(bone => bone.Node).Distinct().Count() != bones.Length)
                 throw new InvalidDataException("Invalid dance bone hierarchy: " + entry.Name);
-            catalog.bindings.Add(entry.Name, new(bones, b.GetProperty("limbless").GetBoolean(), b.GetProperty("stubby").GetBoolean(), b.GetProperty("yaw").GetSingle()));
+            catalog.bindings.Add(entry.Name, new(bones, b.GetProperty("limbless").GetBoolean(), b.GetProperty("stubby").GetBoolean(), b.GetProperty("yaw").GetSingle(),b.TryGetProperty("quadruped",out var quad)&&quad.GetBoolean()));
         }
         return catalog;
     }

@@ -119,9 +119,6 @@ public static partial class DanceChoreography
     }
     private static DancePose Unlock(double b,int i,int pool)
     {
-        double phase=b*PI*(i%3==0?2:1)+pool*PI/2,wave=Sin(phase),beat=Max(0,Sin(b*PI)),reach=.35+i%5*.1,swing=Sin(phase+i*.31);bool left=Floor(b)%8%2==0;var p=new PoseBuilder();
-        p.Set("aL",reach,.25+swing*.5,.45);p.Set("aR",-reach,.25-swing*.5,.45);p.Set("fL",.2,left?.9:.1,.55);p.Set("fR",-.2,left?.1:.9,.55);
-        p.Set("lL",.13+wave*.14,-1,.12*beat);p.Set("lR",-.13+wave*.14,-1,-.12*beat);p.Set("hp",0,wave*(4+i%4),wave*7);p.Set("sp",beat*5,0,-wave*5);p.Set("hd",-beat*8,wave*9,0);
-        p.Scalar("tl",wave*24);p.Scalar("w",wave*.45);p.Root("x",wave*(.025+i%4*.015));p.Root("y",beat*(.025+i%5*.008));p.Root("ry",i%3==0?Sin(b*PI/4)*.6:wave*.12);p.Root("z",Sin(b*PI/2)*.025);return p.Pose;
+        return MysteryPhrase(b,pool*20+i);
     }
 }

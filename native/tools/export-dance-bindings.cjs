@@ -5,8 +5,7 @@ async function main(){
  const {THREE,GLTFParser,GLTFMaterialsUnlitExtension}=await require('./three-loader.cjs')();
  const models=JSON.parse(fs.readFileSync(path.join(root,'native/content/models.json')));
  const companions=JSON.parse(fs.readFileSync(path.join(root,'native/content/companion-models.json')));
- const motion=read('model-motion.js').replace("from 'three'",`from '${require('url').pathToFileURL(path.join(root,'vendor/three/build/three.module.js')).href}'`);
- const {modelClips}=await import('data:text/javascript;base64,'+Buffer.from(motion).toString('base64'));
+ const {modelClips}=await require('./load-model-motion.cjs')();
  const ctx={THREE,modelClips,DT:{Cosmetics:{register(){}}},C:{equipped:()=> 'floss'}};vm.createContext(ctx);
  const mystery=read('mystery-content.js'),source=read('dances.js'),render=read('render3d.js');
  vm.runInContext(mystery.slice(0,mystery.indexOf('export const killThemes')).replace(/export /g,'')+';const mysteryDances=dances;const TAU=Math.PI*2,DEG=Math.PI/180;',ctx);
@@ -29,7 +28,7 @@ async function main(){
   const finite=q=>q.toArray().every(Number.isFinite);
   const visible=e=>{const bone=dancer.rig.bones[e.bi];return finite(bone.P0)&&finite(bone.q0)&&finite(bone.dir);};
   const retained=dancer.E.map((e,i)=>visible(e)?i:-1).filter(i=>i>=0),remap=new Map(retained.map((old,i)=>[old,i]));
-  const binding={limbless:dancer.limbless,stubby:dancer.stubby,yaw:dancer.rig.yaw,
+  const binding={limbless:dancer.limbless,stubby:dancer.stubby,quadruped:dancer.quadruped,yaw:dancer.rig.yaw,
    hiddenAttachments:dancer.E.filter(e=>!visible(e)).map(e=>{const bone=dancer.rig.bones[e.bi];let o=bone.bone,hidden=false;while(o){hidden ||= o.scale.x===0||o.scale.y===0||o.scale.z===0;o=o.parent;}if(!hidden)throw Error('Nonfinite visible dance bone '+key+'/'+bone.name);return nodes.indexOf(bone.bone);}),
    bones:retained.map(old=>{const e=dancer.E[old];
    const bone=dancer.rig.bones[e.bi],node=nodes.indexOf(bone.bone);if(node<0)throw Error('Unmapped bone '+key+'/'+bone.name);

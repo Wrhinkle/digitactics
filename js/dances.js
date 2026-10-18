@@ -644,6 +644,7 @@ export class Dancer {
 
   build() {
     const { roles: R, bones: B, yaw } = this.rig;
+    this.quadruped = R.quadruped;
     const E = [];
     const add = (bi, kind, extra = {}) => { if (bi == null || bi < 0 || E.some((e) => e.bi === bi)) return null; const e = { bi, kind, ...extra }; E.push(e); return e; };
     add(R.hips, 'hips');
@@ -728,7 +729,11 @@ export class Dancer {
         case 'neck': this.eulerQ(p.hd, 0.3, R); break;
         case 'head': this.eulerQ(p.hd, e.share, R); break;
         case 'up': case 'fore': {
-          const src = e.kind === 'up' ? (e.side > 0 ? p.aL : p.aR) : (e.side > 0 ? p.fL : p.fR);
+          let src = e.kind === 'up' ? (e.side > 0 ? p.aL : p.aR) : (e.side > 0 ? p.fL : p.fR);
+          if (p.familyAdapt && this.quadruped) {
+            const step = e.kind === 'up' ? (e.side > 0 ? p.lL : p.lR) : (e.side > 0 ? p.kL : p.kR);
+            src = step ? [step[0], step[1], -step[2]] : null;
+          }
           if (src) this.aim(e, this.dirV(src, _a), R); else R.identity();
           break;
         }
@@ -738,7 +743,7 @@ export class Dancer {
           else this.aim(e, e.d0, R); // stay planted: undo what the hips and knees did
           break;
         }
-        case 'tail': _e.set(Math.sin((e.n + 1) * 0.9) * 0.1 * (p.tl ? 1 : 0), (p.tl || 0) * DEG * e.share * 1.6, 0, 'YXZ'); R.setFromEuler(_e); break;
+        case 'tail': _e.set(Math.sin((e.n + 1) * 0.9) * 0.1 * (p.familyAdapt ? Math.min(1, Math.abs(p.tl || 0) / 20) : p.tl ? 1 : 0), (p.tl || 0) * DEG * e.share * 1.6, 0, 'YXZ'); R.setFromEuler(_e); break;
         case 'wing': {
           const f = p.w != null ? p.w : (aL && aR ? (aL.y + aR.y) / 2 : 0);
           _a.set(0, 0, 1).applyQuaternion(this.fq);
@@ -773,6 +778,9 @@ export class Dancer {
       rt.sq = 1 + 0.08 * up * w;
       if (aL && aR) rt.rz += -0.12 * ((aL.x + aR.x) / 2) * w;
     }
+    // Secret phrases express body accents with rigid translations/rotations;
+    // a limbless model must retain its size and silhouette throughout a dance.
+    if (p.preserveScale) rt.sq = 1;
     return rt;
   }
 

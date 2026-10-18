@@ -73,18 +73,111 @@ export const stickers = rewards('emote', s => ({
     return mysteryStickerArt(s);
   },
 }));
-// Distinct eight-beat phrases: steps, arm patterns, accents, tempo and turns vary per unlock.
+// Distinct eight-beat phrases. The native client embeds this same authored data;
+// only interpolation and the bounded travel primitives are implemented twice.
+const danceRest = {
+  aL:[.25,-.95,.12],aR:[-.25,-.95,.12],fL:[.12,-.9,.2],fR:[-.12,-.9,.2],
+  hp:[0,0,0],sp:[0,0,0],hd:[0,0,0],tl:0,w:0,
+};
+const gesture = p => ({...danceRest,...p});
+const mirrorGesture = p => {
+  const q={...p};
+  for(const [l,r] of [['aL','aR'],['fL','fR']]){q[l]=[-p[r][0],p[r][1],p[r][2]];q[r]=[-p[l][0],p[l][1],p[l][2]];}
+  for(const k of ['hp','sp','hd'])q[k]=[p[k][0],-p[k][1],-p[k][2]];
+  q.tl=-p.tl;return q;
+};
+const danceGestures = {
+  rest:gesture({}),
+  gather:gesture({aL:[-.2,-.45,.8],aR:[.2,-.45,.8],fL:[-.4,.25,.8],fR:[.4,.25,.8],sp:[7,0,0],hd:[12,0,0],w:-.3}),
+  offer:gesture({aL:[.2,-.2,.95],aR:[-.2,-.2,.95],fL:[.2,.15,.95],fR:[-.2,.15,.95],sp:[-3,0,0],hd:[-5,0,0],w:.1}),
+  open:gesture({aL:[.9,.2,.15],aR:[-.9,.2,.15],fL:[.8,.4,.1],fR:[-.8,.4,.1],sp:[-4,0,0],hd:[-8,0,0],w:.65}),
+  crown:gesture({aL:[.5,.8,.15],aR:[-.5,.8,.15],fL:[.1,.95,.15],fR:[-.1,.95,.15],sp:[-6,0,0],hd:[-14,0,0],w:.8}),
+  cross:gesture({aL:[-.4,.1,.8],aR:[.4,.1,.8],fL:[-.7,.15,.5],fR:[.7,.15,.5],hp:[0,-8,0],sp:[3,8,0],hd:[3,0,0],w:-.5}),
+  pointL:gesture({aL:[.65,.65,.35],fL:[.65,.65,.35],aR:[-.6,-.65,.2],fR:[.3,-.55,.5],hp:[0,4,7],sp:[-3,-12,-5],hd:[-12,-18,-5],tl:18,w:.25}),
+  leanL:gesture({aL:[.9,.25,.15],fL:[.85,.45,.1],aR:[-.35,-.65,.55],fR:[.2,.1,.9],hp:[0,0,10],sp:[2,6,-6],hd:[0,-12,-8],tl:20,w:.45}),
+  pullL:gesture({aL:[.65,-.4,.4],fL:[-.5,.3,.7],aR:[.05,-.7,.6],fR:[.3,.2,.8],hp:[0,10,4],sp:[6,-8,0],hd:[5,-15,0],tl:14,w:-.25}),
+  cupL:gesture({aL:[.4,-.4,.7],fL:[.1,.85,.4],aR:[-.3,-.5,.65],fR:[-.4,.3,.7],sp:[3,-10,-5],hd:[8,-20,-9],tl:12,w:-.1}),
+  sweepL:gesture({aL:[.85,-.1,.45],fL:[.9,.15,.35],aR:[.4,-.25,.8],fR:[.65,.2,.7],hp:[0,-10,4],sp:[0,-12,-4],hd:[-3,-18,0],tl:22,w:.2}),
+  cradle:gesture({aL:[-.1,-.4,.85],aR:[.1,-.4,.85],fL:[-.85,0,.4],fR:[.85,0,.4],sp:[4,0,0],hd:[12,0,0],w:-.35}),
+  clap:gesture({aL:[-.3,.15,.85],aR:[.3,.15,.85],fL:[-.5,.15,.8],fR:[.5,.15,.8],hp:[0,0,0],sp:[-2,0,0],hd:[-6,0,0],w:-.1}),
+  low:gesture({aL:[.6,-.7,.35],aR:[-.6,-.7,.35],fL:[.7,-.55,.35],fR:[-.7,-.55,.35],hp:[6,0,0],sp:[9,0,0],hd:[12,0,0],w:-.65}),
+  guard:gesture({aL:[.5,-.45,.65],aR:[-.5,-.45,.65],fL:[.05,.9,.4],fR:[-.05,.9,.4],sp:[3,0,0],hd:[3,0,0],w:-.2}),
+  angleL:gesture({aL:[.95,.05,.1],fL:[.05,.95,.1],aR:[-.5,-.65,.3],fR:[-.85,0,.35],hp:[0,-8,0],sp:[0,10,-4],hd:[0,-20,0],tl:12,w:.15}),
+  traceL:gesture({aL:[.4,.05,.9],fL:[.85,.1,.5],aR:[-.45,-.6,.55],fR:[.05,.85,.45],sp:[2,-8,0],hd:[4,-16,0],tl:8,w:-.1}),
+  box:gesture({aL:[.8,.05,.5],aR:[-.8,.05,.5],fL:[.05,.95,.1],fR:[-.05,.95,.1],hp:[0,0,0],sp:[0,0,0],hd:[0,0,0],w:.3}),
+  lock:gesture({aL:[.4,-.65,.5],aR:[-.4,-.65,.5],fL:[-.65,.25,.6],fR:[.65,.25,.6],hp:[3,0,0],sp:[4,0,0],hd:[7,0,0],w:-.45}),
+  shadeL:gesture({aL:[.65,.65,.35],fL:[-.75,.1,.5],aR:[-.8,-.35,.2],fR:[-.75,-.1,.4],hp:[0,10,0],sp:[0,-12,4],hd:[0,15,0],tl:-14,w:.1}),
+};
+for(const k of ['point','lean','pull','cup','sweep','angle','trace','shade'])danceGestures[k+'R']=mirrorGesture(danceGestures[k+'L']);
+const phrase=(title,story,keys,route='side',accent='flow',hold=.12)=>({title,story,keys:keys.split(' '),route,accent,hold});
+export const danceLibrary = {version:1,beats:8,gestures:danceGestures,phrases:[
+  phrase('Salute','Gather the light, reach overhead, then greet both sides.','gather offer crown open pointL pointR open rest','side'),
+  phrase('Ripple','Catch a drop in each palm and send a ripple outward.','rest cupL sweepL cupR sweepR offer gather rest','sway'),
+  phrase('Harvest','Reach, pick, cradle the harvest, and offer it forward.','rest pointL pullL pointR pullR cradle offer rest','step'),
+  phrase('Flicker','Answer tiny lights with alternating bright hand accents.','rest pointL rest pointR crown pointL pointR rest','zigzag','spark',.38),
+  phrase('Bloom','A closed bud opens, rocks in the breeze, and closes softly.','gather cradle offer crown open leanL leanR gather','still'),
+  phrase('Honey Step','Tap each side, stack the rhythm, and share the honey.','guard angleL pullL angleR pullR offer clap rest','step','bounce'),
+  phrase('Raindance','Make a canopy, brush away the rain, and open to the sky.','rest crown sweepL sweepR crown open gather rest','sway'),
+  phrase('Shell Sway','Listen to one shell, then the other, with a gentle sway.','cupL leanL open cupR leanR open offer rest','sway'),
+  phrase('Kite Flight','Guide a kite up, across the wind, and safely home.','rest pointL leanL crown pointR leanR open rest','arc'),
+  phrase('New Growth','Rise from a seed, stretch new leaves, and settle.','gather low offer crown open pointL pointR gather','still','rise'),
+  phrase('Lantern Lift','Lift a lantern and carry its glow from side to side.','gather offer crown cupL cupR crown offer gather','side'),
+  phrase('Rainbow Arc','Paint a broad arc overhead and open the colors.','pointL sweepL crown sweepR pointR open offer rest','arc'),
+  phrase('Skipping Stone','Wind up and skim a stone from each side.','gather pullL sweepL rest pullR sweepR offer rest','step','bounce'),
+  phrase('Crystal Waltz','Open, close, and turn like a drifting snowflake.','rest open crown open cross open leanR rest','orbit'),
+  phrase('Feather Float','Float each arm on the breeze before a soft landing.','rest leanL open leanR open crown gather rest','arc','rise'),
+  phrase('Waterlily','Unfurl across the water with slow mirrored reaches.','gather offer open leanL offer leanR open gather','sway','flow',.04),
+  phrase('Star Wish','Hold a wish, find two stars, and release it upward.','gather cross crown pointL pointR crown offer gather','still','rise'),
+  phrase('Fireside Clap','Warm the hands, clap, and welcome both sides.','rest cradle clap cradle pointL pointR clap rest','step','bounce',.28),
+  phrase('Breeze Turn','Trade broad arm sails while making a bounded pivot.','rest pointL open pointR cross pointL pointR rest','orbit'),
+  phrase('Moon Lullaby','Cradle and sway before lifting a quiet moon.','gather cradle leanL cradle leanR offer crown gather','sway','flow',.04),
+  phrase('Facet Lock','Present alternating facets and lock a bright diamond.','guard angleL angleR crown box angleR angleL lock','zigzag','pulse',.42),
+  phrase('Eclipse','Cover, cross, and uncover the light in a measured orbit.','open shadeL cross shadeR open cross crown guard','orbit','flow',.25),
+  phrase('Comet Trail','Wind up, launch across the body, and follow each trail.','guard pullL sweepL leanL pullR sweepR leanR guard','arc','spark',.3),
+  phrase('Circuit Trace','Trace two circuit branches and close the connection.','guard traceL angleL traceR angleR box lock guard','step','pulse',.48),
+  phrase('Obsidian Guard','Set two strong blocks, rise, and hold a firm finish.','guard angleL lock angleR lock crown lock guard','still','pulse',.55),
+  phrase('Nebula Drift','Gather a cloud, unfurl it, and let it orbit the body.','gather sweepL open sweepR cradle crown open gather','orbit','flow',.04),
+  phrase('Voltage Pop','Send sharp alternating pulses through a held frame.','guard box angleL lock angleR box crown lock','zigzag','spark',.5),
+  phrase('Portal Step','Frame a doorway, pass a hand through, and close it.','guard box traceL open traceR box cross lock','forward','pulse',.34),
+  phrase('Meteor Strike','Lift, compress, and release two grounded impacts.','guard crown low lock crown low open guard','still','impact',.32),
+  phrase('Mirage Echo','Repeat a feint on the opposite side, then reveal it.','rest shadeL leanR shadeR leanL cross open rest','side','flow',.3),
+  phrase('Quartz Chime','Touch four bright angles before a centered chime.','guard pointL angleR pointR angleL clap crown guard','step','spark',.36),
+  phrase('Gravity Well','Gather inward, rise, settle low, and release the pull.','open gather low offer crown low gather open','still','rise',.18),
+  phrase('Signal Relay','Receive a signal, pass it across, and confirm the lock.','guard cupL traceL box cupR traceR clap lock','zigzag','pulse',.52),
+  phrase('Nova Burst','Compress a small core, then open into a broad burst.','low gather lock crown open sweepL sweepR guard','still','impact',.2),
+  phrase('Chrome Glide','Slide a polished frame left and right with clean stops.','guard box leanL angleL box leanR angleR guard','side','pulse',.4),
+  phrase('Vortex Weave','Weave crossing arms through a controlled circular pivot.','guard sweepL cross sweepR crown sweepL sweepR guard','orbit','flow',.08),
+  phrase('Pulsar','Alternate a tight core and a wide synchronized pulse.','gather open lock crown gather box lock open','still','pulse',.5),
+  phrase('Phantom Veil','Draw a veil, peek from both sides, and vanish into rest.','rest shadeL cross cupR shadeR cross open rest','sway','flow',.34),
+  phrase('Aurora Ribbon','Send a ribbon across three heights with a soft sweep.','gather sweepL pointL crown pointR sweepR open gather','arc','flow',.04),
+  phrase('Singularity','Gather orbiting energy, suspend it, and resolve the core.','open sweepL gather sweepR low crown lock open','orbit','rise',.28),
+]};
+const danceEase=t=>t*t*t*(t*(t*6-15)+10);
+export function mysteryDancePose(b,index) {
+  const p=danceLibrary.phrases[index],cycle=((b%8)+8)%8,k=Math.floor(cycle),f=cycle-k;
+  const t=danceEase(Math.max(0,Math.min(1,(f-p.hold)/(1-p.hold))));
+  const a=danceGestures[p.keys[k]],z=danceGestures[p.keys[(k+1)%8]],pose={};
+  for(const key of Object.keys(danceRest))pose[key]=Array.isArray(a[key])?a[key].map((v,i)=>v+(z[key][i]-v)*t):a[key]+(z[key]-a[key])*t;
+  const step=Math.sin(Math.PI*b),lift=Math.sin(Math.PI*b)**2,turn=Math.sin(Math.PI*b/4),circle=Math.PI*b/4;
+  pose.lL=[.12,-1,.18*step];pose.lR=[-.12,-1,-.18*step];
+  pose.kL=[.05,-1,-.12*Math.max(0,step)];pose.kR=[-.05,-1,-.12*Math.max(0,-step)];
+  let x=0,zp=0,yaw=0;
+  if(p.route==='side'){x=.055*turn;yaw=.16*turn;}
+  if(p.route==='sway'){x=.035*turn;yaw=.12*Math.sin(circle*2);}
+  if(p.route==='step'){x=.045*Math.sin(Math.PI*b/2);zp=.018*turn;}
+  if(p.route==='zigzag'){x=.04*Math.sin(Math.PI*b/2);yaw=.22*turn;}
+  if(p.route==='forward'){zp=.045*(1-Math.cos(circle));yaw=.1*turn;}
+  if(p.route==='arc'){x=.05*turn;zp=.025*(1-Math.cos(circle));yaw=.3*turn;}
+  if(p.route==='orbit'){x=.035*turn;zp=.03*(1-Math.cos(circle));yaw=.5*turn;}
+  const bob=p.accent==='spark'?lift**3*.035:p.accent==='pulse'?lift**2*.028:p.accent==='impact'?lift*.045:p.accent==='rise'?.035*(1-Math.cos(circle)):.018*lift;
+  pose.rt={x,y:bob,z:zp,ry:yaw};pose.preserveScale=1;pose.familyAdapt=1;return pose;
+}
 export const dances = rewards('dance', s => ({
-  name: `${s.name} ${['Two-Step','Waltz','Shuffle','Bounce','Wave'][s.i%5]}`,
-  desc: `${s.label} choreography with ${s.i%2 ? 'alternating arm sweeps' : 'overhead accents'} and a ${s.i%3 ? 'side step' : 'quarter turn'}.`,
+  name: `${s.name} ${danceLibrary.phrases[s.p*20+s.i].title}`,
+  desc: danceLibrary.phrases[s.p*20+s.i].story,
   bpm: 84 + s.i * 3 + s.p * 7, icon: '♫',
   pose(b) {
-    const phase = b * Math.PI * (s.i%3===0 ? 2 : 1) + s.p*Math.PI/2, wave=Math.sin(phase), beat=Math.max(0, Math.sin(b*Math.PI)), bar=Math.floor(b)%8;
-    const reach=.35+(s.i%5)*.1, swing=Math.sin(phase+s.i*.31), left=bar%2===0;
-    return { aL:[reach,.25+swing*.5,.45],aR:[-reach,.25-swing*.5,.45],fL:[.2,left?.9:.1,.55],fR:[-.2,left?.1:.9,.55],
-      lL:[.13+wave*.14,-1,.12*beat],lR:[-.13+wave*.14,-1,-.12*beat],
-      hp:[0,wave*(4+s.i%4),wave*7],sp:[beat*5,0,-wave*5],hd:[-beat*8,wave*9,0],tl:wave*24,w:wave*.45,
-      rt:{x:wave*(.025+s.i%4*.015),y:beat*(.025+s.i%5*.008),ry:s.i%3===0?Math.sin(b*Math.PI/4)*.6:wave*.12,z:Math.sin(b*Math.PI/2)*.025} };
+    return mysteryDancePose(b,s.p*20+s.i);
   },
 }));
 export const killThemes = (() => {

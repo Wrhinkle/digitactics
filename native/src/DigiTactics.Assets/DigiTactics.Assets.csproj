@@ -1,1 +1,5 @@
-<Project Sdk="Microsoft.NET.Sdk" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <EmbeddedResource Include="../../content/mystery-dances.json" LogicalName="DigiTactics.MysteryDances.json" />
+  </ItemGroup>
+</Project>

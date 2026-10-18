@@ -4,7 +4,7 @@ namespace DigiTactics.Assets;
 
 public sealed record DanceBone(int Node, string Kind, int ParentEntry, Vector3 Direction,
     Quaternion ParentRotation, Quaternion RestRotation, int Side = 0, float Share = 1, int Index = 0, float Limit = 0, QuaternionD? ExactParentRotation = null, QuaternionD? ExactRestRotation = null);
-public sealed record DanceBinding(DanceBone[] Bones, bool Limbless, bool Stubby, float Yaw = 0);
+public sealed record DanceBinding(DanceBone[] Bones, bool Limbless, bool Stubby, float Yaw = 0, bool Quadruped = false);
 public sealed record DancePose(Dictionary<string, Vector3> Vectors, Dictionary<string, float> Scalars, Dictionary<string, float> Root);
 public sealed record DanceRoot(Vector3 Position, Vector3 Rotation, float Pivot, float Squash, Quaternion Facing);
 
@@ -86,12 +86,15 @@ public sealed class DanceSkeleton(DanceBinding binding)
                 case "neck": rotation = Euler(V("hd"), .3f); break;
                 case "head": rotation = Euler(V("hd"), bone.Share); break;
                 case "up": case "fore":
-                    if (pose.Vectors.TryGetValue((bone.Kind == "up" ? "a" : "f") + side, out var arm)) rotation = Aim(bone, Direction(arm));
+                    string channel=(bone.Kind=="up"?"a":"f")+side;
+                    bool foreleg=binding.Quadruped&&Scalar("familyAdapt")!=0;
+                    if(foreleg)channel=(bone.Kind=="up"?"l":"k")+side;
+                    if (pose.Vectors.TryGetValue(channel, out var arm)) rotation = Aim(bone, Direction(foreleg?new(arm.X,arm.Y,-arm.Z):arm));
                     break;
                 case "thigh": case "shin": case "foot":
                     rotation = Aim(bone, bone.Kind != "foot" && pose.Vectors.TryGetValue((bone.Kind == "thigh" ? "l" : "k") + side, out var leg) ? Direction(leg) : bone.Direction);
                     break;
-                case "tail": rotation = Yxz(new(MathF.Sin((bone.Index + 1) * .9f) * .1f * (Scalar("tl") != 0 ? 1 : 0), Scalar("tl") * Degree * bone.Share * 1.6f, 0)); break;
+                case "tail": rotation = Yxz(new(MathF.Sin((bone.Index + 1) * .9f) * .1f * (Scalar("familyAdapt")!=0?Math.Min(1,Math.Abs(Scalar("tl"))/20):Scalar("tl") != 0 ? 1 : 0), Scalar("tl") * Degree * bone.Share * 1.6f, 0)); break;
                 case "wing":
                     float flap = pose.Scalars.TryGetValue("w", out var wing) ? wing : left.HasValue && right.HasValue ? (left.Value.Y + right.Value.Y) / 2 : 0;
                     rotation = Quaternion.CreateFromAxisAngle(Vector3.Transform(Vector3.UnitZ, facing), flap * .5f * bone.Side * bone.Share); break;
@@ -127,6 +130,7 @@ public sealed class DanceSkeleton(DanceBinding binding)
             squash = 1 + .08f * (left.HasValue && right.HasValue ? (left.Value.Y + right.Value.Y) / 2 : 0) * w;
             if (left.HasValue && right.HasValue) angles.Z -= .12f * (left.Value.X + right.Value.X) / 2 * w;
         }
+        if(Scalar("preserveScale")!=0)squash=1;
         return new(position, angles, Root("piv"), squash == 0 ? 1 : squash, facing);
     }
 }

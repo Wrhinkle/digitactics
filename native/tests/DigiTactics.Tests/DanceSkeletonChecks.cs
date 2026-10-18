@@ -17,7 +17,7 @@ internal static class DanceSkeletonChecks
         foreach (var row in fixture.RootElement.EnumerateArray())
         {
             if (row.TryGetProperty("binding", out var b))
-                dancer = new(new(b.GetProperty("bones").EnumerateArray().Select(e => new DanceBone(e.GetProperty("node").GetInt32(), e.GetProperty("kind").GetString()!, e.GetProperty("parentEntry").GetInt32(), V(e.GetProperty("direction")), Q(e.GetProperty("parentRotation")), Q(e.GetProperty("restRotation")), e.GetProperty("side").GetInt32(), e.GetProperty("share").GetSingle(), e.GetProperty("index").GetInt32(), e.GetProperty("limit").GetSingle())).ToArray(), b.GetProperty("limbless").GetBoolean(), b.GetProperty("stubby").GetBoolean(), b.GetProperty("yaw").GetSingle()));
+                dancer = new(new(b.GetProperty("bones").EnumerateArray().Select(e => new DanceBone(e.GetProperty("node").GetInt32(), e.GetProperty("kind").GetString()!, e.GetProperty("parentEntry").GetInt32(), V(e.GetProperty("direction")), Q(e.GetProperty("parentRotation")), Q(e.GetProperty("restRotation")), e.GetProperty("side").GetInt32(), e.GetProperty("share").GetSingle(), e.GetProperty("index").GetInt32(), e.GetProperty("limit").GetSingle())).ToArray(), b.GetProperty("limbless").GetBoolean(), b.GetProperty("stubby").GetBoolean(), b.GetProperty("yaw").GetSingle(),b.TryGetProperty("quadruped",out var quad)&&quad.GetBoolean()));
             var choreography = DanceChoreography.Evaluate(row.GetProperty("dance").GetString(), row.GetProperty("time").GetDouble());
             var initial = row.GetProperty("initial");
             for (int i = 0; i < target.Local.Length; i++) { var q = Q(initial[i]); target.Local[i] = target.Local[i] with { Rotation = new(q.X, q.Y, q.Z, q.W) }; }

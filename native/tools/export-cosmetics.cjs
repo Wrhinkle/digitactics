@@ -2,14 +2,39 @@ const fs = require('fs'), path = require('path'), vm = require('vm'), zlib = req
 const { chromium } = require('../artifacts/audio-tools/node_modules/playwright');
 const root = path.resolve(__dirname, '../..');
 (async () => {
-  const browser = await chromium.launch({ channel: 'msedge', headless: true });
-  let catalog;
+  // Route interception needs HTTP: Chromium may serve file:// scripts directly
+  // without passing them through Playwright's current-source bundle override.
+  const server = require('http').createServer((request, response) => {
+    const file = path.resolve(root, '.' + decodeURIComponent(new URL(request.url, 'http://localhost').pathname));
+    if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
+      response.writeHead(404); response.end(); return;
+    }
+    const type = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json' }[path.extname(file)] || 'application/octet-stream';
+    response.writeHead(200, { 'Content-Type': type }); fs.createReadStream(file).pipe(response);
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  let browser, catalog;
   try {
+    browser = await chromium.launch({ channel: 'msedge', headless: true });
     const page = await browser.newPage();
-    await page.goto(require('url').pathToFileURL(path.join(root, 'index.html')).href);
+    page.on('pageerror', error => console.error('Cosmetic source page:', error.message));
+    await require('../../tests/live-source-bundle.cjs')(page);
+    await page.goto(`http://127.0.0.1:${server.address().port}/index.html`, { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => window.DT?.Shop && DT.Cosmetics.list('elimsound').length > 0);
     catalog = await page.evaluate(() => Object.fromEntries(DT.Cosmetics.KINDS.map(k => [k, JSON.parse(JSON.stringify(DT.Cosmetics.list(k)))])));
-  } finally { await browser.close(); }
+  } finally {
+    if (browser) await browser.close();
+    await new Promise(resolve => server.close(resolve));
+  }
+  // A stale shipped bundle must never silently replace authored unlock metadata.
+  const mystery = fs.readFileSync(path.join(root, 'js/mystery-content.js'), 'utf8'), authored = {};
+  vm.createContext(authored);
+  vm.runInContext(mystery.slice(0, mystery.indexOf('export const killThemes')).replace(/export /g, '') + ';this.danceMetadata=dances;', authored);
+  for (const expected of authored.danceMetadata) {
+    const actual = catalog.dance.find(item => item.id === expected.id);
+    if (!actual || actual.name !== expected.name || actual.desc !== `${expected.desc} ${expected.bpm} BPM.`)
+      throw new Error('Cosmetic export did not load current dance source: ' + expected.id);
+  }
   fs.writeFileSync(path.join(root, 'native/src/DigiTactics.Storage/cosmetics.json'), JSON.stringify(catalog));
   const initial = { bits: 100000, owned: {}, equipped: {}, history: [], future: 'keep' };
   const storage = { 'dt.cosmetics.v1': JSON.stringify(initial) };
