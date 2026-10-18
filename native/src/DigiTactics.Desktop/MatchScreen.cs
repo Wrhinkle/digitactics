@@ -254,7 +254,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
-        portraits.BeginFrame(); itemArtwork.BeginFrame();
+        portraits.BeginFrame(); itemArtwork.BeginFrame(); CarouselCardsDrawn = 0;
         sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
@@ -493,14 +493,7 @@ internal sealed partial class MatchScreen : IDisposable
         if (IsSpectating) return;
         if (Session!.Units.Carousel.Active)
         {
-            Window("Carousel", Left, Top + 15, Width, 180);
-            ImGui.Text($"Picking: {Session.Units.Carousel.Turn?.Name ?? "Complete"}");
-            for (int i = 0; i < Session.Units.Carousel.Options.Count; i++)
-            {
-                var o = Session.Units.Carousel.Options[i]; if (o.PickedBy is not null) continue;
-                if (Button("carousel/" + i, $"{Rules.Lines.Single(l => l.Id == o.Line).Forms[0]} + {Name(o.Item!)}")) Act("carousel", new { i });
-            }
-            ImGui.End();
+            CarouselChoices();
         }
         else if (Human.Offer is { } offer)
         {

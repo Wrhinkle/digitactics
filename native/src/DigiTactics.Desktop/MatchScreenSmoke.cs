@@ -133,6 +133,12 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (index == 1 && cooldown == 1 && screen.Session!.Units.Carousel.Active)
+        {
+            if (screen.CarouselCardsDrawn != screen.Session.Units.Carousel.Options.Count)
+                throw new InvalidOperationException("Carousel omitted available or taken choices.");
+            if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "carousel.bmp"), size.X, size.Y);
+        }
         if (index == 22 && cooldown == 1 && capture is not null && !itemDragsVerified && itemDragSmoke.CaptureName is { } itemCapture)
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, itemCapture + ".bmp"), size.X, size.Y);
         if (index == 22 && cooldown == 1 && capture is not null && dropSmoke.CaptureName is { } dropCapture)
