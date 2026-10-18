@@ -29,7 +29,12 @@ const KEY = 'dt.farm.v1';
 const MIN = 60000;
 const CAP_START = 6, CAP_MAX = 12, CAP_STEP = 2;
 const EXPAND_COST = [250, 400, 600]; // 6 -> 8 -> 10 -> 12
-const CATCHUP_MIN = 12 * 60; // offline progress cap
+const CATCHUP_MIN = 2 * 60; // biological decline only; supplies and age retain real elapsed time
+const CARETAKERS = [
+  { id: 'basic', name: 'Basic caretaker', price: 100, needs: 40 },
+  { id: 'full', name: 'Full care', price: 750, needs: 100 },
+];
+const CARE_DAY = 86400000;
 const OFFLINE_MISTAKES = 2; // max care mistakes added by one catch-up longer than 30 minutes
 // per-minute rates (stats run 0..100)
 const RATE = {
@@ -98,7 +103,7 @@ if (!save) save = fresh();
 const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) { /* private mode */ } };
 
 let offset = 0; // test clock
-const now = () => Date.now() + offset;
+const now = () => Math.max(Date.now() + offset, save.caretaker?.clock || 0);
 const listeners = new Set();
 let events = [];
 const push = (ev) => { events.push(ev); if (events.length > 200) events = events.slice(-200); };
@@ -165,17 +170,52 @@ function mistake(id, p, why, budget) {
   push({ id, type: 'mistake', why });
 }
 
+const caretakerAt = (time) => save.caretaker && time >= save.caretaker.since && time < save.caretaker.until
+  ? CARETAKERS.find((plan) => plan.id === save.caretaker.tier) || null : null;
+const caretakerOf = () => caretakerAt(now());
+const caretakerQuote = (id) => {
+  const plan = CARETAKERS.find((x) => x.id === id);
+  if (!plan) return null;
+  const current = caretakerOf(), time = now(), until = save.caretaker?.until || 0;
+  if (current && current.price > plan.price) return { price: 0, until, upgrade: false, blocked: true };
+  if (current && current.price < plan.price) return { price: Math.ceil((plan.price - current.price) * ((until - time) / CARE_DAY)), until, upgrade: true, blocked: false };
+  return { price: plan.price, until: Math.max(time, until) + CARE_DAY, upgrade: false, blocked: false };
+};
+function maintain(p, plan, ideal) {
+  if (!plan) return;
+  for (const field of ['hunger', 'energy', 'happy']) p[field] = Math.max(p[field], plan.needs);
+  if (plan.id === 'full') { p.disc = 100; p.weight = ideal; p.nap = false; }
+  p.poop.length = 0;
+  for (const field of ['dirt', 'sickMin', 'starveMin', 'sadMin', 'sleepyMin', 'tantrum']) p[field] = 0;
+  p.sick = false; p.sickWhy = '';
+  p.flags.asleep = (!save.lights && p.energy < 100) || p.nap;
+}
+function hireCaretaker(id) {
+  tick();
+  const plan = CARETAKERS.find((x) => x.id === id);
+  if (!plan) return fail('Unknown caretaker plan.');
+  const quote = caretakerQuote(id), paid = quote.price;
+  if (quote.blocked) return fail('Full care is already active. Choose Basic after it expires.');
+  if (!W.spend(paid)) return fail(`Needs ${paid} Bits.`);
+  const time = now(); save.caretaker = { tier: id, since: time, until: quote.until, clock: time };
+  for (const resident of save.residents) { maintain(save.pets[resident], plan, idealOf(resident)); save.pets[resident].t = time; }
+  changed(null);
+  return { ok: true, msg: plan.name + (quote.upgrade ? ' upgraded for the remaining paid time.' : ' extended by 24 hours.'), paid, until: quote.until };
+}
+
 function simulate(id, p, t) {
   if (!p.t) p.t = t;
+  const ideal = idealOf(id);
   let from = p.t;
   if (t - from > CATCHUP_MIN * MIN) from = t - CATCHUP_MIN * MIN; // older time is simply skipped
+  if (save.caretaker && p.t < save.caretaker.until && from >= save.caretaker.until) maintain(p, caretakerAt(save.caretaker.until - 1), ideal);
   const mins = Math.floor((t - from) / MIN);
-  if (mins <= 0) return;
+  if (mins <= 0) { maintain(p, caretakerAt(t), ideal); return; }
   const budget = { left: mins > 30 ? OFFLINE_MISTAKES : 99 };
-  const ideal = idealOf(id);
   for (let m = 0; m < mins; m++) {
     const mt = from + m * MIN;
     const mi = Math.floor(mt / MIN);
+    const caretaker = caretakerAt(mt); maintain(p, caretaker, ideal);
     // sleep
     if (!save.lights) p.nap = false;
     else if (p.energy <= NAP_AT) p.nap = true;
@@ -195,8 +235,9 @@ function simulate(id, p, t) {
     if (p.weight >= ideal * FAT) dh += RATE.fatHappy;
     if (!save.lights && !asleep) dh += RATE.boredHappy;
     p.happy -= dh;
-    p.disc -= RATE.disc;
+    if (!caretaker) p.disc -= RATE.disc;
     p.energy = clamp(p.energy, 0, 100); p.hunger = clamp(p.hunger, 0, 100); p.happy = clamp(p.happy, 0, 100); p.disc = clamp(p.disc, 0, 100);
+    maintain(p, caretaker, ideal);
     // starving
     if (p.hunger <= 0) {
       p.starveMin++;
@@ -213,7 +254,8 @@ function simulate(id, p, t) {
     p.poopClock += asleep ? 0.5 : 1;
     if (p.poopClock >= POOP_EVERY) {
       p.poopClock = 0;
-      if (p.disc >= TOILET_DISC && !asleep) { p.toilet++; p.disc = clamp(p.disc + 1, 0, 100); push({ id, type: 'toilet' }); }
+      if (caretaker) { /* Upkeep does not grant care progress. */ }
+      else if (p.disc >= TOILET_DISC && !asleep) { p.toilet++; p.disc = clamp(p.disc + 1, 0, 100); push({ id, type: 'toilet' }); }
       else if (p.poop.length < POOP_MAX) {
         const a = rand01(hash(`${id}|pa|${mi}`)) * Math.PI * 2, r = 1.2 + rand01(hash(`${id}|pr|${mi}`)) * 2.6;
         p.poop.push({ t: mt, x: +(Math.cos(a) * r).toFixed(2), z: +(Math.sin(a) * r * 0.8 + 0.4).toFixed(2), n: false, k: ++p.pileN });
@@ -228,15 +270,18 @@ function simulate(id, p, t) {
     if (p.sick) { p.sickMin++; if (p.sickMin === SICK_MISTAKE) mistake(id, p, 'sick', budget); }
     // tantrums
     if (p.tantrum && mt >= p.tantrum) { p.tantrum = 0; mistake(id, p, 'tantrum', budget); }
-    else if (!p.tantrum && !asleep && !p.sick && rand01(hash(`${id}|tt|${mi}`)) < TANTRUM_CHANCE * (1 - p.disc / 100) ** 2) {
+    else if (!caretaker && !p.tantrum && !asleep && !p.sick && rand01(hash(`${id}|tt|${mi}`)) < TANTRUM_CHANCE * (1 - p.disc / 100) ** 2) {
       p.tantrum = mt + TANTRUM_MIN * MIN;
       push({ id, type: 'tantrum' });
     }
   }
   p.t = from + mins * MIN;
+  maintain(p, caretakerAt(t), ideal);
 }
 
 function tick(t = now()) {
+  t = Math.max(t, save.caretaker?.clock || 0);
+  if (save.caretaker) save.caretaker.clock = t;
   syncRoom();
   stock(save.meat, MEAT_MAX, MEAT_EVERY, t);
   stock(save.bandage, BANDAGE_MAX, BANDAGE_EVERY, t);
@@ -428,12 +473,16 @@ function train(id, game, score) {
 }
 
 // ---------- room management ----------
+function admit(id) {
+  if (!save.pets[id]) save.pets[id] = newPet(id, now()); else save.pets[id].t = now();
+  maintain(save.pets[id], caretakerOf(), idealOf(id));
+}
 function moveIn(id) {
   tick();
   if (!C.owns('legend', id) || isResident(id)) return fail('');
   if (save.residents.length >= save.cap) return fail('The room is full. Send someone to the Digi-Bank first.');
   save.residents.push(id);
-  if (!save.pets[id]) save.pets[id] = newPet(id, now()); else save.pets[id].t = now(); // banked time is paused
+  admit(id); // banked time is paused
   changed(id);
   return { ok: true, msg: `${nameOf(id)} moved in.` };
 }
@@ -449,7 +498,7 @@ function swap(inId, outId) {
   tick();
   if (!isResident(outId) || isResident(inId) || !C.owns('legend', inId)) return fail('');
   save.residents[save.residents.indexOf(outId)] = inId;
-  if (!save.pets[inId]) save.pets[inId] = newPet(inId, now()); else save.pets[inId].t = now();
+  admit(inId);
   changed(inId);
   return { ok: true, msg: `${nameOf(inId)} moved in. ${nameOf(outId)} went to the Digi-Bank.` };
 }
@@ -461,7 +510,7 @@ function buyExpansion() {
   if (!W.spend(cost)) return fail(`Needs ${cost} Bits.`);
   save.cap += CAP_STEP;
   // bank legends move in to fill the new space
-  for (const id of owned()) if (save.residents.length < save.cap && !isResident(id)) { save.residents.push(id); if (!save.pets[id]) save.pets[id] = newPet(id, now()); else save.pets[id].t = now(); }
+  for (const id of owned()) if (save.residents.length < save.cap && !isResident(id)) { save.residents.push(id); admit(id); }
   changed(null);
   return { ok: true, msg: `The room now holds ${save.cap}.` };
 }
@@ -540,6 +589,7 @@ function state() {
     cap: save.cap, capMax: CAP_MAX, expandCost: expandCost(), residents: save.residents.slice(), bank: owned().filter((id) => !isResident(id)),
     theme: save.theme, lights: save.lights, meat: { ...save.meat, max: MEAT_MAX }, bandage: { ...save.bandage, max: BANDAGE_MAX },
     daily: { ...save.daily, capBits: DAILY.bits, capData: DAILY.data }, now: now(),
+    caretaker: caretakerOf()?.id || null, careUntil: save.caretaker?.until || 0, caretakers: CARETAKERS.map((plan) => ({ ...plan, dailyPrice: plan.price, ...caretakerQuote(plan.id) })),
     themes: THEMES.map((th) => ({ ...th, owned: ownsTheme(th.id) })),
   };
 }
@@ -547,7 +597,7 @@ function state() {
 const Farm = {
   FOODS, TRAIN, THEMES, DAILY, RATE, CAP_START, CAP_MAX, EXPAND_COST, CATCHUP_MIN, OFFLINE_MISTAKES, POOP_EVERY, POOP_MAX, TOILET_DISC,
   DIRT_SICK, PILE_NEGLECT, IDEAL_WEIGHT, FAT, MEAT_MAX, MEAT_EVERY, MEAT_BITS, BANDAGE_MAX, BANDAGE_EVERY, MEDICINE_BITS, TANTRUM_MIN, REWARD,
-  KEY, now, tick, state, card, evoCare, themeOf, ownsTheme, nameOf,
+  KEY, now, tick, state, card, evoCare, themeOf, ownsTheme, nameOf, CARETAKERS, hireCaretaker, caretakerQuote,
   pet(id) { const p = petOf(id); return p ? JSON.parse(JSON.stringify(p)) : null; },
   piles() { tick(); return save.residents.flatMap((id) => save.pets[id].poop.map((x) => ({ id, ...x }))); },
   setPilePos(id, k, x, z) { const p = save.pets[id]; const pile = p && p.poop.find((q) => q.k === k); if (pile) { pile.x = +x.toFixed(2); pile.z = +z.toFixed(2); persist(); } },

@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 namespace DigiTactics.Storage;
 
 public sealed record FarmCareUpdate(string Farm, string? Wallet, string? Legends, JsonObject Result, JsonArray Events);
-public enum FarmCareAction { Feed, Clean, CleanPile, Cure, Lights, Praise, Scold, Play, Pet, MoveIn, MoveOut, Swap, Expand, BuyTheme, SetTheme, Train }
+public enum FarmCareAction { Feed, Clean, CleanPile, Cure, Lights, Praise, Scold, Play, Pet, MoveIn, MoveOut, Swap, Expand, BuyTheme, SetTheme, Train, HireCaretaker }
 public sealed record FarmTheme(string Id, string Name, int Price, string? Board = null, bool Free = false);
 
 public static class FarmCare
@@ -49,6 +49,7 @@ public static class FarmCare
         var advanced = (action is FarmCareAction.BuyTheme or FarmCareAction.SetTheme) && farmJson is not null
             ? new FarmUpdate(farmJson, new JsonArray()) : FarmSimulation.Advance(farmJson, walletJson, legendJson, timestamp);
         var farm = JsonNode.Parse(advanced.Save)!.AsObject();
+        timestamp = FarmCaretaker.Time(farm, timestamp);
         if (farm["v"]?.GetValue<int>() != 1) throw new InvalidDataException("Unsupported farm save version.");
         var collection = new CosmeticCollection(walletJson);
         var wallet = JsonNode.Parse(collection.Json)!.AsObject(); bool walletChanged = false;
@@ -88,8 +89,20 @@ public static class FarmCare
         {
             if (pets[petId] is null) pets[petId] = FarmSimulation.NewPet(petId, timestamp, legendJson);
             else pets[petId]!["t"] = timestamp;
+            FarmCaretaker.Maintain(pets[petId]!, FarmCaretaker.Current(farm), Ideal(petId), B(farm, "lights"));
         }
         var room = farm["residents"]!.AsArray();
+        if (action == FarmCareAction.HireCaretaker)
+        {
+            var plan = FarmCaretaker.Plans.FirstOrDefault(plan => plan.Id == option);
+            if (plan is null) return Done(false, "Unknown caretaker plan.");
+            var quote = FarmCaretaker.Quote(farm, plan, timestamp); int price = quote.Price;
+            if (quote.Blocked) return Done(false, "Full care is already active. Choose Basic after it expires.");
+            if (!Spend(price)) return Done(false, $"Needs {price} Bits.");
+            farm["caretaker"] = new JsonObject { ["tier"] = plan.Id, ["since"] = timestamp, ["until"] = quote.Until, ["clock"] = timestamp };
+            foreach (string resident in residents) { FarmCaretaker.Maintain(pets[resident]!, plan, Ideal(resident), B(farm, "lights")); pets[resident]!["t"] = timestamp; }
+            return Done(true, plan.Name + (quote.Upgrade ? " upgraded for the remaining paid time." : " extended by 24 hours."), ("paid", JsonValue.Create(price)), ("until", JsonValue.Create(quote.Until)));
+        }
         if (action == FarmCareAction.MoveIn)
         {
             if (!collection.Owns("legend", id) || residents.Contains(id)) return Done(false, "");

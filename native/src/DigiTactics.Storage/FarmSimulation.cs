@@ -43,6 +43,8 @@ public static class FarmSimulation
             foreach (var field in previous) save[field.Key] = field.Value?.DeepClone();
         }
         if (save["v"]?.GetValue<int>() != 1) throw new InvalidDataException("Unsupported farm save version.");
+        timestamp = FarmCaretaker.Time(save, timestamp);
+        if (save["caretaker"] is JsonObject service) service["clock"] = timestamp;
         if (save["themes"] is not JsonArray || save["residents"] is not JsonArray || save["seen"] is not JsonArray || save["pets"] is not JsonObject || save["meat"] is not JsonObject || save["bandage"] is not JsonObject || save["daily"] is not JsonObject daily || daily["day"] is null)
             throw new InvalidDataException("Invalid farm save fields.");
         var collection = new CosmeticCollection(walletJson);
@@ -83,15 +85,22 @@ public static class FarmSimulation
             var p = pets[id]!;
             if (p["poop"] is not JsonArray || p["flags"] is not JsonObject) throw new InvalidDataException("Invalid farm pet fields.");
             if (N(p, "t") == 0) p["t"] = timestamp;
-            double from = Math.Max(N(p, "t"), timestamp - 720 * Minute);
+            double ideal = Ideal(legendJson, id);
+            // Supplies and age use wall time; unattended biological decline is bounded to two hours.
+            double from = Math.Max(N(p, "t"), timestamp - 120 * Minute);
+            // If paid time ended before the retained window, still apply its final upkeep before unattended decay.
+            if (save["caretaker"] is JsonObject coverage && N(p,"t") < FarmCaretaker.Until(save) && from >= FarmCaretaker.Until(save))
+                FarmCaretaker.Maintain(p, FarmCaretaker.At(save, FarmCaretaker.Until(save) - 1), ideal, lights);
             int minutes = (int)Math.Floor((timestamp - from) / Minute);
-            if (minutes <= 0) continue;
-            int budget = minutes > 30 ? 2 : 99; double ideal = Ideal(legendJson, id);
+            if (minutes <= 0) { FarmCaretaker.Maintain(p, FarmCaretaker.Current(save, timestamp), ideal, lights); continue; }
+            int budget = minutes > 30 ? 2 : 99;
             void Mistake(string why) { if (budget <= 0) return; budget--; Add(p, "mistakes", 1); Emit(id, "mistake", why); }
             var poop = p["poop"]!.AsArray();
             for (int m = 0; m < minutes; m++)
             {
                 double time = from + m * Minute; long minute = (long)Math.Floor(time / Minute);
+                var caretaker = FarmCaretaker.At(save, (long)time);
+                FarmCaretaker.Maintain(p, caretaker, ideal, lights);
                 if (!lights) p["nap"] = false;
                 else if (N(p, "energy") <= 5) p["nap"] = true;
                 else if (B(p, "nap") && N(p, "energy") >= 50) p["nap"] = false;
@@ -104,8 +113,9 @@ public static class FarmSimulation
                 dh += poop.Count * (1d / 20);
                 if (N(p, "weight") >= ideal * 1.4) dh += 1d / 30;
                 if (!lights && !asleep) dh += 1d / 10;
-                Add(p, "happy", -dh); Add(p, "disc", -100d / 3000);
+                Add(p, "happy", -dh); if (caretaker is null) Add(p, "disc", -100d / 3000);
                 foreach (string field in new[] { "energy", "hunger", "happy", "disc" }) p[field] = Math.Clamp(N(p, field), 0, 100);
+                FarmCaretaker.Maintain(p, caretaker, ideal, lights);
                 if (N(p, "hunger") <= 0)
                 {
                     Add(p, "starveMin", 1);
@@ -121,7 +131,8 @@ public static class FarmSimulation
                 if (N(p, "poopClock") >= 180)
                 {
                     p["poopClock"] = 0;
-                    if (N(p, "disc") >= 60 && !asleep) { Add(p, "toilet", 1); p["disc"] = Math.Clamp(N(p, "disc") + 1, 0, 100); Emit(id, "toilet"); }
+                    if (caretaker is not null) { /* The caretaker handles it without granting care progress. */ }
+                    else if (N(p, "disc") >= 60 && !asleep) { Add(p, "toilet", 1); p["disc"] = Math.Clamp(N(p, "disc") + 1, 0, 100); Emit(id, "toilet"); }
                     else if (poop.Count < 4)
                     {
                         double a = LegendEvolution.SeededRandom($"{id}|pa|{minute}") * Math.PI * 2, r = 1.2 + LegendEvolution.SeededRandom($"{id}|pr|{minute}") * 2.6;
@@ -135,10 +146,11 @@ public static class FarmSimulation
                 if (!B(p, "sick") && N(p, "dirt") >= 240) { p["sick"] = true; p["sickWhy"] = "dirty"; p["sickMin"] = 0; Emit(id, "sick", "dirty"); }
                 if (B(p, "sick")) { Add(p, "sickMin", 1); if (N(p, "sickMin") == 360) Mistake("sick"); }
                 if (N(p, "tantrum") != 0 && time >= N(p, "tantrum")) { p["tantrum"] = 0; Mistake("tantrum"); }
-                else if (N(p, "tantrum") == 0 && !asleep && !B(p, "sick") && LegendEvolution.SeededRandom($"{id}|tt|{minute}") < .004 * Math.Pow(1 - N(p, "disc") / 100, 2))
+                else if (caretaker is null && N(p, "tantrum") == 0 && !asleep && !B(p, "sick") && LegendEvolution.SeededRandom($"{id}|tt|{minute}") < .004 * Math.Pow(1 - N(p, "disc") / 100, 2))
                 { p["tantrum"] = time + 30 * Minute; Emit(id, "tantrum"); }
             }
             p["t"] = from + minutes * Minute;
+            FarmCaretaker.Maintain(p, FarmCaretaker.Current(save, timestamp), ideal, lights);
         }
         return new(save.ToJsonString(), events);
     }

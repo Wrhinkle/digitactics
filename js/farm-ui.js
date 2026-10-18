@@ -95,7 +95,7 @@ function build() {
   root.setAttribute('aria-label', 'Digi-Farm');
   root.innerHTML = `<div class="df-win">
     <header class="df-head"><h2>Digi-Farm</h2><span class="df-theme"></span><span class="sp"></span><span class="df-pills"></span>
-      <button data-fm="bank" title="Choose who lives in the room">Digi-Bank</button><button data-fm="themes">Themes</button><span class="df-exp"></span>
+      <button data-fm="bank" title="Choose who lives in the room">Digi-Bank</button><button data-fm="themes">Themes</button><button data-fm="caretakers">Care staff</button><span class="df-exp"></span>
       <button class="df-close" title="Esc">Close</button></header>
     <div class="df-body">
       <div class="df-scene"><div class="df-stars"></div><canvas></canvas><div class="df-night"></div><div class="df-icons"></div><div class="df-chips"></div>
@@ -249,6 +249,19 @@ function renderModal() {
       <h3>Digi-Bank <span class="muted">${st.bank.length} waiting. Legends in the bank are paused: no hunger, no poop.</span></h3>
       <div class="df-grid">${st.bank.map((id) => slot(id, false)).join('') || '<div class="muted">Nobody in the bank. Every legend you own lives in the room.</div>'}</div>
       ${st.cap < st.capMax ? `<div class="muted">Expand the room for ${bit}${st.expandCost} to fit 2 more (up to ${st.capMax}).</div>` : ''}`;
+  } else if (modalKind === 'caretakers') {
+    const st = F.state();
+    box.innerHTML = `<button class="x" data-mclose="1">Close</button><h3>Care staff</h3>
+      <p>${W.bits.toLocaleString()} Bits · Current care: ${esc(F.CARETAKERS.find((plan) => plan.id === st.caretaker)?.name || 'Manual care')}</p>
+      ${st.caretaker ? `<p>${Math.floor((st.careUntil-st.now)/3600000)}h ${Math.floor((st.careUntil-st.now)/60000)%60}m remaining · Expires ${esc(new Date(st.careUntil).toLocaleString())}</p>` : st.careUntil ? '<p>Coverage expired. No Bits were charged automatically.</p>' : ''}
+      <p>Prepaid care covers the whole farm. Supplies are included. Renew explicitly: no automatic charges or debt.</p>
+      <p>Without staff, each absence applies at most two hours of needs decay. Food and bandage supplies still refill in real time.</p>
+      ${st.caretakers.map((plan) => `<section><h3>${esc(plan.name)}</h3><p>${plan.id === 'basic'
+        ? 'Keeps hunger, energy and happiness at least 40/100, cleans and treats sickness. Preserves current discipline.'
+        : 'Keeps hunger, energy, happiness and discipline at 100/100, cleans and treats sickness, and maintains ideal weight.'}</p>
+        <p>${plan.dailyPrice.toLocaleString()} Bits / 24 hours${plan.upgrade ? ' · Upgrade preserves your paid expiry' : ''}</p>
+        <button data-caretaker="${plan.id}" ${plan.blocked || W.bits < plan.price ? 'disabled' : ''}>${plan.blocked ? 'Available after Full care expires' : `${plan.upgrade ? 'Upgrade remaining time' : 'Add 24 hours'} · ${plan.price.toLocaleString()} Bits`}</button></section>`).join('')}
+      <p>Caretakers do not earn Bits, XP, training stats or evolution care credits. Existing care history is preserved.</p>`;
   } else if (modalKind === 'themes') {
     const st = F.state();
     box.innerHTML = `<button class="x" data-mclose="1">Close</button><h3>Room themes</h3><div class="df-themes">${st.themes.map((th) => {
@@ -1010,7 +1023,8 @@ function onClick(e) {
   if (d.train) return playGame(d.train);
   if (d.again) { modalKind = null; return playGame(d.again); }
   if (d.mclose) { if (game) game.cancel(); modalKind = null; renderModal(); return render(); }
-  if (d.fm === 'bank' || d.fm === 'themes') { menu = null; modalKind = d.fm; renderModal(); return render(); }
+  if (d.fm === 'bank' || d.fm === 'themes' || d.fm === 'caretakers') { menu = null; modalKind = d.fm; renderModal(); return render(); }
+  if (d.caretaker) { const r = F.hireCaretaker(d.caretaker); toast(r.msg); if (r.ok) sfx('purchase'); renderModal(); return render(); }
   if (d.fm === 'expand') { const r = F.buyExpansion(); toast(r.msg); if (r.ok) sfx('purchase'); return render(); }
   if (d.in) { const r = F.moveIn(d.in); toast(r.msg); renderModal(); return render(); }
   if (d.out) { const r = F.moveOut(d.out); toast(r.msg); renderModal(); return render(); }

@@ -64,11 +64,13 @@ internal sealed partial class MatchScreen
         FarmHeading("Digi-Farm", 26);
         ImGui.SetCursorScreenPos(new(190, ClientPageTop + 25));
         ImGui.Text(FarmCare.Themes.FirstOrDefault(t => t.Id == state["theme"]!.GetValue<string>())?.Name ?? "Room");
-        ImGui.SetCursorScreenPos(new(size.X - 410, ClientPageTop + 20));
+        ImGui.SetCursorScreenPos(new(size.X - 490, ClientPageTop + 20));
         ImGui.BeginDisabled(farmManagement);
         if (Button("farmRoom", "Digi-Bank", 110, 36)) { farmManagement = true; farmManagementPage = "bank"; farmActionMenu = null; }
         ImGui.SameLine(0, 8);
         if (Button("farmThemes", "Themes", 100, 36)) { farmManagement = true; farmManagementPage = "themes"; farmActionMenu = null; }
+        ImGui.SameLine(0, 8);
+        if (Button("farmCaretakers", "Care staff", 110, 36, FarmCaretaker.Current(state, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) is not null)) { farmManagement = true; farmManagementPage = "caretakers"; farmActionMenu = null; }
         ImGui.SameLine(0, 8);
         if (Button("closeFarm", "Close", 90, 36)) showFarm = false;
         ImGui.EndDisabled();
@@ -221,9 +223,11 @@ internal sealed partial class MatchScreen
         float width = Math.Min(780, size.X - 64), height = Math.Min(640, size.Y - ClientPageTop - 32);
         ImGui.SetNextWindowFocus();
         FarmWindow("Digi-Farm management", (size.X - width) / 2, ClientPageTop + 16, width, height);
-        FarmHeading(farmManagementPage == "bank" ? "Digi-Bank" : "Room themes", 26);
+        FarmManagementBounds = (ImGui.GetWindowDrawList().GetClipRectMin(), ImGui.GetWindowDrawList().GetClipRectMax());
+        FarmHeading(farmManagementPage == "bank" ? "Digi-Bank" : farmManagementPage == "caretakers" ? "Care staff" : "Room themes", 26);
         if (Button("farmManageBank", "Digi-Bank", 130, 38, farmManagementPage == "bank")) farmManagementPage = "bank";
         ImGui.SameLine(); if (Button("farmManageThemes", "Themes", 110, 38, farmManagementPage == "themes")) farmManagementPage = "themes";
+        ImGui.SameLine(); if (Button("farmManageCaretakers", "Care staff", 130, 38, farmManagementPage == "caretakers")) farmManagementPage = "caretakers";
         ImGui.SameLine(); if (Button("farmManagementClose", "Done", 90, 38)) farmManagement = false;
         var collection = new CosmeticCollection(profile!.Storage.GetValueOrDefault("dt.cosmetics.v1"));
         if (farmManagementPage == "bank")
@@ -256,6 +260,7 @@ internal sealed partial class MatchScreen
                 }
             }
         }
+        else if (farmManagementPage == "caretakers") FarmCaretakerControls(state);
         else
         {
             foreach (var theme in FarmCare.Themes)
