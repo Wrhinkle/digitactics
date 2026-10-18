@@ -52,17 +52,28 @@ internal sealed partial class MatchScreen
     }
     private void SaveDataPanel()
     {
-        Window("Save data", size.X / 2 - 285, 70, 570, Math.Min(600, size.Y - 94));
-        if (Button("closeSaveData", "Back", 110, 32) || ImGui.IsKeyPressed(ImGuiKey.Escape)) { showSaveData = confirmResetSave = false; ImGui.End(); return; }
+        float width=Math.Min(660,size.X-48),height=Math.Min(620,size.Y-128);
+        ClientPageWindow("Save data",(size.X-width)/2,108,width,height);
+        bool escape=ImGui.IsKeyPressed(ImGuiKey.Escape,false);
+        if(escape&&confirmResetSave){confirmResetSave=false;escape=false;}
+        if (HomeButton("closeSaveData", "Back", 110, 36) || escape) { showSaveData = confirmResetSave = false; ImGui.End(); return; }
+        ImGui.SameLine();ClientPageTitle("SAVE DATA",26);ImGui.Spacing();
         SaveDataControls(); ImGui.End();
     }
     private void SaveDataControls()
     {
         if (profile is null) return;
-        ImGui.SeparatorText("Save data"u8);
+        ClientCardHeading("DATA");
         UiText.Wrapped("Your Bits, cosmetics, Little Legend levels, Digi-Farm, match history and settings are saved on this computer."u8);
+        ImGui.BeginDisabled(!CanResetSave);
+        ImGui.PushStyleColor(ImGuiCol.Button,new ImColor8(72,19,29));ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(180,66,82));
+        if (Button("resetSave", "Reset save...", Math.Min(250,ImGui.GetContentRegionAvail().X), 38)) { confirmResetSave = true; resetSaveText.SetValue("".AsSpan()); ImGui.OpenPopup("Reset confirmation"u8); }
+        ImGui.PopStyleColor(2);
+        ImGui.EndDisabled();
+        if (!CanResetSave && !SaveDataBusy) UiText.Wrapped("Leave your match or lobby and finish any file operation before resetting your save."u8);
+        ImGui.Spacing();
         ImGui.BeginDisabled(FileOperationsPending || closeAfterFileOperations);
-        if (Button("exportSave", "Export save backup", 220, 34))
+        if (HomeButton("exportSave", "Export save backup", Math.Min(250,ImGui.GetContentRegionAvail().X), 38))
         {
             try { backupSelection = BackupPicker($"digi-tactics-profile-{DateTime.UtcNow:yyyy-MM-dd}.json"); saveDataMessage = null; }
             catch (Exception error) { saveDataMessage = "The file chooser could not open: " + error.Message; }
@@ -70,21 +81,24 @@ internal sealed partial class MatchScreen
         ImGui.EndDisabled();
         UiText.Wrapped("Includes progress, settings and your music files. Keep this backup private."u8);
         if (SaveDataBusy) ImGui.Text(backupSelection is not null ? "Choose where to save the backup..."u8 : "Preparing backup..."u8);
-        ImGui.Separator();
-        ImGui.BeginDisabled(!CanResetSave);
-        if (Button("resetSave", "Reset save...", 220, 34)) { confirmResetSave = true; resetSaveText.SetValue("".AsSpan()); }
-        ImGui.EndDisabled();
-        if (!CanResetSave && !SaveDataBusy) UiText.Wrapped("Leave your match or lobby and finish any file operation before resetting your save."u8);
-        if (confirmResetSave)
+        if (confirmResetSave||ImGui.IsPopupOpen("Reset confirmation"u8))
         {
-            ImGui.SeparatorText("Reset your save?"u8);
+            float width=Math.Min(540,size.X-48),height=Math.Min(410,size.Y-128);
+            ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(180,66,82));
+            ImGui.SetNextWindowPos(new((size.X-width)/2,Math.Max(108,(size.Y-height)/2)));ImGui.SetNextWindowSize(new(width,height));
+            bool visible=ImGui.BeginPopupModal("Reset confirmation"u8,ref confirmResetSave,ImGuiWindowFlags.NoTitleBar|ImGuiWindowFlags.NoResize|ImGuiWindowFlags.NoMove);ImGui.PopStyleColor();
+            if(visible)
+            {
+            ClientPageTitle("RESET YOUR SAVE?",25,new ImColor8(240,180,175));ImGui.Spacing();
             UiText.Wrapped("This clears your active profile: Bits, cosmetics, Little Legend levels, Digi-Farm, match history, settings and music. Export a backup first if you want to restore it later."u8);
             UiText.Wrapped("Previously exported backups and preserved import archives are kept."u8);
-            ImGui.Text("Type RESET to confirm"u8); ImGui.InputText("##resetSaveText"u8, resetSaveText);
+            ImGui.Text("Type RESET to confirm"u8);ImGui.SetNextItemWidth(-1);if(ImGui.IsWindowAppearing())ImGui.SetKeyboardFocusHere();ImGui.InputText("##resetSaveText"u8, resetSaveText);
             Buttons["resetSaveText"] = (ImGui.GetItemRectMin() + ImGui.GetItemRectMax()) * .5f;
-            if (Button("cancelResetSave", "Cancel", 130, 32)) { confirmResetSave = false; resetSaveText.SetValue("".AsSpan()); }
+            ImGui.Spacing();
+            if (HomeButton("cancelResetSave", "Cancel", 130, 38)) { confirmResetSave = false; resetSaveText.SetValue("".AsSpan()); }
             ImGui.SameLine(); ImGui.BeginDisabled(!ResetSaveEnabled);
-            if (Button("confirmResetSave", "Delete everything", 190, 32))
+            ImGui.PushStyleColor(ImGuiCol.Button,new ImColor8(104,29,40));ImGui.PushStyleColor(ImGuiCol.ButtonHovered,new ImColor8(143,37,52));
+            if (Button("confirmResetSave", "Delete everything", 220, 38))
             {
                 if (profile.Reset(resetSaveText.ToString()))
                 {
@@ -97,7 +111,11 @@ internal sealed partial class MatchScreen
                 }
                 else saveDataMessage = profile.Error ?? "Your save was not reset.";
             }
-            ImGui.EndDisabled();
+            ImGui.PopStyleColor(2);ImGui.EndDisabled();
+            if(ImGui.IsKeyPressed(ImGuiKey.Escape,false))confirmResetSave=false;
+            if(!confirmResetSave)ImGui.CloseCurrentPopup();
+            ImGui.EndPopup();
+            }
         }
         if (saveDataMessage is not null) { ImGui.Separator(); UiText.Wrapped(saveDataMessage); }
     }

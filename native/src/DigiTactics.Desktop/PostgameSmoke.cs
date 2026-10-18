@@ -25,7 +25,7 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
     {
         void Click(string key)
         {
-            if(!screen.Buttons.TryGetValue(key,out var point))throw new InvalidOperationException("Postgame button missing: "+key);
+            if(!screen.Buttons.TryGetValue(key,out var point))throw new InvalidOperationException($"Postgame button missing: {key}; {Pending}");
             ImGui.GetIO().AddMousePosEvent(point.X,point.Y); ImGui.GetIO().AddMouseButtonEvent(0,true);
         }
         if(step==0)
@@ -40,10 +40,11 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
             var session=new MatchPlanningSession(catalog.Variants[0],(uint)(900+scenario),Enumerable.Range(0,8).Select(i=>new MatchSeat(i==0?"Result Tamer":"Opponent "+i,i==0)).ToArray(),scenario is 2 or 3);
             var player=session.State.Players[0];
             foreach(var old in player.Roster.Entries.ToArray())player.Roster.Remove(old.Unit.Id,false);
-            for(int i=0;i<3;i++)
+            int compositionSize=scenario==2?9:3;
+            for(int i=0;i<compositionSize;i++)
             {
-                var unit=session.State.CreateUnit(session.State.Rules.Lines[i].Id,i);
-                player.Roster.AddToBench(unit); player.Roster.Move(UnitSpot.Bench(0),UnitSpot.Board(i,4),false,()=>9);
+                var unit=session.State.CreateUnit(session.State.Rules.Lines[i].Id,i%3);
+                player.Roster.AddToBench(unit); player.Roster.Move(UnitSpot.Bench(0),UnitSpot.Board(i%7,4+i/7),false,()=>9);
             }
             var recorder=new MatchHistoryRecorder(session,profile); recorder.Capture();
             session.StartCombat();
@@ -58,9 +59,25 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
             typeof(MatchScreen).GetField("history",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(screen,recorder);
             original=session; saved=profile.Storage["dt.client.v1"];
         }
+        if(scenario>=11&&step>=99)
+        {
+            if(step==99)
+            {
+                if(scenario==11)Click("settings");
+                else if(!screen.SocialVisible)Click("socialToggle");
+            }
+            if(step==100||step==104)ImGui.GetIO().AddMouseButtonEvent(0,false);
+            if(step==103)Click(scenario==11?"homeOverview":"socialLobby");
+            step++;return;
+        }
         if(step==95)Click("resultHistory");
         if(step==96 || step==100 || step==106 || step==110 || step==115)ImGui.GetIO().AddMouseButtonEvent(0,false);
         if(step==99)Click("closeProfile");
+        if(step==103 && !screen.PostgameStoreButtonVisible)
+        {
+            var center=(screen.PostgameRewardsMin+screen.PostgameRewardsMax)*.5f;
+            ImGui.GetIO().AddMousePosEvent(center.X,center.Y); ImGui.GetIO().AddMouseWheelEvent(0,-8);
+        }
         if(step==105)Click("resultStore");
         if(step==109)Click("closeCollection");
         if(step==114)Click(scenario is 4 or 6 or 10?"resultDismiss":scenario is 5 or 7 or 9?"menu":outNow?"spectateRemaining":"resultAgain");
@@ -72,13 +89,41 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
     {
         if(step==94)
         {
-            if(!screen.PostgameVisible || screen.PostgameStandings!=8 || screen.PostgameUnitPortraits!=3 || screen.PostgameMissionCount!=2 || screen.PostgameAvatarCount!=8 || screen.PostgameXpGain<=0 || screen.PostgameBits is not >0 || screen.PostgameDisplayedBits!=screen.PostgameBits)
+            if(!screen.PostgameVisible || screen.PostgameStandings!=8 || screen.PostgameUnitPortraits!=(scenario==2?9:3) || screen.PostgameMissionCount!=2 || screen.PostgameAvatarCount!=8 || screen.PostgameXpGain<=0 || screen.PostgameBits is not >0 || screen.PostgameDisplayedBits!=screen.PostgameBits)
                 throw new InvalidOperationException($"Incomplete postgame panel: visible={screen.PostgameVisible}, rows={screen.PostgameStandings}, units={screen.PostgameUnitPortraits}, missions={screen.PostgameMissionCount}, avatars={screen.PostgameAvatarCount}, xp={screen.PostgameXpGain}, bits={screen.PostgameBits}.");
+            if(screen.PostgameRewardsBelow!=(size.X<=1500) || screen.PostgameProgressMin.X<=screen.PostgameStandingsMax.X ||
+                (screen.PostgameRewardsBelow ? screen.PostgameRewardsMin.Y<=screen.PostgameStandingsMax.Y || Math.Abs(screen.PostgameRewardsMin.X-screen.PostgameStandingsMin.X)>1 || Math.Abs(screen.PostgameRewardsMax.X-screen.PostgameProgressMax.X)>1
+                    : screen.PostgameRewardsMin.X<=screen.PostgameProgressMax.X || Math.Abs(screen.PostgameRewardsMin.Y-screen.PostgameProgressMin.Y)>1))
+                throw new InvalidOperationException("Results do not follow the original responsive two-column/full-width rewards layout.");
+            if(screen.PostgameRewardsMax.Y>=screen.Buttons["resultHistory"].Y-18 || screen.PostgameStandingsMin.Y<40)
+                throw new InvalidOperationException("Results panels overlap the footer or leave the window.");
             if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,$"{scenario}.bmp"),size.X,size.Y);
         }
-        if(step==98 && !screen.PostgameHistoryVisible)throw new InvalidOperationException("Match history navigation failed.");
+        if(step==98)
+        {
+            if(!screen.PostgameHistoryVisible||!screen.Buttons.ContainsKey("settings")||!screen.Buttons.ContainsKey("homeOverview"))throw new InvalidOperationException("Match history is missing its live client navigation.");
+            if(capture is not null&&scenario==0)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"history.bmp"),size.X,size.Y);
+        }
+        if(scenario>=11&&step>=102)
+        {
+            if((scenario==11||step>=107)&&!screen.PostgameHomeVisible||!ReferenceEquals(screen.Session,original)||!ReferenceEquals(NetworkBinding.GetValue(screen),originalRoom)||profile.Storage["dt.client.v1"]!=saved)
+                throw new InvalidOperationException("Result history navigation lost its retained room/session or changed rewards.");
+            if(step==102&&(scenario==11?!screen.SettingsVisible:!screen.SocialVisible))throw new InvalidOperationException("Result history navigation did not open Settings/Friends.");
+            if(step<107)return false;
+            if(scenario==11)
+            {
+                if(screen.SettingsVisible||screen.PostgameVisible||!screen.Buttons.ContainsKey("start"))throw new InvalidOperationException("Result history client navigation did not reach Home.");
+                scenario++;step=0;return false;
+            }
+            if(screen.PostgameHistoryVisible||screen.PostgameVisible||!screen.Buttons.ContainsKey("steamBack")||!screen.Buttons.ContainsKey("steamConnect"))throw new InvalidOperationException("Result history Friends navigation did not reach Lobbies.");
+            if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"history-lobbies.bmp"),size.X,size.Y);
+            Console.WriteLine("Postgame UI passed: Solo/Duos victory and elimination, standings, frozen compositions, XP, missions, Bits count-up, profile/store navigation, play again and spectate. X/Home retains sessions; explicit Leave/Back to lobbies detaches. Live history Settings/Home and Friends/Lobbies navigation preserves the room. Thirteen scenarios without duplicate payouts.");return true;
+        }
         if(step==102 && (screen.PostgameHistoryVisible || profile.Storage["dt.client.v1"]!=saved))throw new InvalidOperationException("Return/redraw altered saved match rewards.");
-        if(step==108 && !screen.PostgameStoreVisible)throw new InvalidOperationException("Result Store navigation failed.");
+        if(step==105 && !screen.PostgameStoreButtonVisible)throw new InvalidOperationException("Result Store button is unreachable after scrolling its reward panel.");
+        if(step==105 && scenario==0 && capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"rewards-scrolled.bmp"),size.X,size.Y);
+        if(step==108 && (!screen.PostgameStoreVisible||!screen.CollectionStoreVisible))throw new InvalidOperationException("Result Store navigation did not open the Store page.");
+        if(step==108 && !screen.Buttons.ContainsKey("closeCollection"))throw new InvalidOperationException("Result Store is hidden by a retained lobby page.");
         if(step==112 && screen.PostgameStoreVisible)throw new InvalidOperationException("Store did not return to results.");
         if(step<138)return false;
         if(dismiss && step==138)
@@ -100,7 +145,6 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
             : ReferenceEquals(screen.Session,original) || screen.Session is null || screen.Session.State.Over || screen.PostgameHomeVisible))
             throw new InvalidOperationException("Home Play did not replace a finished local result or failed to protect the retained multiplayer session.");
         if(profile.Storage["dt.client.v1"]!=saved)throw new InvalidOperationException("Postgame navigation paid rewards again.");
-        if(++scenario<11){step=0;return false;}
-        Console.WriteLine("Postgame UI passed: Solo/Duos victory and elimination, standings, frozen compositions, XP, missions, Bits count-up, profile/store navigation, play again and spectate. X/Home retains local and multiplayer sessions; explicit Leave/Back to lobbies detaches. Eleven scenarios without duplicate payouts.");return true;
+        scenario++;step=0;return false;
     }
 }

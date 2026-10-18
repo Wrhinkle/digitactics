@@ -15,7 +15,7 @@ internal sealed class FileOperationUiSmoke : IDisposable
     private readonly TaskCompletionSource writerGate=new(TaskCreationOptions.RunContinuationsAsynchronously);
     private readonly TaskCompletionSource failureGate=new(TaskCreationOptions.RunContinuationsAsynchronously);
     private int step,cooldown=4,musicChoices,backupChoices;
-    private bool down;
+    private bool down,navigationClick;
     public FileOperationUiSmoke(MatchScreen screen,NativeProfileStore profile,GameAudio audio)
     {
         this.profile=profile;
@@ -31,7 +31,7 @@ internal sealed class FileOperationUiSmoke : IDisposable
     public void Input(MatchScreen screen)
     {
         if(cooldown-->0||controller.LibraryBusy)return;
-        if(down){ImGui.GetIO().AddMouseButtonEvent(0,false);down=false;step++;cooldown=4;return;}
+        if(down){ImGui.GetIO().AddMouseButtonEvent(0,false);down=false;if(!navigationClick)step++;navigationClick=false;cooldown=4;return;}
         switch(step)
         {
             case 5:
@@ -72,7 +72,21 @@ internal sealed class FileOperationUiSmoke : IDisposable
             0 or 21=>"musicLibrary",1 or 22=>"addMusic",2 or 23=>"closeMusicLibrary",3 or 10 or 24=>"saveData",4=>"resetSave",
             6 or 13=>"stayAfterFileOperation",9 or 20=>"closeSaveData",11 or 16 or 25=>"exportSave",19=>"dismissFileOperationError",27=>"cancelSelectionAndClose",_=>throw new InvalidOperationException("Unexpected file operation step "+step)
         };
-        if(!screen.Buttons.TryGetValue(key,out var point))return;
+        // Music now lives in the original Settings page. Exercise that real route
+        // without advancing the pending chooser/write scenario itself.
+        if(!screen.Buttons.ContainsKey(key))
+        {
+            string? route=key=="musicLibrary"&&!screen.SettingsVisible?"settings"
+                :key=="saveData"&&screen.SettingsVisible?"closeSettings":null;
+            if(route is null||!screen.Buttons.TryGetValue(route,out var navigation))return;
+            ImGui.GetIO().AddMousePosEvent(navigation.X,navigation.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=navigationClick=true;return;
+        }
+        var point=screen.Buttons[key];
+        if(key=="musicLibrary"&&(point.Y<screen.SettingsScrollMin.Y+8||point.Y>screen.SettingsScrollMax.Y-18))
+        {
+            var hover=screen.SettingsScrollMin+new float2(100,100);
+            ImGui.GetIO().AddMousePosEvent(hover.X,hover.Y);ImGui.GetIO().AddMouseWheelEvent(0,point.Y<screen.SettingsScrollMin.Y+8?3:-3);cooldown=3;return;
+        }
         ImGui.GetIO().AddMousePosEvent(point.X,point.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=true;
     }
     public bool Verify(MatchScreen screen,int2 size,string? capture)
