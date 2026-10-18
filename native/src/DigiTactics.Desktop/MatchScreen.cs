@@ -242,6 +242,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
+        if((!showCollection || evolutionLegend is null) && evolutionPreview is not null) { evolutionPreview.Dispose(); evolutionPreview=null; }
         portraits.BeginFrame(); itemArtwork.BeginFrame(); CarouselCardsDrawn = 0; InventoryArtworkDrawCalls = 0; ItemTooltipRecipes = 0; DetailedUnit = null; DetailedItems = []; ItemDropFeedback = null;
         hoveredOwnedUnit = null; sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;
@@ -523,5 +524,5 @@ internal sealed partial class MatchScreen : IDisposable
         arenaEnvironment.Actors = (renderer,camera,transparent) => { DrawCompanions(renderer,camera,transparent); lootOrbs.Draw(renderer,camera,transparent); };
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
     }
-    public void Dispose() { lootOrbs.Dispose(); itemArtwork.Dispose(); portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
+    public void Dispose() { evolutionPreview?.Dispose(); lootOrbs.Dispose(); itemArtwork.Dispose(); portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
 }

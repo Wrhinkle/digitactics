@@ -293,7 +293,11 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 if(screen.EvolutionTreeNodes!=LegendEvolution.Tree("bukamon").Tiers.Sum(t=>t.Length)) throw new InvalidOperationException("Evolution tree omitted reachable forms.");
                 if(capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"evolution-tree.bmp"),size.X,size.Y);
             }
-            if (evolutionSmoke && collectionIndex == 11 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "evolution.bmp"), size.X, size.Y);
+            if(evolutionSmoke && collectionIndex==11 && cooldown==1)
+            {
+                if(screen.EvolutionPreviewDrawCalls==0 || screen.EvolutionPreviewTime<=0) throw new InvalidOperationException("Evolution preview did not render and animate.");
+                if(capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"evolution.bmp"),size.X,size.Y);
+            }
             if (collectionIndex < collectionCommands.Length) return false;
             var collection = new CosmeticCollection(collectionProfile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
             int price = CosmeticCollection.Price("legend", CosmeticCollection.Item("legend", "bukamon")!, DateOnly.FromDateTime(DateTime.Now));

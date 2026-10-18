@@ -12,6 +12,13 @@ internal sealed partial class MatchScreen
         var changes = new Dictionary<string, string> { ["dt.legendevo.v1"] = result.Legends! };
         if (result.Wallet is not null && result.Wallet != profile.Storage.GetValueOrDefault("dt.cosmetics.v1")) changes["dt.cosmetics.v1"] = result.Wallet;
         if (!profile.UpdateStorage(changes)) { collectionMessage = profile.Error; return; }
+        if(evolutionPreview is not null)
+        {
+            var current=LegendEvolution.Discovery(profile.Storage.GetValueOrDefault("dt.legendevo.v1"),id).Current;
+            evolutionPreview.Select(LegendEvolution.VisualKey(id,current));
+            if(action==LegendAction.Feed)evolutionPreview.Play("eat");
+            else if(action==LegendAction.Digivolve)evolutionPreview.Play("happy");
+        }
         collectionMessage = action switch {
             LegendAction.Digivolve => "Digivolved into " + LegendEvolution.Form(result.Result!["to"]!.GetValue<string>()).Name + "!",
             LegendAction.Revert => "Reverted to " + LegendEvolution.Form(result.Result!["to"]!.GetValue<string>()).Name + ".",
@@ -19,7 +26,10 @@ internal sealed partial class MatchScreen
             _ => "Your legend gained a level."
         };
     }
+    private CompanionPreview? evolutionPreview;
     private bool showEvolutionTree;
+    internal int EvolutionPreviewDrawCalls=>evolutionPreview?.DrawCalls??0;
+    internal double EvolutionPreviewTime=>evolutionPreview?.AnimationTime??0;
     internal int EvolutionTreeNodes { get; private set; }
     internal float EvolutionTreeScroll { get; private set; }
     internal int EvolutionTreePortraits { get; private set; }
@@ -35,13 +45,16 @@ internal sealed partial class MatchScreen
         }
         var form = LegendEvolution.Form(view.Form);
         ImGui.Text(CosmeticCollection.Item("legend", id)!.Name);
-        var portraitAt=ImGui.GetCursorScreenPos(); ImGui.Dummy(new(64,64)); portraits.DrawEvolution(view.Form,portraitAt,64,true);
-        ImGui.SameLine(); ImGui.Text($"Current form: {form.Name} ({form.Level})");
+        evolutionPreview??=new(); evolutionPreview.Select(LegendEvolution.VisualKey(id,view.Form)); evolutionPreview.Draw(boardSceneTime);
+        var previewAt=ImGui.GetCursorScreenPos(); ImGui.Dummy(new(180,180));
+        ImGui.GetWindowDrawList().AddImage(new ImTextureRef {_TexID=new((nint)evolutionPreview.Texture)},previewAt,new(previewAt.X+180,previewAt.Y+180),new(0,1),new(1,0));
+        ImGui.SameLine(); ImGui.BeginGroup(); ImGui.Text($"Current form: {form.Name} ({form.Level})");
         ImGui.Text($"Level {view.Level} / 10");
         ImGui.Text(view.Need > 0 ? $"Digi-Data: {view.Data} / {view.Need}" : "Maximum level");
         if (view.Next is { } next) ImGui.Text($"Next digivolution unlocks at level {next}");
         foreach (var branch in view.Odds) CollectionText($"{LegendEvolution.Form(branch.Form).Name}: {branch.Pct}% ({branch.Care} care)");
         if (view.Odds.Length == 0) ImGui.Text("Final form"u8);
+        ImGui.EndGroup();
         ImGui.BeginDisabled(!view.CanDigivolve);
         if (Button("digivolve", "Digivolve")) Evolve(id, LegendAction.Digivolve);
         ImGui.EndDisabled();
