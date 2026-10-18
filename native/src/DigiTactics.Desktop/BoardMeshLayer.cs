@@ -23,6 +23,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly BoardTempleMotion? temple;
     private readonly BoardUnderwaterMotion? underwater;
     private readonly BoardFreezeMotion? freeze;
+    private readonly BoardSewerMotion? sewer;
     private static readonly Vector3 freezeCalmFog=BoardLighting.Linear("#24405e"),freezeStormFog=BoardLighting.Linear("#8aa6c0");
     public Vector3? AnimatedFogColor=>freeze is null?null:Vector3.Lerp(freezeCalmFog,freezeStormFog,(float)freeze.Weather);
     private static readonly Vector3 templeSunTint=BoardLighting.Linear("#fff6e0");
@@ -36,6 +37,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false,int initialEvolution=0)
     {
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
+        if(scene.Id=="numemon-sewer")sewer=new(initialWon);
         if(scene.Id=="freezeland")freeze=new();
         if(scene.Id=="kowloon")kowloon=new();
         if(scene.Id=="gekomon-castle")underwater=new(initialCombat);
@@ -63,7 +65,7 @@ internal sealed class BoardMeshLayer : IDisposable
                     {
                         var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
                         if(obj.Motion is { Kind:"sea" or "particles" or "circuit-pulses" or "freeze-aurora" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
-                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" or "temple-lava" or "underwater-caustics" or "underwater-caustics2" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
+                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" or "temple-lava" or "underwater-caustics" or "underwater-caustics2" or "sewer-pour" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
                         var material = scene.Materials[part.Material];
                         return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
                     }).ToArray();
@@ -80,6 +82,7 @@ internal sealed class BoardMeshLayer : IDisposable
     {
         time=seconds;
         freeze?.Advance(delta,combat);
+        sewer?.Advance(time,won);
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
         kowloon?.Advance(delta,combat);
@@ -163,6 +166,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         {
                             { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
                             { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
+                            {Kind:"sewer-numemon" or "sewer-duck",Props:{} sewerItems} motion=>sewer!.Instance(motion.Kind,sewerItems[i],time),
                             { Props:{ } props } motion=>BoardSceneMotion.Prop(motion.Kind,props[i],time),
                             { Castle:{ } items } motion=>castle!.Instance(motion.Kind,items[i],i,time),
                             { Kind:"temple-geysers" }=>temple!.Geysers[i],

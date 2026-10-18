@@ -115,7 +115,7 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             }
             if(obj.Motion is { Props:{ } props } propMotion)
             {
-                Require(propMotion.Kind is "freeze-men" or "village-eggs" or "village-blocks" or "toy-tops" or "toy-train" or "coliseum-banners" or "coliseum-flames" or "savanna-gears" or "grid-polys","prop motion kind");
+                Require(propMotion.Kind is "sewer-numemon" or "sewer-duck" or "freeze-men" or "village-eggs" or "village-blocks" or "toy-tops" or "toy-train" or "coliseum-banners" or "coliseum-flames" or "savanna-gears" or "grid-polys","prop motion kind");
                 Require(obj.Instances is not null && props.Length==obj.Instances.Length,"prop motion count");
                 Require(props.All(p=>new[] {p.X,p.Y,p.Z,p.S,p.Phase,p.Base,p.Cx,p.Cz,p.K,p.Ry,p.Rx,p.Spin}.All(double.IsFinite)),"prop motion values");
             }

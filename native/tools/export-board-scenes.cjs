@@ -37,6 +37,9 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+  .replace('anim(ctx, numemon,','nums.nativeSewer="sewer-numemon"; anim(ctx, numemon,')
+  .replace('anim(ctx, duck, std({ vertexColors: true, roughness: 0.3 }), [{ s: 1.3 }],','anim(ctx, duck, std({ vertexColors: true, roughness: 0.3 }), Object.assign([{ s: 1.3 }],{nativeSewer:"sewer-duck"}),')
+  .replace(/inst\(ctx, new THREE.CylinderGeometry\(0.32, 0.4, 2.2[^\n]+;/,line=>'const nativePour='+line+' nativePour.userData.nativeMotion={kind:"sewer-pour"};')
   .replace('anim(ctx, snowman,','men.nativeFreeze=true; anim(ctx, snowman,')
   .replace('const base = snow.geometry.attributes.position.array;', 'snow.userData.nativeMotion.freezeSnow=true; const base = snow.geometry.attributes.position.array;')
   .replace('          return m;\n        };\n        const aur', '          m.userData.nativeMotion={kind:"freeze-aurora",aurora:{r,a0,a1,y,h,ph,base}}; return m;\n        };\n        const aur')
@@ -70,7 +73,7 @@ async function main(){
   .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
-  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
+  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
@@ -226,7 +229,7 @@ async function main(){
        const a=o.geometry.attributes.position.array,vertices=[];
        for(let i=0;i<a.length/3;i+=13)vertices.push([a[i*3],a[i*3+2],a[i*3+1]]);
        rows.push({id:spec.id,time,motion,vertices});
-      }else if(motion.kind==='island-crystals'||motion.kind==='beach-palms'||motion.props){
+      }else if(motion.kind==='island-crystals'||motion.kind==='beach-palms'||(motion.props&&!motion.kind.startsWith('sewer-'))){
        const matrix=new THREE.Matrix4(),matrices=[];for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
        rows.push({id:spec.id,time,motion,matrices});
       }else if(motion.kind==='beach-surf'||motion.kind==='rotating-parent'){
@@ -368,6 +371,25 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const sewerFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
+   for(const initialWon of [false,true]){
+    const env=buildEnv(THEMES.find(s=>s.id==='numemon-sewer')),objects=[],frames=[];
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('sewer-'))objects.push(o);});
+    env.signal({phase:'combat',stage:1,won:initialWon,evo:0});env.tick(0,0);let time=0;
+    for(let frame=0;frame<800;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],won=frame<200?initialWon:frame<420||frame>=600;time+=delta;
+     env.signal({phase:'combat',stage:1,won,evo:0});env.tick(delta,time);
+     frames.push({time,won,objects:objects.map(o=>{
+      const matrix=new THREE.Matrix4(),matrices=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+      return {kind:o.userData.nativeMotion.kind,matrices,offset:o.material.map?.offset.toArray()};
+     })});
+    }
+    scenarios.push({initialWon,motions:objects.map(o=>o.userData.nativeMotion),frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-sewer.json.gz'),zlib.gzipSync(JSON.stringify(sewerFixture)));
   const freezeFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),spec=THEMES.find(s=>s.id==='freezeland'),scene={fog:new THREE.Fog(...spec.fog)},env=buildEnv(spec,{scene}),objects=[],frames=[];
    env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('freeze-')||o.userData.nativeMotion?.freezeSnow)objects.push(o);});

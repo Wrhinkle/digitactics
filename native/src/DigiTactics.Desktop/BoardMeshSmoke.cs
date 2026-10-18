@@ -360,7 +360,7 @@ internal static class BoardMeshSmoke
             ("flame-temple","temple-lava"),("flame-temple","particles"),
             ("gekomon-castle","underwater-caustics"),("gekomon-castle","underwater-caustics2"),
             ("gekomon-castle","underwater-shafts"),("gekomon-castle","underwater-kelp"),
-            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora")})
+            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
@@ -371,6 +371,11 @@ internal static class BoardMeshSmoke
                 ModelRenderer.Begin(256,256); OpenGl.ClearColor(new(0,0,0,1)); OpenGl.Clear(GlClearBit.Color);
                 var camera=Matrix4x4.CreateLookAt(new(0,25,28),Vector3.Zero,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
                 if(kind=="mountain-stars") camera=Matrix4x4.CreateLookAt(Vector3.Zero,new(0,30,-50),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,200);
+                if(kind=="sewer-pour")
+                {
+                    var target=new Vector3(-12.6f,-.1f,-6);
+                    camera=Matrix4x4.CreateLookAt(target+new Vector3(0,1,3),target,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
+                }
                 if(kind=="castle-flames")
                 {
                     var flame=objects[0].Motion!.Castle![0];var target=new Vector3((float)flame.X,(float)flame.Y,(float)flame.Z);
@@ -382,7 +387,7 @@ internal static class BoardMeshSmoke
                 ModelRenderer.End(); return pixels;
             }
             var initial=Render();
-            for(int frame=1;frame<=162;frame++) layer.Update(frame/60d,1/60d,true,7,evolution:frame>=60?1:0);
+            for(int frame=1;frame<=162;frame++) layer.Update(frame/60d,1/60d,true,7,won:theme=="numemon-sewer" && frame>=60,evolution:frame>=60?1:0);
             var moved=Render();
             int changed=Enumerable.Range(0,256*256).Count(i=>Math.Abs(initial[i*4]-moved[i*4])+Math.Abs(initial[i*4+1]-moved[i*4+1])+Math.Abs(initial[i*4+2]-moved[i*4+2])>3);
             if(changed<5) throw new InvalidOperationException("Board prop animation did not reach the framebuffer: "+kind);
