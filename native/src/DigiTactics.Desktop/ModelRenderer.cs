@@ -10,6 +10,13 @@ internal sealed class ModelRenderer : IDisposable
     private Matrix4D[] palette = [];
     private float[] paletteFloats = [];
     public int DrawCalls { get; private set; }
+    public FarmLighting? FarmLight { get; set; }
+    private void SetFarmLight(Vector3 emissive = default)
+    {
+        program.Uniform(15, FarmLight is null ? 0 : 1);
+        program.Uniform(16, new Brutal.Numerics.float4((float)(FarmLight?.Hemisphere ?? 0), (float)(FarmLight?.Sun ?? 0), (float)(FarmLight?.Lamp ?? 0), 0));
+        program.Uniform(17, new Brutal.Numerics.float4(emissive.X, emissive.Y, emissive.Z, 0));
+    }
     public ModelRenderer()
     {
         using var vertex = OpenGl.CreateShader(GlShaderType.Vertex).SetSource(VertexShader).Compile();
@@ -39,6 +46,7 @@ internal sealed class ModelRenderer : IDisposable
             OpenGl.NamedBufferData(bones, paletteFloats.Length * sizeof(float), null, OpenGl.GL_DYNAMIC_DRAW);
         }
         program.Use(); OpenGl.BindBufferBase(OpenGl.GL_SHADER_STORAGE_BUFFER, 0, bones);
+        SetFarmLight();
         Matrix(4, From(camera)); program.Uniform(14, (float)emission); DrawCalls = 0;
         // The caller controls opaque and transparent passes across all models.
         foreach (var instance in mesh.Instances)
@@ -87,15 +95,17 @@ internal sealed class ModelRenderer : IDisposable
     public unsafe void DrawStatic(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color)
     {
         program.Use(); Matrix(0, world); Matrix(4, From(camera));
+        SetFarmLight();
         program.Uniform(8, 0); program.Uniform(9, 1); program.Uniform(10, 1); program.Uniform(11, 0f);
         program.Uniform(12, color); program.Uniform(13, 0); program.Uniform(14, 0f);
         OpenGl.Native.glDisable(GlCapability.CullFace); OpenGl.Native.glDisable(GlCapability.Blend); OpenGl.Native.glDepthMask(true);
         geometry.Draw();
     }
     public void Dispose() { OpenGl.DeleteBuffers(new[] { bones }); program.Dispose(); }
-    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite)
+    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default)
     {
         program.Use(); Matrix(0, world); Matrix(4, From(camera));
+        SetFarmLight(emissive);
         program.Uniform(8, 0); program.Uniform(9, 1); program.Uniform(10, unlit ? 1 : 0); program.Uniform(11, 0f);
         program.Uniform(12, color); program.Uniform(13, texture is null ? 0 : 1); program.Uniform(14, 0f);
         OpenGl.BindTextureUnit(0, texture?.Id ?? 0); OpenGl.Native.glDisable(GlCapability.CullFace);
@@ -145,14 +155,31 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=12) uniform vec4 color;
         layout(location=13) uniform int textured;
         layout(location=14) uniform float emission;
+        layout(location=15) uniform int farmLighting;
+        layout(location=16) uniform vec4 farmIntensity;
+        layout(location=17) uniform vec4 materialEmission;
         out vec4 outputColor;
+        vec3 toLinear(vec3 color) {
+            return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
+        }
         void main() {
             vec4 c=color*(textured!=0?texture(colorTexture,texCoord):vec4(1));
             if(c.a<cutoff) discard;
             vec3 n=normalize(hasNormals!=0?worldNormal:cross(dFdx(worldPosition),dFdy(worldPosition)));
             if(!gl_FrontFacing) n=-n;
             vec3 light=unlit!=0?vec3(1):vec3(.35)+vec3(.65)*max(dot(n,normalize(vec3(2,4,3))),0);
+            if(farmLighting!=0 && unlit==0) {
+                vec3 hemi=mix(toLinear(vec3(74,90,58)/255.0),vec3(1),n.y*.5+.5)*farmIntensity.x;
+                vec3 sun=toLinear(vec3(255,243,220)/255.0)*farmIntensity.y*max(dot(n,normalize(vec3(4,9,5))),0);
+                vec3 offset=vec3(1.6,2.1,-3.7)-worldPosition;
+                float distance=length(offset);
+                float attenuation=1.0/max(pow(distance,1.5),.01);
+                attenuation*=pow(clamp(1.0-pow(distance/9.0,4.0),0.0,1.0),2.0);
+                vec3 lamp=toLinear(vec3(255,200,120)/255.0)*farmIntensity.z*attenuation*max(dot(n,normalize(offset)),0);
+                light=(hemi+sun+lamp)/3.141592653589793;
+            }
             vec3 linear=max(c.rgb*light+vec3(unlit!=0?0:emission),vec3(0));
+            if(farmLighting!=0 && unlit==0) linear+=materialEmission.rgb;
             vec3 srgb=mix(12.92*linear,1.055*pow(linear,vec3(1.0/2.4))-.055,step(vec3(.0031308),linear));
             outputColor=vec4(srgb,c.a);
         }

@@ -2322,3 +2322,20 @@ Windows app passed all six room GPU checks, including theme-specific particle
 counts and sleep/wake transitions. The snowy render was inspected. This closes
 the snowfall rendering limitation above; lighting, shadows, materials and other
 remaining full-port requirements are still open.
+
+### Farm day/night lighting and emission
+
+Farm rendering now uses the original hemisphere, sun and lamp colors, positions,
+intensity transitions and lamp distance/decay. The saved lights flag controls
+night mode. Exported room materials retain linear emissive colors and intensity;
+the lamp bulb switches between its original day and night emission. Residents
+receive the same room lighting. Other renderers retain their existing lighting.
+
+All 4,320 reference intensity comparisons pass across theme and day/night
+changes, bringing the combined farm checks to 1,381,756. The Windows build passed
+all six room rendering and night/sleep checks plus the Duos match smoke. Meadow
+day/night and grid night captures were inspected.
+
+This is the diffuse and emissive lighting pass. Specular/metallic material
+response, shadow maps, the sky gradient/night overlay and complete original
+material fidelity remain unfinished and are still required for the full port.

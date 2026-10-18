@@ -4,6 +4,14 @@ const {chromium}=require('../artifacts/audio-tools/node_modules/playwright');
 const root=path.resolve(__dirname,'../..');
 async function main(){
  let source=fs.readFileSync(path.join(root,'js/farm-ui.js'),'utf8');
+ const lightBody=source.slice(source.indexOf('  const k = Math.min(1, dt * 3);'),source.indexOf('  for (const fn of S.ticks)'));
+ const lightTick=new Function('S','LOOK','dt',lightBody);
+ const lightState={hemi:{intensity:1.7},sun:{intensity:2.3},lamp:{intensity:0},lampBulb:{material:{}}},lightFrames=[];
+ for(const theme of ['meadow','grid','sewer','snowy'])for(const night of [false,true,false])for(let i=0;i<90;i++){
+  lightState.theme=theme;lightState.night=night;const delta=[1/60,.05,.1][i%3];lightTick(lightState,{[theme]:{deco:theme}},delta);
+  lightFrames.push({theme,night,delta,hemisphere:lightState.hemi.intensity,sun:lightState.sun.intensity,lamp:lightState.lamp.intensity,bulb:lightState.lampBulb.material.emissiveIntensity});
+ }
+ fs.writeFileSync(path.join(root,'native/tests/fixtures/farm-lighting.json.gz'),zlib.gzipSync(JSON.stringify(lightFrames)));
  for(const [needle,tag] of [
   ['S.ticks.push((dt, t) => { water.position',"water.userData.motion={kind:'water',phase:0};"],
   ['S.ticks.push((dt, t) => { p.rotation',"p.userData.motion={kind:'palm',phase:x};"],
@@ -42,7 +50,7 @@ async function main(){
       }texture=textureIds.get(m.map);
      }
      const id=materials.length;materialIds.set(m,id);
-     materials.push({color:[m.color.r,m.color.g,m.color.b,m.opacity],texture,unlit:!!m.isMeshBasicMaterial||!!m.isSpriteMaterial,transparent:m.transparent,depthWrite:m.depthWrite});return id;
+     materials.push({color:[m.color.r,m.color.g,m.color.b,m.opacity],texture,unlit:!!m.isMeshBasicMaterial||!!m.isSpriteMaterial,transparent:m.transparent,depthWrite:m.depthWrite,emissive:m.emissive?.toArray()||[0,0,0],emissiveIntensity:m.emissiveIntensity||0,bulb:m===S.lampBulb.material});return id;
     }
     S.world.traverse(o=>{
      if(o.isPoints){points.push({positions:Array.from(o.geometry.attributes.position.array),matrix:o.matrixWorld.toArray()});return;}

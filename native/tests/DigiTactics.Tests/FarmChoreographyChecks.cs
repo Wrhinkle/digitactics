@@ -50,6 +50,7 @@ internal static class FarmChoreographyChecks
         checks += CareTransitions();
         checks += RoomMotion(root);
         checks += Snow(root);
+        checks += Lighting(root);
         Console.WriteLine($"Farm choreography: {checks} movement, social, sleep, care and animation-command checks passed.");
         return checks;
     }
@@ -102,6 +103,24 @@ internal static class FarmChoreographyChecks
         }
         Console.WriteLine($"Farm snow: {checks} original float32 particle comparisons passed.");
         return checks;
+    }
+    private static int Lighting(string root)
+    {
+        using var file = File.OpenRead(Path.Combine(root, "tests/fixtures/farm-lighting.json.gz"));
+        using var gzip = new GZipStream(file, CompressionMode.Decompress);
+        using var doc = JsonDocument.Parse(gzip);
+        var light = new FarmLighting(); int checks = 0;
+        foreach (var frame in doc.RootElement.EnumerateArray())
+        {
+            light.Night = frame.GetProperty("night").GetBoolean();
+            light.Update(frame.GetProperty("delta").GetDouble(), frame.GetProperty("theme").GetString()!);
+            foreach (var (name, value) in new[] { ("hemisphere", light.Hemisphere), ("sun", light.Sun), ("lamp", light.Lamp), ("bulb", light.BulbEmission) })
+            {
+                checks++;
+                if (Math.Abs(value - frame.GetProperty(name).GetDouble()) > 1e-12) throw new InvalidOperationException("Farm lighting transition: " + name);
+            }
+        }
+        Console.WriteLine($"Farm lighting: {checks} original transition comparisons passed."); return checks;
     }
     private static int CareTransitions()
     {

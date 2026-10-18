@@ -10,7 +10,7 @@ namespace DigiTactics.Desktop;
 
 internal sealed class FarmView : IDisposable
 {
-    private sealed record Material(float[] Color, int? Texture, bool Unlit, bool Transparent, bool DepthWrite);
+    private sealed record Material(float[] Color, int? Texture, bool Unlit, bool Transparent, bool DepthWrite, float[] Emissive, float EmissiveIntensity, bool Bulb);
     private sealed record Texture(int Width, int Height, string Rgba, bool Clamp);
     private sealed record Mesh(float[] Vertices, uint[] Indices, double[] Matrix, int Material, bool Sprite, int Meat, FarmRoomMotion? Motion);
     private sealed record Points(float[] Positions, double[] Matrix);
@@ -25,6 +25,8 @@ internal sealed class FarmView : IDisposable
         public void Update(double delta) => animator.Update(delta);
     }
     private readonly FarmChoreography choreography = new();
+    private readonly FarmLighting lighting = new();
+    public bool Night => lighting.Night;
     private readonly ModelCatalog models = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
     private readonly CompanionCatalog companions = CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/companion-models.json"));
     private readonly ModelRenderer renderer = new();
@@ -45,6 +47,7 @@ internal sealed class FarmView : IDisposable
     {
         if (farmJson == lastFarm && legendJson == lastLegends) return;
         var farm = JsonNode.Parse(farmJson)!;
+        lighting.Night = farm["lights"]?.GetValue<bool>() == false;
         string theme = farm["theme"]!.GetValue<string>();
         if (room?.Theme != theme) LoadRoom(theme);
         meat = farm["meat"]!["n"]!.GetValue<int>();
@@ -89,6 +92,7 @@ internal sealed class FarmView : IDisposable
     public void Update(double delta)
     {
         choreography.Update(delta);
+        lighting.Update(delta, Theme ?? "meadow");
         foreach (var particles in snow) particles.Update(delta, choreography.Time);
     }
     public void React(string? id, string role) { if (id is not null && actors.TryGetValue(id, out var actor)) actor.Animator.Play(role); }
@@ -134,6 +138,7 @@ internal sealed class FarmView : IDisposable
     {
         DrawCalls = 0; if (room is null || width <= 0 || height <= 0) return;
         var (camera, eye) = Camera(width, height); ModelRenderer.Begin(width, height);
+        renderer.FarmLight = lighting;
         Brutal.OpenGlApi.OpenGl.Viewport(left, bottom, width, height);
         foreach (bool transparent in new[] { false, true })
         {
@@ -148,7 +153,8 @@ internal sealed class FarmView : IDisposable
                     var rotation = Quaternion.CreateFromRotationMatrix(billboard);
                     matrix = Matrix4D.Compose(new(matrix.M41, matrix.M42, matrix.M43), new(rotation.X, rotation.Y, rotation.Z, rotation.W), new(.42, .42, .42));
                 }
-                renderer.DrawRoom(geometry[i], matrix, camera, new(material.Color[0], material.Color[1], material.Color[2], material.Color[3]), material.Texture is { } texture ? textures[texture] : null, material.Unlit, transparent, material.DepthWrite); DrawCalls++;
+                float intensity = material.Bulb ? (float)lighting.BulbEmission : material.EmissiveIntensity;
+                renderer.DrawRoom(geometry[i], matrix, camera, new(material.Color[0], material.Color[1], material.Color[2], material.Color[3]), material.Texture is { } texture ? textures[texture] : null, material.Unlit, transparent, material.DepthWrite, new(material.Emissive[0] * intensity, material.Emissive[1] * intensity, material.Emissive[2] * intensity)); DrawCalls++;
             }
             foreach (var actor in actors.Values)
             {
