@@ -24,7 +24,7 @@ internal sealed partial class MatchScreen : IDisposable
     private PlanningView planning = new();
     private BattleView? battle;
     private MatchBattle? watching;
-    private int variant, viewed;
+    private int variant, viewed, localSeat;
     private bool duos, showAudio;
     private int? selectedUnit, selectedItem;
     private string status = "Select a unit, then a hex. Select an item, then its holder.";
@@ -37,7 +37,7 @@ internal sealed partial class MatchScreen : IDisposable
     public bool WatchingMirrored => battle?.Mirrored ?? false;
     public int BattleColumns => battle?.Combat.Columns ?? 0;
     public int CompletedRounds { get; private set; }
-    private MatchPlayer Human => Session!.State.Players[0];
+    private MatchPlayer Human => Session!.State.Players[localSeat];
     private Ruleset Rules => Session?.State.Rules ?? catalog.Variants[variant];
     private int Left => 230;
     private int Top => 118;
@@ -82,8 +82,14 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private MatchActionResult? Act(string action, object? args = null)
     {
-        var result = Session!.Actions.Apply(0, action, JsonSerializer.SerializeToElement(args ?? new { }));
+        var arguments = JsonSerializer.SerializeToElement(args ?? new { });
+        if (networkRoom is not null) { SendNetworkAction(action, arguments); return null; }
+        var result = Session!.Actions.Apply(localSeat, action, arguments);
         history?.Observe();
+        ActionFeedback(action, result); return result;
+    }
+    private void ActionFeedback(string action, MatchActionResult? result)
+    {
         string? sound = result switch
         {
             MatchActionResult.Flag { Value: false } when action != "lock" => "error",
@@ -122,7 +128,6 @@ internal sealed partial class MatchScreen : IDisposable
             },
             _ => "No action taken."
         };
-        return result;
     }
     private static object Spot(UnitSpot spot) => spot.IsBoard ? new { type = "board", c = spot.Column, r = spot.Row } : (object)new { type = "bench", i = spot.Index };
     private void Select(UnitSpot spot)
@@ -138,6 +143,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     public void Update(double delta, double? wallDelta = null)
     {
+        UpdateNetworkMatch();
         if (farm is not null) farm.ResidentPosition = id => showFarm && training is null ? farmView?.Position(id) : null;
         if (training is null) farm?.Update(delta, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         else UpdateTraining(delta, wallDelta ?? delta);
@@ -158,7 +164,7 @@ internal sealed partial class MatchScreen : IDisposable
                 foreach (var match in Session.Battles) if (match != watching) match.Combat.Step();
                 backgroundTime -= CombatSimulation.Tick;
             }
-            if (Session.Battles.All(m => m.Combat.Done)) Finish();
+            if (Session.Battles.All(m => m.Combat.Done)) { if (networkRoom is null) Finish(); else NetworkReplayDone(); }
         }
         else if (Session.Rounds.Phase == MatchPhase.Result) battle?.Advance(delta);
         planning.Update(Rules, Session.State.Players[viewed], delta);
@@ -181,31 +187,46 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private void Fight()
     {
+        if (networkRoom is not null) { SendNetworkAction("ready"); return; }
+        Session!.StartCombat(); CombatStarted();
+    }
+    private void CombatStarted()
+    {
         selectedUnit = null; selectedItem = null; backgroundTime = 0;
         status = "Battle in progress.";
-        Session!.StartCombat(); Watch(0);
+        Watch(localSeat);
         history?.Capture();
-        if (Session.Battles.Count > 0) { audio.Play("fight"); audio.Music("combat"); }
-        if (Session.Battles.Count == 0) Finish();
+        if (Session!.Battles.Count > 0) { audio.Play("fight"); audio.Music("combat"); }
+        if (Session.Battles.Count == 0 && networkRoom is null) Finish();
     }
     private void Finish()
     {
+        if (networkRoom is not null) { foreach (var match in Session!.Battles) while (!match.Combat.Done) match.Combat.Step(); NetworkReplayDone(); return; }
         history?.Capture();
-        Session!.FinishCombat(); CompletedRounds++; status = "Round complete.";
+        Session!.FinishCombat(); RoundFinished();
+    }
+    private void RoundFinished()
+    {
+        CompletedRounds++; status = "Round complete.";
         history?.Complete(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         if (history?.Error is { } saveError) { status = saveError; profileMessage = saveError; }
-        var own = Session.Battles.FirstOrDefault(m => m.A == 0 || m.B == 0 ||
-            m.TeamA is { } a && Session.State.Teams[a].Members.Any(p => p.Id == 0) ||
-            m.TeamB is { } b && Session.State.Teams[b].Members.Any(p => p.Id == 0));
-        bool sideB = own?.B == 0 || own?.TeamB is { } team && Session.State.Teams[team].Members.Any(p => p.Id == 0);
+        var own = Session!.Battles.FirstOrDefault(m => m.A == localSeat || m.B == localSeat ||
+            m.TeamA is { } a && Session.State.Teams[a].Members.Any(p => p.Id == localSeat) ||
+            m.TeamB is { } b && Session.State.Teams[b].Members.Any(p => p.Id == localSeat));
+        bool sideB = own?.B == localSeat || own?.TeamB is { } team && Session.State.Teams[team].Members.Any(p => p.Id == localSeat);
         audio.Play(Session.State.Over ? Human.Placement == 1 ? "champion" : "gameover" :
             own?.Combat.Winner is null or -1 ? "round" : own.Combat.Winner == (sideB ? 1 : 0) ? "win" : "loss");
         audio.Music(Session.State.Over ? null : "planning");
     }
     private void Next()
     {
-        battle?.Dispose(); battle = null; watching = null; combatAudio = null; viewed = 0;
-        Session!.Advance(); selectedUnit = null; selectedItem = null;
+        if (networkRoom is not null) return;
+        Session!.Advance(); RoundAdvanced();
+    }
+    private void RoundAdvanced()
+    {
+        battle?.Dispose(); battle = null; watching = null; combatAudio = null; viewed = localSeat;
+        selectedUnit = null; selectedItem = null;
         audio.Play("round");
         status = "Select a unit, then a hex. Select an item, then its holder.";
     }
@@ -251,7 +272,7 @@ internal sealed partial class MatchScreen : IDisposable
         {
             Session = new(Rules, seed ?? (uint)Random.Shared.Next(1, int.MaxValue), Enumerable.Range(0, 8).Select(i => new MatchSeat(i == 0 ? profile?.Progress.Name ?? "You" : $"Tamer {i}", i == 0)).ToArray(), duos);
             history = profile is null ? null : new(Session, profile);
-            viewed = 0; CompletedRounds = 0;
+            viewed = localSeat = 0; CompletedRounds = 0;
             selectedUnit = null; selectedItem = null; backgroundTime = 0;
             audio.Music("planning");
             status = "Select a unit, then a hex. Select an item, then its holder.";
@@ -269,23 +290,23 @@ internal sealed partial class MatchScreen : IDisposable
         if (session.State.Over)
         {
             ImGui.Text($"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
-            if (Button("menu", "Main menu")) { Session = null; audio.Music(null); battle?.Dispose(); battle = null; watching = null; planning.Dispose(); planning = new(); }
+            if (Button("menu", "Main menu")) { DetachNetworkMatch(); Session = null; audio.Music(null); battle?.Dispose(); battle = null; watching = null; planning.Dispose(); planning = new(); }
         }
-        else if (session.Rounds.Phase == MatchPhase.Planning) { if (Button("fight", session.Rounds.RoundType == "carousel" ? "Finish carousel" : "Ready for battle")) Fight(); }
-        else if (session.Rounds.Phase == MatchPhase.Result) { if (Button("next", "Next round")) Next(); }
-        else { if (Button("finish", "Skip to results")) Finish(); ImGui.SameLine(); ImGui.Text($"{battle?.Combat.Time ?? 0:F1}s"); }
+        else if (session.Rounds.Phase == MatchPhase.Planning) { if (networkRoom is not null && session.Rounds.RoundType == "carousel") ImGui.Text("Waiting for carousel picks..."u8); else if (Button("fight", session.Rounds.RoundType == "carousel" ? "Finish carousel" : "Ready for battle")) Fight(); }
+        else if (session.Rounds.Phase == MatchPhase.Result) { if (networkRoom is not null) ImGui.Text("Next round starts shortly..."u8); else if (Button("next", "Next round")) Next(); }
+        else { if (Button("finish", networkRoom is null ? "Skip to results" : "Finish my replay")) Finish(); ImGui.SameLine(); ImGui.Text($"{battle?.Combat.Time ?? 0:F1}s"); }
         ImGui.End();
     }
     private void Board()
     {
         Window("Arena", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-        ImGui.Text(viewed == 0 ? "Choose a unit or item, then a hex." : $"Scouting {Session!.State.Players[viewed].Name}");
+        ImGui.Text(viewed == localSeat ? "Choose a unit or item, then a hex." : $"Scouting {Session!.State.Players[viewed].Name}");
         for (int row = 4; row < 8; row++) for (int column = 0; column < 7; column++)
         {
             var point = PlanningView.Cell(column, row, Width, Height); var spot = UnitSpot.Board(column, row);
             var unit = Session!.State.Players[viewed].Roster.At(spot);
             ImGui.SetCursorScreenPos(new(Left + point.X - 30, Top + point.Y + 10));
-            ImGui.BeginDisabled(viewed != 0);
+            ImGui.BeginDisabled(viewed != localSeat);
             if (Button($"hex/{column}/{row}", unit is null ? "+" : new string('*', unit.Stage + 1), 60, 25, selectedUnit is not null && selectedUnit == unit?.Id)) Select(spot);
             ImGui.EndDisabled();
             if (unit is not null) UnitTooltip(unit.Line, unit.Stage);
@@ -462,5 +483,5 @@ internal sealed partial class MatchScreen : IDisposable
         int x = (int)(Left * sx), y = (int)((size.Y - Top - Height) * sy), w = (int)(Width * sx), h = (int)(Height * sy);
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
     }
-    public void Dispose() { farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); }
+    public void Dispose() { DetachNetworkMatch(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); }
 }
