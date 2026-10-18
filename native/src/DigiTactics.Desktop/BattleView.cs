@@ -13,7 +13,7 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
     private readonly ModelCatalog catalog;
     private readonly ModelRenderer renderer = new();
     private readonly Dictionary<ModelSource, GpuModel> models = [];
-    private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
+    private readonly Dictionary<int, (GpuModel Model, CombatModelAnimator Animator,CombatUnit Unit)> actors = [];
     private PlaceholderCreature? placeholder;
     private readonly RosterModelView bench = new();
     internal IReadOnlySet<int> RenderedBenchUnits => bench.RenderedUnits;
@@ -61,7 +61,8 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
     {
         var source = catalog.Resolve(rules.Id, unit.Line.Id, unit.Stage); if (source is null) return;
         if (!models.TryGetValue(source, out var model)) { model = new(catalog, source); models.Add(source, model); }
-        actors[unit.Id] = (model, new ModelAnimator(model.Rig, (ModelAnimator.FindIdle(model.Rig)?.Duration ?? 0) * .17));
+        string key=catalog.Variants[rules.Id][unit.Line.Id][unit.Stage]!;
+        actors[unit.Id] = (model, new CombatModelAnimator(model.Rig,key,(ModelAnimator.FindIdle(model.Rig)?.Duration ?? 0) * .17),unit);
     }
     public void Remove(int unit) => actors.Remove(unit);
     public void UpdateBench(MatchPlayer player, MatchPlayer? partner, double delta)
@@ -75,7 +76,11 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
         bench.Update(rules, entries, delta);
     }
     public bool Play(int unit, string role) => actors.TryGetValue(unit, out var actor) && actor.Animator.Play(role);
-    public void Update(int unit, double delta) { if (actors.TryGetValue(unit, out var actor)) actor.Animator.Update(delta); }
+    public void Update(int unit, double delta)
+    {
+        if(actors.TryGetValue(unit,out var actor))actor.Animator.Update(delta,actor.Unit.Alive&&actor.Unit.MoveElapsed<actor.Unit.MoveDuration&&actor.Unit.MoveDuration>=.3&&actor.Unit.MoveOrigin!=actor.Unit.Cell);
+    }
+    public double MovementHeight(int unit,double sourceHeight)=>actors.TryGetValue(unit,out var actor)&&actor.Unit.MoveDuration>=.3&&!actor.Animator.UsesTravelHop?actor.Animator.GlideOffset:sourceHeight;
     public void Advance(double delta, int speed = 1)
     {
         SceneTime+=Math.Clamp(delta,0,.1);

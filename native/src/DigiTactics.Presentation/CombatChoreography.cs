@@ -8,6 +8,7 @@ public interface ICombatModelDriver
     void Remove(int unit);
     bool Play(int unit, string role);
     void Update(int unit, double delta);
+    double MovementHeight(int unit,double sourceHeight)=>sourceHeight;
 }
 public readonly record struct CombatVisual(int UnitId, WorldPosition Position, double Yaw, WorldPosition BodyOffset,
     double Scale, double Flash, double Glow, double RingScale, string? CastName, bool CastVisible);
@@ -97,7 +98,7 @@ public sealed class CombatChoreography
             double glow = combat.Time >= state.GlowStart && combat.Time < state.GlowUntil ? (state.GlowUntil - combat.Time) / (state.GlowUntil - state.GlowStart) : 0;
             double ring = glow > 0 ? 1 + .6 * Math.Sin(Math.PI * Math.Min(1, (1 - glow) * 2)) : 1;
             if (state.CastUntil != 0 && combat.Time > state.CastUntil) state.CastUntil = 0;
-            views.Add(new(view.UnitId, view.Position with { Y = view.Position.Y - view.Dying * .5 }, state.Yaw, offset,
+            views.Add(new(view.UnitId, view.Position with { Y = models.MovementHeight(view.UnitId,view.Position.Y) - view.Dying * .5 }, state.Yaw, offset,
                 view.Dying != 0 ? 1 - view.Dying : view.Hover ? 1.08 : 1, flash, glow > 0 ? .2 + .5 * glow : 0, ring, state.CastName, state.CastUntil != 0));
         }
         expired.Clear();
