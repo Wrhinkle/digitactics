@@ -19,6 +19,8 @@ internal sealed class ModelRenderer : IDisposable
         program.Uniform(17, new Brutal.Numerics.float4(emissive.X, emissive.Y, emissive.Z, 0));
         program.Uniform(18, new Brutal.Numerics.float4(FarmEye.X, FarmEye.Y, FarmEye.Z, 0));
         program.Uniform(19, new Brutal.Numerics.float4(roughness, metalness, 0, 0));
+        program.Uniform(20, new Brutal.Numerics.float4(0, 0, 1, 0));
+        OpenGl.BindTextureUnit(1, 0); OpenGl.BindTextureUnit(2, 0);
     }
     public ModelRenderer()
     {
@@ -72,6 +74,10 @@ internal sealed class ModelRenderer : IDisposable
                 var geometry = mesh.Meshes[instance.Mesh][i];
                 var material = materials[geometry.Material];
                 if (material.Transparent != transparent) continue;
+                SetFarmLight(roughness: (float)material.Roughness);
+                program.Uniform(20, new Brutal.Numerics.float4(material.RoughnessMap is null ? 0 : 1, material.SpecularMap is null ? 0 : 1, (float)material.SpecularIntensity, 0));
+                OpenGl.BindTextureUnit(1, material.RoughnessMap is { } roughMap ? model.SurfaceTextures[roughMap.Texture].Id : 0);
+                OpenGl.BindTextureUnit(2, material.SpecularMap is { } specMap ? model.SurfaceTextures[specMap.Texture].Id : 0);
                 program.Uniform(8, instance.Skin >= 0 && geometry.HasSkin ? 1 : 0);
                 program.Uniform(9, geometry.HasNormals ? 1 : 0);
                 program.Uniform(10, material.Unlit ? 1 : 0);
@@ -152,6 +158,8 @@ internal sealed class ModelRenderer : IDisposable
         #version 450 core
         in vec2 texCoord; in vec3 worldPosition; in vec3 worldNormal;
         layout(binding=0) uniform sampler2D colorTexture;
+        layout(binding=1) uniform sampler2D roughnessTexture;
+        layout(binding=2) uniform sampler2D specularTexture;
         layout(location=9) uniform int hasNormals;
         layout(location=10) uniform int unlit;
         layout(location=11) uniform float cutoff;
@@ -163,12 +171,13 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=17) uniform vec4 materialEmission;
         layout(location=18) uniform vec4 farmEye;
         layout(location=19) uniform vec4 surface;
+        layout(location=20) uniform vec4 surfaceMaps;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
         }
         // Isotropic MeshStandardMaterial BRDF from the bundled Three shader chunks.
-        vec3 specularGGX(vec3 l, vec3 v, vec3 n, vec3 f0, float roughness) {
+        vec3 specularGGX(vec3 l, vec3 v, vec3 n, vec3 f0, float f90, float roughness) {
             vec3 h=normalize(l+v);
             float nl=clamp(dot(n,l),0,1), nv=clamp(dot(n,v),0,1);
             float nh=clamp(dot(n,h),0,1), vh=clamp(dot(v,h),0,1);
@@ -178,7 +187,7 @@ internal sealed class ModelRenderer : IDisposable
             float denom=nh*nh*(a2-1)+1;
             float distribution=a2/(3.141592653589793*denom*denom);
             float fresnel=exp2((-5.55473*vh-6.98316)*vh);
-            return (f0*(1-fresnel)+vec3(fresnel))*visibility*distribution;
+            return (f0*(1-fresnel)+vec3(f90*fresnel))*visibility*distribution;
         }
         void main() {
             vec4 c=color*(textured!=0?texture(colorTexture,texCoord):vec4(1));
@@ -198,11 +207,14 @@ internal sealed class ModelRenderer : IDisposable
                 light=(hemi+sun+lamp)/3.141592653589793;
                 if(surface.x>=0) {
                     vec3 derivatives=max(abs(dFdx(n)),abs(dFdy(n)));
-                    float roughness=min(1,max(surface.x,.0525)+max(derivatives.x,max(derivatives.y,derivatives.z)));
+                    float roughnessFactor=surface.x*(surfaceMaps.x!=0?texture(roughnessTexture,texCoord).g:1);
+                    float roughness=min(1,max(roughnessFactor,.0525)+max(derivatives.x,max(derivatives.y,derivatives.z)));
                     vec3 v=normalize(farmEye.xyz-worldPosition);
-                    vec3 f0=mix(vec3(.04),c.rgb,surface.y);
-                    specular=sun*specularGGX(normalize(vec3(4,9,5)),v,n,f0,roughness)
-                        +lamp*specularGGX(normalize(offset),v,n,f0,roughness);
+                    float specularIntensity=surfaceMaps.z*(surfaceMaps.y!=0?texture(specularTexture,texCoord).a:1);
+                    vec3 f0=mix(vec3(.04*specularIntensity),c.rgb,surface.y);
+                    float f90=mix(specularIntensity,1,surface.y);
+                    specular=sun*specularGGX(normalize(vec3(4,9,5)),v,n,f0,f90,roughness)
+                        +lamp*specularGGX(normalize(offset),v,n,f0,f90,roughness);
                     light*=1-surface.y;
                 }
             }

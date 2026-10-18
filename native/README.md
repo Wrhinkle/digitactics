@@ -2355,3 +2355,16 @@ inspected. Existing farm motion/light reference checks remain green (1,381,756).
 These checks do not establish pixel-identical shading. Companion material
 roughness/metalness, shadow maps, sky/night overlays and broader visual acceptance
 remain open work under the full-port goal.
+
+### Companion surface lighting
+
+Farm companions now use their corrected material roughness and specular intensity
+in GGX lighting. The renderer samples roughness from the green channel and
+specular intensity from alpha, with separate linear GPU textures so these data
+maps cannot accidentally share an sRGB decode with color maps. It preserves the
+original game-rip correction that forces imported models to non-metallic.
+
+The rebuilt app passed the six-theme farm smoke, all 77 base companions under
+farm lighting, and the Duos match smoke. The 77-companion capture was inspected.
+Companion normal maps and authored emission still require rendering support;
+this checkpoint does not claim complete material or visual parity.

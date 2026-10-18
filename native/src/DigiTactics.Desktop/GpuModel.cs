@@ -12,6 +12,7 @@ internal sealed class GpuModel : IDisposable
     public GltfMaterial[] Materials { get; }
     public List<GpuPrimitive> Primitives { get; } = [];
     public Dictionary<int, GpuTexture> Textures { get; } = [];
+    public Dictionary<int, GpuTexture> SurfaceTextures { get; } = [];
     public Matrix4D Normalization { get; }
     public double Footprint { get; }
     public Matrix4D PreviewPlacement => Normalization * Transform(0, 0, 0, Rotation, 2 / Math.Max(1, Footprint));
@@ -43,6 +44,12 @@ internal sealed class GpuModel : IDisposable
                     Textures.Add(binding.Texture, new(asset.Image(texture.Image), texture.Sampler, binding.Srgb));
                 }
             foreach (var group in Mesh.Meshes) foreach (var primitive in group) Primitives.Add(new(primitive));
+            foreach (var binding in Materials.SelectMany(m => new[] { m.RoughnessMap, m.SpecularMap }).OfType<TextureBinding>())
+                if (!SurfaceTextures.ContainsKey(binding.Texture))
+                {
+                    var texture = GltfTexture.Load(asset, binding.Texture);
+                    SurfaceTextures.Add(binding.Texture, new(asset.Image(texture.Image), texture.Sampler, false));
+                }
         }
         catch { Dispose(); throw; }
     }
@@ -61,5 +68,6 @@ internal sealed class GpuModel : IDisposable
     {
         foreach (var primitive in Primitives) primitive.Dispose(); Primitives.Clear();
         foreach (var texture in Textures.Values) texture.Dispose(); Textures.Clear();
+        foreach (var texture in SurfaceTextures.Values) texture.Dispose(); SurfaceTextures.Clear();
     }
 }

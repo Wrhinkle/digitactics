@@ -21,7 +21,7 @@ internal static class CompanionModelSmoke
             window.MakeContextCurrent();
             if (!Glad.Initialize(name => Glfw.PInvoke.GetProcAddress(name))) throw new InvalidOperationException("OpenGL initialization failed.");
             OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
-            using var renderer = new ModelRenderer();
+            using var renderer = new ModelRenderer { FarmLight = new FarmLighting(), FarmEye = new(0, 1.8f, 5) };
             var camera = Matrix4x4.CreateLookAt(new(0, 1.8f, 5), new(0, .9f, 0), Vector3.UnitY) * Matrix4x4.CreatePerspectiveFieldOfView(.65f, 1, .01f, 100);
             int index = 0;
             foreach (var (id, visual) in companions.Bases)
@@ -46,7 +46,7 @@ internal static class CompanionModelSmoke
                 index++;
             }
             if (capture is not null) FrameCapture.SaveBitmap(capture, cell * columns, cell * rows);
-            Console.WriteLine($"Companion GPU smoke passed: {index} original companion models rendered with textures, walking/reaction playback and procedural overlays.");
+            Console.WriteLine($"Companion GPU smoke passed: {index} original companion models rendered with farm lighting, surface textures, walking/reaction playback and procedural overlays.");
         }
         finally { Glfw.Terminate(); }
     }
