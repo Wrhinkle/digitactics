@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Text.Json;
 using DigiTactics.Presentation;
+using DigiTactics.Assets;
 
 internal static class FarmChoreographyChecks
 {
@@ -47,7 +48,34 @@ internal static class FarmChoreographyChecks
             }
         }
         checks += CareTransitions();
+        checks += RoomMotion(root);
         Console.WriteLine($"Farm choreography: {checks} movement, social, sleep, care and animation-command checks passed.");
+        return checks;
+    }
+    private static int RoomMotion(string root)
+    {
+        int checks = 0;
+        foreach (string theme in new[] { "meadow", "tropical", "snowy", "sewer", "toy", "grid" })
+        {
+            using var file = File.OpenRead(Path.Combine(root, "content/farm-rooms", theme + ".json.gz"));
+            using var gzip = new GZipStream(file, CompressionMode.Decompress);
+            using var doc = JsonDocument.Parse(gzip);
+            var meshes = doc.RootElement.GetProperty("meshes");
+            foreach (var sample in doc.RootElement.GetProperty("motionChecks").EnumerateArray())
+            foreach (var expected in sample.GetProperty("meshes").EnumerateArray())
+            {
+                int index = expected.GetProperty("index").GetInt32();
+                var motion = JsonSerializer.Deserialize<FarmRoomMotion>(meshes[index].GetProperty("motion"), new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+                double[] actual = new double[16]; motion.Evaluate(sample.GetProperty("time").GetDouble()).CopyTo(actual);
+                int component = 0;
+                foreach (var value in expected.GetProperty("matrix").EnumerateArray())
+                {
+                    checks++;
+                    if (Math.Abs(actual[component++] - value.GetDouble()) > 1e-9) throw new InvalidOperationException($"Farm room motion {theme}/{index} at {sample.GetProperty("time")}: matrix component {component}");
+                }
+            }
+        }
+        Console.WriteLine($"Farm room animation: {checks} original world-transform comparisons passed.");
         return checks;
     }
     private static int CareTransitions()

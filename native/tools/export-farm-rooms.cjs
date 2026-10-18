@@ -3,7 +3,13 @@ const fs=require('fs'),path=require('path'),zlib=require('zlib');
 const {chromium}=require('../artifacts/audio-tools/node_modules/playwright');
 const root=path.resolve(__dirname,'../..');
 async function main(){
- const source=fs.readFileSync(path.join(root,'js/farm-ui.js'),'utf8');
+ let source=fs.readFileSync(path.join(root,'js/farm-ui.js'),'utf8');
+ for(const [needle,tag] of [
+  ['S.ticks.push((dt, t) => { water.position',"water.userData.motion={kind:'water',phase:0};"],
+  ['S.ticks.push((dt, t) => { p.rotation',"p.userData.motion={kind:'palm',phase:x};"],
+  ['S.ticks.push((dt, t) => drips',"drips.forEach((d,i)=>d.userData.motion={kind:'drip',phase:i});"],
+  ['S.ticks.push((dt, t) => crystals',"crystals.forEach((c,i)=>c.userData.motion={kind:'crystal',phase:i});"]
+ ]){if(!source.includes(needle))throw Error('Missing room motion: '+needle);source=source.replace(needle,tag+needle);}
  const module="import * as THREE from '/vendor/three/build/three.module.js';const PI=Math.PI;const F={MEAT_MAX:3};const S={scene:new THREE.Scene(),world:null,ticks:[],meat:[]};function ensureScene(){}const $=()=>({style:{setProperty(){}}});"
   +source.slice(source.indexOf('const R ='),source.indexOf('// ---------- state ----------'))
   +source.slice(source.indexOf('function buildWorld('),source.indexOf('// ---------- legends in the room ----------'))
@@ -24,7 +30,7 @@ async function main(){
   for(const theme of ['meadow','tropical','snowy','sewer','toy','grid']){
    const room=await page.evaluate(async theme=>{
     const {THREE,S,LOOK,buildWorld}=await import('/room.js');buildWorld(theme);S.world.updateMatrixWorld(true);
-    const materials=[],textures=[],meshes=[],points=[],materialIds=new Map(),textureIds=new Map();
+    const materials=[],textures=[],meshes=[],points=[],materialIds=new Map(),textureIds=new Map(),animated=[];
     function material(m){
      if(materialIds.has(m))return materialIds.get(m);
      let texture=null;
@@ -51,10 +57,18 @@ async function main(){
       }
       const indices=Array.from({length:group.count},(_,i)=>geometry.index?geometry.index.getX(group.start+i):group.start+i);
       let meat=-1;for(let i=0;i<S.meat.length;i++){let parent=o;while(parent){if(parent===S.meat[i])meat=i;parent=parent.parent;}}
-      meshes.push({vertices,indices,matrix:o.matrixWorld.toArray(),material:material(m),sprite:!!o.isSprite,meat});
+      let ancestor=o;while(ancestor&&!ancestor.userData.motion)ancestor=ancestor.parent;
+      let motion=null;
+      if(ancestor){
+       motion={...ancestor.userData.motion,position:ancestor.position.toArray(),rotation:[ancestor.rotation.x,ancestor.rotation.y,ancestor.rotation.z],scale:ancestor.scale.toArray(),parent:ancestor.parent.matrixWorld.toArray(),relative:ancestor.matrixWorld.clone().invert().multiply(o.matrixWorld).toArray()};
+       animated.push({index:meshes.length,object:o});
+      }
+      meshes.push({vertices,indices,matrix:o.matrixWorld.toArray(),material:material(m),sprite:!!o.isSprite,meat,motion});
      }
     });
-    return {schemaVersion:1,theme,sky:LOOK[theme].sky,materials,textures,meshes,points};
+    const motionChecks=[];
+    for(const time of [0,.05,.5,1,3,17,123]){for(const tick of S.ticks)tick(.05,time);S.world.updateMatrixWorld(true);motionChecks.push({time,meshes:animated.map(a=>({index:a.index,matrix:a.object.matrixWorld.toArray()}))});}
+    return {schemaVersion:2,theme,sky:LOOK[theme].sky,materials,textures,meshes,points,motionChecks};
    },theme);
    fs.writeFileSync(path.join(output,theme+'.json.gz'),zlib.gzipSync(JSON.stringify(room)));
    console.log(`${theme}: ${room.meshes.length} original room meshes, ${room.textures.length} canvas textures.`);

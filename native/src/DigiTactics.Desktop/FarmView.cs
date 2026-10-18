@@ -12,7 +12,7 @@ internal sealed class FarmView : IDisposable
 {
     private sealed record Material(float[] Color, int? Texture, bool Unlit, bool Transparent, bool DepthWrite);
     private sealed record Texture(int Width, int Height, string Rgba, bool Clamp);
-    private sealed record Mesh(float[] Vertices, uint[] Indices, double[] Matrix, int Material, bool Sprite, int Meat);
+    private sealed record Mesh(float[] Vertices, uint[] Indices, double[] Matrix, int Material, bool Sprite, int Meat, FarmRoomMotion? Motion);
     private sealed record Room(int SchemaVersion, string Theme, string[] Sky, Material[] Materials, Texture[] Textures, Mesh[] Meshes);
     private sealed record Actor(GpuModel Model, CompanionAnimator Animator, FarmResident Resident, CompanionVisual Visual);
     private sealed class MotionView(CompanionAnimator animator) : IFarmCompanionView
@@ -69,7 +69,7 @@ internal sealed class FarmView : IDisposable
         using var file = File.OpenRead(Path.Combine(AppContext.BaseDirectory, "content/farm-rooms", theme + ".json.gz"));
         using var gzip = new GZipStream(file, CompressionMode.Decompress);
         var next = JsonSerializer.Deserialize<Room>(gzip, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? throw new InvalidDataException("Missing farm room.");
-        if (next.SchemaVersion != 1 || next.Theme != theme) throw new InvalidDataException("Unsupported farm room.");
+        if (next.SchemaVersion != 2 || next.Theme != theme) throw new InvalidDataException("Unsupported farm room.");
         foreach (var primitive in geometry) primitive.Dispose(); geometry.Clear();
         foreach (var texture in textures) texture.Dispose(); textures.Clear();
         room = null;
@@ -132,7 +132,7 @@ internal sealed class FarmView : IDisposable
             {
                 var mesh = room.Meshes[i]; var material = room.Materials[mesh.Material];
                 if (material.Transparent != transparent || mesh.Meat >= meat && mesh.Meat >= 0) continue;
-                var matrix = Matrix4D.From(mesh.Matrix);
+                var matrix = mesh.Motion?.Evaluate(choreography.Time) ?? Matrix4D.From(mesh.Matrix);
                 if (mesh.Sprite)
                 {
                     var billboard = Matrix4x4.CreateBillboard(new((float)matrix.M41, (float)matrix.M42, (float)matrix.M43), eye, Vector3.UnitY, Vector3.UnitZ);

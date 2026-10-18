@@ -2290,3 +2290,18 @@ and training arrival/results. The rebuilt Windows app passed the integrated
 farm/evolution/Solo flow and all four training games, including save retry.
 Food props, care bubbles and audio, simulation-event toilet routing and pile
 visuals remain to be integrated along with the previously listed room effects.
+
+### Animated room decorations
+
+Room schema 2 preserves dynamic ancestor transforms for water, tropical palms,
+sewer drips and grid crystals. Native playback evaluates the original motion
+formulas, retaining static parent transforms and each descendant mesh offset.
+This also moves all branches and coconuts with their palm instead of treating
+individual exported meshes as independent objects.
+
+The exporter samples the original room callbacks at seven times from zero to
+123 seconds. All 14,224 world-matrix component comparisons pass, alongside the
+817,212 resident/care checks. The Windows build passed the six-theme GPU smoke
+and sleep/wake checks; the tropical render was inspected. Snowfall still requires
+native particle rendering. Night lighting, shadows and material fidelity remain
+open parts of the full port.
