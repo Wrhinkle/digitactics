@@ -46,6 +46,43 @@ internal static class SteamMatchmakingChecks
                 client.PumpCallbacks();
             }
             Check(leaves() == before + 2, "disposal leaves joined lobby once");
+            long now = 1000;
+            using (var client = new SteamClient(path, _ => false, 480, () => now))
+            {
+                var api = client.Matchmaking;
+                int initialLeaves = leaves();
+                var lateCreate = api.Create(SteamLobbyVisibility.Private);
+                now += 30000; client.PumpCallbacks();
+                Check(lateCreate.IsFaulted && lateCreate.Exception!.InnerException is TimeoutException, "late create remains timed out");
+                Check(leaves() == initialLeaves + 1, "late successful creation leaves abandoned lobby");
+                var create = api.Create(SteamLobbyVisibility.Private); client.PumpCallbacks(); ulong id = create.Result;
+                api.Leave(id); initialLeaves = leaves();
+                var lateJoin = api.Join(id); now += 30000; client.PumpCallbacks();
+                Check(lateJoin.IsFaulted && lateJoin.Exception!.InnerException is TimeoutException && leaves() == initialLeaves + 1, "late successful join leaves abandoned lobby");
+                initialLeaves = leaves();
+                var oldJoin = api.Join(id); now += 30000;
+                var retry = api.Join(id); client.PumpCallbacks();
+                Check(oldJoin.IsFaulted && oldJoin.Exception!.InnerException is TimeoutException && retry.Result == id, "new join survives earlier timeout");
+                Check(leaves() == initialLeaves && api.SetData(id, new Dictionary<string,string> { ["name"] = "Retry" }), "late cleanup does not leave newer successful membership");
+                var duplicateJoin = api.Join(id); now += 30000; client.PumpCallbacks();
+                Check(duplicateJoin.IsFaulted && duplicateJoin.Exception!.InnerException is TimeoutException && leaves() == initialLeaves, "late duplicate join preserves existing membership");
+                api.Leave(id); initialLeaves = leaves();
+                var failed = api.Join(999); now += 30000; client.PumpCallbacks();
+                Check(failed.IsFaulted && failed.Exception!.InnerException is TimeoutException && leaves() == initialLeaves, "late failed join does not leave unrelated lobby");
+                var search = api.ListCompatible(); now += 30000; client.PumpCallbacks();
+                Check(search.IsFaulted && search.Exception!.InnerException is TimeoutException, "search timeout retained after callback");
+                search = api.ListCompatible(); client.PumpCallbacks(); Check(search.IsCompletedSuccessfully, "search can retry after timeout");
+                var requests = Enumerable.Range(0, 64).Select(_ => api.Join(id)).ToArray();
+                bool bounded = false; try { api.Join(id); } catch (IOException) { bounded = true; }
+                Check(bounded, "unresolved native requests bounded before starting another call");
+                now += 30000; client.PumpCallbacks();
+                Check(requests.All(t => t.IsFaulted && t.Exception!.InnerException is TimeoutException), "bounded batch faults exactly once");
+                create = api.Create(SteamLobbyVisibility.Private); client.PumpCallbacks();
+                Check(create.IsCompletedSuccessfully, "callback cleanup releases request capacity");
+                api.Leave(create.Result);
+                create = api.Create(SteamLobbyVisibility.Private); now += 29999; client.PumpCallbacks();
+                Check(create.IsCompletedSuccessfully, "callback before deadline succeeds");
+            }
         }
         finally { NativeLibrary.Free(module); }
         Console.WriteLine($"Steam matchmaking: {checks} native lobby checks passed.");

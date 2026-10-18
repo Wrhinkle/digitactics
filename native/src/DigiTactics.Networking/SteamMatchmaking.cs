@@ -39,17 +39,21 @@ public sealed class SteamMatchmaking : IDisposable
     private readonly DataFn data;
     private readonly SetDataFn setData;
     private readonly OwnerFn setOwner;
-    private sealed record Pending(int Callback, int Size, long Started, Action<SteamCallResult> Complete, Action<Exception> Fail);
+    private sealed record Pending(int Callback, int Size, long Started, Action<SteamCallResult> Complete, Action<Exception> Fail, Action<byte[]>? Abandoned, ulong Target)
+    { public bool Expired { get; set; } }
+    private readonly Func<long> clock;
     private readonly Dictionary<ulong, Pending> pending = [];
     private readonly HashSet<ulong> joined = [];
+    private readonly HashSet<ulong> abandoned = [];
     private bool disposed, listing;
     private static readonly string[] Keys = ["dt_game", "dt_ver", "name", "host", "hostName", "setId", "format", "pace", "rounds", "state", "round", "seats"];
     public event Action<SteamMemberChange>? MemberChanged;
     public event Action<ulong, ulong, bool>? DataChanged;
     public event Action<ulong, ulong>? JoinRequested;
-    internal SteamMatchmaking(SteamClient client)
+    internal SteamMatchmaking(SteamClient client, Func<long> clock)
     {
         this.client = client;
+        this.clock = clock;
         api = client.Bind<InterfaceFn>("SteamAPI_SteamMatchmaking_v009")();
         if (api == 0) throw new InvalidOperationException("Steam matchmaking interface is unavailable.");
         create = client.Bind<CreateFn>("SteamAPI_ISteamMatchmaking_CreateLobby"); join = client.Bind<LobbyCallFn>("SteamAPI_ISteamMatchmaking_JoinLobby");
@@ -63,38 +67,51 @@ public sealed class SteamMatchmaking : IDisposable
         client.CallResult += Complete; client.Callback += Dispatch;
     }
     private void Verify() { client.VerifyThread(); ObjectDisposedException.ThrowIf(disposed, this); }
-    private Task<T> Track<T>(ulong call, int callback, int size, Func<byte[], T> read)
+    private void VerifyCapacity()
+    {
+        Verify();
+        if (pending.Count >= 64) throw new IOException("Too many unresolved Steam requests. Restart the game to reconnect before trying again.");
+    }
+    private Task<T> Track<T>(ulong call, int callback, int size, Func<byte[], T> read, Action<byte[]>? onAbandoned = null, ulong target = 0)
     {
         var completion = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
         if (call == 0) { completion.SetException(new IOException("Steam did not start the matchmaking request.")); return completion.Task; }
-        pending.Add(call, new(callback, size, Environment.TickCount64,
+        pending.Add(call, new(callback, size, clock(),
             result => { try { completion.TrySetResult(read(result.Data)); } catch (Exception e) { completion.TrySetException(e); } },
-            e => completion.TrySetException(e)));
+            e => completion.TrySetException(e), onAbandoned, target));
         return completion.Task;
     }
     public Task<ulong> Create(SteamLobbyVisibility visibility = SteamLobbyVisibility.Public, int maximum = 8)
     {
-        Verify(); if (!Enum.IsDefined(visibility)) throw new ArgumentOutOfRangeException(nameof(visibility));
+        VerifyCapacity(); if (!Enum.IsDefined(visibility)) throw new ArgumentOutOfRangeException(nameof(visibility));
         return Track(create(api, (int)visibility, Math.Clamp(maximum, 2, 8)), 513, 16, bytes =>
         {
             int result = BinaryPrimitives.ReadInt32LittleEndian(bytes); ulong id = BinaryPrimitives.ReadUInt64LittleEndian(bytes.AsSpan(8));
             if (result != 1 || id == 0) throw new IOException($"Steam could not create the lobby ({result}).");
             joined.Add(id); return id;
+        }, bytes =>
+        {
+            ulong id = BinaryPrimitives.ReadUInt64LittleEndian(bytes.AsSpan(8));
+            if (BinaryPrimitives.ReadInt32LittleEndian(bytes) == 1 && id != 0) abandoned.Add(id);
         });
     }
     public Task<ulong> Join(ulong lobby)
     {
-        Verify(); if (lobby == 0) throw new ArgumentOutOfRangeException(nameof(lobby));
+        VerifyCapacity(); if (lobby == 0) throw new ArgumentOutOfRangeException(nameof(lobby));
         return Track(join(api, lobby), 504, 24, bytes =>
         {
             ulong id = BinaryPrimitives.ReadUInt64LittleEndian(bytes); uint response = BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(16));
             if (response != 1 || id != lobby) throw new IOException($"Steam could not join the lobby ({response}).");
             joined.Add(id); return id;
-        });
+        }, bytes =>
+        {
+            ulong id = BinaryPrimitives.ReadUInt64LittleEndian(bytes);
+            if (BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(16)) == 1 && id != 0) abandoned.Add(id);
+        }, lobby);
     }
     public Task<IReadOnlyList<SteamLobby>> ListCompatible()
     {
-        Verify(); if (listing) throw new InvalidOperationException("A lobby search is already pending.");
+        VerifyCapacity(); if (listing) throw new InvalidOperationException("A lobby search is already pending.");
         filter(api, "dt_game", "digitactics", 0); filter(api, "dt_ver", NetworkProtocol.Version, 0); distance(api, 3); limit(api, 50);
         listing = true;
         var task = Track<IReadOnlyList<SteamLobby>>(list(api), 510, 4, bytes =>
@@ -137,16 +154,35 @@ public sealed class SteamMatchmaking : IDisposable
     private void Complete(SteamCallResult result)
     {
         if (!pending.Remove(result.Call, out var request)) return;
-        if (result.Failed) request.Fail(new IOException("Steam matchmaking request failed."));
+        if (request.Expired)
+        {
+            if (!result.Failed && result.Id == request.Callback && result.Data.Length == request.Size) request.Abandoned?.Invoke(result.Data);
+        }
+        else if (result.Failed) request.Fail(new IOException("Steam matchmaking request failed."));
         else if (result.Id != request.Callback || result.Data.Length != request.Size) request.Fail(new InvalidDataException("Unexpected Steam matchmaking callback layout."));
         else request.Complete(result);
+        LeaveAbandoned();
         if (listTask?.IsCompleted == true) listing = false;
     }
     internal void ExpireRequests()
     {
-        foreach (var call in pending.Where(p => Environment.TickCount64 - p.Value.Started >= 30000).Select(p => p.Key).ToArray())
-        { var request = pending[call]; pending.Remove(call); request.Fail(new TimeoutException("Steam matchmaking request timed out.")); }
+        foreach (var call in pending.Where(p => !p.Value.Expired && clock() - p.Value.Started >= 30000).Select(p => p.Key).ToArray())
+        {
+            var request = pending[call]; request.Expired = true;
+            if (request.Abandoned is null) pending.Remove(call);
+            request.Fail(new TimeoutException("Steam matchmaking request timed out."));
+        }
+        LeaveAbandoned();
         if (listTask?.IsCompleted == true) listing = false;
+    }
+    private void LeaveAbandoned()
+    {
+        foreach (ulong lobby in abandoned.ToArray())
+        {
+            if (joined.Contains(lobby)) { abandoned.Remove(lobby); continue; }
+            if (pending.Values.Any(p => !p.Expired && p.Target == lobby)) continue;
+            leave(api, lobby); abandoned.Remove(lobby);
+        }
     }
     private void Dispatch(SteamCallback callback)
     {
@@ -160,6 +196,6 @@ public sealed class SteamMatchmaking : IDisposable
         if (disposed) return; client.VerifyThread();
         client.CallResult -= Complete; client.Callback -= Dispatch;
         foreach (var request in pending.Values) request.Fail(new ObjectDisposedException(nameof(SteamMatchmaking)));
-        pending.Clear(); foreach (ulong lobby in joined) leave(api, lobby); joined.Clear(); disposed = true;
+        pending.Clear(); foreach (ulong lobby in joined.Concat(abandoned).Distinct()) leave(api, lobby); joined.Clear(); abandoned.Clear(); disposed = true;
     }
 }

@@ -49,7 +49,7 @@ public sealed class SteamClient : IDisposable
     public event Action<SteamCallback>? Callback;
     public event Action<SteamCallResult>? CallResult;
     internal T Bind<T>(string name) where T : Delegate => Marshal.GetDelegateForFunctionPointer<T>(NativeLibrary.GetExport(module, name));
-    public SteamClient(string libraryPath, Func<ulong, bool> isMember, uint? developmentAppId = null)
+    public SteamClient(string libraryPath, Func<ulong, bool> isMember, uint? developmentAppId = null, Func<long>? clock = null)
     {
         ArgumentNullException.ThrowIfNull(isMember);
         if (!OperatingSystem.IsWindows() || nint.Size != 8) throw new PlatformNotSupportedException("Steam client requires Windows x64.");
@@ -81,7 +81,7 @@ public sealed class SteamClient : IDisposable
             Name = Marshal.PtrToStringUTF8(Bind<NameFn>("SteamAPI_ISteamFriends_GetPersonaName")(friends)) ?? "Tamer";
             if (SteamId == 0 || AppId == 0) throw new InvalidOperationException("Steam returned an invalid player or application identity.");
             Messages = new(module, isMember);
-            Matchmaking = new(this);
+            Matchmaking = new(this, clock ?? (() => Environment.TickCount64));
             Friends = new(this);
         }
         catch { Cleanup(); throw; }
