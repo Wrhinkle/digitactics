@@ -96,7 +96,22 @@
       "aug:goldenEgg": "c9e230ce3729a011dbb2043c04c0b4cb07489ef6419ea658edb98d1e092fdd38.png",
       "aug:megaEvolve": "601f5af820198fa62d4c238fa5aa7739bdf74d7e146a18d4c31a0c772f661fb2.png",
       "aug:giant": "150979cb12ea1216921e1a0ef37df3da59771d55ef1e883f30eb37f7809d0601.png",
-      "aug:crest": "df72548443ac9f7b6b565efca6ff6de17daac8f125cc062b7998c88ca0dd6a4d.png"
+      "aug:crest": "df72548443ac9f7b6b565efca6ff6de17daac8f125cc062b7998c88ca0dd6a4d.png",
+      "wisp:gold": "9a44db548103fa17b3c65eb31438818f61b9ca3732d1a6eb787a634f86a760dc.png",
+      "wisp:comp": "c2b8eadcccbe9eccb9db41f46eddeeb77bcbb16ad46af50c2267541e0c2c9501.png",
+      "wisp:egg": "b8d1b430dd143226254f767a62ca2a02de86cee5a4ceda6828944f79b5bd9f27.png",
+      "wisp:copy": "1b526c7456f3d9c6060ddc77545a47ba2085bd49ff5d8000cebe31d53c33d103.png",
+      "wisp:evolve": "eefcbb3cf09360976de16b25c00d9079d7a7c94f2941dcc23b9a66282517be84.png",
+      "wisp:level": "cb95a16fd17ea431ad6b910949d665f7d262d02151d93636cb35cb0c3860b2b7.png",
+      "wisp:battle": "76eb8b03fef9b9a0f97144b51a57fcfc5c1a0dec4dc5eceec499366be1e9ecf1.png",
+      "wisp:iron": "302aa410a8fe1ad1e8dcd8079025a2816a53c55b802ecbff0cde41e2060875d7.png",
+      "wisp:mana": "c9155e9edcc101473073fd453637c315cbdbe9140411b36e9d7fcc5b6dcd6d7d.png",
+      "wisp:heal": "8cbbec7fff9be81eeb595d45eda4a2879effe08f5cd390eaa7a91b2d0c1b25a2.png",
+      "wisp:gamble": "1b6c0cf0185c73740634d093e314d96553aac3fbc378bcefbcf726cf03f270be.png",
+      "wisp:pact": "77c6351c228afbbb8d335dd7595d6a50331275ca848d19d3ad3863fd3ef95972.png",
+      "wisp:rolls": "e3c8762ba7e1b88efdac422f79f8142b0b8098375e8375607f0eeb029d7e2be1.png",
+      "wisp:crest": "fe574414c664ad4ed1e32afe5defa999c64dd13e87421d18286c2c790a6b0011.png",
+      "wisp:fortune": "4ff1b67127ad206e9adbbe8903da79d53af097970d6cbdb53a477a20caefc427.png"
     },
     "galaxies": {
       "gal_reaper": "664bd0bf028ed0669f5ac6f7ca28e072b53eef2e6859e42c590de2ce15554b66.png",

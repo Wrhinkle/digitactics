@@ -4,7 +4,8 @@ namespace DigiTactics.Rules;
 
 public sealed record ShopRollRequest(int Level, int Size, int Boost, double[]? Odds = null);
 public sealed record ShopUnitOverride(int? Stage = null, Dictionary<string, int>? BonusTraits = null, JsonElement? Mods = null);
-public sealed record ShopMetadata(int? Cost = null, string? Tag = null, ShopUnitOverride? Unit = null);
+public sealed record ShopMetadata(int? Cost = null, string? Tag = null, ShopUnitOverride? Unit = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition=System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? Note = null);
 public interface IShopRollHooks
 {
     ShopRollRequest BeforeRoll(ShopRollRequest request);

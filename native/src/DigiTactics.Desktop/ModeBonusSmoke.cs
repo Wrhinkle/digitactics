@@ -9,8 +9,10 @@ internal sealed class ModeBonusSmoke(ContentCatalog catalog)
 {
     private readonly string[] variants = ["underlords/normal", "autochess/normal"];
     private int scenario, step;
+    private readonly WispUiSmoke wisps=new(catalog);
     public void Input(MatchScreen screen)
     {
+        if(scenario>=variants.Length){wisps.Input(screen);return;}
         if (step == 0)
         {
             var rules = catalog.Variants.Single(rules => rules.Id == variants[scenario]);
@@ -38,6 +40,7 @@ internal sealed class ModeBonusSmoke(ContentCatalog catalog)
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if(scenario>=variants.Length)return wisps.Verify(screen,size,capture);
         if (step is not (3 or 8 or 13)) return false;
         int seat = step == 3 ? 0 : 1;
         var player = screen.Session!.State.Players[seat];
@@ -48,6 +51,6 @@ internal sealed class ModeBonusSmoke(ContentCatalog catalog)
         step = 0; scenario++;
         if (scenario != variants.Length) return false;
         Console.WriteLine("Mode bonus UI passed: Underlords powers/ranks/globals and Auto Chess relics, local and scouted players.");
-        return true;
+        return false;
     }
 }

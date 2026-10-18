@@ -2,9 +2,10 @@
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const { chromium } = require('../artifacts/audio-tools/node_modules/playwright');
 const root = path.resolve(__dirname, '../..'), out = path.join(root, 'native/content/item-tokens');
+const wispsOnly = process.argv.includes('--wisps-only');
 async function main() {
   fs.mkdirSync(out, { recursive: true });
-  const browser = await chromium.launch({ channel: 'msedge', headless: true });
+  const browser = await chromium.launch({ channel: 'msedge', headless: true, args: ['--disable-gpu'] });
   try {
     const page = await browser.newPage();
     await page.route('**/*', async route => {
@@ -18,27 +19,33 @@ async function main() {
     await page.goto('http://tokens.local/index.html');
     await page.waitForFunction(() => window.DT?.ItemArt && DT.Sets);
     const sets = await page.evaluate(() => DT.Sets.ids());
-    const manifest = { version: 1, size: 128, sets: {} };
-    let count = 0; const files = new Set();
+    const manifest = wispsOnly ? JSON.parse(fs.readFileSync(path.join(out, 'manifest.json'), 'utf8')) : { version: 1, size: 128, sets: {} };
+    let count = 0; const files = new Set(wispsOnly ? Object.values(manifest.sets).flatMap(icons => Object.values(icons)) : []);
     for (const set of sets) {
-      const icons = await page.evaluate(async set => {
+      const icons = await page.evaluate(async ({ set, wispsOnly }) => {
         DT.Sets.activate(set);
         const { itemCanvas } = await import('/js/icons.js?set=' + encodeURIComponent(set));
         const result = {};
-        for (const id of Object.keys(DT.ITEMS)) {
+        for (const id of wispsOnly ? [] : Object.keys(DT.ITEMS)) {
           const canvas = itemCanvas(id); await canvas.ready;
           result[id] = canvas.toDataURL('image/png').split(',')[1];
         }
-        for (const augment of set === '_template' ? [] : [...new Map([...DT.AUGMENTS, ...(DT.Duos?.AUGMENTS || [])].map(a => [a.id, a])).values()]) {
+        for (const augment of wispsOnly || set === '_template' ? [] : [...new Map([...DT.AUGMENTS, ...(DT.Duos?.AUGMENTS || [])].map(a => [a.id, a])).values()]) {
           const id = 'aug:' + augment.id;
           if (!DT.ItemArt.has(id)) continue; // Original UI also omits artwork when no painter exists.
           const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
           if (!await DT.ItemArt.paint(canvas, id)) throw Error(`Missing original augment art: ${set}/${id}`);
           result[id] = canvas.toDataURL('image/png').split(',')[1];
         }
+        for (const wisp of DT.WISPS) {
+          const id = 'wisp:' + wisp.id;
+          const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
+          if (!await DT.ItemArt.paint(canvas, id)) throw Error(`Missing original Wisp art: ${set}/${id}`);
+          result[id] = canvas.toDataURL('image/png').split(',')[1];
+        }
         return result;
-      }, set);
-      manifest.sets[set] = {};
+      }, { set, wispsOnly });
+      if (!wispsOnly) manifest.sets[set] = {};
       for (const [id, png] of Object.entries(icons)) {
         const bytes = Buffer.from(png, 'base64');
         const hash = crypto.createHash('sha256').update(bytes).digest('hex');
@@ -50,8 +57,12 @@ async function main() {
     }
     const catalog = JSON.parse(fs.readFileSync(path.join(root, 'native/content/catalog.json'), 'utf8'));
     for (const variant of catalog.variants)
+    {
       for (const item of variant.items)
         if (!manifest.sets[variant.id.split('/')[0]]?.[item.id]) throw Error(`Missing native item artwork: ${variant.id}/${item.id}`);
+      for (const wisp of variant.wisps)
+        if (!manifest.sets[variant.id.split('/')[0]]?.['wisp:' + wisp.id]) throw Error(`Missing native Wisp artwork: ${variant.id}/${wisp.id}`);
+    }
     fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
     for (const file of fs.readdirSync(out))
       if (/^[a-f0-9]{64}\.png$/.test(file) && !files.has(file)) fs.unlinkSync(path.join(out, file));
