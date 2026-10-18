@@ -101,6 +101,7 @@ try
     var catalog = ContentCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content", "catalog.json"));
     int captureIndex = Array.IndexOf(args, "--capture");
     string? capture = captureIndex >= 0 && captureIndex + 1 < args.Length ? args[captureIndex + 1] : null;
+    if (args.Contains("--model-vertex-colors-smoke")) { ModelVertexColorSmoke.Run(capture); return 0; }
     if (args.Contains("--elimination-theme-smoke")) { EliminationThemeSmoke.Run(capture); return 0; }
     if (Option("--emote-preview-smoke") is { } emoteReferenceDirectory) { EmotePreviewSmoke.Run(emoteReferenceDirectory); return 0; }
     if (args.Contains("--elimination-composite-smoke")) { EliminationCompositeSmoke.Run(capture); return 0; }
@@ -156,6 +157,7 @@ try
                 args.Contains("--legend-navigation-smoke") ||
                 args.Contains("--galaxy-intro-ui-smoke") ||
                 args.Contains("--choice-presentation-ui-smoke") ||
+                args.Contains("--carousel-ui-smoke") ||
                 args.Contains("--cast-feed-ui-smoke") ||
                 args.Contains("--profile-ui-smoke") ||
                 args.Contains("--update-ui-smoke") ||
@@ -194,6 +196,7 @@ try
             LegendNavigationSmoke = args.Contains("--legend-navigation-smoke"),
             GalaxyIntroUiSmoke = args.Contains("--galaxy-intro-ui-smoke"),
             ChoicePresentationUiSmoke = args.Contains("--choice-presentation-ui-smoke"),
+            CarouselUiSmoke = args.Contains("--carousel-ui-smoke"),
             CastFeedUiSmoke = args.Contains("--cast-feed-ui-smoke"),
             LootNoticeUiSmoke = args.Contains("--loot-notice-ui-smoke"),
             EliminationCinematicSmoke = args.Contains("--elimination-cinematic-smoke"),
