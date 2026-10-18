@@ -245,7 +245,14 @@ EXPORT const char *SteamAPI_ISteamMatchmaking_GetLobbyData(void *, uint64_t lobb
   auto &fields=lobbyData[lobby]; auto found=fields.find(key);
   return found!=fields.end()?found->second.c_str():strcmp(key,"dt_game")==0?"digitactics":"";
 }
-EXPORT bool SteamAPI_ISteamMatchmaking_RequestLobbyData(void *, uint64_t) { return false; }
+static int dataRequestMode;
+EXPORT void FakeSteam_DataRequestMode(int mode) { dataRequestMode=mode; }
+EXPORT bool SteamAPI_ISteamMatchmaking_RequestLobbyData(void *, uint64_t lobby) {
+  if(dataRequestMode==1) return false;
+  if(dataRequestMode==2) return true;
+  struct Updated { uint64_t lobby,member; bool success; } updated={lobby,lobby,true};
+  static_assert(sizeof(Updated)==24,"data update"); FakeSteam_Callback(505,&updated,24); return true;
+}
 EXPORT int SteamAPI_ISteamMatchmaking_GetNumLobbyMembers(void *, uint64_t) { return ((memberMask&1)?1:0)+((memberMask&2)?1:0); }
 EXPORT bool SteamAPI_ISteamMatchmaking_SetLobbyOwner(void *, uint64_t, uint64_t target) { lobbyOwner=target; return true; }
 

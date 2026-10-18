@@ -41,6 +41,7 @@ public sealed class SteamClient : IDisposable
     private string? priorApp, priorGame;
     public SteamMessageTransport Messages { get; private set; } = null!;
     public SteamMatchmaking Matchmaking { get; private set; } = null!;
+    public SteamFriends Friends { get; private set; } = null!;
     public ulong SteamId { get; private set; }
     public uint AppId { get; private set; }
     public string Name { get; private set; } = "";
@@ -81,6 +82,7 @@ public sealed class SteamClient : IDisposable
             if (SteamId == 0 || AppId == 0) throw new InvalidOperationException("Steam returned an invalid player or application identity.");
             Messages = new(module, isMember);
             Matchmaking = new(this);
+            Friends = new(this);
         }
         catch { Cleanup(); throw; }
     }
@@ -114,12 +116,13 @@ public sealed class SteamClient : IDisposable
             else if (copied is not null) Callback?.Invoke(copied);
             if (disposed) break;
         }
+        if (!disposed) Friends.Pump();
         return count;
     }
     private void Cleanup()
     {
         if (disposed) return;
-        try { try { try { Matchmaking?.Dispose(); } finally { Messages?.Dispose(); } } finally { if (initialized) shutdown?.Invoke(); } }
+        try { try { try { try { Friends?.Dispose(); } finally { Matchmaking?.Dispose(); } } finally { Messages?.Dispose(); } } finally { if (initialized) shutdown?.Invoke(); } }
         finally
         {
             initialized = false; disposed = true;

@@ -24,6 +24,7 @@ public sealed class SteamRoomSession : IDisposable
     public ulong SteamId => client.SteamId;
     public string Name => client.Name;
     public SteamMatchmaking Matchmaking => client.Matchmaking;
+    public SteamFriends Friends => client.Friends;
     public event Action<ulong, ulong>? JoinRequested;
     public event Action<string>? ConnectionLost;
     public long FailedSends { get; private set; }

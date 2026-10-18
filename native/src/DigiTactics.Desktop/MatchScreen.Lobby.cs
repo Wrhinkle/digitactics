@@ -13,6 +13,8 @@ internal sealed partial class MatchScreen
     private string lobbyMessage = "";
     private Task<NetworkRoom>? enteringRoom;
     private Task<IReadOnlyList<SteamLobby>>? listingRooms;
+    private Task<IReadOnlyList<SteamFriendRoom>>? listingFriendRooms;
+    private IReadOnlyList<SteamFriendRoom> friendRooms = [];
     private IReadOnlyList<SteamLobby> availableRooms = [];
     private SteamLobbyVisibility visibility = SteamLobbyVisibility.Friends;
     private long presenceAt;
@@ -35,8 +37,8 @@ internal sealed partial class MatchScreen
     }
     private void RefreshSteamRooms()
     {
-        if (steam is null || listingRooms is not null) return;
-        try { listingRooms = steam.Matchmaking.ListCompatible(); } catch (Exception error) { lobbyMessage = error.Message; }
+        if (steam is null || listingRooms is not null || listingFriendRooms is not null) return;
+        try { listingRooms = steam.Matchmaking.ListCompatible(); listingFriendRooms = steam.Friends.ListRooms(); } catch (Exception error) { lobbyMessage = error.Message; }
     }
     private void CreateSteamRoom()
     {
@@ -62,6 +64,11 @@ internal sealed partial class MatchScreen
         {
             try { availableRooms = listingRooms.GetAwaiter().GetResult(); } catch (Exception error) { lobbyMessage = "Could not list rooms: " + error.Message; }
             listingRooms = null;
+        }
+        if (listingFriendRooms?.IsCompleted == true)
+        {
+            try { friendRooms = listingFriendRooms.GetAwaiter().GetResult(); } catch (Exception error) { lobbyMessage = "Could not list friends' rooms: " + error.Message; }
+            listingFriendRooms = null;
         }
         if (enteringRoom?.IsCompleted == true)
         {
@@ -150,15 +157,17 @@ internal sealed partial class MatchScreen
                 ImGui.EndCombo();
             }
             if (Button("steamCreate", "Create room")) CreateSteamRoom(); ImGui.SameLine();
-            if (Button("steamRefresh", listingRooms is null ? "Refresh rooms" : "Searching...")) RefreshSteamRooms();
+            if (Button("steamRefresh", listingRooms is null && listingFriendRooms is null ? "Refresh rooms" : "Searching...")) RefreshSteamRooms();
             if (invitedLobby is { } invited && Button("steamAcceptInvite", "Join invited room")) { invitedLobby = null; JoinSteamRoom(invited); }
             ImGui.Separator();
-            foreach (var listed in availableRooms.Where(r => r.Data["state"] != "over"))
+            var displayed = friendRooms.Select(r => r.Lobby).Concat(availableRooms).DistinctBy(r => r.Id).Where(r => r.Data["state"] != "over").ToArray();
+            foreach (var listed in displayed)
             {
                 ImGui.Text($"{listed.Data["name"]}  {listed.Members}/{listed.Capacity}  {listed.Data["setId"]} / {listed.Data["format"]}"); ImGui.SameLine();
                 if (Button("steamJoin/" + listed.Id, "Join")) JoinSteamRoom(listed.Id);
+                if (friendRooms.FirstOrDefault(r => r.Lobby.Id == listed.Id) is { } roomFriends) ImGui.Text("Friends: " + string.Join(", ", roomFriends.Friends.Select(f => f.Name)));
             }
-            if (availableRooms.Count == 0 && listingRooms is null) ImGui.Text("No public rooms found."u8);
+            if (displayed.Length == 0 && listingRooms is null && listingFriendRooms is null) ImGui.Text("No compatible rooms found."u8);
             ImGui.EndDisabled();
         }
         ImGui.Separator(); ImGui.TextWrapped(lobbyMessage);
