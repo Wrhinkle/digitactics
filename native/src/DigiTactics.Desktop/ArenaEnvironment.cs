@@ -18,7 +18,7 @@ internal sealed class ArenaEnvironment : IDisposable
     private BoardLighting? lighting;
     public string? Theme => scene?.Id;
     public int DrawCalls { get; private set; }
-    public BoardSurfaceFeedback? Feedback => surfaces?.Feedback;
+    public BoardSurfaceFeedback Feedback { get; } = new();
 
     public void SetTheme(string? id)
     {
@@ -26,7 +26,7 @@ internal sealed class ArenaEnvironment : IDisposable
         if(scene?.Id==id) return;
         var next=BoardScene.Load(Path.Combine(folder,id+".json.gz"));
         BoardMeshLayer? nextMeshes=null; BoardBackground? nextBackground=null; BoardSurfaceView? nextSurfaces=null;
-        try { nextMeshes=new(next); nextBackground=new(next); nextSurfaces=new(next,geometry.Value); }
+        try { nextMeshes=new(next); nextBackground=new(next); nextSurfaces=new(next,geometry.Value,Feedback); }
         catch { nextMeshes?.Dispose(); nextBackground?.Dispose(); nextSurfaces?.Dispose(); throw; }
         meshes?.Dispose(); background?.Dispose(); surfaces?.Dispose();
         scene=next; meshes=nextMeshes; background=nextBackground; surfaces=nextSurfaces; lighting=new(next);

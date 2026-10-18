@@ -10,10 +10,11 @@ internal sealed class BoardSurfaceView : IDisposable
     private readonly Dictionary<int,GpuTexture> textures=[];
     private readonly BoardSurfaces materials;
     public int DrawCalls { get; private set; }
-    public BoardSurfaceFeedback Feedback { get; } = new();
+    public BoardSurfaceFeedback Feedback { get; }
 
-    public BoardSurfaceView(BoardScene scene,BoardSurfaceGeometry source)
+    public BoardSurfaceView(BoardScene scene,BoardSurfaceGeometry source,BoardSurfaceFeedback? feedback=null)
     {
+        Feedback=feedback??new();
         materials=BoardSurfaces.From(scene);
         try
         {

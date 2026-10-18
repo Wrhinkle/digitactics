@@ -18,6 +18,9 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     public string BoardTheme { get; set; } = "file-island";
     public int BoardDrawCalls => board.DrawCalls;
     private readonly CombatChoreography choreography;
+    private readonly CombatBoardBursts boardBursts;
+    private static readonly Vector3 allyBurst=BoardLighting.Linear("#6fd3ff"),enemyBurst=BoardLighting.Linear("#ff7a6a");
+    internal int BoardFlashCount=>boardBursts.FlashCount;
     private double accumulator;
     private bool paused;
     private bool mirror;
@@ -33,11 +36,13 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
         var side = roster is { Length: > 0 } ? roster : rules.Lines.Take(6).Select((line, i) => new CombatEntry(line.Id, i % 3, i % columns, 4 + i / columns, Items: [])).ToArray();
         var enemy = rules.Lines.Skip(3).Take(side.Length).Select((line, i) => new CombatEntry(line.Id, i % 3, i % columns, 4 + i / columns, Items: [])).ToArray();
         Combat = new(rules, side, enemy, 84219, columns, setup: new(new(), new()));
+        boardBursts=new(columns,false);
         choreography = new(Combat, this); choreography.Update(0);
     }
     public BattleView(Ruleset rules, CombatSimulation combat, bool mirror)
     {
         this.rules = rules; Combat = combat; this.mirror = mirror;
+        boardBursts=new(combat.Columns,mirror);
         choreography = new(combat, this); choreography.Update(0, mirror);
     }
     public void Create(CombatUnit unit)
@@ -98,6 +103,8 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     {
         if (width <= 0 || height <= 0) return;
         var camera=Camera(width,height,Combat.Columns); board.SetTheme(BoardTheme); DrawCalls=0;
+        board.Feedback.Time=Combat.Time;
+        boardBursts.Update(Combat.Events,flash=>board.Feedback.Flash(flash.Column,flash.Row,flash.Until,flash.ViewTeam==0?allyBurst:enemyBurst));
         void Units(Matrix4x4 viewCamera,bool transparent)
         {
             foreach(var view in choreography.Views)

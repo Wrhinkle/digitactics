@@ -4,15 +4,16 @@ const {chromium}=require('../artifacts/audio-tools/node_modules/playwright');
 const root=path.resolve(__dirname,'../..');
 async function main(){
  const source=fs.readFileSync(path.join(root,'js/boards.js'),'utf8'),render=fs.readFileSync(path.join(root,'js/render3d.js'),'utf8');
- const rng=require('../../tools/headless.cjs').load({strict:true}).makeRng.toString();
+ const engine=require('../../tools/headless.cjs').load({strict:true}),rng=engine.makeRng.toString(),distance=engine.hexDist.toString();
  const layout=render.slice(render.indexOf('const SQ3'),render.indexOf('// placeholder color:')).replace('export const LAYOUT','const LAYOUT');
  const module="import * as THREE from '/vendor/three/build/three.module.js';import {mergeGeometries} from '/vendor/three/addons/utils/BufferGeometryUtils.js';import {extraThemes} from '/js/boards-extra.js';import {mysteryBoards} from '/js/mystery-boards.js';"
-  +`const DT={BENCH:9,CELLS:Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})),makeRng:${rng}},COLS=7,ROWS=8,BENCH=9;const LAYOUT=(()=>{`+layout+';return LAYOUT;})();'
+  +`const DT={BENCH:9,CELLS:Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})),makeRng:${rng},hexDist:${distance}},COLS=7,ROWS=8,BENCH=9;const LAYOUT=(()=>{`+layout+';return LAYOUT;})();'
   +source.slice(source.indexOf('const { cellWorld'),source.indexOf('// ---------- renderer integration ----------'))
   +'\nexport {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
   +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}'
   +'\nexport const originalHighlight='+render.slice(render.indexOf('  highlight(ui, planning) {'),render.indexOf('  benchPos(i, partner')).trim().replace('highlight(','function(')+';'
-  +'\nexport const originalDrawItems='+render.slice(render.indexOf('  drawItems(p, ui) {'),render.indexOf('  // which item token')).trim().replace('drawItems(','function(')+';';
+  +'\nexport const originalDrawItems='+render.slice(render.indexOf('  drawItems(p, ui) {'),render.indexOf('  // which item token')).trim().replace('drawItems(','function(')+';'
+  +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  try{
   const page=await browser.newPage();
@@ -128,6 +129,18 @@ async function main(){
    return rows;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-feedback.json.gz'),zlib.gzipSync(JSON.stringify(feedbackFixture)));
+  const bursts=await page.evaluate(async()=>{
+   const {THREE,originalBurst}=await import('/boards.js'),rows=[];
+   for(const columns of [7,14])for(const mirror of [false,true])for(let r=0;r<8;r++)for(let c=0;c<columns;c++)for(let radius=0;radius<4;radius++)for(let team=0;team<2;team++){
+    const cells=[];for(let y=0;y<8;y++)for(let x=0;x<7;x++)cells.push({c:x,r:y});
+    for(let y=0;y<8;y++)for(let x=7;x<columns;x++)cells.push({c:x,r:y});
+    const tiles=cells.map(p=>({userData:{...p,flash:0,flashColor:new THREE.Color()}})),e={c,r,radius,team,t:3.25};
+    originalBurst.call({tiles,mirror,combatCols:columns,viewTeam:t=>mirror?1-t:t},e);
+    rows.push({columns,mirror,event:e,flashes:tiles.filter(t=>t.userData.flash>0).map(t=>({c:t.userData.c,r:t.userData.r,until:t.userData.flash,color:t.userData.flashColor.toArray()}))});
+   }
+   return rows;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-bursts.json.gz'),zlib.gzipSync(JSON.stringify(bursts)));
   console.log(`Exported ${manifest.length} board themes, ${manifest.reduce((n,t)=>n+t.instances,0)} scene instances; animation tick counts retained for native port.`);
  }finally{await browser.close();}
 }
