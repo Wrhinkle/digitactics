@@ -1,5 +1,5 @@
 {
-  "sourceHash": "5f5f63c3655ad3fcb4f33e97eabfe09ed7b8cdf4e9ebb5c2456af56a1d802834",
+  "sourceHash": "fb8b29e4019134fe0ed3668f534f261f9a36103b5189b2ba81b32bed6205e889",
   "tile": 160,
   "columns": 8,
   "frames": 52,
@@ -35,14 +35,6 @@
         "role": "wave"
       },
       "sha256": "de5be4441ab6de443e1f809d8ca1c30a103b4380084cfbde94ebdf1738504e68"
-    },
-    "mydance": {
-      "file": "mydance.png",
-      "data": {
-        "mood": "good",
-        "role": "dance"
-      },
-      "sha256": "85e30197043c9907a0737006c68a498718ceaf5fc47380653957a24c810dfe63"
     },
     "think": {
       "file": "think.png",
@@ -136,6 +128,81 @@
       },
       "sha256": "a79a6c0d5ffb234958b1da5790d4adef5672205f05fc382b4e023d0a7dcb33f0"
     },
+    "deleted": {
+      "file": "deleted.png",
+      "data": {
+        "mood": "good",
+        "role": "taunt"
+      },
+      "sha256": "7f4f47e6950fa752c033c1f3dc4b5700e02ed2dfb4a6f0235340c3b811b96861"
+    },
+    "digivolve": {
+      "file": "digivolve.png",
+      "data": {
+        "mood": "good"
+      },
+      "sha256": "bffa62a9e8343637a8ee113aaeb1bf69ecd2b8a351b433d82a8f1db15faa30cb"
+    },
+    "crest": {
+      "file": "crest.png",
+      "data": {
+        "mood": "good",
+        "role": "happy"
+      },
+      "sha256": "5d582aff48116fe9f701ad876fd5a73c573c3b97133fecf0ae0510d2da94a08c"
+    },
+    "slide": {
+      "file": "slide.png",
+      "data": {
+        "mood": "good",
+        "role": "dance",
+        "move": "slide"
+      },
+      "sha256": "8a8f6e2e728918e0796cbf9dfcf33f94f0e11072480342c78ec46d26e45b9a33"
+    },
+    "spin": {
+      "file": "spin.png",
+      "data": {
+        "mood": "good",
+        "role": "dance",
+        "move": "spin"
+      },
+      "sha256": "ca3f8238c87605d04da77f0c3e4769547c09cda96ce927c68966cb3583f1f9a3"
+    },
+    "flip": {
+      "file": "flip.png",
+      "data": {
+        "mood": "good",
+        "role": "dance",
+        "move": "flip"
+      },
+      "sha256": "e29b084181835208d7880c822bfc9248f478daaa87a4731f71247cce4eea3fe3"
+    },
+    "mydance": {
+      "file": "mydance.png",
+      "data": {
+        "mood": "good",
+        "role": "dance"
+      },
+      "sha256": "85e30197043c9907a0737006c68a498718ceaf5fc47380653957a24c810dfe63"
+    },
+    "retro_hug": {
+      "file": "retro_hug.png",
+      "data": {
+        "mood": "good",
+        "role": "happy",
+        "retro": {
+          "model": "extra:DW1_Monzaemon",
+          "act": "hug",
+          "glyph": {
+            "ch": "♥",
+            "color": "#ff4d7a"
+          },
+          "size": 0.85
+        }
+      },
+      "sha256": "b2a6e2dc5a008f2746a793740357702f06541fa5fb48d76de8fdea9205a8344d"
+    },
     "retro_cane": {
       "file": "retro_cane.png",
       "data": {
@@ -151,6 +218,19 @@
         }
       },
       "sha256": "e188cd9bec8780a89e722eb97a12be5dd45cf58618c2e04adb12cfd329adb797"
+    },
+    "retro_ufo": {
+      "file": "retro_ufo.png",
+      "data": {
+        "mood": "bad",
+        "role": "sad",
+        "retro": {
+          "model": "extra:DW1_Vademon",
+          "act": "ufo",
+          "size": 0.6
+        }
+      },
+      "sha256": "6b5d0ca7bd56f57532a9b239c0ccabfad28e6f8e2dbd54f3e198b6840bc5e442"
     },
     "retro_shiver": {
       "file": "retro_shiver.png",
@@ -199,6 +279,19 @@
       },
       "sha256": "78df3f23835e864fbb930acd68f753d6bee94ceafa38b1fb327c1bb985c4cad0"
     },
+    "retro_swoop": {
+      "file": "retro_swoop.png",
+      "data": {
+        "mood": "good",
+        "role": "happy",
+        "retro": {
+          "model": "extra:DW1_Airdramon",
+          "act": "swoop",
+          "size": 0.9
+        }
+      },
+      "sha256": "3e15c9b8a015073eb017f92b5b4c5895bec2ae5db9189e40650cbdd8d33a9cbd"
+    },
     "retro_salute": {
       "file": "retro_salute.png",
       "data": {
@@ -215,355 +308,6 @@
       },
       "sha256": "5b87c5e4bae3846f378a783f43d113fe2740b054baf1fd879be158a760ee2df2"
     },
-    "mystery_daily_emote_1": {
-      "file": "mystery_daily_emote_1.png",
-      "data": {
-        "mood": "any",
-        "role": "happy"
-      },
-      "sha256": "5e5a5f9d1500e51aad28e6547335e04f602b36d6a6803fd30dc8dce0a7430aee"
-    },
-    "mystery_daily_emote_2": {
-      "file": "mystery_daily_emote_2.png",
-      "data": {
-        "mood": "any",
-        "role": "wave"
-      },
-      "sha256": "0d6d6215b736b4e190b0cc73cf9de69a6ffa76ceb5372f9d96ee7008404b2dce"
-    },
-    "mystery_daily_emote_3": {
-      "file": "mystery_daily_emote_3.png",
-      "data": {
-        "mood": "any",
-        "role": "taunt"
-      },
-      "sha256": "1c7065a188bab24ae0fbdbd2136fad0af372020b15a9ca58b9825b1f1f211f8e"
-    },
-    "mystery_daily_emote_4": {
-      "file": "mystery_daily_emote_4.png",
-      "data": {
-        "mood": "any",
-        "role": "dance"
-      },
-      "sha256": "046b0f6cce412d42c724516067cce12b59a5868d7f62d9e47ead37a963efa5e9"
-    },
-    "mystery_daily_emote_5": {
-      "file": "mystery_daily_emote_5.png",
-      "data": {
-        "mood": "any",
-        "role": "happy"
-      },
-      "sha256": "7d4cc9e30bc1bf0e6c407bd6eafd8739219f0382d142f9d9faaf0dec2e42821f"
-    },
-    "mystery_daily_emote_6": {
-      "file": "mystery_daily_emote_6.png",
-      "data": {
-        "mood": "any",
-        "role": "wave"
-      },
-      "sha256": "22ff280f4e9d9d8232f3ea4406fa48ac8f7a3ce3a6d37fb419b3601df5fedfc4"
-    },
-    "mystery_daily_emote_7": {
-      "file": "mystery_daily_emote_7.png",
-      "data": {
-        "mood": "any",
-        "role": "taunt"
-      },
-      "sha256": "41ad18004f43773247383ec81cefa182eea06ddd2e567aa32b423ada2c49622b"
-    },
-    "mystery_daily_emote_8": {
-      "file": "mystery_daily_emote_8.png",
-      "data": {
-        "mood": "any",
-        "role": "dance"
-      },
-      "sha256": "02d015707fe2a670e922c5ebf6cc0be56783702c5783cc1cb9211513b62bf445"
-    },
-    "mystery_vault_emote_1": {
-      "file": "mystery_vault_emote_1.png",
-      "data": {
-        "mood": "any",
-        "role": "happy"
-      },
-      "sha256": "ae7ca7cfd5b4f99b8386495f5b98563ba081b90073ca25cb1b945820260b644d"
-    },
-    "mystery_vault_emote_2": {
-      "file": "mystery_vault_emote_2.png",
-      "data": {
-        "mood": "any",
-        "role": "wave"
-      },
-      "sha256": "2c54f2eff27efbd33b21a6932f7aca0c2d1874a3029ec9e78f995c08d4206f53"
-    },
-    "mystery_vault_emote_3": {
-      "file": "mystery_vault_emote_3.png",
-      "data": {
-        "mood": "any",
-        "role": "taunt"
-      },
-      "sha256": "442f9816a67be07b20d6796264dad7ac779a1237de371798c96604bc2c1d2723"
-    },
-    "mystery_vault_emote_4": {
-      "file": "mystery_vault_emote_4.png",
-      "data": {
-        "mood": "any",
-        "role": "dance"
-      },
-      "sha256": "98ec5a0e4ca0a0726e067519d6cfd3305e706753649cc3778255011ed0788fab"
-    },
-    "mystery_vault_emote_5": {
-      "file": "mystery_vault_emote_5.png",
-      "data": {
-        "mood": "any",
-        "role": "happy"
-      },
-      "sha256": "a1b84479f5a2638f213a5114ddd237130382d0958c6e405890fb6618dc364e64"
-    },
-    "mystery_vault_emote_6": {
-      "file": "mystery_vault_emote_6.png",
-      "data": {
-        "mood": "any",
-        "role": "wave"
-      },
-      "sha256": "42b177ecd8891a9e2541edca7ac3d1598bdbb84af954bc2f5a52ae0067bb577f"
-    },
-    "mystery_vault_emote_7": {
-      "file": "mystery_vault_emote_7.png",
-      "data": {
-        "mood": "any",
-        "role": "taunt"
-      },
-      "sha256": "701334848895d98de4a7f2440085c6061906563b843493548d00a70af8e03942"
-    },
-    "mystery_vault_emote_8": {
-      "file": "mystery_vault_emote_8.png",
-      "data": {
-        "mood": "any",
-        "role": "dance"
-      },
-      "sha256": "2b318bfd1e2d2f2acaa6ce478feef4fc1519b2f6250bf9d387fcc545800f0765"
-    },
-    "deleted": {
-      "file": "deleted.png",
-      "data": {
-        "mood": "good",
-        "role": "taunt"
-      },
-      "sha256": "7f4f47e6950fa752c033c1f3dc4b5700e02ed2dfb4a6f0235340c3b811b96861"
-    },
-    "digivolve": {
-      "file": "digivolve.png",
-      "data": {
-        "mood": "good"
-      },
-      "sha256": "bffa62a9e8343637a8ee113aaeb1bf69ecd2b8a351b433d82a8f1db15faa30cb"
-    },
-    "crest": {
-      "file": "crest.png",
-      "data": {
-        "mood": "good",
-        "role": "happy"
-      },
-      "sha256": "5d582aff48116fe9f701ad876fd5a73c573c3b97133fecf0ae0510d2da94a08c"
-    },
-    "slide": {
-      "file": "slide.png",
-      "data": {
-        "mood": "good",
-        "role": "dance",
-        "move": "slide"
-      },
-      "sha256": "8a8f6e2e728918e0796cbf9dfcf33f94f0e11072480342c78ec46d26e45b9a33"
-    },
-    "spin": {
-      "file": "spin.png",
-      "data": {
-        "mood": "good",
-        "role": "dance",
-        "move": "spin"
-      },
-      "sha256": "ca3f8238c87605d04da77f0c3e4769547c09cda96ce927c68966cb3583f1f9a3"
-    },
-    "retro_hug": {
-      "file": "retro_hug.png",
-      "data": {
-        "mood": "good",
-        "role": "happy",
-        "retro": {
-          "model": "extra:DW1_Monzaemon",
-          "act": "hug",
-          "glyph": {
-            "ch": "♥",
-            "color": "#ff4d7a"
-          },
-          "size": 0.85
-        }
-      },
-      "sha256": "b2a6e2dc5a008f2746a793740357702f06541fa5fb48d76de8fdea9205a8344d"
-    },
-    "retro_ufo": {
-      "file": "retro_ufo.png",
-      "data": {
-        "mood": "bad",
-        "role": "sad",
-        "retro": {
-          "model": "extra:DW1_Vademon",
-          "act": "ufo",
-          "size": 0.6
-        }
-      },
-      "sha256": "6b5d0ca7bd56f57532a9b239c0ccabfad28e6f8e2dbd54f3e198b6840bc5e442"
-    },
-    "retro_swoop": {
-      "file": "retro_swoop.png",
-      "data": {
-        "mood": "good",
-        "role": "happy",
-        "retro": {
-          "model": "extra:DW1_Airdramon",
-          "act": "swoop",
-          "size": 0.9
-        }
-      },
-      "sha256": "3e15c9b8a015073eb017f92b5b4c5895bec2ae5db9189e40650cbdd8d33a9cbd"
-    },
-    "mystery_daily_emote_9": {
-      "file": "mystery_daily_emote_9.png",
-      "data": {
-        "mood": "any",
-        "role": "happy"
-      },
-      "sha256": "5affb4c0e8f241bd5d2cb7cb59514fdc8c93d3d3a574b74a24f09aae0b18321f"
-    },
-    "mystery_daily_emote_10": {
-      "file": "mystery_daily_emote_10.png",
-      "data": {
-        "mood": "any",
-        "role": "wave"
-      },
-      "sha256": "1b5c2c381a5132c639c82bc0a0e3e314cb70cb0c41647fb347ec0681f7bcb62a"
-    },
-    "mystery_daily_emote_11": {
-      "file": "mystery_daily_emote_11.png",
-      "data": {
-        "mood": "any",
-        "role": "taunt"
-      },
-      "sha256": "40a004e676f239a88916ad616e9cab92cc01161ac6188fa29923318e0202f688"
-    },
-    "mystery_daily_emote_12": {
-      "file": "mystery_daily_emote_12.png",
-      "data": {
-        "mood": "any",
-        "role": "dance"
-      },
-      "sha256": "bce02badfe44873dc61336d0e6858689ff6c1d38a0f1ea75b222e888881bb09f"
-    },
-    "mystery_daily_emote_13": {
-      "file": "mystery_daily_emote_13.png",
-      "data": {
-        "mood": "any",
-        "role": "happy"
-      },
-      "sha256": "75c2d37767c8c1190eaa680b48af987a5e5f8c53b542b69a70f2dfa248ce8b11"
-    },
-    "mystery_daily_emote_14": {
-      "file": "mystery_daily_emote_14.png",
-      "data": {
-        "mood": "any",
-        "role": "wave"
-      },
-      "sha256": "f0dc52f3702f2e95b397f6643d525eb9a85d964c408d6775236da56ebdce0811"
-    },
-    "mystery_daily_emote_15": {
-      "file": "mystery_daily_emote_15.png",
-      "data": {
-        "mood": "any",
-        "role": "taunt"
-      },
-      "sha256": "ee67a10024607275b007cfab64e9cc2304ba47e2de5bd34b7741fadf0595e39b"
-    },
-    "mystery_daily_emote_16": {
-      "file": "mystery_daily_emote_16.png",
-      "data": {
-        "mood": "any",
-        "role": "dance"
-      },
-      "sha256": "c166cfa3420cf3323767be02b43d84d2ceb2e3bc18c6ae384074a9027b827a3d"
-    },
-    "mystery_vault_emote_9": {
-      "file": "mystery_vault_emote_9.png",
-      "data": {
-        "mood": "any",
-        "role": "happy"
-      },
-      "sha256": "80b49b33a60b74ad3440eed766aa6882adaf57d433c559341a8627d3bd4e56cc"
-    },
-    "mystery_vault_emote_10": {
-      "file": "mystery_vault_emote_10.png",
-      "data": {
-        "mood": "any",
-        "role": "wave"
-      },
-      "sha256": "060b169c0143c0f18ba779b9f9e4e81f587fe64d9c20e095ef40819cfacd7a31"
-    },
-    "mystery_vault_emote_11": {
-      "file": "mystery_vault_emote_11.png",
-      "data": {
-        "mood": "any",
-        "role": "taunt"
-      },
-      "sha256": "e69b8e9bbbfc946694070eb95141a362d3e59cebe7e94487b01ed819a5a555ef"
-    },
-    "mystery_vault_emote_12": {
-      "file": "mystery_vault_emote_12.png",
-      "data": {
-        "mood": "any",
-        "role": "dance"
-      },
-      "sha256": "7dec980a837800481a64c2215192af032424afd568de0e4a4237fe0f9b3a0f8e"
-    },
-    "mystery_vault_emote_13": {
-      "file": "mystery_vault_emote_13.png",
-      "data": {
-        "mood": "any",
-        "role": "happy"
-      },
-      "sha256": "d3f196184e28301f19a52adef0493ea8f0aa87dcb889a734ea6865c28776c238"
-    },
-    "mystery_vault_emote_14": {
-      "file": "mystery_vault_emote_14.png",
-      "data": {
-        "mood": "any",
-        "role": "wave"
-      },
-      "sha256": "44f4f9936c2b5711f8dfdd9296f02a59ae2bc8baeed745cb2d7378de7cc69fa6"
-    },
-    "mystery_vault_emote_15": {
-      "file": "mystery_vault_emote_15.png",
-      "data": {
-        "mood": "any",
-        "role": "taunt"
-      },
-      "sha256": "04494ce6a537842b5b8aaa3c261dbad5a20174d7042f2edbf030a7ee5924df8e"
-    },
-    "mystery_vault_emote_16": {
-      "file": "mystery_vault_emote_16.png",
-      "data": {
-        "mood": "any",
-        "role": "dance"
-      },
-      "sha256": "48dad30bb6c0f9755c078bee21717304d6e826d02853ae98292791e82ff83f5c"
-    },
-    "flip": {
-      "file": "flip.png",
-      "data": {
-        "mood": "good",
-        "role": "dance",
-        "move": "flip"
-      },
-      "sha256": "e29b084181835208d7880c822bfc9248f478daaa87a4731f71247cce4eea3fe3"
-    },
     "retro_stomp": {
       "file": "retro_stomp.png",
       "data": {
@@ -577,13 +321,141 @@
       },
       "sha256": "239860dfc88fc7a4b51fa328cf4135493842161a89aa2171470ef204cfbeca28"
     },
+    "mystery_daily_emote_1": {
+      "file": "mystery_daily_emote_1.png",
+      "data": {
+        "mood": "any",
+        "role": "happy"
+      },
+      "sha256": "1ae0acf0a395ff14939bc13c920b59f45dd12930dd4996d66ebc6c166d8a5cc7"
+    },
+    "mystery_daily_emote_2": {
+      "file": "mystery_daily_emote_2.png",
+      "data": {
+        "mood": "any",
+        "role": "wave"
+      },
+      "sha256": "08ef65fdc7b1dd8a2936637ff9963dc038af25f825c204fd1b4ce176b622c718"
+    },
+    "mystery_daily_emote_3": {
+      "file": "mystery_daily_emote_3.png",
+      "data": {
+        "mood": "any",
+        "role": "taunt"
+      },
+      "sha256": "ace637a4b4c1c2075ba9cfa6e597afe7aec298182bdfa9a0bd05fdcda782a3a8"
+    },
+    "mystery_daily_emote_4": {
+      "file": "mystery_daily_emote_4.png",
+      "data": {
+        "mood": "any",
+        "role": "dance"
+      },
+      "sha256": "875b619686ebf5121d7a19b00911c8f3a3a81d98cc28defb8936c673b28cc895"
+    },
+    "mystery_daily_emote_5": {
+      "file": "mystery_daily_emote_5.png",
+      "data": {
+        "mood": "any",
+        "role": "happy"
+      },
+      "sha256": "3935e6edf04db6f27bb17fb9c385dfcc18a74fdd0c0d628af483d4550b9fc9e1"
+    },
+    "mystery_daily_emote_6": {
+      "file": "mystery_daily_emote_6.png",
+      "data": {
+        "mood": "any",
+        "role": "wave"
+      },
+      "sha256": "ce849c5d9c4a2c2c911f86a54f075eb7c674728dc358ec5e3502d566909217d9"
+    },
+    "mystery_daily_emote_7": {
+      "file": "mystery_daily_emote_7.png",
+      "data": {
+        "mood": "any",
+        "role": "taunt"
+      },
+      "sha256": "9a28b6cfbc6f4605a4f4c7bd042526d210f323a37a6236cd29e7b153fe369e8c"
+    },
+    "mystery_daily_emote_8": {
+      "file": "mystery_daily_emote_8.png",
+      "data": {
+        "mood": "any",
+        "role": "dance"
+      },
+      "sha256": "2339968a4c2c84981701d530861ca4601cda490c385fc5503c81b901b592e4a4"
+    },
+    "mystery_daily_emote_9": {
+      "file": "mystery_daily_emote_9.png",
+      "data": {
+        "mood": "any",
+        "role": "happy"
+      },
+      "sha256": "cf670986570287ab39b3bf6e752f3b4aa4c400417f66abf412c0b5780b9828b6"
+    },
+    "mystery_daily_emote_10": {
+      "file": "mystery_daily_emote_10.png",
+      "data": {
+        "mood": "any",
+        "role": "wave"
+      },
+      "sha256": "0da0520e5f8fceff50a4ff0ca34a8f050a4707b8a50d9006482452a9da60e874"
+    },
+    "mystery_daily_emote_11": {
+      "file": "mystery_daily_emote_11.png",
+      "data": {
+        "mood": "any",
+        "role": "taunt"
+      },
+      "sha256": "0fb6d8bf0a6ad12c839fc1c77e32c409005395066dbb85ed12a091f65193db03"
+    },
+    "mystery_daily_emote_12": {
+      "file": "mystery_daily_emote_12.png",
+      "data": {
+        "mood": "any",
+        "role": "dance"
+      },
+      "sha256": "e74ca2909f818276f2eac5d28420a60024852062db128b18fed9d89290c9f107"
+    },
+    "mystery_daily_emote_13": {
+      "file": "mystery_daily_emote_13.png",
+      "data": {
+        "mood": "any",
+        "role": "happy"
+      },
+      "sha256": "0ac87f2368eb2b7e61d67fc9e4959f4a040cfbccc387dd0d0d0face31a245640"
+    },
+    "mystery_daily_emote_14": {
+      "file": "mystery_daily_emote_14.png",
+      "data": {
+        "mood": "any",
+        "role": "wave"
+      },
+      "sha256": "1d82b2e4c15516681dfc404fb8999f6c20ed956d291cce160e4ddc6035b3cdbe"
+    },
+    "mystery_daily_emote_15": {
+      "file": "mystery_daily_emote_15.png",
+      "data": {
+        "mood": "any",
+        "role": "taunt"
+      },
+      "sha256": "d3291bf817882982af421111fc6e0f6c0e9b047940612aa6f986cf23d13a3ff4"
+    },
+    "mystery_daily_emote_16": {
+      "file": "mystery_daily_emote_16.png",
+      "data": {
+        "mood": "any",
+        "role": "dance"
+      },
+      "sha256": "54ef28c8fe946539d977afabd1f157d8d94abaa7784e7c620d0c4c8fd710456a"
+    },
     "mystery_daily_emote_17": {
       "file": "mystery_daily_emote_17.png",
       "data": {
         "mood": "any",
         "role": "happy"
       },
-      "sha256": "e7cdd76a02a755f9fbb6081c1ffe82e069ad01977cf76858cfeeb4def057bb83"
+      "sha256": "0f46bc07a2d4eb173437bea49883d0bb209e2439b53ded113909b35634abe0aa"
     },
     "mystery_daily_emote_18": {
       "file": "mystery_daily_emote_18.png",
@@ -591,7 +463,7 @@
         "mood": "any",
         "role": "wave"
       },
-      "sha256": "b97b9766911907f47564928c266f2beaa24a54c760c946b4309908d249bade63"
+      "sha256": "2721328a4e82ec89129410bfad3c7f7628c9c776e3a5c1d551a42eb3f594abfc"
     },
     "mystery_daily_emote_19": {
       "file": "mystery_daily_emote_19.png",
@@ -599,7 +471,7 @@
         "mood": "any",
         "role": "taunt"
       },
-      "sha256": "b177e86f3e2504cfe1e672cfac525e69d23973fd0352fa53563f0701fcc129da"
+      "sha256": "bfc739d5d4c98d6f233e60a0da663de9a88f0543834f1c88c8b7879d155b4ee6"
     },
     "mystery_daily_emote_20": {
       "file": "mystery_daily_emote_20.png",
@@ -607,7 +479,135 @@
         "mood": "any",
         "role": "dance"
       },
-      "sha256": "58613ad1d5494fe8980172a6e84fd1cba6d3e43ce61bb263b7f4abf07d871307"
+      "sha256": "8bbf316c4d0d0421a2171da07c10dd20fb93f59c0346d88f7f8c06107bd8a8a1"
+    },
+    "mystery_vault_emote_1": {
+      "file": "mystery_vault_emote_1.png",
+      "data": {
+        "mood": "any",
+        "role": "happy"
+      },
+      "sha256": "395846e0aee04e60a43da7c4e9cc4ea83092823efffa7d582b2db4c96085da3e"
+    },
+    "mystery_vault_emote_2": {
+      "file": "mystery_vault_emote_2.png",
+      "data": {
+        "mood": "any",
+        "role": "wave"
+      },
+      "sha256": "85202256d019f420733143395697972dce835ffd682eb65c07300a8449e8aa60"
+    },
+    "mystery_vault_emote_3": {
+      "file": "mystery_vault_emote_3.png",
+      "data": {
+        "mood": "any",
+        "role": "taunt"
+      },
+      "sha256": "4dda2ec19ab74999b2a972edad71416723d514649aea669429977f55b3d51faf"
+    },
+    "mystery_vault_emote_4": {
+      "file": "mystery_vault_emote_4.png",
+      "data": {
+        "mood": "any",
+        "role": "dance"
+      },
+      "sha256": "3306d5c51277436a222993f6a9f8edf654b8203e751a8e6253298898d0f51b52"
+    },
+    "mystery_vault_emote_5": {
+      "file": "mystery_vault_emote_5.png",
+      "data": {
+        "mood": "any",
+        "role": "happy"
+      },
+      "sha256": "8c602efb53fb88b6b4493931501fb6f76ceeb74b65b309128671e8a1b4e2878a"
+    },
+    "mystery_vault_emote_6": {
+      "file": "mystery_vault_emote_6.png",
+      "data": {
+        "mood": "any",
+        "role": "wave"
+      },
+      "sha256": "5914162817c1c935f3b3cde34345b09f9515e59aa1749d46d178eafb8757f995"
+    },
+    "mystery_vault_emote_7": {
+      "file": "mystery_vault_emote_7.png",
+      "data": {
+        "mood": "any",
+        "role": "taunt"
+      },
+      "sha256": "a3a0978b5433b5cdc61b9b04690e7665915f8ae0654521c3f7bceec565c1ad62"
+    },
+    "mystery_vault_emote_8": {
+      "file": "mystery_vault_emote_8.png",
+      "data": {
+        "mood": "any",
+        "role": "dance"
+      },
+      "sha256": "9f34b5fb45a29faf3c7df80a7dbd15072a4c3a1e9476b703cbf558e7a9a32abe"
+    },
+    "mystery_vault_emote_9": {
+      "file": "mystery_vault_emote_9.png",
+      "data": {
+        "mood": "any",
+        "role": "happy"
+      },
+      "sha256": "3224aacc167d8fc702c9947bedd38134431c53ebfb81a7d4e1dc038d9416e975"
+    },
+    "mystery_vault_emote_10": {
+      "file": "mystery_vault_emote_10.png",
+      "data": {
+        "mood": "any",
+        "role": "wave"
+      },
+      "sha256": "c1dd09c0081374891b27a3ef16d33d2bde4e04d1ec2adf7d2c45b90bcc56bce9"
+    },
+    "mystery_vault_emote_11": {
+      "file": "mystery_vault_emote_11.png",
+      "data": {
+        "mood": "any",
+        "role": "taunt"
+      },
+      "sha256": "90c517d9b978bc276e5033d94361f7de45f3c029e5720d94d6e32e1a66e55267"
+    },
+    "mystery_vault_emote_12": {
+      "file": "mystery_vault_emote_12.png",
+      "data": {
+        "mood": "any",
+        "role": "dance"
+      },
+      "sha256": "60dd7909eda8c0f0fc9f40458a6d7b95844a9bf6d9c24343ea5918bf8d06d57f"
+    },
+    "mystery_vault_emote_13": {
+      "file": "mystery_vault_emote_13.png",
+      "data": {
+        "mood": "any",
+        "role": "happy"
+      },
+      "sha256": "4baf55fa7de5a2773c8e01411fb77401591453c94196b5ab86d84d3011c5a4ad"
+    },
+    "mystery_vault_emote_14": {
+      "file": "mystery_vault_emote_14.png",
+      "data": {
+        "mood": "any",
+        "role": "wave"
+      },
+      "sha256": "fb120640c9b2230eac1d088f50f269a53204729452634c659fcd1e082ec4621a"
+    },
+    "mystery_vault_emote_15": {
+      "file": "mystery_vault_emote_15.png",
+      "data": {
+        "mood": "any",
+        "role": "taunt"
+      },
+      "sha256": "8dfba42b3889751c8defd8bf8f713d6170a55145a686db9c1fd162dd222db577"
+    },
+    "mystery_vault_emote_16": {
+      "file": "mystery_vault_emote_16.png",
+      "data": {
+        "mood": "any",
+        "role": "dance"
+      },
+      "sha256": "cf5429e1c746bc6535ef0d5297c8474e4f2ec25c4d3cf44ebdbda31cfe825e5c"
     },
     "mystery_vault_emote_17": {
       "file": "mystery_vault_emote_17.png",
@@ -615,7 +615,7 @@
         "mood": "any",
         "role": "happy"
       },
-      "sha256": "d5b7a61e916efd0371e3c292155f777e2bc36fc7a14c1efa4ae8749eaef5f635"
+      "sha256": "d7483a9b7bde3f373e107aa6356d90a5c03d41e22493d7148e065c25b52c8ed6"
     },
     "mystery_vault_emote_18": {
       "file": "mystery_vault_emote_18.png",
@@ -623,7 +623,7 @@
         "mood": "any",
         "role": "wave"
       },
-      "sha256": "e5c763342e294ccd908b8d995a428596f2cd05e3fcf329d96dabca168c30417c"
+      "sha256": "23fe0ed853dfc38599b8e2677478041bba6115da9365a7a32a5b5f75785356a9"
     },
     "mystery_vault_emote_19": {
       "file": "mystery_vault_emote_19.png",
@@ -631,7 +631,7 @@
         "mood": "any",
         "role": "taunt"
       },
-      "sha256": "f255021320c435067d1420846b21789d0d40b74a29177ff5bd52facbcd0b597c"
+      "sha256": "bf3e3e19c951e67319f9f6258c31d44225194043c0851ab6a1b7a36ea21f0d39"
     },
     "mystery_vault_emote_20": {
       "file": "mystery_vault_emote_20.png",
@@ -639,7 +639,7 @@
         "mood": "any",
         "role": "dance"
       },
-      "sha256": "a695cd8151f9309f29b8e3483b810be985c6ee85990d585e543b1a53ac34bc7e"
+      "sha256": "7d877d1d427dc021e4bb6f77239c95296fd0e5a47b65aa56bedca2fdf456191a"
     }
   }
 }
