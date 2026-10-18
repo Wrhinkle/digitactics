@@ -15,6 +15,8 @@ internal sealed partial class MatchScreen
     private bool farmWasVisible;
     private readonly List<(string Text, double Remaining)> farmNotices = [];
     private readonly FarmRewardPops farmRewardPops = new();
+    private GpuTexture? farmMoodTexture;
+    private double farmMoodTime;
     private int FarmSceneWidth => Math.Max(250, (int)(size.X * .54f) - 24);
     private int FarmSceneHeight => Math.Max(200, size.Y - 150);
     public int FarmDrawCalls => farmView?.DrawCalls ?? 0;
@@ -42,6 +44,7 @@ internal sealed partial class MatchScreen
     }
     private void UpdateFarmView(double delta)
     {
+        farmMoodTime += delta;
         for (int i = farmNotices.Count - 1; i >= 0; i--)
         {
             var notice = farmNotices[i];
@@ -102,8 +105,18 @@ internal sealed partial class MatchScreen
             else if (farmView is not null)
                 foreach (var (id, x, y) in farmView.Anchors(FarmSceneWidth, FarmSceneHeight))
                 {
-                    ImGui.SetCursorScreenPos(new(12 + x - 25, 70 + y));
-                    if (Button("farmResident/" + id, CosmeticCollection.Item("legend", id)!.Name, active: id == farmPet)) { farmPet = id; FarmAct(FarmCareAction.Pet); }
+                    var pointer = ImGui.GetMousePos();
+                    bool hovered = ImGui.IsWindowHovered() && farmView.Pick(pointer.X - 12, pointer.Y - 70, FarmSceneWidth, FarmSceneHeight) is { Pile: null } hit && hit.Id == id;
+                    if (id == farmPet || hovered)
+                    {
+                        ImGui.SetCursorScreenPos(new(12 + x - 25, 70 + y));
+                        if (Button("farmResident/" + id, CosmeticCollection.Item("legend", id)!.Name, active: id == farmPet)) { farmPet = id; FarmAct(FarmCareAction.Pet); }
+                    }
+                    if (farmView.Mood(id) is { } mood)
+                    {
+                        if (hovered) ImGui.SetTooltip(mood.Text);
+                        DrawFarmMood(mood, 12 + x, 70 + y - 16);
+                    }
                 }
             if (farmView is not null && ImGui.IsWindowHovered() && !ImGui.IsAnyItemHovered() && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
             {
@@ -145,6 +158,7 @@ internal sealed partial class MatchScreen
             if (farmPet is not null)
             {
                 var pet = state["pets"]![farmPet]!;
+                if (farmView?.Mood(farmPet) is { } mood) ImGui.Text(mood.Text);
                 ImGui.Text($"Hunger {pet["hunger"]!.GetValue<double>():0}    Energy {pet["energy"]!.GetValue<double>():0}    Happiness {pet["happy"]!.GetValue<double>():0}    Discipline {pet["disc"]!.GetValue<double>():0}");
                 ImGui.Text($"Weight {pet["weight"]}    {(pet["sick"]!.GetValue<bool>() ? "Sick: " + pet["sickWhy"] : "Healthy")}    {(pet["flags"]?["asleep"]?.GetValue<bool>() == true ? "Sleeping" : "Awake")}");
                 ImGui.Text($"Strength {pet["str"]}    Speed {pet["spd"]}    Wisdom {pet["wis"]}    Stamina {pet["sta"]} (cap 300)");
@@ -183,6 +197,17 @@ internal sealed partial class MatchScreen
             draw.AddText(ImGui.GetFont(), ImGui.GetFontSize(), position + new Brutal.Numerics.float2(1, 1), new ImColor8(0, 0, 0, alpha), pop.Text);
             draw.AddText(ImGui.GetFont(), ImGui.GetFontSize(), position, new ImColor8(255, 211, 106, alpha), pop.Text);
         }
+    }
+    private void DrawFarmMood(FarmMood mood, float x, float y)
+    {
+        if (mood.Icon == 9) return;
+        farmMoodTexture ??= new(DigiTactics.Assets.PngImage.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "content/farm-moods.png"))), new(MinFilter: 9729, WrapS: 33071, WrapT: 33071), false);
+        // Original 1.6-second bubble bob, with the same three-pixel excursion.
+        y -= (float)(1.5 * (1 - Math.Cos(farmMoodTime * Math.PI * 2 / 1.6)));
+        var draw = ImGui.GetWindowDrawList();
+        draw.AddCircleFilled(new(x + 1, y + 2), 14, new ImColor8(0, 0, 0, 70));
+        draw.AddCircleFilled(new(x, y), 13, new ImColor8(255, 255, 255, 235));
+        draw.AddImage(new ImTextureRef { _TexID = new((nint)farmMoodTexture.Id) }, new(x - 13, y - 13), new(x + 13, y + 13), new(mood.Icon / 10f, 0), new((mood.Icon + 1) / 10f, 1));
     }
     private void FarmRoomControls(JsonNode state, string[] residents)
     {

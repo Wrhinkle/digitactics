@@ -25,6 +25,8 @@ internal sealed partial class FarmView : IDisposable
         public void Update(double delta) => animator.Update(delta);
     }
     private readonly FarmChoreography choreography = new();
+    private readonly Dictionary<string, FarmMood> moods = [];
+    public FarmMood? Mood(string id) => moods.GetValueOrDefault(id);
     private readonly FarmLighting lighting = new();
     public bool Night => lighting.Night;
     private readonly ModelCatalog models = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
@@ -60,12 +62,14 @@ internal sealed partial class FarmView : IDisposable
         if (room?.Theme != theme) LoadRoom(theme);
         meat = farm["meat"]!["n"]!.GetValue<int>();
         var residents = farm["residents"]!.AsArray().Select(x => x!.GetValue<string>()).ToArray();
+        moods.Clear();
         foreach (string id in actors.Keys.Except(residents).ToArray()) { actors.Remove(id); choreography.Remove(id); }
         foreach (string id in residents)
         {
             string form = LegendEvolution.Inspect(legendJson, walletJson, farmJson, id).Form;
             var visual = companions.Resolve(form == id ? id : id + "@" + form);
             var pet = farm["pets"]![id]!;
+            moods[id] = FarmMood.Read(pet, !lighting.Night, new[] { 10d, 20, 30, 40 }[Math.Clamp(LegendEvolution.Form(form).Tier, 0, 3)]);
             var needs = new FarmResidentNeeds(pet["flags"]?["asleep"]?.GetValue<bool>() == true, pet["sick"]!.GetValue<bool>(), pet["energy"]!.GetValue<double>(), pet["happy"]!.GetValue<double>(), pet["tantrum"]!.GetValue<double>() != 0);
             if (actors.TryGetValue(id, out var existing) && existing.Visual == visual) { existing.Resident.Needs = needs; continue; }
             if (!loaded.TryGetValue(visual.Source, out var model)) loaded[visual.Source] = model = new(models, models.Sources[visual.Source]);

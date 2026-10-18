@@ -12,6 +12,19 @@ internal static class FarmCareChecks
         using var gzip = new GZipStream(file, CompressionMode.Decompress);
         using var fixture = JsonDocument.Parse(gzip);
         int checks = FarmEventChecks.Run();
+        using (var moodFile = File.OpenRead(Path.Combine(root, "tests/fixtures/farm-moods.json.gz")))
+        using (var moodGzip = new GZipStream(moodFile, CompressionMode.Decompress))
+        using (var moods = JsonDocument.Parse(moodGzip))
+        {
+            string[] names = ["Sleeping", "Sick", "Throwing a tantrum", "Hungry", "Sleepy", "Wants a clean room", "Sad", "Chubby", "Happy", "Content"];
+            foreach (var row in moods.RootElement.EnumerateArray())
+            {
+                var mood = FarmMood.Read(JsonNode.Parse(row.GetProperty("p").GetRawText())!, row.GetProperty("lights").GetBoolean(), row.GetProperty("ideal").GetDouble());
+                string expected = row.GetProperty("mood").GetProperty("text").GetString()!;
+                checks++;
+                if (mood.Text != expected || names[mood.Icon] != expected) throw new InvalidOperationException("Farm mood priority differs from original: " + expected);
+            }
+        }
         foreach (var test in fixture.RootElement.EnumerateArray())
         {
             var result = FarmCare.Apply(test.GetProperty("farm").GetRawText(), test.GetProperty("wallet").GetRawText(), test.GetProperty("legend").GetRawText(), test.GetProperty("time").GetInt64(),

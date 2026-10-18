@@ -19,6 +19,8 @@ internal sealed class FarmPointerSmoke : IDisposable
         this.directory = directory;
         if (profile.Exists) throw new InvalidOperationException("Farm pointer smoke requires a fresh isolated profile directory.");
         var farm = JsonNode.Parse(FarmSimulation.Advance(null, null, null, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()).Save)!;
+        farm["pets"]!["tokomon"]!["hunger"] = 10;
+        farm["pets"]!["tsunomon"]!["happy"] = 85;
         // Equal keys on different owners catch dispatch that accidentally uses the selected resident.
         farm["pets"]!["tokomon"]!["poop"] = new JsonArray(new JsonObject { ["k"] = 901, ["x"] = -2, ["z"] = 2, ["n"] = false });
         farm["pets"]!["tsunomon"]!["poop"] = new JsonArray(new JsonObject { ["k"] = 901, ["x"] = 2, ["z"] = 2, ["n"] = true });
