@@ -16,7 +16,7 @@ internal static class CompanionModelSmoke
         try
         {
             Glfw.WindowHint(GlfwWindowHint.ContextVersionMajor, 4); Glfw.WindowHint(GlfwWindowHint.ContextVersionMinor, 5); Glfw.WindowHint(GlfwWindowHint.Visible, 0);
-            const int cell = 140, columns = 11, rows = 7;
+            const int cell = 140, columns = 11, rows = 8;
             using var window = Glfw.CreateWindow(new GlfwWindow.CreateInfo { Title = "Companion model verification", Size = new int2(cell * columns, cell * rows) });
             window.MakeContextCurrent();
             if (!Glad.Initialize(name => Glfw.PInvoke.GetProcAddress(name))) throw new InvalidOperationException("OpenGL initialization failed.");
@@ -24,9 +24,12 @@ internal static class CompanionModelSmoke
             using var renderer = new ModelRenderer { FarmLight = new FarmLighting(), FarmEye = new(0, 1.8f, 5) };
             var camera = Matrix4x4.CreateLookAt(new(0, 1.8f, 5), new(0, .9f, 0), Vector3.UnitY) * Matrix4x4.CreatePerspectiveFieldOfView(.65f, 1, .01f, 100);
             int index = 0;
-            foreach (var (id, visual) in companions.Bases)
+            string normalSource = catalog.Sources.First(x => x.Value.Asset == "models/files/rip_nc_vulcanusmon.glb").Key;
+            var samples = companions.Bases.Append(new KeyValuePair<string, CompanionVisual>("normal-map-vulcanusmon", companions.Bases.First().Value with { Source = normalSource }));
+            foreach (var (id, visual) in samples)
             {
                 using var model = new GpuModel(catalog, catalog.Sources[visual.Source]);
+                if (id == "normal-map-vulcanusmon" && (!model.Materials.Any(m => m.NormalMap is not null) || !model.Mesh.Meshes.SelectMany(x => x).Any(p => p.Tangents.Length > 0))) throw new InvalidOperationException("Normal-map smoke did not load the original texture and tangents.");
                 var animator = model.CreateCompanionAnimator(visual, companions.Fallbacks, height: 2);
                 animator.Update(.37); animator.SetMoving(true); animator.Update(.07);
                 animator.Play("happy"); animator.Update(.2); animator.SetMoving(false); animator.Update(.12);
@@ -46,7 +49,7 @@ internal static class CompanionModelSmoke
                 index++;
             }
             if (capture is not null) FrameCapture.SaveBitmap(capture, cell * columns, cell * rows);
-            Console.WriteLine($"Companion GPU smoke passed: {index} original companion models rendered with farm lighting, surface textures, walking/reaction playback and procedural overlays.");
+            Console.WriteLine($"Companion GPU smoke passed: {index} models (77 companions plus normal-mapped Vulcanusmon) rendered with farm lighting, surface textures, walking/reaction playback and procedural overlays.");
         }
         finally { Glfw.Terminate(); }
     }

@@ -5,6 +5,7 @@ public sealed record GltfPrimitive(float[] Vertices, uint[] Indices, int Materia
 {
     public const int Stride = 16;
     public int VertexCount => Vertices.Length / Stride;
+    public float[] Tangents { get; init; } = [];
 }
 public sealed record MeshInstance(int Node, int Mesh, int Skin);
 public sealed record GltfMesh(GltfPrimitive[][] Meshes, MeshInstance[] Instances)
@@ -58,7 +59,20 @@ public sealed record GltfMesh(GltfPrimitive[][] Meshes, MeshInstance[] Instances
                 }
                 else indices = Enumerable.Range(0, count).Select(i => (uint)i).ToArray();
                 if (indices.Length % 3 != 0 || indices.Any(i => i >= count)) throw new InvalidDataException("Invalid triangle indices.");
-                primitives.Add(new(vertices, indices, primitive.TryGetProperty("material", out var material) ? material.GetInt32() : -1, normal, skin));
+                float[] tangents = [];
+                if (attributes.TryGetProperty("TANGENT", out var tangent))
+                {
+                    int accessor = tangent.GetInt32();
+                    if (root.GetProperty("accessors")[accessor].GetProperty("count").GetInt32() != count) throw new InvalidDataException("Tangent count differs from positions.");
+                    tangents = new float[count * 4];
+                    for (int i = 0; i < count; i++)
+                    {
+                        var values = asset.AccessorElement(accessor, i);
+                        if (values.Length != 4 || values.Any(v => !double.IsFinite(v))) throw new InvalidDataException("Invalid mesh tangent.");
+                        for (int c = 0; c < 4; c++) tangents[i * 4 + c] = (float)values[c];
+                    }
+                }
+                primitives.Add(new(vertices, indices, primitive.TryGetProperty("material", out var material) ? material.GetInt32() : -1, normal, skin) { Tangents = tangents });
             }
             meshes.Add(primitives.ToArray());
         }

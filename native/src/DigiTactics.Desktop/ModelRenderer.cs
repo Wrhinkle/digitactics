@@ -22,6 +22,7 @@ internal sealed class ModelRenderer : IDisposable
         program.Uniform(20, new Brutal.Numerics.float4(0, 0, 1, 0));
         OpenGl.BindTextureUnit(1, 0); OpenGl.BindTextureUnit(2, 0);
         OpenGl.BindTextureUnit(3, 0); program.Uniform(21, 0);
+        OpenGl.BindTextureUnit(4, 0); program.Uniform(22, new Brutal.Numerics.float4(0, 1, 0, 0));
     }
     public ModelRenderer()
     {
@@ -78,6 +79,8 @@ internal sealed class ModelRenderer : IDisposable
                 SetFarmLight(new((float)(material.Emissive.R * material.EmissiveIntensity), (float)(material.Emissive.G * material.EmissiveIntensity), (float)(material.Emissive.B * material.EmissiveIntensity)), roughness: (float)material.Roughness);
                 program.Uniform(21, material.EmissiveMap is null ? 0 : 1);
                 OpenGl.BindTextureUnit(3, material.EmissiveMap is { } emissiveMap ? model.Textures[emissiveMap.Texture].Id : 0);
+                program.Uniform(22, new Brutal.Numerics.float4(material.NormalMap is null ? 0 : 1, (float)material.NormalScale, geometry.Tangents.Length > 0 ? 1 : 0, 0));
+                OpenGl.BindTextureUnit(4, material.NormalMap is { } normalMap ? model.SurfaceTextures[normalMap.Texture].Id : 0);
                 program.Uniform(20, new Brutal.Numerics.float4(material.RoughnessMap is null ? 0 : 1, material.SpecularMap is null ? 0 : 1, (float)material.SpecularIntensity, 0));
                 OpenGl.BindTextureUnit(1, material.RoughnessMap is { } roughMap ? model.SurfaceTextures[roughMap.Texture].Id : 0);
                 OpenGl.BindTextureUnit(2, material.SpecularMap is { } specMap ? model.SurfaceTextures[specMap.Texture].Id : 0);
@@ -143,27 +146,30 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=2) in vec2 uv;
         layout(location=3) in vec4 joints;
         layout(location=4) in vec4 weights;
+        layout(location=5) in vec4 tangent;
         layout(std430,binding=0) readonly buffer Bones { mat4 bones[]; };
         layout(location=0) uniform mat4 world;
         layout(location=4) uniform mat4 camera;
         layout(location=8) uniform int skinned;
-        out vec2 texCoord; out vec3 worldPosition; out vec3 worldNormal;
+        out vec2 texCoord; out vec3 worldPosition; out vec3 worldNormal; out vec4 worldTangent;
         void main() {
             mat4 skin = mat4(1);
             if(skinned!=0) skin=bones[int(joints.x)]*weights.x+bones[int(joints.y)]*weights.y+bones[int(joints.z)]*weights.z+bones[int(joints.w)]*weights.w;
             vec4 p=world*skin*vec4(position,1);
             worldPosition=p.xyz; worldNormal=transpose(inverse(mat3(world)))*mat3(skin)*normal;
+            worldTangent=vec4(mat3(world)*mat3(skin)*tangent.xyz,tangent.w);
             texCoord=uv; gl_Position=camera*p;
             gl_Position.z=2*gl_Position.z-gl_Position.w;
         }
         """;
     private const string FragmentShader = """
         #version 450 core
-        in vec2 texCoord; in vec3 worldPosition; in vec3 worldNormal;
+        in vec2 texCoord; in vec3 worldPosition; in vec3 worldNormal; in vec4 worldTangent;
         layout(binding=0) uniform sampler2D colorTexture;
         layout(binding=1) uniform sampler2D roughnessTexture;
         layout(binding=2) uniform sampler2D specularTexture;
         layout(binding=3) uniform sampler2D emissiveTexture;
+        layout(binding=4) uniform sampler2D normalTexture;
         layout(location=9) uniform int hasNormals;
         layout(location=10) uniform int unlit;
         layout(location=11) uniform float cutoff;
@@ -177,6 +183,7 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=19) uniform vec4 surface;
         layout(location=20) uniform vec4 surfaceMaps;
         layout(location=21) uniform int hasEmissiveMap;
+        layout(location=22) uniform vec4 normalSettings;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
@@ -199,6 +206,25 @@ internal sealed class ModelRenderer : IDisposable
             if(c.a<cutoff) discard;
             vec3 n=normalize(hasNormals!=0?worldNormal:cross(dFdx(worldPosition),dFdy(worldPosition)));
             if(!gl_FrontFacing) n=-n;
+            vec3 geometryNormal=n;
+            if(normalSettings.x!=0 && unlit==0) {
+                vec3 t,b;
+                if(normalSettings.z!=0) {
+                    t=normalize(worldTangent.xyz);
+                    b=normalize(cross(normalize(worldNormal),t)*worldTangent.w);
+                } else {
+                    vec3 q0=dFdx(worldPosition),q1=dFdy(worldPosition);
+                    vec2 st0=dFdx(texCoord),st1=dFdy(texCoord);
+                    vec3 q1perp=cross(q1,n),q0perp=cross(n,q0);
+                    t=q1perp*st0.x+q0perp*st1.x; b=q1perp*st0.y+q0perp*st1.y;
+                    float det=max(dot(t,t),dot(b,b)); float scale=det==0?0:inversesqrt(det);
+                    t*=scale;b*=scale;
+                }
+                if(!gl_FrontFacing) {t=-t;b=-b;}
+                vec3 mapN=texture(normalTexture,texCoord).xyz*2-1;
+                mapN.xy*=normalSettings.y;
+                n=normalize(mat3(t,b,n)*mapN);
+            }
             vec3 light=unlit!=0?vec3(1):vec3(.35)+vec3(.65)*max(dot(n,normalize(vec3(2,4,3))),0);
             vec3 specular=vec3(0);
             if(farmLighting!=0 && unlit==0) {
@@ -211,7 +237,7 @@ internal sealed class ModelRenderer : IDisposable
                 vec3 lamp=toLinear(vec3(255,200,120)/255.0)*farmIntensity.z*attenuation*max(dot(n,normalize(offset)),0);
                 light=(hemi+sun+lamp)/3.141592653589793;
                 if(surface.x>=0) {
-                    vec3 derivatives=max(abs(dFdx(n)),abs(dFdy(n)));
+                    vec3 derivatives=max(abs(dFdx(geometryNormal)),abs(dFdy(geometryNormal)));
                     float roughnessFactor=surface.x*(surfaceMaps.x!=0?texture(roughnessTexture,texCoord).g:1);
                     float roughness=min(1,max(roughnessFactor,.0525)+max(derivatives.x,max(derivatives.y,derivatives.z)));
                     vec3 v=normalize(farmEye.xyz-worldPosition);

@@ -5,7 +5,7 @@ namespace DigiTactics.Desktop;
 internal sealed class GpuPrimitive : IDisposable
 {
     private GlVertexArray array;
-    private readonly GlBuffer[] buffers = new GlBuffer[2];
+    private readonly GlBuffer[] buffers = new GlBuffer[3];
     private readonly int count;
     public unsafe GpuPrimitive(GltfPrimitive data)
     {
@@ -18,6 +18,13 @@ internal sealed class GpuPrimitive : IDisposable
             fixed (uint* indices = data.Indices) OpenGl.NamedBufferData(buffers[1], data.Indices.Length * sizeof(uint), indices, OpenGl.GL_STATIC_DRAW);
             OpenGl.VertexArrayVertexBuffer(array.Id, 0, buffers[0], 0, GltfPrimitive.Stride * sizeof(float));
             OpenGl.VertexArrayElementBuffer(array.Id, buffers[1]);
+            if (data.Tangents.Length > 0)
+            {
+                fixed (float* tangents = data.Tangents) OpenGl.NamedBufferData(buffers[2], data.Tangents.Length * sizeof(float), tangents, OpenGl.GL_STATIC_DRAW);
+                OpenGl.VertexArrayVertexBuffer(array.Id, 1, buffers[2], 0, 4 * sizeof(float));
+                OpenGl.EnableVertexArrayAttrib(array.Id, 5); OpenGl.VertexArrayAttribBinding(array.Id, 5, 1);
+                OpenGl.VertexArrayAttribFormat(array.Id, 5, 4, OpenGl.GL_FLOAT, false, 0);
+            }
             int[] sizes = [3, 3, 2, 4, 4]; uint offset = 0;
             for (uint i = 0; i < sizes.Length; i++)
             {

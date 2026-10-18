@@ -31,6 +31,7 @@ public sealed record GltfMaterial(MaterialColor Color, bool Unlit, bool DoubleSi
     public MaterialColor Emissive { get; init; } = new(0, 0, 0);
     public double EmissiveIntensity { get; init; } = 1;
     public TextureBinding? EmissiveMap { get; init; }
+    public double NormalScale { get; init; } = 1;
     public static GltfMaterial Load(GltfAsset asset, int index, bool frontOnly = false)
     {
         var material = asset.Root.GetProperty("materials")[index];
@@ -60,7 +61,8 @@ public sealed record GltfMaterial(MaterialColor Color, bool Unlit, bool DoubleSi
         {
             Emissive = !unlit && Property(material, "emissiveFactor") is { ValueKind: JsonValueKind.Array } e ? new(e[0].GetDouble(), e[1].GetDouble(), e[2].GetDouble()) : new(0, 0, 0),
             EmissiveIntensity = Number(Property(extensions, "KHR_materials_emissive_strength"), "emissiveStrength", 1),
-            EmissiveMap = unlit ? null : Binding(material, "emissiveTexture", true)
+            EmissiveMap = unlit ? null : Binding(material, "emissiveTexture", true),
+            NormalScale = Number(Property(material, "normalTexture"), "scale", 1)
         };
     }
 

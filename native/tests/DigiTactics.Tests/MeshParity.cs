@@ -29,6 +29,9 @@ internal static class MeshParity
                 foreach (var vertex in expected.GetProperty("vertices").EnumerateArray())
                 {
                     int start = vertex.GetProperty("index").GetInt32() * GltfPrimitive.Stride;
+                    if (vertex.GetProperty("tangent").ValueKind == JsonValueKind.Array)
+                        for (int c = 0; c < 4; c++) Near(primitive.Tangents[vertex.GetProperty("index").GetInt32() * 4 + c], vertex.GetProperty("tangent")[c].GetDouble(), "tangent");
+                    else Check(primitive.Tangents.Length == 0, "absent tangents");
                     for (int c = 0; c < 3; c++) Near(primitive.Vertices[start + c], vertex.GetProperty("position")[c].GetDouble(), "position");
                     if (vertex.GetProperty("weights").ValueKind == JsonValueKind.Array)
                         for (int c = 0; c < 4; c++) Near(primitive.Vertices[start + 12 + c], vertex.GetProperty("weights")[c].GetDouble(), "weight");

@@ -35,7 +35,8 @@ async function main() {
       for(const o of list){
         const p=o.geometry.getAttribute('position'),w=o.geometry.getAttribute('skinWeight');
         const vertices=[];
-        for(const i of new Set([0,Math.floor(p.count/2),p.count-1]))vertices.push({index:i,position:[p.getX(i),p.getY(i),p.getZ(i)],weights:w?[w.getX(i),w.getY(i),w.getZ(i),w.getW(i)]:null});
+        const tangent=o.geometry.attributes.tangent;
+        for(const i of new Set([0,Math.floor(p.count/2),p.count-1]))vertices.push({index:i,position:[p.getX(i),p.getY(i),p.getZ(i)],weights:w?[w.getX(i),w.getY(i),w.getZ(i),w.getW(i)]:null,tangent:tangent?[tangent.getX(i),tangent.getY(i),tangent.getZ(i),tangent.getW(i)]:null});
         const indices=o.geometry.index;
         primitives.push({mesh:index,count:p.count,indices:indices?indices.count:p.count,vertices});
       }

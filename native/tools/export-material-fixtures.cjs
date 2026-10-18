@@ -34,7 +34,7 @@ async function main() {
       };
       materials.push({color:[material.color.r,material.color.g,material.color.b,material.opacity], unlit:!!material.isMeshBasicMaterial,
         doubleSided:material.side===THREE.DoubleSide,transparent:material.transparent,depthWrite:material.depthWrite,
-        alphaCutoff:material.alphaTest,roughness:material.roughness??1,specularIntensity:material.specularIntensity??1,
+        alphaCutoff:material.alphaTest,roughness:material.roughness??1,specularIntensity:material.specularIntensity??1,normalScale:material.normalScale?.x??1,
         colorMap:binding('map'),roughnessMap:binding('roughnessMap'),normalMap:binding('normalMap'),specularMap:binding('specularIntensityMap'),
         emissive:material.emissive?.toArray()||[0,0,0],emissiveIntensity:material.emissiveIntensity??1,emissiveMap:binding('emissiveMap')});
     }

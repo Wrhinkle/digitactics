@@ -2383,3 +2383,20 @@ this does not change the current model appearance. The Windows package passed
 77-companion rendering, all six farm themes and the Duos match smoke; the companion
 capture was inspected. Nonzero emission rendering is implemented but not proven
 by those current-asset smoke checks. Normal maps and shadow rendering remain open.
+
+### Model normal maps and tangents
+
+Catalog inspection identified one corrected material with a normal map:
+Vulcanusmon. Its mapped primitive has authored tangents. The mesh loader now
+preserves tangent vectors and handedness in a separate vertex stream, and the
+shader skins and transforms them before applying the linear normal texture and
+its scale. A derivative tangent frame is available for mapped meshes without
+an authored tangent stream. Geometry roughness remains based on the unperturbed
+surface normal. The GPU smoke includes Vulcanusmon in addition to 77 companions.
+
+The original-loader checks passed for 34,176 material values, 84,531 mesh values
+(including tangent samples), and 2,748,100 skeletal values. The Windows package
+passed the 78-model GPU smoke, all six farm rooms and the Duos match smoke; its
+model capture was inspected. These checks establish asset/animation consistency
+and successful rendering, not pixel-identical normal-map shading. Shadow maps
+and broader visual acceptance remain required parts of the full-port goal.

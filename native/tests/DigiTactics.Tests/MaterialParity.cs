@@ -31,6 +31,7 @@ internal static class MaterialParity
                 Check(actual.AlphaCutoff == expected.GetProperty("alphaCutoff").GetDouble(), "alphaCutoff");
                 Check(actual.Roughness == expected.GetProperty("roughness").GetDouble(), "roughness");
                 Check(actual.SpecularIntensity == expected.GetProperty("specularIntensity").GetDouble(), "specularIntensity");
+                Check(actual.NormalScale == expected.GetProperty("normalScale").GetDouble(), "normalScale");
                 double[] emissive = [actual.Emissive.R, actual.Emissive.G, actual.Emissive.B];
                 for (int c = 0; c < 3; c++) Check(Math.Abs(emissive[c] - expected.GetProperty("emissive")[c].GetDouble()) < 1e-10, "emissive");
                 Check(actual.EmissiveIntensity == expected.GetProperty("emissiveIntensity").GetDouble(), "emissiveIntensity");

@@ -44,7 +44,7 @@ internal sealed class GpuModel : IDisposable
                     Textures.Add(binding.Texture, new(asset.Image(texture.Image), texture.Sampler, binding.Srgb));
                 }
             foreach (var group in Mesh.Meshes) foreach (var primitive in group) Primitives.Add(new(primitive));
-            foreach (var binding in Materials.SelectMany(m => new[] { m.RoughnessMap, m.SpecularMap }).OfType<TextureBinding>())
+            foreach (var binding in Materials.SelectMany(m => new[] { m.RoughnessMap, m.SpecularMap, m.NormalMap }).OfType<TextureBinding>())
                 if (!SurfaceTextures.ContainsKey(binding.Texture))
                 {
                     var texture = GltfTexture.Load(asset, binding.Texture);
