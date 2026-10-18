@@ -11,8 +11,6 @@ internal sealed partial class MatchScreen
     private string? mysteryObservedSave;
     private bool mysteryInitialized;
     private MysteryReward? mysteryReward;
-    private string? mysteryNotice;
-    private double mysteryNoticeUntil;
     internal Func<double> MysteryRandom { private get; set; } = SecureMysteryRoll;
     internal MysteryInventory? MysteryInventory => profile is null ? null : MysteryLoot.Inventory(profile.Storage.GetValueOrDefault(MysteryLoot.StorageKey));
     internal MysteryReward? RevealedMysteryReward => mysteryReward;
@@ -29,7 +27,7 @@ internal sealed partial class MatchScreen
         if (mysteryInitialized && current == mysteryObservedSave) return;
         mysteryInitialized = true; mysteryLoot.Recover();
         mysteryObservedSave = profile.Storage.GetValueOrDefault(MysteryLoot.StorageKey);
-        if (current is null) mysteryReward = null;
+        if (current is null) {mysteryReward = null;lootAwardNotices.Clear();}
     }
     private void AwardMysteryRound()
     {
@@ -37,14 +35,12 @@ internal sealed partial class MatchScreen
         mysteryLoot ??= new(profile);
         // Only local settlement and MatchReplica.Applied(end) reach RoundFinished; rebuilds never do.
         var drops = mysteryLoot.RecordRound(MysteryRoundProjection.From(Session, localSeat), DateOnly.FromDateTime(DateTime.Now), MysteryRandom);
-        if (drops.Length > 0) { mysteryNotice = string.Join(" + ", drops) + " collected! Open it in Loot."; mysteryNoticeUntil = boardSceneTime + 2.7; }
+        if (drops.Length > 0)
+        {
+            var round=Session.Rounds.Position;
+            lootAwardNotices.Earned($"{Session.State.Rules.Id}:{Session.State.Duos}:{Session.State.Seed}:{localSeat}:{round.Stage}:{round.Round}",round.Label,drops);
+        }
         if (mysteryLoot.Error is { } error) profileMessage = error;
-    }
-    private void DrawMysteryLootNotice()
-    {
-        if (mysteryNotice is null || boardSceneTime >= mysteryNoticeUntil) return;
-        Window("Mystery loot collected", 24, size.Y - 118, 360, 92, ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoInputs);
-        ImGui.Text("MYSTERY LOOT"u8); UiText.Wrapped(mysteryNotice); ImGui.End();
     }
     private void MysteryLootControls(CosmeticCollection collection)
     {

@@ -1,0 +1,1996 @@
+[
+  {
+    "action": {
+      "op": "earn",
+      "id": "match1:201",
+      "round": "2-1",
+      "drops": [
+        "Daybreak Box",
+        "Cipher Box",
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "daily",
+            "name": "Daybreak Box",
+            "count": 1,
+            "source": "Activity reward · 2 active days completed"
+          },
+          {
+            "id": "vault",
+            "name": "Cipher Box",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          },
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "match1:201",
+      "round": "2-1",
+      "drops": [
+        "Daybreak Box",
+        "Cipher Box",
+        "Cipher Key"
+      ]
+    },
+    "result": false,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "daily",
+            "name": "Daybreak Box",
+            "count": 1,
+            "source": "Activity reward · 2 active days completed"
+          },
+          {
+            "id": "vault",
+            "name": "Cipher Box",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          },
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "advance",
+      "seconds": 4
+    },
+    "result": null,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "daily",
+            "name": "Daybreak Box",
+            "count": 1,
+            "source": "Activity reward · 2 active days completed"
+          },
+          {
+            "id": "vault",
+            "name": "Cipher Box",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          },
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          }
+        ]
+      },
+      "elapsed": 4,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "advance",
+      "seconds": 100,
+      "paused": true
+    },
+    "result": null,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "daily",
+            "name": "Daybreak Box",
+            "count": 1,
+            "source": "Activity reward · 2 active days completed"
+          },
+          {
+            "id": "vault",
+            "name": "Cipher Box",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          },
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          }
+        ]
+      },
+      "elapsed": 4,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "match1:202",
+      "round": "2-2",
+      "drops": [
+        "Cipher Box",
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "daily",
+            "name": "Daybreak Box",
+            "count": 1,
+            "source": "Activity reward · 2 active days completed"
+          },
+          {
+            "id": "vault",
+            "name": "Cipher Box",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          },
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          }
+        ]
+      },
+      "elapsed": 4,
+      "pendingCount": 2
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "match1:203",
+      "round": "2-3",
+      "drops": [
+        "Cipher Key",
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "daily",
+            "name": "Daybreak Box",
+            "count": 1,
+            "source": "Activity reward · 2 active days completed"
+          },
+          {
+            "id": "vault",
+            "name": "Cipher Box",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          },
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          }
+        ]
+      },
+      "elapsed": 4,
+      "pendingCount": 4
+    }
+  },
+  {
+    "action": {
+      "op": "dismiss"
+    },
+    "result": null,
+    "expected": {
+      "current": {
+        "serial": 2,
+        "items": [
+          {
+            "id": "vault",
+            "name": "Cipher Box",
+            "count": 1,
+            "source": "Round drop · 2-2 complete"
+          },
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 3,
+            "source": "Round drops · 2 rounds, latest 2-3"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "advance",
+      "seconds": 9.5
+    },
+    "result": null,
+    "expected": {
+      "current": {
+        "serial": 2,
+        "items": [
+          {
+            "id": "vault",
+            "name": "Cipher Box",
+            "count": 1,
+            "source": "Round drop · 2-2 complete"
+          },
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 3,
+            "source": "Round drops · 2 rounds, latest 2-3"
+          }
+        ]
+      },
+      "elapsed": 9.5,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "advance",
+      "seconds": 0.5
+    },
+    "result": null,
+    "expected": {
+      "current": null,
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "secret",
+      "round": "3-1",
+      "drops": [
+        "Unopened secret cosmetic name"
+      ]
+    },
+    "result": false,
+    "expected": {
+      "current": null,
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "match1:301",
+      "round": "3-1",
+      "drops": [
+        "Daybreak Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 3,
+        "items": [
+          {
+            "id": "daily",
+            "name": "Daybreak Box",
+            "count": 1,
+            "source": "Activity reward · 2 active days completed"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "clear"
+    },
+    "result": null,
+    "expected": {
+      "current": null,
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "match2:201",
+      "round": "2-1",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 4,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 2-1 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "reload"
+    },
+    "result": null,
+    "expected": {
+      "current": null,
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:0",
+      "round": "4-0",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:1",
+      "round": "4-1",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 1
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:2",
+      "round": "4-2",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 2
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:3",
+      "round": "4-3",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 3
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:4",
+      "round": "4-4",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 4
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:5",
+      "round": "4-5",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 5
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:6",
+      "round": "4-6",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 6
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:7",
+      "round": "4-7",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 7
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:8",
+      "round": "4-8",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 8
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:9",
+      "round": "4-9",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 9
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:10",
+      "round": "4-10",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 10
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:11",
+      "round": "4-11",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 11
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:12",
+      "round": "4-12",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 12
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:13",
+      "round": "4-13",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 13
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:14",
+      "round": "4-14",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 14
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:15",
+      "round": "4-15",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 15
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:16",
+      "round": "4-16",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 16
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:17",
+      "round": "4-17",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 17
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:18",
+      "round": "4-18",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 18
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:19",
+      "round": "4-19",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 19
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:20",
+      "round": "4-20",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 20
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:21",
+      "round": "4-21",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 21
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:22",
+      "round": "4-22",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 22
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:23",
+      "round": "4-23",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 23
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:24",
+      "round": "4-24",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 24
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:25",
+      "round": "4-25",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 25
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:26",
+      "round": "4-26",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 26
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:27",
+      "round": "4-27",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 27
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:28",
+      "round": "4-28",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 28
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:29",
+      "round": "4-29",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 29
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:30",
+      "round": "4-30",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 30
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:31",
+      "round": "4-31",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 31
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:32",
+      "round": "4-32",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 32
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:33",
+      "round": "4-33",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 33
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:34",
+      "round": "4-34",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 34
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:35",
+      "round": "4-35",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 35
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:36",
+      "round": "4-36",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 36
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:37",
+      "round": "4-37",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 37
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:38",
+      "round": "4-38",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 38
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:39",
+      "round": "4-39",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 39
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:40",
+      "round": "4-40",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 40
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:41",
+      "round": "4-41",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 41
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:42",
+      "round": "4-42",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 42
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:43",
+      "round": "4-43",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 43
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:44",
+      "round": "4-44",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 44
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:45",
+      "round": "4-45",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 45
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:46",
+      "round": "4-46",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 46
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:47",
+      "round": "4-47",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 47
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:48",
+      "round": "4-48",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 48
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:49",
+      "round": "4-49",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 49
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:50",
+      "round": "4-50",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 50
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:51",
+      "round": "4-51",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 51
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:52",
+      "round": "4-52",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 52
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:53",
+      "round": "4-53",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 53
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:54",
+      "round": "4-54",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 54
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:55",
+      "round": "4-55",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 55
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:56",
+      "round": "4-56",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 56
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:57",
+      "round": "4-57",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 57
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:58",
+      "round": "4-58",
+      "drops": [
+        "Cipher Key"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 58
+    }
+  },
+  {
+    "action": {
+      "op": "earn",
+      "id": "burst:59",
+      "round": "4-59",
+      "drops": [
+        "Cipher Box"
+      ]
+    },
+    "result": true,
+    "expected": {
+      "current": {
+        "serial": 1,
+        "items": [
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 1,
+            "source": "Round drop · 4-0 complete"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 59
+    }
+  },
+  {
+    "action": {
+      "op": "dismiss"
+    },
+    "result": null,
+    "expected": {
+      "current": {
+        "serial": 2,
+        "items": [
+          {
+            "id": "vault",
+            "name": "Cipher Box",
+            "count": 30,
+            "source": "Round drops · 30 rounds, latest 4-59"
+          },
+          {
+            "id": "key",
+            "name": "Cipher Key",
+            "count": 29,
+            "source": "Round drops · 29 rounds, latest 4-58"
+          }
+        ]
+      },
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "advance",
+      "seconds": 10
+    },
+    "result": null,
+    "expected": {
+      "current": null,
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  },
+  {
+    "action": {
+      "op": "dismiss"
+    },
+    "result": null,
+    "expected": {
+      "current": null,
+      "elapsed": 0,
+      "pendingCount": 0
+    }
+  }
+]

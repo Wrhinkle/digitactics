@@ -40,7 +40,7 @@ function roundEnd(g) {
   }
   if (!persist(next)) return [];
   emit();
-  if (drops.length) DT.Client?.toast(`${drops.join(' + ')} collected! Open it in Loot.`, 'good');
+  if (drops.length) DT.LootNotices?.earned({id:`${key}:${round}`,round:`${g.stage}-${g.round}`,drops});
   return drops;
 }
 function open(pool) {

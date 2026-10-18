@@ -22,6 +22,7 @@ import './killscreens.js';
 import './soundboard.js';
 import './elimsounds.js'; // 'elimsound' cosmetics; after soundboard.js, whose clips it reuses
 import './mystery-register.js';
+import './mystery-notices.js';
 import './mystery-loot.js';
 import './soundui.js';
 import './scout.js'; // after emotes.js, so an open emote wheel gets the digit keys first

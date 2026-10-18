@@ -5,10 +5,11 @@ const out=path.resolve(process.argv[3]),root=path.join(__dirname,'..');fs.mkdirS
 const checks=[],check=(ok,name)=>{checks.push({ok:!!ok,name});console.log((ok?'PASS ':'FAIL ')+name);};
 (async()=>{const server=spawn(process.execPath,['serve.cjs'],{cwd:root,env:{...process.env,PORT:'8215'},windowsHide:true,stdio:'ignore'});let browser;
 try{
- await new Promise(r=>setTimeout(r,500));browser=await chromium.launch({args:['--use-angle=d3d11']});const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];
+ await new Promise(r=>setTimeout(r,500));browser=await chromium.launch({channel:'msedge',args:['--use-angle=d3d11']});const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];
  page.on('pageerror',e=>errors.push(String(e)));
+ await require('./live-source-bundle.cjs')(page);
  await page.addInitScript(()=>{if(!localStorage.getItem('dt.mysteryLoot.v1'))localStorage.setItem('dt.mysteryLoot.v1',JSON.stringify({daily:0,vault:0,keys:0,day:'',dayProgress:1,games:{},boxMisses:31,keyMisses:39,pending:null}));});
- await page.goto('http://localhost:8215/?bits=5000');await page.waitForSelector('#boot',{state:'detached'});
+ await page.goto('http://localhost:8215/?bits=5000',{waitUntil:'domcontentloaded'});await page.waitForSelector('#boot',{state:'detached'});
  const pools=await page.evaluate(()=>Object.fromEntries(['daily','vault'].map(pool=>[pool,Object.fromEntries(DT.Cosmetics.KINDS.map(k=>[k,DT.Cosmetics.list(k).filter(it=>it.lootPool===pool).length]))])));
  for(const [pool,kinds] of Object.entries(pools))check(Object.entries(kinds).every(([k,n])=>n===(k==='board'?5:20)),pool+' contains 20 per category and 5 boards');
  check(await page.evaluate(()=>DT.Cosmetics.KINDS.every(k=>DT.Cosmetics.visible(k).every(it=>!it.secret))), 'all undiscovered rewards hidden');
