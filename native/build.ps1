@@ -123,6 +123,7 @@ try {
     Invoke-Checked 'node' @('tools/export-motions.cjs')
     Invoke-Checked 'node' @('tools/export-companion-motion.cjs')
     Invoke-Checked 'node' @('tools/export-companion-playback.cjs')
+    Invoke-Checked 'node' @('tools/export-board-scenes.cjs')
     Invoke-Checked 'node' @('tools/export-farm-rooms.cjs')
     Invoke-Checked 'node' @('tools/export-farm-choreography.cjs')
     Invoke-Checked 'node' @('tools/export-farm-picking.cjs')
@@ -168,3 +169,4 @@ try {
         Write-Host "Native migration build: $destination"
     }
 } finally { Pop-Location }
+
