@@ -36,8 +36,12 @@ internal sealed partial class MatchScreen
         var room = networkRoom ?? steam?.Room;
         if (!showPlayers || room is null) return;
         ReadPlayerMutes();
-        Window("Players", size.X / 2 - 230, Top + 25, 460, 460);
-        UiText.Wrapped("Mute hides a player's emotes and soundboard. Remove blocks them from this room."u8);
+        float width=Math.Min(620,size.X-48),height=Math.Min(580,size.Y-80);
+        Window("Players",(size.X-width)/2,(size.Y-height)/2,width,height,ImGuiWindowFlags.NoTitleBar);
+        HudText("PLAYERS",22,HudGold);
+        HudText("Mute a player's emotes and soundboard. Hosts can remove players from the room.",16,HudMuted);
+        ImGui.Separator();
+        ImGui.BeginChild("Room players"u8,new(0,height-190));
         var slots = room.Authority.Lobby?["slots"]?.AsObject();
         bool any = false;
         if (slots is not null) foreach (var slot in slots)
@@ -45,19 +49,21 @@ internal sealed partial class MatchScreen
             string? id = slot.Value?["uid"]?.GetValue<string>();
             if (id is null || id == room.Authority.LocalId) continue;
             any = true;
-            ImGui.Separator(); ImGui.Text(slot.Value?["name"]?.GetValue<string>() ?? "Tamer");
-            if (Button("playerMute/" + id, playerMutes.Contains(id) ? "Unmute" : "Mute")) TogglePlayerMute(id);
+            HudText(slot.Value?["name"]?.GetValue<string>() ?? "Tamer",18);
+            if (HudButton("playerMute/" + id, playerMutes.Contains(id) ? "Unmute" : "Mute",120,38,playerMutes.Contains(id))) TogglePlayerMute(id);
             if (room.Authority.IsHost)
             {
                 ImGui.SameLine(); ImGui.BeginDisabled(!room.Authority.Member(id));
-                if (Button("playerRemove/" + id, "Remove")) playerMessage = room.Ban(id) ? "Player removed from this room." : "Player could not be removed.";
+                if (HudButton("playerRemove/" + id, "Remove",120)) playerMessage = room.Ban(id) ? "Player removed from this room." : "Player could not be removed.";
                 ImGui.EndDisabled();
             }
+            ImGui.Separator();
         }
-        if (!any) ImGui.Text("No other seated players."u8);
+        if (!any) HudText("No other seated players.",16,HudMuted);
+        ImGui.EndChild();
         InviteFriendsButton("steamInvitePlayers");
         if (playerMessage is not null) UiText.Wrapped(playerMessage);
-        if (Button("closePlayers", "Close")) showPlayers = false;
+        if (HudButton("closePlayers", "Back",140)) showPlayers = false;
         ImGui.End();
     }
 }

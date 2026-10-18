@@ -12,6 +12,7 @@ internal sealed partial class MatchScreen
     internal bool CombinedTraits { get; private set; }
     internal int TraitTooltipLevels { get; private set; }
     internal IReadOnlyList<int> TraitTooltipUnits { get; private set; } = [];
+    internal (float2 Min,float2 Max) TraitCardsBounds { get; private set; }
 
     private void TraitSidebar(MatchPlayer player)
     {
@@ -29,22 +30,30 @@ internal sealed partial class MatchScreen
         // Solo uses the source's ID tie-break; combined counts retain their team traversal order.
         var ordered = CombinedTraits ? rows.ToArray() : rows.ThenBy(row => row.Trait.Id, StringComparer.Ordinal).ToArray();
         DisplayedTraits = ordered.ToDictionary(row => row.Trait.Id, row => row.Count);
-        UiText.Wrapped((CombinedTraits ? "Combined team traits" : player.Id == Human.Id ? "Traits" : player.Name + "'s traits") + $" - {ordered.Count(row => row.Level > 0)} active");
+        HudText(CombinedTraits ? "TEAM TRAITS" : "TRAITS",22);
+        HudText($"{ordered.Count(row => row.Level > 0)} active"+(player.Id==Human.Id?"":" / "+player.Name),16,HudMuted);
         var board = CombinedTraits ? Session.CombatProjection.Team(Session.State.Teams[player.Team!.Value]).Units : Session.CombatProjection.Board(player);
         // Keep long trait lists from pushing combat controls out of the sidebar.
-        ImGui.BeginChild("Trait cards"u8, new(0, Math.Clamp(Height * .42f, 120, 220)));
+        ImGui.BeginChild("Trait cards"u8, new(0, Math.Clamp(Height * .55f, 160, 360)));
+        TraitCardsBounds=(ImGui.GetWindowDrawList().GetClipRectMin(),ImGui.GetWindowDrawList().GetClipRectMax());
         foreach (var row in ordered)
         {
             var contributors = TraitContributors.Select(Rules, board, row.Trait.Id, CombinedTraits);
             var color = row.Level == 0 ? new ImColor8(140,150,165) : row.Level >= row.Trait.Breakpoints.Length ? new ImColor8(255,207,74)
                 : row.Level >= 2 ? new ImColor8(201,209,220) : new ImColor8(205,151,101);
             int next = row.Trait.Breakpoints.FirstOrDefault(point => point > row.Count);
-            ImGui.PushStyleColor(ImGuiCol.Text, color);
-            UiText.Wrapped($"{Name(row.Trait.Id)}  {(next > 0 ? $"{row.Count}/{next}" : row.Count.ToString())}");
-            ImGui.PopStyleColor();
+            ImGui.BeginGroup();
+            float width=ImGui.GetContentRegionAvail().X;
+            bool open=HudButton("trait/"+row.Trait.Id,"",width,44,row.Level>0);
             var min = ImGui.GetItemRectMin(); var max = ImGui.GetItemRectMax();
-            Buttons["trait/" + row.Trait.Id] = new((min.X + max.X) / 2, (min.Y + max.Y) / 2);
-            if(ImGui.IsItemClicked())OpenCodexPanel(row.Trait.Id);
+            var draw=ImGui.GetWindowDrawList();var badge=min+new float2(8,6);
+            draw.AddRectFilled(badge+new float2(0,7),badge+new float2(28,25),color);
+            draw.AddTriangleFilled(badge+new float2(0,7),badge+new float2(14,0),badge+new float2(28,7),color);
+            draw.AddTriangleFilled(badge+new float2(0,25),badge+new float2(28,25),badge+new float2(14,32),color);
+            HudClipText(draw,badge+new float2(7,8),22,row.Count.ToString(),new ImColor8(16,19,26));
+            HudClipText(draw,min+new float2(44,13),width-92,Name(row.Trait.Id),row.Level>0?HudInk:HudMuted);
+            HudClipText(draw,new(max.X-42,min.Y+13),36,next>0?$"/{next}":"MAX",color);
+            if(open)OpenCodexPanel(row.Trait.Id);
             if (ImGui.IsItemHovered())
             {
                 ImGui.SetNextWindowSize(new(340,0)); ImGui.BeginTooltip();
@@ -76,30 +85,31 @@ internal sealed partial class MatchScreen
             {
                 if (i > 0) ImGui.SameLine();
                 ImGui.PushStyleColor(ImGuiCol.Text, i < row.Level ? color : new ImColor8(140,150,165));
-                ImGui.Text(row.Trait.Breakpoints[i].ToString());
+                ImGui.PushFont(default,16);ImGui.Text(row.Trait.Breakpoints[i].ToString());ImGui.PopFont();
                 ImGui.PopStyleColor();
             }
             if (row.Level > 0)
             {
-                UiText.Wrapped(text.TraitBreakpoint(Rules.Id, row.Trait.Id, row.Level - 1).Description);
+                HudText(text.TraitBreakpoint(Rules.Id, row.Trait.Id, row.Level - 1).Description,16,HudMuted);
                 InlineTraitEffects++;
             }
             int columns = Math.Max(1, (int)(ImGui.GetContentRegionAvail().X / 36));
-            for (int i = 0; i < contributors.Length; i++)
+            for (int i = 0; row.Level>0&&i < contributors.Length; i++)
             {
                 if (i % columns != 0) ImGui.SameLine(0, 4);
                 var unit = contributors[i];
                 var position = ImGui.GetCursorScreenPos(); ImGui.Dummy(new(32,32));
                 portraits.Draw(Rules.Id, unit.Line, unit.Stage, position, 32);
                 InlineTraitPortraits++;
+                Buttons[$"traitUnit/{row.Trait.Id}/{unit.Uid}"]=position+new float2(16,16);
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.SetNextWindowSize(new(340,0)); ImGui.BeginTooltip();
-                    UnitDetails(unit.Line, unit.Stage, unit.Items);
+                    UnitDetails(unit);
                     ImGui.EndTooltip();
                 }
             }
-            ImGui.Separator();
+            ImGui.EndGroup();ImGui.Spacing();
         }
         if (ordered.Length == 0) UiText.Wrapped("Place Digimon on the board to activate traits."u8);
         ImGui.EndChild();

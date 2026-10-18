@@ -44,7 +44,7 @@ internal sealed partial class MatchScreen
         int previous = (int)Math.Ceiling(PlanningRemaining);
         PlanningRemaining = Math.Max(0, PlanningRemaining - Math.Max(0,delta));
         if (CountdownCue.Select(previous, PlanningRemaining) is { } cue) audio.Play(cue);
-        if (PlanningRemaining <= 0) Fight();
+        if (PlanningRemaining <= 0) Fight(autoResolveOffers:true);
     }
     private void PlanningTimerControls()
     {
@@ -58,7 +58,7 @@ internal sealed partial class MatchScreen
             return;
         }
         ImGui.SameLine();
-        if (Button("planningTimer", PlanningTimerEnabled ? "Timer on" : "Timer off"))
+        if (Button("planningTimer", PlanningTimerEnabled ? "Timer on" : "Timer off",104,36))
         {
             PlanningTimerEnabled = !PlanningTimerEnabled;
             PlanningRemaining = Rules.PlanningSeconds;

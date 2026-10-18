@@ -125,10 +125,10 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
             yield return (unit, new(x,y));
         }
     }
-    public void Labels(int width, int height, int windowHeight, int left = 0, int bottom = 0)
+    public void Labels(int width, int height, int windowHeight, int left = 0, int bottom = 0,ImDrawListPtr? layer=null)
     {
         if (width <= 0 || height <= 0) return;
-        var camera = board.Camera.Matrix(width, height, Combat.Columns); var draw = ImGui.GetForegroundDrawList();
+        var camera = board.Camera.Matrix(width, height, Combat.Columns); var draw = layer??ImGui.GetForegroundDrawList();
         foreach (var view in choreography.Views)
         {
             var unit = Combat.Units[view.UnitId]; if (!unit.Alive) continue;

@@ -22,6 +22,7 @@ internal sealed partial class MatchScreen
         CancelArenaDrag(); cameraDrag = null;
         Session = null; history = null; audio.Music(null);
         battle?.Dispose(); battle = null; watching = null; combatAudio = null;
+        castFeed=null;
         planning.Dispose(); planning = new(arenaEnvironment);
         selectedUnit = selectedItem = null; resultCountdown = null;
         localPaused = showGameMenu = confirmLeave = showAudio = showPlayers = showEmotes = showSoundboard = false;

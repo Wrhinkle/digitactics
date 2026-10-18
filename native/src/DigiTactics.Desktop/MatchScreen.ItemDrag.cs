@@ -11,13 +11,13 @@ internal sealed partial class MatchScreen
 
     private bool ItemButton(int index, float width)
     {
-        bool pressed = Button("item/" + index, "", width, 24, selectedItem == index);
+        bool pressed = HudButton("item/" + index, "", width, 38, selectedItem == index);
         var min = ImGui.GetItemRectMin(); var max = ImGui.GetItemRectMax();
         var draw = ImGui.GetWindowDrawList();
         draw.PushClipRect(min, max, true);
         InventoryArtworkDrawCalls++;
-        itemArtwork.Draw(Rules.Id, Human.Items[index], new(min.X + 2, min.Y + 1), 22);
-        draw.AddText(ImGui.GetFont(), 13, new(min.X + 29, min.Y + 5), new ImColor8(235, 240, 248), Name(Human.Items[index]));
+        itemArtwork.Draw(Rules.Id, Human.Items[index], new(min.X + 4, min.Y + 3), 32);
+        HudClipText(draw,new(min.X+43,min.Y+11),width-49,Name(Human.Items[index]),HudInk);
         draw.PopClipRect();
         return pressed;
     }

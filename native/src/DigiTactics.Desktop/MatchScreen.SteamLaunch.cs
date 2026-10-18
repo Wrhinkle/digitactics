@@ -22,7 +22,8 @@ internal sealed partial class MatchScreen
     internal void SteamStartupError(string? error) {if(error is not null)lobbyMessage=error;}
     private void OpenMultiplayerView()
     {
-        if(EvolutionBusy)return;
+        if(ClientNavigationBlocked)return;
+        if(PostgameClientOverlay&&!PostgameHomeVisible)DismissResults();
         if(evolutionLegend is not null)CloseEvolution();
         // Every entry route leaves the current client module, like the original
         // client's play-page navigation. Async save/file work keeps completing

@@ -36,6 +36,7 @@ internal sealed partial class MatchScreen
     }
     private void NetworkRebuilt(LockstepMatch match)
     {
+        castFeed=null;
         battle?.Dispose(); battle = null; watching = null; combatAudio = null;
         Session = match.Session; selectedItem = selectedUnit = null; viewed = localSeat >= 0 ? localSeat : Math.Clamp(viewed, 0, 7); backgroundTime = 0; networkDone = false;
         history = networkHistory?.Recorder;

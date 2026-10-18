@@ -35,7 +35,9 @@ internal sealed partial class MatchScreen
             {
                 case "scout":Watch(action.Seat!.Value);break;
                 case "menu":OpenGameMenu();break;
-                case "fight":Fight();break;
+                // Source readyBtn is disabled during carousel (ui.js). Space
+                // must never skip the player's pick; Escape/scouting still work.
+                case "fight":if(!Session.Units.Carousel.Active)Fight();break;
                 case "sell":if(!arenaDragMoved&&!itemDragMoved){Act("sell",new{uid=action.Unit});selectedUnit=null;hoveredOwnedUnit=null;}break;
                 default:Act(action.Kind);break;
             }

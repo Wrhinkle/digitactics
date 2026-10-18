@@ -20,7 +20,7 @@ internal sealed partial class MatchScreen
         ResultTitle = own.Title;
         ResultHealthLoss = own.HealthLoss;
         string opponent = result.Match.Pve ? "Wild Digimon" : Session.State.Players[(a ? result.Match.B : result.Match.A)!.Value].Name;
-        Window("Round result", Left + 12, Top + 12, Width - 24, 80, ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoInputs);
+        Window("Round result", Left + 12, Top + 12, Width - 24, 80, ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoFocusOnAppearing);
         ImGui.PushStyleColor(ImGuiCol.Text, won ? new ImColor8(100,235,170) : lost ? new ImColor8(255,120,120) : new ImColor8(230,235,245));
         ImGui.Text(ResultTitle + " vs " + opponent); ImGui.PopStyleColor();
         var details = new List<string>();

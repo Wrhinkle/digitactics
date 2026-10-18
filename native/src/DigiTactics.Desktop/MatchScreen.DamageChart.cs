@@ -17,11 +17,11 @@ internal sealed partial class MatchScreen
     {
         ChartUnits = [];
         if (battle is null) return;
-        ImGui.SeparatorText("Damage - this fight"u8);
+        ImGui.Separator();HudText("THIS FIGHT",22);
         for (int i = 0; i < chartLabels.Length; i++)
         {
             if (i > 0) ImGui.SameLine();
-            if (Button("chart/" + i, chartLabels[i], 55, 23, chartMetric == i)) chartMetric = i;
+            if (HudButton("chart/" + i, chartLabels[i],(ImGui.GetContentRegionAvail().X-(2-i)*8)/(3-i),36,chartMetric == i)) chartMetric = i;
         }
         double Value(CombatUnit unit) => chartMetric switch { 1 => unit.Taken, 2 => unit.Healed, _ => unit.Dealt };
         var units = battle.Combat.Units.Where(u => u.Team == (battle.Mirrored ? 1 : 0)).OrderByDescending(Value).ToArray();
@@ -31,20 +31,18 @@ internal sealed partial class MatchScreen
         foreach (var unit in units)
         {
             var min = ImGui.GetCursorScreenPos();
-            ImGui.Dummy(new(width, 35));
+            ImGui.Dummy(new(width, 46));
             bool hovered = ImGui.IsItemHovered();
             var draw = ImGui.GetWindowDrawList();
             var ink = unit.Alive ? new ImColor8(235,240,248) : new ImColor8(135,145,160);
-            portraits.Draw(Rules.Id, unit.Line.Id, unit.Stage, min, 32, unit.Alive ? (byte)255 : (byte)100);
+            portraits.Draw(Rules.Id, unit.Line.Id, unit.Stage, min, 40, unit.Alive ? (byte)255 : (byte)100);
             string value = UnitValues.Round(Value(unit)).ToString(System.Globalization.CultureInfo.InvariantCulture);
-            float valueWidth = ImGui.CalcTextSize(value).X;
-            draw.PushClipRect(new(min.X+36,min.Y), new(min.X+width-valueWidth-5,min.Y+18),true);
-            draw.AddText(ImGui.GetFont(),12,new(min.X+36,min.Y+2),ink,unit.Line.Forms[unit.Stage]);
-            draw.PopClipRect();
-            draw.AddText(new(min.X+width-valueWidth,min.Y+1),ink,value);
-            float barWidth = Math.Max(1,width-36);
-            draw.AddRectFilled(new(min.X+36,min.Y+23),new(min.X+width,min.Y+29),new ImColor8(40,50,65));
-            draw.AddRectFilled(new(min.X+36,min.Y+23),new(min.X+36+barWidth*(float)(Value(unit)/maximum),min.Y+29),chartColors[chartMetric]);
+            ImGui.PushFont(default,16);float valueWidth = ImGui.CalcTextSize(value).X;ImGui.PopFont();
+            HudClipText(draw,min+new float2(48,2),width-valueWidth-56,unit.Line.Forms[unit.Stage],ink);
+            HudClipText(draw,min+new float2(width-valueWidth,2),valueWidth+1,value,ink);
+            float barWidth = Math.Max(1,width-48);
+            draw.AddRectFilled(new(min.X+48,min.Y+28),new(min.X+width,min.Y+36),new ImColor8(40,50,65),3);
+            draw.AddRectFilled(new(min.X+48,min.Y+28),new(min.X+48+barWidth*(float)(Value(unit)/maximum),min.Y+36),chartColors[chartMetric],3);
             if (hovered)
             {
                 ImGui.BeginTooltip(); ImGui.Text(unit.Line.Forms[unit.Stage]);

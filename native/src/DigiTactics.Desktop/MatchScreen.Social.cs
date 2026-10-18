@@ -147,7 +147,7 @@ internal sealed partial class MatchScreen
             HomeLabel(lobby["status"]?.GetValue<string>()=="playing"?"In game":$"{(lobby["slots"] as JsonObject)?.Count??0}/8 Tamers seated",16,HomeMute);
         }
         else {HomeLabel("No party",17,HomeInk);HomeLabel("Play with your friends",16,HomeMute);}
-        ImGui.BeginDisabled(EvolutionBusy);
+        ImGui.BeginDisabled(ClientNavigationBlocked);
         if (HomeButton("socialLobby", steam?.Room is null ? "Lobbies" : "Open party", ImGui.GetContentRegionAvail().X, 38))
         { OpenMultiplayerView(); }
         ImGui.EndDisabled();
@@ -176,7 +176,7 @@ internal sealed partial class MatchScreen
         if (row.JoinLobby is { } lobby)
         {
             ImGui.SetCursorScreenPos(at+new float2(50,52));
-            ImGui.BeginDisabled(!row.CanJoin || enteringRoom is not null || EvolutionBusy);
+            ImGui.BeginDisabled(!row.CanJoin || enteringRoom is not null || ClientNavigationBlocked);
             if (HomeButton("socialJoin/" + row.Id, "Join lobby", width-50, 36)) { JoinSteamRoom(lobby); OpenMultiplayerView(); }
             ImGui.EndDisabled();
             if (!row.CanJoin && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ResultTooltip("Leave your current party before joining another.");
