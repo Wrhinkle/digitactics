@@ -2437,3 +2437,19 @@ GPU check and Duos match smoke passed. After the billboard correction the Window
 package was rebuilt, the six-theme smoke rerun, and the tropical capture inspected.
 This addresses the shadow-side limitation above. Broader visual acceptance and
 the remaining full-port requirements are still open.
+
+### Farm atmosphere layers
+
+The farm now draws its theme sky gradient and original eight star positions
+behind the 3D scene, then composites the original blue radial night tint over it.
+The tint interpolates premultiplied CSS gradient colors and uses a 0.8-second
+CSS-ease fade. Layers are restricted to the room viewport and leave the adjacent
+care controls unchanged. The original opaque water can obscure the background
+sky and stars at some camera sizes, as in the source layering.
+
+The Windows six-theme smoke now verifies night-opacity fade-in, an intermediate
+fade-out value, and full return to day. It passed with the existing shadow and
+sleep/wake checks. The integrated farm/evolution/Solo flow passed; night meadow
+and integrated farm captures were inspected. Exact CSS interrupted-transition
+shortening and device-scale star sizing still need visual fidelity review.
+Broader UI, care feedback, multiplayer and release acceptance remain unfinished.

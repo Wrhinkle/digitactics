@@ -42,11 +42,15 @@ internal static class FarmRoomSmoke
                 room.Sync(farm.ToJsonString(), null, null);
                 for (int frame = 0; frame < 240; frame++) room.Update(.05);
                 if (room.SleepingResidents != 3 || !room.Night) throw new InvalidOperationException("Farm residents did not reach their beds at night: " + theme.Id);
+                if (room.NightOpacity != 1) throw new InvalidOperationException("Farm night overlay did not finish fading in.");
                 OpenGl.Clear(GlClearBit.Color); room.Draw(0, 0, 1000, 850);
                 if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, theme.Id + "-sleep.bmp"), 1000, 850);
                 farm["lights"] = true;
                 foreach (var pet in farm["pets"]!.AsObject()) pet.Value!["flags"]!["asleep"] = false;
                 room.Sync(farm.ToJsonString(), null, null); room.Update(.05);
+                if (room.NightOpacity <= 0 || room.NightOpacity >= 1) throw new InvalidOperationException("Farm night overlay did not fade out smoothly.");
+                for (int frame = 0; frame < 20; frame++) room.Update(.05);
+                if (room.NightOpacity != 0) throw new InvalidOperationException("Farm night overlay did not finish fading out.");
                 if (room.SleepingResidents != 0) throw new InvalidOperationException("Farm residents did not wake: " + theme.Id);
             }
             Console.WriteLine("Farm room GPU smoke passed: all six themes, textures, care stations, resident movement and sleep/wake transitions.");

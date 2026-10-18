@@ -31,6 +31,8 @@ internal sealed class FarmView : IDisposable
     private readonly CompanionCatalog companions = CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/companion-models.json"));
     private readonly ModelRenderer renderer = new();
     private readonly FarmShadowMap shadows = new();
+    private readonly FarmAtmosphere atmosphere = new();
+    public double NightOpacity => atmosphere.Opacity;
     public int ShadowDrawCalls { get; private set; }
     internal bool EnableSunShadows { get; set; } = true;
     private readonly Dictionary<string, Actor> actors = [];
@@ -96,6 +98,7 @@ internal sealed class FarmView : IDisposable
     {
         choreography.Update(delta);
         lighting.Update(delta, Theme ?? "meadow");
+        atmosphere.Update(delta, lighting.Night);
         foreach (var particles in snow) particles.Update(delta, choreography.Time);
     }
     public void React(string? id, string role) { if (id is not null && actors.TryGetValue(id, out var actor)) actor.Animator.Play(role); }
@@ -146,6 +149,7 @@ internal sealed class FarmView : IDisposable
         renderer.FarmLight = lighting;
         renderer.FarmEye = eye;
         Brutal.OpenGlApi.OpenGl.Viewport(left, bottom, width, height);
+        atmosphere.Draw(left,bottom,width,height,room.Sky,false);
         foreach (bool transparent in new[] { false, true })
         {
             for (int i = 0; i < room.Meshes.Length; i++)
@@ -174,6 +178,7 @@ internal sealed class FarmView : IDisposable
         }
         renderer.ReceiveShadow = false;
         foreach (var particles in snow) { particles.Draw(renderer, camera, eye); DrawCalls++; }
+        atmosphere.Draw(left,bottom,width,height,room.Sky,true);
         ModelRenderer.End();
     }
     private void DrawShadows()
@@ -204,6 +209,6 @@ internal sealed class FarmView : IDisposable
     }
     public void Dispose()
     {
-        foreach (var particles in snow) particles.Dispose(); foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); shadows.Dispose(); renderer.Dispose();
+        foreach (var particles in snow) particles.Dispose(); foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); atmosphere.Dispose(); shadows.Dispose(); renderer.Dispose();
     }
 }
