@@ -91,6 +91,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         }
         if (collectionProfile is not null && !farmVerified)
         {
+            if (farmIndex == farmCommands.Length - 1 && cooldown == 1 && (screen.FarmDrawCalls < 150 || screen.FarmTheme != (evolutionSmoke ? "sewer" : "meadow")))
+                throw new InvalidOperationException("Farm scene did not render the selected theme.");
             if (farmIndex == farmCommands.Length - 1 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "farm.bmp"), size.X, size.Y);
             if (farmIndex < farmCommands.Length) return false;
             var save = System.Text.Json.Nodes.JsonNode.Parse(collectionProfile.Storage["dt.farm.v1"])!;

@@ -2222,3 +2222,33 @@ combined animated-pose capture was inspected. The new targeted check is
 Farm movement, themed room construction, care-event choreography and the farm UI
 still need to connect to this controller. The full native port remains active and
 this is not a production release.
+
+### Native farm room integration
+
+The farm now displays its room alongside the care controls. `FarmView` renders the
+selected theme, animated resident models, current evolved forms, selectable name
+labels and the remaining free-meat tray. It synchronizes admissions, bank removals
+and form changes while retaining existing resident positions. Care actions trigger
+companion reactions only after their save succeeds. The existing full-width
+training panel remains available over this view.
+
+The room exporter executes the original procedural builders in an isolated
+browser and bakes their mesh groups, transforms, colors and canvas texture pixels.
+All six themes are included: meadow (208 meshes), tropical (260), snowy (219),
+sewer (161), toy (196) and grid (151). Each includes its six original canvas
+textures, care stations, fence and theme decorations. Native playback does not
+execute JavaScript. Geometry and textures use the BRUTAL GPU renderer.
+
+The Windows package passed the new `--farm-room-smoke` for all six themes, with
+resident, selected-theme, draw-call and visible-surface checks. Theme screenshots
+were inspected. The integrated evolution/farm UI smoke now checks that the room
+actually renders the selected sewer theme after bank operations and expansion;
+that flow, the four training games and Solo/Duos match smokes passed after the
+final rebuild.
+
+This is the first integrated room rendering pass. Residents currently retain
+arrival positions while their idle/reaction animations play. Wandering, sleeping,
+friend interactions, pile visuals, moving water/decorations, snowfall, night
+lighting, shadows, material polish and improved overlapping labels remain to be
+completed. Snow particle data is exported but not rendered yet. These limitations
+remain part of the active full-port goal; this checkpoint is not a release gate.

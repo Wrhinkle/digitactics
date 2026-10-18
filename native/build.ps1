@@ -108,6 +108,7 @@ try {
     Invoke-Checked 'node' @('tools/export-motions.cjs')
     Invoke-Checked 'node' @('tools/export-companion-motion.cjs')
     Invoke-Checked 'node' @('tools/export-companion-playback.cjs')
+    Invoke-Checked 'node' @('tools/export-farm-rooms.cjs')
     Invoke-Checked 'node' @('tools/export-material-fixtures.cjs')
     Invoke-Checked 'node' @('tools/export-mesh-fixtures.cjs')
     Invoke-Checked 'node' @('tools/export-rig-fixtures.cjs')

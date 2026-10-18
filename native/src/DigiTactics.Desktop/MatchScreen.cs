@@ -140,6 +140,7 @@ internal sealed partial class MatchScreen : IDisposable
     {
         if (training is null) farm?.Update(delta, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         else UpdateTraining(delta, wallDelta ?? delta);
+        UpdateFarmView(delta);
         if (profilePreview is { IsCompleted: true })
         {
             try { profileCandidate = profilePreview.GetAwaiter().GetResult(); profileMessage = null; }
@@ -210,7 +211,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear();
-        if (Session is null) { Menu(); if (showCollection) Collection(); if (showFarm) FarmPanel(); return; }
+        if (Session is null) { if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
         Header(); if (Session is null) return;
         Roster(); Sidebar();
         if (battle is null) Board();
@@ -447,11 +448,17 @@ internal sealed partial class MatchScreen : IDisposable
     }
     public void Render(int2 framebuffer)
     {
+        if (Session is null && showFarm && training is null && farmViewError is null && size.X > 0 && size.Y > 0)
+        {
+            float scaleX = (float)framebuffer.X / size.X, scaleY = (float)framebuffer.Y / size.Y;
+            farmView?.Draw((int)(12 * scaleX), (int)((size.Y - 70 - FarmSceneHeight) * scaleY), (int)(FarmSceneWidth * scaleX), (int)(FarmSceneHeight * scaleY));
+            return;
+        }
         if (Session is null || framebuffer.X <= 0 || framebuffer.Y <= 0 || size.X <= 0 || size.Y <= 0) return;
         // GLFW logical and framebuffer sizes can differ on high-DPI displays.
         float sx = (float)framebuffer.X / size.X, sy = (float)framebuffer.Y / size.Y;
         int x = (int)(Left * sx), y = (int)((size.Y - Top - Height) * sy), w = (int)(Width * sx), h = (int)(Height * sy);
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
     }
-    public void Dispose() { battle?.Dispose(); planning.Dispose(); }
+    public void Dispose() { farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); }
 }

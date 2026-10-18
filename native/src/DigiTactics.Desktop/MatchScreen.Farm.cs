@@ -9,10 +9,44 @@ internal sealed partial class MatchScreen
     private bool showFarm;
     private string? farmPet;
     private bool farmManagement;
-    private void FarmAct(FarmCareAction action, string? option = null, int pile = 0) => farm!.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), action, farmPet, option, pile);
+    private FarmView? farmView;
+    private string? farmViewError;
+    private int FarmSceneWidth => Math.Max(250, (int)(size.X * .54f) - 24);
+    private int FarmSceneHeight => Math.Max(200, size.Y - 150);
+    public int FarmDrawCalls => farmView?.DrawCalls ?? 0;
+    public string? FarmTheme => farmView?.Theme;
+    private void FarmAct(FarmCareAction action, string? option = null, int pile = 0)
+    {
+        if (!farm!.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), action, farmPet, option, pile)) return;
+        farmView?.React(farmPet, action switch { FarmCareAction.Feed => "eat", FarmCareAction.Scold => "sad", FarmCareAction.Praise or FarmCareAction.Play or FarmCareAction.Pet => "happy", _ => "wave" });
+    }
+    private void UpdateFarmView(double delta)
+    {
+        if (!showFarm || farm?.Save is null || farm.Error is not null) return;
+        try
+        {
+            farmView ??= new();
+            farmView.Sync(farm.Save, profile!.Storage.GetValueOrDefault("dt.legendevo.v1"), profile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
+            farmView.Update(delta); farmViewError = null;
+        }
+        catch (Exception error) when (error is InvalidDataException or IOException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
+        { farmViewError = "Room view unavailable: " + error.Message; }
+    }
     private void FarmPanel()
     {
-        Window("Digi-Farm", size.X * .12f, size.Y * .06f, size.X * .76f, size.Y * .88f);
+        if (training is null)
+        {
+            Window("Digi-Farm room", 12, 70, FarmSceneWidth, FarmSceneHeight, ImGuiWindowFlags.NoBackground);
+            if (farmViewError is not null) CollectionText(farmViewError);
+            else if (farmView is not null)
+                foreach (var (id, x, y) in farmView.Anchors(FarmSceneWidth, FarmSceneHeight))
+                {
+                    ImGui.SetCursorScreenPos(new(12 + x - 25, 70 + y));
+                    if (Button("farmResident/" + id, CosmeticCollection.Item("legend", id)!.Name, active: id == farmPet)) farmPet = id;
+                }
+            ImGui.End();
+        }
+        Window("Digi-Farm", training is null ? size.X * .55f : size.X * .12f, size.Y * .06f, training is null ? size.X * .44f : size.X * .76f, size.Y * .88f);
         if (training is not null) { TrainingPanel(); ImGui.End(); return; }
         if (Button("closeFarm", "Back")) showFarm = false;
         if (farm!.Error is { } farmError) { CollectionText(farmError); if (Button("retryFarm", "Retry saving farm")) farm.Refresh(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()); ImGui.End(); return; }
