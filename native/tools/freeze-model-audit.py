@@ -17,8 +17,9 @@ GROUPS = {
         "Desktop/GpuModel.cs", "Desktop/GpuTexture.cs", "Desktop/GpuPrimitive.cs",
         "Desktop/ModelVisualAudit.cs",
     ],
+    "pose": ["Assets/ModelAnimator.cs"],
     "combat": [
-        "Assets/ModelAnimator.cs", "Presentation/CombatScene.cs",
+        "Assets/CombatModelAnimator.cs", "Assets/CompanionLocomotion.cs", "Presentation/CombatScene.cs",
         "Presentation/CombatChoreography.cs", "Desktop/CombatModelAnimations.cs",
         "Desktop/BattleView.cs", "Desktop/ArenaEnvironment.cs",
     ],
@@ -75,7 +76,7 @@ def main():
         target.write_bytes(original.read_bytes())
         catalogs[name] = {"file": target.name, "sha256": sha(target)}
     manifest = {"schemaVersion": 1, "sourceStableBeforeAfterBuild": True,
-                "policy": "ModelAnimator+CombatChoreography+CompanionAnimator/v2",
+                "policy": "ModelAnimator+CombatModelAnimator+CombatChoreography+CompanionAnimator/v3",
                 "sourceGroups": current, "runtimeHashes": assemblies, "frozenCatalogs": catalogs}
     (args.directory / "capture-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print("Frozen source, assembly and catalog provenance; no visual status changed.")
