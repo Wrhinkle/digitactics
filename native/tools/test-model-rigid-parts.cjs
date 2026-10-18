@@ -2,11 +2,13 @@
 const fs=require('node:fs'),path=require('node:path'),zlib=require('node:zlib'),crypto=require('node:crypto'),vm=require('node:vm');
 const {pathToFileURL}=require('node:url');
 const root=path.resolve(__dirname,'../..'),out=path.join(root,'native/artifacts/dw1-rig-diagnosis');
-const keys=['extra:DW1_Agumon','extra:DW1_Airdramon','extra:DW1_Akatorimon'];
+const preview=process.argv.includes('--brachiomon-preview');
+const keys=preview?['extra:DW1_Brachiomon']:['extra:DW1_Agumon','extra:DW1_Airdramon','extra:DW1_Akatorimon',...(process.argv.includes('--first-three')?[]:['extra:DW1_Brachiomon'])];
 const originalHashes={
   'extra:DW1_Agumon':'fd89d75cd3a044cda275d09498237784628d5f9f4f18811fe09d6611ce42ca80',
   'extra:DW1_Airdramon':'8f56049bf128083aa0221d76803ceb76a4ee602a319e3e638b580854f19296ce',
   'extra:DW1_Akatorimon':'9e68d57bd02b2f54cd6216f128ac113fadbb6c0c23e9751224597ffa02c8d13c',
+  'extra:DW1_Brachiomon':'c5de628e214f3e1a2d5cebf1e3d63bcd1b4b077819eb421cb7fd1311662d1670',
 };
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex'),failures=[];let checks=0;
 const check=(ok,label,detail)=>{checks++;if(!ok)failures.push({label,detail});};
@@ -19,10 +21,13 @@ async function main(){
   const render=fs.readFileSync(path.join(root,'js/render3d.js'),'utf8'),ctx={THREE,modelClips};vm.createContext(ctx);
   vm.runInContext(render.slice(render.indexOf('const IDLE_RE'),render.indexOf('// undefined = still loading')).replace('export function','function')+';this.prepareTemplate=prepareTemplate;',ctx);
   const load=async key=>{
-    const entry=catalog.sources[key],asset=catalog.assets[entry.asset],packed=fs.readFileSync(path.join(root,'native/artifacts/model-content',asset.file));
-    check(sha(packed)===asset.sha256,key+': content hash');check(sha(fs.readFileSync(path.join(root,entry.asset)))===asset.sourceSha256,key+': original asset hash');
-    check(asset.sourceSha256===originalHashes[key],key+': pinned original geometry/material asset');
-    const bytes=zlib.gunzipSync(packed),length=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+length)),binary=bytes.subarray(28+length);
+    const entry=catalog.sources[key],asset=catalog.assets[entry.asset];let bytes;
+    if(preview){bytes=fs.readFileSync(path.join(out,'DW1_Brachiomon_Recovered.glb'));check(sha(bytes)===originalHashes[key],key+': pinned recovered candidate');}
+    else{const packed=fs.readFileSync(path.join(root,'native/artifacts/model-content',asset.file));check(sha(packed)===asset.sha256,key+': content hash');check(sha(fs.readFileSync(path.join(root,entry.asset)))===asset.sourceSha256,key+': original asset hash');check(asset.sourceSha256===originalHashes[key],key+': pinned geometry/material asset');bytes=zlib.gunzipSync(packed);}
+    const length=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+length)),binary=bytes.subarray(28+length);
+    // CPU-only parser supplies dummy images. Source candidates retain WebP,
+    // whereas exported native fixtures already contain PNG image sources.
+    if(preview)for(const texture of json.textures||[])if(texture.source===undefined&&texture.extensions?.EXT_texture_webp)texture.source=texture.extensions.EXT_texture_webp.source;
     const parser=new GLTFParser(json,{manager:THREE.DefaultLoadingManager});parser.extensions.KHR_materials_unlit=new GLTFMaterialsUnlitExtension();
     parser.loadImageSource=async()=>new THREE.Texture();parser.loadBuffer=async()=>binary.buffer.slice(binary.byteOffset,binary.byteOffset+binary.byteLength);
     const gltf=await new Promise((resolve,reject)=>parser.parse(resolve,reject));
@@ -120,12 +125,13 @@ async function main(){
     check(immutable(gltf)===identity,key+': source attributes/materials survive playback');
     const control=await load(key);check(modelClips(control.gltf,{...entry.metadata,uid:entry.metadata.uid+'-control'}).length===0,key+': nonmatching UID unchanged');
     const browser=await load(key),template=ctx.prepareTemplate(browser.gltf,entry.metadata);check(template.actions.run?.name==='run',key+': actual browser companion template exposes run');
-    const context={key,sourceSha256:catalog.assets[entry.asset].sourceSha256,roles,blends};results.push(context);
-    fs.writeFileSync(path.join(out,key.split(':')[1]+'.motion.json'),JSON.stringify({...context,frames:visual}));
-    fs.writeFileSync(path.join(out,key.split(':')[1]+'.blends.json'),JSON.stringify({...context,frames:blendFrames}));
+    const context={key,sourceSha256:preview?originalHashes[key]:catalog.assets[entry.asset].sourceSha256,roles,blends};results.push(context);
+    const visualName=preview?'DW1_Brachiomon_Recovered':key.split(':')[1];
+    fs.writeFileSync(path.join(out,visualName+'.motion.json'),JSON.stringify({...context,frames:visual}));
+    fs.writeFileSync(path.join(out,visualName+'.blends.json'),JSON.stringify({...context,frames:blendFrames}));
     console.log(JSON.stringify({key,roles:roles.map(({links,...r})=>r)}));
   }
-  const report={checks,failures,metricDefinitions:{maxAnchorErrorHeight:'Distance between a shared virtual joint evaluated through the actual child and parent node transforms. Flat-node TRS interruption blending can move these anchors differently; the measured limitation is retained.',maxNearestContactGapGrowthHeight:'Increase in minimum distance among selected attachment-region vertices and opposite triangles. Bounds closest contact only, not every cap edge or seamless boundary coverage.'},results};fs.writeFileSync(path.join(out,'motion-checks.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({checks,failures:failures.length}));
+  const report={checks,failures,metricDefinitions:{maxAnchorErrorHeight:'Distance between a shared virtual joint evaluated through the actual child and parent node transforms. Flat-node TRS interruption blending can move these anchors differently; the measured limitation is retained.',maxNearestContactGapGrowthHeight:'Increase in minimum distance among selected attachment-region vertices and opposite triangles. Bounds closest contact only, not every cap edge or seamless boundary coverage.'},results};fs.writeFileSync(path.join(out,preview?'brachiomon-motion-checks.json':'motion-checks.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({checks,failures:failures.length}));
   if(failures.length){console.error(JSON.stringify(failures,null,2));process.exitCode=1;}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

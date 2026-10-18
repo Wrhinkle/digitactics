@@ -1,10 +1,11 @@
-// Reviewed original rigid pieces from three DW1 rips. The virtual joints only
+// Reviewed original rigid pieces from DW1 rips. The virtual joints only
 // generate tracks on existing nodes: no mesh, material, skin or hierarchy edits.
 import * as THREE from 'three';
 
 const part = (name, parent, pivot, kind, side = 0, segment = 0) => ({ name, parent, pivot, kind, side, segment });
 const mesh = (n, parent, pivot, kind, side = 0, segment = 0) => part(`Mesh_${n}`, parent === null ? null : `Mesh_${parent}`, pivot, kind, side, segment);
 const ag = (name, parent, pivot, kind, side = 0) => part(`Agumon_${name}_${name}`, parent && `Agumon_${parent}_${parent}`, pivot, kind, side);
+const br = (name, parent, pivot, kind, side = 0, segment = 0) => part(`Brachiomon_${name}`, parent && `Brachiomon_${parent}`, pivot, kind, side, segment);
 const rigs = {
   'rip-dw1_agumon': { family: 'agumon', parts: [
     ag('Torso', null, [0, .86, 0], 'body'), ag('Head', 'Torso', [0, 1.80, .08], 'head'),
@@ -31,6 +32,18 @@ const rigs = {
     mesh(17, 16, [17, 12, -8], 'leg', 1, 2), mesh(18, 17, [22, 5, 9], 'leg', 1, 3),
     mesh(11, 0, [-12.3, 47, 0], 'leg', -1, 0), mesh(12, 11, [-11.6, 32, -11], 'leg', -1, 1),
     mesh(13, 12, [-16.6, 12, -8], 'leg', -1, 2), mesh(14, 13, [-21.6, 5, 9], 'leg', -1, 3),
+  ] },
+  'rip-dw1_brachiomon': { family: 'brachiomon', durations: { idle: 3.2, run: 1.2, attack: .9, special: 1.6, win: 2.8 }, parts: [
+    br('Torso', null, [0, 0, 0], 'body'), br('NeckBase', 'Torso', [0, 2.65, 2.5], 'neck', 0, 0),
+    br('Neck1', 'NeckBase', [0, 7.35, 2.3], 'neck', 0, 1), br('Neck2', 'Neck1', [0, 9.78, 2.2], 'neck', 0, 2),
+    br('Neck3', 'Neck2', [0, 12.41, 2.25], 'neck', 0, 3), br('NeckTop', 'Neck3', [0, 14.68, 2.3], 'neck', 0, 4),
+    br('Head', 'NeckTop', [0, 17.7, 2.8], 'head'), br('Jaw', 'Head', [0, 18.42, 2.5], 'jaw'),
+    br('FrontLeftUpper', 'Torso', [-2.7, .2, 3.0], 'leg', -1, 0), br('FrontLeftFoot', 'FrontLeftUpper', [-2.9, -3.5, 2.9], 'foot', -1, 0),
+    br('FrontRightUpper', 'Torso', [2.9, .2, 3.2], 'leg', 1, 0), br('FrontRightFoot', 'FrontRightUpper', [2.9, -3.5, 2.9], 'foot', 1, 0),
+    br('BackLeftUpper', 'Torso', [-2.4, -.8, -3.6], 'leg', -1, 1), br('BackLeftFoot', 'BackLeftUpper', [-2.6, -3.9, -3.5], 'foot', -1, 1),
+    br('BackRightUpper', 'Torso', [2.5, -.8, -3.6], 'leg', 1, 1), br('BackRightFoot', 'BackRightUpper', [2.6, -3.9, -3.5], 'foot', 1, 1),
+    br('TailBase', 'Torso', [0, -.9, -5.2], 'tail', 0, 0), br('Tail1', 'TailBase', [0, -.91, -8.773], 'tail', 0, 1),
+    br('TailTip', 'Tail1', [0, -.91, -11.913], 'tail', 0, 2),
   ] },
 };
 
@@ -87,6 +100,30 @@ function angles(family, p, role, u) {
     if (p.kind === 'head') x = role === 'attack' ? .22 * hit - .09 * wind : role === 'special' ? -.18 * big : .035 * s;
     if (p.kind === 'jaw') x = role === 'attack' ? .40 * hit : role === 'special' ? .48 * big : role === 'win' ? .18 * (1 - c) : 0;
     if (p.kind === 'body') x = role === 'attack' ? .09 * hit : role === 'special' ? -.06 * big : .012 * s;
+  } else if (family === 'brachiomon') {
+    const gait = side * (p.segment === 0 ? 1 : -1) * s;
+    if (p.kind === 'tail') y = (role === 'run' ? .065 : role === 'win' ? .095 : .035) * (Math.sin(cycle - p.segment * .45) - Math.sin(-p.segment * .45));
+    if (role === 'idle') {
+      if (p.kind === 'neck') x = .009 * s;
+      if (p.kind === 'head') { x = .025 * s; y = .035 * s; }
+    } else if (role === 'run' || role === 'win') {
+      const strength = role === 'run' ? 1 : .40;
+      if (p.kind === 'leg') x = -.25 * gait * strength;
+      if (p.kind === 'foot') x = .20 * gait * strength + .10 * Math.max(0, gait) ** 2 * strength;
+      if (p.kind === 'neck') { x = .018 * s; y = role === 'win' ? .035 * s : .008 * s; }
+      if (p.kind === 'head') { x = -.025 * s; z = role === 'win' ? .08 * s : .025 * s; }
+      if (p.kind === 'jaw' && role === 'win') x = .12 * (1 - c);
+    } else if (role === 'attack') {
+      if (p.kind === 'neck') x = (p.segment ? .065 : .035) * hit - .018 * wind;
+      if (p.kind === 'head') x = .18 * hit - .07 * wind;
+      if (p.kind === 'jaw') x = .26 * hit;
+    } else if (role === 'special') {
+      if (p.kind === 'neck') x = -.035 * big;
+      if (p.kind === 'head') x = -.20 * big;
+      if (p.kind === 'jaw') x = .45 * big;
+      if (p.kind === 'leg') x = (p.segment ? -.055 : .055) * big;
+      if (p.kind === 'foot') x = (p.segment ? .055 : -.055) * big;
+    }
   } else {
     if (role === 'idle') {
       if (p.kind === 'head') { x = .035 * s; z = .025 * s; }
@@ -136,7 +173,7 @@ export function rigidPartClips(gltf, src) {
   }
   const all = [...prepared.values()], floor = Math.min(...all.flatMap(p => p.vertices.map(v => v.y)));
   const height = Math.max(...all.flatMap(p => p.vertices.map(v => v.y))) - floor;
-  return Object.entries(durations).map(([role, duration]) => {
+  return Object.entries(spec.durations || durations).map(([role, duration]) => {
     // Dense original-node tracks bound positional interpolation at virtual
     // joints. Runtime/native players use their existing linear+slerp sampler.
     const count = Math.ceil(duration * 120), times = [], positions = all.map(() => []), rotations = all.map(() => []);

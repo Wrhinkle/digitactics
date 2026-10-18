@@ -47,7 +47,7 @@ async function main(){
     const selected=new Set([0,nodes.length-1]);
     // These reviewed rigid-part clips articulate flat mesh nodes rather than
     // skin joints. Compare every part in native motion/action parity fixtures.
-    if(['rip-dw1_agumon','rip-dw1_airdramon','rip-dw1_akatorimon'].includes(source.metadata.uid))nodes.forEach((_,i)=>selected.add(i));
+    if(['rip-dw1_agumon','rip-dw1_airdramon','rip-dw1_akatorimon','rip-dw1_brachiomon'].includes(source.metadata.uid))nodes.forEach((_,i)=>selected.add(i));
     for(const skin of json.skins||[]){selected.add(skin.joints[0]);selected.add(skin.joints[Math.floor(skin.joints.length/2)]);selected.add(skin.joints.at(-1));}
     nodes.forEach((n,i)=>{if(n.parent!==before[i])selected.add(i);});
     const samples=[];
