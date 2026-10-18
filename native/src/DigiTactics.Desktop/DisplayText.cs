@@ -3,7 +3,8 @@ using DigiTactics.Rules;
 
 namespace DigiTactics.Desktop;
 
-internal sealed record DisplayEntry(string Name, string Description, string? Preview = null, int? AbilityValue = null, string? ScaledDescription = null);
+internal sealed record AbilityFormula(string Operation, double Operand, bool Rounded);
+internal sealed record DisplayEntry(string Name, string Description, string? Preview = null, int? AbilityValue = null, string? ScaledDescription = null, AbilityFormula[]? Formulas = null);
 internal sealed class DisplayText
 {
     private readonly Dictionary<string, Dictionary<string, DisplayEntry>> variants = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, DisplayEntry>>>(
@@ -13,9 +14,17 @@ internal sealed class DisplayText
     public DisplayEntry Ability(string variant, string line, int stage, double abilityPower)
     {
         var entry = Ability(variant, line, stage);
-        return entry.ScaledDescription is { } template && entry.AbilityValue is { } value
-            ? entry with { Description = template.Replace("{value}", UnitValues.Round(value * abilityPower / 100).ToString(System.Globalization.CultureInfo.InvariantCulture)) }
-            : entry;
+        if (entry.ScaledDescription is not { } template || entry.AbilityValue is not { } baseValue) return entry;
+        double value = UnitValues.Round(baseValue * abilityPower / 100);
+        template = template.Replace("{value}", value.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        for (int i = 0; i < (entry.Formulas?.Length ?? 0); i++)
+        {
+            var formula = entry.Formulas![i];
+            double result = formula.Operation == "/" ? value / formula.Operand : value * formula.Operand;
+            if (formula.Rounded) result = UnitValues.Round(result);
+            template = template.Replace($"{{value:{i}}}", result.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        }
+        return entry with { Description = template };
     }
     public DisplayEntry TraitBreakpoint(string variant, string trait, int index) => variants[variant][$"trait:{trait}:{index}"];
     public string ConsumablePreview(Ruleset rules, string id, int heldItems, int benchItems)

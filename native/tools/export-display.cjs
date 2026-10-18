@@ -3,6 +3,7 @@ const DT = require('../../tools/headless.cjs').load({ strict: true });
 const breakpointSource = fs.readFileSync(path.join(__dirname, '../../js/ui.js'), 'utf8').match(/const bpText = (\(T, i\) => \{[\s\S]*?\n  \});/);
 if (!breakpointSource) throw new Error('Original trait breakpoint formatter could not be located.');
 const breakpointText = require('vm').runInNewContext(breakpointSource[1]);
+const customTemplate = require('./ability-display-template.cjs');
 const variants = {};
 const consumableCases = [];
 const abilityCases = [];
@@ -41,6 +42,13 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
       entries[key].abilityValue = base;
       for (const ap of [0, 33.3, 99.5, 100, 127.25, 200, 999.9])
         abilityCases.push({ variant: `${set.id}/${pace}`, line: line.id, stage, ap, text: DT.abilityText(line, stage, ap) });
+    } else {
+      const compiled = customTemplate(DT,line,stage);
+      if (compiled) {
+        Object.assign(entries[`ability:${line.id}:${stage}`], compiled);
+        for (const ap of [0, .1, 1, 33.3, 99.5, 100, 127.25, 200, 999.9, 10000])
+          abilityCases.push({ variant: `${set.id}/${pace}`, line: line.id, stage, ap, text: DT.abilityText(line, stage, ap) });
+      }
     }
   }
   for (const v of [...DT.Duos.AUGMENTS, ...DT.AUGMENTS, ...DT.POWERS, ...DT.WISPS]) add(v.id, v);
@@ -66,4 +74,4 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
 fs.writeFileSync(path.join(__dirname, '../content/display.json'), JSON.stringify(variants, null, 2) + '\n');
 fs.writeFileSync(path.join(__dirname, '../content/consumable-preview-cases.json'), JSON.stringify(consumableCases) + '\n');
 fs.writeFileSync(path.join(__dirname, '../content/ability-display-cases.json'), JSON.stringify(abilityCases) + '\n');
-console.log(`Exported native display text and ${abilityCases.length} shared ability AP cases.`);
+console.log(`Exported native display text and ${abilityCases.length} ability AP cases.`);

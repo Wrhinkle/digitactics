@@ -41,7 +41,7 @@ internal static class UiTextChecks
         foreach (var sample in abilityCases)
             if (display.Ability(sample.Variant, sample.Line, sample.Stage, sample.Ap).Description != sample.Text)
                 throw new InvalidOperationException($"AP-scaled ability text differs from source: {sample}");
-        Console.WriteLine($"Shared ability AP display checks passed: {abilityCases.Length} source comparisons.");
+        Console.WriteLine($"Ability AP display checks passed: {abilityCases.Length} source comparisons.");
         int breakpoints = 0;
         foreach (var rules in catalog.Variants)
             foreach (var trait in rules.Traits)
