@@ -1,0 +1,12 @@
+const fs=require('fs'),path=require('path'),zlib=require('zlib');
+const source=fs.readFileSync(path.resolve(__dirname,'../../js/render3d.js'),'utf8');
+const start=source.indexOf('  pickCombat(pt, cb) {'),end=source.indexOf('\n  // combat cell',start);
+if(start<0 || end<0) throw new Error('Original pickCombat not found');
+const renderer=Function('return ({'+source.slice(start,end).trim()+'})')();
+renderer.unitWorld=u=>({x:u.x,z:u.y}); renderer.project=(x,y,z)=>{if(y!==.7)throw new Error('Body anchor changed');return {x,y:z};};
+const rows=[];
+const rosters=[[],[{id:1,x:0,y:0,alive:true}], [{id:1,x:0,y:0,alive:false},{id:2,x:20,y:0,alive:true}], [{id:5,x:-10,y:0,alive:true},{id:2,x:10,y:0,alive:true}], [{id:2,x:10,y:0,alive:true},{id:5,x:-10,y:0,alive:true}],Array.from({length:24},(_,i)=>({id:i,x:(i%6)*23-60,y:Math.floor(i/6)*19-30,alive:i%4!==0}))];
+for(const targets of rosters) for(let x=-70;x<=70;x+=2)for(let y=-70;y<=70;y+=2) rows.push({targets,x,y,expected:renderer.pickCombat({x,y},{units:targets})?.id??null});
+for(const x of [39.999999,40,40.000001,-40]) rows.push({targets:rosters[1],x,y:0,expected:renderer.pickCombat({x,y:0},{units:rosters[1]})?.id??null});
+fs.writeFileSync(path.resolve(__dirname,'../tests/fixtures/combat-picking.json.gz'),zlib.gzipSync(JSON.stringify(rows)));
+console.log(`Exported ${rows.length} original combat selection cases.`);

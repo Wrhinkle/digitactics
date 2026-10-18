@@ -33,6 +33,7 @@ try {
     Invoke-Checked 'node' @('tools/export-dance-skeleton.cjs')
     Invoke-Checked 'node' @('tools/export-companion-travel.cjs')
     Invoke-Checked 'node' @('tools/export-music-playlist.cjs')
+    Invoke-Checked 'node' @('tools/export-combat-picking.cjs')
     Invoke-Checked 'node' @('tools/export-content.cjs')
     Invoke-Checked 'node' @('tools/export-display.cjs')
     Invoke-Checked 'node' @('tools/export-match-history.cjs')
