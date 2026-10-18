@@ -2533,3 +2533,5 @@ projected pile-center hits and removal from picking; the integrated farm/evoluti
 Solo flow passed. This replaces the prior fixed 28-pixel targets. A full automated
 pointer-to-persisted-cleanup UI check remains pending, along with simulation-event
 feedback and the broader full-port requirements.
+
+Farm pointer integration check: run `DigiTactics.Desktop.exe --farm-pointer-smoke --profile-directory <new-empty-directory> --capture farm-pointer.bmp`. The hidden native window sends ImGui mouse events to a rendered pile owned by a nonselected resident. It checks duplicate pile keys across owners, a locked-save failure followed by retry, persisted cleanup/reward after reopening the profile, and unchanged selection. Existing profiles are rejected before fixture setup.

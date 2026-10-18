@@ -39,9 +39,11 @@ try
         bool evolutionSmoke = args.Contains("--evolution-smoke");
         bool collectionSmoke = args.Contains("--collection-smoke") || evolutionSmoke;
         bool trainingSmoke = args.Contains("--training-smoke");
+        bool farmPointerSmoke = args.Contains("--farm-pointer-smoke");
+        if (farmPointerSmoke && profileDirectory is null) throw new ArgumentException("Farm pointer smoke requires an isolated --profile-directory.");
         if (trainingSmoke && profileDirectory is null) throw new ArgumentException("Training smoke requires an isolated --profile-directory.");
         if (collectionSmoke && profileDirectory is null) throw new ArgumentException("Collection smoke requires an isolated --profile-directory.");
-        MatchApplication.Run(catalog, args.Contains("--match-smoke") || collectionSmoke || trainingSmoke, capture, args.Contains("--duos"), profileDirectory, collectionSmoke, evolutionSmoke, trainingSmoke);
+        MatchApplication.Run(catalog, args.Contains("--match-smoke") || collectionSmoke || trainingSmoke || farmPointerSmoke, capture, args.Contains("--duos"), profileDirectory, collectionSmoke, evolutionSmoke, trainingSmoke, farmPointerSmoke);
     }
     return 0;
 }

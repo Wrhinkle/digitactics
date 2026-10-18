@@ -16,6 +16,14 @@ internal sealed partial class MatchScreen
     private int FarmSceneHeight => Math.Max(200, size.Y - 150);
     public int FarmDrawCalls => farmView?.DrawCalls ?? 0;
     public string? FarmTheme => farmView?.Theme;
+    internal string? FarmSelectedResident => farmPet;
+    internal (float X, float Y)? FarmPilePoint(string id, int key)
+    {
+        if (farmView is null) return null;
+        foreach (var pile in farmView.PileAnchors(FarmSceneWidth, FarmSceneHeight))
+            if (pile.Id == id && pile.Key == key) return (12 + pile.X, 70 + pile.Y);
+        return null;
+    }
     private void FarmAct(FarmCareAction action, string? option = null, int pile = 0, string? resident = null)
     {
         string? before = farm!.Save;
