@@ -27,6 +27,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly BoardLibraryMotion? library;
     private readonly BoardCrowdMotion? crowd;
     private readonly BoardStudioMotion? studio;
+    private readonly BoardTrainMotion? train;
     private readonly BoardConfetti? confetti;
     private static readonly Vector3 libraryTint=BoardLighting.Linear("#ffd090");
     private static readonly Vector3 freezeCalmFog=BoardLighting.Linear("#24405e"),freezeStormFog=BoardLighting.Linear("#8aa6c0");
@@ -42,6 +43,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false,int initialEvolution=0)
     {
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
+        if(scene.Id=="trailmon-station")train=new(initialCombat);
         if(scene.Id=="battle-studio"){studio=new();confetti=new(scene.Objects.FirstOrDefault(o=>o.Motion?.Kind=="studio-confetti")?.Instances?.Length??0,initialWon);}
         if(scene.Id=="knights-coliseum"){crowd=new(initialCombat,initialWon);confetti=new(scene.Objects.FirstOrDefault(o=>o.Motion?.Kind=="knights-confetti")?.Instances?.Length??0,initialWon);}
         if(scene.Id=="witchelny-library"){library=new(initialEvolution);FlashColor=BoardLighting.Linear("#ffe8a0");}
@@ -94,6 +96,7 @@ internal sealed class BoardMeshLayer : IDisposable
         library?.Advance(delta,evolution);
         crowd?.Advance(time,combat,won);
         studio?.Advance(delta,combat);
+        train?.Advance(time,combat);
         confetti?.Advance(delta,won);
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
@@ -141,6 +144,7 @@ internal sealed class BoardMeshLayer : IDisposable
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = World(item.Object);
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
+            if(item.Object.Motion?.TrainSteam==true)opacity=train!.SteamOpacity;
             if(item.Object.Motion?.Kind=="library-circle")opacity=library!.Opacity(time);
             if(item.Object.Motion?.Aurora is {} aurora)opacity=freeze!.Opacity((int)(aurora.Ph/2));
             if(item.Object.Motion is {Kind:"circuit-screen" or "circuit-floor"} code)opacity=circuit!.Opacity(code.Kind);
@@ -187,6 +191,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         {
                             { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
                             { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
+                            {Kind:"train-cars" or "train-engine"} motion=>train!.Instance(motion.Kind,i,instance.Matrix),
                             {Kind:"knights-confetti" or "studio-confetti"}=>ConfettiMatrix(confetti!.Poses[i]),
                             {Kind:"studio-audience",Crowd:{} audience}=>BoardStudioMotion.Audience(audience[i],time),
                             {Crowd:{} people} motion=>crowd!.Instance(motion.Kind,people[i],time),
@@ -220,6 +225,8 @@ internal sealed class BoardMeshLayer : IDisposable
     internal static Matrix4D ConfettiMatrix(BoardConfettiPose p)=>new CompanionTransform(new(p.X,p.Y,p.Z),new(p.Rx,0,p.Rz),new(1,1,1)).Matrix;
     private Matrix4D World(BoardObject obj)
     {
+        if(obj.Motion?.TrainSteam==true)return train!.Steam*Root;
+        if(obj.Motion?.Kind=="train-clock")return BoardTrainMotion.Clock(obj.Matrix,time)*Root;
         if(obj.Motion?.Kind is "studio-beam" or "studio-pool")return studio!.Light((int)obj.Motion.Speed,obj.Motion.Kind=="studio-beam",time)*Root;
         if(obj.Motion?.Kind=="studio-crane")return BoardStudioMotion.Crane(obj.Motion,time)*Root;
         if(obj.Motion?.Kind is "library-circle" or "library-outer")return library!.Circle(obj.Motion.Kind,obj.Matrix)*Root;

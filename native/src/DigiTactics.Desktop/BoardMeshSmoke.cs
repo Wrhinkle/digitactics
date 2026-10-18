@@ -369,7 +369,7 @@ internal static class BoardMeshSmoke
             ("flame-temple","temple-lava"),("flame-temple","particles"),
             ("gekomon-castle","underwater-caustics"),("gekomon-castle","underwater-caustics2"),
             ("gekomon-castle","underwater-shafts"),("gekomon-castle","underwater-kelp"),
-            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour"),("witchelny-library","library-pages"),("witchelny-library","library-candles"),("witchelny-library","library-flames"),("witchelny-library","library-halos"),("witchelny-library","library-circle"),("witchelny-library","library-outer"),("knights-coliseum","knights-crowd"),("knights-coliseum","knights-banners"),("knights-coliseum","knights-flashes"),("knights-coliseum","knights-confetti"),("battle-studio","studio-strip"),("battle-studio","studio-led"),("battle-studio","studio-audience"),("battle-studio","studio-sticks"),("battle-studio","studio-beam"),("battle-studio","studio-pool"),("battle-studio","studio-crane"),("battle-studio","studio-confetti")})
+            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour"),("witchelny-library","library-pages"),("witchelny-library","library-candles"),("witchelny-library","library-flames"),("witchelny-library","library-halos"),("witchelny-library","library-circle"),("witchelny-library","library-outer"),("knights-coliseum","knights-crowd"),("knights-coliseum","knights-banners"),("knights-coliseum","knights-flashes"),("knights-coliseum","knights-confetti"),("battle-studio","studio-strip"),("battle-studio","studio-led"),("battle-studio","studio-audience"),("battle-studio","studio-sticks"),("battle-studio","studio-beam"),("battle-studio","studio-pool"),("battle-studio","studio-crane"),("battle-studio","studio-confetti"),("trailmon-station","train-cars"),("trailmon-station","train-engine"),("trailmon-station","train-clock"),("trailmon-station","particles")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
@@ -380,6 +380,12 @@ internal static class BoardMeshSmoke
                 ModelRenderer.Begin(256,256); OpenGl.ClearColor(new(0,0,0,1)); OpenGl.Clear(GlClearBit.Color);
                 var camera=Matrix4x4.CreateLookAt(new(0,25,28),Vector3.Zero,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
                 if(kind=="mountain-stars") camera=Matrix4x4.CreateLookAt(Vector3.Zero,new(0,30,-50),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,200);
+                if(kind=="train-clock")
+                {
+                    OpenGl.ClearColor(new(.5f,.5f,.5f,1));OpenGl.Clear(GlClearBit.Color);
+                    var target=new Vector3(-6.5f,3,-10.42f);
+                    camera=Matrix4x4.CreateLookAt(target+new Vector3(0,0,2),target,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
+                }
                 if(kind=="sewer-pour")
                 {
                     var target=new Vector3(-12.6f,-.1f,-6);

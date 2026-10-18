@@ -37,6 +37,10 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+  .replace("anim(ctx, car, std({ vertexColors: true, roughness: 0.6 }), cars,", "cars.nativeTrain='train-cars'; anim(ctx, car, std({ vertexColors: true, roughness: 0.6 }), cars,")
+  .replace("anim(ctx, engine, std({ vertexColors: true, roughness: 0.5, metalness: 0.3 }), [{ y: -1.1, z: TZ }],", "anim(ctx, engine, std({ vertexColors: true, roughness: 0.5, metalness: 0.3 }), Object.assign([{ y: -1.1, z: TZ }],{nativeTrain:'train-engine'}),")
+  .replace('ctx.tick(() => { steam.position.set','steam.userData.nativeMotion.trainSteam=true; ctx.tick(() => { steam.position.set')
+  .replace('ctx.tick((dt, t) => { hand.rotation.z = -t * 0.5; });','hand.userData.nativeMotion={kind:"train-clock"}; ctx.tick((dt, t) => { hand.rotation.z = -t * 0.5; });')
   .replace('strip2.rotation.z = Math.PI / 12;','strip2.rotation.z = Math.PI / 12; strip.userData.nativeMotion={kind:"studio-strip",speed:0}; strip2.userData.nativeMotion={kind:"studio-strip",speed:1};')
   .replace(/inst\(ctx, new THREE.PlaneGeometry\(7, 3.5\)[^\n]+;/,line=>'const nativeLed='+line+' nativeLed.userData.nativeMotion={kind:"studio-led"};')
   .replace("anim(ctx, crowdGeo(), std({ color: '#ffffff', roughness: 0.9 }), aud,", "aud.nativeCrowd='studio-audience'; anim(ctx, crowdGeo(), std({ color: '#ffffff', roughness: 0.9 }), aud,")
@@ -90,7 +94,7 @@ async function main(){
   .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
-  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeCrowd)m.userData.nativeMotion={kind:items.nativeCrowd,crowd:items.map(p=>({...p}))}; if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
+  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeTrain)m.userData.nativeMotion={kind:items.nativeTrain}; if(items.nativeCrowd)m.userData.nativeMotion={kind:items.nativeCrowd,crowd:items.map(p=>({...p}))}; if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
@@ -388,6 +392,25 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const trainFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
+   for(const initialCombat of [false,true]){
+    const env=buildEnv(THEMES.find(s=>s.id==='trailmon-station')),objects=[],frames=[];
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('train-')||o.userData.nativeMotion?.trainSteam)objects.push(o);});
+    env.signal({phase:initialCombat?'combat':'planning',stage:1,won:false,evo:0});env.tick(0,0);let time=0;
+    for(let frame=0;frame<1400;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],combat=frame<200?initialCombat:Math.floor(frame/180)%2===0;time+=delta;
+     env.signal({phase:combat?'combat':'planning',stage:1,won:false,evo:0});env.tick(delta,time);env.group.updateMatrixWorld(true);
+     frames.push({time,delta,combat,objects:objects.map(o=>{
+      const matrix=new THREE.Matrix4(),matrices=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+      return {kind:o.userData.nativeMotion.kind,matrix:o.matrixWorld.toArray(),matrices,opacity:o.material.opacity};
+     })});
+    }
+    scenarios.push({initialCombat,frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-train.json.gz'),zlib.gzipSync(JSON.stringify(trainFixture)));
   const studioFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
    for(const initial of [false,true]){
