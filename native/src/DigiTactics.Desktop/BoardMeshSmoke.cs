@@ -360,11 +360,11 @@ internal static class BoardMeshSmoke
             ("flame-temple","temple-lava"),("flame-temple","particles"),
             ("gekomon-castle","underwater-caustics"),("gekomon-castle","underwater-caustics2"),
             ("gekomon-castle","underwater-shafts"),("gekomon-castle","underwater-kelp"),
-            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish")})
+            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
-            if(objects.Length!=(kind=="savanna-gears"?4:kind=="rotating-parent"?2:1)) throw new InvalidOperationException("Missing original animated prop: "+kind);
+            if(objects.Length!=(kind=="freeze-aurora"?3:kind=="savanna-gears"?4:kind=="rotating-parent"?2:1)) throw new InvalidOperationException("Missing original animated prop: "+kind);
             using var layer=new BoardMeshLayer(scene with { Objects=objects });
             byte[] Render()
             {

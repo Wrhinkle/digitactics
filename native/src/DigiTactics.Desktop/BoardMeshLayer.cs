@@ -22,9 +22,12 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly BoardCircuitMotion? circuit;
     private readonly BoardTempleMotion? temple;
     private readonly BoardUnderwaterMotion? underwater;
+    private readonly BoardFreezeMotion? freeze;
+    private static readonly Vector3 freezeCalmFog=BoardLighting.Linear("#24405e"),freezeStormFog=BoardLighting.Linear("#8aa6c0");
+    public Vector3? AnimatedFogColor=>freeze is null?null:Vector3.Lerp(freezeCalmFog,freezeStormFog,(float)freeze.Weather);
     private static readonly Vector3 templeSunTint=BoardLighting.Linear("#fff6e0");
     public (float Multiplier,float Weight,Vector3 Tint)? SunFlare=>temple is null?null:(temple.SunMultiplier,temple.TintWeight,templeSunTint);
-    public (float Near,float Far)? AnimatedFog=>kowloon is null?null:(kowloon.FogNear,kowloon.FogFar);
+    public (float Near,float Far)? AnimatedFog=>freeze is not null?(freeze.FogNear,freeze.FogFar):kowloon is null?null:(kowloon.FogNear,kowloon.FogFar);
     public float LightFlash=>(float)(lightning?.Flash??circuit?.LightFlash??temple?.LightFlash??0);
     public Vector3? FlashColor { get; private set; }
     private readonly Dictionary<BoardObject,BoardSpiralMotion> spirals=[];
@@ -33,6 +36,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false,int initialEvolution=0)
     {
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
+        if(scene.Id=="freezeland")freeze=new();
         if(scene.Id=="kowloon")kowloon=new();
         if(scene.Id=="gekomon-castle")underwater=new(initialCombat);
         if(scene.Id=="circuit-core") {circuit=new(initialWon);FlashColor=BoardLighting.Linear("#a8ffc8");}
@@ -58,7 +62,7 @@ internal sealed class BoardMeshLayer : IDisposable
                     parts = BoardMesh.Create(scene, obj).Select(part =>
                     {
                         var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
-                        if(obj.Motion is { Kind:"sea" or "particles" or "circuit-pulses" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
+                        if(obj.Motion is { Kind:"sea" or "particles" or "circuit-pulses" or "freeze-aurora" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
                         if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" or "temple-lava" or "underwater-caustics" or "underwater-caustics2" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
                         var material = scene.Materials[part.Material];
                         return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
@@ -75,6 +79,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public void Update(double seconds,double delta=0,bool combat=false,int stage=1,bool won=false,int evolution=0)
     {
         time=seconds;
+        freeze?.Advance(delta,combat);
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
         kowloon?.Advance(delta,combat);
@@ -94,7 +99,8 @@ internal sealed class BoardMeshLayer : IDisposable
         {
             if(wave.Motion.Kind=="sea") BoardSceneMotion.Sea(wave.Vertices,time,wave.Motion);
             else if(wave.Motion.Kind=="circuit-pulses")circuit!.Pulses(wave.Vertices,wave.Motion.Pulses!);
-            else BoardSceneMotion.Particles(wave.Vertices,delta,time,wave.Motion);
+            else if(wave.Motion.Aurora is {} aurora)BoardFreezeMotion.Aurora(wave.Vertices,aurora,time);
+            else {BoardSceneMotion.Particles(wave.Vertices,delta,time,wave.Motion);if(wave.Motion.FreezeSnow)freeze!.Snow(wave.Vertices,delta); }
             wave.Geometry.UpdateVertices(wave.Vertices);
         }
     }
@@ -117,6 +123,7 @@ internal sealed class BoardMeshLayer : IDisposable
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = World(item.Object);
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
+            if(item.Object.Motion?.Aurora is {} aurora)opacity=freeze!.Opacity((int)(aurora.Ph/2));
             if(item.Object.Motion is {Kind:"circuit-screen" or "circuit-floor"} code)opacity=circuit!.Opacity(code.Kind);
             if(item.Object.Motion is {Kind:"kowloon-band" or "kowloon-lattice"} scan)
             {
@@ -144,7 +151,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         new Vector3(material.Emissive[0], material.Emissive[1], material.Emissive[2]) * material.EmissiveIntensity,
                         material.Roughness, material.Metalness, material.Side, additive: material.Blending == 2,
                         vertexColors: material.VertexColors, flatShading: material.FlatShading || !part.HasNormals, alphaTest: material.AlphaTest, wireframe: material.Wireframe,
-                        points: item.Object.Kind == "points" ? PointSprite.Board(material, part.Texture, viewportHeight,item.Object.Motion?.KowloonRain==true?kowloon!.RainSize:item.Object.Motion?.TempleEmbers==true?temple!.EmberSize:null) : null, fog: material.Fog,
+                        points: item.Object.Kind == "points" ? PointSprite.Board(material, part.Texture, viewportHeight,item.Object.Motion?.FreezeSnow==true?freeze!.SnowSize:item.Object.Motion?.KowloonRain==true?kowloon!.RainSize:item.Object.Motion?.TempleEmbers==true?temple!.EmberSize:null) : null, fog: material.Fog,
                         emissiveMap:material.EmissiveMap is {} emissionMap?textures[emissionMap]:null);
                     DrawCalls++;
                 }

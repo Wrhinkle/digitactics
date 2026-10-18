@@ -36,7 +36,11 @@ async function main(){
   +'\nexport const originalDrawItems='+render.slice(render.indexOf('  drawItems(p, ui) {'),render.indexOf('  // which item token')).trim().replace('drawItems(','function(')+';'
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
- const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8')
+ const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+  .replace('anim(ctx, snowman,','men.nativeFreeze=true; anim(ctx, snowman,')
+  .replace('const base = snow.geometry.attributes.position.array;', 'snow.userData.nativeMotion.freezeSnow=true; const base = snow.geometry.attributes.position.array;')
+  .replace('          return m;\n        };\n        const aur', '          m.userData.nativeMotion={kind:"freeze-aurora",aurora:{r,a0,a1,y,h,ph,base}}; return m;\n        };\n        const aur')
+
   .replace(/mesh\(ctx, new THREE.CircleGeometry\(40, 40\)[^\n]+cm\(caus\)[^\n]+;/,line=>'const nativeCaustics='+line+' nativeCaustics.userData.nativeMotion={kind:"underwater-caustics"};')
   .replace(/mesh\(ctx, new THREE.CircleGeometry\(12.6, 40\)[^\n]+cm\(caus2\)[^\n]+;/,line=>'const nativeCaustics2='+line+' nativeCaustics2.userData.nativeMotion={kind:"underwater-caustics2"};')
   .replace('const shm = anim(ctx,','shafts.nativeUnderwater="underwater-shafts"; const shm = anim(ctx,')
@@ -66,7 +70,7 @@ async function main(){
   .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
-  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
+  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
@@ -364,6 +368,22 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const freezeFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),spec=THEMES.find(s=>s.id==='freezeland'),scene={fog:new THREE.Fog(...spec.fog)},env=buildEnv(spec,{scene}),objects=[],frames=[];
+   env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('freeze-')||o.userData.nativeMotion?.freezeSnow)objects.push(o);});
+   env.signal({phase:'planning',stage:1,won:false,evo:0});env.tick(0,0);let time=0;
+   const initial=objects.map(o=>({motion:o.userData.nativeMotion,positions:Array.from(o.geometry.attributes.position.array)}));
+   for(let frame=0;frame<600;frame++){
+    const delta=[0,1/60,.033,.1][frame%4],combat=Math.floor(frame/100)%2===0;time+=delta;
+    env.signal({phase:combat?'combat':'planning',stage:1,won:false,evo:0});env.tick(delta,time);
+    frames.push({time,delta,combat,fog:{near:scene.fog.near,far:scene.fog.far,color:scene.fog.color.toArray()},objects:objects.map(o=>{
+     const matrix=new THREE.Matrix4(),matrices=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+     return {matrices,positions:Array.from(o.geometry.attributes.position.array),opacity:o.material.opacity,size:o.material.size??0};
+    })});
+   }
+   disposeEnv(env);return {initial,frames};
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-freeze.json.gz'),zlib.gzipSync(JSON.stringify(freezeFixture)));
   const particleFixture=await page.evaluate(async()=>{
    const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
    for(const spec of THEMES){

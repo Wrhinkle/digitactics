@@ -53,6 +53,7 @@ internal sealed class ArenaEnvironment : IDisposable
         meshes!.Root=Matrix4D.Compose(new(0,0,0),new(0,0,0,1),new(wide?1.8:1,1,1));
         lighting!.FogNear=wide?65:scene!.Fog[1].GetSingle(); lighting.FogFar=wide?120:scene!.Fog[2].GetSingle();
         if(meshes.AnimatedFog is {} fog) {lighting.FogNear=fog.Near;lighting.FogFar=fog.Far;}
+        if(meshes.AnimatedFogColor is {} fogColor)lighting.FogColor=fogColor;
         renderer.BoardLight=lighting; renderer.FarmEye=eye; renderer.ShadowCamera=SceneShadowMap.BoardCamera;
         renderer.ShadowMapSize=shadows.Size; renderer.ShadowBias=-.0005f;
         shadows.Begin(); renderer.ShadowPass=true;

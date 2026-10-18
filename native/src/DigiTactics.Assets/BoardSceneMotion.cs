@@ -35,6 +35,7 @@ public static class BoardSceneMotion
         double x=p.X,y=p.Y,z=p.Z,rx=0,ry=p.Ry,rz=0,sx=p.S,sy=p.S,sz=p.S;
         switch(kind)
         {
+            case "freeze-men":return BoardFreezeMotion.Snowman(p,time);
             case "village-eggs": rz=Math.Sin(time*2+p.Phase)*.18; break;
             case "village-blocks":
                 y=p.Base+Math.Sin(time*1.2+p.Phase)*.3; ry=time*.4+p.Phase; rx=Math.Sin(time*.5+p.Phase)*.3; break;
