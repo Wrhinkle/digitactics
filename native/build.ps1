@@ -24,6 +24,7 @@ try {
     Invoke-Checked 'node' @('tools/export-content.cjs')
     Invoke-Checked 'node' @('tools/export-display.cjs')
     Invoke-Checked 'node' @('tools/export-match-history.cjs')
+    Invoke-Checked 'node' @('tools/export-recent-players.cjs')
     Invoke-Checked 'node' @('tools/export-match-rewards.cjs')
     Invoke-Checked 'node' @('tools/export-legend-rewards.cjs')
     Invoke-Checked 'node' @('tools/export-eggs.cjs')

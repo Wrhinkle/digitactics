@@ -15,6 +15,8 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
     private HistoryMatch? pending;
     private DateOnly rewardDay;
     private RewardStats? rewardStats;
+    private EncounteredPlayer[] encountered = [];
+    private string recordedName = "";
     public RewardBreakdown? Award { get; private set; }
     public LegendReward? LegendAward { get; private set; }
     public string? Error { get; private set; }
@@ -38,7 +40,12 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
         var player = session.State.Players[seat];
         if (saved) return true;
         if (player.Placement == 0) return false;
-        if (pending is null) { rewardDay = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime); rewardStats = tracker.Stats; }
+        if (pending is null)
+        {
+            rewardDay = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime); rewardStats = tracker.Stats;
+            recordedName = player.Name;
+            if (multiplayer) encountered = session.State.Players.Where(p => p.IsHuman && p.Id != seat).Select(p => new EncounteredPlayer(p.Name)).ToArray();
+        }
         string mode = multiplayer ? "mp" : "solo";
         pending ??= new($"{mode}:{session.State.Seed}:{player.Id}", timestamp, mode, session.State.Duos ? "duos" : "solo",
             session.State.Rules.Id.Split('/')[0], player.Placement, session.Rounds.Position.Label, Math.Max(level, player.Economy.Level), traits, units,
@@ -57,6 +64,8 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
             }
             string? previous = profile.Storage.GetValueOrDefault("dt.client.v1");
             string updated = MatchHistory.Append(previous, pending with { Bits = rewards.Award?.Total });
+            if (multiplayer && !MatchAlreadyRecorded(previous, pending.Key))
+                updated = RecentPlayers.Remember(updated, recordedName, encountered, pending.At)!;
             if (updated != previous) changes["dt.client.v1"] = updated;
             saved = changes.Count == 0 || profile.UpdateStorage(changes);
             if (saved) { Award = rewards.Award; LegendAward = legend?.Award; }
@@ -65,5 +74,11 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
         catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException)
         { Error = "Match progress could not be saved. Existing progress was preserved: " + error.Message; }
         return saved;
+    }
+    private static bool MatchAlreadyRecorded(string? saved, string key)
+    {
+        if (saved is null) return false;
+        using var document = System.Text.Json.JsonDocument.Parse(saved);
+        return document.RootElement.TryGetProperty("matches", out var matches) && matches.EnumerateArray().Any(m => m.GetProperty("key").GetString() == key);
     }
 }

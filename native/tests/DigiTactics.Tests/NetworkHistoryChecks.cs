@@ -62,6 +62,18 @@ internal static class NetworkHistoryChecks
                 using(var replay=new MatchReplica(room,catalog))
                 using(var guarded=new NetworkMatchHistory(replay,uncertain,1,()=>2000))
                 {replay.Pump(now);Check(replay.LastDesync is not null&&!uncertain.Exists&&uncertain.Storage.Count==0,"replay disagreement cannot commit uncertain rewards");}
+                var socialProfile = new NativeProfileStore(target + "-recent");
+                var session = replica.Match.Session;
+                session.Actions.Apply(0, "claim", JsonSerializer.SerializeToElement(new { name = "Peer" }));
+                session.Actions.Apply(1, "claim", JsonSerializer.SerializeToElement(new { name = "Self" }));
+                var recorder = new MatchHistoryRecorder(session, socialProfile, 1, true);
+                Directory.CreateDirectory(target + "-recent");
+                using (var guard = new FileStream(Path.Combine(target + "-recent", "profile.json.lock"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                    Check(!recorder.Complete(3000) && socialProfile.Storage.Count == 0, "recent players and rewards fail atomically");
+                Check(recorder.Complete(90000000), "recent player transaction retries");
+                Check(RecentPlayers.Read(socialProfile.Storage["dt.client.v1"]).SequenceEqual(new[] { new RecentPlayer("Peer", 3000) }), "only human peers recorded with original timestamp");
+                string socialSaved = socialProfile.Storage["dt.client.v1"];
+                Check(new MatchHistoryRecorder(session, socialProfile, 1, true).Complete(90000000) && socialProfile.Storage["dt.client.v1"] == socialSaved, "duplicate match does not refresh recent players");
             }
         }
         finally

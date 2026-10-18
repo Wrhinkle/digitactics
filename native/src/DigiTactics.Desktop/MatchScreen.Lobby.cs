@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Brutal.ImGuiApi;
 using DigiTactics.Networking;
+using DigiTactics.Storage;
 
 namespace DigiTactics.Desktop;
 
@@ -18,6 +19,8 @@ internal sealed partial class MatchScreen
     private IReadOnlyList<SteamLobby> availableRooms = [];
     private SteamLobbyVisibility visibility = SteamLobbyVisibility.Friends;
     private long presenceAt;
+    private long recentPlayersAt;
+    private string recentPlayersError = "";
     private ulong? invitedLobby;
     private sealed record LobbyAvatar(long At, int Handle, GpuTexture? Texture);
     private readonly Dictionary<ulong, LobbyAvatar> lobbyAvatars = [];
@@ -105,13 +108,31 @@ internal sealed partial class MatchScreen
             {
                 var entered = enteringRoom.GetAwaiter().GetResult();
                 entered.SeatResult += (_, accepted) => lobbyMessage = accepted ? "Seat selected." : "That seat is not available.";
-                lobbyMessage = "Choose a seat. Empty seats are controlled by AI."; presenceAt = 0;
+                lobbyMessage = "Choose a seat. Empty seats are controlled by AI."; presenceAt = 0; recentPlayersAt = 0;
             }
             catch (Exception error) { lobbyMessage = "Could not enter room: " + error.Message; }
             enteringRoom = null;
         }
         if (steam.Room is not { } room) return;
         if (now - presenceAt > 5000) { room.SetPresence(new JsonObject { ["name"] = SteamName }, false, now); presenceAt = now; }
+        if (profile is not null && now - recentPlayersAt > 5000)
+        {
+            recentPlayersAt = now;
+            try
+            {
+                var presence = room.Authority.Presence;
+                var slots = room.Authority.Lobby?["slots"] as JsonObject;
+                var members = room.Authority.Members.Select(id => new EncounteredPlayer(
+                    presence[id]?["name"]?.GetValue<string>() ?? slots?.FirstOrDefault(s => s.Value?["uid"]?.GetValue<string>() == id).Value?["name"]?.GetValue<string>(),
+                    id == room.Authority.LocalId));
+                string? previous = profile.Storage.GetValueOrDefault("dt.client.v1");
+                string? updated = RecentPlayers.Remember(previous, SteamName, members, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+                recentPlayersError = updated == previous || profile.UpdateStorage(new Dictionary<string, string> { ["dt.client.v1"] = updated! })
+                    ? "" : profile.Error ?? "Recent players could not be saved.";
+            }
+            catch (Exception error) when (error is JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException)
+            { recentPlayersError = "Recent players could not be saved: " + error.Message; }
+        }
         if (room.Init is not null && networkRoom is null)
         {
             try { AttachNetworkMatch(room); } catch (Exception error) { lobbyMessage = "Could not load this match: " + error.Message; LeaveSteamRoom(); }
@@ -200,6 +221,18 @@ internal sealed partial class MatchScreen
             if (displayed.Length == 0 && listingRooms is null && listingFriendRooms is null) ImGui.Text("No compatible rooms found."u8);
             ImGui.EndDisabled();
         }
+        if (profile is not null && ImGui.CollapsingHeader("Recent players"u8))
+        {
+            try
+            {
+                var recent = RecentPlayers.Read(profile.Storage.GetValueOrDefault("dt.client.v1"));
+                if (recent.Count == 0) ImGui.Text("Players you meet will appear here."u8);
+                foreach (var player in recent) ImGui.Text(player.Name);
+            }
+            catch (Exception error) when (error is JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException)
+            { ImGui.TextWrapped("Recent players could not be read: " + error.Message); }
+        }
+        if (recentPlayersError.Length > 0) ImGui.TextWrapped(recentPlayersError);
         ImGui.Separator(); ImGui.TextWrapped(lobbyMessage);
         if (Button("steamBack", "Back to menu")) { LeaveSteamRoom(); showMultiplayer = false; }
         ImGui.End();
