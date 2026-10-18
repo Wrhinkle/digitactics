@@ -47,7 +47,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private int farmIndex;
     private bool farmVerified;
     private long farmInitialBits;
-    public string Pending => collectionProfile is not null && collectionIndex < collectionCommands.Length ? collectionCommands[collectionIndex] == "egg/legend" && !incubator.Done ? incubator.Pending : collectionCommands[collectionIndex]
+    public string Pending => !home.Done ? home.Pending : collectionProfile is not null && collectionIndex < collectionCommands.Length ? collectionCommands[collectionIndex] == "egg/legend" && !incubator.Done ? incubator.Pending : collectionCommands[collectionIndex]
         : collectionProfile is not null && farmIndex < farmCommands.Length ? farmCommands[farmIndex] : commands.ElementAtOrDefault(index) ?? "verification";
     private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "arenaBench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
         "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "reconnectAudio", "closeAudio", "mute", "mute"];

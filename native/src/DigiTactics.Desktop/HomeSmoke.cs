@@ -19,12 +19,13 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
     private string initialSet="";
     private string[] originalOffers=[];
     public bool Done {get;private set;}
+    public string Pending=>"Home/"+(step<steps.Count?steps[step].Name:"verification");
     private static void Check(bool okay,string message){if(!okay)throw new InvalidOperationException("Home UI: "+message);}
     private bool Click(MatchScreen screen,string key,(float2 Min,float2 Max)? bounds=null)
     {
         if(!screen.Buttons.TryGetValue(key,out var point))return false;
-        if(bounds is {} box&&(point.Y<box.Min.Y+20||point.Y>box.Max.Y-24))
-        {var center=(box.Min+box.Max)*.5f;ImGui.GetIO().AddMousePosEvent(center.X,center.Y);ImGui.GetIO().AddMouseWheelEvent(0,point.Y<box.Min.Y+20?4:-4);cooldown=4;return false;}
+        if(bounds is {} box&&(point.Y<box.Min.Y+12||point.Y>box.Max.Y-12))
+        {var center=(box.Min+box.Max)*.5f;ImGui.GetIO().AddMousePosEvent(center.X,center.Y);ImGui.GetIO().AddMouseWheelEvent(0,point.Y<box.Min.Y+12 ? .5f : -.5f);cooldown=4;return false;}
         ImGui.GetIO().AddMousePosEvent(point.X,point.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=true;return true;
     }
     private bool Escape(){ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,true);down=keyDown=true;return true;}
