@@ -14,6 +14,7 @@ internal sealed partial class MatchScreen
     {
         arenaEnvironment.CombatActive=Session?.Rounds.Phase==DigiTactics.Rules.MatchPhase.Combat;
         arenaEnvironment.Stage=Session?.Rounds.Position.Stage??1;
+        arenaEnvironment.Evolution=Session is null?0:Human.Roster.Entries.Sum(e=>e.Unit.Stage);
         arenaEnvironment.Won=false;
         if(Session is {} session && session.Rounds.Phase!=DigiTactics.Rules.MatchPhase.Planning)
         {

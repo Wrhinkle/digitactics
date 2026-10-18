@@ -71,6 +71,14 @@ internal static class BoardMeshSmoke
                 arena.SetTheme("file-island");arena.SetTheme("circuit-core");arena.Time+=.016;
                 arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
                 if(Math.Abs(renderer.BoardLight!.HemisphereIntensity-circuitBase)>.001)throw new InvalidOperationException("Initial won state triggered a false win reaction.");
+                arena.Evolution=0;arena.SetTheme("flame-temple");arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
+                float templeBase=renderer.BoardLight!.HemisphereIntensity,templeSun=renderer.BoardLight.SunIntensity;
+                arena.Evolution=1;arena.Time+=.016;arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
+                if(Math.Abs(renderer.BoardLight!.HemisphereIntensity-templeBase-2.12f)>.001 || renderer.BoardLight.SunIntensity<templeSun*2)
+                    throw new InvalidOperationException("Temple evolution did not reach scene lighting.");
+                arena.SetTheme("file-island");arena.SetTheme("flame-temple");arena.Time+=.016;
+                arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
+                if(Math.Abs(renderer.BoardLight!.HemisphereIntensity-templeBase)>.001)throw new InvalidOperationException("Initial evolution count triggered a false flare.");
             }
             renderer.BoardLight=null; renderer.ShadowTexture=0;
             var scenes=Directory.GetFiles(Path.Combine(AppContext.BaseDirectory,"content/boards"),"*.json.gz").Order().Select(BoardScene.Load).ToArray();
@@ -329,7 +337,9 @@ internal static class BoardMeshSmoke
             ("vampire-castle","castle-flames"),("vampire-castle","castle-bats"),
             ("vampire-castle","castle-moon"),("vampire-castle","castle-halo"),
             ("kowloon","kowloon-band"),("kowloon","kowloon-lattice"),("kowloon","kowloon-signs"),("kowloon","particles"),
-            ("circuit-core","circuit-pulses"),("circuit-core","circuit-screen"),("circuit-core","circuit-floor")})
+            ("circuit-core","circuit-pulses"),("circuit-core","circuit-screen"),("circuit-core","circuit-floor"),
+            ("flame-temple","temple-outer"),("flame-temple","temple-inner"),("flame-temple","temple-geysers"),
+            ("flame-temple","temple-lava"),("flame-temple","particles")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
@@ -351,7 +361,7 @@ internal static class BoardMeshSmoke
                 ModelRenderer.End(); return pixels;
             }
             var initial=Render();
-            for(int frame=1;frame<=162;frame++) layer.Update(frame/60d,1/60d,true,7);
+            for(int frame=1;frame<=162;frame++) layer.Update(frame/60d,1/60d,true,7,evolution:frame>=60?1:0);
             var moved=Render();
             int changed=Enumerable.Range(0,256*256).Count(i=>Math.Abs(initial[i*4]-moved[i*4])+Math.Abs(initial[i*4+1]-moved[i*4+1])+Math.Abs(initial[i*4+2]-moved[i*4+2])>3);
             if(changed<5) throw new InvalidOperationException("Board prop animation did not reach the framebuffer: "+kind);

@@ -28,13 +28,18 @@ async function main(){
    .replace('const floor = plain(ctx, new THREE.MeshBasicMaterial({ map: grid }));','const floor = plain(ctx, new THREE.MeshBasicMaterial({ map: grid })); floor.userData.nativeMotion={kind:"grid-floor"};')
    .replace(/const bm = inst\(ctx, bGeo,[^\n]+;/,line=>line+' bm.userData.nativeMotion={kind:"coliseum-banners",props:banners.map(p=>({...p}))};')
    .replace(/const fm = inst\(ctx, new THREE.ConeGeometry\(0.16, 0.45, 8\)[^\n]+;/,line=>line+' fm.userData.nativeMotion={kind:"coliseum-flames",props:flames.map(p=>({...p}))};')
-  +'\nexport {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
+  +'\nexport {THREE,DT,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
   +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}'
   +'\nexport const originalHighlight='+render.slice(render.indexOf('  highlight(ui, planning) {'),render.indexOf('  benchPos(i, partner')).trim().replace('highlight(','function(')+';'
   +'\nexport const originalDrawItems='+render.slice(render.indexOf('  drawItems(p, ui) {'),render.indexOf('  // which item token')).trim().replace('drawItems(','function(')+';'
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8')
+  .replace('plain(ctx, lavaMat, -1.3);','const nativeLava=plain(ctx, lavaMat, -1.3); nativeLava.userData.nativeMotion={kind:"temple-lava"};')
+  .replace('const fire = { k: 0 };','const fire = { k: 0 }; fl.nativeTemple="temple-outer";')
+  .replace('fl.filter((_, i) => i % 3 === 0),','Object.assign(fl.filter((_, i) => i % 3 === 0),{nativeTemple:"temple-inner"}),')
+  .replace('anim(ctx, new THREE.CylinderGeometry(0.15, 0.7, 1, 10, 1, true)', 'gey.nativeTemple="temple-geysers"; anim(ctx, new THREE.CylinderGeometry(0.15, 0.7, 1, 10, 1, true)')
+  .replace(/const embers = particles\(ctx, 260,[^\n]+;/,line=>line+' embers.userData.nativeMotion.templeEmbers=true;')
   .replace('const speed = { v: 1, ph: 0 };','const speed = { v: 1, ph: 0 }; pts.userData.nativeMotion={kind:"circuit-pulses",pulses:pulses.map(p=>({...p}))};')
   .replace(/mesh\(ctx, new THREE.CylinderGeometry\(13.6, 13.6, 7[^\n]+;/,line=>'const nativeScreen='+line+' nativeScreen.userData.nativeMotion={kind:"circuit-screen"};')
   .replace(/const fl = mesh\(ctx, new THREE.RingGeometry\(16, 40, 48\)[^\n]+;/,line=>line+' fl.userData.nativeMotion={kind:"circuit-floor"};')
@@ -53,7 +58,7 @@ async function main(){
   .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
-  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))};');
+  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))};');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
@@ -296,6 +301,26 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-circuit.json.gz'),zlib.gzipSync(JSON.stringify(circuitFixture)));
+  const templeFixture=await page.evaluate(async()=>{
+   const {THREE,DT,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),spec=THEMES.find(s=>s.id==='flame-temple'),scenarios=[],originalRandom=Math.random;
+   try {for(const initialEvolution of [0,3]){
+    Math.random=DT.makeRng(733);
+    const L={hemi:new THREE.HemisphereLight(...spec.hemi),sun:new THREE.DirectionalLight(...spec.sun)},env=buildEnv(spec,{L}),objects=[],frames=[];
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('temple-')||o.userData.nativeMotion?.templeEmbers)objects.push(o);});
+    env.signal({phase:'planning',stage:1,won:false,evo:initialEvolution});env.tick(0,0);Math.random=DT.makeRng(733);let time=0;
+    for(let frame=0;frame<600;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],combat=frame%200<100,stage=1+Math.floor(frame/100),evolution=initialEvolution+[0,1,0,2][Math.floor(frame/150)];time+=delta;
+     env.signal({phase:combat?'combat':'planning',stage,won:false,evo:evolution});env.tick(delta,time);
+     frames.push({time,delta,combat,stage,evolution,flash:L.hemi.intensity-spec.hemi[2],sun:L.sun.intensity,sunColor:L.sun.color.toArray(),objects:objects.map(o=>{
+      const matrix=new THREE.Matrix4(),matrices=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+      return {kind:o.userData.nativeMotion.kind,matrices,color:o.material.color.toArray(),offset:o.material.map?.offset.toArray(),size:o.material.size??null};
+     })});
+    }
+    scenarios.push({initialEvolution,sun:spec.sun,motions:objects.map(o=>o.userData.nativeMotion),frames});disposeEnv(env);
+   }}finally{Math.random=originalRandom;}
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-temple.json.gz'),zlib.gzipSync(JSON.stringify(templeFixture)));
   const particleFixture=await page.evaluate(async()=>{
    const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
    for(const spec of THEMES){

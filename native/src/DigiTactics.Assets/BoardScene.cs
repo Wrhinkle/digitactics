@@ -57,6 +57,13 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             Require(obj.Geometry >= 0 && obj.Geometry < Geometries.Length, "geometry reference");
             Require(obj.Materials.Length > 0 && obj.Materials.All(i => i >= 0 && i < Materials.Length), "material references");
             Require(obj.Matrix.Length == 16 && obj.Matrix.All(double.IsFinite), "world matrix");
+            if(obj.Motion?.Temple is {} temple)
+            {
+                Require(Id=="flame-temple" && obj.Motion.Kind is "temple-outer" or "temple-inner" or "temple-geysers","temple kind");
+                Require(obj.Instances is not null && temple.Length==obj.Instances.Length,"temple instance count");
+                Require(temple.All(p=>new[] {p.X,p.Y,p.Z,p.Bx,p.Bz,p.Ph,p.H,p.T0}.All(double.IsFinite)),"temple values");
+            }
+            if(obj.Motion?.TempleEmbers==true)Require(Id=="flame-temple" && obj.Motion.Kind=="particles" && obj.Kind=="points","temple embers");
             if(obj.Motion?.Pulses is {} pulses)
             {
                 Require(Id=="circuit-core" && obj.Motion.Kind=="circuit-pulses" && pulses.Length==Geometries[obj.Geometry].Position.Length/3,"circuit pulse count");
@@ -127,7 +134,8 @@ public sealed record BoardGeometryGroup(int Start, int Count, int MaterialIndex)
 public sealed record BoardObject(string Kind, int Geometry, int[] Materials, double[] Matrix, bool Visible,
     bool CastShadow, bool ReceiveShadow, BoardInstance[]? Instances, BoardMotion? Motion = null);
 public sealed record BoardInstance(double[] Matrix, float[] Color);
-public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0,BoardPalm[]? Palms=null,double[]? Matrix=null,BoardProp[]? Props=null,double[]? Parent=null,BoardSpiralItem[]? Spirals=null,BoardLightningData? Lightning=null,BoardCastleItem[]? Castle=null,BoardNeonSign[]? Signs=null,bool KowloonRain=false,BoardCircuitPulse[]? Pulses=null);
+public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0,BoardPalm[]? Palms=null,double[]? Matrix=null,BoardProp[]? Props=null,double[]? Parent=null,BoardSpiralItem[]? Spirals=null,BoardLightningData? Lightning=null,BoardCastleItem[]? Castle=null,BoardNeonSign[]? Signs=null,bool KowloonRain=false,BoardCircuitPulse[]? Pulses=null,BoardTempleItem[]? Temple=null,bool TempleEmbers=false);
+public sealed record BoardTempleItem(double X=0,double Y=0,double Z=0,double Bx=0,double Bz=0,double Ph=0,double H=0,double T0=-9);
 public sealed record BoardCircuitPulse(bool Along,double Lane,double Off,double Sp);
 public sealed record BoardNeonSign(double Phase,float[] Color);
 public sealed record BoardCastleItem(double X=0,double Y=0,double Z=0,double Ph=0,double S=1,double A0=0,double Rad=0,double H=0,double Sp=0);

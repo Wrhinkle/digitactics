@@ -23,6 +23,7 @@ internal sealed class ArenaEnvironment : IDisposable
     public bool? CombatActive { get; set; }
     public int Stage { get; set; }=1;
     public bool Won { get; set; }
+    public int Evolution { get; set; }
     private double? previousTime;
 
     public void SetTheme(string? id)
@@ -31,7 +32,7 @@ internal sealed class ArenaEnvironment : IDisposable
         if(scene?.Id==id) return;
         var next=BoardScene.Load(Path.Combine(folder,id+".json.gz"));
         BoardMeshLayer? nextMeshes=null; BoardBackground? nextBackground=null; BoardSurfaceView? nextSurfaces=null;
-        try { nextMeshes=new(next,CombatActive??false,Won); nextBackground=new(next); nextSurfaces=new(next,geometry.Value,Feedback); }
+        try { nextMeshes=new(next,CombatActive??false,Won,Evolution); nextBackground=new(next); nextSurfaces=new(next,geometry.Value,Feedback); }
         catch { nextMeshes?.Dispose(); nextBackground?.Dispose(); nextSurfaces?.Dispose(); throw; }
         meshes?.Dispose(); background?.Dispose(); surfaces?.Dispose();
         scene=next; meshes=nextMeshes; background=nextBackground; surfaces=nextSurfaces; lighting=new(next);
@@ -42,9 +43,10 @@ internal sealed class ArenaEnvironment : IDisposable
     {
         if(scene is null) SetTheme("file-island");
         double delta=previousTime is { } previous?Math.Clamp(Time-previous,0,.1):0;
-        previousTime=Time; meshes!.Update(Time,delta,CombatActive??!planning,Stage,Won);
+        previousTime=Time; meshes!.Update(Time,delta,CombatActive??!planning,Stage,Won,Evolution);
         if(meshes.FlashColor is {} flashColor)
         {
+            if(meshes.SunFlare is {} sun) {lighting!.SunMultiplier=sun.Multiplier;lighting.TintWeight=sun.Weight;lighting.Tint=sun.Tint;}
             lighting!.FlashColor=flashColor;lighting.Flash=meshes.LightFlash;lighting.Update(0);
         }
         bool wide=columns>7;
