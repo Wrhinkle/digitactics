@@ -75,6 +75,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             }
             else if (screen.TraitTooltipLevels != screen.Session!.State.Rules.Traits.Single(trait => trait.Id == hoveredTrait).Breakpoints.Length)
                 throw new InvalidOperationException("Trait hover omitted breakpoint effect text.");
+            if (traitHoverStep == 1 && screen.TraitTooltipUnits.Count == 0)
+                throw new InvalidOperationException("Trait hover omitted its deployed contributor portraits.");
             traitHoverStep++; cooldown = 3; return;
         }
         if (index == 20 && chartStep < 7)

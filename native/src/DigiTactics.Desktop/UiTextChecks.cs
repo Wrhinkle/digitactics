@@ -10,6 +10,22 @@ internal static class UiTextChecks
     {
         var display = new DisplayText(); int abilities = 0;
         foreach (var rules in catalog.Variants)
+        {
+            var line = rules.Lines.First(line => line.Traits.Length > 0);
+            CombatEntry[] duplicates = [new(line.Id,0,0,4,1),new(line.Id,2,1,4,2),new(line.Id,1,2,4,3)];
+            var solo = TraitContributors.Select(rules, duplicates, line.Traits[0], false);
+            var combined = TraitContributors.Select(rules, duplicates, line.Traits[0], true);
+            if (solo.Length != 1 || solo[0].Uid != 2 || combined.Length != 3)
+                throw new InvalidOperationException($"Trait contributor duplicate/form selection failed: {rules.Id}");
+            var emblem = rules.Items.FirstOrDefault(item => item.Emblem is not null && !line.Traits.Contains(item.Emblem));
+            if (emblem is not null)
+            {
+                CombatEntry[] equipped = [duplicates[0] with { Items = [emblem.Id] }];
+                if (TraitContributors.Select(rules,equipped,emblem.Emblem!,false).Length != 1 || TraitContributors.Select(rules,equipped,emblem.Emblem!,true).Length != 0)
+                    throw new InvalidOperationException($"Trait contributor emblem selection failed: {rules.Id}");
+            }
+        }
+        foreach (var rules in catalog.Variants)
             foreach (var line in rules.Lines.Concat(rules.ExtraLines))
                 for (int stage = 0; stage < line.Forms.Length; stage++)
                 {
