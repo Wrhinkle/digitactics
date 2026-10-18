@@ -58,6 +58,11 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             Require(obj.Materials.Length > 0 && obj.Materials.All(i => i >= 0 && i < Materials.Length), "material references");
             Require(obj.Matrix.Length == 16 && obj.Matrix.All(double.IsFinite), "world matrix");
             Require(obj.SortCenter is null || obj.SortCenter.Length==3 && obj.SortCenter.All(double.IsFinite),"sort center");
+            if(obj.Motion is {Kind:"mystery-monument" or "mystery-center" or "mystery-blades" or "mystery-rings" or "mystery-meteor"} mystery)
+            {
+                Require(Id.StartsWith("mystery_",StringComparison.Ordinal) && mystery.Matrix is {Length:16} && mystery.Matrix.All(double.IsFinite) && double.IsFinite(mystery.Speed),"mystery transform");
+                if(mystery.Kind!="mystery-meteor")Require(mystery.Parent is {Length:16} && mystery.Parent.All(double.IsFinite),"mystery parent");
+            }
             if(obj.Motion?.Fireworks is {} firework)
             {
                 Require(Id=="gargomon-carnival" && obj.Motion.Kind=="carnival-fireworks" && obj.Kind=="points" && firework.Count==Geometries[obj.Geometry].Position.Length/3 && firework.Count>0 && firework.Max>0 && firework.Index>=0 && firework.Index<firework.Max && firework.Calls>=0 && firework.Colors.Length>0,"fireworks parameters");
@@ -152,7 +157,7 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             }
             if(obj.Motion is { Props:{ } props } propMotion)
             {
-                Require(propMotion.Kind is "pyramid-flames" or "sewer-numemon" or "sewer-duck" or "freeze-men" or "village-eggs" or "village-blocks" or "toy-tops" or "toy-train" or "coliseum-banners" or "coliseum-flames" or "savanna-gears" or "grid-polys","prop motion kind");
+                Require(propMotion.Kind is "mystery-satellites" or "pyramid-flames" or "sewer-numemon" or "sewer-duck" or "freeze-men" or "village-eggs" or "village-blocks" or "toy-tops" or "toy-train" or "coliseum-banners" or "coliseum-flames" or "savanna-gears" or "grid-polys","prop motion kind");
                 Require(obj.Instances is not null && props.Length==obj.Instances.Length,"prop motion count");
                 Require(props.All(p=>new[] {p.X,p.Y,p.Z,p.S,p.Phase,p.Base,p.Cx,p.Cz,p.K,p.Ry,p.Rx,p.Spin}.All(double.IsFinite)),"prop motion values");
             }

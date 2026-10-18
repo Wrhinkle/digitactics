@@ -111,12 +111,21 @@ async function main(){
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
   .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeCarnival)m.userData.nativeMotion={kind:items.nativeCarnival,carnival:items.map(p=>({...p}))}; if(items.nativePyramid)m.userData.nativeMotion={kind:"pyramid-flames",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeGhosts)m.userData.nativeMotion={kind:"graveyard-ghosts",ghosts:items.map(p=>({...p}))}; if(items.nativeTrain)m.userData.nativeMotion={kind:items.nativeTrain}; if(items.nativeCrowd)m.userData.nativeMotion={kind:items.nativeCrowd,crowd:items.map(p=>({...p}))}; if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
+ const mystery=fs.readFileSync(path.join(root,'js/mystery-boards.js'),'utf8')
+  .replace("  const titles=", "  const tag=(o,kind,parent,speed=0)=>{o.updateMatrix();if(parent)parent.updateMatrix();o.userData.nativeMotion={kind,speed,matrix:o.matrix.toArray(),parent:parent?.matrix.toArray()};}; const titles=")
+  .replace('center.add(monument);','center.add(monument);tag(monument,"mystery-monument",center,n);')
+  .replace('center.add(cross);','center.add(cross);tag(cross,"mystery-center",center,n);')
+  .replace('const satellites=inst(ctx,geometry,glow,props,{moving:true});','const satellites=inst(ctx,geometry,glow,props,{moving:true}); satellites.userData.nativeMotion={kind:"mystery-satellites",speed:n,props:props.map(p=>({...p}))};')
+  .replace('ctx.tick((dt,t)=>{blades.rotation.z=', 'blades.children.forEach(o=>tag(o,"mystery-blades",blades));ctx.tick((dt,t)=>{blades.rotation.z=')
+  .replace('ctx.tick((dt,t)=>{rings.rotation.y=', 'rings.children.forEach(o=>tag(o,"mystery-rings",rings));ctx.tick((dt,t)=>{rings.rotation.y=')
+  .replace('ctx.tick((dt,t)=>{meteor.position.y=', 'tag(meteor,"mystery-meteor",null,x);ctx.tick((dt,t)=>{meteor.position.y=');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
    const url=new URL(route.request().url());
    if(url.pathname==='/')return route.fulfill({contentType:'text/html',body:'<!doctype html><script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js"}}</script>'});
    if(url.pathname==='/boards.js')return route.fulfill({contentType:'text/javascript',body:module});
+   if(url.pathname==='/js/mystery-boards.js')return route.fulfill({contentType:'text/javascript',body:mystery});
    if(url.pathname==='/js/boards-extra.js')return route.fulfill({contentType:'text/javascript',body:extra});
    const file=path.resolve(root,'.'+decodeURIComponent(url.pathname));if(!file.startsWith(root+path.sep))return route.abort();
    return route.fulfill({contentType:'text/javascript',body:fs.readFileSync(file)});
@@ -266,7 +275,7 @@ async function main(){
        const a=o.geometry.attributes.position.array,vertices=[];
        for(let i=0;i<a.length/3;i+=13)vertices.push([a[i*3],a[i*3+2],a[i*3+1]]);
        rows.push({id:spec.id,time,motion,vertices});
-      }else if(motion.kind==='island-crystals'||motion.kind==='beach-palms'||(motion.props&&!motion.kind.startsWith('sewer-'))){
+      }else if(motion.kind==='island-crystals'||motion.kind==='beach-palms'||(motion.props&&!motion.kind.startsWith('sewer-')&&!motion.kind.startsWith('mystery-'))){
        const matrix=new THREE.Matrix4(),matrices=[];for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
        rows.push({id:spec.id,time,motion,matrices});
       }else if(motion.kind==='beach-surf'||motion.kind==='rotating-parent'){
@@ -408,6 +417,23 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const mysteryFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
+   for(const spec of THEMES.filter(s=>s.id.startsWith('mystery_'))){
+    const env=buildEnv(spec),objects=[],frames=[];env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('mystery-'))objects.push(o);});
+    env.tick(0,0);let time=0;
+    for(let frame=0;frame<240;frame++){
+     const delta=[0,1/60,.033,.1][frame%4];time+=delta;env.tick(delta,time);env.group.updateMatrixWorld(true);
+     frames.push({time,delta,objects:objects.map(o=>{
+      const matrix=new THREE.Matrix4(),matrices=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+      return {matrix:o.matrixWorld.toArray(),matrices};
+     })});
+    }
+    scenarios.push({id:spec.id,motions:objects.map(o=>o.userData.nativeMotion),frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-mystery.json.gz'),zlib.gzipSync(JSON.stringify(mysteryFixture)));
   const fireworkFixture=await page.evaluate(async()=>{
    const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
    for(const initialWon of [false,true]){

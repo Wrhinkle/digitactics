@@ -18,6 +18,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private double time;
     private int currentStage;
     private readonly Dictionary<BoardObject,BoardCityBuilding> buildings=[];
+    private readonly Dictionary<BoardObject,BoardMysteryMotion> mystery=[];
     private BoardLightning? lightning;
     private readonly BoardCastleMotion? castle;
     private readonly BoardKowloonMotion? kowloon;
@@ -50,6 +51,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false,int initialEvolution=0,int initialStage=1)
     {
         currentStage=initialStage;
+        foreach(var obj in scene.Objects)if(obj.Motion is {Kind:"mystery-satellites",Props:{} props})mystery.Add(obj,new(props));
         foreach(var obj in scene.Objects)if(obj.Motion?.Building is {} building)buildings.Add(obj,new(building,initialStage));
         if(scene.Objects.Select(o=>o.Motion?.Fireworks).FirstOrDefault(f=>f is not null) is {} fw)
         {fireworks=new(fw.Count,fw.Max,fw.Colors.Length,fw.Seed,fw.Calls,initialWon);fireworkColors=fw.Colors.Select(BoardLighting.Linear).ToArray();}
@@ -106,6 +108,7 @@ internal sealed class BoardMeshLayer : IDisposable
     {
         time=seconds;currentStage=stage;
         foreach(var building in buildings.Values)building.Advance(delta,stage);
+        foreach(var motion in mystery.Values)motion.Advance(delta);
         freeze?.Advance(delta,combat);
         sewer?.Advance(time,won);
         library?.Advance(delta,evolution);
@@ -219,6 +222,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         {
                             { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
                             { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
+                            {Kind:"mystery-satellites"} motion=>mystery[item.Object].Satellite(i,(int)motion.Speed,time),
                             {Carnival:{} carnival} motion=>BoardCarnivalMotion.Instance(motion.Kind,i,carnival[i],time),
                             {Ghosts:{} ghosts}=>graveyard!.Ghost(ghosts[i],time),
                             {Kind:"train-cars" or "train-engine"} motion=>train!.Instance(motion.Kind,i,instance.Matrix),
@@ -248,13 +252,14 @@ internal sealed class BoardMeshLayer : IDisposable
         foreach (var texture in textures) texture.Dispose(); textures.Clear();
         objects.Clear();
         transparentObjects.Clear();
-        spirals.Clear();buildings.Clear();
+        spirals.Clear();buildings.Clear();mystery.Clear();
         animatedGeometry.Clear();
         animatedUv.Clear();
     }
     internal static Matrix4D ConfettiMatrix(BoardConfettiPose p)=>new CompanionTransform(new(p.X,p.Y,p.Z),new(p.Rx,0,p.Rz),new(1,1,1)).Matrix;
     private Matrix4D World(BoardObject obj)
     {
+        if(obj.Motion is {Kind:"mystery-monument" or "mystery-center" or "mystery-blades" or "mystery-rings" or "mystery-meteor"} motion)return BoardMysteryMotion.World(motion,time)*Root;
         if(obj.Motion?.Kind=="carnival-wheel")return BoardCarnivalMotion.Wheel(time)*Root;
         if(buildings.TryGetValue(obj,out var building))return building.Matrix*Root;
         if(obj.Motion?.Kind=="pyramid-beams")return pyramid!.Beam(obj.Matrix)*Root;
