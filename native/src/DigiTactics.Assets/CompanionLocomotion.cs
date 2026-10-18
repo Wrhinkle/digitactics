@@ -42,12 +42,13 @@ public sealed class CompanionLocomotion
         "catalog:L_MagnaAngemon:chr101", "catalog:TS_Funbeemon:chr042", "catalog:TS_Lalamon:chr056",
         "catalog:TS_Lucemon:chr390", "catalog:TS_PicoDevimon:chr097", "catalog:TS_Solarmon_Hagurumon:chr009",
         "catalog:TS_Tentomon:chr303", "ac:Dianamon", "ac:Flymon",
-        "catalog:CS_Seadramon:chr347", "ac:Phantomon", "drg:Phantomon", "ac:Solarmon", "ac:Soulmon"
+        "catalog:CS_Seadramon:chr347", "ac:Phantomon", "drg:Phantomon", "ac:Solarmon", "ac:Soulmon",
+        "drg:Varodurumon"
     };
     // These visually reviewed quadrupeds name their weight-bearing forelegs as arms.
     // Do not apply this rule to humanoids merely because they share the bone naming scheme.
     private static readonly HashSet<string> ForelegSources = new(StringComparer.Ordinal)
-    { "ac:Dobermon", "bearmon:1", "ac:Grizzlymon" };
+    { "ac:Dobermon", "bearmon:1", "ac:Grizzlymon", "armadillomon:1", "drg:Ankylomon" };
     // Short legs have only a proximal joint and a foot: rotate those actual joints without inventing a knee.
     private static readonly HashSet<string> ShortLegSources = new(StringComparer.Ordinal)
     { "lopmon:0", "terriermon:0", "ac:Hyokomon", "drg:Hyokomon" };
@@ -86,9 +87,20 @@ public sealed class CompanionLocomotion
             if (!match.Success) continue;
             var side = match.Groups[1].Success ? match.Groups[1] : match.Groups[2];
             int knee = Child(foreleg ? ElbowName : KneeName, hip);
-            int footParent = knee >= 0 ? knee : policy == "shortlegs" ? hip : -1;
-            int foot = footParent < 0 ? -1 : Child(foreleg ? HandName : FootName, footParent);
+            int foot = Child(foreleg ? HandName : FootName, knee >= 0 ? knee : hip);
             if (foot < 0) continue;
+            if (knee < 0 && policy != "shortlegs")
+            {
+                // These original short-legged rigs have one real leg segment,
+                // not a missing knee. Only accept an immediate, downward J_ leg
+                // -> foot pair; generated simple rigs and unnamed intermediates
+                // require a separate reviewed policy. Flight takes priority above.
+                if (foreleg || !name.StartsWith("J_", StringComparison.OrdinalIgnoreCase) || rig.Nodes[foot].Parent != hip) continue;
+                var h = idle.World[hip]; var f = idle.World[foot];
+                double x = f.M41 - h.M41, y = f.M42 - h.M42, z = f.M43 - h.M43;
+                double length = Math.Sqrt(x * x + y * y + z * z);
+                if (length <= 1e-9 || y >= -.25 * length) continue;
+            }
             string pair = name[..side.Index].ToLowerInvariant() + "?" + name[(side.Index + side.Length)..].ToLowerInvariant();
             candidates.Add((hip, knee, foot, side.Value.Equals("l", StringComparison.OrdinalIgnoreCase) ? 1 : -1, pair));
         }
@@ -126,7 +138,10 @@ public sealed class CompanionLocomotion
         foreach (var leg in legs)
         {
             double phase = time * 8.5 + (leg.Side < 0 ? Math.PI : 0) + leg.Pair * Math.PI;
-            double stride = Math.Sin(phase), hip = stride * .3 * weight;
+            // A single leg segment has no knee to share the bend. The smaller
+            // swing keeps its blended ankle seam within the measured short-leg
+            // skin envelope while retaining a visible alternating step.
+            double stride = Math.Sin(phase), hip = stride * (leg.Knee < 0 ? .18 : .3) * weight;
             double knee = Math.Max(0, stride) * .28 * leg.Bend * weight;
             Turn(leg.Hip, hip); if (leg.Knee >= 0) Turn(leg.Knee, knee); Turn(leg.Foot, -hip - knee);
         }

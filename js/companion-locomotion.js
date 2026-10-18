@@ -21,9 +21,10 @@ const GLIDERS = new Set([
   'catalog:TS_Lucemon:chr390', 'catalog:TS_PicoDevimon:chr097', 'catalog:TS_Solarmon_Hagurumon:chr009',
   'catalog:TS_Tentomon:chr303', 'ac:Dianamon', 'ac:Flymon',
   'catalog:CS_Seadramon:chr347', 'ac:Phantomon', 'drg:Phantomon', 'ac:Solarmon', 'ac:Soulmon',
+  'drg:Varodurumon',
 ]);
 // Only reviewed weight-bearing forelimbs; never infer this from humanoid arm names alone.
-const FORELEG_SOURCES = new Set(['ac:Dobermon', 'bearmon:1', 'ac:Grizzlymon']);
+const FORELEG_SOURCES = new Set(['ac:Dobermon', 'bearmon:1', 'ac:Grizzlymon', 'armadillomon:1', 'drg:Ankylomon']);
 const SHORT_LEG_SOURCES = new Set(['lopmon:0', 'terriermon:0', 'ac:Hyokomon', 'drg:Hyokomon']);
 const HIP = /(?:^|[_ ])(?:momo|thigh|upleg|groin|leg)(?:0?1)?[_ ]?([lr])(?:[_ ]|$)|(?:^|[_ ])([lr])[_ ](?:momo|thigh|leg)$/di;
 const KNEE = /(?:^|[_ ])(?:hiza|knee\d*|shin|calf|leg02)(?:[_ ]?[lr])?(?:[_ ]|$)/i;
@@ -54,9 +55,15 @@ export class CompanionLocomotion {
       if (!match) continue;
       const [start, end] = match.indices[1] || match.indices[2], side = name[start].toLowerCase() === 'l' ? 1 : -1;
       const knee = child(foreleg ? ELBOW : KNEE, hip);
-      const footParent = knee || (SHORT_LEG_SOURCES.has(source) ? hip : null);
-      const foot = footParent && child(foreleg ? HAND : FOOT, footParent);
+      const foot = child(foreleg ? HAND : FOOT, knee || hip);
       if (!foot) continue;
+      if (!knee && !SHORT_LEG_SOURCES.has(source)) {
+        // Original short-legged rigs use one actual leg segment. Do not invent
+        // a knee or infer anatomy from a generated simple rig / unknown joint.
+        if (foreleg || !/^J_/i.test(name) || foot.parent !== hip) continue;
+        const leg = point(foot).sub(point(hip)), length = leg.length();
+        if (length <= 1e-9 || leg.y >= -.25 * length) continue;
+      }
       const key = (name.slice(0, start) + '?' + name.slice(end)).toLowerCase();
       if (!candidates.has(key)) candidates.set(key, []);
       candidates.get(key).push({ hip, knee, foot, side });
@@ -98,7 +105,9 @@ export class CompanionLocomotion {
     };
     for (const leg of this.legs) {
       const phase = time * 8.5 + (leg.side < 0 ? Math.PI : 0) + leg.pair * Math.PI;
-      const stride = Math.sin(phase), hip = stride * .3 * this.weight, knee = Math.max(0, stride) * .28 * leg.bend * this.weight;
+      // One-segment legs cannot distribute bend across a knee: preserve their
+      // ankle skin with a shorter, still visible alternating step.
+      const stride = Math.sin(phase), hip = stride * (leg.knee ? .3 : .18) * this.weight, knee = Math.max(0, stride) * .28 * leg.bend * this.weight;
       turn(leg.hip, hip); if (leg.knee) turn(leg.knee, knee); turn(leg.foot, -hip - knee);
     }
     this.saved.push([this.root, this.root.quaternion.clone(), this.root.position.clone()]);

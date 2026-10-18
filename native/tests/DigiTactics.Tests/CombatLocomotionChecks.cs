@@ -50,6 +50,7 @@ internal static class CombatLocomotionChecks
             Check(moving.Pose.Local.SequenceEqual(idle.Pose.Local),key+" authored run fades back to the current idle pose");
         }
         Check(authoredRuns>=31,"all31 authored run fixtures were exercised");
-        Console.WriteLine($"Combat locomotion: {count} movement, arrival, pause and action-priority checks passed.");return count;
+        Console.WriteLine($"Combat locomotion: {count} movement, arrival, pause and action-priority checks passed.");
+        return count + GaitAnatomyChecks.Run(root);
     }
 }
