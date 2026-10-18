@@ -209,6 +209,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         {
                             { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
                             { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
+                            {Carnival:{} carnival} motion=>BoardCarnivalMotion.Instance(motion.Kind,i,carnival[i],time),
                             {Ghosts:{} ghosts}=>graveyard!.Ghost(ghosts[i],time),
                             {Kind:"train-cars" or "train-engine"} motion=>train!.Instance(motion.Kind,i,instance.Matrix),
                             {Kind:"knights-confetti" or "studio-confetti"}=>ConfettiMatrix(confetti!.Poses[i]),
@@ -244,6 +245,7 @@ internal sealed class BoardMeshLayer : IDisposable
     internal static Matrix4D ConfettiMatrix(BoardConfettiPose p)=>new CompanionTransform(new(p.X,p.Y,p.Z),new(p.Rx,0,p.Rz),new(1,1,1)).Matrix;
     private Matrix4D World(BoardObject obj)
     {
+        if(obj.Motion?.Kind=="carnival-wheel")return BoardCarnivalMotion.Wheel(time)*Root;
         if(buildings.TryGetValue(obj,out var building))return building.Matrix*Root;
         if(obj.Motion?.Kind=="pyramid-beams")return pyramid!.Beam(obj.Matrix)*Root;
         if(obj.Motion?.TrainSteam==true)return train!.Steam*Root;

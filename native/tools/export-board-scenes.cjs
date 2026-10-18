@@ -37,6 +37,11 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+   .replace('wheel.add(rimM);','wheel.add(rimM); rimM.userData.nativeMotion={kind:"carnival-wheel"};')
+  .replace('const cosA = Math.cos(-0.6), sinA = Math.sin(-0.6);','gond.nativeCarnival="carnival-gondolas"; const cosA = Math.cos(-0.6), sinA = Math.sin(-0.6);')
+  .replace(/const bl = inst\(ctx, new THREE.SphereGeometry\(0.1, 6, 4\)[^\n]+;/,line=>line+' bl.userData.nativeMotion={kind:"carnival-bulbs",carnival:bulbs.map(p=>({...p}))};')
+  .replace('anim(ctx, horse,','horses.nativeCarnival="carnival-horses"; anim(ctx, horse,')
+  .replace('anim(ctx, new THREE.SphereGeometry(0.3, 10, 8),','balloons.nativeCarnival="carnival-balloons"; anim(ctx, new THREE.SphereGeometry(0.3, 10, 8),')
   .replace(/const bm = inst\(ctx, new THREE.SphereGeometry\(0.11, 6, 4\)[^\n]+;/,line=>line+' bm.userData.nativeMotion={kind:"holiday-tree",phases:bulbs.map(p=>p.ph)};')
   .replace(/const slm = inst\(ctx, new THREE.SphereGeometry\(0.09, 6, 4\)[^\n]+;/,line=>line+' slm.userData.nativeMotion={kind:"holiday-string",phases:sl.map(p=>p.ph)};')
   .replace('ctx.tick((dt, t) => { sparkle.material.opacity','snow.userData.nativeMotion.holidaySnow=true; sparkle.userData.nativeMotion.holidaySparkle=true; ctx.tick((dt, t) => { sparkle.material.opacity')
@@ -103,7 +108,7 @@ async function main(){
   .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
-  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativePyramid)m.userData.nativeMotion={kind:"pyramid-flames",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeGhosts)m.userData.nativeMotion={kind:"graveyard-ghosts",ghosts:items.map(p=>({...p}))}; if(items.nativeTrain)m.userData.nativeMotion={kind:items.nativeTrain}; if(items.nativeCrowd)m.userData.nativeMotion={kind:items.nativeCrowd,crowd:items.map(p=>({...p}))}; if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
+  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeCarnival)m.userData.nativeMotion={kind:items.nativeCarnival,carnival:items.map(p=>({...p}))}; if(items.nativePyramid)m.userData.nativeMotion={kind:"pyramid-flames",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeGhosts)m.userData.nativeMotion={kind:"graveyard-ghosts",ghosts:items.map(p=>({...p}))}; if(items.nativeTrain)m.userData.nativeMotion={kind:items.nativeTrain}; if(items.nativeCrowd)m.userData.nativeMotion={kind:items.nativeCrowd,crowd:items.map(p=>({...p}))}; if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
@@ -401,6 +406,19 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const carnivalFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),env=buildEnv(THEMES.find(s=>s.id==='gargomon-carnival')),objects=[],frames=[];
+   env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('carnival-'))objects.push(o);});
+   for(const time of [0,.016,.37,1,2.7,10,31.25,120,1000]){
+    env.tick(.016,time);env.group.updateMatrixWorld(true);
+    frames.push({time,objects:objects.map(o=>{
+     const matrix=new THREE.Matrix4(),matrices=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+     return {matrix:o.matrixWorld.toArray(),matrices};
+    })});
+   }
+   const result={motions:objects.map(o=>o.userData.nativeMotion),frames};disposeEnv(env);return result;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-carnival.json.gz'),zlib.gzipSync(JSON.stringify(carnivalFixture)));
   const holidayFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
    for(const initialWon of [false,true]){
