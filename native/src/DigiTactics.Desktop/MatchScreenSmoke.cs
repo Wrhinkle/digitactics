@@ -194,6 +194,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             var player = session.State.Players[screen.ViewedPlayer];
             if (!screen.DisplayedAugments.SequenceEqual(player.Augments) || screen.AugmentPortraits != player.Augments.Count(id => ItemArtwork.Has(session.State.Rules.Id, "aug:" + id)))
                 throw new InvalidOperationException("Augment sidebar did not follow the scouted player or omitted authored artwork.");
+            if (screen.DisplayedPower != player.Power || !screen.DisplayedGlobals.SequenceEqual(player.Globals))
+                throw new InvalidOperationException("Power/global sidebar did not follow the scouted player.");
             var soloTraits = TraitRules.Count(session.State.Rules, session.CombatProjection.Board(player), player.Augments.ToArray());
             var expectedTraits = session.State.Duos ? session.CombatProjection.Team(session.State.Teams[player.Team!.Value]).Effects.Counts! : soloTraits;
             if (screen.CombinedTraits != session.State.Duos || screen.DisplayedTraits.Count != expectedTraits.Count || expectedTraits.Any(pair => screen.DisplayedTraits.GetValueOrDefault(pair.Key) != pair.Value))

@@ -403,10 +403,9 @@ internal sealed partial class MatchScreen : IDisposable
             if (Session.State.Duos && Button("sendUnit", "Send to partner")) { Act("portal", new { uid = selected.Unit.Id }); selectedUnit = null; }
         }
         if (!IsSpectating && Human.Wisp is { } wisp && Button("wisp", $"{Name(wisp.Id)} ({wisp.Cost}g)")) Act("wisp");
-        if (Human.Power is { } power) UiText.Wrapped($"{Name(power.Id)} - rank {power.Rank}");
-        foreach (string id in Human.Globals) { UiText.Wrapped(Name(id)); Tooltip(id); }
         DamageChart();
         AugmentSidebar(player);
+        ModeBonusSidebar(player);
         ImGui.End();
         Window("Standings", size.X - 228, Top, 216, Height);
         EnsureSoundboard(); var soundLabels = soundboard.Labels(Environment.TickCount64);
