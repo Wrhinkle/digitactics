@@ -43,7 +43,7 @@ public static class EliminationThemes
     public static void Draw(EliminationCanvas c,string? variant,bool pve,double w,double h,double t)
     {
         string key=Resolve(variant,pve);
-        if(MysteryKey(key,out int pool,out int index)) {Mystery(c,w,h,t,pool,index);return;}
+        if(MysteryKey(key,out int pool,out int index)) {MysteryEliminationThemes.finaleDraw(c,w,h,t,pool,index,mysteryColors[pool][index%5]);return;}
         switch(key)
         {
             case "basic": Basic(c,w,h,t); break;
@@ -319,25 +319,5 @@ public static class EliminationThemes
       c.fillStyle = "rgba(255,90,106,0.5)";
       double x = easeOut(t / 0.4) * w;
       c.fillRect(0, h * 0.5 - 1, x, 2);
-    }
-    private static void Mystery(EliminationCanvas c,double w,double h,double t,int pool,int index)
-    {
-        string color=mysteryColors[pool][index%5];
-        c.fillStyle=pool!=0?"#0e081f":"#081a24";c.fillRect(0,0,w,h);double m=Math.Min(w,h),cx=w/2,cy=h*.42;
-        c.save();c.translate(cx,cy);c.rotate(Math.Sin(t*.3)*.2);
-        for(int j=0;j<4+index%5;j++)
-        {
-            c.strokeStyle=color;c.globalAlpha=.5-j*.045;c.lineWidth=2+j%3;
-            c.beginPath();c.ellipse(0,0,m*(.12+j*.065),m*(.12+j*.065)*(index%2!=0?.55:1),t*(j%2!=0?-.2:.2),0,Math.PI*2);c.stroke();
-        }
-        for(int j=0;j<36;j++)
-        {
-            double a=j*2.399+t*(.18+index*.015),r=m*(.1+((j/36d+t*.07)%1)*.6),sz=2+(j+index)%6;
-            c.globalAlpha=.3+(j%4)*.16;c.fillStyle=j%3!=0?color:"#fff";c.save();c.translate(Math.Cos(a)*r,Math.Sin(a)*r);c.rotate(a);
-            if(index%2!=0){c.beginPath();c.moveTo(0,-sz*2);c.lineTo(sz,0);c.lineTo(0,sz*2);c.lineTo(-sz,0);c.closePath();c.fill();}
-            else c.fillRect(-sz,-sz,sz*2,sz*2);
-            c.restore();
-        }
-        c.restore();
     }
 }
