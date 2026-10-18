@@ -21,7 +21,7 @@ async function main(){
  const module="import * as THREE from '/vendor/three/build/three.module.js';const PI=Math.PI;const F={MEAT_MAX:3};const S={scene:new THREE.Scene(),world:null,ticks:[],meat:[]};function ensureScene(){}const $=()=>({style:{setProperty(){}}});"
   +source.slice(source.indexOf('const R ='),source.indexOf('// ---------- state ----------'))
   +source.slice(source.indexOf('function buildWorld('),source.indexOf('// ---------- legends in the room ----------'))
-  +'\nexport {THREE,S,LOOK,buildWorld};';
+  +'\nexport {THREE,S,LOOK,buildWorld,foodMesh};';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  try{
   const page=await browser.newPage();
@@ -35,9 +35,11 @@ async function main(){
   });
   await page.goto('http://farm.local/');
   const output=path.join(root,'native/content/farm-rooms');fs.mkdirSync(output,{recursive:true});
-  for(const theme of ['meadow','tropical','snowy','sewer','toy','grid']){
+  for(const theme of ['meadow','tropical','snowy','sewer','toy','grid','food-meat','food-carrot','food-bigmeat','food-sirloin','food-cake']){
    const room=await page.evaluate(async theme=>{
-    const {THREE,S,LOOK,buildWorld}=await import('/room.js');buildWorld(theme);S.world.updateMatrixWorld(true);
+    const {THREE,S,LOOK,buildWorld,foodMesh}=await import('/room.js');buildWorld(theme.startsWith('food-')?'meadow':theme);
+    if(theme.startsWith('food-')){S.world=new THREE.Group();S.world.add(foodMesh(theme.slice(5)));S.meat=[];S.ticks=[];}
+    S.world.updateMatrixWorld(true);
     const materials=[],textures=[],meshes=[],points=[],materialIds=new Map(),textureIds=new Map(),animated=[];
     function material(m){
      if(materialIds.has(m))return materialIds.get(m);
@@ -86,7 +88,7 @@ async function main(){
     }
     const motionChecks=[];
     for(const time of [0,.05,.5,1,3,17,123]){for(const tick of S.ticks)tick(.05,time);S.world.updateMatrixWorld(true);motionChecks.push({time,meshes:animated.map(a=>({index:a.index,matrix:a.object.matrixWorld.toArray()}))});}
-    return {schemaVersion:2,theme,sky:LOOK[theme].sky,materials,textures,meshes,points,motionChecks,snowChecks};
+    return {schemaVersion:2,theme,sky:(LOOK[theme]||LOOK.meadow).sky,materials,textures,meshes,points,motionChecks,snowChecks};
    },theme);
    if(room.snowChecks.length)fs.writeFileSync(path.join(root,'native/tests/fixtures/farm-snow.json.gz'),zlib.gzipSync(JSON.stringify({initial:room.points.map(p=>p.positions),frames:room.snowChecks})));
    delete room.snowChecks;

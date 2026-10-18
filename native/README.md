@@ -2485,3 +2485,19 @@ and missing-resident removal, and the integrated farm/evolution/Solo flow. The
 meadow capture was inspected with the ring visible under the selected resident.
 Remaining care props, bubbles and event feedback are still part of the active
 full-port goal, along with the broader UI, multiplayer and release work.
+
+### Feeding props
+
+The room exporter now also executes the original food builders for meat, carrot,
+giant meat, sirloin and cake. Native feeding displays those meshes in front of
+the resident using its current facing, at the original height and offset. Props
+last 1.6 seconds, shrink over the final half-second, and preserve giant-meat scale.
+They participate in room lighting and their original shadow flags. Geometry is
+cached by food type and disposed with the farm view. Refused or unsaved actions
+do not create food props.
+
+The rebuilt Windows six-theme smoke covers all five food types, refusal, initial
+appearance, shrink-period lifetime and expiry. Carrot and cake captures were
+inspected. The integrated profile/evolution/farm/Solo smoke also passed. Care
+bubbles, reward feedback and simulation-event/pile presentation remain open,
+along with the broader full-port objective.

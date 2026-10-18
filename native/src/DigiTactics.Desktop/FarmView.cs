@@ -8,7 +8,7 @@ using DigiTactics.Presentation;
 
 namespace DigiTactics.Desktop;
 
-internal sealed class FarmView : IDisposable
+internal sealed partial class FarmView : IDisposable
 {
     private sealed record Material(float[] Color, int? Texture, bool Unlit, bool Transparent, bool DepthWrite, float[] Emissive, float EmissiveIntensity, bool Bulb, float Roughness, float Metalness, int Side, int? ShadowSide);
     private sealed record Texture(int Width, int Height, string Rgba, bool Clamp);
@@ -103,6 +103,7 @@ internal sealed class FarmView : IDisposable
         lighting.Update(delta, Theme ?? "meadow");
         atmosphere.Update(delta, lighting.Night);
         foreach (var particles in snow) particles.Update(delta, choreography.Time);
+        UpdateFood(delta);
     }
     public void React(string? id, string role) { if (id is not null && actors.TryGetValue(id, out var actor)) actor.Animator.Play(role); }
     public void StartTraining(string id) => choreography.StartTraining(id);
@@ -120,7 +121,7 @@ internal sealed class FarmView : IDisposable
         if (id is null) return;
         switch (action)
         {
-            case FarmCareAction.Feed: choreography.Feed(id); break;
+            case FarmCareAction.Feed: ShowFood(id, option ?? "meat"); choreography.Feed(id); break;
             case FarmCareAction.Pet: choreography.Pet(id); break;
             case FarmCareAction.Play: choreography.Play(id, option); break;
             case FarmCareAction.Cure: React(id, "happy"); break;
@@ -180,6 +181,7 @@ internal sealed class FarmView : IDisposable
                 renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.PlaceCompanion(actor.Animator) * root.Matrix, camera, transparent); DrawCalls += renderer.DrawCalls;
             }
         }
+        DrawFood(camera, false);
         renderer.ReceiveShadow = false;
         foreach (var particles in snow) { particles.Draw(renderer, camera, eye); DrawCalls++; }
         SelectionVisible = Selected is not null && actors.TryGetValue(Selected, out _);
@@ -214,11 +216,13 @@ internal sealed class FarmView : IDisposable
                     ShadowDrawCalls += renderer.DrawCalls;
                 }
             }
+            DrawFood(FarmShadowMap.Camera, true);
         }
         finally { renderer.ShadowPass = false; shadows.End(); }
     }
     public void Dispose()
     {
+        foreach (var prop in foodModels.Values) foreach (var primitive in prop.Geometry) primitive.Dispose();
         foreach (var particles in snow) particles.Dispose(); foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); selectionRing.Dispose(); atmosphere.Dispose(); shadows.Dispose(); renderer.Dispose();
     }
 }

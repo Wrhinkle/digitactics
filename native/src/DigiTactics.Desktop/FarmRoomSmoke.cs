@@ -56,6 +56,19 @@ internal static class FarmRoomSmoke
                 for (int frame = 0; frame < 20; frame++) room.Update(.05);
                 if (room.NightOpacity != 0) throw new InvalidOperationException("Farm night overlay did not finish fading out.");
                 if (room.SleepingResidents != 0) throw new InvalidOperationException("Farm residents did not wake: " + theme.Id);
+                if (theme.Id == "meadow") foreach (string food in new[] { "meat", "carrot", "bigmeat", "sirloin", "cake" })
+                {
+                    room.Care("tokomon",FarmCareAction.Feed,food,new JsonObject { ["ok"]=false,["refused"]=true },farm.ToJsonString());
+                    if (room.FoodCount != 0) throw new InvalidOperationException("Refused food created a prop.");
+                    room.Care("tokomon",FarmCareAction.Feed,food,new JsonObject { ["ok"]=true },farm.ToJsonString());
+                    room.Update(.25); room.Draw(0,0,1000,850);
+                    if (room.FoodCount != 1) throw new InvalidOperationException("Feeding prop missing: " + food);
+                    if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"food-"+food+".bmp"),1000,850);
+                    room.Update(1.1); room.Draw(0,0,1000,850);
+                    if (room.FoodCount != 1) throw new InvalidOperationException("Food vanished before its shrink period.");
+                    room.Update(.3);
+                    if (room.FoodCount != 0) throw new InvalidOperationException("Food prop did not expire: " + food);
+                }
             }
             Console.WriteLine("Farm room GPU smoke passed: all six themes, textures, care stations, resident movement and sleep/wake transitions.");
         }
