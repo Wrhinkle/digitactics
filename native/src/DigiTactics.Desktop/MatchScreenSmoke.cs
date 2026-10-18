@@ -32,6 +32,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private int scoutSwitches;
     private bool switchingScout;
     private int chartStep;
+    private bool combinedTraitsVerified;
     private int dragStep, draggedId;
     private readonly ArenaDropSmoke dropSmoke = new();
     private bool dropsVerified;
@@ -153,6 +154,13 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     {
         if (index == 20 && cooldown == 1 && screen.ChartCombat is { } chartCombat)
         {
+            var session = screen.Session!;
+            var player = session.State.Players[screen.ViewedPlayer];
+            var soloTraits = TraitRules.Count(session.State.Rules, session.CombatProjection.Board(player), player.Augments.ToArray());
+            var expectedTraits = session.State.Duos ? session.CombatProjection.Team(session.State.Teams[player.Team!.Value]).Effects.Counts! : soloTraits;
+            if (screen.CombinedTraits != session.State.Duos || screen.DisplayedTraits.Count != expectedTraits.Count || expectedTraits.Any(pair => screen.DisplayedTraits.GetValueOrDefault(pair.Key) != pair.Value))
+                throw new InvalidOperationException("Sidebar trait counts do not match the watched Solo/Duos team.");
+            combinedTraitsVerified |= session.State.Duos && expectedTraits.Any(pair => soloTraits.GetValueOrDefault(pair.Key) != pair.Value);
             var expected = chartCombat.Units.Where(unit => unit.Team == (screen.WatchingMirrored ? 1 : 0))
                 .OrderByDescending(unit => screen.ChartMetric switch { 1 => unit.Taken, 2 => unit.Healed, _ => unit.Dealt })
                 .Select(unit => unit.Id);
@@ -274,6 +282,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "combat-bench.bmp"), size.X, size.Y);
         }
         if (index < commands.Length || cooldown > 0) return false;
+        if (screen.Session!.State.Duos && !combinedTraitsVerified) throw new InvalidOperationException("Duos trait fixture did not exercise counts different from the solo board.");
         if (!planningCaptured || !battleCaptured || !pvpCaptured || !combatBenchVerified || screen.CompletedRounds != 5 || screen.Session!.Rounds.Phase != MatchPhase.Planning || screen.AiEmotesShown == 0)
             throw new InvalidOperationException($"Match UI round transition smoke failed: planning={planningCaptured}, battle={battleCaptured}, pvp={pvpCaptured}, bench={combatBenchVerified}, rounds={screen.CompletedRounds}, phase={screen.Session!.Rounds.Phase}, emotes={screen.AiEmotesShown}.");
         Console.WriteLine("Match UI smoke passed: menu, carousel, purchase, placement/drag/drop, sale/partner rules, 3D planning, combat reserve, scouting both sides, PvE, mirrored PvP, five settlements and round advances.");

@@ -393,12 +393,7 @@ internal sealed partial class MatchScreen : IDisposable
         PartnerDropZone();
         var player = Session!.State.Players[viewed];
         ImGui.Text($"{player.Name}  {player.Roster.BoardCount}/{new MatchPlacement(Session.State).Capacity(player, Session.Rounds.Position.Stage)} deployed");
-        var counts = TraitRules.Count(Rules, Session.CombatProjection.Board(player), player.Augments.ToArray());
-        foreach (var count in counts.OrderByDescending(c => c.Value))
-        {
-            var trait = Rules.Traits.FirstOrDefault(t => t.Id == count.Key);
-            UiText.Wrapped($"{Name(count.Key)}  {count.Value}  ({string.Join('/', trait?.Breakpoints ?? [])})"); Tooltip(count.Key);
-        }
+        TraitSidebar(player);
         ImGui.SeparatorText("Selected"u8);
         var selected = Human.Roster.Entries.FirstOrDefault(e => e.Unit.Id == selectedUnit);
         if (selected is not null)
