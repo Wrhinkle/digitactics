@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "sourceKey": "ac:Tankmon",
+      "asset": "models/files/rip_cs_tankmon.glb",
+      "sourceSha256": "fb07334696b253f1e1bb2e0a78cdcbe07d527beecd0f2a63cddcf26d84bbf3d7",
+      "packedAssetSha256": "cf07bcbcdcc4870c7267c064b60560d936c597fd630c6dbb73940c7e73642f1a",
+      "status": "FAIL",
+      "reason": "Grayscale specular/reflection gradient is bound as base color on visible body/armor surfaces.",
+      "materials": [
+        {
+          "name": "chr621base_01",
+          "extras": {
+            "fromFBX": {
+              "shadingModel": "Phong",
+              "isTruePBR": false
+            }
+          },
+          "pbrMetallicRoughness": {
+            "metallicFactor": 0,
+            "baseColorTexture": {
+              "index": 0
+            }
+          }
+        },
+        {
+          "name": "chr621spec_01",
+          "extras": {
+            "fromFBX": {
+              "shadingModel": "Phong",
+              "isTruePBR": false
+            }
+          },
+          "pbrMetallicRoughness": {
+            "metallicFactor": 0,
+            "baseColorTexture": {
+              "index": 1
+            }
+          }
+        }
+      ],
+      "images": [
+        {
+          "name": "chr621a01.png",
+          "sha256": "1a3eff048e973252e9988bbf3e25b3e29acb78925fc58169c72f8658d7873484",
+          "bytes": 31604
+        },
+        {
+          "name": "chr621a01s.png",
+          "sha256": "010b3c1829e5dfce7d5c7b1bda0e0e1cb0fa487023299a59b5bb1d7d11a40490",
+          "bytes": 196
+        }
+      ],
+      "originalSourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324287/",
+      "repairState": "investigating exact albedo remap; no source asset or runtime override changed",
+      "scope": "Intrinsic material binding in original GLB and byte-equivalent native material; independent of animation sampling/runtime DLL hash. Requires reassessment after source or loader/material-preparation repair."
+    },
+    {
+      "sourceKey": "ac:Triceramon",
+      "asset": "models/files/rip_cs_triceramon.glb",
+      "sourceSha256": "f5f6675ec24c58a1e9d1c6331ea8fcf056fa675a1f26f6a8e3e14f68845f933d",
+      "packedAssetSha256": "adb9d59ef77c0774e7f4624b058a2cf8416452fe3c6d0ba327616f7c665f309f",
+      "status": "FAIL",
+      "reason": "Grayscale specular/reflection gradient is bound as base color on visible body/armor surfaces.",
+      "materials": [
+        {
+          "name": "chr033spec_01",
+          "extras": {
+            "fromFBX": {
+              "shadingModel": "Phong",
+              "isTruePBR": false
+            }
+          },
+          "pbrMetallicRoughness": {
+            "metallicFactor": 0,
+            "baseColorTexture": {
+              "index": 0
+            }
+          }
+        }
+      ],
+      "images": [
+        {
+          "name": "chr033a01s.png",
+          "sha256": "bfa45b015805aa4c17f8d13c915745196fb49fd94a589cec7dd10461909df936",
+          "bytes": 248
+        }
+      ],
+      "originalSourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324322/",
+      "repairState": "investigating exact albedo remap; no source asset or runtime override changed",
+      "scope": "Intrinsic material binding in original GLB and byte-equivalent native material; independent of animation sampling/runtime DLL hash. Requires reassessment after source or loader/material-preparation repair."
+    },
+    {
+      "sourceKey": "agunimon:0",
+      "asset": "models/files/rip_agunimon.glb",
+      "sourceSha256": "99d7c959e2f1a6964c2ef1b341c46df7d2db2dfb723d535a51aa37f4b075a5c5",
+      "packedAssetSha256": "8ef2bce7f217f3f1365ea3f83b9470157e0b25ca369c710f19394da267829e90",
+      "status": "FAIL",
+      "reason": "Grayscale specular/reflection gradient is bound as base color on visible body/armor surfaces.",
+      "materials": [
+        {
+          "name": "chr676base_01",
+          "extras": {
+            "fromFBX": {
+              "shadingModel": "Phong",
+              "isTruePBR": false
+            }
+          },
+          "pbrMetallicRoughness": {
+            "metallicFactor": 0,
+            "baseColorTexture": {
+              "index": 0
+            }
+          }
+        },
+        {
+          "name": "chr676spec_01",
+          "extras": {
+            "fromFBX": {
+              "shadingModel": "Phong",
+              "isTruePBR": false
+            }
+          },
+          "pbrMetallicRoughness": {
+            "metallicFactor": 0,
+            "baseColorTexture": {
+              "index": 1
+            }
+          }
+        }
+      ],
+      "images": [
+        {
+          "name": "chr676a01.png",
+          "sha256": "7f449764ed69158896ed4a0f83973894e50098c55c95197942edededbbc4b1c8",
+          "bytes": 51328
+        },
+        {
+          "name": "chr676a01s.png",
+          "sha256": "e4a19dc7f526644ecec7eda5efab0631e6ccf4313e9c4094ed3200daac73c85d",
+          "bytes": 228
+        }
+      ],
+      "originalSourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331596/",
+      "repairState": "investigating exact albedo remap; no source asset or runtime override changed",
+      "scope": "Intrinsic material binding in original GLB and byte-equivalent native material; independent of animation sampling/runtime DLL hash. Requires reassessment after source or loader/material-preparation repair."
+    },
+    {
+      "sourceKey": "agunimon:2",
+      "asset": "models/files/rip_emperorgreymon.glb",
+      "sourceSha256": "87411a470601b1ddd4725b8fb4050caca3bb16ffcaa4af105b9facc7ffc47e43",
+      "packedAssetSha256": "550d6ed8bef11eb104da849d58d5b45747312571acdb130a4196736a9d2eb1cc",
+      "status": "FAIL",
+      "reason": "Grayscale specular/reflection gradient is bound as base color on visible body/armor surfaces.",
+      "materials": [
+        {
+          "name": "chr677spec_02",
+          "extras": {
+            "fromFBX": {
+              "shadingModel": "Phong",
+              "isTruePBR": false
+            }
+          },
+          "pbrMetallicRoughness": {
+            "metallicFactor": 0,
+            "baseColorTexture": {
+              "index": 0
+            }
+          }
+        },
+        {
+          "name": "chr677cube_02",
+          "extras": {
+            "fromFBX": {
+              "shadingModel": "Phong",
+              "isTruePBR": false
+            }
+          },
+          "pbrMetallicRoughness": {
+            "baseColorFactor": [
+              0.800000011920929,
+              0.800000011920929,
+              0.800000011920929,
+              1
+            ],
+            "roughnessFactor": 0.272165536880493,
+            "metallicFactor": 0.400000005960464
+          }
+        },
+        {
+          "name": "chr677base_01",
+          "extras": {
+            "fromFBX": {
+              "shadingModel": "Phong",
+              "isTruePBR": false
+            }
+          },
+          "pbrMetallicRoughness": {
+            "metallicFactor": 0,
+            "baseColorTexture": {
+              "index": 1
+            }
+          }
+        }
+      ],
+      "images": [
+        {
+          "name": "chr677a01s.png",
+          "sha256": "473e85094a41fd6d8aeac4796841f34b4f6f96b659f35637478be4ba5ff86dc5",
+          "bytes": 190
+        },
+        {
+          "name": "chr677a01.png",
+          "sha256": "7d74dae5c940c868afca18028210684617d2c71b0b30738cf36e6e94b49f9eda",
+          "bytes": 51758
+        }
+      ],
+      "originalSourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331594/",
+      "repairState": "investigating exact albedo remap; no source asset or runtime override changed",
+      "scope": "Intrinsic material binding in original GLB and byte-equivalent native material; independent of animation sampling/runtime DLL hash. Requires reassessment after source or loader/material-preparation repair."
+    },
+    {
+      "sourceKey": "drg:PileVolcamon",
+      "asset": "models/files/rip_cs_pilevolcamon.glb",
+      "sourceSha256": "5a2663ea3ba36c8888f7b16576a46bbd44f7bb36a6164a280f85c8b5903e67d9",
+      "packedAssetSha256": "eadff6c050ff4dfe44cd60a63ea3c7c122fea713460c27be65e621c99ce9a68d",
+      "status": "FAIL",
+      "reason": "Grayscale specular/reflection gradient is bound as base color on visible body/armor surfaces.",
+      "materials": [
+        {
+          "name": "chr060cubeB_01",
+          "extras": {
+            "fromFBX": {
+              "shadingModel": "Phong",
+              "isTruePBR": false
+            }
+          },
+          "pbrMetallicRoughness": {
+            "baseColorFactor": [
+              0.800000011920929,
+              0.800000011920929,
+              0.800000011920929,
+              1
+            ],
+            "roughnessFactor": 0.272165536880493,
+            "metallicFactor": 0.400000005960464
+          }
+        },
+        {
+          "name": "chr060specA_01",
+          "extras": {
+            "fromFBX": {
+              "shadingModel": "Phong",
+              "isTruePBR": false
+            }
+          },
+          "pbrMetallicRoughness": {
+            "metallicFactor": 0,
+            "baseColorTexture": {
+              "index": 0
+            }
+          }
+        }
+      ],
+      "images": [
+        {
+          "name": "chr060a01s.png",
+          "sha256": "f19c483a36724b517e954a73b3ea3f4f84e91f5dca64ad2650ac9b12da905cfc",
+          "bytes": 192
+        }
+      ],
+      "originalSourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324353/",
+      "repairState": "investigating exact albedo remap; no source asset or runtime override changed",
+      "scope": "Intrinsic material binding in original GLB and byte-equivalent native material; independent of animation sampling/runtime DLL hash. Requires reassessment after source or loader/material-preparation repair."
+    }
+  ],
+  "scope": "Frozen confirmed pre-repair diagnostics. These source binding facts are historical once their exact original/exported hashes change. Candidate-only bindings are deliberately excluded. Repair-state descriptions record the diagnostic snapshot, not current completion."
+}

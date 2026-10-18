@@ -35,10 +35,14 @@ class EvidenceChecks(unittest.TestCase):
         self.original_source_paths = audit.capture_source_paths if hasattr(audit, "capture_source_paths") else None
         audit.capture_source_paths = lambda: {group: ["native/src/" + group + ".cs"]
                                               for group in ["renderer", "pose", "combat", "companion"]}
+        self.original_material_paths = getattr(audit, "material_source_paths", None)
+        audit.material_source_paths = lambda: ["native/src/material-loader.cs"]
 
     def tearDown(self):
         if self.original_source_paths is not None:
             audit.capture_source_paths = self.original_source_paths
+        if self.original_material_paths is not None:
+            audit.material_source_paths = self.original_material_paths
         self.temp.cleanup()
 
     @staticmethod
@@ -468,6 +472,88 @@ class EvidenceChecks(unittest.TestCase):
         review = self.identity_review()
         self.write(self.args.identity, {"schemaVersion": 1, "sources": [review, review]})
         with self.assertRaisesRegex(ValueError, "Duplicate identity"):
+            self.result()
+
+    def material_review(self):
+        proof = audit.ROOT / "material-proof.txt"
+        proof.write_text("Reviewed diffuse slot uses a gray specular gradient on visible armor.", encoding="utf-8")
+        loader = audit.ROOT / audit.material_source_paths()[0]
+        loader.parent.mkdir(parents=True, exist_ok=True)
+        loader.write_text("load original material binding", encoding="utf-8")
+        self.args.materials = audit.NATIVE / "content/model-material-reviews.json"
+        record = {"issueId": "armor-gradient", "asset": "asset", "assetSha256": "asset-hash", "sourceSha256": "original-hash",
+                  "status": "FAIL", "review": "Confirmed material-slot defect, not a heuristic candidate.",
+                  "codeHashes": {str(loader.relative_to(audit.ROOT)).replace("\\", "/"): audit.sha(loader)},
+                  "evidence": ["material-proof.txt"], "evidenceSha256": {"material-proof.txt": audit.sha(proof)}}
+        self.catalog["assets"]["asset"]["sourceSha256"] = "original-hash"
+        self.update_catalog()
+        self.write(self.args.materials, {"schemaVersion": 1, "assets": [record]})
+        return record
+
+    def test_confirmed_asset_material_failure_needs_no_fresh_motion_capture(self):
+        self.material_review()
+        row = self.result()
+        self.assertEqual(row["sourceMaterialStatus"], "FAIL")
+        self.assertEqual(row["materialRuntimeStatus"], "FAIL")
+        self.assertEqual(row["functionalStatus"], "FAIL")
+
+    def test_material_failure_survives_unrelated_motion_change(self):
+        self.material_review()
+        self.catalog["sources"]["creature"]["motion"]["sha256"] = "new-motion"
+        self.update_catalog()
+        self.assertEqual(self.result()["functionalStatus"], "FAIL")
+
+    def test_material_defect_applies_to_every_exact_asset_alias(self):
+        self.two_sources()
+        self.material_review()
+        self.assertEqual(self.other_row()["materialRuntimeStatus"], "FAIL")
+
+    def test_material_replacement_retains_old_finding_as_history(self):
+        self.material_review()
+        self.catalog["assets"]["asset"].update(sha256="repaired-payload", sourceSha256="repaired-source")
+        self.update_catalog()
+        row = self.result()
+        self.assertEqual(row["sourceMaterialStatus"], "UNVERIFIED")
+        self.assertEqual(row["functionalStatus"], "UNVERIFIED")
+        self.assertEqual(row["sourceMaterialReviews"][0]["status"], "FAIL")
+
+    def test_original_material_source_change_alone_invalidates_finding(self):
+        self.material_review()
+        self.catalog["assets"]["asset"]["sourceSha256"] = "changed-original"
+        self.update_catalog()
+        self.assertEqual(self.result()["sourceMaterialStatus"], "UNVERIFIED")
+
+    def test_material_loader_change_requires_new_runtime_review_but_keeps_asset_fact(self):
+        self.material_review()
+        (audit.ROOT / audit.material_source_paths()[0]).write_text("new corrected loader")
+        row = self.result()
+        self.assertEqual(row["sourceMaterialStatus"], "FAIL")
+        self.assertEqual(row["materialRuntimeStatus"], "UNVERIFIED")
+        self.assertEqual(row["functionalStatus"], "UNVERIFIED")
+
+    def test_material_finding_missing_loader_dependency_cannot_fail_runtime(self):
+        record = self.material_review()
+        record["codeHashes"] = {}
+        self.write(self.args.materials, {"schemaVersion": 1, "assets": [record]})
+        row = self.result()
+        self.assertEqual(row["sourceMaterialStatus"], "FAIL")
+        self.assertEqual(row["materialRuntimeStatus"], "UNVERIFIED")
+
+    def test_changed_material_proof_invalidates_canonical_finding(self):
+        self.material_review()
+        (audit.ROOT / "material-proof.txt").write_text("different finding")
+        self.assertEqual(self.result()["sourceMaterialStatus"], "UNVERIFIED")
+
+    def test_material_candidate_is_not_a_confirmed_defect(self):
+        record = self.material_review()
+        record["status"] = "CANDIDATE"
+        self.write(self.args.materials, {"schemaVersion": 1, "assets": [record]})
+        self.assertEqual(self.result()["sourceMaterialStatus"], "UNVERIFIED")
+
+    def test_duplicate_material_issue_rejected(self):
+        record = self.material_review()
+        self.write(self.args.materials, {"schemaVersion": 1, "assets": [record, record]})
+        with self.assertRaisesRegex(ValueError, "Duplicate material"):
             self.result()
 
     def functional_review(self):

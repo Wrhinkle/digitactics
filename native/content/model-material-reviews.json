@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "scope": "Explicit confirmed defects tied to exact original and exported asset payloads, inherited by every exact asset alias. Material-loading/render source hashes additionally govern whether the old defect interpretation still applies to runtime. Repairs require fresh visual review; no automatic approval.",
+  "assets": [
+    {
+      "issueId": "gradient-albedo:ac:Tankmon",
+      "asset": "models/files/rip_cs_tankmon.glb",
+      "assetSha256": "cf07bcbcdcc4870c7267c064b60560d936c597fd630c6dbb73940c7e73642f1a",
+      "sourceSha256": "fb07334696b253f1e1bb2e0a78cdcbe07d527beecd0f2a63cddcf26d84bbf3d7",
+      "reportedSource": "ac:Tankmon",
+      "status": "FAIL",
+      "review": "Grayscale specular/reflection gradient is bound as base color on visible body/armor surfaces. Confirmed visible defect with original GLB/material/image inspection; this is not an identity mismatch or an unreviewed naming heuristic.",
+      "evidence": [
+        "native/content/model-material-findings.json"
+      ],
+      "evidenceSha256": {
+        "native/content/model-material-findings.json": "fda625b14f9fdb05e8db7a6c082a026e312ee80308c988019ef95785a4adbccb"
+      },
+      "codeHashes": {
+        "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
+        "native/src/DigiTactics.Assets/GltfMaterial.cs": "669b63032d4efbd1994532905c20ac1b16e6390ad0e41bdca5a391752db19f38",
+        "native/src/DigiTactics.Assets/GltfMesh.cs": "eaf3a57940efbc8efb168a1957aaaa6beeec79844c7d386c86fccfa80c396cfa",
+        "native/src/DigiTactics.Assets/PngImage.cs": "c0d06659c59f639d503d9b06951554b6640ff556f46cbf7d9c6bde41d40bbd22",
+        "native/src/DigiTactics.Assets/ModelCatalog.cs": "904d810752fa2b6d06fb5e9b9110ec5ee46b5d72e6bffc0378c37bce7ba16698",
+        "native/src/DigiTactics.Desktop/GpuModel.cs": "e63b8718e8a95d570cd451bc7ed7a3ad00d15da625dceba10d2fb3db7415d813",
+        "native/src/DigiTactics.Desktop/GpuTexture.cs": "c64abc356afd70747781fe89c3fc8df593b28faf83bc1bfcc4ca5c9a76afafcb",
+        "native/src/DigiTactics.Desktop/GpuPrimitive.cs": "34c8e39bc10f66bc4ebd9436519a1aff931bff41a782663eeaeb5af41e15bea0",
+        "native/src/DigiTactics.Desktop/ModelRenderer.cs": "cecbc114386c5b5eb6ebdcd5ca84461f8cdbb8f07fe3437cb02b3f5fb71ee0c6",
+        "native/src/DigiTactics.Desktop/ModelRenderer.Transparency.cs": "ca7e76048a53eabf2346ebb084e3fcbf9af317b4551fa5cfd64218f4bd650932"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324287/"
+      ]
+    },
+    {
+      "issueId": "gradient-albedo:ac:Triceramon",
+      "asset": "models/files/rip_cs_triceramon.glb",
+      "assetSha256": "adb9d59ef77c0774e7f4624b058a2cf8416452fe3c6d0ba327616f7c665f309f",
+      "sourceSha256": "f5f6675ec24c58a1e9d1c6331ea8fcf056fa675a1f26f6a8e3e14f68845f933d",
+      "reportedSource": "ac:Triceramon",
+      "status": "FAIL",
+      "review": "Grayscale specular/reflection gradient is bound as base color on visible body/armor surfaces. Confirmed visible defect with original GLB/material/image inspection; this is not an identity mismatch or an unreviewed naming heuristic.",
+      "evidence": [
+        "native/content/model-material-findings.json"
+      ],
+      "evidenceSha256": {
+        "native/content/model-material-findings.json": "fda625b14f9fdb05e8db7a6c082a026e312ee80308c988019ef95785a4adbccb"
+      },
+      "codeHashes": {
+        "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
+        "native/src/DigiTactics.Assets/GltfMaterial.cs": "669b63032d4efbd1994532905c20ac1b16e6390ad0e41bdca5a391752db19f38",
+        "native/src/DigiTactics.Assets/GltfMesh.cs": "eaf3a57940efbc8efb168a1957aaaa6beeec79844c7d386c86fccfa80c396cfa",
+        "native/src/DigiTactics.Assets/PngImage.cs": "c0d06659c59f639d503d9b06951554b6640ff556f46cbf7d9c6bde41d40bbd22",
+        "native/src/DigiTactics.Assets/ModelCatalog.cs": "904d810752fa2b6d06fb5e9b9110ec5ee46b5d72e6bffc0378c37bce7ba16698",
+        "native/src/DigiTactics.Desktop/GpuModel.cs": "e63b8718e8a95d570cd451bc7ed7a3ad00d15da625dceba10d2fb3db7415d813",
+        "native/src/DigiTactics.Desktop/GpuTexture.cs": "c64abc356afd70747781fe89c3fc8df593b28faf83bc1bfcc4ca5c9a76afafcb",
+        "native/src/DigiTactics.Desktop/GpuPrimitive.cs": "34c8e39bc10f66bc4ebd9436519a1aff931bff41a782663eeaeb5af41e15bea0",
+        "native/src/DigiTactics.Desktop/ModelRenderer.cs": "cecbc114386c5b5eb6ebdcd5ca84461f8cdbb8f07fe3437cb02b3f5fb71ee0c6",
+        "native/src/DigiTactics.Desktop/ModelRenderer.Transparency.cs": "ca7e76048a53eabf2346ebb084e3fcbf9af317b4551fa5cfd64218f4bd650932"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324322/"
+      ]
+    },
+    {
+      "issueId": "gradient-albedo:agunimon:0",
+      "asset": "models/files/rip_agunimon.glb",
+      "assetSha256": "8ef2bce7f217f3f1365ea3f83b9470157e0b25ca369c710f19394da267829e90",
+      "sourceSha256": "99d7c959e2f1a6964c2ef1b341c46df7d2db2dfb723d535a51aa37f4b075a5c5",
+      "reportedSource": "agunimon:0",
+      "status": "FAIL",
+      "review": "Grayscale specular/reflection gradient is bound as base color on visible body/armor surfaces. Confirmed visible defect with original GLB/material/image inspection; this is not an identity mismatch or an unreviewed naming heuristic.",
+      "evidence": [
+        "native/content/model-material-findings.json"
+      ],
+      "evidenceSha256": {
+        "native/content/model-material-findings.json": "fda625b14f9fdb05e8db7a6c082a026e312ee80308c988019ef95785a4adbccb"
+      },
+      "codeHashes": {
+        "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
+        "native/src/DigiTactics.Assets/GltfMaterial.cs": "669b63032d4efbd1994532905c20ac1b16e6390ad0e41bdca5a391752db19f38",
+        "native/src/DigiTactics.Assets/GltfMesh.cs": "eaf3a57940efbc8efb168a1957aaaa6beeec79844c7d386c86fccfa80c396cfa",
+        "native/src/DigiTactics.Assets/PngImage.cs": "c0d06659c59f639d503d9b06951554b6640ff556f46cbf7d9c6bde41d40bbd22",
+        "native/src/DigiTactics.Assets/ModelCatalog.cs": "904d810752fa2b6d06fb5e9b9110ec5ee46b5d72e6bffc0378c37bce7ba16698",
+        "native/src/DigiTactics.Desktop/GpuModel.cs": "e63b8718e8a95d570cd451bc7ed7a3ad00d15da625dceba10d2fb3db7415d813",
+        "native/src/DigiTactics.Desktop/GpuTexture.cs": "c64abc356afd70747781fe89c3fc8df593b28faf83bc1bfcc4ca5c9a76afafcb",
+        "native/src/DigiTactics.Desktop/GpuPrimitive.cs": "34c8e39bc10f66bc4ebd9436519a1aff931bff41a782663eeaeb5af41e15bea0",
+        "native/src/DigiTactics.Desktop/ModelRenderer.cs": "cecbc114386c5b5eb6ebdcd5ca84461f8cdbb8f07fe3437cb02b3f5fb71ee0c6",
+        "native/src/DigiTactics.Desktop/ModelRenderer.Transparency.cs": "ca7e76048a53eabf2346ebb084e3fcbf9af317b4551fa5cfd64218f4bd650932"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331596/"
+      ]
+    },
+    {
+      "issueId": "gradient-albedo:agunimon:2",
+      "asset": "models/files/rip_emperorgreymon.glb",
+      "assetSha256": "550d6ed8bef11eb104da849d58d5b45747312571acdb130a4196736a9d2eb1cc",
+      "sourceSha256": "87411a470601b1ddd4725b8fb4050caca3bb16ffcaa4af105b9facc7ffc47e43",
+      "reportedSource": "agunimon:2",
+      "status": "FAIL",
+      "review": "Grayscale specular/reflection gradient is bound as base color on visible body/armor surfaces. Confirmed visible defect with original GLB/material/image inspection; this is not an identity mismatch or an unreviewed naming heuristic.",
+      "evidence": [
+        "native/content/model-material-findings.json"
+      ],
+      "evidenceSha256": {
+        "native/content/model-material-findings.json": "fda625b14f9fdb05e8db7a6c082a026e312ee80308c988019ef95785a4adbccb"
+      },
+      "codeHashes": {
+        "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
+        "native/src/DigiTactics.Assets/GltfMaterial.cs": "669b63032d4efbd1994532905c20ac1b16e6390ad0e41bdca5a391752db19f38",
+        "native/src/DigiTactics.Assets/GltfMesh.cs": "eaf3a57940efbc8efb168a1957aaaa6beeec79844c7d386c86fccfa80c396cfa",
+        "native/src/DigiTactics.Assets/PngImage.cs": "c0d06659c59f639d503d9b06951554b6640ff556f46cbf7d9c6bde41d40bbd22",
+        "native/src/DigiTactics.Assets/ModelCatalog.cs": "904d810752fa2b6d06fb5e9b9110ec5ee46b5d72e6bffc0378c37bce7ba16698",
+        "native/src/DigiTactics.Desktop/GpuModel.cs": "e63b8718e8a95d570cd451bc7ed7a3ad00d15da625dceba10d2fb3db7415d813",
+        "native/src/DigiTactics.Desktop/GpuTexture.cs": "c64abc356afd70747781fe89c3fc8df593b28faf83bc1bfcc4ca5c9a76afafcb",
+        "native/src/DigiTactics.Desktop/GpuPrimitive.cs": "34c8e39bc10f66bc4ebd9436519a1aff931bff41a782663eeaeb5af41e15bea0",
+        "native/src/DigiTactics.Desktop/ModelRenderer.cs": "cecbc114386c5b5eb6ebdcd5ca84461f8cdbb8f07fe3437cb02b3f5fb71ee0c6",
+        "native/src/DigiTactics.Desktop/ModelRenderer.Transparency.cs": "ca7e76048a53eabf2346ebb084e3fcbf9af317b4551fa5cfd64218f4bd650932"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331594/"
+      ]
+    },
+    {
+      "issueId": "gradient-albedo:drg:PileVolcamon",
+      "asset": "models/files/rip_cs_pilevolcamon.glb",
+      "assetSha256": "eadff6c050ff4dfe44cd60a63ea3c7c122fea713460c27be65e621c99ce9a68d",
+      "sourceSha256": "5a2663ea3ba36c8888f7b16576a46bbd44f7bb36a6164a280f85c8b5903e67d9",
+      "reportedSource": "drg:PileVolcamon",
+      "status": "FAIL",
+      "review": "Grayscale specular/reflection gradient is bound as base color on visible body/armor surfaces. Confirmed visible defect with original GLB/material/image inspection; this is not an identity mismatch or an unreviewed naming heuristic.",
+      "evidence": [
+        "native/content/model-material-findings.json"
+      ],
+      "evidenceSha256": {
+        "native/content/model-material-findings.json": "fda625b14f9fdb05e8db7a6c082a026e312ee80308c988019ef95785a4adbccb"
+      },
+      "codeHashes": {
+        "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
+        "native/src/DigiTactics.Assets/GltfMaterial.cs": "669b63032d4efbd1994532905c20ac1b16e6390ad0e41bdca5a391752db19f38",
+        "native/src/DigiTactics.Assets/GltfMesh.cs": "eaf3a57940efbc8efb168a1957aaaa6beeec79844c7d386c86fccfa80c396cfa",
+        "native/src/DigiTactics.Assets/PngImage.cs": "c0d06659c59f639d503d9b06951554b6640ff556f46cbf7d9c6bde41d40bbd22",
+        "native/src/DigiTactics.Assets/ModelCatalog.cs": "904d810752fa2b6d06fb5e9b9110ec5ee46b5d72e6bffc0378c37bce7ba16698",
+        "native/src/DigiTactics.Desktop/GpuModel.cs": "e63b8718e8a95d570cd451bc7ed7a3ad00d15da625dceba10d2fb3db7415d813",
+        "native/src/DigiTactics.Desktop/GpuTexture.cs": "c64abc356afd70747781fe89c3fc8df593b28faf83bc1bfcc4ca5c9a76afafcb",
+        "native/src/DigiTactics.Desktop/GpuPrimitive.cs": "34c8e39bc10f66bc4ebd9436519a1aff931bff41a782663eeaeb5af41e15bea0",
+        "native/src/DigiTactics.Desktop/ModelRenderer.cs": "cecbc114386c5b5eb6ebdcd5ca84461f8cdbb8f07fe3437cb02b3f5fb71ee0c6",
+        "native/src/DigiTactics.Desktop/ModelRenderer.Transparency.cs": "ca7e76048a53eabf2346ebb084e3fcbf9af317b4551fa5cfd64218f4bd650932"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324353/"
+      ]
+    }
+  ]
+}

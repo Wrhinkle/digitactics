@@ -201,6 +201,44 @@ def identity_verdict(review, source, asset):
     return (verdict(review.get("status")) if current else "UNVERIFIED"), current
 
 
+def material_source_paths():
+    """Code that can change how an intrinsic material binding reaches the screen."""
+    return ["native/src/DigiTactics." + name for name in [
+        "Assets/GltfAsset.cs", "Assets/GltfMaterial.cs", "Assets/GltfMesh.cs", "Assets/PngImage.cs", "Assets/ModelCatalog.cs",
+        "Desktop/GpuModel.cs", "Desktop/GpuTexture.cs", "Desktop/GpuPrimitive.cs",
+        "Desktop/ModelRenderer.cs", "Desktop/ModelRenderer.Transparency.cs"]]
+
+
+def material_reviews(path):
+    if not path.is_file():
+        return {}
+    document = read(path)
+    if document.get("schemaVersion") != 1:
+        raise ValueError("Unsupported material review schema.")
+    result, issues = {}, set()
+    for record in document.get("assets", []):
+        issue, asset = record.get("issueId"), record.get("asset")
+        if not issue or issue in issues or not asset:
+            raise ValueError("Duplicate material issue or missing issue/asset: " + str(issue))
+        issues.add(issue)
+        result.setdefault(asset, []).append(record)
+    return result
+
+
+def material_verdict(review, source, asset):
+    """Asset facts survive unrelated motion edits; changed material code needs review."""
+    current = (review.get("status") == "FAIL" and review.get("asset") == source["asset"]
+               and bool(review.get("assetSha256")) and review["assetSha256"] == asset.get("sha256")
+               and bool(review.get("sourceSha256")) and review["sourceSha256"] == asset.get("sourceSha256")
+               and bool(review.get("review")) and measured_review_paths(review))
+    hashes = review.get("codeHashes", {})
+    paths = material_source_paths()
+    runtime_current = current and bool(paths) and set(hashes) == set(paths) and all(
+        (ROOT / name).is_file() and sha(ROOT / name) == expected for name, expected in hashes.items())
+    return {"issueId": review.get("issueId"), "assetCurrent": current, "runtimeCurrent": runtime_current,
+            "sourceStatus": "FAIL" if current else "UNVERIFIED", "runtimeStatus": "FAIL" if runtime_current else "UNVERIFIED"}
+
+
 def functional_verdict(review, current, motion_complete, texture_complete, statuses, runtime_ready,
                        context_required, image_paths):
     """Functional quality is explicit reviewed behavior, independent of pixel fidelity."""
@@ -239,6 +277,8 @@ def merge(args):
     catalog = read(NATIVE / "content/models.json")
     identity_path = Path(getattr(args, "identity", None) or NATIVE / "content/model-identity-reviews.json").resolve()
     identity_decisions = identity_reviews(identity_path)
+    material_path = Path(getattr(args, "materials", None) or NATIVE / "content/model-material-reviews.json").resolve()
+    material_decisions = material_reviews(material_path)
     catalog_hash = sha(NATIVE / "content/models.json")
     companion_path = NATIVE / "content/companion-models.json"
     companions = read(companion_path) if companion_path.is_file() else {}
@@ -298,6 +338,10 @@ def merge(args):
         group = identity_by_source[key]
         identity_review = identity_decisions.get(key)
         identity_status, identity_current = identity_verdict(identity_review, source, catalog["assets"][source["asset"]])
+        material_records = material_decisions.get(source["asset"], [])
+        material_states = [material_verdict(record, source, catalog["assets"][source["asset"]]) for record in material_records]
+        source_material_status = "FAIL" if any(state["assetCurrent"] for state in material_states) else "UNVERIFIED"
+        material_runtime_status = "FAIL" if any(state["runtimeCurrent"] for state in material_states) else "UNVERIFIED"
         runtime_row = runtime.get(key)
         runtime_status = "UNVERIFIED"
         runtime_notes = []
@@ -396,7 +440,7 @@ def merge(args):
         # Wrong form and concrete load/runtime/material/motion failures are never
         # erased by a new render. Optional browser fidelity is a separate result.
         checks = [row["structureStatus"], model["status"], fine_texture_status, motion_review_status]
-        if identity_status == "FAIL" or runtime_status == "FAIL" or (evidence and render_current and evidence[0].get("Status") == "render-error"):
+        if identity_status == "FAIL" or material_runtime_status == "FAIL" or runtime_status == "FAIL" or (evidence and render_current and evidence[0].get("Status") == "render-error"):
             checks.append("FAIL")
         context_required = bool(runtime_row and runtime_row.get("review")) or bool(evidence and any(
             sample.get("EdgePixels", 0) > 0 or sample.get("VisiblePixels", 0) == 0 for sample in evidence[0].get("Samples", [])))
@@ -415,6 +459,8 @@ def merge(args):
                        "runtimeStatus": runtime_status, "finiteSamplingStatus": finite_status, "renderedTechnicalStatus": render_status,
                        "visualFidelityStatus": visual_status, "fineTextureStatus": fine_texture_status, "motionReviewStatus": motion_review_status,
                        "identityStatus": identity_status, "identityReview": identity_review, "functionalStatus": functional_status,
+                       "sourceMaterialStatus": source_material_status, "materialRuntimeStatus": material_runtime_status,
+                       "sourceMaterialReviews": material_records,
                        "functionalReview": functional_notes,
                        "roles": row["roles"], "clips": row["clips"],
                        "failures": [*model["failures"], *row["failures"]],
@@ -423,6 +469,8 @@ def merge(args):
                        "evidence": {"inventory": str(args.inventory.relative_to(ROOT)),
                                     "runtime": str(args.runtime.relative_to(ROOT)) if runtime_row and args.runtime else None,
                                     "identity": str(identity_path.relative_to(ROOT)) if identity_review else None,
+                                    "materials": str(material_path.relative_to(ROOT)) if material_records else None,
+                                    "materialIssues": material_states,
                                     "identityCurrent": identity_current, "runtimeCoverageComplete": runtime_complete and runtime_role_coverage(runtime_row),
                                     "render": render_file, "renderAlias": alias_file, "renderReusedFrom": reused_from,
                                     "renderCatalogSha256": evidence[0].get("RuntimeHashes", {}).get("models.json") if evidence else None,
@@ -438,10 +486,12 @@ def merge(args):
                           "fineTexture": dict(Counter(row["fineTextureStatus"] for row in matrix)),
                           "motionReview": dict(Counter(row["motionReviewStatus"] for row in matrix)),
                           "identity": dict(Counter(row["identityStatus"] for row in matrix)),
+                          "sourceMaterial": dict(Counter(row["sourceMaterialStatus"] for row in matrix)),
+                          "materialRuntime": dict(Counter(row["materialRuntimeStatus"] for row in matrix)),
                           "functional": dict(Counter(row["functionalStatus"] for row in matrix))}, "sources": matrix}
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     with args.output.with_suffix(".csv").open("w", newline="", encoding="utf-8") as file:
-        fields = ["sourceKey", "asset", "status", "identityStatus", "functionalStatus", "assetStatus", "structureStatus", "runtimeStatus", "renderedTechnicalStatus", "visualFidelityStatus", "fineTextureStatus", "motionReviewStatus"]
+        fields = ["sourceKey", "asset", "status", "identityStatus", "sourceMaterialStatus", "materialRuntimeStatus", "functionalStatus", "assetStatus", "structureStatus", "runtimeStatus", "renderedTechnicalStatus", "visualFidelityStatus", "fineTextureStatus", "motionReviewStatus"]
         writer = csv.DictWriter(file, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(matrix)
@@ -455,6 +505,7 @@ if __name__ == "__main__":
     parser.add_argument("--inventory", type=Path, default=ARTIFACTS / "model-audit-inventory.json")
     parser.add_argument("--runtime", type=Path, default=ARTIFACTS / "model-runtime-summary.json")
     parser.add_argument("--identity", type=Path, default=NATIVE / "content/model-identity-reviews.json")
+    parser.add_argument("--materials", type=Path, default=NATIVE / "content/model-material-reviews.json")
     parser.add_argument("--visual", type=Path, default=ARTIFACTS / "model-visual-audit-v2")
     parser.add_argument("--output", type=Path, default=ARTIFACTS / "model-audit-matrix.json")
     merge(parser.parse_args())
