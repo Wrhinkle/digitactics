@@ -4,7 +4,7 @@ namespace DigiTactics.Desktop;
 
 internal sealed partial class MatchScreen
 {
-    private bool showMusicLibrary;
+    private bool showMusicLibrary,clearMusic;
     private string? removeMusicId,musicPickerError;
     private Task<string[]>? musicPicker;
     internal Func<Task<string[]>> PickMusicFiles { get; set; }=MusicFilePicker.Open;
@@ -26,8 +26,12 @@ internal sealed partial class MatchScreen
             musicPickerError=null;
             try { musicPicker=PickMusicFiles(); } catch(Exception e) { musicPickerError=e.Message; }
         }
+        ImGui.SameLine();
+        ImGui.BeginDisabled(controller.Library?.Tracks.Count is not >0);
+        if(Button("clearMusic","Clear all")) { clearMusic=true; removeMusicId=null; }
+        ImGui.EndDisabled();
         ImGui.EndDisabled(); ImGui.SameLine();
-        if(Button("closeMusicLibrary","Close")) { showMusicLibrary=false; removeMusicId=null; }
+        if(Button("closeMusicLibrary","Close")) { showMusicLibrary=false; removeMusicId=null; clearMusic=false; }
         ImGui.BeginChild("musicStatus"u8,new(0,76),ImGuiChildFlags.None);
         if(controller.LibraryBusy || musicPicker is not null) ImGui.Text("Loading music..."u8); else ImGui.Text(" "u8);
         if(musicPickerError is { } pickerError) UiText.Wrapped(pickerError);
@@ -35,6 +39,14 @@ internal sealed partial class MatchScreen
         else if(controller.Library?.Error is { } error) UiText.Wrapped(error);
         if(controller.Error is { } playbackError && playbackError!=controller.Library?.Error) UiText.Wrapped(playbackError);
         ImGui.EndChild();
+        if(clearMusic)
+        {
+            UiText.Wrapped("Remove every track from your music library? Original files are unchanged."u8);
+            ImGui.BeginDisabled(controller.LibraryBusy);
+            if(Button("confirmClearMusic","Remove all tracks")) { controller.Clear(); clearMusic=false; }
+            ImGui.SameLine(); if(Button("cancelClearMusic","Cancel")) clearMusic=false;
+            ImGui.EndDisabled();
+        }
         ImGui.BeginChild("musicTracks"u8,new(0,0),ImGuiChildFlags.None);
         if(controller.Library is { } library)
         {
@@ -49,7 +61,7 @@ internal sealed partial class MatchScreen
                     if(Button($"musicUse/{track.Id}/{use}",use=="both"?"Both":use=="planning"?"Planning":"Combat",active:track.Use==use)) controller.SetUse(track.Id,use);
                 }
                 ImGui.SameLine();
-                if(Button("removeMusic/"+track.Id,"Remove")) removeMusicId=track.Id;
+                if(Button("removeMusic/"+track.Id,"Remove")) { removeMusicId=track.Id; clearMusic=false; }
                 if(removeMusicId==track.Id)
                 {
                     UiText.Wrapped("Remove this track from your music library?"u8);

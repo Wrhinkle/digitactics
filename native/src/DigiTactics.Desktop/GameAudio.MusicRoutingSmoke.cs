@@ -46,10 +46,14 @@ internal sealed unsafe partial class GameAudio
             if(audio.voices.Count(v=>v.Music && v.Target==1)!=1) throw new InvalidOperationException("Repeated routing duplicated the built-in track.");
             audio.MusicSource="own"; Until(()=>audio.activeCustom is not null && !controller.Loading,"Own source did not restart");
             audio.Music(null); controller.Update(); if(audio.activeCustom is not null) throw new InvalidOperationException("Leaving the match did not stop custom music.");
+            audio.Music("combat"); Until(()=>audio.activeCustom is not null && !controller.Loading,"Restart before clear failed");
+            if(!controller.Clear()) throw new InvalidOperationException("Could not clear playing library.");
+            Until(()=>!controller.LibraryBusy && audio.activeCustom is null,"Clear did not stop the active decoder");
+            if(audio.MusicSource!="builtin" || !audio.voices.Any(v=>v.Music && v.Target==1) || profile.OpenMusicLibrary().Tracks.Count!=0) throw new InvalidOperationException("Clear did not persist or restore built-in phase music.");
+            Until(()=>audio.customVoices.Count==0,"Cleared music did not finish its fade");
             library=profile.OpenMusicLibrary();
-            foreach(var track in library.Tracks.ToArray()) if(!library.Remove(track.Id)) throw new InvalidOperationException(library.Error);
             string corrupt=Path.Combine(directory,"broken.wav"); File.WriteAllText(corrupt,"not audio"); if(!library.AddFile(corrupt)) throw new InvalidOperationException(library.Error);
-            controller.Reload(); audio.Music("planning");
+            controller.Reload(); audio.MusicSource="own"; audio.Music("planning");
             Until(()=>!controller.Loading && controller.Error is not null && audio.activeCustom is null,"Corrupt-only library did not stop after bounded failures");
             for(int i=0;i<20;i++) controller.Update();
             if(controller.Loading) throw new InvalidOperationException("Failed playlist restarted automatically in a loop.");
@@ -62,7 +66,7 @@ internal sealed unsafe partial class GameAudio
                 try { using var file=new FileStream(Path.Combine(directory,"music",library.Tracks.Single().Sha256+".audio"),FileMode.Open,FileAccess.Write,FileShare.None); break; }
                 catch(IOException) { Thread.Sleep(10); }
             }
-            Console.WriteLine("Music routing passed: planning/combat, Next, natural completion, mute/restart, source changes, leave, corrupt-file failure limit and explicit retry.");
+            Console.WriteLine("Music routing passed: planning/combat, Next, natural completion, mute/restart, source changes, leave, clear during playback, corrupt-file failure limit and explicit retry.");
         }
         finally
         {

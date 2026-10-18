@@ -144,5 +144,7 @@ public sealed class MusicLibrary
         return Edit(next=> { var track=next["tracks"]!.AsArray().Single(t=>t!["metadata"]!["id"]!.GetValue<string>()==id)!; track["metadata"]!["use"]=use; });
     }
     // Removing an index entry leaves its bytes available to older index backups; filenames never come from user metadata.
+    public bool Clear() => Edit(next=>next["tracks"]!.AsArray().Clear());
+
     public bool Remove(string id) => Edit(next=> { var tracks=next["tracks"]!.AsArray(); var track=tracks.Single(t=>t!["metadata"]!["id"]!.GetValue<string>()==id); tracks.Remove(track); });
 }

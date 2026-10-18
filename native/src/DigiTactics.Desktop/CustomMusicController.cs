@@ -50,6 +50,7 @@ internal sealed class CustomMusicController : IDisposable
         return errors.Count==0;
     },true);
     public bool SetUse(string id,string use) => Edit(library=>library.SetUse(id,use));
+    public bool Clear() => Edit(library=>library.Clear());
     public bool Remove(string id) => Edit(library=>library.Remove(id));
     private bool Edit(Func<MusicLibrary,bool> action,bool selectOwn=false)
     {
@@ -109,7 +110,7 @@ internal sealed class CustomMusicController : IDisposable
                 bool success=edited.GetAwaiter().GetResult();
                 if(selectOwnAfterEdit && Library!.Tracks.Count>tracksBeforeEdit) audio.MusicSource="own";
                 if(!success) EditError=batchError??Library!.Error;
-                if(Library!.Tracks.Count==0) audio.MusicSource="builtin";
+                if(Library!.Tracks.Count==0) { Apply(playlist.Stop(.5)); audio.MusicSource="builtin"; }
                 RefreshTracks();
             }
             catch(Exception e) { EditError="Music could not be saved: "+e.Message; }

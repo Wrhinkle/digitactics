@@ -49,6 +49,15 @@ internal static class MusicLibraryChecks
             Check(restarted.AddFile(added) && restarted.Tracks.Single().Name=="local track" && restarted.Tracks.Single().Use=="both","new local track metadata");
             Check(Directory.GetFiles(folder,"*.audio").Length==1 && restarted.ReadAudio(restarted.Tracks.Single().Id).Length==5,"duplicate content shares immutable bytes");
             Check(!restarted.AddFile(backup) && restarted.Tracks.Count==1,"non-audio import rejected");
+            var stale=new MusicLibrary(folder);
+            Check(restarted.AddFile(added) && restarted.Tracks.Count==2,"prepare multi-track clear");
+            Check(!stale.Clear() && new MusicLibrary(folder).Tracks.Count==2,"stale clear preserves concurrent additions");
+            using(var guard=new FileStream(Path.Combine(folder,"library.json.lock"),FileMode.Open,FileAccess.ReadWrite,FileShare.None))
+                Check(!restarted.Clear() && restarted.Tracks.Count==2,"locked clear leaves all tracks intact");
+            Check(restarted.Clear() && new MusicLibrary(folder).Tracks.Count==0,"clear persists empty library");
+            Check(restarted.ImportLegacy(backup) && restarted.Tracks.Count==0,"clear preserves migration history");
+            Check(File.ReadAllBytes(added).SequenceEqual(new byte[]{0,1,2,254,255}) && File.Exists(audioPath),"clear preserves original files and recovery blobs");
+            Check(restarted.Clear() && restarted.AddFile(added),"empty clear and subsequent add succeed");
             var invalid=JsonNode.Parse(File.ReadAllText(Path.Combine(folder,"library.json")))!;
             invalid["tracks"]![0]!.AsObject().Remove("sha256"); string broken=invalid.ToJsonString(); File.WriteAllText(Path.Combine(folder,"library.json"),broken);
             var damaged=new MusicLibrary(folder);

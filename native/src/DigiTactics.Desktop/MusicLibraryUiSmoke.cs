@@ -47,22 +47,26 @@ internal sealed class MusicLibraryUiSmoke : IDisposable
         if(step==6 && controller.Library!.Tracks.Count!=2) throw new InvalidOperationException("Cancel removal deleted a track.");
         if(step==8 && controller.Library!.Tracks.Count!=1) throw new InvalidOperationException("Confirmed removal failed.");
         if(step==10 && (controller.Library!.Tracks.Count!=0 || audio.MusicSource!="builtin")) throw new InvalidOperationException("Removing the last track did not restore built-in music.");
-        if(step==11)
+        if(step==12 && controller.Library!.Tracks.Count!=2) throw new InvalidOperationException("Reimport before bulk clear failed.");
+        if(step==13 && controller.Library!.Tracks.Count!=2) throw new InvalidOperationException("Cancel clear deleted tracks.");
+        if(step==15 && (controller.Library!.Tracks.Count!=0 || new MusicLibrary(Path.Combine(directory,"music")).Tracks.Count!=0 || audio.MusicSource!="builtin")) throw new InvalidOperationException("Confirmed clear did not persist or restore built-in music.");
+        if(step==16)
         {
             if(!screen.Buttons.ContainsKey("start") || screen.Buttons.ContainsKey("addMusic")) throw new InvalidOperationException("Library did not close to menu.");
             preferences.Update(1); preferences.Dispose();
             if(new AudioSettingsStore(Path.Combine(directory,"audio-settings.json")).Settings.Source!="builtin") throw new InvalidOperationException("Music source was not saved.");
             done=true; return;
         }
-        string key=step switch {0=>"musicLibrary",1=>"addMusic",2=>$"musicUse/{first}/planning",3=>$"musicUse/{second}/combat",4=>$"removeMusic/{first}",5=>"cancelRemoveMusic",6=>$"removeMusic/{first}",7=>$"confirmRemoveMusic/{first}",8=>$"removeMusic/{second}",9=>$"confirmRemoveMusic/{second}",10=>"closeMusicLibrary",_=>throw new InvalidOperationException()};
+        string key=step switch {0=>"musicLibrary",1=>"addMusic",2=>$"musicUse/{first}/planning",3=>$"musicUse/{second}/combat",4=>$"removeMusic/{first}",5=>"cancelRemoveMusic",6=>$"removeMusic/{first}",7=>$"confirmRemoveMusic/{first}",8=>$"removeMusic/{second}",9=>$"confirmRemoveMusic/{second}",10=>"addMusic",11=>"clearMusic",12=>"cancelClearMusic",13=>"clearMusic",14=>"confirmClearMusic",15=>"closeMusicLibrary",_=>throw new InvalidOperationException()};
         if(!screen.Buttons.TryGetValue(key,out var point)) return;
         ImGui.GetIO().AddMousePosEvent(point.X,point.Y); ImGui.GetIO().AddMouseButtonEvent(0,true); down=true;
     }
     public bool Verify(int2 size,string? capture)
     {
+        if(step==14 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-clear.bmp"),size.X,size.Y);
         if(step==5 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-remove.bmp"),size.X,size.Y);
         if(step==4 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-library.bmp"),size.X,size.Y);
-        if(done) Console.WriteLine("Music library UI passed: multi-file import, literal names, phase assignment persistence, cancel/confirm removal, last-track fallback and saved source.");
+        if(done) Console.WriteLine("Music library UI passed: multi-file import, literal names, phase assignment persistence, cancel/confirm removal, last-track fallback, cancelled/confirmed bulk clear and saved source.");
         return done;
     }
     public void Dispose()
