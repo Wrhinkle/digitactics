@@ -1,0 +1,4 @@
+# Font binaries and upstream license/metadata bytes are pinned in provenance.json.
+*.ttf -text
+*/OFL.txt -text
+*/METADATA.pb -text

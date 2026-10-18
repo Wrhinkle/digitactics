@@ -1,0 +1,20 @@
+Digi-Tactics native UI fonts
+
+The original web client selects Inter for body text and Chakra Petch for
+display text (index.html, style.css, js/theme.js). The native client bundles
+these same font families for offline use, with no system font dependency.
+
+Inter: Copyright 2020 The Inter Project Authors
+https://github.com/rsms/inter
+License: SIL Open Font License 1.1, included at inter/OFL.txt.
+The unchanged variable font is used at its default Regular (400) instance.
+
+Chakra Petch: Copyright 2018 The Chakra Petch Project Authors
+https://github.com/m4rc1e/Chakra-Petch
+License: SIL Open Font License 1.1, included at chakrapetch/OFL.txt.
+The unchanged SemiBold (600) and Bold (700) fonts are bundled.
+
+provenance.json identifies the exact Google Fonts repository commits,
+immutable download URLs, file sizes and SHA-256 values. The upstream font
+metadata and full original license files accompany the unmodified fonts.
+These files are part of the application content in full and update packages.

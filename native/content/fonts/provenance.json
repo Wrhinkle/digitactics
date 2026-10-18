@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "originalUi": "index.html / style.css / js/theme.js",
+  "files": [
+    {
+      "path": "inter/Inter[opsz,wght].ttf",
+      "size": 876576,
+      "sha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+      "source": "https://raw.githubusercontent.com/google/fonts/0b58fb370093f9a9f4ff785d94405710b79de67c/ofl/inter/Inter%5Bopsz%2Cwght%5D.ttf",
+      "repositoryCommit": "0b58fb370093f9a9f4ff785d94405710b79de67c"
+    },
+    {
+      "path": "inter/OFL.txt",
+      "size": 4377,
+      "sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57",
+      "source": "https://raw.githubusercontent.com/google/fonts/0b58fb370093f9a9f4ff785d94405710b79de67c/ofl/inter/OFL.txt",
+      "repositoryCommit": "0b58fb370093f9a9f4ff785d94405710b79de67c"
+    },
+    {
+      "path": "inter/METADATA.pb",
+      "size": 1342,
+      "sha256": "79e4721ef4f72251c6080a40dfd9efb6728b4df1fc690f0c70eb4b1b5303a5b0",
+      "source": "https://raw.githubusercontent.com/google/fonts/0b58fb370093f9a9f4ff785d94405710b79de67c/ofl/inter/METADATA.pb",
+      "repositoryCommit": "0b58fb370093f9a9f4ff785d94405710b79de67c"
+    },
+    {
+      "path": "chakrapetch/ChakraPetch-SemiBold.ttf",
+      "size": 78604,
+      "sha256": "45264de3204ddbd5fb3e14a2402acd5c630d16650ae5fc221d2c52da46a6734b",
+      "source": "https://raw.githubusercontent.com/google/fonts/a4c8c2a0f77efa06765d596d64d077af1d7f0dae/ofl/chakrapetch/ChakraPetch-SemiBold.ttf",
+      "repositoryCommit": "a4c8c2a0f77efa06765d596d64d077af1d7f0dae"
+    },
+    {
+      "path": "chakrapetch/ChakraPetch-Bold.ttf",
+      "size": 78384,
+      "sha256": "65fbf76d95651697275e19db4d717c0e95a789ddd3476478b05292104db278a0",
+      "source": "https://raw.githubusercontent.com/google/fonts/a4c8c2a0f77efa06765d596d64d077af1d7f0dae/ofl/chakrapetch/ChakraPetch-Bold.ttf",
+      "repositoryCommit": "a4c8c2a0f77efa06765d596d64d077af1d7f0dae"
+    },
+    {
+      "path": "chakrapetch/OFL.txt",
+      "size": 4396,
+      "sha256": "13831d02389d917d22fcfa6c79f98f8acbf61d230add0e73a4d4dc5f3bfb9e56",
+      "source": "https://raw.githubusercontent.com/google/fonts/a4c8c2a0f77efa06765d596d64d077af1d7f0dae/ofl/chakrapetch/OFL.txt",
+      "repositoryCommit": "a4c8c2a0f77efa06765d596d64d077af1d7f0dae"
+    },
+    {
+      "path": "chakrapetch/METADATA.pb",
+      "size": 3328,
+      "sha256": "d008cbaed83da54bb765bbcdc33f913a57a110b1e59e381b1d424797cf33f5a2",
+      "source": "https://raw.githubusercontent.com/google/fonts/a4c8c2a0f77efa06765d596d64d077af1d7f0dae/ofl/chakrapetch/METADATA.pb",
+      "repositoryCommit": "a4c8c2a0f77efa06765d596d64d077af1d7f0dae"
+    }
+  ]
+}
