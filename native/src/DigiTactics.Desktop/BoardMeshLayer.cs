@@ -91,6 +91,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         {
                             { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
                             { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
+                            { Props:{ } props } motion=>BoardSceneMotion.Prop(motion.Kind,props[i],time),
                             _=>Matrix4D.From(instance.Matrix)
                         };
                         Draw(matrix*world,instance.Color[0],instance.Color[1],instance.Color[2]);

@@ -56,6 +56,12 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             Require(obj.Geometry >= 0 && obj.Geometry < Geometries.Length, "geometry reference");
             Require(obj.Materials.Length > 0 && obj.Materials.All(i => i >= 0 && i < Materials.Length), "material references");
             Require(obj.Matrix.Length == 16 && obj.Matrix.All(double.IsFinite), "world matrix");
+            if(obj.Motion is { Props:{ } props } propMotion)
+            {
+                Require(propMotion.Kind is "village-eggs" or "village-blocks" or "toy-tops" or "toy-train","prop motion kind");
+                Require(obj.Instances is not null && props.Length==obj.Instances.Length,"prop motion count");
+                Require(props.All(p=>new[] {p.X,p.Y,p.Z,p.S,p.Phase,p.Base,p.Cx,p.Cz,p.K}.All(double.IsFinite)),"prop motion values");
+            }
             if(obj.Motion is { Kind:"particles" } motion)
             {
                 Require(motion.Box?.Length==6 && motion.Velocity?.Length==3 && motion.Speeds?.Length==Geometries[obj.Geometry].Position.Length/3,"particle motion dimensions");
@@ -85,6 +91,7 @@ public sealed record BoardGeometryGroup(int Start, int Count, int MaterialIndex)
 public sealed record BoardObject(string Kind, int Geometry, int[] Materials, double[] Matrix, bool Visible,
     bool CastShadow, bool ReceiveShadow, BoardInstance[]? Instances, BoardMotion? Motion = null);
 public sealed record BoardInstance(double[] Matrix, float[] Color);
-public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0,BoardPalm[]? Palms=null,double[]? Matrix=null);
+public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0,BoardPalm[]? Palms=null,double[]? Matrix=null,BoardProp[]? Props=null);
+public sealed record BoardProp(double X=0,double Y=0,double Z=0,double S=1,double Phase=0,double Base=0,double Cx=0,double Cz=0,double K=0);
 public sealed record BoardCrystal(double X,double Z,double Sx,double Sy,double Sz,double Phase);
 public sealed record BoardPalm(double X,double Z,double Ry,double S,double Phase);

@@ -14,6 +14,10 @@ async function main(){
    .replace(/const cm = inst\(ctx, new THREE.OctahedronGeometry\(0.45, 0\)[^\n]+;/,line=>line+' cm.userData.nativeMotion={kind:"island-crystals",items:crystals.map(c=>({...c}))};')
    .replace(/const foam = mesh\(ctx, new THREE.RingGeometry\(13.4[^\n]+;/,line=>line+' foam.updateMatrix(); foam.userData.nativeMotion={kind:"beach-surf",matrix:foam.matrix.toArray()};')
    .replace(/const pm = inst\(ctx, palmGeo\(\)[^\n]+;/,line=>line+' pm.userData.nativeMotion={kind:"beach-palms",palms:palms.map(p=>({...p}))};')
+   .replace(/const em = inst\(ctx, eggGeo[^\n]+;/,line=>line+' em.userData.nativeMotion={kind:"village-eggs",props:eggs.map(p=>({...p}))};')
+   .replace(/const bm = inst\(ctx, new THREE.BoxGeometry\(1, 1, 1\)[^\n]+;/,line=>line+' bm.userData.nativeMotion={kind:"village-blocks",props:blocks.map(p=>({...p}))};')
+   .replace(/const tm = inst\(ctx, top,[^\n]+;/,line=>line+' tm.userData.nativeMotion={kind:"toy-tops",props:tops.map(p=>({...p}))};')
+   .replace(/const trm = inst\(ctx, car,[^\n]+;/,line=>line+' trm.userData.nativeMotion={kind:"toy-train",props:cars.map(p=>({...p}))};')
   +'\nexport {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
   +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}'
   +'\nexport const originalHighlight='+render.slice(render.indexOf('  highlight(ui, planning) {'),render.indexOf('  benchPos(i, partner')).trim().replace('highlight(','function(')+';'
@@ -158,7 +162,7 @@ async function main(){
        const a=o.geometry.attributes.position.array,vertices=[];
        for(let i=0;i<a.length/3;i+=13)vertices.push([a[i*3],a[i*3+2],a[i*3+1]]);
        rows.push({id:spec.id,time,motion,vertices});
-      }else if(motion.kind==='island-crystals'||motion.kind==='beach-palms'){
+      }else if(motion.kind==='island-crystals'||motion.kind==='beach-palms'||motion.props){
        const matrix=new THREE.Matrix4(),matrices=[];for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
        rows.push({id:spec.id,time,motion,matrices});
       }else if(motion.kind==='beach-surf'){

@@ -30,15 +30,15 @@ internal static class BoardMotionChecks
             else
             {
                 var expected=row.GetProperty("matrices");
-                for(int i=0;i<(motion.Kind=="beach-palms"?motion.Palms!.Length:motion.Items!.Length);i++)
+                for(int i=0;i<(motion.Props?.Length??(motion.Kind=="beach-palms"?motion.Palms!.Length:motion.Items!.Length));i++)
                 {
                     double[] values=new double[16];
-                    var matrix=motion.Kind=="beach-palms"?BoardSceneMotion.Palm(motion.Palms![i],time):BoardSceneMotion.Crystal(motion.Items![i],time);
+                    var matrix=motion.Props is {} props?BoardSceneMotion.Prop(motion.Kind,props[i],time):motion.Kind=="beach-palms"?BoardSceneMotion.Palm(motion.Palms![i],time):BoardSceneMotion.Crystal(motion.Items![i],time);
                     matrix.CopyTo(values);
                     for(int j=0;j<16;j++) Near(values[j],expected[i][j].GetDouble(),1e-6);
                 }
             }
         }
-        Console.WriteLine($"Board motion: {checks:N0} original wave, crystal, palm and surf comparisons passed."); return checks;
+        Console.WriteLine($"Board motion: {checks:N0} original wave, crystal, palm, surf and prop comparisons passed."); return checks;
     }
 }

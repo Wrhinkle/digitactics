@@ -2,6 +2,23 @@ namespace DigiTactics.Assets;
 
 public static class BoardSceneMotion
 {
+    public static Matrix4D Prop(string kind,BoardProp p,double time)
+    {
+        double x=p.X,y=p.Y,z=p.Z,rx=0,ry=0,rz=0;
+        switch(kind)
+        {
+            case "village-eggs": rz=Math.Sin(time*2+p.Phase)*.18; break;
+            case "village-blocks":
+                y=p.Base+Math.Sin(time*1.2+p.Phase)*.3; ry=time*.4+p.Phase; rx=Math.Sin(time*.5+p.Phase)*.3; break;
+            case "toy-tops":
+                ry=time*9+p.Phase; rx=Math.Sin(time*1.5+p.Phase)*.12;
+                x=p.Cx+Math.Sin(time*.6+p.Phase)*.25; z=p.Cz+Math.Cos(time*.6+p.Phase)*.25; break;
+            case "toy-train":
+                double angle=time*.12-p.K*.085; x=Math.Cos(angle)*12.05; z=Math.Sin(angle)*12.05; ry=-angle-Math.PI/2; break;
+            default: throw new ArgumentException("Unknown board prop motion: "+kind,nameof(kind));
+        }
+        return new CompanionTransform(new(x,y,z),new(rx,ry,rz),new(p.S,p.S,p.S)).Matrix;
+    }
     public static float SeaHeight(double x,double z,double time,double amplitude,double speed)
     {
         double s=time*speed;

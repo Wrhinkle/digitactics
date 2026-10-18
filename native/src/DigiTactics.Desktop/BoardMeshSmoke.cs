@@ -26,6 +26,7 @@ internal static class BoardMeshSmoke
             CheckLines(renderer);
             CheckFog(renderer);
             CheckParticleMotion(renderer);
+            CheckPropMotion(renderer);
             using(var arena=new ArenaEnvironment())
             {
                 var view=BattleView.Camera(256,256,14);
@@ -229,6 +230,28 @@ internal static class BoardMeshSmoke
             if(Math.Abs(pixels[i]-expected[i])>1) throw new InvalidOperationException($"Board sky color/orientation mismatch: {scene.Id}, byte {i}: {pixels[i]} vs {expected[i]}.");
     }
 
+    private static unsafe void CheckPropMotion(ModelRenderer renderer)
+    {
+        foreach(var (theme,kind) in new[] {("primary-village","village-eggs"),("primary-village","village-blocks"),("toy-town","toy-tops"),("toy-town","toy-train")})
+        {
+            var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
+            var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
+            if(objects.Length!=1) throw new InvalidOperationException("Missing original animated prop: "+kind);
+            using var layer=new BoardMeshLayer(scene with { Objects=objects });
+            byte[] Render()
+            {
+                ModelRenderer.Begin(256,256); OpenGl.ClearColor(new(0,0,0,1)); OpenGl.Clear(GlClearBit.Color);
+                var camera=Matrix4x4.CreateLookAt(new(0,25,28),Vector3.Zero,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
+                layer.Draw(renderer,camera,false,256);
+                var pixels=new byte[256*256*4]; fixed(byte* p=pixels) OpenGl.ReadPixels(0,0,256,256,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
+                ModelRenderer.End(); return pixels;
+            }
+            var initial=Render(); layer.Update(2.7); var moved=Render();
+            int changed=Enumerable.Range(0,256*256).Count(i=>Math.Abs(initial[i*4]-moved[i*4])+Math.Abs(initial[i*4+1]-moved[i*4+1])+Math.Abs(initial[i*4+2]-moved[i*4+2])>3);
+            if(changed<5) throw new InvalidOperationException("Board prop animation did not reach the framebuffer: "+kind);
+            Console.WriteLine($"Board prop {kind}: {changed} changed pixels verified.");
+        }
+    }
     private static unsafe void CheckParticleMotion(ModelRenderer renderer)
     {
         var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/server-desert.json.gz"));
