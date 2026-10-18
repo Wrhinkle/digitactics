@@ -18,6 +18,7 @@ internal sealed partial class MatchScreen
     private IReadOnlyList<SteamFriendRoom> friendRooms = [];
     private IReadOnlyList<SteamLobby> availableRooms = [];
     private SteamLobbyVisibility visibility = SteamLobbyVisibility.Friends;
+    private int lobbyPlanningSeconds = 30;
     private long presenceAt;
     private long recentPlayersAt;
     private string recentPlayersError = "";
@@ -77,7 +78,7 @@ internal sealed partial class MatchScreen
         var lobby = new JsonObject
         {
             ["host"] = steam.SteamId.ToString(), ["hostName"] = SteamName, ["name"] = SteamName + "'s room", ["status"] = "lobby",
-            ["setId"] = Rules.Id.Split('/')[0], ["pace"] = Rules.Pace, ["format"] = duos ? "duos" : "solo", ["planTime"] = 30,
+            ["setId"] = Rules.Id.Split('/')[0], ["pace"] = Rules.Pace, ["format"] = duos ? "duos" : "solo", ["planTime"] = lobbyPlanningSeconds,
             ["slots"] = new JsonObject { ["0"] = new JsonObject { ["uid"] = steam.SteamId.ToString(), ["name"] = SteamName } }
         };
         try { enteringRoom = steam.Create(lobby, visibility); lobbyMessage = "Creating room..."; } catch (Exception error) { lobbyMessage = error.Message; }
@@ -161,7 +162,7 @@ internal sealed partial class MatchScreen
         var slots = Enumerable.Range(0, 8).Select(i => new { name = lobby["slots"]?[i.ToString()]?["name"]?.GetValue<string>() ?? names[i], human = lobby["slots"]?[i.ToString()] is not null }).ToArray();
         long now = (long)room.ServerTime(Environment.TickCount64);
         var init = JsonSerializer.SerializeToElement(new { seed = Random.Shared.Next(1, int.MaxValue), at = now, slots,
-            setId = lobby["setId"]!.GetValue<string>(), pace = lobby["pace"]!.GetValue<string>(), format = lobby["format"]!.GetValue<string>(), planTime = 30 });
+            setId = lobby["setId"]!.GetValue<string>(), pace = lobby["pace"]!.GetValue<string>(), format = lobby["format"]!.GetValue<string>(), planTime = lobby["planTime"]?.GetValue<int>() ?? 30 });
         if (room.PublishInit(init)) room.UpdateLobby(new JsonObject { ["status"] = "playing", ["round"] = "1-1", ["alive"] = new JsonArray(Enumerable.Repeat(true, 8).Select(v => JsonValue.Create(v)).ToArray()) });
     }
     private void MultiplayerMenu()
@@ -178,6 +179,7 @@ internal sealed partial class MatchScreen
             if (lobby is not null)
             {
                 ImGui.Text(lobby["name"]!.GetValue<string>()); ImGui.Text($"{lobby["setId"]} / {lobby["pace"]} / {lobby["format"]}");
+                ImGui.Text($"Planning: {lobby["planTime"]?.GetValue<int>() ?? 30}s");
                 for (int i = 0; i < 8; i++)
                 {
                     var seat = lobby["slots"]?[i.ToString()]; string? uid = seat?["uid"]?.GetValue<string>();
@@ -210,6 +212,12 @@ internal sealed partial class MatchScreen
                 ImGui.EndCombo();
             }
             ImGui.Checkbox("Duos"u8, ref duos);
+            ImGui.Text("Planning time"u8);
+            foreach (int seconds in new[] { 30, 45, 60 })
+            {
+                ImGui.SameLine();
+                if (Button("planningSeconds/" + seconds, seconds + "s", active: lobbyPlanningSeconds == seconds)) lobbyPlanningSeconds = seconds;
+            }
             if (ImGui.BeginCombo("Visibility"u8, visibility.ToString()))
             {
                 foreach (var item in Enum.GetValues<SteamLobbyVisibility>()) if (ImGui.Selectable(item.ToString(), visibility == item)) visibility = item;

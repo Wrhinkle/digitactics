@@ -5,7 +5,7 @@ namespace DigiTactics.Desktop;
 
 internal sealed class SteamLobbyUiSmoke
 {
-    private readonly string[] commands = ["multiplayer", "steamConnect", "steamCreate", "steamFree/0", "steamSeat/1", "steamStart", "leaveOnline", "steamBack"];
+    private readonly string[] commands = ["multiplayer", "steamConnect", "planningSeconds/45", "steamCreate", "steamFree/0", "steamSeat/1", "steamStart", "leaveOnline", "confirmLeave", "steamBack"];
     private int index, cooldown = 5;
     private bool down, roomVerified, matchVerified;
     public string Pending => index < commands.Length ? commands[index] : "cleanup";
@@ -19,14 +19,15 @@ internal sealed class SteamLobbyUiSmoke
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
-        if (index == 3 && screen.InSteamRoom && !roomVerified)
+        if (index == 4 && screen.InSteamRoom && !roomVerified)
         {
             roomVerified = true;
             if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "lobby.bmp"), size.X, size.Y);
         }
-        if (index == 6 && screen.Session is not null && screen.NetworkStateHash is not null)
+        if (index == 7 && screen.Session is not null && screen.NetworkStateHash is not null)
         {
             if (!screen.Session.State.Players[1].IsHuman || screen.Session.State.Players[0].IsHuman) throw new InvalidOperationException("Steam lobby seat switch did not reach the match.");
+            if (screen.NetworkPlanningDuration != 45) throw new InvalidOperationException("Lobby planning duration did not reach match initialization.");
             matchVerified = true;
             if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "match.bmp"), size.X, size.Y);
         }

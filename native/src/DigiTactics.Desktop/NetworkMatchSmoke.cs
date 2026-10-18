@@ -93,6 +93,13 @@ internal sealed class NetworkMatchSmoke : IDisposable
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (screen.Session is { } clockSession && clockSession.Rounds.Phase == MatchPhase.Planning && clockSession.Rounds.RoundType != "carousel" && !clockSession.State.Over && clockSession.State.Players[screen.ViewedPlayer].Alive)
+        {
+            var match = replica.Match!;
+            double expected = Math.Max(0,(match.PhaseAt + match.PlanMs - host.ServerTime(now)) / 1000);
+            if (screen.NetworkPlanningRemaining is not { } displayed || Math.Abs(displayed - expected) > .001 || screen.Buttons.ContainsKey("planningTimer") || screen.Buttons.ContainsKey("pause"))
+                throw new InvalidOperationException("Network countdown differed from host time or exposed local clock controls.");
+        }
         planningRendered |= screen.PlanningDrawCalls > 0;
         companionRendered |= screen.CompanionDrawCalls > 0;
         danceRendered |= screen.CompanionDancing && screen.CompanionDrawCalls > 0;

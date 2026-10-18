@@ -5,6 +5,8 @@ namespace DigiTactics.Desktop;
 
 internal sealed partial class MatchScreen
 {
+    internal double? NetworkPlanningDuration => networkReplica?.Match?.PlanMs / 1000;
+    internal double? NetworkPlanningRemaining { get; private set; }
     private double? resultCountdown;
     private MatchPlanningSession? clockSession;
     private string? clockRound;
@@ -27,7 +29,17 @@ internal sealed partial class MatchScreen
     }
     private void PlanningTimerControls()
     {
-        if (networkRoom is not null || Session!.State.Over || !Human.Alive) return;
+        NetworkPlanningRemaining = null;
+        if (Session!.State.Over || !Human.Alive) return;
+        if (networkRoom is not null)
+        {
+            if (networkReplica?.Match is { } match && Session.Rounds.Phase == MatchPhase.Planning && Session.Rounds.RoundType != "carousel")
+            {
+                NetworkPlanningRemaining = Math.Max(0,(match.PhaseAt + match.PlanMs - networkRoom.ServerTime(networkClock())) / 1000);
+                ImGui.SameLine(); ImGui.Text($"{Math.Ceiling(NetworkPlanningRemaining.Value)}s");
+            }
+            return;
+        }
         ImGui.SameLine();
         if (Button("planningTimer", PlanningTimerEnabled ? "Timer on" : "Timer off"))
         {
