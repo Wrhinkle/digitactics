@@ -11,6 +11,21 @@ try
         if (index + 1 >= args.Length || args[index + 1].StartsWith("--", StringComparison.Ordinal)) throw new ArgumentException($"Provide a path after {name}.");
         return Path.GetFullPath(args[index + 1]);
     }
+    if (Option("--model-visual-audit") is { } modelAuditDirectory)
+    {
+        int AuditNumber(string name, int fallback) { int index = Array.IndexOf(args, name); return index < 0 ? fallback : int.Parse(args[index + 1], System.Globalization.CultureInfo.InvariantCulture); }
+        ModelVisualAudit.Run(modelAuditDirectory, AuditNumber("--audit-start", 0), AuditNumber("--audit-count", int.MaxValue)); return 0;
+    }
+    if (Option("--model-board-audit") is { } modelBoardDirectory)
+    {
+        string AuditValue(string name) { int index = Array.IndexOf(args, name); return index >= 0 && index + 1 < args.Length ? args[index + 1] : throw new ArgumentException("Missing " + name); }
+        ModelVisualAudit.RunBoard(modelBoardDirectory, int.Parse(AuditValue("--audit-start"), System.Globalization.CultureInfo.InvariantCulture), AuditValue("--audit-role"), double.Parse(AuditValue("--audit-time"), System.Globalization.CultureInfo.InvariantCulture)); return 0;
+    }
+    if (Option("--model-fitted-audit") is { } modelFittedDirectory)
+    {
+        string AuditValue(string name) { int index = Array.IndexOf(args, name); return index >= 0 && index + 1 < args.Length ? args[index + 1] : throw new ArgumentException("Missing " + name); }
+        ModelVisualAudit.RunFitted(modelFittedDirectory, int.Parse(AuditValue("--audit-start"), System.Globalization.CultureInfo.InvariantCulture), AuditValue("--audit-role")); return 0;
+    }
     string? profileDirectory = Option("--profile-directory");
     if(Option("--native-file-picker-smoke") is { } pickerDirectory) {NativeFilePickerSmoke.Run(pickerDirectory).GetAwaiter().GetResult();return 0;}
     if (args.Contains("--music-routing-smoke")) { GameAudio.MusicRoutingSmoke(Option("--ffmpeg") ?? Path.Combine(AppContext.BaseDirectory,"media","ffmpeg.exe")); return 0; }
