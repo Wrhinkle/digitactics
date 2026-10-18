@@ -37,6 +37,7 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
         {
             Require(material.Color.Length == 4 && Finite(material.Color) && material.Emissive.Length == 3 && Finite(material.Emissive), "material color");
             Require(material.Map is null || material.Map >= 0 && material.Map < Textures.Length, "texture reference");
+            Require(material.EmissiveMap is null || material.EmissiveMap >= 0 && material.EmissiveMap < Textures.Length,"emissive texture reference");
         }
         foreach (int texture in Surface.Values) Require(texture >= 0 && texture < Textures.Length, "surface reference");
         foreach (var geometry in Geometries)
@@ -108,7 +109,7 @@ public sealed record BoardTexture(int Width, int Height, string Rgba, bool FlipY
     float[] Offset, float[] Center, float Rotation, int WrapS, int WrapT, string ColorSpace);
 public sealed record BoardMaterial(float[] Color, int? Map, bool Unlit, bool Transparent, bool DepthWrite,
     int Side, bool Fog, bool FlatShading, float AlphaTest, float[] Emissive, float EmissiveIntensity,
-    float Roughness, float Metalness, bool VertexColors, bool Wireframe, int Blending, float Size, bool SizeAttenuation);
+    float Roughness, float Metalness, bool VertexColors, bool Wireframe, int Blending, float Size, bool SizeAttenuation,int? EmissiveMap=null);
 public sealed record BoardGeometry(float[] Position, float[]? Normal, float[]? Uv, float[]? Color,
     uint[]? Indices, BoardGeometryGroup[] Groups);
 public sealed record BoardGeometryGroup(int Start, int Count, int MaterialIndex);

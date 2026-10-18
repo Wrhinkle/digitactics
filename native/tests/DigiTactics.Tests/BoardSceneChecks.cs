@@ -36,6 +36,9 @@ internal static class BoardSceneChecks
             }
         }
         Check(ids.Count == 37, "all original themes");
+        var kowloon=BoardScene.Load(Path.Combine(folder,"kowloon.json.gz"));
+        var windows=kowloon.Materials.Single(m=>m.EmissiveMap is not null);
+        Check(windows.EmissiveMap==windows.Map && windows.EmissiveIntensity==1.1f,"original city windows use the same color/emissive texture and transform");
         Check(kinds.Contains("mesh") && kinds.Contains("points") && kinds.Contains("lines"), "mesh, particles and grid outlines");
         var sample = BoardScene.Load(Path.Combine(folder, "file-island.json.gz"));
         using var uvFixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"tests/fixtures/board-uv.json")));

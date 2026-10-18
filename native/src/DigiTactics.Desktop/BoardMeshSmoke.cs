@@ -28,6 +28,7 @@ internal static class BoardMeshSmoke
             CheckParticleMotion(renderer);
             CheckPropMotion(renderer);
             CheckLightning(renderer);
+            CheckWindowEmission(renderer);
             using(var arena=new ArenaEnvironment())
             {
                 var rules=DigiTactics.Rules.ContentCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/catalog.json")).Variants[0];
@@ -245,6 +246,26 @@ internal static class BoardMeshSmoke
             if(Math.Abs(pixels[i]-expected[i])>1) throw new InvalidOperationException($"Board sky color/orientation mismatch: {scene.Id}, byte {i}: {pixels[i]} vs {expected[i]}.");
     }
 
+    private static unsafe void CheckWindowEmission(ModelRenderer renderer)
+    {
+        var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/kowloon.json.gz"));
+        var buildings=scene.Objects.Where(o=>o.Materials.Any(i=>scene.Materials[i].EmissiveMap is not null)).ToArray();
+        if(buildings.Length!=1)throw new InvalidOperationException("Missing original city-window emissive material.");
+        using var masked=new BoardMeshLayer(scene with {Objects=buildings});
+        using var unmasked=new BoardMeshLayer(scene with {Objects=buildings,Materials=scene.Materials.Select(m=>m with {EmissiveMap=null}).ToArray()});
+        byte[] Render(BoardMeshLayer layer)
+        {
+            ModelRenderer.Begin(256,256);OpenGl.ClearColor(new(0,0,0,1));OpenGl.Clear(GlClearBit.Color);
+            var camera=Matrix4x4.CreateLookAt(new(0,25,28),new(0,-8,0),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
+            layer.Draw(renderer,camera,false,256);
+            var pixels=new byte[256*256*4];fixed(byte* p=pixels)OpenGl.ReadPixels(0,0,256,256,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
+            ModelRenderer.End();return pixels;
+        }
+        var plain=Render(unmasked);var windows=Render(masked);var restored=Render(unmasked);
+        int darker=Enumerable.Range(0,256*256).Count(i=>plain[i*4]+plain[i*4+1]+plain[i*4+2]-windows[i*4]-windows[i*4+1]-windows[i*4+2]>30);
+        if(darker<100 || !plain.SequenceEqual(restored))throw new InvalidOperationException("City emissive texture or per-draw shader reset failed.");
+        Console.WriteLine($"City emissive map: {darker} wall pixels darkened; shader reset verified.");
+    }
     private static unsafe void CheckLightning(ModelRenderer renderer)
     {
         var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/spiral-mountain.json.gz"));

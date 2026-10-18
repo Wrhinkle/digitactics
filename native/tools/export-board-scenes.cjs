@@ -82,7 +82,7 @@ async function main(){
     }
     function material(m){
      if(materialIds.has(m))return materialIds.get(m);const index=materials.length;materialIds.set(m,index);
-     materials.push({color:[...m.color.toArray(),m.opacity],map:texture(m.map),unlit:!!m.isMeshBasicMaterial||!!m.isPointsMaterial||!!m.isSpriteMaterial||!!m.isLineBasicMaterial,transparent:m.transparent,depthWrite:m.depthWrite,side:m.side,fog:m.fog,flatShading:!!m.flatShading,alphaTest:m.alphaTest,
+     materials.push({color:[...m.color.toArray(),m.opacity],map:texture(m.map),...(m.emissiveMap?{emissiveMap:texture(m.emissiveMap)}:{}),unlit:!!m.isMeshBasicMaterial||!!m.isPointsMaterial||!!m.isSpriteMaterial||!!m.isLineBasicMaterial,transparent:m.transparent,depthWrite:m.depthWrite,side:m.side,fog:m.fog,flatShading:!!m.flatShading,alphaTest:m.alphaTest,
       emissive:m.emissive?.toArray()||[0,0,0],emissiveIntensity:m.emissiveIntensity||0,roughness:m.roughness??1,metalness:m.metalness??0,vertexColors:m.vertexColors,wireframe:!!m.wireframe,blending:m.blending,size:m.size??1,sizeAttenuation:m.sizeAttenuation??true});return index;
     }
     function geometry(g){

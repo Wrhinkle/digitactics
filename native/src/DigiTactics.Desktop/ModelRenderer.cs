@@ -139,10 +139,11 @@ internal sealed class ModelRenderer : IDisposable
         geometry.Draw();
     }
     public void Dispose() { OpenGl.DeleteBuffers(new[] { bones }); program.Dispose(); }
-    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false, PointSprite? points = null, bool fog = true)
+    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false, PointSprite? points = null, bool fog = true,GpuTexture? emissiveMap=null)
     {
         program.Use(); Matrix(0, world); Matrix(4, From(camera));
         SetFarmLight(emissive, roughness, metalness, fog);
+        program.Uniform(21,emissiveMap is null?0:1);OpenGl.BindTextureUnit(3,emissiveMap?.Id??0);
         program.Uniform(8, 0); program.Uniform(9, flatShading ? 0 : 1); program.Uniform(10, unlit ? 1 : 0); program.Uniform(11, alphaTest);
         program.Uniform(29, vertexColors && geometry.HasColors ? 1 : 0);
         program.Uniform(12, color); program.Uniform(13, texture is null ? 0 : 1); program.Uniform(14, 0f);
