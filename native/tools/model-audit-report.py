@@ -274,7 +274,10 @@ def board_evidence_current(review, key, catalog, companions, reviewed_paths):
         data = read(path)
         capture = capture_provenance(path.parent)
         groups = {"renderer", "pose", "board"}
+        if data.get("Role") == "movement":
+            groups.add("combat")
         if (data.get("Source") != key or data.get("BoardContextPolicy") != "live-arena-camera/v1"
+                or data.get("Role") not in {"attack", "special", "win", "movement"}
                 or not record_matches_capture(capture, data.get("RuntimeHashes", {}))
                 or not source_matches_capture(capture, catalog, companions, key)
                 or not all(capture["groups"].get(group, False) for group in groups)):

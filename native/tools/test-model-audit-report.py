@@ -665,7 +665,7 @@ class EvidenceChecks(unittest.TestCase):
         board = self.args.visual / "board.png"
         board.write_bytes(b"reviewed production context")
         record = self.args.visual / "board.json"
-        self.write(record, {"Source": "creature", "Image": board.name, "Times": [0, .5, 1.4],
+        self.write(record, {"Source": "creature", "Image": board.name, "Role": "special", "Times": [0, .5, 1.4],
                            "BoardContextPolicy": "live-arena-camera/v1", "RuntimeHashes": self.capture_hashes})
         paths = [str(path.relative_to(audit.ROOT)) for path in [board, record]]
         review["evidence"].extend(paths)
@@ -737,6 +737,19 @@ class EvidenceChecks(unittest.TestCase):
         review["evidenceSha256"] = {name: audit.sha(audit.ROOT / name) for name in review["evidence"]}
         self.write(self.args.visual / "reviews.json", {"sources": [review]})
         self.assertEqual(self.result()["functionalStatus"], "FAIL")
+
+    def test_board_movement_requires_current_production_locomotion(self):
+        review, record = self.reviewed_board()
+        data = audit.read(record); data["Role"] = "movement"; self.write(record, data)
+        review["evidenceSha256"][str(record.relative_to(audit.ROOT))] = audit.sha(record)
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        (audit.NATIVE / "src/combat.cs").write_text("changed locomotion")
+        self.assertFalse(self.result()["evidence"]["boardContextCurrent"])
+
+    def test_board_action_pose_does_not_inherit_unrelated_locomotion_change(self):
+        self.reviewed_board()
+        (audit.NATIVE / "src/combat.cs").write_text("changed locomotion")
+        self.assertTrue(self.result()["evidence"]["boardContextCurrent"])
 
     def test_optional_fidelity_difference_does_not_override_functional_acceptance(self):
         review, runtime = self.functional_review()
