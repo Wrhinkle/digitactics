@@ -27,6 +27,21 @@ internal sealed partial class MatchScreen
     private bool itemDragMoved;
     private int itemDropSlot = -1;
     internal bool ItemDragging => itemDragMoved;
+    internal string? ItemDropFeedback { get; private set; }
+
+    internal string ItemDropPreview(string id, PlanningUnit unit)
+    {
+        var item = Rules.Items.Single(item => item.Id == id);
+        if (item.Consumable) return Name(id) + ": " + text.Get(Rules.Id, id).Description;
+        if (item.Emblem is { } emblem && TraitRules.UnitTraits(new(unit.Line, unit.Stage, 0, 0, Items: unit.Items), Rules).Contains(emblem))
+            return "Already has this trait";
+        if (item.Component)
+            foreach (var held in unit.Items)
+                if (Rules.Items.Single(item => item.Id == held).Component && Session!.Units.Items.Combine(held, id) is { } result)
+                    return "Combines into " + Name(result);
+        if (!Session!.Units.Items.HoldsItems(unit)) return "Can't hold items";
+        return !Session.Units.Items.CanHold(Human, unit, id) ? "Item slots full" : "Equip " + Name(id);
+    }
 
     private void ItemDragSource(int index)
     {
@@ -62,9 +77,18 @@ internal sealed partial class MatchScreen
         if (!itemDragMoved) return;
         selectedUnit = selectedItem = null;
         string label = Name(drag.Id);
-        if (spot is { } target && Human.Roster.At(target) is { } holder) label += " -> " + UnitName(holder);
+        if (spot is { } target && Human.Roster.At(target) is { } holder)
+        {
+            ItemDropFeedback = ItemDropPreview(drag.Id, holder);
+            label = UnitName(holder) + ": " + ItemDropFeedback;
+        }
         var draw = ImGui.GetForegroundDrawList();
-        draw.AddRectFilled(new(mouse.X + 10, mouse.Y + 14), new(mouse.X + 290, mouse.Y + 42), new ImColor8(15, 28, 40, 235));
-        draw.AddText(ImGui.GetFont(), 14, new(mouse.X + 16, mouse.Y + 20), new ImColor8(240, 220, 140), label);
+        float width = Math.Min(size.X - 24, ImGui.CalcTextSize(label).X + 20);
+        float x = Math.Clamp(mouse.X + 10, 12, size.X - width - 12);
+        float y = Math.Min(mouse.Y + 14, size.Y - 42);
+        draw.AddRectFilled(new(x, y), new(x + width, y + 28), new ImColor8(15, 28, 40, 235));
+        draw.PushClipRect(new(x,y),new(x+width,y+28),true);
+        draw.AddText(ImGui.GetFont(), 14, new(x + 6, y + 6), new ImColor8(240, 220, 140), label);
+        draw.PopClipRect();
     }
 }

@@ -52,10 +52,27 @@ internal sealed class ItemDragSmoke
                 slot = player.Items.FindIndex(id => session.State.Rules.Items.Single(i => i.Id == id).Component);
                 if (slot < 0) throw new InvalidOperationException("Item drag smoke has no component to equip.");
                 var entry = player.Roster.Entries.First(e => e.Unit.Items.Length == 0);
+                string componentId = player.Items[slot];
+                var recipe = session.State.Rules.Recipes!.First(pair => pair.Key.Split('+').Contains(componentId));
+                var ingredients = recipe.Key.Split('+');
+                string other = ingredients[0] == componentId ? ingredients[1] : ingredients[0];
+                var display = new DisplayText();
+                if (screen.ItemDropPreview(componentId, entry.Unit with { Items = [other] }) != "Combines into " + display.Get(session.State.Rules.Id, recipe.Value).Name)
+                    throw new InvalidOperationException("Component drop preview did not identify the recipe result.");
+                if (screen.ItemDropPreview(componentId, entry.Unit with { NoItems = true }) != "Can't hold items")
+                    throw new InvalidOperationException("Drop preview allowed an itemless unit.");
+                string completed = session.State.Rules.Items.First(item => !item.Component && !item.Consumable).Id;
+                if (screen.ItemDropPreview(componentId, entry.Unit with { Items = [completed, completed, completed] }) != "Item slots full")
+                    throw new InvalidOperationException("Drop preview did not identify full item slots.");
+                if (entry.Unit.Items.Length != 0 || !inventory.SequenceEqual(player.Items))
+                    throw new InvalidOperationException("Drop preview mutated unit or inventory state.");
                 holder = entry.Unit.Id; destination = entry.Spot; item = player.Items[slot]; Start(slot); break;
             case 7:
                 Move(screen.Buttons[destination.IsBoard ? $"hex/{destination.Column}/{destination.Row}" : $"arenaBench/{destination.Index}"]); break;
-            case 8: Up(); break;
+            case 8:
+                if (screen.ItemDropFeedback != "Equip " + new DisplayText().Get(session.State.Rules.Id, item).Name)
+                    throw new InvalidOperationException("Dragged component did not show an equip preview over its holder.");
+                Up(); break;
             case 9:
                 if (player.Items.Count != inventory.Length - 1 || !player.Roster.Entries.Single(e => e.Unit.Id == holder).Unit.Items.Contains(item) || screen.ItemDragging)
                     throw new InvalidOperationException("Item drop did not equip the target unit.");
