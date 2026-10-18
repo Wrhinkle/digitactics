@@ -48,14 +48,23 @@ public sealed class MusicLibrary
         return result.OrderBy(t=>t.Added).ToArray();
     }
     private string AudioPath(string sha) => Digest(sha) ? Path.Combine(directory,sha+".audio") : throw new InvalidDataException("Invalid audio identifier.");
-    public byte[] ReadAudio(string id)
+    /// <summary>Validates bytes while holding a read lease, preventing edits during decoder playback.</summary>
+    public FileStream OpenAudio(string id)
     {
         var track=Tracks.Single(t=>t.Id==id);
-        var file=new FileInfo(AudioPath(track.Sha256));
-        if(file.Length!=track.Size) throw new InvalidDataException("Music file size changed; the file was preserved.");
-        var bytes=File.ReadAllBytes(file.FullName);
-        if(!string.Equals(Convert.ToHexString(SHA256.HashData(bytes)),track.Sha256,StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Music integrity check failed; the file was preserved.");
-        return bytes;
+        var file=new FileStream(AudioPath(track.Sha256),FileMode.Open,FileAccess.Read,FileShare.Read);
+        try
+        {
+            if(file.Length!=track.Size) throw new InvalidDataException("Music file size changed; the file was preserved.");
+            if(!string.Equals(Convert.ToHexString(SHA256.HashData(file)),track.Sha256,StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Music integrity check failed; the file was preserved.");
+            file.Position=0; return file;
+        }
+        catch { file.Dispose(); throw; }
+    }
+    public byte[] ReadAudio(string id)
+    {
+        using var file=OpenAudio(id);
+        byte[] bytes=new byte[checked((int)file.Length)]; file.ReadExactly(bytes); return bytes;
     }
     private void SaveAudio(string sha,byte[] bytes)
     {

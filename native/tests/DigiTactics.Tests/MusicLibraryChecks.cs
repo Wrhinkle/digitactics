@@ -18,6 +18,12 @@ internal static class MusicLibraryChecks
             Check(track.Id=="track-1" && track.Use=="combat" && track.Added==123,"metadata and order");
             Check(track.Metadata["future"]!["keep"]!.GetValue<bool>() && track.Blob["name"]!.GetValue<string>()=="original.wav","unknown metadata and blob metadata");
             Check(library.ReadAudio(track.Id).SequenceEqual(new byte[]{0,1,2,254,255}),"exact decoded bytes");
+            using(var lease=library.OpenAudio(track.Id))
+            {
+                Check(lease.Position==0 && lease.Length==5,"verified stream starts at the beginning");
+                try { using var writer=new FileStream(lease.Name,FileMode.Open,FileAccess.Write,FileShare.ReadWrite); throw new Exception("Playback file was writable"); }
+                catch(IOException) { checks++; }
+            }
             Check(File.ReadAllBytes(backup).SequenceEqual(original),"source archive unchanged");
             Check(Directory.GetFiles(folder,"*.audio").Single()==Path.Combine(folder,track.Sha256+".audio"),"names cannot become filesystem paths");
             string indexPath=Path.Combine(folder,"library.json"), firstIndex=File.ReadAllText(Path.Combine(folder,"library.json"));

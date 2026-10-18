@@ -13,6 +13,12 @@ if (args.Contains("--loadouts-only")) { LoadoutChecks.Run(root); return; }
 if (args.Contains("--emote-layout-only")) { EmoteLayoutChecks.Run(root); return; }
 if (args.Contains("--steam-native-only")) { SteamMessageChecks.Run(root); SteamClientChecks.Run(root); SteamMatchmakingChecks.Run(root); SteamRoomSessionChecks.Run(root); SteamFriendsChecks.Run(root); return; }
 if (args.Contains("--network-only")) { NetworkProtocolChecks.Run(root); ReplicatedLogChecks.Run(root); LobbyAuthorityChecks.Run(root); NetworkRoomChecks.Run(); return; }
+if (args.Contains("--music-decoder-only"))
+{
+    int option=Array.IndexOf(args,"--ffmpeg");
+    if(option<0 || option+1>=args.Length) throw new ArgumentException("Provide --ffmpeg with the decoder executable path.");
+    await StreamingMusicChecks.Run(Path.GetFullPath(args[option+1])); return;
+}
 if (args.Contains("--music-library-only")) { MusicLibraryChecks.Run(root); return; }
 if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--soundboard-only")) { SoundboardChecks.Run(); return; }
