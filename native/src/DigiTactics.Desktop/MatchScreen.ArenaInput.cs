@@ -34,6 +34,7 @@ internal sealed partial class MatchScreen
         bool inside = ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem) && mouse.X >= Left && mouse.X < Left + Width && mouse.Y >= Top && mouse.Y < Top + Height;
         var ground = ArenaPicking.Ground(mouse.X - Left, mouse.Y - Top, Width, Height, battle?.Combat.Columns ?? 7, arenaEnvironment.Camera);
         var spot = inside && ground is { } p ? ArenaPicking.Spot(p, battle?.Combat.Columns > 7, battle is null) : null;
+        if (editable && spot is { } ownedSpot) hoveredOwnedUnit = Human.Roster.At(ownedSpot)?.Id;
         int shelfHover = -1; double nearest = 30 * 30;
         if (battle?.Combat.Columns is null or 7)
             for (int i = 0; i < Math.Min(10, Session!.State.Players[viewed].Items.Count); i++)

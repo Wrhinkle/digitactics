@@ -137,6 +137,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         var io = ImGui.GetIO();
         if (down)
         {
+            io.AddKeyEvent(ImGuiKey.Space,false);
             io.AddMouseButtonEvent(0, false); down = false;
             if (purchasingReserve) { reservePurchased = true; purchasingReserve = false; }
             else if (switchingScout) { scoutSwitches++; switchingScout = false; }
@@ -165,6 +166,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             command = "view/" + player;
         }
         if (command == "finish" && screen.Session!.Rounds.Phase == MatchPhase.Result) { index++; return; }
+        if (command == "fight") { io.AddKeyEvent(ImGuiKey.Space,true); down=true; return; }
         if (!screen.Buttons.TryGetValue(command, out var point)) return;
         io.AddMousePosEvent(point.X, point.Y); io.AddMouseButtonEvent(0, true); down = true;
     }

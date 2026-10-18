@@ -240,7 +240,7 @@ internal sealed partial class MatchScreen : IDisposable
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
         portraits.BeginFrame(); itemArtwork.BeginFrame(); CarouselCardsDrawn = 0; InventoryArtworkDrawCalls = 0; ItemTooltipRecipes = 0; DetailedUnit = null; DetailedItems = []; ItemDropFeedback = null;
-        sellDropHovered = partnerDropHovered = false;
+        hoveredOwnedUnit = null; sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
         if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
@@ -263,6 +263,7 @@ internal sealed partial class MatchScreen : IDisposable
             if (Button("closeAudio", "Close")) showAudio = false;
             ImGui.End();
         }
+        MatchShortcuts();
     }
     private void Menu()
     {
@@ -451,7 +452,7 @@ internal sealed partial class MatchScreen : IDisposable
         {
             if (i > 0) ImGui.SameLine(); var unit = Human.Roster.Bench[i];
             if (Button("bench/" + i, unit is null ? "-" : UnitName(unit) + "\n" + new string('*', unit.Stage + 1), (size.X - 96f) / 9, 40, selectedUnit is not null && unit?.Id == selectedUnit)) Select(UnitSpot.Bench(i));
-            if (unit is not null) UnitTooltip(unit);
+            if (unit is not null) { if (ImGui.IsItemHovered()) hoveredOwnedUnit = unit.Id; UnitTooltip(unit); }
         }
         for (int i = 0; i < Human.Items.Count; i++)
         {
