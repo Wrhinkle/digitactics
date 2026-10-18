@@ -21,6 +21,7 @@ internal sealed class ArenaEnvironment : IDisposable
     public BoardSurfaceFeedback Feedback { get; } = new();
     public ItemShelfView Items { get; } = new();
     public ArenaCamera Camera { get; } = new();
+    public Action<ModelRenderer,Matrix4x4,bool>? Actors { get; set; }
     public double Time { get; set; }
     public bool? CombatActive { get; set; }
     public int Stage { get; set; }=1;
@@ -61,7 +62,7 @@ internal sealed class ArenaEnvironment : IDisposable
         shadows.Begin(); renderer.ShadowPass=true;
         try
         {
-            foreach(bool transparent in new[] {false,true}) { meshes.Draw(renderer,SceneShadowMap.BoardCamera,transparent,shadows.Size); units(SceneShadowMap.BoardCamera,transparent); }
+            foreach(bool transparent in new[] {false,true}) { meshes.Draw(renderer,SceneShadowMap.BoardCamera,transparent,shadows.Size); units(SceneShadowMap.BoardCamera,transparent); Actors?.Invoke(renderer,SceneShadowMap.BoardCamera,transparent); }
         }
         finally { renderer.ShadowPass=false; shadows.End(); }
         renderer.ShadowTexture=shadows.Texture;
@@ -71,8 +72,10 @@ internal sealed class ArenaEnvironment : IDisposable
             background!.Draw(renderer); meshes.Draw(renderer,camera,false,height); DrawCalls=meshes.DrawCalls;
             surfaces!.Draw(renderer,camera,columns,planning); DrawCalls+=surfaces.DrawCalls;
             renderer.ReceiveShadow=true; units(camera,false);
+            Actors?.Invoke(renderer,camera,false);
             meshes.Draw(renderer,camera,true,height); DrawCalls+=meshes.DrawCalls;
             renderer.ReceiveShadow=true; units(camera,true);
+            Actors?.Invoke(renderer,camera,true);
             Items.Draw(renderer,camera,eye,columns,Time,Feedback,Camera.Target);
         }
         finally { ModelRenderer.End(); }

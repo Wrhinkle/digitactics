@@ -536,9 +536,9 @@ internal sealed partial class MatchScreen : IDisposable
         SyncBoardTheme();
         arenaEnvironment.Items.Ruleset = Rules.Id;
         arenaEnvironment.Items.Items = Session.State.Players[viewed].Items;
+        arenaCompanion?.BeginFrame(); opponentCompanion?.BeginFrame();
+        arenaEnvironment.Actors = DrawCompanions;
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
-        if (!IsSpectating) arenaCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7, arenaEnvironment.Camera);
-        opponentCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7, arenaEnvironment.Camera);
     }
     public void Dispose() { DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
 }

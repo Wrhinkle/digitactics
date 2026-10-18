@@ -9,7 +9,7 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
     private readonly ModelCatalog models = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
     private readonly CompanionCatalog companions = CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/companion-models.json"));
     private readonly JsonDocument emoteData = JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "content/emotes/manifest.json")));
-    private readonly ModelRenderer renderer = new();
+    private ModelRenderer? renderer;
     private static readonly Lazy<DanceCatalog> Dances = new(() => DanceCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/dance-bindings.json")));
     private DanceSkeleton? dancer;
     private DanceRoot? danceRoot;
@@ -27,6 +27,20 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
     private double height;
     private CompanionTransform? overlay;
     public int DrawCalls { get; private set; }
+    public int ShadowDrawCalls { get; private set; }
+    public void BeginFrame() { DrawCalls = 0; ShadowDrawCalls = 0; RetroDrawCalls = 0; }
+    public void DrawModel(ModelRenderer sceneRenderer, System.Numerics.Matrix4x4 camera, bool transparent)
+    {
+        if (model is null || animator is null) return;
+        var placement = model.PlaceCompanion(animator, opponent ? 7.6 : Travel.X, opponent ? 0 : Travel.Hop(animator.HasRun), opponent ? -6.6 : Travel.Z, overlay, danceRoot);
+        sceneRenderer.ReceiveShadow = true;
+        sceneRenderer.Draw(model, animator.Pose, placement, camera, transparent);
+        if (sceneRenderer.ShadowPass) ShadowDrawCalls += sceneRenderer.DrawCalls;
+        else DrawCalls += sceneRenderer.DrawCalls;
+        if (transparent && !sceneRenderer.ShadowPass)
+            RetroDrawCalls = retro?.Draw(sceneRenderer, camera, sceneRenderer.FarmEye,
+                new(opponent ? 7.6 : Travel.X, opponent ? 0 : Travel.Hop(animator.HasRun), opponent ? -6.6 : Travel.Z), frameNow) ?? 0;
+    }
     public CompanionTravel Travel { get; } = new();
     public void Update(string nextKey, ActiveEmote? emote, long now, double delta, string? equippedDance = null)
     {
@@ -78,7 +92,8 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
         (float)(height + .3 + (opponent ? 0 : Travel.Hop(animator?.HasRun ?? false))), (float)(opponent ? -6.6 : Travel.Z));
     public void Draw(int left, int bottom, int width, int height, int columns, ArenaCamera? view = null)
     {
-        DrawCalls = 0; RetroDrawCalls = 0; if (model is null || animator is null) return;
+        BeginFrame(); if (model is null || animator is null) return;
+        var renderer = this.renderer ??= new();
         ModelRenderer.Begin(width, height, false); Brutal.OpenGlApi.OpenGl.Viewport(left, bottom, width, height);
         var camera = view?.Matrix(width, height, columns) ?? BattleView.Camera(width, height, columns);
         var placement = model.PlaceCompanion(animator, opponent ? 7.6 : Travel.X, opponent ? 0 : Travel.Hop(animator.HasRun), opponent ? -6.6 : Travel.Z, overlay, danceRoot);
@@ -87,5 +102,5 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
             new(opponent?7.6:Travel.X,opponent?0:Travel.Hop(animator.HasRun),opponent?-6.6:Travel.Z),frameNow) ?? 0;
         ModelRenderer.End();
     }
-    public void Dispose() { retro?.Dispose(); model?.Dispose(); emoteData.Dispose(); renderer.Dispose(); }
+    public void Dispose() { retro?.Dispose(); model?.Dispose(); emoteData.Dispose(); renderer?.Dispose(); }
 }

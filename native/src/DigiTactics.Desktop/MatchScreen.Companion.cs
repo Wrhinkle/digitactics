@@ -41,6 +41,13 @@ internal sealed partial class MatchScreen
     private string companionDance = "floss";
     internal bool CompanionDancing => arenaCompanion?.Dancing == true;
     internal int CompanionDrawCalls => arenaCompanion?.DrawCalls ?? 0;
+    internal int CompanionShadowDrawCalls => arenaCompanion?.ShadowDrawCalls ?? 0;
+    internal int OpponentCompanionShadowDrawCalls => opponentCompanion?.ShadowDrawCalls ?? 0;
+    private void DrawCompanions(ModelRenderer renderer, Matrix4x4 camera, bool transparent)
+    {
+        if (!IsSpectating) arenaCompanion?.DrawModel(renderer, camera, transparent);
+        opponentCompanion?.DrawModel(renderer, camera, transparent);
+    }
     internal DigiTactics.Presentation.CompanionTravel? CompanionTravel => arenaCompanion?.Travel;
     private (double X, double Z, long At)? companionClick;
     private void CompanionClickMark()

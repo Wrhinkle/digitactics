@@ -21,6 +21,7 @@ internal static class BoardMeshSmoke
             int cell = Math.Min(window.FramebufferSize.X / columns, window.FramebufferSize.Y / rows);
             if (cell < 32) throw new InvalidOperationException("Board capture framebuffer is too small.");
             using var renderer = new ModelRenderer();
+            CompanionArenaChecks.Run(renderer);
             CheckVertexColors(renderer);
             CheckPoints(renderer);
             CheckLines(renderer);
