@@ -128,7 +128,7 @@ internal sealed partial class MatchScreen
     {
         if(!ImGui.IsRectVisible(at,at+extent))return;
         var draw=ImGui.GetWindowDrawList();
-        if(kind=="emote")emoteArtwork.Draw(item.Id,(long)(boardSceneTime*1000)%2600,at,extent.Y);
+        if(kind=="emote")emoteArtwork.Draw(item.Id,(long)(boardSceneTime*1000),at,extent.Y);
         else if(kind=="killscreen")collectionTheme.Draw(item.Id,false,boardSceneTime%3.5,at,extent);
         else if(kind is "legend" or "dance" or "board")
         {

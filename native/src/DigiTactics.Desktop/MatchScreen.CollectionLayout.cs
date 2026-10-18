@@ -116,7 +116,7 @@ internal sealed partial class MatchScreen
         if(!ImGui.IsRectVisible(at,at+extent))return;
         float square=extent.Y;
         if(kind=="legend")portraits.DrawCompanion(CurrentPreviewLegend(collection,item.Id),at+new float2((extent.X-square)/2,0),square);
-        else if(kind=="emote")emoteArtwork.Draw(item.Id,(long)(boardSceneTime*1000)%2600,at+new float2((extent.X-square+10)/2,5),square-10);
+        else if(kind=="emote")emoteArtwork.Draw(item.Id,(long)(boardSceneTime*1000),at+new float2((extent.X-square+10)/2,5),square-10);
         else if(kind=="killscreen")collectionTheme.Draw(item.Id,false,boardSceneTime%3.5,at,extent);
         else if(CollectionArt.Value.TryGetValue(kind+"/"+item.Id,out string? file))collectionArtwork.Draw(file,at,extent,255,kind=="board");
     }

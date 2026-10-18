@@ -59,7 +59,7 @@ internal sealed partial class MatchScreen
             draw.AddImage(new ImTextureRef{_TexID=new((nint)collectionPreview.Texture)},at,at+new float2(width,height),new(0,1),new(1,0));
             CollectionPreviewDrawCalls=collectionPreview.DrawCalls;
         }
-        else if(kind=="emote") {float s=Math.Min(width,height)*.8f;emoteArtwork.Draw(item.Id,(long)(boardSceneTime*1000)%2600,at+new float2((width-s)/2,(height-s)/2),s);CollectionPreviewDrawCalls=1;}
+        else if(kind=="emote") {float s=Math.Min(width,height)*.8f;emoteArtwork.Draw(item.Id,(long)(boardSceneTime*1000),at+new float2((width-s)/2,(height-s)/2),s);CollectionPreviewDrawCalls=1;}
         else if(kind=="killscreen")
         {
             collectionTheme.Draw(item.Id,false,(boardSceneTime-collectionPreviewStarted)%3.5,at,new(width,height));

@@ -26,6 +26,7 @@ internal static class EmoteChecks
         emotes.Send(collection, "gg", 0, 3000); emotes.Receive(1, "gg", 0, false, 3000); emotes.ClearOthers(0);
         Check(emotes.At(0, 3001) is not null && emotes.At(1, 3001) is null, "mute clears current remote sticker while preserving local sticker");
         using var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "content/emotes/manifest.json")));
+        var atlases = EmoteAtlasCatalog.Load(Path.Combine(root, "content/emotes/manifest.json"));
         var clips = manifest.RootElement.GetProperty("clips");
         Check(clips.EnumerateObject().Select(p => p.Name).Order().SequenceEqual(CosmeticCollection.Items("emote").Select(i => i.Id).Order()), "every original catalog item has artwork");
         int animated = 0;
@@ -44,7 +45,23 @@ internal static class EmoteChecks
             }
             if (hashes.Count > 1) animated++;
             if (clip.Name is "gg" or "nice" or "cry" or "hop") Check(hashes.Count > 10, "original animated frames vary " + clip.Name);
+            var descriptor = atlases.Clips[clip.Name];
+            Check(descriptor.Match.FrameAt(2599, false) == 51 && descriptor.Match.FrameAt(2600, false) == 51, "match frame timing remains unchanged " + clip.Name);
+            foreach (var layer in descriptor.Preview)
+            {
+                byte[] preview = File.ReadAllBytes(Path.Combine(root, "content/emotes", layer.File));
+                Check(Convert.ToHexStringLower(SHA256.HashData(preview)) == layer.Sha256, "preview atlas integrity " + layer.File);
+                var image = PngImage.Decode(preview);
+                Check(image.Width == layer.Columns * 160 && image.Height == layer.Rows * 160 && image.Height <= 8192, "preview texture dimensions and conservative GPU limit " + layer.File);
+                Check(layer.FrameAt(-1, true) == 0 && layer.FrameAt(layer.LoopMs - 1, true) == layer.Frames - 1 && layer.FrameAt(layer.LoopMs, true) == 0,
+                    "preview wraps exactly at its source period " + layer.File);
+                Check(layer.FrameAt(layer.LoopMs * 1000L + 50, true) == (layer.Frames == 1 ? 0 : 1), "long-running preview retains source timing " + layer.File);
+            }
         }
+        Check(atlases.Clips["mystery_daily_emote_19"].Preview.Single().LoopMs == 6000, "Windmill nested 6-second spin and 2-second breath retain full cycle");
+        Check(atlases.Clips["mystery_vault_emote_16"].Preview.Single().FrameAt(2600, true) == 52, "Vortex preview continues through old 2.6-second reset");
+        Check(atlases.Clips["nice"].Preview.Select(layer => layer.LoopMs).SequenceEqual(new[] { 6000, 1100, 900 }), "NICE keeps source paint order and independent periods without a 198-second atlas");
+        Check(atlases.Clips["wave"].Preview.Any(layer => layer.LoopMs == 1000), "alternating wave includes both forward and backward directions");
         Check(animated > 40, "animation retained across catalog");
         Console.WriteLine($"Emotes: {checks} original rate, ownership, lifetime and frame checks passed; {animated} animated sheets."); return checks;
     }

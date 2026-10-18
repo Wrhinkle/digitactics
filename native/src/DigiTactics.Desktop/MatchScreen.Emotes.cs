@@ -115,7 +115,7 @@ internal sealed partial class MatchScreen
                 string name=CosmeticCollection.Item("emote",id)?.Name??"Empty slot";
                 draw.AddCircleFilled(slotCenter,diameter*.5f,hover?new ImColor8(35,52,68):new ImColor8(18,28,43),64);
                 draw.AddCircle(slotCenter,diameter*.5f,hover||focused?new ImColor8(240,218,155):new ImColor8(88,106,132),64,hover||focused?3:2);
-                if(id is not null)emoteArtwork.Draw(id,now%2600,at+new float2(9,9),70);
+                if(id is not null)emoteArtwork.Draw(id,now,at+new float2(9,9),70);
                 else {var textAt=slotCenter-new float2(25,10);draw.AddText(ImGui.GetFont(),16,textAt,new ImColor8(165,178,196),"Empty"u8);}
                 var badge=at+new float2(4,4);draw.AddCircleFilled(badge,13,new ImColor8(200,170,110),32);
                 draw.AddText(ImGui.GetFont(),16,badge-new float2(4,9),new ImColor8(15,20,29),(i+1).ToString());
