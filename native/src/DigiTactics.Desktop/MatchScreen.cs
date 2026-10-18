@@ -36,6 +36,8 @@ internal sealed partial class MatchScreen : IDisposable
     public int BattleDrawCalls => battle?.DrawCalls ?? 0;
     public int PlanningDrawCalls => planning.DrawCalls;
     internal IReadOnlySet<int> PlanningRenderedUnits => planning.RenderedUnits;
+    internal IReadOnlySet<int>? BattleRenderedBenchUnits => battle?.RenderedBenchUnits;
+    internal int ViewedPlayer => viewed;
     public bool WatchingMirrored => battle?.Mirrored ?? false;
     public int BattleColumns => battle?.Combat.Columns ?? 0;
     public int CompletedRounds { get; private set; }
@@ -172,6 +174,7 @@ internal sealed partial class MatchScreen : IDisposable
         }
         else if (Session.Rounds.Phase == MatchPhase.Result) battle?.Advance(delta);
         planning.Update(Rules, Session.State.Players[viewed], delta);
+        UpdateBattleBench(delta);
         UpdateAiEmotes();
         UpdateArenaCompanion(delta);
     }
@@ -182,14 +185,22 @@ internal sealed partial class MatchScreen : IDisposable
         var next = Session.Battles.FirstOrDefault(m => m.A == player || !m.Ghost && m.B == player ||
             m.TeamA is { } ta && Session.State.Teams[ta].Members.Any(p => p.Id == player) ||
             !m.Ghost && m.TeamB is { } tb && Session.State.Teams[tb].Members.Any(p => p.Id == player)) ?? Session.Battles.FirstOrDefault();
-        if (next == watching) return;
+        bool mirror = next is not null && (next.B == player || next.TeamB is { } team && Session.State.Teams[team].Members.Any(p => p.Id == player));
+        if (next == watching && battle?.Mirrored == mirror) { UpdateBattleBench(0); return; }
         battle?.Dispose(); battle = null; watching = next;
         combatAudio = next is null ? null : new(next.Combat, Rules.Id, abilityElements);
         if (next is not null)
         {
-            bool mirror = next.B == player || next.TeamB is { } team && Session.State.Teams[team].Members.Any(p => p.Id == player);
             battle = new(Rules, next.Combat, mirror,arenaEnvironment);
+            UpdateBattleBench(0);
         }
+    }
+    private void UpdateBattleBench(double delta)
+    {
+        if (battle is null || Session is null) return;
+        var player = Session.State.Players[viewed];
+        var partner = player.Team is { } team ? Session.State.Teams[team].Members.FirstOrDefault(p => p.Id != player.Id) : null;
+        battle.UpdateBench(player, partner, delta);
     }
     private void Fight()
     {

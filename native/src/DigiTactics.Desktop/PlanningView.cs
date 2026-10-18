@@ -7,7 +7,7 @@ namespace DigiTactics.Desktop;
 
 internal sealed class PlanningView : IDisposable
 {
-    private readonly ModelCatalog catalog = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
+    private readonly RosterModelView roster = new();
     private readonly ModelRenderer renderer = new();
     private readonly ArenaEnvironment board;
     private readonly bool ownsBoard;
@@ -15,28 +15,14 @@ internal sealed class PlanningView : IDisposable
     public string BoardTheme { get; set; } = "file-island";
     public int BoardDrawCalls => board.DrawCalls;
     public double SceneTime { get=>board.Time; set=>board.Time=value; }
-    private readonly Dictionary<ModelSource, GpuModel> models = [];
-    private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
     public int DrawCalls { get; private set; }
-    public HashSet<int> RenderedUnits { get; } = [];
+    public IReadOnlySet<int> RenderedUnits => roster.RenderedUnits;
     public void Update(Ruleset rules, MatchPlayer player, double delta)
     {
         SceneTime+=Math.Clamp(delta,0,.1);
-        var live = player.Roster.Entries.Select(e => e.Unit.Id).ToHashSet();
-        foreach (int id in actors.Keys.Where(id => !live.Contains(id)).ToArray()) actors.Remove(id);
-        foreach (var entry in player.Roster.Entries)
-        {
-            var source = catalog.Resolve(rules.Id, entry.Unit.Line, entry.Unit.Stage);
-            if (source is null) continue;
-            if (!actors.TryGetValue(entry.Unit.Id, out var existing) || existing.Model.Source != source)
-            {
-                if (!models.TryGetValue(source, out var model)) models[source] = model = new(catalog, source);
-                actors[entry.Unit.Id] = (model, new ModelAnimator(model.Rig, (entry.Unit.Id % 7) * .13));
-            }
-            actors[entry.Unit.Id].Animator.Update(delta);
-        }
-        var used = actors.Values.Select(a => a.Model.Source).ToHashSet();
-        foreach (var source in models.Keys.Where(s => !used.Contains(s)).ToArray()) { models[source].Dispose(); models.Remove(source); }
+        roster.Update(rules, player.Roster.Entries.Select(e => (e.Unit, e.Spot.IsBoard
+            ? CombatLayout.Cell(new(e.Spot.Column, e.Spot.Row), 7, false)
+            : CombatLayout.Bench(e.Spot.Index))), delta);
     }
     public static Brutal.Numerics.float2 Cell(int column, int row, int width, int height)
         => Project(CombatLayout.Cell(new(column, row), 7, false), width, height);
@@ -49,26 +35,12 @@ internal sealed class PlanningView : IDisposable
     }
     public void Draw(Ruleset rules, MatchPlayer player, int left, int bottom, int width, int height)
     {
-        var camera = BattleView.Camera(width,height,7); board.SetTheme(BoardTheme); DrawCalls=0; RenderedUnits.Clear();
+        var camera = BattleView.Camera(width,height,7); board.SetTheme(BoardTheme); DrawCalls=0; roster.RenderedUnits.Clear();
         void Units(Matrix4x4 viewCamera,bool transparent)
         {
-            foreach(var entry in player.Roster.Entries)
-            {
-                if(!actors.TryGetValue(entry.Unit.Id,out var actor)) continue;
-                var position=entry.Spot.IsBoard
-                    ? CombatLayout.Cell(new(entry.Spot.Column,entry.Spot.Row),7,false)
-                    : CombatLayout.Bench(entry.Spot.Index);
-                var view=new CombatVisual(entry.Unit.Id,position,Math.PI,default,1,0,0,1,null,false);
-                var line=rules.Lines.Concat(rules.ExtraLines).Single(l=>l.Id==entry.Unit.Line);
-                renderer.Draw(actor.Model,actor.Animator.Pose,actor.Model.Place(view,entry.Unit.Stage,line.Tier),viewCamera,transparent);
-                if(!renderer.ShadowPass)
-                {
-                    DrawCalls+=renderer.DrawCalls;
-                    if(renderer.DrawCalls>0) RenderedUnits.Add(entry.Unit.Id);
-                }
-            }
+            DrawCalls += roster.Draw(renderer, viewCamera, transparent);
         }
         board.Draw(renderer,camera,BattleView.CameraEye(width,height,7),7,true,left,bottom,width,height,Units);
     }
-    public void Dispose() { foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
+    public void Dispose() { roster.Dispose(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
 }

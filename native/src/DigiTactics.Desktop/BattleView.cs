@@ -14,6 +14,8 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     private readonly ModelRenderer renderer = new();
     private readonly Dictionary<ModelSource, GpuModel> models = [];
     private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
+    private readonly RosterModelView bench = new();
+    internal IReadOnlySet<int> RenderedBenchUnits => bench.RenderedUnits;
     private readonly ArenaEnvironment board;
     private readonly bool ownsBoard;
     public string BoardTheme { get; set; } = "file-island";
@@ -56,6 +58,16 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
         actors[unit.Id] = (model, new ModelAnimator(model.Rig, (ModelAnimator.FindIdle(model.Rig)?.Duration ?? 0) * .17));
     }
     public void Remove(int unit) => actors.Remove(unit);
+    public void UpdateBench(MatchPlayer player, MatchPlayer? partner, double delta)
+    {
+        bool wide = Combat.Columns > 7;
+        var entries = player.Roster.Entries.Where(e => !e.Spot.IsBoard)
+            .Select(e => (e.Unit, CombatLayout.Bench(e.Spot.Index, wide)));
+        if (wide && partner is not null)
+            entries = entries.Concat(partner.Roster.Entries.Where(e => !e.Spot.IsBoard)
+                .Select(e => (e.Unit, CombatLayout.Bench(e.Spot.Index, true, true))));
+        bench.Update(rules, entries, delta);
+    }
     public bool Play(int unit, string role) => actors.TryGetValue(unit, out var actor) && actor.Animator.Play(role);
     public void Update(int unit, double delta) { if (actors.TryGetValue(unit, out var actor)) actor.Animator.Update(delta); }
     public void Advance(double delta)
@@ -108,10 +120,12 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     {
         if (width <= 0 || height <= 0) return;
         var camera=Camera(width,height,Combat.Columns); board.SetTheme(BoardTheme); DrawCalls=0;
+        bench.RenderedUnits.Clear();
         board.Feedback.Time=Combat.Time;
         boardBursts.Update(Combat.Events,flash=>board.Feedback.Flash(flash.Column,flash.Row,flash.Until,flash.ViewTeam==0?allyBurst:enemyBurst));
         void Units(Matrix4x4 viewCamera,bool transparent)
         {
+            DrawCalls += bench.Draw(renderer, viewCamera, transparent);
             foreach(var view in choreography.Views)
             {
                 if(!actors.TryGetValue(view.UnitId,out var actor)) continue;
@@ -122,5 +136,5 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
         }
         board.Draw(renderer,camera,CameraEye(width,height,Combat.Columns),Combat.Columns,false,left,bottom,width,height,Units);
     }
-    public void Dispose() { foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
+    public void Dispose() { bench.Dispose(); foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
 }

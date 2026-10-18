@@ -27,6 +27,10 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private int index, cooldown = 3, battleFrames, pvpFrames;
     private bool down, planningCaptured, battleCaptured, pvpCaptured;
     private long emoteTime;
+    private bool combatBenchVerified;
+    private bool reservePurchased, purchasingReserve;
+    private int scoutSwitches;
+    private bool switchingScout;
     public void Input(MatchScreen screen)
     {
         emoteTime+=100;screen.AiEmoteClock=()=>emoteTime;screen.AiEmoteRandom=()=>.01;
@@ -50,14 +54,33 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
         var io = ImGui.GetIO();
-        if (down) { io.AddMouseButtonEvent(0, false); down = false; index++; cooldown = 3; return; }
+        if (down)
+        {
+            io.AddMouseButtonEvent(0, false); down = false;
+            if (purchasingReserve) { reservePurchased = true; purchasingReserve = false; }
+            else if (switchingScout) { scoutSwitches++; switchingScout = false; }
+            else index++;
+            cooldown = 3; return;
+        }
         string command = commands[index];
+        if (index == 19 && !reservePurchased)
+        {
+            // Buy a reserve through the real shop during combat, after automatic deployment.
+            // This keeps a nonempty bench through combat instead of passing only empty-set comparisons.
+            command = "buy"; purchasingReserve = true;
+        }
+        if (index == 20 && scoutSwitches < 2)
+        {
+            command = scoutSwitches == 0 ? "ally" : "opponent";
+            switchingScout = true;
+        }
         if (command == "carousel") command = "carousel/" + screen.Session!.Units.Carousel.Options.Select((o, i) => (o, i)).First(e => e.o.PickedBy is null).i;
         if (command == "buy") command = "buy/" + screen.Session!.State.Players[0].Shop.Slots.Select((id, i) => (id, i)).First(e => e.id is not null).i;
-        if (command == "opponent")
+        if (command is "opponent" or "ally")
         {
             var match = screen.Session!.Battles[0];
-            int player = match.TeamB is { } team ? screen.Session.State.Teams[team].Members[0].Id : match.B!.Value;
+            int? team = command == "ally" ? match.TeamA : match.TeamB;
+            int player = team is { } t ? screen.Session.State.Teams[t].Members[0].Id : command == "ally" ? match.A : match.B!.Value;
             command = "view/" + player;
         }
         if (command == "finish" && screen.Session!.Rounds.Phase == MatchPhase.Result) { index++; return; }
@@ -143,10 +166,29 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 pvpCaptured = true;
             }
         }
+        if (screen.BattleRenderedBenchUnits is { } renderedBench && cooldown == 1 && screen.Session is { } active)
+        {
+            var player = active.State.Players[screen.ViewedPlayer];
+            var expected = player.Roster.Entries.Where(e => !e.Spot.IsBoard).Select(e => e.Unit.Id).ToHashSet();
+            if (screen.BattleColumns > 7 && player.Team is { } team)
+                expected.UnionWith(active.State.Teams[team].Members.Where(p => p.Id != player.Id)
+                    .SelectMany(p => p.Roster.Entries.Where(e => !e.Spot.IsBoard)).Select(e => e.Unit.Id));
+            if (!renderedBench.SetEquals(expected)) throw new InvalidOperationException("Combat bench does not match the viewed player and partner.");
+            if (expected.Count > 0 && !combatBenchVerified && capture is not null)
+                FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "reserve.bmp"), size.X, size.Y);
+            combatBenchVerified |= expected.Count > 0;
+        }
+        if (index == 20 && cooldown == 1 && scoutSwitches > 0)
+        {
+            if (screen.WatchingMirrored != (scoutSwitches == 2))
+                throw new InvalidOperationException("Switching sides of the same fight did not update the camera orientation.");
+            if (scoutSwitches == 1 && capture is not null)
+                FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "combat-bench.bmp"), size.X, size.Y);
+        }
         if (index < commands.Length || cooldown > 0) return false;
-        if (!planningCaptured || !battleCaptured || !pvpCaptured || screen.CompletedRounds != 5 || screen.Session!.Rounds.Phase != MatchPhase.Planning || screen.AiEmotesShown == 0)
-            throw new InvalidOperationException("Match UI round transition smoke failed.");
-        Console.WriteLine("Match UI smoke passed: menu, carousel, purchase, two placements, 3D planning, PvE, mirrored PvP, five settlements and round advances.");
+        if (!planningCaptured || !battleCaptured || !pvpCaptured || !combatBenchVerified || screen.CompletedRounds != 5 || screen.Session!.Rounds.Phase != MatchPhase.Planning || screen.AiEmotesShown == 0)
+            throw new InvalidOperationException($"Match UI round transition smoke failed: planning={planningCaptured}, battle={battleCaptured}, pvp={pvpCaptured}, bench={combatBenchVerified}, rounds={screen.CompletedRounds}, phase={screen.Session!.Rounds.Phase}, emotes={screen.AiEmotesShown}.");
+        Console.WriteLine("Match UI smoke passed: menu, carousel, purchase, two placements, 3D planning, combat reserve, scouting both sides, PvE, mirrored PvP, five settlements and round advances.");
         return true;
     }
 }
