@@ -5,11 +5,14 @@ namespace DigiTactics.Desktop;
 internal sealed class GpuPrimitive : IDisposable
 {
     private GlVertexArray array;
-    private readonly GlBuffer[] buffers = new GlBuffer[3];
+    private readonly GlBuffer[] buffers = new GlBuffer[4];
+    public bool HasColors { get; }
     private readonly int count;
     public unsafe GpuPrimitive(GltfPrimitive data)
     {
         count = data.Indices.Length;
+        HasColors = data.Colors.Length > 0;
+        if (HasColors && data.Colors.Length != data.VertexCount * 3) throw new InvalidDataException("Vertex color count mismatch.");
         Span<GlVertexArray> arrays = stackalloc GlVertexArray[1]; OpenGl.CreateVertexArrays(arrays); array = arrays[0];
         try
         {
@@ -18,6 +21,13 @@ internal sealed class GpuPrimitive : IDisposable
             fixed (uint* indices = data.Indices) OpenGl.NamedBufferData(buffers[1], data.Indices.Length * sizeof(uint), indices, OpenGl.GL_STATIC_DRAW);
             OpenGl.VertexArrayVertexBuffer(array.Id, 0, buffers[0], 0, GltfPrimitive.Stride * sizeof(float));
             OpenGl.VertexArrayElementBuffer(array.Id, buffers[1]);
+            if (HasColors)
+            {
+                fixed (float* colors = data.Colors) OpenGl.NamedBufferData(buffers[3], data.Colors.Length * sizeof(float), colors, OpenGl.GL_STATIC_DRAW);
+                OpenGl.VertexArrayVertexBuffer(array.Id, 2, buffers[3], 0, 3 * sizeof(float));
+                OpenGl.EnableVertexArrayAttrib(array.Id, 6); OpenGl.VertexArrayAttribBinding(array.Id, 6, 2);
+                OpenGl.VertexArrayAttribFormat(array.Id, 6, 3, OpenGl.GL_FLOAT, false, 0);
+            }
             if (data.Tangents.Length > 0)
             {
                 fixed (float* tangents = data.Tangents) OpenGl.NamedBufferData(buffers[2], data.Tangents.Length * sizeof(float), tangents, OpenGl.GL_STATIC_DRAW);
@@ -35,7 +45,13 @@ internal sealed class GpuPrimitive : IDisposable
         }
         catch { Dispose(); throw; }
     }
-    public unsafe void Draw() { array.Bind(); OpenGl.Native.glDrawElements(OpenGl.GL_TRIANGLES, count, OpenGl.GL_UNSIGNED_INT, null); }
+    public unsafe void Draw(bool wireframe = false)
+    {
+        array.Bind();
+        if (wireframe) OpenGl.Native.glPolygonMode((GlFace)OpenGl.GL_FRONT_AND_BACK, OpenGl.GL_LINE);
+        OpenGl.Native.glDrawElements(OpenGl.GL_TRIANGLES, count, OpenGl.GL_UNSIGNED_INT, null);
+        if (wireframe) OpenGl.Native.glPolygonMode((GlFace)OpenGl.GL_FRONT_AND_BACK, OpenGl.GL_FILL);
+    }
     public unsafe void UpdateVertices(float[] vertices)
     {
         fixed (float* data = vertices) OpenGl.NamedBufferSubData(buffers[0], 0, vertices.Length * sizeof(float), data);

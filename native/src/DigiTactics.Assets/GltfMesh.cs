@@ -6,6 +6,7 @@ public sealed record GltfPrimitive(float[] Vertices, uint[] Indices, int Materia
     public const int Stride = 16;
     public int VertexCount => Vertices.Length / Stride;
     public float[] Tangents { get; init; } = [];
+    public float[] Colors { get; init; } = [];
 }
 public sealed record MeshInstance(int Node, int Mesh, int Skin);
 public sealed record GltfMesh(GltfPrimitive[][] Meshes, MeshInstance[] Instances)

@@ -140,6 +140,7 @@ try {
     Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Desktop', '--locked-mode')
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--', $nativeRoot)
     Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--board-mesh-smoke', '--capture', 'artifacts/board-meshes.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--smoke', '--capture', 'artifacts/native-smoke.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--capture', 'artifacts/match-ui.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--duos', '--capture', 'artifacts/match-duos.bmp')

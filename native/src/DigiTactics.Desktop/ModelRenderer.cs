@@ -27,6 +27,7 @@ internal sealed class ModelRenderer : IDisposable
         OpenGl.BindTextureUnit(3, 0); program.Uniform(21, 0);
         OpenGl.BindTextureUnit(4, 0); program.Uniform(22, new Brutal.Numerics.float4(0, 1, 0, 0));
         program.Uniform(23, ShadowPass ? 1 : 0);
+        program.Uniform(29, 0);
         program.Uniform(24, !ShadowPass && ReceiveShadow && ShadowTexture != 0 ? 1 : 0);
         Matrix(25, From(FarmShadowMap.Camera));
         OpenGl.BindTextureUnit(5, ShadowPass ? 0 : ShadowTexture);
@@ -125,11 +126,12 @@ internal sealed class ModelRenderer : IDisposable
         geometry.Draw();
     }
     public void Dispose() { OpenGl.DeleteBuffers(new[] { bones }); program.Dispose(); }
-    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false)
+    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false)
     {
         program.Use(); Matrix(0, world); Matrix(4, From(camera));
         SetFarmLight(emissive, roughness, metalness);
-        program.Uniform(8, 0); program.Uniform(9, 1); program.Uniform(10, unlit ? 1 : 0); program.Uniform(11, 0f);
+        program.Uniform(8, 0); program.Uniform(9, flatShading ? 0 : 1); program.Uniform(10, unlit ? 1 : 0); program.Uniform(11, alphaTest);
+        program.Uniform(29, vertexColors && geometry.HasColors ? 1 : 0);
         program.Uniform(12, color); program.Uniform(13, texture is null ? 0 : 1); program.Uniform(14, 0f);
         OpenGl.BindTextureUnit(0, texture?.Id ?? 0); SetSides(side, shadowSide);
         double determinant = world.M11 * (world.M22 * world.M33 - world.M23 * world.M32)
@@ -137,7 +139,7 @@ internal sealed class ModelRenderer : IDisposable
         OpenGl.Native.glFrontFace(determinant < 0 ? GlFrontFace.Clockwise : GlFrontFace.CounterClockwise);
         if (transparent) { OpenGl.Native.glEnable(GlCapability.Blend); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, additive ? OpenGl.GL_ONE : OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
         else OpenGl.Native.glDisable(GlCapability.Blend);
-        OpenGl.Native.glDepthMask(ShadowPass || depthWrite); geometry.Draw();
+        OpenGl.Native.glDepthMask(ShadowPass || depthWrite); geometry.Draw(wireframe);
     }
     private unsafe void SetSides(int side, int? shadowSide = null)
     {
@@ -168,24 +170,27 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=3) in vec4 joints;
         layout(location=4) in vec4 weights;
         layout(location=5) in vec4 tangent;
+        layout(location=6) in vec3 vertexColor;
         layout(std430,binding=0) readonly buffer Bones { mat4 bones[]; };
         layout(location=0) uniform mat4 world;
         layout(location=4) uniform mat4 camera;
         layout(location=8) uniform int skinned;
         out vec2 texCoord; out vec3 worldPosition; out vec3 worldNormal; out vec4 worldTangent;
+        out vec3 meshColor;
         void main() {
             mat4 skin = mat4(1);
             if(skinned!=0) skin=bones[int(joints.x)]*weights.x+bones[int(joints.y)]*weights.y+bones[int(joints.z)]*weights.z+bones[int(joints.w)]*weights.w;
             vec4 p=world*skin*vec4(position,1);
             worldPosition=p.xyz; worldNormal=transpose(inverse(mat3(world)))*mat3(skin)*normal;
             worldTangent=vec4(mat3(world)*mat3(skin)*tangent.xyz,tangent.w);
-            texCoord=uv; gl_Position=camera*p;
+            texCoord=uv; meshColor=vertexColor; gl_Position=camera*p;
             gl_Position.z=2*gl_Position.z-gl_Position.w;
         }
         """;
     private const string FragmentShader = """
         #version 450 core
         in vec2 texCoord; in vec3 worldPosition; in vec3 worldNormal; in vec4 worldTangent;
+        in vec3 meshColor;
         layout(binding=0) uniform sampler2D colorTexture;
         layout(binding=1) uniform sampler2D roughnessTexture;
         layout(binding=2) uniform sampler2D specularTexture;
@@ -209,6 +214,7 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=23) uniform int shadowPass;
         layout(location=24) uniform int receiveShadow;
         layout(location=25) uniform mat4 shadowCamera;
+        layout(location=29) uniform int hasVertexColors;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
@@ -243,6 +249,7 @@ internal sealed class ModelRenderer : IDisposable
         }
         void main() {
             vec4 c=color*(textured!=0?texture(colorTexture,texCoord):vec4(1));
+            if(hasVertexColors!=0) c.rgb*=meshColor;
             if(c.a<cutoff) discard;
             if(shadowPass!=0) { outputColor=vec4(1); return; }
             vec3 n=normalize(hasNormals!=0?worldNormal:cross(dFdx(worldPosition),dFdy(worldPosition)));

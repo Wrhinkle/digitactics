@@ -72,6 +72,7 @@ try
     var catalog = ContentCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content", "catalog.json"));
     int captureIndex = Array.IndexOf(args, "--capture");
     string? capture = captureIndex >= 0 && captureIndex + 1 < args.Length ? args[captureIndex + 1] : null;
+    if (args.Contains("--board-mesh-smoke")) { BoardMeshSmoke.Run(capture); return 0; }
     if (args.Contains("--companion-model-smoke")) { CompanionModelSmoke.Run(capture); return 0; }
     if (args.Contains("--farm-room-smoke")) { FarmRoomSmoke.Run(capture); return 0; }
     if (args.Contains("--smoke") || args.Contains("--workbench")) NativeApplication.Run(catalog, args.Contains("--smoke"), capture);
