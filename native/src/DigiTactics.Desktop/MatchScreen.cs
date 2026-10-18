@@ -136,9 +136,10 @@ internal sealed partial class MatchScreen : IDisposable
         }
         selectedUnit = unit?.Id;
     }
-    public void Update(double delta)
+    public void Update(double delta, double? wallDelta = null)
     {
-        farm?.Update(delta, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+        if (training is null) farm?.Update(delta, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+        else UpdateTraining(delta, wallDelta ?? delta);
         if (profilePreview is { IsCompleted: true })
         {
             try { profileCandidate = profilePreview.GetAwaiter().GetResult(); profileMessage = null; }

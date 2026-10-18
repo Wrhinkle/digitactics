@@ -17,6 +17,27 @@ public static class FarmCare
         return theme.Free || themes.Any(x => x?.GetValue<string>() == theme.Id) || theme.Board is not null && collection.Owns("board", theme.Board);
     }
     public static int ExpansionPrice(int cap) => cap >= 12 ? 0 : cap == 6 ? 250 : cap == 8 ? 400 : 600;
+    private static double N(JsonNode node, string key)
+    {
+        var value = node[key]?.AsValue() ?? throw new InvalidDataException("Missing farm value: " + key);
+        if (value.TryGetValue<double>(out double d)) return d;
+        if (value.TryGetValue<int>(out int i)) return i;
+        return value.GetValue<long>();
+    }
+    private static bool B(JsonNode node, string key) => node[key]?.GetValue<bool>() == true;
+    public static string? TrainingRefusal(JsonNode farm, string? legendJson, string? id)
+    {
+        if (id is null || !farm["residents"]!.AsArray().Any(x => x?.GetValue<string>() == id)) return "Not in the room.";
+        var pet = farm["pets"]![id]!;
+        var (_, record) = LegendRewards.Snapshot(legendJson, id);
+        string name = LegendEvolution.Form(record["form"]!.GetValue<string>()).Name;
+        if (B(pet["flags"]!, "asleep")) return name + " is asleep.";
+        if (B(pet, "sick")) return name + " is sick. Cure it first.";
+        if (N(pet, "energy") < 15) return name + " is too tired. Turn the lights off for a nap.";
+        if (N(pet, "hunger") < 10) return name + " is too hungry to train.";
+        if (N(pet, "tantrum") != 0 && N(pet, "disc") < 40) return name + " won't listen. Scold it first.";
+        return null;
+    }
     private sealed record Food(string Name, int Bits, int Hunger, int Weight, int Happy = 0, int Energy = 0, int Disc = 0, bool Healthy = false, bool Sweet = false);
     private static readonly Dictionary<string, Food> Foods = new() {
         ["meat"] = new("Meat", 0, 30, 1), ["carrot"] = new("Supercarrot", 8, 25, 0, Energy: 6, Healthy: true),
@@ -34,14 +55,6 @@ public static class FarmCare
         var residents = farm["residents"]!.AsArray().Select(x => x!.GetValue<string>()).ToArray();
         var pets = farm["pets"]!.AsObject();
         JsonObject? p = id is not null && residents.Contains(id) ? pets[id]!.AsObject() : null;
-        static double N(JsonNode node, string key)
-        {
-            var value = node[key]?.AsValue() ?? throw new InvalidDataException("Missing farm value: " + key);
-            if (value.TryGetValue<double>(out double d)) return d;
-            if (value.TryGetValue<int>(out int i)) return i;
-            return value.GetValue<long>();
-        }
-        static bool B(JsonNode node, string key) => node[key]?.GetValue<bool>() == true;
         static void Add(JsonNode node, string key, double value) => node[key] = N(node, key) + value;
         static void Stat(JsonNode node, string key, double value) => node[key] = Math.Clamp(N(node, key) + value, 0, 100);
         string Name(string petId) { var (_, record) = LegendRewards.Snapshot(legendJson, petId); return LegendEvolution.Form(record["form"]!.GetValue<string>()).Name; }
@@ -178,11 +191,7 @@ public static class FarmCare
                 if (timestamp - N(p, "lastPet") < 15000) return Done(true, "", ("small", JsonValue.Create(true)));
                 p["lastPet"] = timestamp; Stat(p, "happy", 3); Add(p, "goodBond", .05); return Done(true, "");
             case FarmCareAction.Train:
-                if (Asleep(p)) return Done(false, name + " is asleep.");
-                if (B(p, "sick")) return Done(false, name + " is sick. Cure it first.");
-                if (N(p, "energy") < 15) return Done(false, name + " is too tired. Turn the lights off for a nap.");
-                if (N(p, "hunger") < 10) return Done(false, name + " is too hungry to train.");
-                if (N(p, "tantrum") != 0 && N(p, "disc") < 40) return Done(false, name + " won't listen. Scold it first.");
+                if (TrainingRefusal(farm, legendJson, id) is { } refusal) return Done(false, refusal);
                 if (option is null || !Training.TryGetValue(option, out var training)) return Done(false, "Unknown training.");
                 score = double.IsNaN(score) ? 0 : Math.Clamp(score, 0, 1);
                 int gain = 2 + (int)Math.Floor(8 * score + .5);

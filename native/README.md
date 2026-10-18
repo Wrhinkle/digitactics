@@ -2110,3 +2110,36 @@ self-contained package built successfully; Solo and Duos match UI smokes passed.
 This checkpoint implements training outcomes only. Power Swing, Beat Dash, Data
 Memory and Endurance Run still need their native gameplay and input interfaces.
 The full port remains in progress; this is not a production release.
+
+### Playable native farm training
+
+Power Swing, Beat Dash, Data Memory and Endurance Run are now playable from the
+farm panel using native BRUTAL ImGui drawing and keyboard/mouse controls. The
+frame-driven C# models preserve swing windows, note scoring, deterministic memory
+sequences and endurance drain. Memory callbacks use wall time separately from the
+clamped animation step, including after frame stutters. The panel includes the
+countdown, feedback, score, stat/reward receipt, repeat and quit controls. Quit
+preserves the current browser game's zero-score training result behavior.
+
+Training eligibility is shared with the existing care rules. A finished result
+uses the atomic farm/profile transaction; failed writes retain the result for an
+explicit retry without rerunning the game. Periodic farm saves do not run over a
+pending training result. The result screen exposes all gained stats, Bits and
+Digi-Data. This remains the functional native UI, with production visual polish
+and the animated farm environment still pending.
+
+`export-training-games.cjs` executes the original factories with deterministic
+timers and a minimal DOM. Its 80 runs cover four frame intervals, idle, automatic,
+rapid, sparse and stuttering input schedules: 52,777 frames and 360,359 native
+comparisons passed. The full farm checks also passed (424,718 simulation and
+118,599 transaction/persistence checks). Both targeted suites are included in
+the regular native build/test workflow.
+
+The self-contained Windows build passed `--training-smoke` on a fresh isolated
+profile: all four games are played through real ImGui keyboard/mouse events,
+results are reopened from disk, a locked save is retried, and quit is checked.
+Solo and Duos match UI smoke tests passed. Training screenshots and result screens
+were inspected. To run the training UI check, supply a new, empty
+`--profile-directory` and optionally `--capture`; existing trained pets are not
+suitable test fixtures. This checkpoint does not constitute the completed port
+or a production release.

@@ -7,7 +7,19 @@ public sealed class FarmProgress(NativeProfileStore profile)
     private double elapsed = 30;
     public string? Error { get; private set; }
     public string? Message { get; private set; }
+    public System.Text.Json.Nodes.JsonObject? LastResult { get; private set; }
     public string? Save => profile.Storage.GetValueOrDefault("dt.farm.v1");
+    public bool CanTrain(long timestamp, string id)
+    {
+        try
+        {
+            if (!Refresh(timestamp)) return false;
+            Message = FarmCare.TrainingRefusal(System.Text.Json.Nodes.JsonNode.Parse(Save!)!, profile.Storage.GetValueOrDefault("dt.legendevo.v1"), id);
+            return Message is null;
+        }
+        catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException or KeyNotFoundException)
+        { Error = "Training is unavailable: " + error.Message; return false; }
+    }
     public void Update(double delta, long timestamp)
     {
         if (!profile.Exists) return;
@@ -40,6 +52,7 @@ public sealed class FarmProgress(NativeProfileStore profile)
             if (result.Wallet is not null) changes["dt.cosmetics.v1"] = result.Wallet;
             if (result.Legends is not null) changes["dt.legendevo.v1"] = result.Legends;
             if (!Commit(changes)) return false;
+            LastResult = result.Result;
             Message = result.Result["msg"]!.GetValue<string>();
             return result.Result["ok"]!.GetValue<bool>();
         }

@@ -13,6 +13,7 @@ internal sealed partial class MatchScreen
     private void FarmPanel()
     {
         Window("Digi-Farm", size.X * .12f, size.Y * .06f, size.X * .76f, size.Y * .88f);
+        if (training is not null) { TrainingPanel(); ImGui.End(); return; }
         if (Button("closeFarm", "Back")) showFarm = false;
         if (farm!.Error is { } farmError) { CollectionText(farmError); if (Button("retryFarm", "Retry saving farm")) farm.Refresh(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()); ImGui.End(); return; }
         if (farm.Message is { Length: > 0 } message) CollectionText(message);
@@ -40,6 +41,13 @@ internal sealed partial class MatchScreen
                 var pet = state["pets"]![farmPet]!;
                 ImGui.Text($"Hunger {pet["hunger"]!.GetValue<double>():0}    Energy {pet["energy"]!.GetValue<double>():0}    Happiness {pet["happy"]!.GetValue<double>():0}    Discipline {pet["disc"]!.GetValue<double>():0}");
                 ImGui.Text($"Weight {pet["weight"]}    {(pet["sick"]!.GetValue<bool>() ? "Sick: " + pet["sickWhy"] : "Healthy")}    {(pet["flags"]?["asleep"]?.GetValue<bool>() == true ? "Sleeping" : "Awake")}");
+                ImGui.Text($"Strength {pet["str"]}    Speed {pet["spd"]}    Wisdom {pet["wis"]}    Stamina {pet["sta"]} (cap 300)");
+                foreach (var game in TrainingTitles)
+                {
+                    if (Button("farmTrain/" + game.Key, game.Value)) StartTraining(game.Key);
+                    ImGui.SameLine();
+                }
+                ImGui.NewLine();
                 foreach (var food in new[] { ("meat", "Meat (tray, then 5 Bits)"), ("carrot", "Supercarrot (8 Bits)"), ("bigmeat", "Giant Meat (15 Bits)"), ("sirloin", "Sirloin (25 Bits)"), ("cake", "Digi-Cake (10 Bits)") })
                     if (Button("farmFeed/" + food.Item1, food.Item2)) FarmAct(FarmCareAction.Feed, food.Item1);
                 if (Button("farmBandage", "Use bandage")) FarmAct(FarmCareAction.Cure);
