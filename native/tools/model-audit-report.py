@@ -50,7 +50,7 @@ def source_identity(catalog, companions, key):
 
 def capture_provenance(directory):
     """A capture is current only for its measured data and applicable code groups."""
-    result = {"valid": False, "reason": "Capture has no measured build/source manifest.", "hashes": {}, "groups": {}}
+    result = {"valid": False, "reason": "Capture has no measured build/source manifest.", "hashes": {}, "groups": {}, "captureSources": {}}
     path = directory / "capture-manifest.json"
     if not path.is_file():
         return result
@@ -78,8 +78,30 @@ def capture_provenance(directory):
         return result
     expected_groups = capture_source_paths()
     legacy_pose = "pose" not in declared
+    capture_paths = expected_groups.get("capture", [])
+    # Legacy manifests measured the diagnostic harness inside renderer. Keep its
+    # exact build provenance without letting a later camera-only harness change
+    # invalidate unchanged fitted role and texture evidence.
+    captured = dict(declared.get("capture", {}))
+    if not captured:
+        captured = {name: declared["renderer"][name] for name in capture_paths if name in declared["renderer"]}
+    if capture_paths and (set(captured) != set(capture_paths) or not all(isinstance(value, str) and value for value in captured.values())):
+        result["reason"] = "Capture omits measured diagnostic source provenance."
+        return result
+    result["captureSources"] = captured
     for group, paths in expected_groups.items():
+        if group == "capture":
+            continue
         recorded = dict(declared.get(group, {}))
+        if group == "renderer":
+            for name in capture_paths:
+                recorded.pop(name, None)
+        if group == "combat":
+            # These two production files moved to the placement group. Never
+            # remove a newly unknown dependency or infer unmeasured board code.
+            for name in ["native/src/DigiTactics.Desktop/BattleView.cs", "native/src/DigiTactics.Desktop/ArenaEnvironment.cs"]:
+                if name not in paths and name in expected_groups.get("board", []):
+                    recorded.pop(name, None)
         # Earlier measured manifests recorded ModelAnimator inside combat. This
         # reuses that exact measured entry, never a guessed current hash.
         if legacy_pose and group == "pose":
@@ -149,7 +171,7 @@ def verdict(value):
 
 def runtime_source_paths():
     """Dependencies measured by the production full-cycle/transition audit."""
-    return ["../js/model-motion.js", "src/DigiTactics.Assets/GltfRig.cs", "src/DigiTactics.Assets/ModelAnimator.cs",
+    return ["../js/model-motion.js", "../js/model-anatomy.js", "src/DigiTactics.Assets/GltfRig.cs", "src/DigiTactics.Assets/ModelAnimator.cs",
             "src/DigiTactics.Assets/CombatModelAnimator.cs", "src/DigiTactics.Assets/CompanionLocomotion.cs",
             "src/DigiTactics.Assets/GltfMesh.cs", "src/DigiTactics.Desktop/CombatModelAnimations.cs",
             "src/DigiTactics.Desktop/BattleView.cs", "src/DigiTactics.Desktop/GpuModel.cs",
@@ -239,8 +261,54 @@ def material_verdict(review, source, asset):
             "sourceStatus": "FAIL" if current else "UNVERIFIED", "runtimeStatus": "FAIL" if runtime_current else "UNVERIFIED"}
 
 
+def board_evidence_current(review, key, catalog, companions, reviewed_paths):
+    """Board images require their own measured live-camera record and manifest."""
+    scope = review.get("functionalScope", {}) if review else {}
+    names = scope.get("boardEvidence", [])
+    images = {(ROOT / name).resolve() for name in names if Path(name).suffix.lower() != ".json"}
+    records = [(ROOT / name).resolve() for name in names if Path(name).suffix.lower() == ".json"]
+    if not images or not records or not all(path in reviewed_paths and path.is_file() for path in images | set(records)):
+        return False
+    covered = set()
+    for path in records:
+        data = read(path)
+        capture = capture_provenance(path.parent)
+        groups = {"renderer", "pose", "board"}
+        if (data.get("Source") != key or data.get("BoardContextPolicy") != "live-arena-camera/v1"
+                or not record_matches_capture(capture, data.get("RuntimeHashes", {}))
+                or not source_matches_capture(capture, catalog, companions, key)
+                or not all(capture["groups"].get(group, False) for group in groups)):
+            return False
+        times = data.get("Times", [])
+        if len(times) < 3 or any(not isinstance(time, (float, int)) or not 0 <= time < float("inf") for time in times):
+            return False
+        image = (path.parent / data.get("Image", "")).resolve()
+        if image not in images:
+            return False
+        covered.add(image)
+    return covered == images
+
+
+def board_only_review(review, image, reviewed_paths):
+    if not review:
+        return False
+    if review.get("reviewScope", {}).get("motionEvidenceContext") == "board":
+        return True
+    if image and image.resolve() in reviewed_paths:
+        return False
+    # Older partial board reviews did not label their context. Their measured
+    # board JSON still establishes its origin; never reinterpret an old fixed
+    # camera disappearance as a current live-camera defect.
+    for path in reviewed_paths:
+        if path.suffix.lower() == ".json":
+            data = read(path)
+            if isinstance(data, dict) and data.get("Source") and data.get("Times") and data.get("Image"):
+                return True
+    return False
+
+
 def functional_verdict(review, current, motion_complete, texture_complete, statuses, runtime_ready,
-                       context_required, image_paths):
+                       context_required, image_paths, board_current=False):
     """Functional quality is explicit reviewed behavior, independent of pixel fidelity."""
     if "FAIL" in statuses:
         return "FAIL", ["A current identity, dependency, runtime, motion or material check failed."]
@@ -265,7 +333,7 @@ def functional_verdict(review, current, motion_complete, texture_complete, statu
     if context_required or scope.get("boardContextRequired"):
         board = scope.get("boardEvidence", [])
         if (scope.get("boardContextReviewed") is not True or scope.get("boardSamplesInspected", 0) < 3
-                or not board or not all((ROOT / name).resolve() in image_paths for name in board)):
+                or not board_current or not board or not all((ROOT / name).resolve() in image_paths for name in board)):
             missing.append("A framing/bounds candidate requires hash-linked actual-board review.")
     return ("UNVERIFIED", missing) if missing else ("VERIFIED", [])
 
@@ -436,6 +504,10 @@ def merge(args):
                     fine_texture_status = "UNVERIFIED"
                 if not render_current or (visual_status == "VERIFIED" and (not motion_complete or not texture_complete or motion_review_status != "VERIFIED" or fine_texture_status != "VERIFIED")):
                     visual_status = "UNVERIFIED"
+        board_current = board_evidence_current(review, key, catalog, companions, reviewed_paths)
+        board_only = board_only_review(review, image, reviewed_paths)
+        if board_only and not board_current:
+            motion_review_status = visual_status = "UNVERIFIED"
         finite_status = "VERIFIED" if runtime_valid and runtime_row and runtime_row.get("runtimeSampling") == "FINITE" else "UNVERIFIED"
         # Wrong form and concrete load/runtime/material/motion failures are never
         # erased by a new render. Optional browser fidelity is a separate result.
@@ -444,9 +516,9 @@ def merge(args):
             checks.append("FAIL")
         context_required = bool(runtime_row and runtime_row.get("review")) or bool(evidence and any(
             sample.get("EdgePixels", 0) > 0 or sample.get("VisiblePixels", 0) == 0 for sample in evidence[0].get("Samples", [])))
-        functional_status, functional_notes = functional_verdict(review, review_current and render_current,
+        functional_status, functional_notes = functional_verdict(review, review_current and render_current and (not board_only or board_current),
             motion_complete, texture_complete, checks, runtime_complete and finite_status == "VERIFIED" and runtime_role_coverage(runtime_row),
-            context_required, reviewed_paths)
+            context_required, reviewed_paths, board_current)
         if functional_status == "VERIFIED" and identity_status == "UNVERIFIED":
             identity_status = "VERIFIED"  # Explicit identityReviewed in this current complete manual review.
         overall = functional_status
@@ -475,6 +547,7 @@ def merge(args):
                                     "render": render_file, "renderAlias": alias_file, "renderReusedFrom": reused_from,
                                     "renderCatalogSha256": evidence[0].get("RuntimeHashes", {}).get("models.json") if evidence else None,
                                     "captureManifest": capture.get("manifest"), "captureCatalogSha256": capture["hashes"].get("models.json"),
+                                    "captureSourceProvenance": capture["captureSources"], "boardContextCurrent": board_current,
                                     "captureRuntimeGroupsCurrent": capture["groups"], "renderDataAndRuntimeCurrent": render_current,
                                     "completeRoleFrameCoverage": coverage}})
     counts = dict(Counter(row["status"] for row in matrix))

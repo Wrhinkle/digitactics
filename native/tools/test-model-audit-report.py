@@ -1,5 +1,6 @@
 """The audit must never turn missing, stale, or purely numerical evidence into visual approval."""
 import importlib.util
+import hashlib
 from contextlib import chdir
 import json
 from pathlib import Path
@@ -34,7 +35,7 @@ class EvidenceChecks(unittest.TestCase):
         self.write(self.args.inventory, self.inventory)
         self.original_source_paths = audit.capture_source_paths if hasattr(audit, "capture_source_paths") else None
         audit.capture_source_paths = lambda: {group: ["native/src/" + group + ".cs"]
-                                              for group in ["renderer", "pose", "combat", "companion"]}
+                                              for group in ["renderer", "pose", "combat", "companion", "capture", "board"]}
         self.original_material_paths = getattr(audit, "material_source_paths", None)
         audit.material_source_paths = lambda: ["native/src/material-loader.cs"]
 
@@ -178,7 +179,7 @@ class EvidenceChecks(unittest.TestCase):
             self.write(path, value)
             frozen[name] = {"file": path.name, "sha256": audit.sha(path)}
         groups = {}
-        for group in ["renderer", "pose", "combat", "companion"]:
+        for group in ["renderer", "pose", "combat", "companion", "capture", "board"]:
             path = audit.NATIVE / ("src/" + group + ".cs")
             path.parent.mkdir(exist_ok=True)
             path.write_text("measured " + group, encoding="utf-8")
@@ -236,6 +237,41 @@ class EvidenceChecks(unittest.TestCase):
     def test_changed_renderer_source_invalidates_capture(self):
         self.capture()
         (audit.NATIVE / "src/renderer.cs").write_text("changed rendering", encoding="utf-8")
+        self.assertEqual(self.result()["renderedTechnicalStatus"], "UNVERIFIED")
+
+    def test_capture_camera_edit_retains_measured_role_and_texture_evidence(self):
+        self.capture()
+        self.manual_review()
+        (audit.NATIVE / "src/capture.cs").write_text("updated board capture camera", encoding="utf-8")
+        row = self.result()
+        self.assertEqual(row["renderedTechnicalStatus"], "VERIFIED")
+        self.assertEqual(row["fineTextureStatus"], "VERIFIED")
+        self.assertEqual(row["motionReviewStatus"], "VERIFIED")
+        self.assertEqual(row["evidence"]["captureSourceProvenance"]["native/src/capture.cs"], hashlib.sha256(b"measured capture").hexdigest())
+
+    def test_capture_provenance_cannot_be_omitted(self):
+        self.capture()
+        path = self.args.visual / "capture-manifest.json"
+        manifest = audit.read(path)
+        manifest["sourceGroups"].pop("capture")
+        self.write(path, manifest)
+        self.assertEqual(self.result()["renderedTechnicalStatus"], "UNVERIFIED")
+
+    def test_legacy_measured_harness_in_renderer_remains_valid_provenance(self):
+        self.capture()
+        path = self.args.visual / "capture-manifest.json"
+        manifest = audit.read(path)
+        manifest["sourceGroups"]["renderer"].update(manifest["sourceGroups"].pop("capture"))
+        self.write(path, manifest)
+        (audit.NATIVE / "src/capture.cs").write_text("new diagnostic", encoding="utf-8")
+        self.assertEqual(self.result()["renderedTechnicalStatus"], "VERIFIED")
+
+    def test_unknown_renderer_dependency_is_not_silently_discarded(self):
+        self.capture()
+        path = self.args.visual / "capture-manifest.json"
+        manifest = audit.read(path)
+        manifest["sourceGroups"]["renderer"]["native/src/unknown.cs"] = "old-hash"
+        self.write(path, manifest)
         self.assertEqual(self.result()["renderedTechnicalStatus"], "UNVERIFIED")
 
     def test_companion_only_runtime_change_preserves_combat_only_source(self):
@@ -622,18 +658,85 @@ class EvidenceChecks(unittest.TestCase):
         self.write(self.args.runtime, runtime)
         self.assertEqual(self.result()["functionalStatus"], "UNVERIFIED")
 
-    def test_board_review_with_hashed_evidence_can_resolve_framing_candidate(self):
+    def reviewed_board(self):
         review, runtime = self.functional_review()
         runtime["sources"][0]["review"] = ["special: large root travel"]
         self.write(self.args.runtime, runtime)
-        board = audit.ROOT / "board.png"
+        board = self.args.visual / "board.png"
         board.write_bytes(b"reviewed production context")
-        review["evidence"].append("board.png")
-        review["evidenceSha256"]["board.png"] = audit.sha(board)
+        record = self.args.visual / "board.json"
+        self.write(record, {"Source": "creature", "Image": board.name, "Times": [0, .5, 1.4],
+                           "BoardContextPolicy": "live-arena-camera/v1", "RuntimeHashes": self.capture_hashes})
+        paths = [str(path.relative_to(audit.ROOT)) for path in [board, record]]
+        review["evidence"].extend(paths)
+        review["evidenceSha256"].update({path: audit.sha(audit.ROOT / path) for path in paths})
         review["functionalScope"].update(boardContextRequired=True, boardContextReviewed=True,
-                                         boardSamplesInspected=3, boardEvidence=["board.png"])
+                                         boardSamplesInspected=3, boardEvidence=paths)
         self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        return review, record
+
+    def test_board_review_with_hashed_evidence_can_resolve_framing_candidate(self):
+        self.reviewed_board()
         self.assertEqual(self.result()["functionalStatus"], "VERIFIED")
+
+    def test_old_comparative_camera_cannot_clear_actual_board_context(self):
+        review, record = self.reviewed_board()
+        data = audit.read(record)
+        data.pop("BoardContextPolicy")
+        self.write(record, data)
+        review["evidenceSha256"][str(record.relative_to(audit.ROOT))] = audit.sha(record)
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        row = self.result()
+        self.assertEqual(row["functionalStatus"], "UNVERIFIED")
+        self.assertFalse(row["evidence"]["boardContextCurrent"])
+        self.assertEqual(row["fineTextureStatus"], "VERIFIED")
+
+    def test_board_camera_change_only_invalidates_required_board_context(self):
+        self.reviewed_board()
+        (audit.NATIVE / "src/board.cs").write_text("new live camera", encoding="utf-8")
+        row = self.result()
+        self.assertEqual(row["functionalStatus"], "UNVERIFIED")
+        self.assertEqual(row["fineTextureStatus"], "VERIFIED")
+        self.assertEqual(row["motionReviewStatus"], "VERIFIED")
+        self.assertFalse(row["evidence"]["boardContextCurrent"])
+
+    def test_board_change_does_not_block_models_without_context_findings(self):
+        self.functional_review()
+        (audit.NATIVE / "src/board.cs").write_text("new live camera", encoding="utf-8")
+        self.assertEqual(self.result()["functionalStatus"], "VERIFIED")
+
+    def test_board_capture_must_match_reviewed_model_and_runtime(self):
+        for field, value in [("Source", "other"), ("RuntimeHashes", {}), ("Times", [0]), ("Image", "other.png")]:
+            with self.subTest(field=field):
+                review, record = self.reviewed_board()
+                data = audit.read(record)
+                data[field] = value
+                self.write(record, data)
+                review["evidenceSha256"][str(record.relative_to(audit.ROOT))] = audit.sha(record)
+                self.write(self.args.visual / "reviews.json", {"sources": [review]})
+                self.assertEqual(self.result()["functionalStatus"], "UNVERIFIED")
+
+    def test_legacy_board_only_failure_is_retained_as_comparative_history(self):
+        review, record = self.reviewed_board()
+        data = audit.read(record)
+        data.pop("BoardContextPolicy")
+        self.write(record, data)
+        review.update(functionalStatus="FAIL", motionReviewStatus="FAIL", visualFidelityStatus="FAIL")
+        review["evidence"] = review["functionalScope"]["boardEvidence"]
+        review["evidenceSha256"] = {name: audit.sha(audit.ROOT / name) for name in review["evidence"]}
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        row = self.result()
+        self.assertEqual(row["functionalStatus"], "UNVERIFIED")
+        self.assertEqual(row["motionReviewStatus"], "UNVERIFIED")
+        self.assertEqual(row["visualReview"]["motionReviewStatus"], "FAIL")
+
+    def test_measured_live_board_can_establish_partial_concrete_failure(self):
+        review, record = self.reviewed_board()
+        review.update(functionalStatus="FAIL", motionReviewStatus="FAIL", visualFidelityStatus="FAIL")
+        review["evidence"] = review["functionalScope"]["boardEvidence"]
+        review["evidenceSha256"] = {name: audit.sha(audit.ROOT / name) for name in review["evidence"]}
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        self.assertEqual(self.result()["functionalStatus"], "FAIL")
 
     def test_optional_fidelity_difference_does_not_override_functional_acceptance(self):
         review, runtime = self.functional_review()
