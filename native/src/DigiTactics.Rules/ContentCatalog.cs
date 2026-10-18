@@ -12,7 +12,7 @@ public sealed record FormDefinition(string Id, string Name, string Description, 
 public sealed record PartnerStats(double Hp, double BonusHp, double BonusAp, double BonusAd, double BonusMana,
     int[]?[]? Odds = null, double Chance = 0, double SeekerChance = 0, int FromLevel = 4);
 public sealed record Ruleset(string Id, string Name, string Pace, UnitLine[] Lines, int[] PoolSizes, int[]?[] Odds, int RerollCost, int ShopSize,
-    ItemDefinition[] Items, string[] CoreItems, TraitDefinition[] Traits, UnitLine[] ExtraLines, PartnerStats? Partner = null, double[]? PveMultipliers = null, Dictionary<string, int>? DragonTraitLimits = null, Dictionary<string, FormDefinition[]>? Forms = null, Dictionary<string, TamerDefinition>? Tamers = null, EconomyRules? Economy = null, RoundSchedule? Schedule = null, DuoRules? Duo = null, MatchLossRules? Loss = null, LootRules? Loot = null, OfferRules? Offers = null, Dictionary<string, string>? Recipes = null, ColiseumPlanningRules? Coliseum = null, Dictionary<string, string[]>? ItemRoles = null, Dictionary<string, OfferAiDefinition>? OfferAi = null, Dictionary<string, string>? AnomalyTags = null, CarouselRules? Carousel = null, DragonShopCut? DragonShopCut = null, GameStartRules? GameStart = null, UnderlordsPlanningRules? Underlords = null, ReckoningPlanningRules? Reckoning = null, WispDefinition[]? Wisps = null, MatchCombatRules? MatchCombat = null);
+    ItemDefinition[] Items, string[] CoreItems, TraitDefinition[] Traits, UnitLine[] ExtraLines, PartnerStats? Partner = null, double[]? PveMultipliers = null, Dictionary<string, int>? DragonTraitLimits = null, Dictionary<string, FormDefinition[]>? Forms = null, Dictionary<string, TamerDefinition>? Tamers = null, EconomyRules? Economy = null, RoundSchedule? Schedule = null, DuoRules? Duo = null, MatchLossRules? Loss = null, LootRules? Loot = null, OfferRules? Offers = null, Dictionary<string, string>? Recipes = null, ColiseumPlanningRules? Coliseum = null, Dictionary<string, string[]>? ItemRoles = null, Dictionary<string, OfferAiDefinition>? OfferAi = null, Dictionary<string, string>? AnomalyTags = null, CarouselRules? Carousel = null, DragonShopCut? DragonShopCut = null, GameStartRules? GameStart = null, UnderlordsPlanningRules? Underlords = null, ReckoningPlanningRules? Reckoning = null, WispDefinition[]? Wisps = null, MatchCombatRules? MatchCombat = null, double PlanningSeconds = 40);
 public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
 {
     public static ContentCatalog Load(string path)
@@ -24,6 +24,7 @@ public sealed record ContentCatalog(int SchemaVersion, Ruleset[] Variants)
             throw new InvalidDataException("Unsupported or empty content catalog.");
         foreach (var rules in catalog.Variants)
         {
+            if (!double.IsFinite(rules.PlanningSeconds) || rules.PlanningSeconds <= 0) throw new InvalidDataException("Invalid planning duration: " + rules.Id);
             if (rules.MatchCombat is null) throw new InvalidDataException("Missing match combat definitions: " + rules.Id);
             rules.MatchCombat.Validate(rules);
             if (rules.Wisps is null || rules.Wisps.Any(w => string.IsNullOrEmpty(w.Id) || w.Base < 0 || w.MinStage < 1) ||

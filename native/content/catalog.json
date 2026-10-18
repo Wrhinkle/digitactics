@@ -6677,6 +6677,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 40,
       "shopSize": 5,
       "items": [
         {
@@ -15639,6 +15640,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 1,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -23914,6 +23916,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 40,
       "shopSize": 5,
       "items": [
         {
@@ -32698,6 +32701,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 1,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -41198,6 +41202,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 40,
       "shopSize": 5,
       "items": [
         {
@@ -49239,6 +49244,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 1,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -57415,6 +57421,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 40,
       "shopSize": 5,
       "items": [
         {
@@ -66705,6 +66712,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 1,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -76921,6 +76929,7 @@
         2.8
       ],
       "rerollCost": 2,
+      "planningSeconds": 40,
       "shopSize": 5,
       "items": [
         {
@@ -88448,6 +88457,7 @@
         2.7
       ],
       "rerollCost": 1,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -99360,6 +99370,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 40,
       "shopSize": 5,
       "items": [
         {
@@ -108409,6 +108420,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 1,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -117103,6 +117115,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 40,
       "shopSize": 5,
       "items": [
         {
@@ -126214,6 +126227,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 1,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -136030,6 +136044,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 40,
       "shopSize": 5,
       "items": [
         {
@@ -145212,6 +145227,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 1,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -154253,6 +154269,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -162654,6 +162671,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 1,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -170815,6 +170833,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 35,
       "shopSize": 5,
       "items": [
         {
@@ -178815,6 +178834,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 1,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -187208,6 +187228,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {
@@ -195736,6 +195757,7 @@
       },
       "pveMultipliers": [],
       "rerollCost": 2,
+      "planningSeconds": 30,
       "shopSize": 5,
       "items": [
         {

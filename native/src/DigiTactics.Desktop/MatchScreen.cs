@@ -161,6 +161,7 @@ internal sealed partial class MatchScreen : IDisposable
         }
         else if (Session.Rounds.Phase == MatchPhase.Result) battle?.Advance(delta);
         if (wasResult) UpdateResultCountdown(wallDelta ?? delta);
+        else UpdatePlanningCountdown(delta);
         planning.Update(Rules, Session.State.Players[viewed], delta);
         UpdateBattleBench(delta);
         UpdateAiEmotes();
@@ -320,6 +321,7 @@ internal sealed partial class MatchScreen : IDisposable
         else if (session.Rounds.Phase == MatchPhase.Planning) { if (networkRoom is not null && session.Rounds.RoundType == "carousel") ImGui.Text("Waiting for carousel picks..."u8); else if (Button("fight", session.Rounds.RoundType == "carousel" ? "Finish carousel" : "Ready for battle")) Fight(); }
         else if (session.Rounds.Phase == MatchPhase.Result) { if (networkRoom is not null) ImGui.Text("Next round starts shortly..."u8); else if (Button("next", "Next round")) Next(); }
         else { if (Button("finish", networkRoom is null ? "Skip to results" : "Finish my replay")) Finish(); ImGui.SameLine(); ImGui.Text($"{battle?.Combat.Time ?? 0:F1}s"); }
+        PlanningTimerControls();
         if (networkRoom is not null) { ImGui.SameLine(); NetworkSeatControls(); ImGui.SameLine(); if (Button("leaveOnline", "Leave match")) LeaveSteamRoom(); }
         ImGui.End();
     }

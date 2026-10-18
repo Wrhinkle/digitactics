@@ -8,6 +8,7 @@ namespace DigiTactics.Desktop;
 /// <summary>Exercises visible controls through ImGui mouse events, not direct gameplay mutations.</summary>
 internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = null, bool evolutionSmoke = false)
 {
+    private readonly PlanningTimerSmoke planningTimer = new();
     private double automaticAdvanceWait;
     private int combatHoverFrames, combatHoverVisible;
     private bool combatHoverVerified;
@@ -172,6 +173,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 throw new InvalidOperationException("Automatic result advance skipped the result presentation delay.");
             index++; cooldown = 3; return;
         }
+        if (index == 12) { if (planningTimer.Input(screen)) index++; cooldown = 3; return; }
         string command = commands[index];
         if (index == 19 && !reservePurchased)
         {
