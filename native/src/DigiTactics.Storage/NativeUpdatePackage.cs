@@ -87,7 +87,7 @@ public static partial class NativeUpdatePackage
         if(length!=expectedLength)throw new InvalidDataException("Expanded file length differs.");
         cancellation.ThrowIfCancellationRequested();return Convert.ToHexStringLower(hash.GetHashAndReset());
     }
-    private static void RejectDuplicateProperties(JsonElement value)
+    internal static void RejectDuplicateProperties(JsonElement value)
     {
         if(value.ValueKind==JsonValueKind.Object)
         {

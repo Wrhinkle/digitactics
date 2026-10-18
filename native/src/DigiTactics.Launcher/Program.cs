@@ -16,7 +16,13 @@ try
     int separator=Array.IndexOf(args,"--");
     string[] options=separator<0?args:args[..separator],gameArgs=separator<0?[]:args[(separator+1)..];
     int index=0;string command="run";
-    if(options.Length>0 && options[0] is "run" or "stage" or "fetch")command=options[index++];
+    if(options.Length>0 && options[0] is "run" or "stage" or "fetch" or "check")command=options[index++];
+    string? owner=null,repository=null;
+    if(command=="check")
+    {
+        if(options.Length-index<2 || gameArgs.Length!=0)throw new ArgumentException("Usage: check <owner> <repository> [launcher options]");
+        owner=options[index++];repository=options[index++];
+    }
     string? archive=null,descriptorPath=null;
     if(command is "stage" or "fetch")
     {
@@ -49,6 +55,13 @@ try
     if(!File.Exists(Path.Combine(bundle,"DigiTactics.Desktop.exe")))throw new FileNotFoundException("Bundled native application is missing.");
     using var state=new NativeLaunchState(stateDirectory,version!);
     string candidates=Path.Combine(stateDirectory,"candidates");
+    if(command=="check")
+    {
+        using var discovery=new NativeReleaseDiscovery();
+        var available=await discovery.Check(owner!,repository!,state.CurrentVersion,launcherVersion,Path.Combine(stateDirectory,"release-cache.json"));
+        Console.WriteLine(JsonSerializer.Serialize(available,json));return 0;
+    }
+
     if(command is "stage" or "fetch")
     {
         if(new FileInfo(descriptorPath!).Length>16384)throw new InvalidDataException("Oversized update descriptor.");

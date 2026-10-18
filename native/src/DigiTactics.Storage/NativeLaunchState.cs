@@ -43,6 +43,8 @@ public sealed class NativeLaunchState : IDisposable
         catch {lease.Dispose();throw;}
     }
 
+    public string CurrentVersion {get {ObjectDisposedException.ThrowIf(disposed,this);return EffectiveActive()?.Version??bundledVersion;}}
+
     public void Queue(NativeReleaseReference release)
     {
         ObjectDisposedException.ThrowIf(disposed,this);ValidateRelease(release);
