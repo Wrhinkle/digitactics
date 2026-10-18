@@ -19,6 +19,7 @@ if (args.Contains("--music-decoder-only"))
     if(option<0 || option+1>=args.Length) throw new ArgumentException("Provide --ffmpeg with the decoder executable path.");
     await StreamingMusicChecks.Run(Path.GetFullPath(args[option+1])); return;
 }
+if (args.Contains("--music-playlist-only")) { MusicPlaylistChecks.Run(root); return; }
 if (args.Contains("--music-library-only")) { MusicLibraryChecks.Run(root); return; }
 if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--soundboard-only")) { SoundboardChecks.Run(); return; }
@@ -234,6 +235,7 @@ assertions += AudioCueParity.Run(root, catalog);
 assertions += AudioSettingsChecks.Run();
 assertions += MatchHistoryChecks.Run(root, catalog);
 assertions += PlayOnChecks.Run(catalog);
+assertions += MusicPlaylistChecks.Run(root);
 assertions += MusicLibraryChecks.Run(root);
 assertions += MatchRewardChecks.Run(root, catalog);
 assertions += LegendRewardChecks.Run(root);

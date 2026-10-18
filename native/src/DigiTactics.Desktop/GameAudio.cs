@@ -8,7 +8,7 @@ internal sealed record AudioClipInfo(string File, int Frames, int? LoopFrame, in
 internal sealed record AudioManifest(int SampleRate, int Channels, Dictionary<string, AudioClipInfo> Clips);
 
 /// <summary>One bounded PCM mixer feeding BRUTAL SDL. Audio never reads or advances gameplay RNG.</summary>
-internal sealed unsafe class GameAudio : IDisposable
+internal sealed unsafe partial class GameAudio : IDisposable
 {
     private sealed class Voice(float[] samples, float gain, bool music = false, int loop = 0, int end = 0, bool board = false)
     {
@@ -19,6 +19,7 @@ internal sealed unsafe class GameAudio : IDisposable
         public int Position;
         public int TailPosition = -1;
         public float Gain = gain, Target = gain;
+        public float FadeDown = 1f / 66150;
     }
     private readonly AudioManifest manifest;
     private readonly string directory;
@@ -181,7 +182,8 @@ internal sealed unsafe class GameAudio : IDisposable
     }
     public void Music(string? id)
     {
-        if (music == id) return;
+        if (music == id && customVoices.Count == 0) return;
+        StopCustomMusic(1);
         music = id;
         if (!Available) voices.RemoveAll(v => v.Music);
         foreach (var voice in voices.Where(v => v.Music)) voice.Target = 0;
@@ -219,7 +221,7 @@ internal sealed unsafe class GameAudio : IDisposable
                 {
                     if (voice.Music && voice.Position >= voice.End) { voice.TailPosition = voice.End; voice.Position = voice.Loop; }
                     if (voice.Position >= voice.Samples.Length) break;
-                    voice.Gain += Math.Clamp(voice.Target - voice.Gain, -1f / 66150, 1f / 52920);
+                    voice.Gain += Math.Clamp(voice.Target - voice.Gain, -voice.FadeDown, 1f / 52920);
                     // Assets carry 6 dB of headroom; restore it alongside the original bus gains.
                     float gain = Muted || voice.Music && MusicOff ? 0 : voice.Gain * (voice.Music ? .84f * MusicVolume : voice.Board ? 1.5f * BoardVolume : 1.4f * EffectsVolume);
                     if (voice.Music) gain *= MusicDuck(frame + i / 2);
@@ -234,11 +236,12 @@ internal sealed unsafe class GameAudio : IDisposable
                 }
             }
             voices.RemoveAll(v => !v.Music && v.Position >= v.Samples.Length || v.Music && v.Target == 0 && v.Gain <= 0);
+            MixCustomMusic();
             for (int i = 0; i < buffer.Length; i++) buffer[i] = Math.Clamp(buffer[i], -1, 1);
             fixed (float* ptr = buffer)
                 if (Sdl.PInvoke.PutAudioStreamData(stream, ptr, buffer.Length * sizeof(float)) == 0) { DeviceFailed("Audio queue failed."); return; }
             frame += buffer.Length / 2; queued += buffer.Length * sizeof(float);
         }
     }
-    public void Dispose() { stream.Dispose(); stream = default; if (audioInitialized) { Sdl.PInvoke.QuitSubSystem(SdlInitFlags.Audio); audioInitialized = false; } }
+    public void Dispose() { DisposeCustomMusic(); stream.Dispose(); stream = default; if (audioInitialized) { Sdl.PInvoke.QuitSubSystem(SdlInitFlags.Audio); audioInitialized = false; } }
 }
