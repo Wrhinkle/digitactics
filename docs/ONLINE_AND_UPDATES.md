@@ -1,6 +1,6 @@
 # Online play, local data and updates
 
-This guide describes the **native 2.0.0 release candidate** on this branch. It does not announce a published release or completion of final acceptance. Electron 1.x uses different save and update paths, documented at the end.
+This guide describes the **native 2.0.0 Windows edition**. Electron 1.x uses different save and update paths, documented at the end.
 
 ## What connects to what
 
@@ -15,7 +15,7 @@ This guide describes the **native 2.0.0 release candidate** on this branch. It d
 
 Start Steam and sign in before launching Digi-Tactics. Solo does not require Steam. The native integration uses **Spacewar App ID 480**, a development/sample integration, not a Digi-Tactics store listing. Steam may display Spacewar; availability depends on Steam and may change. Keep Digi-Tactics open before accepting an invite because the shared development App ID may otherwise launch Spacewar. Native launch arguments and in-game invite callbacks can forward a lobby request to an already running game.
 
-Rooms are filtered by the Digi-Tactics marker and compatible multiplayer protocol. The native candidate uses **protocol 9**. Use the same release on each PC; a shared App ID does not establish compatibility with older Electron clients. Public rooms appear in the room browser, and friends-only rooms can be discovered through friends. This is lobby-based multiplayer, with no ranked matchmaking queue or project-operated account service.
+Rooms are filtered by the Digi-Tactics marker and compatible multiplayer protocol. The native edition uses **protocol 9**. Use the same release on each PC; a shared App ID does not establish compatibility with older Electron clients. Public rooms appear in the room browser, and friends-only rooms can be discovered through friends. This is lobby-based multiplayer, with no ranked matchmaking queue or project-operated account service.
 
 Each match has eight seats. Duos groups them into four teams of two with shared health, partner transfers and a combined battlefield. AI controls empty seats. An idle host can change the set, pace and format before starting. Chaos set and pace choices are resolved once from the host's match seed; peers receive those resolved values and do not roll their own choices.
 
@@ -27,7 +27,7 @@ The native game is a C# desktop application without an embedded Electron rendere
 
 Steam transport requests relays and disables direct peer address sharing before creating sessions. Initialization fails if that configuration cannot be established. This has not been independently audited as a network privacy guarantee.
 
-Steam identity does not make client game logic trustworthy. A modified host or client can cheat. There is no central authoritative server or VAC integration, and local progression/results are not competitive proof. Automated source comparisons, fake-Steam transport checks and local UI tests do not establish live cross-device recovery, clean-machine compatibility or public-scale concurrency. Final native release acceptance remains separate; no concurrency or uptime guarantee is offered.
+Steam identity does not make client game logic trustworthy. A modified host or client can cheat. There is no central authoritative server or VAC integration, and local progression/results are not competitive proof. Automated source comparisons, fake-Steam transport checks and local UI tests do not establish live cross-device recovery, clean-machine compatibility or public-scale concurrency. Real two-account Steam recovery, actual Windows chooser interaction, physical audio-device switching and clean-machine execution remain unverified.
 
 ## Saves and migration
 
@@ -76,7 +76,7 @@ No GitHub credential is bundled or required. Offline operation, rate limits or i
 | Matching `digitactics-media-audio-sources-*.zip` and `MEDIA_RUNTIME_NOTICES.txt` | Source/build materials and notices for the packaged FFmpeg audio runtime; not game installers |
 | GitHub's Source code archives | Repository source for developers |
 
-Native 2.0.0 is still a candidate on this branch. These filenames describe the intended release layout, not proof that the files are already downloadable. See [artifact assembly](../native/tools/NATIVE_RELEASE_ARTIFACTS.md) for maintainer verification.
+Use the full installation ZIP for the first native installation; the update ZIP requires the native launcher. See [artifact assembly](../native/tools/NATIVE_RELEASE_ARTIFACTS.md) for maintainer verification.
 
 ## Historical Electron 1.x
 

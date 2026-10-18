@@ -1,0 +1,2 @@
+# Preserve the upstream bytes verified by the managed-license SHA-256 pin.
+native/tools/licenses/dotnet/LICENSE.TXT -text

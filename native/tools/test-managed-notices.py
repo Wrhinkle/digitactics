@@ -3,6 +3,7 @@ from contextlib import contextmanager
 import base64
 import hashlib
 import importlib.util
+import io
 import json
 from pathlib import Path
 import shutil
@@ -120,6 +121,18 @@ with changed(app / "System.Runtime.dll", b"changed binary"):
 with changed(app / "Fixture.Library.dll"):
     reject("Missing package binary rejected", "Published binary differs")
 archive = cache / library.lower() / "fixture.library.1.2.3.nupkg"
+without_notices = io.BytesIO()
+with ZipFile(archive) as original, ZipFile(without_notices, "w") as reduced:
+    for name in original.namelist():
+        if name != "THIRD-PARTY-NOTICES.TXT":
+            reduced.writestr(name, original.read(name))
+reduced_data = without_notices.getvalue()
+reduced_hash = base64.b64encode(hashlib.sha512(reduced_data).digest())
+with changed(archive, reduced_data), changed(archive.with_suffix(".nupkg.sha512"), reduced_hash):
+    reduced_outputs, count, _ = notices.gather(assets_file, deps_file, app)
+    check(count == 3 and "LICENSES/Fixture.Library-1.2.3/License.md" in reduced_outputs
+          and "LICENSES/Fixture.Library-1.2.3/THIRD-PARTY-NOTICES.TXT" not in reduced_outputs,
+          "Library without upstream third-party notices needs only its actual license")
 with changed(archive, b"corrupted archive"):
     reject("Corrupted NuGet archive rejected", "NuGet archive integrity mismatch")
 with changed(cache / library.lower() / ".nupkg.metadata", json_bytes({"contentHash": "other-hash"})):

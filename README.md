@@ -6,13 +6,13 @@
 
 A free, unofficial Digimon autobattler made for fun. Buy Digimon, combine copies to evolve them, build trait synergies, equip items and position your team before automatic battles.
 
-**This branch prepares the native 2.0.0 release candidate. It is still undergoing final acceptance and has not been declared published.** The native edition uses [BRUTAL](https://github.com/ahwootech/BRUTAL) for its Windows desktop foundation, with C# gameplay and native graphics, audio and UI. No Electron or browser runs inside the native game. Existing Electron 1.x releases and their download instructions remain separate below.
+**Digi-Tactics 2.0.0 is the native Windows edition.** The native edition uses [BRUTAL](https://github.com/ahwootech/BRUTAL) for its Windows desktop foundation, with C# gameplay and native graphics, audio and UI. No Electron or browser runs inside the native game. Existing Electron 1.x releases and their download instructions remain separate below.
 
 **[Release downloads](https://github.com/Wrhinkle/digitactics/releases)** | [Watch the trailer](media/digi-tactics-trailer.mp4) | [Full credits](CREDITS.md) | [Report a bug](https://github.com/Wrhinkle/digitactics/issues)
 
 ## Start the native edition
 
-When the native release is published, use the full **[DigiTactics-native-2.0.0-win-x64.zip](https://github.com/Wrhinkle/digitactics/releases/download/native-v2.0.0/DigiTactics-native-2.0.0-win-x64.zip)** (or the matching newer version on the release page). This is the intended asset link; it becomes available after publication. A local candidate built from source has the same launcher layout. GitHub's automatic **Source code** archives and the `native-update` ZIP are not full installations.
+Use the full **[DigiTactics-native-2.0.0-win-x64.zip](https://github.com/Wrhinkle/digitactics/releases/download/native-v2.0.0/DigiTactics-native-2.0.0-win-x64.zip)** (or the matching newer version on the release page). GitHub's automatic **Source code** archives and the `native-update` ZIP are not full installations.
 
 1. Extract the entire ZIP to a local folder. Keep **`DigiTactics.Launcher.exe`**, its accompanying files and the **`app`** folder together. Start **`DigiTactics.Launcher.exe`** after extraction.
 2. To bring over an existing save, follow the import steps below **before starting a match or changing settings**.
@@ -21,7 +21,7 @@ When the native release is published, use the full **[DigiTactics-native-2.0.0-w
 
 The native package targets **64-bit Windows with an OpenGL 4.5 capable graphics driver**. It includes its .NET runtime; players do not need development tools, a GitHub account or a GitHub token. Use `SHA256SUMS.txt` to check downloaded assets. The trailer was captured from the earlier edition and is not a native performance benchmark.
 
-## What's in the native candidate
+## What's in the native edition
 
 - **Eleven sets and Chaos:** 22 concrete Normal / Hyper Roll variants, including Undermons, Knockout and Auto Chess. Chaos chooses from the eligible sets using the match seed; Steam hosts can also choose Chaos pace. All peers receive the same resolved choices.
 - **Solo and Duos:** AI fills empty seats. Duos has four teams of two, shared health, partner transfers and combined battlefields. Steam rooms include public/friends-only discovery, invites, chat, spectator controls and host recovery.
@@ -44,11 +44,11 @@ The native app does not automatically read or modify the old Electron profile. I
 
 ## Online play and limits
 
-Start the game on both PCs with Steam signed in, then create or join a lobby. Everyone should use the same native release. The native candidate uses multiplayer protocol **9**; do not assume compatibility with an older Electron build just because both use Steam.
+Start the game on both PCs with Steam signed in, then create or join a lobby. Everyone should use the same native release. The native edition uses multiplayer protocol **9**; do not assume compatibility with an older Electron build just because both use Steam.
 
 **The integration uses the Spacewar development App ID, 480.** Steam may show Spacewar, and an invite accepted while Digi-Tactics is closed may open the sample application. Keep Digi-Tactics running before accepting an invite. This is an experimental fan-project setup, not an official Steam store release.
 
-Matches are hosted by a player, with validated actions and relayed peer transport. A modified host/client can still cheat. There is no central ranked service, VAC integration or claim of tested large-scale concurrency. Final packaged-app and live Steam acceptance are separate from source comparison and local UI tests; the candidate status above does not promise they have all passed.
+Matches are hosted by a player, with validated actions and relayed peer transport. A modified host/client can still cheat. There is no central ranked service, VAC integration or claim of tested large-scale concurrency. Automated tests cover source parity, local multiplayer orchestration and both supported UI sizes. Packaged-app checks cover graphics, audio, dependency closure and staged startup updates. Real two-account Steam reconnect and host migration remain unverified.
 
 **[Online, privacy, saves and updates explained](docs/ONLINE_AND_UPDATES.md)**
 

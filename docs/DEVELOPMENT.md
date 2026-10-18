@@ -1,11 +1,11 @@
 # Run and build from source
 
-This branch prepares the native 2.0.0 release candidate. The C# application under
+This branch contains the native 2.0.0 Windows edition. The C# application under
 `native/` uses BRUTAL GLFW, OpenGL and ImGui; browser/Electron source is retained
 as the original implementation and as input to reference comparisons and asset
 exporters. A successful local build does not publish or approve a release.
 
-## Native Windows candidate
+## Native Windows build
 
 See [the native guide](../native/README.md) for prerequisites and current
 acceptance status. Build on Windows x64 with the pinned .NET SDK, MSVC x64 tools,
@@ -114,7 +114,7 @@ Other test scripts document their arguments at the top. Keep generated screensho
 ## Historical Electron publishing
 
 These commands produce the Electron `latest.json`/payload channel, not a native
-release. Use the native artifact guide above for 2.0.0 candidates.
+release. Use the native artifact guide above for native releases.
 
 Change `desktop-steam/update-config.example.json` to your own repository before distributing a fork. An ignored `update-config.json` can override it locally; only `owner` and `repo` are staged. A fork pointed at the original repository will receive the original maintainer's updates.
 

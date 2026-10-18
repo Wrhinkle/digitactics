@@ -66,7 +66,9 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
               "codex","__codex","__joinFromInvite","__joined","steamLeave","steamBack",
               "saveData","__prepareBackup","exportSave","__inviteWithBackup","__joinedWithBackup","__backupCanceled","steamLeave","steamBack",
               "__prepareSocialRoom","__friends","socialRefresh","settings","__settings","socialJoin/"+Peer,"__joined","steamLeave","steamBack",
-              "__prepareSocialRoom","__friends","socialRefresh","codex","__codex","socialJoin/"+Peer,"__joined","steamLeave","steamBack"];
+              "__prepareSocialRoom","__friends","socialRefresh","codex","__codex","socialJoin/"+Peer,"__joined","steamLeave","steamBack",
+              "__friends","homeRuleset","homeRuleset/faction-wars","homeHeroAction","__homePlay","socialLobby","__lobby","steamBack",
+              "__prepareSocialRoom","__friends","socialRefresh","homeRuleset","homeRuleset/faction-wars","homeHeroAction","__homePlay","socialJoin/"+Peer,"__joined","steamLeave","steamBack"];
     }
     private void JoinRequest(ulong requested)
     {byte[] data=new byte[16];BinaryPrimitives.WriteUInt64LittleEndian(data,requested);callback!(333,data,data.Length);}
@@ -87,8 +89,8 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
     private void NextCommand(){index++;cooldown=5;}
     private void AssertLobbyView(MatchScreen screen)
     {
-        if(screen.SettingsVisible || screen.CodexVisible || screen.SaveDataVisible || screen.ProfileVisible || screen.CollectionVisible || screen.AboutVisible || !screen.Buttons.ContainsKey("steamBack"))
-            throw new InvalidOperationException($"Multiplayer navigation left the previous client screen visible at step {index} ({Pending}): Settings={screen.SettingsVisible}, Codex={screen.CodexVisible}, SaveData={screen.SaveDataVisible}, Profile={screen.ProfileVisible}, Collection={screen.CollectionVisible}, About={screen.AboutVisible}, lobby controls={screen.Buttons.ContainsKey("steamBack")}.");
+        if(screen.SettingsVisible || screen.HomePlayVisible || screen.CodexVisible || screen.SaveDataVisible || screen.ProfileVisible || screen.CollectionVisible || screen.AboutVisible || !screen.Buttons.ContainsKey("steamBack"))
+            throw new InvalidOperationException($"Multiplayer navigation left the previous client screen visible at step {index} ({Pending}): Settings={screen.SettingsVisible}, HomePlay={screen.HomePlayVisible}, Codex={screen.CodexVisible}, SaveData={screen.SaveDataVisible}, Profile={screen.ProfileVisible}, Collection={screen.CollectionVisible}, About={screen.AboutVisible}, lobby controls={screen.Buttons.ContainsKey("steamBack")}.");
     }
     public void Input(MatchScreen screen)
     {
@@ -106,6 +108,9 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
                 NextCommand();return;
             case "__codex":
                 if(!screen.CodexFullVisible)throw new InvalidOperationException("Navigation smoke did not open Codex through its Home control.");
+                NextCommand();return;
+            case "__homePlay":
+                if(!screen.HomePlayVisible || !screen.Buttons.ContainsKey("homePlayStart") || !screen.SocialVisible)throw new InvalidOperationException("Navigation smoke did not open the match launch panel through its Home control while keeping Friends visible.");
                 NextCommand();return;
             case "__lobby":AssertLobbyView(screen);navigationChecks++;NextCommand();return;
             case "__joined":
@@ -171,9 +176,9 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
         if (index < commands.Length) return false;
         if (!roomVerified || !matchVerified || screen.Session is not null || screen.InSteamRoom) throw new InvalidOperationException("Steam lobby UI did not enter and cleanly leave a native match.");
         if(callback is not null && (!inviteVerified || !rejectVerified || !rejoinVerified))throw new InvalidOperationException("Fake Steam invite, active-match guard or automatic accepted-invite join was not verified.");
-        if(callback is not null && navigationChecks!=7)throw new InvalidOperationException("Not all Settings, Codex, social, invite and pending-save navigation routes were verified.");
+        if(callback is not null && navigationChecks!=9)throw new InvalidOperationException("Not all Settings, Codex, match launch panel, social, invite and pending-save navigation routes were verified.");
         if (capture is not null) FrameCapture.SaveBitmap(capture, size.X, size.Y);
-        Console.WriteLine("Steam lobby UI smoke passed: connect, private create, free/take seat, native match start, leave and return to menu."+(callback is null?"":" Fake-only overlay, current-room no-op, active-match protection, accepted-invite join and seven cross-screen navigation/pending-save routes also passed; no invitations sent.")); return true;
+        Console.WriteLine("Steam lobby UI smoke passed: connect, private create, free/take seat, native match start, leave and return to menu."+(callback is null?"":" Fake-only overlay, current-room no-op, active-match protection, accepted-invite join and nine cross-screen navigation/pending-save routes also passed; no invitations sent.")); return true;
     }
     public void Dispose(){capturePackets?.Invoke(0);if(module!=0)NativeLibrary.Free(module);}
 }

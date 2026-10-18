@@ -93,8 +93,8 @@ def gather(assets_file: Path, deps_file: Path, destination: Path):
                 if len(license_data) != supplement["size"] or sha256(license_data) != supplement["sha256"]:
                     raise ValueError(f"Pinned license supplement differs: {identity}")
                 notices["LICENSE.TXT"] = license_data
-            if not any("notice" in name.lower() for name in notices):
-                raise ValueError(f"Package third-party notices are absent: {identity}")
+            if runtime and not any("notice" in name.lower() for name in notices):
+                raise ValueError(f"Runtime third-party notices are absent: {identity}")
             shipped = []
             for kind in ("runtime", "native", "resources"):
                 for asset in target[key].get(kind, {}):

@@ -23,7 +23,7 @@ Supply `-MediaMaterialsArchive <zip>` to attach the minimal audio runtime's comp
 
 ZIP ordering and timestamps are fixed. Repeating assembly with identical input bytes, notes and minimum launcher produces identical artifacts. Every full-install entry is read back and hashed, and its application content is checked against the update manifest. Output becomes visible under the requested name only after assembly succeeds. A failed attempt leaves a uniquely named `.partial` directory for inspection and never overwrites previous output.
 
-When release acceptance is eventually complete, the five base files and all media source/notice attachments belong on the same GitHub release, tagged `native-v<version>` or `v<version>`. Discovery reads GitHub's latest non-draft, non-prerelease release and ignores the existing Electron `latest.json`. Creating these local files does **not** authorize or perform publication. Live Steam, clean-machine, complete redistribution materials and remaining port acceptance retain their separate gates.
+After release acceptance, the five base files and all media source/notice attachments belong on the same GitHub release, tagged `native-v<version>` or `v<version>`. Discovery reads GitHub's latest non-draft, non-prerelease release and ignores the existing Electron `latest.json`. Creating these local files does **not** authorize or perform publication. Record application test evidence and coverage limits separately from archive integrity. Source materials, Microsoft CRT files, and managed runtime licenses must match the packaged binaries; see MEDIA_AUDIO_RUNTIME.md, CRT_RUNTIME.md and MANAGED_RUNTIME_NOTICES.md. A local package check does not establish remote-peer Steam or clean-machine coverage.
 
 ## Verification
 

@@ -1,19 +1,17 @@
 # Digi-Tactics native BRUTAL port
 
-The native port is undergoing integrated acceptance testing and is not yet a
-production replacement for v1.0.14. Gameplay, rendering, audio, Steam networking,
-profile migration and launcher updates are implemented; the final source audit
-and complete packaged-app checks must pass before release.
+Digi-Tactics 2.0.0 is a native C# Windows application using BRUTAL GLFW,
+OpenGL and ImGui. No Electron, WebView, JavaScript interpreter or browser runs
+inside it. Gameplay across all 22 variants, original models and animation,
+audio, Steam networking, client UI, progress migration and native updates are
+implemented.
+
 The integrated CPU suite passes 219,414,972 checks, including 5,699 reference
-battles across all 22 variants. Codex, save export/reset, Steam invites, social
-display, keyboard/preferences, collection filters and seeded Chaos are implemented
-and covered by source comparisons and focused UI tests. Result dismissal keeps
-multiplayer rooms connected; explicit Leave disconnects. Mystery rewards, the
-incubator, pedestal interaction and expanded Home content are in final UI
-verification. A fresh self-contained package and release acceptance remain
-outstanding; simulation counts alone do not establish release readiness.
-It is a native C# application using BRUTAL GLFW, OpenGL and ImGui. No Electron,
-WebView, JavaScript interpreter or browser runs inside it.
+battles and 114,063,925 state comparisons. Normal and minimum-window UI runs
+cover Home, Codex, collection, incubator, Farm and matches. Packaged checks
+cover native dependencies, rendering, audio and staged update startup on the
+build workstation. See [online and update documentation](https://github.com/Wrhinkle/digitactics/blob/native-v2.0.0/docs/ONLINE_AND_UPDATES.md)
+for migration instructions and the limits of single-workstation testing.
 
 ## Moving an existing save to the native app
 
@@ -55,11 +53,11 @@ The script prints a fresh package directory under
 `%LOCALAPPDATA%/DigiTacticsBuild/releases/`; start `DigiTactics.Launcher.exe`
 there. Publishing here means building the local package, not uploading a GitHub
 release. Release assembly and source-attachment instructions are in
-[tools/NATIVE_RELEASE_ARTIFACTS.md](tools/NATIVE_RELEASE_ARTIFACTS.md).
+[tools/NATIVE_RELEASE_ARTIFACTS.md](https://github.com/Wrhinkle/digitactics/blob/native-v2.0.0/native/tools/NATIVE_RELEASE_ARTIFACTS.md).
 The bundled minimal audio runtime and rebuilding prerequisites are described in
-[tools/MEDIA_AUDIO_RUNTIME.md](tools/MEDIA_AUDIO_RUNTIME.md).
+[tools/MEDIA_AUDIO_RUNTIME.md](https://github.com/Wrhinkle/digitactics/blob/native-v2.0.0/native/tools/MEDIA_AUDIO_RUNTIME.md).
 The application-local Microsoft CRT and dependency audit are documented in
-[tools/CRT_RUNTIME.md](tools/CRT_RUNTIME.md).
+[tools/CRT_RUNTIME.md](https://github.com/Wrhinkle/digitactics/blob/native-v2.0.0/native/tools/CRT_RUNTIME.md).
 `build.ps1` checks the SDK installed at `%LOCALAPPDATA%\DigiTacticsBuild\dotnet`
 before using `dotnet` from PATH. Package versions and transitive dependencies are locked.
 For manual development, run dotnet commands from `native/` so `global.json` applies.

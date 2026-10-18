@@ -31,7 +31,7 @@ internal sealed partial class MatchScreen
         socialWindowSize = windowSize;
         // Capture the module being drawn, before a click can navigate to the
         // next one. Its newly created window must stay below the open drawer.
-        socialDrawnModule=codexFull?1:showSettings?2:showSaveData?3:showProfile?4:showMultiplayer?5:showFarm?6:showCollection?7:showAbout?8:0;
+        socialDrawnModule=codexFull?1:showSettings?2:showHomePlay?9:showSaveData?3:showProfile?4:showMultiplayer?5:showFarm?6:showCollection?7:showAbout?8:0;
         return ClientHomeVisible && SocialDocked ? new(windowSize.X - (int)SocialWidth - 12, windowSize.Y) : windowSize;
     }
     private void DrawClientSocial()
