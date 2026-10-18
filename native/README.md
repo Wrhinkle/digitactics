@@ -1835,6 +1835,26 @@ reference parity, duplicate prevention, and complete native placement-to-disk
 flows for all 22 variants in both Solo and Duos, including restart readback,
 last-board retention, untouched imported domains, backups and stale-writer
 protection. The 32 profile/import checks and packaged Solo/Duos flows also passed.
-The gameplay engine itself was unchanged. Detailed reward-tracker stats, Bits
-payouts, missions and other post-match progression remain to be integrated;
-history currently records `stats`/`bits` as null rather than inventing rewards.
+The gameplay engine itself was unchanged. The subsequent reward-tracking work
+below adds detailed statistics; Bits payouts and other post-match progression
+still require integration.
+
+### Match reward calculation and tracking
+
+Native history now records PvP wins, eliminations, highest unit star level,
+highest player level and placement. Settlement observations are idempotent and
+handle PvE, ghosts and team matches according to the original tracker.
+`--history-only` passed 656 checks, including persisted reward statistics.
+
+`MatchRewards.Calculate` implements placement Bits, PvP/elimination bonuses,
+first-game bonuses, deterministic daily missions and the original duplicate
+award retention. It returns updated shop/wallet documents without writing them,
+preserving unknown fields. `--rewards-only` passed 4,660 comparisons against
+225 sequential original award cases and 44 complete original tracker traces
+covering every variant in Solo and Duos. Both fixture exporters run in the native
+build pipeline. The Windows package and Solo/Duos UI smoke checks passed.
+
+The calculator is not yet connected to profile writes: the original award also
+grants Little Legend care and Digi-Data. That remaining reward component must be
+ported and saved atomically with Bits, missions and history before payouts are
+enabled. History therefore still records `bits` as null.

@@ -82,6 +82,7 @@ internal sealed class MatchScreen : IDisposable
     private MatchActionResult? Act(string action, object? args = null)
     {
         var result = Session!.Actions.Apply(0, action, JsonSerializer.SerializeToElement(args ?? new { }));
+        history?.Observe();
         string? sound = result switch
         {
             MatchActionResult.Flag { Value: false } when action != "lock" => "error",

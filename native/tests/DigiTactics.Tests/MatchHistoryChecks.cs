@@ -38,7 +38,7 @@ internal static class MatchHistoryChecks
                 int rounds = 0;
                 while (session.State.Players[0].Placement == 0 && rounds++ < 200)
                 {
-                    session.StartCombat(); recorder.Capture(); session.FinishCombat();
+                    session.StartCombat(); recorder.Capture(); session.FinishCombat(); recorder.Observe();
                     if (session.State.Players[0].Placement == 0) session.Advance();
                 }
                 Check(recorder.Complete(2000), "placement saved after native match");
@@ -49,6 +49,9 @@ internal static class MatchHistoryChecks
                 using var client = JsonDocument.Parse(reopened.Storage["dt.client.v1"]);
                 Check(client.RootElement.GetProperty("matches")[0].GetProperty("at").GetInt64() == 2000, "result timestamp stable");
                 Check(client.RootElement.GetProperty("matches")[0].GetProperty("units").GetArrayLength() > 0, "last living board retained");
+                var stats = client.RootElement.GetProperty("matches")[0].GetProperty("stats");
+                Check(stats.GetProperty("place").GetInt32() == session.State.Players[0].Placement, "reward placement survives restart");
+                Check(stats.GetProperty("maxLevel").GetInt32() >= 1 && stats.GetProperty("maxStars").GetInt32() >= 1, "reward peaks survive restart");
                 Check(File.Exists(Path.Combine(destination, "profile.json.bak")), "profile backup retained");
                 var competing = new NativeProfileStore(destination);
                 Check(reopened.UpdateStorage(new Dictionary<string, string> { ["dt.future"] = "new" }), "update raw entry");

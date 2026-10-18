@@ -6,6 +6,8 @@ namespace DigiTactics.Presentation;
 /// <summary>Captures the last living board before elimination clears it, then records placement once.</summary>
 public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativeProfileStore profile)
 {
+    private readonly MatchRewardTracker tracker = new(session);
+    public void Observe() => tracker.Update();
     private HistoryTrait[] traits = [];
     private HistoryUnit[] units = [];
     private int level;
@@ -14,6 +16,7 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
     public string? Error { get; private set; }
     public void Capture()
     {
+        tracker.Update();
         var player = session.State.Players[0];
         if (!player.Alive || player.Roster.BoardCount == 0) return;
         var rules = session.State.Rules;
@@ -27,11 +30,13 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
     }
     public bool Complete(long timestamp)
     {
+        tracker.Update();
         var player = session.State.Players[0];
         if (saved) return true;
         if (player.Placement == 0) return false;
         pending ??= new($"solo:{session.State.Seed}:{player.Id}", timestamp, "solo", session.State.Duos ? "duos" : "solo",
-            session.State.Rules.Id.Split('/')[0], player.Placement, session.Rounds.Position.Label, Math.Max(level, player.Economy.Level), traits, units);
+            session.State.Rules.Id.Split('/')[0], player.Placement, session.Rounds.Position.Label, Math.Max(level, player.Economy.Level), traits, units,
+            System.Text.Json.JsonSerializer.SerializeToNode(tracker.Stats, new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase }));
         try
         {
             string? previous = profile.Storage.GetValueOrDefault("dt.client.v1");
