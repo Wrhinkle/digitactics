@@ -2,7 +2,7 @@ using System.Text.Json;
 using DigiTactics.Rules;
 
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");
-if (args.Contains("--steam-native-only")) { SteamMessageChecks.Run(root); SteamClientChecks.Run(root); return; }
+if (args.Contains("--steam-native-only")) { SteamMessageChecks.Run(root); SteamClientChecks.Run(root); SteamMatchmakingChecks.Run(root); return; }
 if (args.Contains("--network-only")) { NetworkProtocolChecks.Run(root); ReplicatedLogChecks.Run(root); LobbyAuthorityChecks.Run(root); NetworkRoomChecks.Run(); return; }
 if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--profile-only")) { LegacyProfileChecks.Run(root); return; }

@@ -12,10 +12,24 @@ try
         return Path.GetFullPath(args[index + 1]);
     }
     string? profileDirectory = Option("--profile-directory");
-    if (args.Contains("--steam-client-smoke"))
+    if (args.Contains("--steam-client-smoke") || args.Contains("--steam-lobby-smoke"))
     {
         string library = Option("--steam-api") ?? throw new ArgumentException("Steam smoke requires --steam-api with the Steam API DLL path.");
         using var client = new DigiTactics.Networking.SteamClient(library, _ => false, 480);
+        if (args.Contains("--steam-lobby-smoke"))
+        {
+            var created = client.Matchmaking.Create(DigiTactics.Networking.SteamLobbyVisibility.Private);
+            var deadline = System.Diagnostics.Stopwatch.StartNew();
+            while (!created.IsCompleted && deadline.Elapsed.TotalSeconds < 35) { client.PumpCallbacks(); Thread.Sleep(10); }
+            if (!created.IsCompleted) throw new TimeoutException("Private lobby smoke timed out.");
+            ulong lobby = created.GetAwaiter().GetResult();
+            if (client.Matchmaking.Owner(lobby) != client.SteamId || !client.Matchmaking.Members(lobby).Contains(client.SteamId)) throw new InvalidDataException("Private lobby membership did not match its creator.");
+            if (!client.Matchmaking.SetData(lobby, new Dictionary<string,string> { ["dt_game"] = "digitactics", ["dt_ver"] = DigiTactics.Networking.NetworkProtocol.Version, ["name"] = "Native private smoke" })) throw new IOException("Private lobby metadata write failed.");
+            if (client.Matchmaking.Read(lobby).Data["name"] != "Native private smoke") throw new InvalidDataException("Private lobby metadata read failed.");
+            client.Matchmaking.Leave(lobby);
+            Console.WriteLine("Steam lobby smoke passed: private lobby created, ownership/membership and metadata verified, lobby left.");
+            return 0;
+        }
         var timer = System.Diagnostics.Stopwatch.StartNew(); int callbacks = 0;
         while (timer.Elapsed.TotalSeconds < 2) { callbacks += client.PumpCallbacks(); Thread.Sleep(10); }
         Console.WriteLine($"Steam client smoke passed: app {client.AppId}, player identity available, relay-only messages initialized, {callbacks} callbacks dispatched.");

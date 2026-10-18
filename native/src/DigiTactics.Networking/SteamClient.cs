@@ -40,6 +40,7 @@ public sealed class SteamClient : IDisposable
     private bool initialized, disposed, changedAppEnvironment;
     private string? priorApp, priorGame;
     public SteamMessageTransport Messages { get; private set; } = null!;
+    public SteamMatchmaking Matchmaking { get; private set; } = null!;
     public ulong SteamId { get; private set; }
     public uint AppId { get; private set; }
     public string Name { get; private set; } = "";
@@ -79,17 +80,18 @@ public sealed class SteamClient : IDisposable
             Name = Marshal.PtrToStringUTF8(Bind<NameFn>("SteamAPI_ISteamFriends_GetPersonaName")(friends)) ?? "Tamer";
             if (SteamId == 0 || AppId == 0) throw new InvalidOperationException("Steam returned an invalid player or application identity.");
             Messages = new(module, isMember);
+            Matchmaking = new(this);
         }
         catch { Cleanup(); throw; }
     }
-    private void VerifyThread()
+    internal void VerifyThread()
     {
         ObjectDisposedException.ThrowIf(disposed, this);
         if (Environment.CurrentManagedThreadId != thread) throw new InvalidOperationException("Steam client must be used on its owning game thread.");
     }
     public int PumpCallbacks()
     {
-        VerifyThread(); run(pipe); int count = 0;
+        VerifyThread(); Matchmaking.ExpireRequests(); run(pipe); int count = 0;
         while (count < 256 && next(pipe, out var callback))
         {
             count++; SteamCallback? copied = null; SteamCallResult? completed = null;
@@ -117,7 +119,7 @@ public sealed class SteamClient : IDisposable
     private void Cleanup()
     {
         if (disposed) return;
-        try { try { Messages?.Dispose(); } finally { if (initialized) shutdown?.Invoke(); } }
+        try { try { try { Matchmaking?.Dispose(); } finally { Messages?.Dispose(); } } finally { if (initialized) shutdown?.Invoke(); } }
         finally
         {
             initialized = false; disposed = true;
