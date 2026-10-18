@@ -106,6 +106,7 @@ try {
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-companion-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
+    Invoke-Checked 'node' @('tools/export-companion-motion.cjs')
     Invoke-Checked 'node' @('tools/export-material-fixtures.cjs')
     Invoke-Checked 'node' @('tools/export-mesh-fixtures.cjs')
     Invoke-Checked 'node' @('tools/export-rig-fixtures.cjs')

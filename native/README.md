@@ -2174,3 +2174,24 @@ This supplies the original assets and selection policy for farm, evolution and
 match companions. It does not yet implement the companion reaction animator,
 animated farm room, themed decorations or in-match companion presentation. Those
 remain part of the full port, along with the other production acceptance work.
+
+### Companion reaction plans and procedural motion
+
+`CompanionMotion` selects the original authored reaction/dance steps, including
+item overrides, ordered fallback clips, loop counts, speed and procedural-only
+fallbacks while moving or without a mixer. It also evaluates all thirteen original
+procedural effects: spin, twirl, hop, sway, sway2, bounce, wave, droop, slump,
+wiggle, bob, idle and shake. The resulting position, Euler rotation, scale and
+matrix retain the original Three.js XYZ rotation convention.
+
+The new exporter executes the original `stepsFor`, `clipOf` and FX functions.
+Across all base and explicit-form visual policies it produced 7,950 reaction
+plans and 1,872 transform samples. All 54,750 native comparisons passed, including
+matrix components and static/clipless fallbacks. The suite is included in the
+regular build and available through `--companion-motion-only`. The self-contained
+Windows package also builds successfully.
+
+This is the selection/math layer for the companion animator. Timed step playback,
+clip blending, walking transitions and connection to the animated farm scene are
+still pending; no claim of completed farm presentation or production release is
+made by this checkpoint.
