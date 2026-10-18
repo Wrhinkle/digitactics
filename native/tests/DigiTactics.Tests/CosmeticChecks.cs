@@ -9,6 +9,12 @@ internal static class CosmeticChecks
     {
         int checks = 0;
         void Check(bool ok, string what) { checks++; if (!ok) throw new InvalidOperationException("Cosmetics: " + what); }
+        foreach (string? input in new[] { null, "{}", "{\"owned\":{}}" })
+        {
+            var fresh = new CosmeticCollection(input);
+            Check(fresh.Bits == 0 && fresh.Equipped("legend")?.GetValue<string>() == "tokomon", "fresh wallet and default legend");
+            Check(!fresh.Buy("legend", "bukamon", new DateOnly(2026, 10, 17)), "fresh wallet cannot spend Bits");
+        }
         using var file = File.OpenRead(Path.Combine(root, "tests/fixtures/cosmetics.json.gz"));
         using var gzip = new GZipStream(file, CompressionMode.Decompress);
         using var fixture = JsonDocument.Parse(gzip);

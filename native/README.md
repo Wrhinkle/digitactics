@@ -2004,3 +2004,31 @@ preserved. The evolution screenshot was inspected and Duos UI checks passed.
 
 Tree visualization, animated form previews, in-match legend rendering, farm
 simulation/UI and other production presentation work remain unfinished.
+
+
+### Native farm time simulation
+
+`FarmSimulation.Advance` now calculates the original farm's resident sync,
+equipped-first admission, bank pause behavior, supply refill and local daily
+rollover. It simulates sleep/naps, energy, hunger, happiness, discipline, weight,
+starvation, sickness, dirt, neglect, toilets, piles and tantrums minute by minute.
+Catch-up preserves the 12-hour maximum and two-mistake cap for gaps over 30
+minutes. Pile placement and tantrums use the original seeded random function.
+Unknown saved fields remain intact and emitted events retain the 200-event limit.
+
+`export-farm-simulation.cjs` executes the original farm with a controlled clock.
+`--farm-only` passed 424,718 save/event comparisons over 770 snapshots, covering
+all 77 equipped legends, fresh farms, imported state, room capacity, banked pets,
+lights, threshold states, fractional minutes, clock reversal and long gaps.
+Numeric comparisons allow at most 1e-9 difference; structure and event order are
+also checked. Collection (24,997) and evolution (17,377) regressions passed, and
+the Windows package rebuilt with Solo/Duos UI smokes passing.
+
+The new fixture exposed a fresh-wallet bug: the default zero was an Int32 JSON
+value but the wallet reader expects Int64. The default now uses Int64, with
+regressions for absent/empty wallet data and insufficient-balance purchases.
+
+Farm simulation currently returns a pure snapshot and events. It is not yet
+scheduled or persisted by the desktop app. Live aging will be enabled with the
+native care actions, rewards and room UI; imported farm saves remain untouched
+in the meantime. This is a simulation component, not a completed Digi-Farm port.

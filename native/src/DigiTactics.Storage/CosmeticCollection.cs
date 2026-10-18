@@ -24,7 +24,7 @@ public sealed class CosmeticCollection
     }
     public CosmeticCollection(string? json)
     {
-        save = new JsonObject { ["bits"] = 0, ["owned"] = new JsonObject(), ["equipped"] = new JsonObject(), ["history"] = new JsonArray() };
+        save = new JsonObject { ["bits"] = 0L, ["owned"] = new JsonObject(), ["equipped"] = new JsonObject(), ["history"] = new JsonArray() };
         if (json is not null)
         {
             var previous = JsonNode.Parse(json) as JsonObject ?? throw new InvalidDataException("Invalid cosmetic collection.");

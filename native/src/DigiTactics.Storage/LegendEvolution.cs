@@ -47,7 +47,7 @@ public static class LegendEvolution
         foreach (string key in result.Keys) result[key] = Math.Max(0, result[key]);
         return result;
     }
-    private static double Random(string text)
+    internal static double SeededRandom(string text)
     {
         unchecked
         {
@@ -86,7 +86,7 @@ public static class LegendEvolution
         string? roll = null;
         if (odds.Length > 0)
         {
-            double target = Random($"{id}|{level}|{form}|{record["nonce"]!.GetValue<int>()}") * sum, acc = 0;
+            double target = SeededRandom($"{id}|{level}|{form}|{record["nonce"]!.GetValue<int>()}") * sum, acc = 0;
             roll = odds[^1].Form;
             foreach (var entry in odds) { acc += entry.Weight; if (target < acc) { roll = entry.Form; break; } }
         }
