@@ -37,8 +37,8 @@ internal sealed class GpuModel : IDisposable
             Normalization = Transform(-(min.X + max.X) / (2 * height), -min.Y / height, -(min.Z + max.Z) / (2 * height), 0, 1 / height);
             bool front = source.Metadata.TryGetProperty("frontOnly"u8, out var frontOnly) && frontOnly.GetBoolean();
             Materials = asset.Root.GetProperty("materials"u8).EnumerateArray().Select((_, i) => GltfMaterial.Load(asset, i, front)).ToArray();
-            foreach (var material in Materials)
-                if (material.ColorMap is { } binding && !Textures.ContainsKey(binding.Texture))
+            foreach (var binding in Materials.SelectMany(m => new[] { m.ColorMap, m.EmissiveMap }).OfType<TextureBinding>())
+                if (!Textures.ContainsKey(binding.Texture))
                 {
                     var texture = GltfTexture.Load(asset, binding.Texture);
                     Textures.Add(binding.Texture, new(asset.Image(texture.Image), texture.Sampler, binding.Srgb));

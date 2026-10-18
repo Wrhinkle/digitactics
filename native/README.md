@@ -2368,3 +2368,18 @@ The rebuilt app passed the six-theme farm smoke, all 77 base companions under
 farm lighting, and the Duos match smoke. The 77-companion capture was inspected.
 Companion normal maps and authored emission still require rendering support;
 this checkpoint does not claim complete material or visual parity.
+
+### Imported model emission
+
+The material loader and renderer now preserve emissive RGB, the emissive-strength
+extension and emissive color textures. Emissive textures use sRGB decoding, and
+emission is added in linear color before display conversion. Unlit materials
+continue to follow their original loader behavior.
+
+The refreshed original-loader fixture passes 32,943 checks across 1,233 materials,
+including emission values and bindings. Catalog inspection found zero nonzero
+emissive materials and zero emissive maps after original loader corrections, so
+this does not change the current model appearance. The Windows package passed
+77-companion rendering, all six farm themes and the Duos match smoke; the companion
+capture was inspected. Nonzero emission rendering is implemented but not proven
+by those current-asset smoke checks. Normal maps and shadow rendering remain open.

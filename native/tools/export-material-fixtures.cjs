@@ -3,7 +3,7 @@ const fs = require('node:fs'), path = require('node:path'), zlib = require('node
 const root = path.resolve(__dirname, '../..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 async function main() {
-  const {THREE, GLTFParser, GLTFMaterialsUnlitExtension, GLTFMaterialsSpecularExtension} = await require('./three-loader.cjs')();
+  const {THREE, GLTFParser, GLTFMaterialsUnlitExtension, GLTFMaterialsSpecularExtension, GLTFMaterialsEmissiveStrengthExtension} = await require('./three-loader.cjs')();
   const renderer = read('js/render3d.js');
   const pluginStart = renderer.indexOf('loader.register((parser) => (');
   const pluginEnd = renderer.indexOf('\nexport const lib', pluginStart);
@@ -22,6 +22,7 @@ async function main() {
     parser.extensions.KHR_materials_unlit = new GLTFMaterialsUnlitExtension();
     parser.plugins.specGloss = plugin(parser);
     parser.plugins.specular = new GLTFMaterialsSpecularExtension(parser);
+    parser.plugins.emission = new GLTFMaterialsEmissiveStrengthExtension(parser);
     parser.loadImageSource = async () => new THREE.Texture();
     const materials = [];
     for (let index = 0; index < (json.materials || []).length; index++) {
@@ -34,7 +35,8 @@ async function main() {
       materials.push({color:[material.color.r,material.color.g,material.color.b,material.opacity], unlit:!!material.isMeshBasicMaterial,
         doubleSided:material.side===THREE.DoubleSide,transparent:material.transparent,depthWrite:material.depthWrite,
         alphaCutoff:material.alphaTest,roughness:material.roughness??1,specularIntensity:material.specularIntensity??1,
-        colorMap:binding('map'),roughnessMap:binding('roughnessMap'),normalMap:binding('normalMap'),specularMap:binding('specularIntensityMap')});
+        colorMap:binding('map'),roughnessMap:binding('roughnessMap'),normalMap:binding('normalMap'),specularMap:binding('specularIntensityMap'),
+        emissive:material.emissive?.toArray()||[0,0,0],emissiveIntensity:material.emissiveIntensity??1,emissiveMap:binding('emissiveMap')});
     }
     const textures = [];
     for (let index = 0; index < (json.textures || []).length; index++) {

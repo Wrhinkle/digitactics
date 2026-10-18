@@ -11,6 +11,6 @@ module.exports = async function () {
   const source = read('vendor/three/addons/loaders/GLTFLoader.js')
     .replace("from 'three'", `from '${threeUrl}'`)
     .replace("from '../utils/BufferGeometryUtils.js'", `from '${utils}'`)
-    + '\nexport {GLTFParser, GLTFMaterialsUnlitExtension, GLTFMaterialsSpecularExtension};';
+    + '\nexport {GLTFParser, GLTFMaterialsUnlitExtension, GLTFMaterialsSpecularExtension, GLTFMaterialsEmissiveStrengthExtension};';
   return {THREE, ...await import(moduleUrl(source))};
 };

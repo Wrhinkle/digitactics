@@ -6,6 +6,7 @@ if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--profile-only")) { LegacyProfileChecks.Run(root); return; }
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
 if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
+if (args.Contains("--materials-only")) { MaterialParity.Run(root); return; }
 if (args.Contains("--assets-only")) { ModelAssetParity.Run(root); TextureParity.Run(root); MotionParity.Run(root); CompanionModelChecks.Run(root); return; }
 if (args.Contains("--geometry-only")) { MaterialParity.Run(root); MeshParity.Run(root); RigParity.Run(root); return; }
 if (args.Contains("--companion-motion-only")) { CompanionMotionChecks.Run(root); return; }

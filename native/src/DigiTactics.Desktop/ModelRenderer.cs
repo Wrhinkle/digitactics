@@ -21,6 +21,7 @@ internal sealed class ModelRenderer : IDisposable
         program.Uniform(19, new Brutal.Numerics.float4(roughness, metalness, 0, 0));
         program.Uniform(20, new Brutal.Numerics.float4(0, 0, 1, 0));
         OpenGl.BindTextureUnit(1, 0); OpenGl.BindTextureUnit(2, 0);
+        OpenGl.BindTextureUnit(3, 0); program.Uniform(21, 0);
     }
     public ModelRenderer()
     {
@@ -74,7 +75,9 @@ internal sealed class ModelRenderer : IDisposable
                 var geometry = mesh.Meshes[instance.Mesh][i];
                 var material = materials[geometry.Material];
                 if (material.Transparent != transparent) continue;
-                SetFarmLight(roughness: (float)material.Roughness);
+                SetFarmLight(new((float)(material.Emissive.R * material.EmissiveIntensity), (float)(material.Emissive.G * material.EmissiveIntensity), (float)(material.Emissive.B * material.EmissiveIntensity)), roughness: (float)material.Roughness);
+                program.Uniform(21, material.EmissiveMap is null ? 0 : 1);
+                OpenGl.BindTextureUnit(3, material.EmissiveMap is { } emissiveMap ? model.Textures[emissiveMap.Texture].Id : 0);
                 program.Uniform(20, new Brutal.Numerics.float4(material.RoughnessMap is null ? 0 : 1, material.SpecularMap is null ? 0 : 1, (float)material.SpecularIntensity, 0));
                 OpenGl.BindTextureUnit(1, material.RoughnessMap is { } roughMap ? model.SurfaceTextures[roughMap.Texture].Id : 0);
                 OpenGl.BindTextureUnit(2, material.SpecularMap is { } specMap ? model.SurfaceTextures[specMap.Texture].Id : 0);
@@ -160,6 +163,7 @@ internal sealed class ModelRenderer : IDisposable
         layout(binding=0) uniform sampler2D colorTexture;
         layout(binding=1) uniform sampler2D roughnessTexture;
         layout(binding=2) uniform sampler2D specularTexture;
+        layout(binding=3) uniform sampler2D emissiveTexture;
         layout(location=9) uniform int hasNormals;
         layout(location=10) uniform int unlit;
         layout(location=11) uniform float cutoff;
@@ -172,6 +176,7 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=18) uniform vec4 farmEye;
         layout(location=19) uniform vec4 surface;
         layout(location=20) uniform vec4 surfaceMaps;
+        layout(location=21) uniform int hasEmissiveMap;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
@@ -219,7 +224,8 @@ internal sealed class ModelRenderer : IDisposable
                 }
             }
             vec3 linear=max(c.rgb*light+vec3(unlit!=0?0:emission),vec3(0));
-            if(farmLighting!=0 && unlit==0) linear+=materialEmission.rgb+specular;
+            if(unlit==0) linear+=materialEmission.rgb*(hasEmissiveMap!=0?texture(emissiveTexture,texCoord).rgb:vec3(1));
+            if(farmLighting!=0 && unlit==0) linear+=specular;
             vec3 srgb=mix(12.92*linear,1.055*pow(linear,vec3(1.0/2.4))-.055,step(vec3(.0031308),linear));
             outputColor=vec4(srgb,c.a);
         }

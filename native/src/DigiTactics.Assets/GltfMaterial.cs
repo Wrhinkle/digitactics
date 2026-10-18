@@ -28,6 +28,9 @@ public sealed record GltfMaterial(MaterialColor Color, bool Unlit, bool DoubleSi
     bool DepthWrite, double AlphaCutoff, double Roughness, double SpecularIntensity,
     TextureBinding? ColorMap, TextureBinding? RoughnessMap, TextureBinding? NormalMap, TextureBinding? SpecularMap)
 {
+    public MaterialColor Emissive { get; init; } = new(0, 0, 0);
+    public double EmissiveIntensity { get; init; } = 1;
+    public TextureBinding? EmissiveMap { get; init; }
     public static GltfMaterial Load(GltfAsset asset, int index, bool frontOnly = false)
     {
         var material = asset.Root.GetProperty("materials")[index];
@@ -53,7 +56,12 @@ public sealed record GltfMaterial(MaterialColor Color, bool Unlit, bool DoubleSi
         return new(color, unlit, !frontOnly && Property(material, "doubleSided").ValueKind == JsonValueKind.True,
             transparent, !transparent, cutoff, unlit ? 1 : Number(pbr, "roughnessFactor", 1), Number(specular, "specularFactor", 1),
             map, unlit ? null : Binding(pbr, "metallicRoughnessTexture", false),
-            unlit ? null : Binding(material, "normalTexture", false), unlit ? null : Binding(specular, "specularTexture", false));
+            unlit ? null : Binding(material, "normalTexture", false), unlit ? null : Binding(specular, "specularTexture", false))
+        {
+            Emissive = !unlit && Property(material, "emissiveFactor") is { ValueKind: JsonValueKind.Array } e ? new(e[0].GetDouble(), e[1].GetDouble(), e[2].GetDouble()) : new(0, 0, 0),
+            EmissiveIntensity = Number(Property(extensions, "KHR_materials_emissive_strength"), "emissiveStrength", 1),
+            EmissiveMap = unlit ? null : Binding(material, "emissiveTexture", true)
+        };
     }
 
     public IEnumerable<TextureBinding> Textures()
@@ -62,6 +70,7 @@ public sealed record GltfMaterial(MaterialColor Color, bool Unlit, bool DoubleSi
         if (RoughnessMap is not null) yield return RoughnessMap;
         if (NormalMap is not null) yield return NormalMap;
         if (SpecularMap is not null) yield return SpecularMap;
+        if (EmissiveMap is not null) yield return EmissiveMap;
     }
     private static JsonElement Property(JsonElement value, string name) => value.ValueKind == JsonValueKind.Object && value.TryGetProperty(name, out var result) ? result : default;
     private static double Number(JsonElement value, string name, double fallback) => Property(value, name) is var number && number.ValueKind == JsonValueKind.Number ? number.GetDouble() : fallback;
