@@ -10,6 +10,13 @@ async function main(){
  const {CompanionLocomotion}=await import('data:text/javascript;base64,'+Buffer.from(locomotionSource).toString('base64'));
  const policy=source.slice(source.indexOf('const clipOf ='),source.indexOf('// ---------- view ----------'));
  const methods=source.slice(source.indexOf('  base() {'),source.indexOf('  dispose() {'));
+ // Independently identified fore/hind chains. Source/native parity must cover
+ // every actual foot, not just a generic first/middle/last skeleton selection.
+ const taggedLegs=['RL','RR','FL','FR'].flatMap(side=>['J_leg','J_knee','J_unkle'].map(role=>role+side));
+ const reviewedGaitNodes={
+  'kudamon:1':['b_l','b_r','f_l','f_r'].flatMap(side=>[(side[0]==='b'?'leg1_':'leg_')+side,'knee_'+side,'foot_'+side]),
+  'woodmon:0':taggedLegs,'extra:Okuwamon':taggedLegs,
+ };
  const fixture=[];
  for(const [kind,visuals] of Object.entries({bases:catalog.bases,forms:catalog.forms}))for(const [id,visual] of Object.entries(visuals)){
   const model=models.sources[visual.source],asset=models.assets[model.asset];
@@ -29,6 +36,7 @@ async function main(){
   if(idle){v.mixer=new THREE.AnimationMixer(gltf.scene);v.idle=v.mixer.clipAction(idle);v.idle.play();const run=['run','walk','move'].map(n=>clips.find(c=>c.name===n)).find(Boolean);v.run=run?v.mixer.clipAction(run):null;v.hasRun=!!v.run;v.cur=v.idle;}
   v.locomotion=new CompanionLocomotion(gltf.scene,visual.source,!!v.run);v.hasRun=!v.locomotion.usesTravelHop;
   const selected=new Set([0,nodes.length-1]);for(const skin of json.skins||[])for(const n of [skin.joints[0],skin.joints[Math.floor(skin.joints.length/2)],skin.joints.at(-1)])selected.add(n);
+  for(const name of reviewedGaitNodes[visual.source]||[]){const node=nodes.findIndex(n=>n.name===name);if(node<0)throw Error(`Missing reviewed gait node ${visual.source}/${name}`);selected.add(node);}
   const operations=[{delta:0},{delta:.03},{moving:true},{delta:.06},{play:'happy'},{delta:.3},{moving:false},{delta:.1}];
   for(const role of ['dance','sad','happy','taunt','eat','wave','hit','dance'])operations.push({play:role},...[0,.03,.09,.24,.8,1.7,2.4,3.5].map(delta=>({delta})));
   operations.push({play:'dance'},{delta:.04},{moving:true},{delta:.06},{moving:false},{yaw:7},{delta:.09},{delta:.4});

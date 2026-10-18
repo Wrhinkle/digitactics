@@ -33,7 +33,16 @@ const SHORT_HIP = /(?:^|[_ ])foot[_ ]?([lr])(?:[_ ]|$)/di;
 const SHOULDER = /(?:^|[_ ])(?:upperarm|arm)[_ ]?([lr])(?:[_ ]|$)|(?:^|[_ ])([lr])[_ ](?:upperarm|arm)$/di;
 const ELBOW = /(?:^|[_ ])(?:elbow|forearm)(?:[_ ]?[lr])?(?:[_ ]|$)/i;
 const HAND = /(?:^|[_ ])hand(?:[_ ]?[lr])?(?:[_ ]|$)/i;
-const boneName = value => value.replace(/_0\d+$/, '');
+const FORE_HIND = /^(J_)?(leg(?:0?1)?|knee\d*|foot\d*|unkle|ankle)(?:_([fbr])_([lr])|([fr])([lr]))$/i;
+const boneName = value => {
+  value = value.replace(/_0\d+$/, '');
+  // Normalize discovery only; preserve original names, joints and skin. A
+  // lettered segment such as J_legB_L is deliberately not a rear-leg tag.
+  const match = FORE_HIND.exec(value);
+  if (!match) return value;
+  const tag = match[3] || match[5], side = match[4] || match[6];
+  return (match[1] || '') + (tag.toLowerCase() === 'f' ? 'front' : 'back') + '_' + match[2] + '_' + side;
+};
 const point = b => new THREE.Vector3().setFromMatrixPosition(b.matrixWorld);
 const depth = (b, ancestor) => { let distance = 1; for (let p = b.parent; p; p = p.parent, distance++) if (p === ancestor) return distance; return -1; };
 const below = (b, ancestor) => depth(b, ancestor) > 0;

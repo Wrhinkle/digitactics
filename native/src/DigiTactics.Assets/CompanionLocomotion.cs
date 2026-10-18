@@ -59,7 +59,19 @@ public sealed class CompanionLocomotion
     private static readonly Regex ShoulderName = new(@"(?:^|[_ ])(?:upperarm|arm)[_ ]?([lr])(?:[_ ]|$)|(?:^|[_ ])([lr])[_ ](?:upperarm|arm)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex ElbowName = new(@"(?:^|[_ ])(?:elbow|forearm)(?:[_ ]?[lr])?(?:[_ ]|$)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex HandName = new(@"(?:^|[_ ])hand(?:[_ ]?[lr])?(?:[_ ]|$)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-    private static string BoneName(string value) => Regex.Replace(value, @"_0\d+$", "", RegexOptions.CultureInvariant);
+    private static readonly Regex ForeHindName = new(@"^(J_)?(leg(?:0?1)?|knee\d*|foot\d*|unkle|ankle)(?:_([fbr])_([lr])|([fr])([lr]))$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    private static string BoneName(string value)
+    {
+        value = Regex.Replace(value, @"_0\d+$", "", RegexOptions.CultureInvariant);
+        // Normalize discovery only: actual node names, intermediate joints and
+        // skin bindings remain intact. J_legB_L is a segment, not a rear-leg tag.
+        var match = ForeHindName.Match(value);
+        if (!match.Success) return value;
+        string tag = match.Groups[3].Success ? match.Groups[3].Value : match.Groups[5].Value;
+        string side = match.Groups[4].Success ? match.Groups[4].Value : match.Groups[6].Value;
+        string position = tag.Equals("f", StringComparison.OrdinalIgnoreCase) ? "front" : "back";
+        return match.Groups[1].Value + position + "_" + match.Groups[2].Value + "_" + side;
+    }
 
     public CompanionLocomotion(GltfRig rig, string source, RigPose idle, bool authored)
     {

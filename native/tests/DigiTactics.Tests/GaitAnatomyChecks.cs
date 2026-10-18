@@ -18,9 +18,25 @@ internal static class GaitAnatomyChecks
             "catalog:CS_Lopmon:chr750", "catalog:L_ToyAgumon:chr708", "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701",
             "catalog:TS_Terriermon_Lopmon_and_Assistant:chr750", "catalog:TS_ToyAgumon:chr708"];
         void Check(bool condition, string message) { checks++; if (!condition) failures.Add(message); }
-        foreach (var (key, quadruped) in importedDirectCandidates.Where(key => key != "drg:Varodurumon").Select(key => (key, false))
-            .Concat(new[] { ("drg:Ankylomon", true), ("armadillomon:1", true) }))
+        Fixture[] foreHindFixtures = [
+            new("myotismon:2", ["J_foot_f_l","J_foot_f_r","J_foot_b_l","J_foot_b_r"], ["J_leg_f_l","J_leg_f_r","J_leg_b_l","J_leg_b_r"]),
+            new("drg:GranDracmon", ["J_foot_f_l","J_foot_f_r","J_foot_b_l","J_foot_b_r"], ["J_leg_f_l","J_leg_f_r","J_leg_b_l","J_leg_b_r"]),
+            new("kudamon:1", ["foot_f_l","foot_f_r","foot_b_l","foot_b_r"], ["leg_f_l","leg_f_r","leg1_b_l","leg1_b_r"]),
+            new("catalog:CS_Reppamon:chr077", ["foot_f_l","foot_f_r","foot_b_l","foot_b_r"], ["leg_f_l","leg_f_r","leg1_b_l","leg1_b_r"]),
+            new("woodmon:0", ["J_unkleFL","J_unkleFR","J_unkleRL","J_unkleRR"], ["J_legFL","J_legFR","J_legRL","J_legRR"]),
+            new("catalog:CS_Woodmon:chr393", ["J_unkleFL","J_unkleFR","J_unkleRL","J_unkleRR"], ["J_legFL","J_legFR","J_legRL","J_legRR"]),
+            new("extra:Okuwamon", ["J_unkleFL","J_unkleFR","J_unkleRL","J_unkleRR"], ["J_legFL","J_legFR","J_legRL","J_legRR"]),
+            new("okuwamon:1", ["J_unkleFL","J_unkleFR","J_unkleRL","J_unkleRR"], ["J_legFL","J_legFR","J_legRL","J_legRR"])
+        ];
+        var fixtures = importedDirectCandidates.Where(key => key != "drg:Varodurumon")
+            .Select(key => new Fixture(key, ["J_foot_l","J_foot_r"], RequireDirect: true))
+            .Concat(new[] {
+                new Fixture("drg:Ankylomon", ["J_foot_l","J_foot_r","J_hand_l","J_hand_r"], ["J_leg_l","J_leg_r","J_arm_l","J_arm_r"]),
+                new Fixture("armadillomon:1", ["J_foot_l","J_foot_r","J_hand_l","J_hand_r"], ["J_leg_l","J_leg_r","J_arm_l","J_arm_r"])
+            }).Concat(foreHindFixtures);
+        foreach (var fixture in fixtures)
         {
+            string key = fixture.Source;
             var source = catalog.Sources[key];
             using var asset = catalog.Open(payload, source.Asset);
             var rig = GltfRig.Load(asset).Prepare(source, payload);
@@ -28,17 +44,19 @@ internal static class GaitAnatomyChecks
             var moving = new CombatModelAnimator(rig, key);
             var idle = new ModelAnimator(rig);
             var helper = new CompanionLocomotion(rig, key, idle.Pose, authored: false);
-            string[] footNames = quadruped ? ["J_foot_l", "J_foot_r", "J_hand_l", "J_hand_r"] : ["J_foot_l", "J_foot_r"];
+            string[] footNames = fixture.Feet;
             int[] feet = footNames.Select(name => Array.FindIndex(rig.Nodes, node => node.Name == name)).ToArray();
-            // Monzaemon uses J_leg1, not J_leg. The actual immediate parent is the anatomical short-leg joint.
-            int[] hips = quadruped ? new[] { "J_leg_l", "J_leg_r", "J_arm_l", "J_arm_r" }
-                .Select(name => Array.FindIndex(rig.Nodes, node => node.Name == name)).ToArray()
+            // Short imported limbs use their actual immediate foot parents (including Monzaemon J_leg1).
+            // Explicit quadruped hips preserve intermediate joints such as Reppamon leg2_b_l/r.
+            int[] hips = fixture.Hips is { } hipNames
+                ? hipNames.Select(name => Array.FindIndex(rig.Nodes, node => node.Name == name)).ToArray()
                 : feet.Select(foot => foot >= 0 ? rig.Nodes[foot].Parent : -1).ToArray();
             Check(hips.All(i => i >= 0) && feet.All(i => i >= 0), key + " independently identified actual limbs exist");
             if (hips.Any(i => i < 0) || feet.Any(i => i < 0)) continue;
             Check(moving.LocomotionKind == CompanionLocomotionKind.Grounded && helper.LegCount == feet.Length,
                 key + $" includes all {feet.Length} weight-bearing limbs (actual {helper.Kind}/{helper.LegCount})");
-            if (!quadruped) Check(feet.Select((foot, i) => rig.Nodes[foot].Parent == hips[i]).All(x => x),
+            Check(feet.Select((foot, i) => Below(foot, hips[i], rig)).All(x => x), key + " actual feet descend from independently identified hips");
+            if (fixture.RequireDirect) Check(feet.Select((foot, i) => rig.Nodes[foot].Parent == hips[i]).All(x => x),
                 key + " uses immediate hip-to-foot joints without inventing knees");
             int rootNode = hips[0]; while (rig.Nodes[rootNode].Parent >= 0) rootNode = rig.Nodes[rootNode].Parent;
             var vertices = Vertices(mesh, rig);
@@ -123,6 +141,18 @@ internal static class GaitAnatomyChecks
             evidence.Add(new { source = key, assetSha256 = catalog.Assets[source.Asset].Sha256, motionSha256 = source.Motion!.Sha256,
                 kind = moving.LocomotionKind.ToString(), peakGlideOffset = peak, skinPoseUnchanged = samePose });
         }
+        {
+            const string key = "drg:Saberdramon";
+            var source = catalog.Sources[key]; using var asset = catalog.Open(payload, source.Asset);
+            var rig = GltfRig.Load(asset).Prepare(source, payload); var idle = new ModelAnimator(rig);
+            var moving = new CombatModelAnimator(rig, key);
+            var helper = new CompanionLocomotion(rig, key, idle.Pose, authored: false);
+            Check(helper.Kind == CompanionLocomotionKind.Hop && helper.LegCount == 0,
+                key + " lettered J_legB_L/R segments are not interpreted as back-leg position tokens");
+            bool unchanged = true;
+            for (int frame = 0; frame < 24; frame++) { moving.Update(1d / 60, true); idle.Update(1d / 60); unchanged &= moving.Pose.Local.SequenceEqual(idle.Pose.Local); }
+            Check(unchanged, key + " retains its current idle skeleton under the bounded name-discovery change");
+        }
         // The full authored-run inventory already has its own regression; independently pin priority here too.
         bool authoredExercised = false;
         foreach (var (key, source) in catalog.Sources.Where(pair => pair.Key.StartsWith("legend:", StringComparison.Ordinal)))
@@ -140,8 +170,8 @@ internal static class GaitAnatomyChecks
         File.WriteAllText(Path.Combine(root, "artifacts/gait-anatomy-checks.json"), JsonSerializer.Serialize(new {
             catalogSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(catalogPath))).ToLowerInvariant(),
             runtimeAssetsSha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(typeof(CompanionLocomotion).Assembly.Location))).ToLowerInvariant(), checks, failures,
-            method = "48 native travel frames at 60 Hz versus independent same-time idle; root translation removed from limb and skin displacement. All 14 newly grounded imported source keys plus both quadruped aliases sample all frames and ordinary edges >=0.1% body span. The reviewed airborne candidate keeps exact idle articulation. Edge growth limit 15% real limb length derives from existing lopmon/terriermon controls (13.60%/13.51%), not body span or a blanket ratio. Numeric checks are not visual approval.",
-            importedDirectCandidates, models = evidence }, new JsonSerializerOptions { WriteIndented = true }));
+            method = "48 native travel frames at 60 Hz versus independent same-time idle; root translation removed from limb and skin displacement. All 14 short-leg source keys, both Ankylomon aliases, and all eight fore/hind-tagged quadruped sources sample all frames and ordinary edges >=0.1% body span. The reviewed airborne candidate keeps exact idle articulation. Edge growth limit 15% real limb length derives from existing lopmon/terriermon controls (13.60%/13.51%), not body span or a blanket ratio. Numeric checks are not visual approval.",
+            importedDirectCandidates, foreHindSources = foreHindFixtures.Select(f => f.Source).ToArray(), models = evidence }, new JsonSerializerOptions { WriteIndented = true }));
         if (failures.Count > 0) throw new InvalidOperationException($"Gait anatomy: {failures.Count}/{checks} failed. " + string.Join("; ", failures));
         Console.WriteLine($"Gait anatomy: {checks} skin, foot, edge, arrival and priority checks passed.");
         return checks;
@@ -184,6 +214,7 @@ internal static class GaitAnatomyChecks
         }
         return edges.ToArray();
     }
+    private sealed record Fixture(string Source, string[] Feet, string[]? Hips = null, bool RequireDirect = false);
     private sealed record Influence(int Node, double Weight, Matrix4D InverseBind);
     private sealed record Vertex(V Position, int MeshNode, Influence[] Influences);
     private readonly record struct V(double X, double Y, double Z)
