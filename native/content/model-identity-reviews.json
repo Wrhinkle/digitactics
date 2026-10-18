@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "scope": "Explicit reviewed identity decisions tied to exact model payload, original source hash, mapping and declared form; independent of animation/runtime freshness.",
+  "sources": [
+    {
+      "sourceKey": "ac:Aegiomon",
+      "status": "FAIL",
+      "asset": "models/files/rip_ts_aegiomon.glb",
+      "assetSha256": "b2cf6de4f7c3908aaccf28c48a04079f927401dd96b0a7708e510003363c6955",
+      "sourceSha256": "35a19d2ad2ca146ea28d422f0ad3f531b367240393eb667a4ae291ddc0394b26",
+      "declaredForm": "Aegiomon",
+      "expectedForm": "Champion Aegiomon, humanoid upper body and goat-like legs",
+      "observedForm": "Elecmon disguise/Coo-chan chr563, orange quadruped with fan tails",
+      "review": "Exact source import and authoritative character references confirm the wrong form. No compatible verified replacement is currently available; animation fixes do not resolve the identity defect.",
+      "evidence": [
+        "docs/MODEL_IDENTITY_AEGIOMON.md"
+      ],
+      "evidenceSha256": {
+        "docs/MODEL_IDENTITY_AEGIOMON.md": "95ab906a50089917df66bb9a3ae4f1fab71a063bcdbd882a4aeedf3da972cb89"
+      },
+      "references": [
+        "https://digimon.net/reference_en/detail.php?directory_name=aegiomon",
+        "https://en.bandainamcoent.eu/digimon/digimon-story-time-stranger/characters/aegiomon",
+        "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604898/"
+      ]
+    }
+  ]
+}

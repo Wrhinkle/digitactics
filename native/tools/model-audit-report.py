@@ -147,11 +147,98 @@ def verdict(value):
     return value if value in STATUS else "UNVERIFIED"
 
 
+def runtime_source_paths():
+    """Dependencies measured by the production full-cycle/transition audit."""
+    return ["../js/model-motion.js", "src/DigiTactics.Assets/GltfRig.cs", "src/DigiTactics.Assets/ModelAnimator.cs",
+            "src/DigiTactics.Assets/CombatModelAnimator.cs", "src/DigiTactics.Assets/CompanionLocomotion.cs",
+            "src/DigiTactics.Assets/GltfMesh.cs", "src/DigiTactics.Desktop/CombatModelAnimations.cs",
+            "src/DigiTactics.Desktop/BattleView.cs", "src/DigiTactics.Desktop/GpuModel.cs",
+            "src/DigiTactics.Presentation/CombatChoreography.cs", "tests/DigiTactics.Tests/ModelRuntimeAudit.cs"]
+
+
+def runtime_role_coverage(row):
+    phases = row.get("phases", []) if row else []
+    counts = {phase.get("name"): phase.get("sampleCount", 0) for phase in phases}
+    cycles = ["idle-cycle", "attack-cycle", "special-cycle", "win-cycle", "movement-arrival"]
+    transitions = ["attack-runtime", "special-runtime", "win-runtime", "attack-to-special", "special-to-win"]
+    return (all(counts.get(name, 0) >= 33 for name in cycles)
+            and all(counts.get(name, 0) >= 2 for name in transitions)
+            and any(name and name.startswith("movement-") and name != "movement-arrival" and count >= 33
+                    for name, count in counts.items()))
+
+
+def measured_review_paths(review):
+    paths = review.get("evidence", [])
+    hashes = review.get("evidenceSha256", {})
+    return bool(paths) and all(isinstance(name, str) and (ROOT / name).is_file()
+                              and sha(ROOT / name) == hashes.get(name) for name in paths)
+
+
+def identity_reviews(path):
+    if not path.is_file():
+        return {}
+    document = read(path)
+    if document.get("schemaVersion") != 1:
+        raise ValueError("Unsupported identity review schema.")
+    records = document.get("sources", [])
+    result = {}
+    for record in records:
+        key = record.get("sourceKey")
+        if not key or key in result:
+            raise ValueError("Duplicate identity review or missing source key: " + str(key))
+        result[key] = record
+    return result
+
+
+def identity_verdict(review, source, asset):
+    """A wrong-species asset fact survives animation/render changes, not replacement."""
+    if not review:
+        return "UNVERIFIED", False
+    current = (review.get("asset") == source["asset"] and review.get("assetSha256") == asset.get("sha256")
+               and "sourceSha256" in review and review["sourceSha256"] == asset.get("sourceSha256")
+               and "declaredForm" in review and review["declaredForm"] == source["metadata"].get("form")
+               and bool(review.get("review")) and measured_review_paths(review))
+    return (verdict(review.get("status")) if current else "UNVERIFIED"), current
+
+
+def functional_verdict(review, current, motion_complete, texture_complete, statuses, runtime_ready,
+                       context_required, image_paths):
+    """Functional quality is explicit reviewed behavior, independent of pixel fidelity."""
+    if "FAIL" in statuses:
+        return "FAIL", ["A current identity, dependency, runtime, motion or material check failed."]
+    requested = verdict(review.get("functionalStatus")) if review else "UNVERIFIED"
+    if requested == "FAIL" and current and measured_review_paths(review):
+        return "FAIL", ["Current functional review records a concrete failure."]
+    missing = []
+    if requested != "VERIFIED":
+        missing.append("No explicit functional approval.")
+    if not current or not measured_review_paths(review or {}):
+        missing.append("Functional evidence is missing, changed or not current.")
+    if not motion_complete or not texture_complete or not all(value == "VERIFIED" for value in statuses):
+        missing.append("Complete reviewed role and texture coverage has not passed.")
+    if not runtime_ready:
+        missing.append("Current measured full-cycle, movement and transition evidence is incomplete.")
+    scope = review.get("functionalScope", {}) if review else {}
+    for name in ["identityReviewed", "materialMappingReviewed", "transitionsReviewed", "runtimeBoundsReviewed"]:
+        if scope.get(name) is not True:
+            missing.append("Functional review has not cleared " + name + ".")
+    if scope.get("unresolvedFindings") != []:
+        missing.append("Functional review does not explicitly resolve every open finding.")
+    if context_required or scope.get("boardContextRequired"):
+        board = scope.get("boardEvidence", [])
+        if (scope.get("boardContextReviewed") is not True or scope.get("boardSamplesInspected", 0) < 3
+                or not board or not all((ROOT / name).resolve() in image_paths for name in board)):
+            missing.append("A framing/bounds candidate requires hash-linked actual-board review.")
+    return ("UNVERIFIED", missing) if missing else ("VERIFIED", [])
+
+
 def merge(args):
     for name in ["inventory", "runtime", "visual", "output"]:
         if getattr(args, name, None) is not None:
             setattr(args, name, Path(getattr(args, name)).resolve())
     catalog = read(NATIVE / "content/models.json")
+    identity_path = Path(getattr(args, "identity", None) or NATIVE / "content/model-identity-reviews.json").resolve()
+    identity_decisions = identity_reviews(identity_path)
     catalog_hash = sha(NATIVE / "content/models.json")
     companion_path = NATIVE / "content/companion-models.json"
     companions = read(companion_path) if companion_path.is_file() else {}
@@ -174,13 +261,14 @@ def merge(args):
     rows = indexed_sources(inventory)
     if set(rows) != set(catalog["sources"]):
         raise ValueError("Inventory does not enumerate every shipped source mapping exactly.")
-    runtime, runtime_valid, runtime_reason = {}, False, "Runtime audit has not been supplied."
+    runtime, runtime_valid, runtime_complete, runtime_reason = {}, False, False, "Runtime audit has not been supplied."
     if args.runtime and args.runtime.exists():
         document = read(args.runtime)
         runtime = indexed_sources(document)
         runtime_valid = document.get("catalogSha256") == catalog_hash
         runtime_code = document.get("codeHashes", {})
         runtime_valid = runtime_valid and all((NATIVE / name).is_file() and sha(NATIVE / name) == expected for name, expected in runtime_code.items())
+        runtime_complete = runtime_valid and set(runtime_source_paths()).issubset(runtime_code)
         runtime_reason = "" if runtime_valid else "Runtime evidence has no matching catalog SHA; it cannot establish a current verification."
     visual, reviews, render_identities = {}, {}, {}
     if args.visual.is_dir():
@@ -208,6 +296,8 @@ def merge(args):
         row = rows[key]
         model = asset_evidence[source["asset"]]
         group = identity_by_source[key]
+        identity_review = identity_decisions.get(key)
+        identity_status, identity_current = identity_verdict(identity_review, source, catalog["assets"][source["asset"]])
         runtime_row = runtime.get(key)
         runtime_status = "UNVERIFIED"
         runtime_notes = []
@@ -281,6 +371,8 @@ def merge(args):
         visual_status = verdict(review.get("visualFidelityStatus")) if review else "UNVERIFIED"
         fine_texture_status = verdict(review.get("fineTextureStatus")) if review else "UNVERIFIED"
         motion_review_status = verdict(review.get("motionReviewStatus", review.get("motionStatus"))) if review else "UNVERIFIED"
+        review_current = motion_complete = texture_complete = False
+        reviewed_paths = set()
         if review:
             review_current = record_matches_capture(capture, review.get("runtimeHashes", {}))
             review_paths = [ROOT / path for path in review.get("evidence", [])]
@@ -300,38 +392,56 @@ def merge(args):
                     fine_texture_status = "UNVERIFIED"
                 if not render_current or (visual_status == "VERIFIED" and (not motion_complete or not texture_complete or motion_review_status != "VERIFIED" or fine_texture_status != "VERIFIED")):
                     visual_status = "UNVERIFIED"
-        checks = [row["structureStatus"], model["status"], runtime_status, render_status, visual_status, fine_texture_status, motion_review_status]
-        overall = "FAIL" if "FAIL" in checks else "VERIFIED" if all(status == "VERIFIED" for status in checks) else "UNVERIFIED"
+        finite_status = "VERIFIED" if runtime_valid and runtime_row and runtime_row.get("runtimeSampling") == "FINITE" else "UNVERIFIED"
+        # Wrong form and concrete load/runtime/material/motion failures are never
+        # erased by a new render. Optional browser fidelity is a separate result.
+        checks = [row["structureStatus"], model["status"], fine_texture_status, motion_review_status]
+        if identity_status == "FAIL" or runtime_status == "FAIL" or (evidence and render_current and evidence[0].get("Status") == "render-error"):
+            checks.append("FAIL")
+        context_required = bool(runtime_row and runtime_row.get("review")) or bool(evidence and any(
+            sample.get("EdgePixels", 0) > 0 or sample.get("VisiblePixels", 0) == 0 for sample in evidence[0].get("Samples", [])))
+        functional_status, functional_notes = functional_verdict(review, review_current and render_current,
+            motion_complete, texture_complete, checks, runtime_complete and finite_status == "VERIFIED" and runtime_role_coverage(runtime_row),
+            context_required, reviewed_paths)
+        if functional_status == "VERIFIED" and identity_status == "UNVERIFIED":
+            identity_status = "VERIFIED"  # Explicit identityReviewed in this current complete manual review.
+        overall = functional_status
         matrix.append({"sourceKey": key, "asset": source["asset"], "assetSha256": catalog["assets"][source["asset"]]["sha256"],
                        "motionSha256": source.get("motion", {}).get("sha256"), "visualIdentity": render_identities.get(key, {}).get("Signature"),
                        "inventoryContextIdentity": group["signature"],
                        "metadata": source["metadata"], "companionBindings": row.get("companionBindings", []),
                        "aliases": row["aliases"], "companionContexts": row["companionContexts"], "status": overall,
                        "assetStatus": model["status"], "structureStatus": row["structureStatus"],
-                       "runtimeStatus": runtime_status, "finiteSamplingStatus": "VERIFIED" if runtime_valid and runtime_row and runtime_row.get("runtimeSampling")=="FINITE" else "UNVERIFIED", "renderedTechnicalStatus": render_status,
+                       "runtimeStatus": runtime_status, "finiteSamplingStatus": finite_status, "renderedTechnicalStatus": render_status,
                        "visualFidelityStatus": visual_status, "fineTextureStatus": fine_texture_status, "motionReviewStatus": motion_review_status,
+                       "identityStatus": identity_status, "identityReview": identity_review, "functionalStatus": functional_status,
+                       "functionalReview": functional_notes,
                        "roles": row["roles"], "clips": row["clips"],
                        "failures": [*model["failures"], *row["failures"]],
                        "review": [*model["review"], *row["review"]], "runtimeReview": runtime_notes,
                        "renderReview": render_flags, "visualReview": review,
                        "evidence": {"inventory": str(args.inventory.relative_to(ROOT)),
                                     "runtime": str(args.runtime.relative_to(ROOT)) if runtime_row and args.runtime else None,
+                                    "identity": str(identity_path.relative_to(ROOT)) if identity_review else None,
+                                    "identityCurrent": identity_current, "runtimeCoverageComplete": runtime_complete and runtime_role_coverage(runtime_row),
                                     "render": render_file, "renderAlias": alias_file, "renderReusedFrom": reused_from,
                                     "renderCatalogSha256": evidence[0].get("RuntimeHashes", {}).get("models.json") if evidence else None,
                                     "captureManifest": capture.get("manifest"), "captureCatalogSha256": capture["hashes"].get("models.json"),
                                     "captureRuntimeGroupsCurrent": capture["groups"], "renderDataAndRuntimeCurrent": render_current,
                                     "completeRoleFrameCoverage": coverage}})
     counts = dict(Counter(row["status"] for row in matrix))
-    result = {"schemaVersion": 1, "catalogSha256": catalog_hash,
-              "scope": "Every shipped source; VERIFIED requires current asset, structure, runtime, native raster and reviewed visual fidelity evidence. Missing evidence remains UNVERIFIED. Numerical finiteness and nonblank pictures do not establish visual correctness.",
+    result = {"schemaVersion": 2, "catalogSha256": catalog_hash,
+              "scope": "Every shipped source; status reports functional quality using current identity, dependencies, role/texture review, full-cycle/transition runtime evidence and actual-board resolution of framing candidates. Optional browser visual fidelity is separate. Missing evidence remains UNVERIFIED; finite poses and nonblank pictures alone do not prove quality.",
               "summary": {"assets": len(catalog["assets"]), "sources": len(matrix), "visualIdentities": len(grouping["groups"]),
                           "status": counts, "renderedTechnical": dict(Counter(row["renderedTechnicalStatus"] for row in matrix)),
                           "visualFidelity": dict(Counter(row["visualFidelityStatus"] for row in matrix)),
                           "fineTexture": dict(Counter(row["fineTextureStatus"] for row in matrix)),
-                          "motionReview": dict(Counter(row["motionReviewStatus"] for row in matrix))}, "sources": matrix}
+                          "motionReview": dict(Counter(row["motionReviewStatus"] for row in matrix)),
+                          "identity": dict(Counter(row["identityStatus"] for row in matrix)),
+                          "functional": dict(Counter(row["functionalStatus"] for row in matrix))}, "sources": matrix}
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     with args.output.with_suffix(".csv").open("w", newline="", encoding="utf-8") as file:
-        fields = ["sourceKey", "asset", "status", "assetStatus", "structureStatus", "runtimeStatus", "renderedTechnicalStatus", "visualFidelityStatus", "fineTextureStatus", "motionReviewStatus"]
+        fields = ["sourceKey", "asset", "status", "identityStatus", "functionalStatus", "assetStatus", "structureStatus", "runtimeStatus", "renderedTechnicalStatus", "visualFidelityStatus", "fineTextureStatus", "motionReviewStatus"]
         writer = csv.DictWriter(file, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(matrix)
@@ -344,6 +454,7 @@ if __name__ == "__main__":
     parser.add_argument("--groups-only", action="store_true")
     parser.add_argument("--inventory", type=Path, default=ARTIFACTS / "model-audit-inventory.json")
     parser.add_argument("--runtime", type=Path, default=ARTIFACTS / "model-runtime-summary.json")
+    parser.add_argument("--identity", type=Path, default=NATIVE / "content/model-identity-reviews.json")
     parser.add_argument("--visual", type=Path, default=ARTIFACTS / "model-visual-audit-v2")
     parser.add_argument("--output", type=Path, default=ARTIFACTS / "model-audit-matrix.json")
     merge(parser.parse_args())

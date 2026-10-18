@@ -286,10 +286,10 @@ class EvidenceChecks(unittest.TestCase):
                    "sources": [{"sourceKey": "creature", "runtimeSampling": "FINITE", "status": "VERIFIED"}]})
         return review
 
-    def test_complete_measured_and_reviewed_scopes_can_pass(self):
+    def test_complete_measured_and_reviewed_visual_scopes_can_pass(self):
         self.capture()
         self.manual_review()
-        self.assertEqual(self.result()["status"], "VERIFIED")
+        self.assertEqual(self.result()["visualFidelityStatus"], "VERIFIED")
 
     def test_partial_manual_roles_cannot_approve_overall(self):
         self.capture()
@@ -395,6 +395,190 @@ class EvidenceChecks(unittest.TestCase):
         del manifest["sourceGroups"]["pose"]
         self.write(path, manifest)
         self.assertEqual(self.result()["fineTextureStatus"], "UNVERIFIED")
+
+    def identity_review(self):
+        proof = audit.ROOT / "identity-proof.txt"
+        proof.write_text("Manually compared declared form with exact asset and authoritative reference.", encoding="utf-8")
+        self.args.identity = audit.NATIVE / "content/model-identity-reviews.json"
+        record = {"sourceKey": "creature", "status": "FAIL", "asset": "asset", "assetSha256": "asset-hash",
+                  "sourceSha256": None, "declaredForm": None, "review": "Wrong species assigned.",
+                  "evidence": ["identity-proof.txt"], "evidenceSha256": {"identity-proof.txt": audit.sha(proof)}}
+        self.write(self.args.identity, {"schemaVersion": 1, "sources": [record]})
+        return record
+
+    def test_exact_asset_identity_failure_survives_missing_render_and_runtime(self):
+        self.identity_review()
+        row = self.result()
+        self.assertEqual(row["identityStatus"], "FAIL")
+        self.assertEqual(row["functionalStatus"], "FAIL")
+        self.assertEqual(row["status"], "FAIL")
+
+    def test_identity_failure_survives_animation_and_renderer_changes(self):
+        self.capture()
+        self.identity_review()
+        self.catalog["sources"]["creature"]["motion"]["sha256"] = "fixed-animation"
+        self.catalog["sources"]["creature"]["metadata"]["height"] = 2
+        self.update_catalog()
+        (audit.NATIVE / "src/renderer.cs").write_text("new renderer")
+        self.assertEqual(self.result()["identityStatus"], "FAIL")
+
+    def test_replaced_asset_invalidates_old_identity_failure(self):
+        self.identity_review()
+        self.catalog["assets"]["asset"]["sha256"] = "replacement"
+        self.update_catalog()
+        row = self.result()
+        self.assertEqual(row["identityStatus"], "UNVERIFIED")
+        self.assertEqual(row["identityReview"]["status"], "FAIL")
+
+    def test_changed_declared_form_invalidates_old_identity_failure(self):
+        self.identity_review()
+        self.catalog["sources"]["creature"]["metadata"]["form"] = "ActualForm"
+        self.update_catalog()
+        self.assertEqual(self.result()["identityStatus"], "UNVERIFIED")
+
+    def test_remapped_asset_does_not_inherit_identity_failure(self):
+        self.identity_review()
+        self.catalog["assets"]["another-asset"] = self.catalog["assets"]["asset"].copy()
+        self.catalog["sources"]["creature"]["asset"] = "another-asset"
+        self.inventory["assets"].append({**self.inventory["assets"][0], "asset": "another-asset"})
+        self.inventory["sources"][0]["asset"] = "another-asset"
+        self.update_catalog()
+        self.assertEqual(self.result()["identityStatus"], "UNVERIFIED")
+
+    def test_changed_original_source_hash_invalidates_identity_record(self):
+        self.identity_review()
+        self.catalog["assets"]["asset"]["sourceSha256"] = "different-import"
+        self.update_catalog()
+        self.assertEqual(self.result()["identityStatus"], "UNVERIFIED")
+
+    def test_identity_failure_requires_unchanged_review_proof(self):
+        self.identity_review()
+        (audit.ROOT / "identity-proof.txt").write_text("different finding")
+        self.assertEqual(self.result()["identityStatus"], "UNVERIFIED")
+
+    def test_identity_approval_alone_never_proves_functional_quality(self):
+        review = self.identity_review()
+        review["status"] = "VERIFIED"
+        self.write(self.args.identity, {"schemaVersion": 1, "sources": [review]})
+        row = self.result()
+        self.assertEqual(row["identityStatus"], "VERIFIED")
+        self.assertEqual(row["functionalStatus"], "UNVERIFIED")
+
+    def test_duplicate_identity_decisions_are_rejected(self):
+        review = self.identity_review()
+        self.write(self.args.identity, {"schemaVersion": 1, "sources": [review, review]})
+        with self.assertRaisesRegex(ValueError, "Duplicate identity"):
+            self.result()
+
+    def functional_review(self):
+        self.capture()
+        review = self.manual_review()
+        review["visualFidelityStatus"] = "UNVERIFIED"
+        review["functionalStatus"] = "VERIFIED"
+        review["functionalScope"] = {"identityReviewed": True, "materialMappingReviewed": True,
+            "transitionsReviewed": True, "runtimeBoundsReviewed": True, "unresolvedFindings": [],
+            "boardContextRequired": False, "boardContextReviewed": False}
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        code = {}
+        for name in audit.runtime_source_paths():
+            path = audit.NATIVE / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("runtime measured " + name)
+            code[name] = audit.sha(path)
+        runtime = {"catalogSha256": self.hash, "codeHashes": code, "sources": [{"sourceKey": "creature",
+            "runtimeSampling": "FINITE", "status": "UNVERIFIED", "review": [], "phases": [
+                {"name": name, "sampleCount": 33} for name in ["idle-cycle", "attack-cycle", "special-cycle", "win-cycle",
+                    "attack-runtime", "special-runtime", "win-runtime", "attack-to-special", "special-to-win",
+                    "movement-Grounded", "movement-arrival"]]}]}
+        self.write(self.args.runtime, runtime)
+        return review, runtime
+
+    def test_functional_quality_can_pass_without_browser_fidelity_approval(self):
+        self.functional_review()
+        row = self.result()
+        self.assertEqual(row["visualFidelityStatus"], "UNVERIFIED")
+        self.assertEqual(row["functionalStatus"], "VERIFIED")
+        self.assertEqual(row["identityStatus"], "VERIFIED")
+        self.assertEqual(row["status"], "VERIFIED")
+
+    def test_functional_approval_requires_current_transition_measurement(self):
+        review, runtime = self.functional_review()
+        runtime["sources"][0]["phases"] = [p for p in runtime["sources"][0]["phases"] if p["name"] != "attack-to-special"]
+        self.write(self.args.runtime, runtime)
+        self.assertEqual(self.result()["functionalStatus"], "UNVERIFIED")
+
+    def test_functional_approval_rejects_incomplete_runtime_code_identity(self):
+        review, runtime = self.functional_review()
+        runtime["codeHashes"].pop(next(iter(runtime["codeHashes"])))
+        self.write(self.args.runtime, runtime)
+        self.assertEqual(self.result()["functionalStatus"], "UNVERIFIED")
+
+    def test_functional_approval_requires_explicit_identity_review(self):
+        review, runtime = self.functional_review()
+        review["functionalScope"]["identityReviewed"] = False
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        self.assertEqual(self.result()["functionalStatus"], "UNVERIFIED")
+
+    def test_functional_approval_does_not_hide_an_open_finding(self):
+        review, runtime = self.functional_review()
+        review["functionalScope"]["unresolvedFindings"] = ["Feet do not step during movement."]
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        self.assertEqual(self.result()["functionalStatus"], "UNVERIFIED")
+
+    def test_functional_approval_cannot_override_known_wrong_species(self):
+        self.functional_review()
+        self.identity_review()
+        self.assertEqual(self.result()["functionalStatus"], "FAIL")
+
+    def test_clipping_candidate_needs_actual_board_review(self):
+        review, runtime = self.functional_review()
+        runtime["sources"][0]["review"] = ["special: large root travel"]
+        self.write(self.args.runtime, runtime)
+        self.assertEqual(self.result()["functionalStatus"], "UNVERIFIED")
+
+    def test_board_review_with_hashed_evidence_can_resolve_framing_candidate(self):
+        review, runtime = self.functional_review()
+        runtime["sources"][0]["review"] = ["special: large root travel"]
+        self.write(self.args.runtime, runtime)
+        board = audit.ROOT / "board.png"
+        board.write_bytes(b"reviewed production context")
+        review["evidence"].append("board.png")
+        review["evidenceSha256"]["board.png"] = audit.sha(board)
+        review["functionalScope"].update(boardContextRequired=True, boardContextReviewed=True,
+                                         boardSamplesInspected=3, boardEvidence=["board.png"])
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        self.assertEqual(self.result()["functionalStatus"], "VERIFIED")
+
+    def test_optional_fidelity_difference_does_not_override_functional_acceptance(self):
+        review, runtime = self.functional_review()
+        review["visualFidelityStatus"] = "FAIL"
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        row = self.result()
+        self.assertEqual(row["visualFidelityStatus"], "FAIL")
+        self.assertEqual(row["functionalStatus"], "VERIFIED")
+
+    def test_fidelity_approval_without_functional_review_does_not_silently_promote(self):
+        self.capture()
+        self.manual_review()
+        self.assertEqual(self.result()["functionalStatus"], "UNVERIFIED")
+
+    def test_partial_current_review_can_record_concrete_functional_failure(self):
+        self.capture()
+        review = self.manual_review()
+        review.update(functionalStatus="FAIL", motionReviewStatus="UNVERIFIED", fineTextureStatus="UNVERIFIED")
+        review["reviewScope"] = {"roles": ["attack"], "framesPerRole": 1, "animationFramesInspected": 1}
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        self.assertEqual(self.result()["functionalStatus"], "FAIL")
+
+    def test_stale_partial_functional_failure_remains_history(self):
+        self.capture()
+        review = self.manual_review()
+        review.update(functionalStatus="FAIL", motionReviewStatus="UNVERIFIED", fineTextureStatus="UNVERIFIED")
+        self.write(self.args.visual / "reviews.json", {"sources": [review]})
+        (audit.NATIVE / "src/combat.cs").write_text("fixed production movement")
+        row = self.result()
+        self.assertEqual(row["functionalStatus"], "UNVERIFIED")
+        self.assertEqual(row["visualReview"]["functionalStatus"], "FAIL")
 
 
 if __name__ == "__main__":
