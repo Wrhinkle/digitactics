@@ -155,6 +155,17 @@ try {
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--duos', '--capture', 'artifacts/match-duos.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--mode-bonus-smoke', '--capture', 'artifacts/mode-bonuses.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-library-ui-smoke', '--capture', 'artifacts/music-library.bmp')
+    # Exercise the same controls at the enforced minimum window size, where clipping is most likely.
+    foreach ($scenario in @(
+        @{ Flag = '--match-smoke'; Name = 'minimum-solo'; Duos = $false },
+        @{ Flag = '--match-smoke'; Name = 'minimum-duos'; Duos = $true },
+        @{ Flag = '--mode-bonus-smoke'; Name = 'minimum-bonus'; Duos = $false },
+        @{ Flag = '--music-library-ui-smoke'; Name = 'minimum-music'; Duos = $false }
+    )) {
+        $smokeArguments = @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', $scenario.Flag, '--minimum-window', '--capture', ('artifacts/' + $scenario.Name + '.bmp'))
+        if ($scenario.Duos) { $smokeArguments += '--duos' }
+        Invoke-Checked $dotnet $smokeArguments
+    }
     if ($Publish) {
         $destination = Join-Path $nativeRoot 'artifacts\win-x64'
         Invoke-Checked $dotnet @('publish', 'src/DigiTactics.Desktop', '-c', 'Release', '-r', 'win-x64', '--self-contained', 'true', '-o', $destination)

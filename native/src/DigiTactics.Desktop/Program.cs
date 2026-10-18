@@ -92,7 +92,7 @@ try
         bool audioVisibilitySmoke = args.Contains("--audio-visibility-smoke");
         bool modeBonusSmoke = args.Contains("--mode-bonus-smoke");
         bool steamLobbyUiSmoke = args.Contains("--steam-lobby-ui-smoke");
-        MatchApplication.Run(catalog, args.Contains("--match-smoke") || args.Contains("--music-library-ui-smoke") || collectionSmoke || trainingSmoke || farmPointerSmoke || networkMatchSmoke || steamLobbyUiSmoke || modeBonusSmoke || audioVisibilitySmoke, capture, args.Contains("--duos"), profileDirectory, collectionSmoke, evolutionSmoke, trainingSmoke, farmPointerSmoke, networkMatchSmoke, Option("--steam-api"), steamLobbyUiSmoke, spectatorSmoke, modeBonusSmoke, audioVisibilitySmoke, Option("--ffmpeg"), args.Contains("--music-library-ui-smoke"));
+        MatchApplication.Run(catalog, args.Contains("--match-smoke") || args.Contains("--music-library-ui-smoke") || collectionSmoke || trainingSmoke || farmPointerSmoke || networkMatchSmoke || steamLobbyUiSmoke || modeBonusSmoke || audioVisibilitySmoke, capture, args.Contains("--duos"), profileDirectory, collectionSmoke, evolutionSmoke, trainingSmoke, farmPointerSmoke, networkMatchSmoke, Option("--steam-api"), steamLobbyUiSmoke, spectatorSmoke, modeBonusSmoke, audioVisibilitySmoke, Option("--ffmpeg"), args.Contains("--music-library-ui-smoke"), args.Contains("--minimum-window"));
     }
     return 0;
 }

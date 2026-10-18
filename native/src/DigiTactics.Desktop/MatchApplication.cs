@@ -10,14 +10,14 @@ namespace DigiTactics.Desktop;
 
 internal static class MatchApplication
 {
-    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false, bool evolutionSmoke = false, bool trainingSmoke = false, bool farmPointerSmoke = false, bool networkMatchSmoke = false, string? steamLibrary = null, bool steamLobbyUiSmoke = false, bool spectatorSmoke = false, bool modeBonusSmoke = false, bool audioVisibilitySmoke = false, string? musicDecoder = null, bool musicLibrarySmoke = false)
+    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false, bool evolutionSmoke = false, bool trainingSmoke = false, bool farmPointerSmoke = false, bool networkMatchSmoke = false, string? steamLibrary = null, bool steamLobbyUiSmoke = false, bool spectatorSmoke = false, bool modeBonusSmoke = false, bool audioVisibilitySmoke = false, string? musicDecoder = null, bool musicLibrarySmoke = false, bool minimumWindow = false)
     {
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
         {
             Glfw.WindowHint(GlfwWindowHint.ContextVersionMajor, 4); Glfw.WindowHint(GlfwWindowHint.ContextVersionMinor, 5);
             Glfw.WindowHint(GlfwWindowHint.Visible, smoke && !audioVisibilitySmoke ? 0 : 1);
-            using var window = Glfw.CreateWindow(new GlfwWindow.CreateInfo { Title = "Digi-Tactics", Size = new int2(1440, 900) });
+            using var window = Glfw.CreateWindow(new GlfwWindow.CreateInfo { Title = "Digi-Tactics", Size = minimumWindow ? new int2(1100, 760) : new int2(1440, 900) });
             window.SetSizeLimits(new(1100, 760), new(-1, -1));
             window.MakeContextCurrent();
             if (!Glad.Initialize(name => Glfw.PInvoke.GetProcAddress(name))) throw new InvalidOperationException("OpenGL initialization failed.");
