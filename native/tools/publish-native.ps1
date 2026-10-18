@@ -15,14 +15,18 @@ $sdk=Join-Path $env:LOCALAPPDATA 'DigiTacticsBuild/dotnet/dotnet.exe'
 if(-not(Test-Path -LiteralPath $sdk)) {$sdk=(Get-Command dotnet).Source}
 . (Join-Path $PSScriptRoot 'NativeProcess.ps1')
 $app=Join-Path $Destination 'app'
+$launcherRuntime=Join-Path $Destination 'launcher'
 $steamRuntime = & (Join-Path $PSScriptRoot 'setup-steam.ps1')
 $mediaRuntime = & (Join-Path $PSScriptRoot 'setup-media.ps1')
 $crtRuntime = & (Join-Path $PSScriptRoot 'setup-crt.ps1')
-Invoke-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Launcher'),'-c','Release','-r','win-x64','--self-contained','true','-m:1','-nr:false','-p:UseSharedCompilation=false',('-p:Version='+$Version),'-o',$Destination)
+Invoke-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Launcher'),'-c','Release','-r','win-x64','--self-contained','true','-m:1','-nr:false','-p:UseSharedCompilation=false',('-p:Version='+$Version),('-p:LauncherRootDirectory='+$Destination),'-o',$launcherRuntime)
+# The root apphost is the sole player-facing launcher; remove only this freshly
+# generated duplicate, never anything from an existing installation.
+Remove-Item -LiteralPath (Join-Path $launcherRuntime 'DigiTactics.Launcher.exe')
 Invoke-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Desktop'),'-c','Release','-r','win-x64','--self-contained','true','-m:1','-nr:false','-p:UseSharedCompilation=false',('-p:Version='+$Version),'-o',$app)
-Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'copy-managed-notices.py'),'--assets',(Join-Path $nativeRoot 'src/DigiTactics.Launcher/obj/project.assets.json'),'--deps',(Join-Path $Destination 'DigiTactics.Launcher.deps.json'),'--destination',$Destination)
+Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'copy-managed-notices.py'),'--assets',(Join-Path $nativeRoot 'src/DigiTactics.Launcher/obj/project.assets.json'),'--deps',(Join-Path $launcherRuntime 'DigiTactics.Launcher.deps.json'),'--destination',$launcherRuntime)
 Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'copy-managed-notices.py'),'--assets',(Join-Path $nativeRoot 'src/DigiTactics.Desktop/obj/project.assets.json'),'--deps',(Join-Path $app 'DigiTactics.Desktop.deps.json'),'--destination',$app)
-foreach($assembly in @((Join-Path $Destination 'DigiTactics.Launcher.dll'),(Join-Path $app 'DigiTactics.Desktop.dll'))) {
+foreach($assembly in @((Join-Path $launcherRuntime 'DigiTactics.Launcher.dll'),(Join-Path $app 'DigiTactics.Desktop.dll'))) {
     $metadata=[Diagnostics.FileVersionInfo]::GetVersionInfo($assembly)
     if($metadata.ProductVersion.Split('+')[0] -cne $Version -or $metadata.FileVersion -cne ($Version+'.0')) {throw "Published assembly version does not match release $Version`: $assembly"}
 }
@@ -55,7 +59,8 @@ foreach($library in $assets.libraries.PSObject.Properties) {
 Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'verify-native-dependencies.py'),$app,'--require-brutal')
 Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'verify-native-dependencies.py'),$Destination)
 [IO.File]::WriteAllText((Join-Path $Destination 'native-launcher.json'),(@{schemaVersion=1;bundledVersion=$Version;updateOwner="Wrhinkle";updateRepository="digitactics"}|ConvertTo-Json -Compress))
-[IO.File]::WriteAllText((Join-Path $Destination 'START-HERE.txt'),"Start DigiTactics.Launcher.exe to play.`r`nKeep the app folder beside the launcher. Saves and staged updates are stored under your Windows user account.`r`n")
+[IO.File]::WriteAllText((Join-Path $Destination 'START-HERE.txt'),"Start DigiTactics.Launcher.exe to play.`r`nKeep the app and launcher folders beside it; they contain the game, runtime and license notices.`r`nSaves and staged updates are stored under your Windows user account.`r`n")
+Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'verify-native-layout.py'),'--package',$Destination)
 $savedRoot=$env:DOTNET_ROOT;$savedX64=$env:DOTNET_ROOT_X64;$savedLookup=$env:DOTNET_MULTILEVEL_LOOKUP
 try {
     # Prove the launcher and game resolve their bundled runtime, independently of the build SDK.

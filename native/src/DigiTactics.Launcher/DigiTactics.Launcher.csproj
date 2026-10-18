@@ -1,4 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>WinExe</OutputType></PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <ApplicationIcon>../../../icons/digitactics.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup><ProjectReference Include="../DigiTactics.Storage/DigiTactics.Storage.csproj" /></ItemGroup>
+  <!-- The SDK apphost can locate its managed entrypoint in a relative folder.
+       Keep the player's launch target at the package root and the complete
+       self-contained runtime (including its notices) together in launcher/. -->
+  <Target Name="CreateRootLauncherHost" AfterTargets="Publish" Condition="'$(LauncherRootDirectory)' != ''">
+    <CreateAppHost AppHostSourcePath="$(AppHostSourcePath)"
+                   AppHostDestinationPath="$(LauncherRootDirectory)/DigiTactics.Launcher.exe"
+                   AppBinaryName="launcher/DigiTactics.Launcher.dll"
+                   IntermediateAssembly="@(IntermediateAssembly->'%(FullPath)')"
+                   WindowsGraphicalUserInterface="true" />
+  </Target>
 </Project>

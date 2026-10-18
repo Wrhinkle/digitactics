@@ -13,11 +13,20 @@ The version comes from the package's `native-launcher.json`. `-NotesFile` is opt
 
 The completed directory contains:
 
-- `DigiTactics-native-<version>-win-x64.zip`: full installation, with `DigiTactics.Launcher.exe` at its root and the game under `app/`.
+- `DigiTactics-native-<version>-win-x64.zip`: full installation, with `DigiTactics.Launcher.exe` at its root, the game under `app/`, and launcher runtime dependencies/notices under `launcher/`. The only other root files are `START-HERE.txt` and `native-launcher.json`. Keep both folders beside the launcher.
 - `DigiTactics-native-update-<version>-win-x64.zip`: application-only payload created and verified by the production launcher package writer.
 - `native-latest.json`: the exact schema consumed by `NativeReleaseDiscovery`; its file, size, SHA-256, version, platform and minimum launcher match the update payload.
 - `SHA256SUMS.txt`: hashes of both ZIPs and `native-latest.json`.
 - `native-release-artifacts.json`: deterministic assembly report with the expected tag, file counts, sizes and hashes.
+
+The launcher uses the standard .NET apphost with its managed entrypoint under
+`launcher/`; it does not extract a runtime on startup. The application's existing
+`app/DigiTactics.Desktop.exe` path and update manifest format are unchanged.
+`publish-native.ps1` verifies the clean root layout and both executable icons.
+The icon is the original `icons/icon-512.png` artwork; regenerate its seven-size
+Windows resource with `python native/tools/export-windows-icon.py` after an
+intentional artwork change. The same exporter makes a pixel-identical RGBA8 PNG
+for the game's limited PNG decoder, embedded for its window icon.
 
 Supply `-MediaMaterialsArchive <zip>` to attach the minimal audio runtime's complete source/build bundle produced by `prepare-media-audio.py`: `digitactics-media-audio-sources-8.1.3-digitactics-audio-29e619e767.zip`. Historical BtbN investigation bundles describe a different development runtime and must not accompany this application. Each ZIP retains its original filename, is read back against its `materials-manifest.json` file hashes, and must identify the same runtime SHA-256 as `app/media/provenance.json`. The packaged `MEDIA_RUNTIME_NOTICES.txt` is also copied beside the ZIPs. These files enter `SHA256SUMS.txt` and the assembly report. The report preserves each materials bundle's `distributionReady` and remaining requirements; source/build completeness does not imply full game release acceptance. `releaseApproved` is always false because this tool only verifies local artifact integrity.
 

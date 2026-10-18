@@ -1,8 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
+    <ApplicationIcon>../../../icons/digitactics.ico</ApplicationIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="../../../icons/digitactics-window.png" LogicalName="DigiTactics.ApplicationIcon.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../DigiTactics.Networking/DigiTactics.Networking.csproj" />
     <PackageReference Include="Ahwoo.BRUTAL.Sdl" Version="2026.10.2" />

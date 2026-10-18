@@ -1,15 +1,15 @@
 # Managed runtime redistribution files
 
-`dotnet publish --self-contained` copies the runtime binaries but does not copy all of their license files. Run `copy-managed-notices.py` after publishing, once for the launcher directory and once for its `app` directory:
+`dotnet publish --self-contained` copies the runtime binaries but does not copy all of their license files. Run `copy-managed-notices.py` after publishing, once for the `launcher` runtime directory and once for the `app` directory:
 
 ```powershell
-python native/tools/copy-managed-notices.py --assets native/src/DigiTactics.Launcher/obj/project.assets.json --deps <package>/DigiTactics.Launcher.deps.json --destination <package>
+python native/tools/copy-managed-notices.py --assets native/src/DigiTactics.Launcher/obj/project.assets.json --deps <package>/launcher/DigiTactics.Launcher.deps.json --destination <package>/launcher
 python native/tools/copy-managed-notices.py --assets native/src/DigiTactics.Desktop/obj/project.assets.json --deps <package>/app/DigiTactics.Desktop.deps.json --destination <package>/app
 ```
 
 The helper reads the published `.deps.json`, matching restore assets and exact NuGet archives. It checks the archive SHA-512 sidecar, package identity and restored NuGet content hash, then compares every shipped .NET runtime and non-BRUTAL managed dependency binary to its archive. It does not guess the runtime version from an SDK installation or download a newer license. There are no network requests during packaging.
 
-Both publish roots receive `DOTNET_LICENSE.TXT`, `DOTNET_THIRD-PARTY-NOTICES.TXT` and deterministic `MANAGED_DEPENDENCY_NOTICES.json`. The game also receives the unchanged licenses and third-party notices for CommunityToolkit.HighPerformance and Microsoft.Extensions under `LICENSES/<package>-<version>/`. The manifest records package versions, original package URLs, archive hashes, repository commits, notice hashes, and the verified published binaries. These app files are included in application updates as well as full installs.
+Both runtime folders (`launcher/` and `app/`) receive `DOTNET_LICENSE.TXT`, `DOTNET_THIRD-PARTY-NOTICES.TXT` and deterministic `MANAGED_DEPENDENCY_NOTICES.json`. The game also receives the unchanged licenses and third-party notices for CommunityToolkit.HighPerformance and Microsoft.Extensions under `LICENSES/<package>-<version>/`. The manifest records package versions, original package URLs, archive hashes, repository commits, notice hashes, and the verified published binaries. These app files are included in application updates as well as full installs.
 
 The resolved `Microsoft.NETCore.App.Runtime.win-x64/10.0.13` archive contains its own MIT license and third-party notices; these exact files are used. Its [official NuGet listing](https://www.nuget.org/packages/Microsoft.NETCore.App.Runtime.win-x64/10.0.13) also identifies MIT. Some older general .NET licensing pages describe different Windows distribution licenses; do not replace the actual resolved package's license with those general examples. [.NET's asset licensing model](https://github.com/dotnet/runtime/blob/main/docs/project/licensing-assets.md) explains that binary distributions carry their applicable license and third-party notices.
 

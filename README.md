@@ -14,7 +14,7 @@ A free, unofficial Digimon autobattler made for fun. Buy Digimon, combine copies
 
 Use the full **[DigiTactics-native-2.0.0-win-x64.zip](https://github.com/Wrhinkle/digitactics/releases/download/native-v2.0.0/DigiTactics-native-2.0.0-win-x64.zip)** (or the matching newer version on the release page). GitHub's automatic **Source code** archives and the `native-update` ZIP are not full installations.
 
-1. Extract the entire ZIP to a local folder. Keep **`DigiTactics.Launcher.exe`**, its accompanying files and the **`app`** folder together. Start **`DigiTactics.Launcher.exe`** after extraction.
+1. Extract the entire ZIP to a local folder. Keep **`DigiTactics.Launcher.exe`**, its accompanying files and the **`app`** and **`launcher`** folders together. Start **`DigiTactics.Launcher.exe`** after extraction.
 2. To bring over an existing save, follow the import steps below **before starting a match or changing settings**.
 3. For online play, start the Steam desktop client and sign in before opening the game. Solo works without Steam.
 4. On Home, choose your **set**, **pace** and **Solo / Duos** format, then Play. Multiplayer opens the Steam lobby controls.

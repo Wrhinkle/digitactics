@@ -56,7 +56,7 @@ Online peers receive the identity, lobby presence, actions and social messages n
 
 ## Native updates
 
-Always start **`DigiTactics.Launcher.exe`** with the accompanying files and `app` folder intact. Starting `app/DigiTactics.Desktop.exe` directly bypasses launcher updates and supervision.
+Always start **`DigiTactics.Launcher.exe`** with the accompanying files and both `app` and `launcher` folders intact. Starting `app/DigiTactics.Desktop.exe` directly bypasses launcher updates and supervision.
 
 1. After an interactive game startup is confirmed, the launcher checks `Wrhinkle/digitactics`'s latest public GitHub Release, using an ETag cache where available. Drafts and prereleases are excluded.
 2. It reads **`native-latest.json`**, which identifies the version, `win-x64` platform, minimum launcher version, payload filename, size and SHA-256 hash. Electron's `latest.json` is ignored.

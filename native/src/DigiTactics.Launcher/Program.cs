@@ -60,10 +60,14 @@ try
     if((bundle is null)!=(version is null))throw new ArgumentException("Provide both --bundle and --version for a development launch.");
     if(bundle is null)
     {
-        string configuration=Path.Combine(AppContext.BaseDirectory,"native-launcher.json");
+        // Packaged apphost is at the root; its managed runtime lives in launcher/.
+        string installation=AppContext.BaseDirectory;
+        if(!File.Exists(Path.Combine(installation,"native-launcher.json")))
+            installation=Path.GetDirectoryName(Environment.ProcessPath)??installation;
+        string configuration=Path.Combine(installation,"native-launcher.json");
         var settings=JsonSerializer.Deserialize<LauncherConfiguration>(File.ReadAllBytes(configuration),json)??throw new InvalidDataException("Missing launcher configuration.");
         if(settings.SchemaVersion!=1)throw new InvalidDataException("Unsupported launcher configuration.");
-        version=settings.BundledVersion;bundle=Path.Combine(AppContext.BaseDirectory,"app");
+        version=settings.BundledVersion;bundle=Path.Combine(installation,"app");
         updateOwner=settings.UpdateOwner;updateRepository=settings.UpdateRepository;
     }
     if(!NativeUpdatePackage.ValidVersion(version))throw new InvalidDataException("Invalid bundled application version.");

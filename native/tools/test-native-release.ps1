@@ -9,6 +9,7 @@ $app=Join-Path $fixture 'app'
 New-Item -ItemType Directory -Path $app | Out-Null
 # Use the real self-contained packager with a deliberately tiny, non-executed app.
 Get-ChildItem -LiteralPath $PackageDirectory -File -Force | Copy-Item -Destination $fixture
+if(Test-Path -LiteralPath (Join-Path $PackageDirectory 'launcher')) {Copy-Item -LiteralPath (Join-Path $PackageDirectory 'launcher') -Destination $fixture -Recurse}
 $utf8=New-Object System.Text.UTF8Encoding($false)
 [IO.File]::WriteAllText((Join-Path $fixture 'native-launcher.json'),' {"schemaVersion":1,"bundledVersion":"1.2.3","updateOwner":"test","updateRepository":"native-artifacts"} ',$utf8)
 [IO.File]::WriteAllText((Join-Path $app 'DigiTactics.Desktop.exe'),'synthetic fixture; never executed',$utf8)

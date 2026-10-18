@@ -20,7 +20,7 @@ The script exports content/reference fixtures, runs checks and creates a fresh
 self-contained package under `%LOCALAPPDATA%/DigiTacticsBuild/releases/`.
 `-Publish` means a local .NET package; it does not upload to GitHub. Start
 `DigiTactics.Launcher.exe` from the printed package directory and keep its `app`
-folder beside it. Players need no installed .NET SDK/runtime.
+and `launcher` folders beside it. Players need no installed .NET SDK/runtime.
 
 Native profile data is separate from Electron. Use an isolated
 `--profile-directory` for development and diagnostics; do not use a real player
