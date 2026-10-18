@@ -37,7 +37,7 @@ internal sealed partial class MatchScreen : IDisposable
     public bool WatchingMirrored => battle?.Mirrored ?? false;
     public int BattleColumns => battle?.Combat.Columns ?? 0;
     public int CompletedRounds { get; private set; }
-    private MatchPlayer Human => Session!.State.Players[localSeat];
+    private MatchPlayer Human => Session!.State.Players[localSeat >= 0 ? localSeat : viewed];
     private Ruleset Rules => Session?.State.Rules ?? catalog.Variants[variant];
     private int Left => 230;
     private int Top => 118;
@@ -195,7 +195,7 @@ internal sealed partial class MatchScreen : IDisposable
     {
         selectedUnit = null; selectedItem = null; backgroundTime = 0;
         status = "Battle in progress.";
-        Watch(localSeat);
+        Watch(localSeat >= 0 ? localSeat : viewed);
         history?.Capture();
         if (Session!.Battles.Count > 0) { audio.Play("fight"); audio.Music("combat"); }
         if (Session.Battles.Count == 0 && networkRoom is null) Finish();
@@ -215,7 +215,7 @@ internal sealed partial class MatchScreen : IDisposable
             m.TeamA is { } a && Session.State.Teams[a].Members.Any(p => p.Id == localSeat) ||
             m.TeamB is { } b && Session.State.Teams[b].Members.Any(p => p.Id == localSeat));
         bool sideB = own?.B == localSeat || own?.TeamB is { } team && Session.State.Teams[team].Members.Any(p => p.Id == localSeat);
-        audio.Play(Session.State.Over ? Human.Placement == 1 ? "champion" : "gameover" :
+        audio.Play(IsSpectating ? "round" : Session.State.Over ? Human.Placement == 1 ? "champion" : "gameover" :
             own?.Combat.Winner is null or -1 ? "round" : own.Combat.Winner == (sideB ? 1 : 0) ? "win" : "loss");
         audio.Music(Session.State.Over ? null : "planning");
     }
@@ -226,7 +226,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private void RoundAdvanced()
     {
-        battle?.Dispose(); battle = null; watching = null; combatAudio = null; viewed = localSeat;
+        battle?.Dispose(); battle = null; watching = null; combatAudio = null; viewed = localSeat >= 0 ? localSeat : viewed;
         selectedUnit = null; selectedItem = null;
         audio.Play("round");
         status = "Select a unit, then a hex. Select an item, then its holder.";
@@ -286,18 +286,19 @@ internal sealed partial class MatchScreen : IDisposable
         var session = Session!;
         Window("Match", 12, 12, size.X - 24, 96, ImGuiWindowFlags.NoTitleBar);
         ImGui.Text($"{Rules.Name}  /  {Rules.Pace}  /  {(session.State.Duos ? "Duos" : "Solo")}     Round {session.Rounds.Position.Label}  -  {session.Rounds.RoundType.ToUpperInvariant()}");
-        ImGui.Text($"{Human.Health} HP     {Human.Economy.Gold} gold     Level {Human.Economy.Level}     Streak {Human.Economy.Streak}");
+        ImGui.Text(IsSpectating ? $"Spectating {Human.Name}" : $"{Human.Health} HP     {Human.Economy.Gold} gold     Level {Human.Economy.Level}     Streak {Human.Economy.Streak}");
         ImGui.SameLine(); if (Button("mute", audio.Muted ? "Unmute" : "Mute")) audio.Muted = !audio.Muted;
         ImGui.SameLine(); if (Button("audioSettings", "Sound settings")) showAudio = !showAudio;
         if (session.State.Over)
         {
-            ImGui.Text($"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
+            ImGui.Text(IsSpectating ? "Match complete" : $"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
             if (Button("menu", "Main menu")) { if (networkRoom is not null) LeaveSteamRoom(); Session = null; audio.Music(null); battle?.Dispose(); battle = null; watching = null; planning.Dispose(); planning = new(); }
         }
+        else if (IsSpectating) ImGui.Text($"{session.Rounds.Phase} - watching the shared match");
         else if (session.Rounds.Phase == MatchPhase.Planning) { if (networkRoom is not null && session.Rounds.RoundType == "carousel") ImGui.Text("Waiting for carousel picks..."u8); else if (Button("fight", session.Rounds.RoundType == "carousel" ? "Finish carousel" : "Ready for battle")) Fight(); }
         else if (session.Rounds.Phase == MatchPhase.Result) { if (networkRoom is not null) ImGui.Text("Next round starts shortly..."u8); else if (Button("next", "Next round")) Next(); }
         else { if (Button("finish", networkRoom is null ? "Skip to results" : "Finish my replay")) Finish(); ImGui.SameLine(); ImGui.Text($"{battle?.Combat.Time ?? 0:F1}s"); }
-        if (networkRoom is not null) { ImGui.SameLine(); if (Button("leaveOnline", "Leave match")) LeaveSteamRoom(); }
+        if (networkRoom is not null) { ImGui.SameLine(); NetworkSeatControls(); ImGui.SameLine(); if (Button("leaveOnline", "Leave match")) LeaveSteamRoom(); }
         ImGui.End();
     }
     private void Board()
@@ -308,6 +309,7 @@ internal sealed partial class MatchScreen : IDisposable
         {
             var point = PlanningView.Cell(column, row, Width, Height); var spot = UnitSpot.Board(column, row);
             var unit = Session!.State.Players[viewed].Roster.At(spot);
+            if (IsSpectating && unit is null) continue;
             ImGui.SetCursorScreenPos(new(Left + point.X - 30, Top + point.Y + 10));
             ImGui.BeginDisabled(viewed != localSeat);
             if (Button($"hex/{column}/{row}", unit is null ? "+" : new string('*', unit.Stage + 1), 60, 25, selectedUnit is not null && selectedUnit == unit?.Id)) Select(spot);
@@ -382,7 +384,7 @@ internal sealed partial class MatchScreen : IDisposable
             if (Button("sell", "Sell unit")) { Act("sell", new { uid = selected.Unit.Id }); selectedUnit = null; }
             if (Session.State.Duos && Button("sendUnit", "Send to partner")) { Act("portal", new { uid = selected.Unit.Id }); selectedUnit = null; }
         }
-        if (Human.Wisp is { } wisp && Button("wisp", $"{Name(wisp.Id)} ({wisp.Cost}g)")) Act("wisp");
+        if (!IsSpectating && Human.Wisp is { } wisp && Button("wisp", $"{Name(wisp.Id)} ({wisp.Cost}g)")) Act("wisp");
         if (Human.Power is { } power) ImGui.TextWrapped($"{Name(power.Id)} - rank {power.Rank}");
         foreach (string id in Human.Augments) { ImGui.TextWrapped(Name(id)); Tooltip(id); }
         foreach (string id in Human.Globals) { ImGui.TextWrapped(Name(id)); Tooltip(id); }
@@ -390,8 +392,8 @@ internal sealed partial class MatchScreen : IDisposable
         Window("Standings", size.X - 228, Top, 216, Height);
         foreach (var p in Session.State.Players.OrderByDescending(p => p.Alive).ThenByDescending(p => p.Health))
             if (Button("view/" + p.Id, $"{p.Name}  {(p.Alive ? p.Health + " HP" : "#" + p.Placement)}", 192, 28)) Watch(p.Id);
-        if (Session.State.Duos) ImGui.TextWrapped("Your partner: " + Session.Units.Portal.Partner(Human)?.Name);
-        foreach (var orb in Human.Orbs.ToArray()) if (Button("orb/" + orb.Id, $"Collect {orb.Kind} loot")) Act("orb", new { id = orb.Id });
+        if (Session.State.Duos && !IsSpectating) ImGui.TextWrapped("Your partner: " + Session.Units.Portal.Partner(Human)?.Name);
+        if (!IsSpectating) foreach (var orb in Human.Orbs.ToArray()) if (Button("orb/" + orb.Id, $"Collect {orb.Kind} loot")) Act("orb", new { id = orb.Id });
         if (history?.Award is { } award)
         {
             ImGui.Separator(); ImGui.Text($"Earned {award.Total} Bits");
@@ -409,6 +411,7 @@ internal sealed partial class MatchScreen : IDisposable
     private void Roster()
     {
         Window("Shop and bench", 12, size.Y - 207, size.X - 24, 195, ImGuiWindowFlags.NoTitleBar);
+        if (IsSpectating) { ImGui.TextWrapped("Spectating. Take an available seat to control a team."u8); ImGui.End(); return; }
         ImGui.BeginDisabled(Session!.State.Over || !Human.Alive);
         if (Button("reroll", $"Refresh ({(Human.Shop.FreeRolls > 0 ? "free" : Rules.RerollCost + "g")})")) Act("reroll");
         ImGui.SameLine(); if (Button("lock", Human.Shop.Locked ? "Unlock shop" : "Lock shop")) Act("lock");
@@ -443,6 +446,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private void Choices()
     {
+        if (IsSpectating) return;
         if (Session!.Units.Carousel.Active)
         {
             Window("Carousel", Left, Top + 15, Width, 180);

@@ -112,7 +112,7 @@ internal sealed partial class MatchScreen
         }
         if (steam.Room is not { } room) return;
         if (now - presenceAt > 5000) { room.SetPresence(new JsonObject { ["name"] = SteamName }, false, now); presenceAt = now; }
-        if (room.Init is not null && networkRoom is null && room.Authority.Lobby?["slots"]?.AsObject().Any(s => s.Value?["uid"]?.GetValue<string>() == room.Authority.LocalId) == true)
+        if (room.Init is not null && networkRoom is null)
         {
             try { AttachNetworkMatch(room); } catch (Exception error) { lobbyMessage = "Could not load this match: " + error.Message; LeaveSteamRoom(); }
         }

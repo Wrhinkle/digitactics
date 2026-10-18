@@ -10,7 +10,7 @@ namespace DigiTactics.Desktop;
 
 internal static class MatchApplication
 {
-    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false, bool evolutionSmoke = false, bool trainingSmoke = false, bool farmPointerSmoke = false, bool networkMatchSmoke = false, string? steamLibrary = null, bool steamLobbyUiSmoke = false)
+    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false, bool evolutionSmoke = false, bool trainingSmoke = false, bool farmPointerSmoke = false, bool networkMatchSmoke = false, string? steamLibrary = null, bool steamLobbyUiSmoke = false, bool spectatorSmoke = false)
     {
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
@@ -45,7 +45,7 @@ internal static class MatchApplication
                 screen.SteamLibraryPath = steamLibrary;
                 var driver = smoke && !trainingSmoke && !farmPointerSmoke && !networkMatchSmoke && !steamLobbyUiSmoke ? new MatchScreenSmoke(collectionSmoke ? profile : null, evolutionSmoke) : null;
                 var lobbyDriver = steamLobbyUiSmoke ? new SteamLobbyUiSmoke() : null;
-                using var networkDriver = networkMatchSmoke ? new NetworkMatchSmoke(catalog, screen, duos) : null;
+                using var networkDriver = networkMatchSmoke ? new NetworkMatchSmoke(catalog, screen, duos, spectatorSmoke) : null;
                 using var trainer = trainingSmoke ? new TrainingSmoke(profile!, profileDirectory!) : null;
                 var clock = System.Diagnostics.Stopwatch.StartNew(); double last = 0;
                 for (int frame = 0; !window.ShouldClose; frame++)
