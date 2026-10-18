@@ -1,6 +1,7 @@
 using System.Text.Json;
 using DigiTactics.Rules;
 
+if(args.Length>=2 && args[0].StartsWith("--native-job-",StringComparison.Ordinal)) {await NativeJobChecks.Child(args);return;}
 if(args.Length==2 && args[0]=="--native-supervisor-child") {await NativeSupervisorChecks.Child(args[1]);return;}
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");
 if (args.Contains("--startup-desktop-only")) { await NativeStartupChecks.RunDesktop(args[Array.IndexOf(args,"--desktop")+1]); return; }
@@ -24,7 +25,7 @@ if (args.Contains("--music-decoder-only"))
 if (args.Contains("--combat-picking-only")) { CombatPickingChecks.Run(root); return; }
 if (args.Contains("--music-playlist-only")) { MusicPlaylistChecks.Run(root); return; }
 if (args.Contains("--music-library-only")) { MusicLibraryChecks.Run(root); return; }
-if (args.Contains("--native-update-only")) { NativeUpdateChecks.Run(); NativeLaunchChecks.Run(); await NativeStartupChecks.Run(); await NativeSupervisorChecks.Run(); await NativeDownloadChecks.Run(); await NativeReleaseChecks.Run(); await NativeUpdateSessionChecks.Run(); return; }
+if (args.Contains("--native-update-only")) { NativeUpdateChecks.Run(); NativeLaunchChecks.Run(); await NativeStartupChecks.Run(); await NativeSupervisorChecks.Run(); await NativeDownloadChecks.Run(); await NativeReleaseChecks.Run(); await NativeUpdateSessionChecks.Run(); await NativeJobChecks.Run(); return; }
 if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--soundboard-only")) { SoundboardChecks.Run(); return; }
 if (args.Contains("--player-mutes-only")) { PlayerMuteChecks.Run(); return; }
@@ -243,6 +244,7 @@ assertions += await NativeSupervisorChecks.Run();
 assertions += await NativeDownloadChecks.Run();
 assertions += await NativeReleaseChecks.Run();
 assertions += await NativeUpdateSessionChecks.Run();
+assertions += await NativeJobChecks.Run();
 assertions += AudioSettingsChecks.Run();
 assertions += MatchHistoryChecks.Run(root, catalog);
 assertions += PlayOnChecks.Run(catalog);

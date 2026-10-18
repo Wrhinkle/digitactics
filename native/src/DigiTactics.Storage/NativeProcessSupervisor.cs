@@ -38,10 +38,10 @@ public static class NativeProcessSupervisor
                 deadline.CancelAfter(timeout);
                 ready=listener.WaitReady(selection.TrialToken!,deadline.Token);
             }
-            Process? child=null;
+            Process? child=null;NativeChildProcess? lifetime=null;
             try
             {
-                try {child=Process.Start(start)??throw new IOException("Game process did not start.");}
+                try {lifetime=NativeChildProcess.Start(start);child=lifetime.Process;}
                 catch(Exception error) when(selection.Release is not null && StartupError(error))
                 {Reject(state,selection);rolledBack=true;failure=error.Message;continue;}
                 Task exited=child.WaitForExitAsync(cancellation);
@@ -69,7 +69,7 @@ public static class NativeProcessSupervisor
             {
                 deadline.Cancel();
                 if(ready is not null)try {await ready.ConfigureAwait(false);}catch(Exception error) when(error is InvalidDataException or IOException or OperationCanceledException or UnauthorizedAccessException) { }
-                if(child is not null) {try {await Stop(child).ConfigureAwait(false);}finally {child.Dispose();}}
+                if(child is not null) {try {await Stop(child).ConfigureAwait(false);}finally {lifetime!.Dispose();}}
             }
         }
         throw new IOException("No working native application could be started: "+failure);
