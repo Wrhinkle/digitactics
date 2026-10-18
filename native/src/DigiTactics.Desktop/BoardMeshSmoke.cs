@@ -55,6 +55,13 @@ internal static class BoardMeshSmoke
                 }
                 arena.Draw(renderer,BattleView.Camera(256,256,7),BattleView.CameraEye(256,256,7),7,true,0,0,256,256,(_,_)=>{});
                 if(renderer.BoardLight?.FogNear!=30 || renderer.BoardLight?.FogFar!=60) throw new InvalidOperationException("Planning did not restore theme fog.");
+                arena.SetTheme("kowloon");arena.CombatActive=true;arena.Time+=.1;
+                arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,256,256,(_,_)=>{});
+                if(Math.Abs(renderer.BoardLight!.FogNear-22.92f)>.001 || Math.Abs(renderer.BoardLight.FogFar-56.32f)>.001)
+                    throw new InvalidOperationException("Kowloon combat weather did not override Duos fog.");
+                arena.CombatActive=false;arena.Time+=.1;
+                arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,256,256,(_,_)=>{});
+                if(Math.Abs(renderer.BoardLight!.FogNear-23.0496f)>.001)throw new InvalidOperationException("Kowloon result weather did not ease out.");
             }
             renderer.BoardLight=null; renderer.ShadowTexture=0;
             var scenes=Directory.GetFiles(Path.Combine(AppContext.BaseDirectory,"content/boards"),"*.json.gz").Order().Select(BoardScene.Load).ToArray();
@@ -311,7 +318,8 @@ internal static class BoardMeshSmoke
             ("spiral-mountain","spiral-rocks"),("spiral-mountain","spiral-islets"),
             ("spiral-mountain","spiral-crystals"),("spiral-mountain","spiral-halos"),
             ("vampire-castle","castle-flames"),("vampire-castle","castle-bats"),
-            ("vampire-castle","castle-moon"),("vampire-castle","castle-halo")})
+            ("vampire-castle","castle-moon"),("vampire-castle","castle-halo"),
+            ("kowloon","kowloon-band"),("kowloon","kowloon-lattice"),("kowloon","kowloon-signs"),("kowloon","particles")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();

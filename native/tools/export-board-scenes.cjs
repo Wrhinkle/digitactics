@@ -35,6 +35,10 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8')
+  .replace(/const sm = inst\(ctx, new THREE.PlaneGeometry\(0.9, 1\)[^\n]+;/,line=>line+' sm.userData.nativeMotion={kind:"kowloon-signs",signs:signs.map(s=>({phase:s.ph,color:C(s.color).toArray()}))};')
+  .replace(/const band = mesh\(ctx, new THREE.CylinderGeometry\(14.4, 14.4[^\n]+;/,line=>line+' band.userData.nativeMotion={kind:"kowloon-band"};')
+  .replace(/const lattice = mesh\(ctx, new THREE.CylinderGeometry\(14.5, 14.5[^\n]+;/,line=>line+' lattice.userData.nativeMotion={kind:"kowloon-lattice"};')
+  .replace(/const rain = particles\(ctx, 520,[^\n]+;/,line=>line+' rain.userData.nativeMotion.kowloonRain=true;')
   .replace('moon.lookAt(0, 16.5, 17.3);','moon.lookAt(0, 16.5, 17.3); moon.userData.nativeMotion={kind:"castle-moon"};')
   .replace('halo.lookAt(0, 16.5, 17.3);','halo.lookAt(0, 16.5, 17.3); halo.userData.nativeMotion={kind:"castle-halo"};')
   .replace('anim(ctx, new THREE.ConeGeometry(0.06, 0.2, 6),','flames.nativeCastle="castle-flames"; anim(ctx, new THREE.ConeGeometry(0.06, 0.2, 6),')
@@ -257,6 +261,22 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-castle.json.gz'),zlib.gzipSync(JSON.stringify(castleFixture)));
+  const kowloonFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),spec=THEMES.find(s=>s.id==='kowloon');
+   const scene={fog:new THREE.Fog(...spec.fog)},env=buildEnv(spec,{scene}),objects=[],frames=[];
+   env.group.traverse(o=>{const m=o.userData.nativeMotion;if(m?.kind.startsWith('kowloon-')||m?.kowloonRain)objects.push(o);});
+   env.signal({phase:'planning',stage:1,won:false,evo:0});env.tick(0,0);let time=0;
+   for(let frame=0;frame<900;frame++){
+    const delta=[0,1/60,.033,.1][frame%4],combat=Math.floor(frame/150)%2===1;time+=delta;
+    env.signal({phase:combat?'combat':'planning',stage:1,won:false,evo:0});env.tick(delta,time);
+    frames.push({time,delta,combat,fog:[scene.fog.near,scene.fog.far],objects:objects.map(o=>{
+     const colors=[],color=new THREE.Color();if(o.instanceColor)for(let i=0;i<o.count;i++){o.getColorAt(i,color);colors.push(color.toArray());}
+     return {kind:o.userData.nativeMotion.kind,y:o.position.y,opacity:o.material.opacity,size:o.material.size??null,colors};
+    })});
+   }
+   const result={motions:objects.map(o=>o.userData.nativeMotion),frames};disposeEnv(env);return result;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-kowloon.json.gz'),zlib.gzipSync(JSON.stringify(kowloonFixture)));
   const particleFixture=await page.evaluate(async()=>{
    const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
    for(const spec of THEMES){

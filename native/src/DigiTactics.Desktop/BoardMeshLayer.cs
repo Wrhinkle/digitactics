@@ -17,6 +17,8 @@ internal sealed class BoardMeshLayer : IDisposable
     private double time;
     private BoardLightning? lightning;
     private readonly BoardCastleMotion? castle;
+    private readonly BoardKowloonMotion? kowloon;
+    public (float Near,float Far)? AnimatedFog=>kowloon is null?null:(kowloon.FogNear,kowloon.FogFar);
     public float LightningFlash=>(float)(lightning?.Flash??0);
     public Vector3? LightningColor { get; private set; }
     private readonly Dictionary<BoardObject,BoardSpiralMotion> spirals=[];
@@ -25,6 +27,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public BoardMeshLayer(BoardScene scene,bool initialCombat=false)
     {
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
+        if(scene.Id=="kowloon")kowloon=new();
         try
         {
             foreach (var texture in scene.Textures)
@@ -64,6 +67,7 @@ internal sealed class BoardMeshLayer : IDisposable
         time=seconds;
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
+        kowloon?.Advance(delta,combat);
         foreach(var spiral in spirals.Values) spiral.Advance(delta,time,combat);
         foreach(var uv in animatedUv)
         {
@@ -91,6 +95,12 @@ internal sealed class BoardMeshLayer : IDisposable
             if(bolt is not null) world=new CompanionTransform(new(lightning!.X,lightning.Y,lightning.Z),new(0,lightning.Yaw,0),new(1,1,1)).Matrix*Root;
             if(item.Object.Motion is { Kind:"rotating-parent" } rotating) world=BoardSceneMotion.RotatingParent(rotating,time)*Root;
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
+            if(item.Object.Motion is {Kind:"kowloon-band" or "kowloon-lattice"} scan)
+            {
+                var animated=BoardKowloonMotion.Scan(scan.Kind,time);
+                world=(Matrix4D.From(item.Object.Matrix) with {M42=animated.Y})*Root;opacity=animated.Opacity;
+            }
+            if(item.Object.Motion?.KowloonRain==true)opacity=kowloon!.RainOpacity;
             if(item.Object.Motion?.Kind=="castle-halo")opacity=castle!.HaloOpacity(time);
             if(item.Object.Motion is { Kind:"beach-surf" } surf)
             {
@@ -110,7 +120,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         new Vector3(material.Emissive[0], material.Emissive[1], material.Emissive[2]) * material.EmissiveIntensity,
                         material.Roughness, material.Metalness, material.Side, additive: material.Blending == 2,
                         vertexColors: material.VertexColors, flatShading: material.FlatShading || !part.HasNormals, alphaTest: material.AlphaTest, wireframe: material.Wireframe,
-                        points: item.Object.Kind == "points" ? PointSprite.Board(material, part.Texture, viewportHeight) : null, fog: material.Fog,
+                        points: item.Object.Kind == "points" ? PointSprite.Board(material, part.Texture, viewportHeight,item.Object.Motion?.KowloonRain==true?kowloon!.RainSize:null) : null, fog: material.Fog,
                         emissiveMap:material.EmissiveMap is {} emissionMap?textures[emissionMap]:null);
                     DrawCalls++;
                 }
@@ -126,7 +136,8 @@ internal sealed class BoardMeshLayer : IDisposable
                             { Castle:{ } items } motion=>castle!.Instance(motion.Kind,items[i],i,time),
                             _=>Matrix4D.From(instance.Matrix)
                         };
-                        Draw(matrix*world,instance.Color[0],instance.Color[1],instance.Color[2]);
+                        var tint=item.Object.Motion?.Signs is {} signs?BoardKowloonMotion.Sign(signs[i],time):new Vector3(instance.Color[0],instance.Color[1],instance.Color[2]);
+                        Draw(matrix*world,tint.X,tint.Y,tint.Z);
                     }
                 else Draw(world, 1, 1, 1);
             }
