@@ -1,6 +1,7 @@
 # Digi-Tactics native BRUTAL port
 
-This development workbench is not yet a replacement for v1.0.14.
+This development build now starts a playable native match screen. It is not yet
+a production replacement for v1.0.14.
 It is a native C# application using BRUTAL GLFW, OpenGL and ImGui. No Electron,
 WebView, JavaScript interpreter or browser runs inside it.
 
@@ -22,7 +23,17 @@ The publish output is self-contained and does not require an installed .NET runt
 before using `dotnet` from PATH. Package versions and transitive dependencies are locked.
 For manual development, run dotnet commands from `native/` so `global.json` applies.
 
-The sandbox starts with 50 gold. Buy units, refresh the shop, combine copies,
+The default launch offers Solo or Duos against AI across all 22 ruleset/pace
+variants. Buy units, select a bench unit and then a hex to place it, select an
+item and then a holder to equip it, and use Ready for battle / Next round to
+progress. Standings buttons scout players and switch the watched battle. Offers,
+carousels, loot, Wisps and Duos transfers use the native action boundary.
+This first playable screen still needs the remaining production presentation,
+mode details, audio, networking, persistence and release work described below.
+
+Use `--match-smoke` for the hidden click-through UI test (`--duos` selects Duos).
+Use `--workbench` for the earlier shop/model diagnostic screen; `--smoke` continues
+to run its asset/GPU/animation checks. The diagnostic sandbox starts with 50 gold. Buy units, refresh the shop, combine copies,
 sell units, reset the sandbox, and select any of the 22 ruleset/pace catalogs.
 Selling uses the original star/tier discount rules, including Dragonlands price premiums.
 Below the shop, an animated native model preview shows the most recently owned unit
@@ -1652,3 +1663,40 @@ UI, multiplayer transport, audio, save migration or release acceptance.
 Validation: **189,671,496 full-suite native checks passed**, including all action
 traces, 88 complete matches and 5,699 isolated reference battles. Self-contained
 Windows publish and packaged BRUTAL smoke checks passed.
+
+### First playable native match screen
+
+The default Windows application now opens a local-match menu and the native match
+screen instead of the diagnostic shop. Solo and Duos, all ruleset/pace selections,
+shopping, bench/hex placement, equipment, inventory swapping, XP, offers, carousels,
+loot, Wisps, transfers, standings/scouting, battle viewing and round progression
+connect to the tested native session and action boundary.
+
+Planning renders the real rigged models and idles on the board. Battles reuse the
+live match simulation, with per-view mirroring, health labels and animation; other
+fights advance on fixed ticks before settlement. Viewports account for framebuffer
+scaling. Planning GPU resources retire when their models are no longer present,
+and same-UID form changes replace the model. Windows' installed Segoe UI font is
+used when available; no system font is redistributed. Display names/descriptions
+for items, traits, augments, powers and Wisps are exported as build-time data.
+
+`--workbench` retains the diagnostic UI. `--match-smoke` sends actual ImGui mouse
+events through the menu, carousel, purchase and two placement controls, checks 3D
+planning, live PvE, and mirrored PvP rendering, and runs five settlements and
+round advances. Duos also checks the 14-column team battlefield.
+`--duos` repeats that flow in Duos. Captures are written to
+`native/artifacts/match-ui.bmp`, `match-ui.battle.bmp` and `match-ui.pvp.bmp`
+(and `match-duos.*`).
+
+This is the first playable local screen, not completed production UI. Rich mode
+panels and choice descriptions, further UI polish/accessibility, audio and visual
+effects, multiplayer, player migration, settings, installer/updater and release
+acceptance remain outstanding. The click-through scenarios currently cover
+Faction Wars Normal in Solo/Duos; engine coverage across all variants remains in
+the full-match and action parity suites.
+
+Validation: self-contained Windows publish passed. Packaged asset, animation,
+GPU and diagnostic rendering smoke checks passed. Packaged Solo and Duos match UI
+click-through tests passed through five rounds, including mirrored PvP; planning,
+PvE and Duos PvP captures were visually inspected. Gameplay code was unchanged in
+this UI milestone; the preceding full rules suite passed 189,671,496 checks.

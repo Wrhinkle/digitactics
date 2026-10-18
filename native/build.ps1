@@ -11,6 +11,7 @@ function Invoke-Checked([string]$Program, [string[]]$Arguments) {
 Push-Location $nativeRoot
 try {
     Invoke-Checked 'node' @('tools/export-content.cjs')
+    Invoke-Checked 'node' @('tools/export-display.cjs')
     Invoke-Checked 'node' @('tools/export-economy.cjs')
     Invoke-Checked 'node' @('tools/export-planning.cjs')
     Invoke-Checked 'node' @('tools/export-match-state.cjs')
@@ -95,6 +96,8 @@ try {
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--', $nativeRoot)
     Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--smoke', '--capture', 'artifacts/native-smoke.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--capture', 'artifacts/match-ui.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--duos', '--capture', 'artifacts/match-duos.bmp')
     if ($Publish) {
         $destination = Join-Path $nativeRoot 'artifacts\win-x64'
         Invoke-Checked $dotnet @('publish', 'src/DigiTactics.Desktop', '-c', 'Release', '-r', 'win-x64', '--self-contained', 'true', '-o', $destination)

@@ -2,7 +2,10 @@
 
 The active objective is the complete native port described in `README.md`, including
 production UI, rendering, all rulesets, Steam, save migration, packaging and updates.
-The current executable is a migration workbench. It must not replace the public game yet.
+The default executable now opens the first playable native match screen; the
+legacy diagnostic workbench is available with `--workbench`. Production UI/audio,
+multiplayer, persistence and release acceptance remain incomplete. It must not
+replace the public game yet.
 
 Latest integration: native planning, battle preparation, Solo/Duos/PvE combat and
 settlement now run together through match end. 88 complete original-engine matches

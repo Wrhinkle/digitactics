@@ -1,0 +1,3 @@
+const fs=require('fs'),path=require('path'),DT=require('../../tools/headless.cjs').load({strict:true});const variants={};
+for(const set of DT.Sets.pickable())for(const pace of ['normal','hyper']){DT.Sets.activate(set.id,pace);const entries={};const add=(id,v)=>{if(id)entries[id]={name:v.name||id,description:v.desc||v.description||''};};for(const [id,v]of Object.entries(DT.ITEMS))add(id,v);for(const [id,v]of Object.entries(DT.TRAITS))add(id,v);for(const v of [...DT.Duos.AUGMENTS,...DT.AUGMENTS,...DT.POWERS,...DT.WISPS])add(v.id,v);variants[`${set.id}/${pace}`]=entries;}
+fs.writeFileSync(path.join(__dirname,'../content/display.json'),JSON.stringify(variants,null,2)+'\n');console.log('Exported native display text.');
