@@ -38,6 +38,7 @@ internal sealed partial class MatchScreen : IDisposable
     internal IReadOnlySet<int> PlanningRenderedUnits => planning.RenderedUnits;
     internal IReadOnlySet<int>? BattleRenderedBenchUnits => battle?.RenderedBenchUnits;
     internal int ViewedPlayer => viewed;
+    internal int ItemShelfDrawCalls => arenaEnvironment.Items.DrawCalls;
     public bool WatchingMirrored => battle?.Mirrored ?? false;
     public int BattleColumns => battle?.Combat.Columns ?? 0;
     public int CompletedRounds { get; private set; }
@@ -532,6 +533,8 @@ internal sealed partial class MatchScreen : IDisposable
         float sx = (float)framebuffer.X / size.X, sy = (float)framebuffer.Y / size.Y;
         int x = (int)(Left * sx), y = (int)((size.Y - Top - Height) * sy), w = (int)(Width * sx), h = (int)(Height * sy);
         SyncBoardTheme();
+        arenaEnvironment.Items.Ruleset = Rules.Id;
+        arenaEnvironment.Items.Items = Session.State.Players[viewed].Items;
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
         if (!IsSpectating) arenaCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7);
         opponentCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7);

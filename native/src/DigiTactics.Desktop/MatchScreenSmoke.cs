@@ -207,6 +207,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             pvpFrames++;
             if (pvpFrames == 45)
             {
+                int expectedItems = screen.BattleColumns > 7 ? 0 : Math.Min(10, screen.Session!.State.Players[screen.ViewedPlayer].Items.Count);
+                if (screen.ItemShelfDrawCalls != expectedItems) throw new InvalidOperationException("Scouted combat shelf did not follow inventory or Duos visibility.");
                 if (!screen.WatchingMirrored || screen.BattleColumns != (screen.Session!.State.Duos ? 14 : 7) || screen.BattleDrawCalls == 0 || screen.OpponentCompanionDrawCalls == 0)
                     throw new InvalidOperationException("Match UI mirrored PvP smoke failed.");
                 if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "pvp.bmp"), size.X, size.Y);

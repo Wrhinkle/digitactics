@@ -34,7 +34,30 @@ internal sealed partial class MatchScreen
         bool inside = ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem) && mouse.X >= Left && mouse.X < Left + Width && mouse.Y >= Top && mouse.Y < Top + Height;
         var ground = ArenaPicking.Ground(mouse.X - Left, mouse.Y - Top, Width, Height, battle?.Combat.Columns ?? 7);
         var spot = inside && ground is { } p ? ArenaPicking.Spot(p, battle?.Combat.Columns > 7, battle is null) : null;
+        int shelfHover = -1; double nearest = 30 * 30;
+        if (battle?.Combat.Columns is null or 7)
+            for (int i = 0; i < Math.Min(10, Session!.State.Players[viewed].Items.Count); i++)
+            {
+                var point = ItemShelfView.Screen(i, Width, Height);
+                Buttons[$"shelfItem/{i}"] = new(Left + point.X, Top + point.Y);
+                double distance = Math.Pow(mouse.X - Left - point.X, 2) + Math.Pow(mouse.Y - Top - point.Y, 2);
+                if (inside && distance < nearest) { nearest = distance; shelfHover = i; }
+            }
+        feedback.HoverItem = shelfHover;
+        if (editable && shelfHover >= 0)
+        {
+            itemDropSlot = shelfHover; spot = null;
+            if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+            {
+                itemDrag = new(shelfHover, Human.Items[shelfHover], Human.Items.ToArray(), mouse, Session!.Rounds.Phase);
+                itemDragMoved = false; selectedItem = shelfHover; selectedUnit = null;
+            }
+        }
         ItemDragPointer(editable, spot);
+        feedback.ItemDragging = itemDragMoved;
+        feedback.ItemDragOver = itemDragMoved && itemDropSlot != itemDrag?.Index ? itemDropSlot : -1;
+        arenaEnvironment.Items.DragIndex = itemDragMoved ? itemDrag?.Index ?? -1 : -1;
+        arenaEnvironment.Items.DragPosition = ground;
         if (editable && inside && ImGui.IsMouseClicked(ImGuiMouseButton.Left) && spot is { } start)
         {
             if (selectedItem is null && Human.Roster.At(start) is { } unit)
@@ -63,6 +86,11 @@ internal sealed partial class MatchScreen
             feedback.UnitDragMoved = true;
             if (spot is { IsBoard: true } cell) feedback.HoverCell = (cell.Column, cell.Row);
             else if (spot is { IsBoard: false } bench) feedback.HoverBench = bench.Index;
+        }
+        else if (!itemDragMoved && shelfHover >= 0)
+        {
+            var description = text.Get(Rules.Id, Session!.State.Players[viewed].Items[shelfHover]);
+            ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); ImGui.Text(description.Name); ImGui.TextWrapped(description.Description); ImGui.EndTooltip();
         }
         else if (!itemDragMoved && inside && spot is { } hover && Session!.State.Players[viewed].Roster.At(hover) is { } unit)
         {

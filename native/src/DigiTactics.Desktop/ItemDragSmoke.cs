@@ -15,15 +15,16 @@ internal sealed class ItemDragSmoke
     {
         var session = screen.Session!; var player = session.State.Players[0]; var io = ImGui.GetIO();
         void Move(float2 point) => io.AddMousePosEvent(point.X, point.Y);
-        void Start(int index) { Move(screen.Buttons["item/" + index]); io.AddMouseButtonEvent(0, true); }
+        void Start(int index) { Move(screen.Buttons[(step <= 3 ? "shelfItem/" : "item/") + index]); io.AddMouseButtonEvent(0, true); }
         void Up() => io.AddMouseButtonEvent(0, false);
         switch (step++)
         {
             case 0:
                 inventory = player.Items.ToArray();
                 if (inventory.Length < 2) throw new InvalidOperationException("Item drag smoke requires two earned items.");
+                if (screen.ItemShelfDrawCalls != Math.Min(10, inventory.Length)) throw new InvalidOperationException("Planning shelf omitted item tokens.");
                 Start(0); break;
-            case 1: Move(screen.Buttons["item/1"]); break;
+            case 1: Move(screen.Buttons["shelfItem/1"]); break;
             case 2: Up(); break;
             case 3:
                 (inventory[0], inventory[1]) = (inventory[1], inventory[0]);
