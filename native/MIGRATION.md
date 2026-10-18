@@ -1,3 +1,173 @@
+# Native 2.0.1 correction checkpoint - 2026-10-18
+
+Native 2.0.0 is the historical port release baseline. Current work restores the
+original client's presentation, fixes reported behavior and audits every model
+and animation. This is NOT a claim of complete visual parity or approval to
+publish 2.0.1. Older migration entries below describe their own dates; their
+unfinished-work lists are not the current release checklist.
+
+Evidence reviewed October 18, 2026, through 13:58 America/Chicago:
+
+- Collection, Store and Loot: artifacts/collection-layout-normal.log and
+  collection-layout-min.log (13:39) completed. Filters, purchases, equipment,
+  category previews, incubator odds, hatch persistence and page routes passed.
+  Normal/minimum captures were checked for readable controls and scroll bounds.
+- Profile: artifacts/profile-visual-normal.log, profile-visual-minimum.log and
+  profile-visual-short.log (13:40) passed stats, history, charts, missions,
+  banner/avatar/name edits and two-column scrolling. Short-window captures at
+  1342x670 include six traits and eight portraits without overlapping controls.
+- Save data/file operations: artifacts/save-visual-normal.log and
+  save-visual-minimum.log (13:40) passed export, typed reset, cancellation,
+  preserved backup, import navigation, stale picker results, deferred close and
+  failed-write recovery. Confirmation/deferred-close/failure dialogs were reviewed.
+- Steam lobby: artifacts/lobby-ui-normal.log and lobby-ui-min.log (13:44) passed
+  fake-Steam create/seat/start/leave, accepted join, active-match protection and
+  ten cross-screen/pending-operation routes. Captures fit both tested sizes.
+  This is not real two-account Steam coverage.
+- Friends: artifacts/social-ui-normal.log and social-ui-min.log (13:35) passed
+  simulated presence groups, refresh, settings persistence and hide/show; current
+  minimum captures are readable. No invitations were sent.
+- Music: artifacts/music-visual-normal.log (13:46) passed import, phase assignment,
+  source changes, removal and bulk clear. The short-window run did not complete.
+- Home/full match: artifacts/ui-scout-min.log and ui-scout-normal.log (13:53)
+  completed 1553 and 1516 frames respectively. Covered Home/Codex, carousel,
+  purchases/placement/drag/sale, combat/scouting, settlements, arena loot,
+  elimination continuation and confirmed leave. Independent normal/minimum
+  screenshots confirm Home descriptions remain readable and all shop cards fit.
+- In-match audio: ui-scout-{normal,min}.audio-settings.bmp (13:53) independently
+  confirm full slider labels, percentage values and visible Reconnect/Close.
+- Keyboard/wheel/pads: artifacts/wheel-pads-{minimum,normal}.log (13:55-13:56)
+  each passed 133 actual mouse/key steps. Four associated emote/soundboard captures
+  fit their windows with readable original sound icons and controls. The owner's
+  subsequent center-label alignment change has not yet been recaptured.
+- Cleaner ZIP/original icon: commit c9ed424 implements the root launcher, separate
+  app/ and launcher/ folders, original Windows/window artwork and targeted
+  launcher/layout/icon checks. A final 2.0.1 package has not passed acceptance.
+- Lucky Glove: owner reports 780 JavaScript and 390 native focused checks plus
+  item suites (791,222 AI and 239,726 planning comparisons) passing. The correction
+  reserves all three equipment slots for random-item gloves and returns
+  incompatible merge items to inventory. Final broad/integrated regression is
+  still pending; release notes retain that qualification.
+
+Subsequent verified checkpoints and expanded scope:
+
+- Lucky Glove commit e5444e0: all three slots reserved, merge overflow preserved;
+  1,492 JS and 704 native capacity checks, real browser overflow drag/equip and
+  native Solo/Duos minimum-window inputs pass. The 219,441,373-check full suite
+  includes 5,699 reference battles. The unrelated source _template/normal stage
+  progression failure reproduces on the baseline; network digests still agree.
+- Live cosmetics commit 1a6fe6b: 43 actual input steps at normal/minimum sizes,
+  2,563 mission checks and independent delta screenshots pass. Additional Home
+  partner actions and Evolution navigation are still being verified.
+- User-confirmed half-rate loot, commit 5f7016e: Cipher Boxes 3%/pity32, keys
+  2.5%/pity40, Daybreak every two distinct active days with gaps preserved.
+  6,267 focused source/native/recovery/settlement checks pass. All 250 secret
+  reward IDs retain disjoint pools and remain separate from shop inventory.
+- Secret emote artwork commit 483e977: 40 individually drawn themed silhouettes;
+  2,080 rendered frames pass animation/content/atlas-edge checks, and the 32 public
+  atlas hashes are unchanged. Independent review found longer preview loops need
+  duration-aware playback, now in progress. Authored dances, ten distinct boards,
+  sound families and finale themes are also in progress, not accepted as complete.
+- Digi-Farm: the user chose recurring upkeep, superseding provisional permanent
+  hires. Working design is prepaid 24-hour Basic (100 Bits) or Full (750 Bits),
+  explicit renewal, prorated upgrades and visible expiry. Unstaffed biological
+  catch-up is capped at two hours while supplies use real elapsed time. Recurring
+  coverage tests and actual UI checks must pass before accepting this change.
+
+Latest resumed integration checkpoint:
+
+- Caretakers committed c150f27: 695,265 focused farm checks, clean Desktop build,
+  normal/minimum real-input runs and ten independently reviewed captures pass.
+  Basic costs 100 Bits/24h; Full costs 750 Bits/24h. Renewal is explicit, with
+  prorated upgrades, saved expiry and no automatic charges or debt.
+- Home/Digivolve navigation committed 32028d1: both 28-step real-input runs and
+  all ten independently reviewed captures pass. Transformation starts scroll
+  the stage into view; busy-state navigation and long odds remain readable.
+- Earned loot notices committed c5341e1: 161 native queue checks, three actual
+  native layouts, 27 browser notice checks and 66 source mystery-flow checks
+  pass. Notices show saved chest/key counts and sources without secret contents.
+- Integrated Desktop and Tests builds pass with zero warnings/errors. Current
+  focused integration checks pass: loot notices 161, live missions 2,563 and
+  match HUD 175. Model export and collectible revisions are still in progress;
+  these results do not approve later changes or a release package.
+
+Additional accepted local checkpoints after resume:
+
+- 917476d restores all 15 Galaxy announcements, original choice artwork and
+  tier styling, live Gates schedules and measured long descriptions. Both
+  window sizes pass 86 presentation routes and real scrolling/reroll/selection;
+  independent visual review includes the longest four-Tamer description case.
+- ad973c6 fixes all 72 emote preview loop periods with 108 cached layers;
+  5,409 CPU checks, 641 browser comparisons and 288 native comparisons pass.
+  In-match lifetime remains 2.6 seconds. Unused preview textures are released.
+- 7414d5b adds 80 authored sound clips; 1,524 source/PCM/adapter checks and 360
+  native audio checks pass. Audio received automated validation, not listening QA.
+- b2e8ced authors 40 secret finale backgrounds; 409,509 source and 909,772 native
+  checks pass, with 51 raster comparisons and minimum tested caption contrast
+  5.90:1. This verifies backgrounds/test captions, not complete actor composites.
+- de18544 and d5d8054 restore exact original Palmon flower and ToyAgumon body
+  geometry removed by erroneous importer cleanup. Geometry/material scope was
+  visually checked; gait and other outstanding model findings remain separate.
+- 57f8fe9 records anatomy/root corrections, including MagnaGarurumon body-travel
+  containment in 12 actual minimum-board samples. Final Monodramon forward elbow
+  correction removes the rejected T-like pose; fixed-foot movement remains open.
+- ab611b3 integrates the readable match shell, client routes and durable notices.
+  Fresh native minimum notice input checks and all four reviewed captures pass;
+  the arena hint no longer intersects the round-result banner.
+
+The legacy js/bundle.js was regenerated during board preview work. Its current
+in-flight bytes are preserved; preview exporters now use routed in-memory source
+builds. This generated bundle is not a release acceptance artifact and must be
+intentionally rebuilt/verified with the final accepted source revision.
+
+Latest verified integration additions:
+
+- a0e3229 adds 40 authored secret dance phrases with bounded movement and
+  stable proportions; source/choreography/binding checks pass. Visual review
+  sampled eight combinations, not all 737 bindings.
+- 587f555 adds ten distinct secret board scenes. 15,947,232 board checks and
+  60 independently reviewed normal/minimum Solo/Duos captures pass. Occupied
+  benches, full combat and user camera changes remain outside that review.
+- 7c1ab01 restores five source-proven material/UV mappings. Ten fitted views
+  pass material review; no animation approval is implied.
+- Fresh music-acceptance normal/minimum/short runs complete real Settings,
+  import, assignment, persistence, removal and navigation checks. The earlier
+  short-window failure is superseded; live-match Sound controls remain in work.
+- root-integration-final-build.log records a clean Desktop build with zero
+  warnings/errors. Current generated models remain an evolving audit cohort.
+- Fitted gait investigation supersedes the small-preview fixed-foot suspicion
+  for Impmon, Monodramon and Arresterdramon: CPU skin samples show articulation.
+  Final readability still requires focused visual review.
+
+Outstanding release gates:
+
+- Finish remaining Profile/Home navigation, live-match Sound, clean postgame,
+  timeline/standings and interaction follow-ups, then rerun the final integrated
+  revision. An earlier build's pass does not approve later edits.
+- Complete the all-model audit described in ../docs/NATIVE_MODEL_AUDIT.md.
+  Valid assets, finite poses and nonblank pictures do not establish correct
+  appearance or motion. Unreviewed rows and failed comparisons must stay visible.
+  Current evidence does not establish whole-roster visual parity.
+- Finish collectible-quality acceptance and recheck integrated caretaker/loot UI.
+  Revalidate the integrated source after the new changes; prior test counts
+  do not approve subsequent revisions.
+- Rebuild the integrated CPU suite and self-contained 2.0.1 package from the
+  accepted revision. Run package/update/rollback and release-consumer checks,
+  retain matching source/license materials, then record final approval.
+- Real two-account Steam gameplay, reconnect and host migration remain unverified.
+  Fake-DLL/simulated peers and earlier one-account live checks are narrower
+  evidence. Steam still uses App ID 480 and native protocol 9.
+
+Local artifact integrity does not approve publication. No 2.0.1 release or tag is
+approved by this record. Three obsolete generated TEMP update fixtures were
+removed after path/link/process checks; manifests/state were retained under
+artifacts/reclaimed-packaged-update-evidence/. Prior releases and player installs
+were preserved. See tools/NATIVE_RELEASE_ARTIFACTS.md for the final package flow.
+
+---
+
+Historical migration record follows (through 2026-10-17); original bytes preserved.
+
 # Full BRUTAL port status
 
 The active objective is the complete native port described in `README.md`, including

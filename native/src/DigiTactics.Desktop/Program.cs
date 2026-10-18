@@ -11,6 +11,12 @@ try
         if (index + 1 >= args.Length || args[index + 1].StartsWith("--", StringComparison.Ordinal)) throw new ArgumentException($"Provide a path after {name}.");
         return Path.GetFullPath(args[index + 1]);
     }
+    if(args.Contains("--ui-scale-smoke")){NativeUiScaleSmoke.Verify();return 0;}
+    if (Option("--model-dance-visual") is { } danceAuditDirectory)
+    {
+        string DanceValue(string name) { int index = Array.IndexOf(args, name); return index >= 0 && index + 1 < args.Length ? args[index + 1] : throw new ArgumentException("Missing " + name); }
+        ModelDanceVisualAudit.Run(danceAuditDirectory, DanceValue("--audit-source"), DanceValue("--audit-dance"), args.Contains("--audit-companion")); return 0;
+    }
     if (Option("--model-visual-audit") is { } modelAuditDirectory)
     {
         int AuditNumber(string name, int fallback) { int index = Array.IndexOf(args, name); return index < 0 ? fallback : int.Parse(args[index + 1], System.Globalization.CultureInfo.InvariantCulture); }
@@ -96,11 +102,13 @@ try
     int captureIndex = Array.IndexOf(args, "--capture");
     string? capture = captureIndex >= 0 && captureIndex + 1 < args.Length ? args[captureIndex + 1] : null;
     if (args.Contains("--elimination-theme-smoke")) { EliminationThemeSmoke.Run(capture); return 0; }
+    if (Option("--emote-preview-smoke") is { } emoteReferenceDirectory) { EmotePreviewSmoke.Run(emoteReferenceDirectory); return 0; }
     if (args.Contains("--elimination-composite-smoke")) { EliminationCompositeSmoke.Run(capture); return 0; }
     if (args.Contains("--pedestal-stage-smoke")) { PedestalStageSmoke.Run(capture); return 0; }
     if (args.Contains("--ui-frame-lifetime-smoke")) { UiFrameLifetime.Verify(); return 0; }
     if (args.Contains("--move-effect-smoke")) { MoveEffectSmoke.Run(catalog,capture); return 0; }
     if (args.Contains("--board-mesh-smoke")) { BoardMeshSmoke.Run(capture); return 0; }
+    if (Option("--mystery-board-visual") is { } boardDirectory) { MysteryBoardVisualSmoke.Run(catalog,boardDirectory); return 0; }
     if (args.Contains("--companion-model-smoke")) { CompanionModelSmoke.Run(capture); return 0; }
     if (args.Contains("--farm-room-smoke")) { FarmRoomSmoke.Run(capture); return 0; }
     if (args.Contains("--smoke") || args.Contains("--workbench")) NativeApplication.Run(catalog, args.Contains("--smoke"), capture);
@@ -111,15 +119,20 @@ try
         if(args.Contains("--mystery-loot-ui-smoke") && profileDirectory is null)throw new ArgumentException("Mystery loot UI smoke requires an isolated --profile-directory.");
         if(args.Contains("--set-selection-smoke") && (profileDirectory is null || Option("--steam-api") is null))throw new ArgumentException("Set selection smoke requires an isolated --profile-directory and fake --steam-api.");
         if(args.Contains("--match-keyboard-smoke") && profileDirectory is null)throw new ArgumentException("Keyboard UI smoke requires an isolated --profile-directory.");
+        if(args.Contains("--loot-notice-ui-smoke") && profileDirectory is null)throw new ArgumentException("Loot notice smoke requires an isolated --profile-directory.");
+        if(args.Contains("--match-cosmetics-smoke") && profileDirectory is null)throw new ArgumentException("Match cosmetics smoke requires an isolated --profile-directory.");
+        if(args.Contains("--legend-navigation-smoke") && profileDirectory is null)throw new ArgumentException("Legend navigation smoke requires an isolated --profile-directory.");
         if(args.Contains("--postgame-smoke") && profileDirectory is null)throw new ArgumentException("Postgame UI smoke requires an isolated --profile-directory.");
         if(args.Contains("--profile-ui-smoke") && profileDirectory is null)throw new ArgumentException("Profile UI smoke requires an isolated --profile-directory.");
         if(args.Contains("--social-ui-smoke") && profileDirectory is null)throw new ArgumentException("Social UI smoke requires an isolated --profile-directory.");
         if(args.Contains("--client-preferences-smoke") && profileDirectory is null)throw new ArgumentException("Client preferences smoke requires an isolated --profile-directory.");
         if(args.Contains("--save-data-ui-smoke") && profileDirectory is null)throw new ArgumentException("Save data UI smoke requires an isolated --profile-directory.");
         bool evolutionSmoke = args.Contains("--evolution-smoke");
-        bool collectionSmoke = args.Contains("--collection-smoke") || evolutionSmoke;
+        bool collectionSmoke = args.Contains("--collection-smoke") || args.Contains("--collection-layout-smoke") || evolutionSmoke;
         bool trainingSmoke = args.Contains("--training-smoke");
         bool farmPointerSmoke = args.Contains("--farm-pointer-smoke");
+        bool farmCaretakerSmoke = args.Contains("--farm-caretaker-smoke");
+        if (farmCaretakerSmoke && profileDirectory is null) throw new ArgumentException("Caretaker smoke requires an isolated --profile-directory.");
         if (farmPointerSmoke && profileDirectory is null) throw new ArgumentException("Farm pointer smoke requires an isolated --profile-directory.");
         if (trainingSmoke && profileDirectory is null) throw new ArgumentException("Training smoke requires an isolated --profile-directory.");
         if (collectionSmoke && profileDirectory is null) throw new ArgumentException("Collection smoke requires an isolated --profile-directory.");
@@ -137,12 +150,19 @@ try
                 args.Contains("--elimination-cinematic-smoke") ||
                 args.Contains("--match-smoke") ||
                 args.Contains("--postgame-smoke") ||
+                args.Contains("--unit-note-ui-smoke") ||
+                args.Contains("--loot-notice-ui-smoke") ||
+                args.Contains("--match-cosmetics-smoke") ||
+                args.Contains("--legend-navigation-smoke") ||
+                args.Contains("--galaxy-intro-ui-smoke") ||
+                args.Contains("--choice-presentation-ui-smoke") ||
+                args.Contains("--cast-feed-ui-smoke") ||
                 args.Contains("--profile-ui-smoke") ||
                 args.Contains("--update-ui-smoke") ||
                 args.Contains("--music-library-ui-smoke") ||
                 collectionSmoke ||
                 trainingSmoke ||
-                farmPointerSmoke ||
+                farmPointerSmoke || farmCaretakerSmoke ||
                 networkMatchSmoke ||
                 steamLobbyUiSmoke ||
                 modeBonusSmoke ||
@@ -151,9 +171,11 @@ try
             Duos = args.Contains("--duos"),
             ProfileDirectory = profileDirectory,
             CollectionSmoke = collectionSmoke,
+            CollectionLayoutSmoke = args.Contains("--collection-layout-smoke"),
             EvolutionSmoke = evolutionSmoke,
             TrainingSmoke = trainingSmoke,
             FarmPointerSmoke = farmPointerSmoke,
+            FarmCaretakerSmoke = farmCaretakerSmoke,
             NetworkMatchSmoke = networkMatchSmoke,
             SteamLibrary = Option("--steam-api"),
             SteamLobbyUiSmoke = steamLobbyUiSmoke,
@@ -163,9 +185,17 @@ try
             MusicDecoder = Option("--ffmpeg"),
             MusicLibrarySmoke = args.Contains("--music-library-ui-smoke"),
             MinimumWindow = args.Contains("--minimum-window"),
+            ShortWindow = args.Contains("--short-window"),
             UpdateUiSmoke = args.Contains("--update-ui-smoke"),
             ProfileUiSmoke = args.Contains("--profile-ui-smoke"),
             PostgameSmoke = args.Contains("--postgame-smoke"),
+            UnitNoteUiSmoke = args.Contains("--unit-note-ui-smoke"),
+            MatchCosmeticsSmoke = args.Contains("--match-cosmetics-smoke"),
+            LegendNavigationSmoke = args.Contains("--legend-navigation-smoke"),
+            GalaxyIntroUiSmoke = args.Contains("--galaxy-intro-ui-smoke"),
+            ChoicePresentationUiSmoke = args.Contains("--choice-presentation-ui-smoke"),
+            CastFeedUiSmoke = args.Contains("--cast-feed-ui-smoke"),
+            LootNoticeUiSmoke = args.Contains("--loot-notice-ui-smoke"),
             EliminationCinematicSmoke = args.Contains("--elimination-cinematic-smoke"),
             SaveDataUiSmoke = args.Contains("--save-data-ui-smoke"),
             Instance = instance,

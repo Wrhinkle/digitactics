@@ -9,6 +9,15 @@ if(args.Length==2 && args[0]=="--native-release-artifacts") {await NativeRelease
 if(args.Length>=2 && args[0].StartsWith("--native-job-",StringComparison.Ordinal)) {await NativeJobChecks.Child(args);return;}
 if(args.Length==2 && args[0]=="--native-supervisor-child") {await NativeSupervisorChecks.Child(args[1]);return;}
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");
+if(args.Contains("--unit-notes-only")){UnitNoteChecks.Run(root);return;}
+if(args.Contains("--cast-feed-only")){CastFeedChecks.Run(root);return;}
+if(args.Contains("--loot-notices-only")){LootNoticeChecks.Run(root);return;}
+if(args.Contains("--live-missions-only")){LiveMissionChecks.Run();return;}
+if(args.Contains("--match-hud-only")){MatchHudProjectionChecks.Run(root);return;}
+if(args.Contains("--model-dance-audit")){ModelDanceAudit.Run(root,args.Contains("--source-filter")?args[Array.IndexOf(args,"--source-filter")+1]:null);return;}
+if(args.Contains("--combat-locomotion-only")){CombatLocomotionChecks.Run(root);return;}
+if(args.Contains("--model-animation-audit")){ModelRuntimeAudit.Run(root,args.Contains("--source-filter")?args[Array.IndexOf(args,"--source-filter")+1]:null);return;}
+if(args.Contains("--model-animation-probe")){int p=Array.IndexOf(args,"--model-animation-probe");ModelRuntimeProbe.Run(root,args[p+1],args[p+2],double.Parse(args[p+3],System.Globalization.CultureInfo.InvariantCulture));return;}
 if(args.Contains("--native-game-instance-only")){await NativeGameInstanceChecks.Run();return;}
 if(args.Contains("--native-launch-only")){NativeLaunchChecks.Run();await NativeSupervisorChecks.Run();return;}
 if(args.Contains("--native-diagnostic-launch-only")){await NativeDiagnosticLaunchChecks.Run(args[Array.IndexOf(args,"--launcher")+1]);return;}
@@ -16,6 +25,7 @@ if(args.Contains("--native-launch-routing-only")){await NativeSteamLaunchChecks.
 if (args.Contains("--desktop-profile-cli-only")) { await DesktopProfileCliChecks.Run(root,args[Array.IndexOf(args,"--desktop")+1]); return; }
 if (args.Contains("--startup-desktop-only")) { await NativeStartupChecks.RunDesktop(args[Array.IndexOf(args,"--desktop")+1]); return; }
 if (args.Contains("--move-effects-only")) { MovePrimitiveChecks.Run(root); MovePlaybackChecks.Run(root); LegacyCombatEffectChecks.Run(root); return; }
+if (args.Contains("--board-mystery-only")) { BoardMysteryChecks.Run(root); return; }
 if (args.Contains("--board-scenes-only")) { BoardSceneChecks.Run(root); return; }
 if (args.Contains("--ai-emotes-only")) { AiEmoteChecks.Run(root); return; }
 if (args.Contains("--retro-particles-only")) { RetroParticleChecks.Run(root); return; }
@@ -51,13 +61,14 @@ if (args.Contains("--recent-players-only")) { RecentPlayerChecks.Run(root); retu
 if (args.Contains("--profile-summary-only")) { ProfileSummaryChecks.Run(root); return; }
 if (args.Contains("--profile-only")) { LegacyProfileChecks.Run(root); return; }
 if (args.Contains("--profile-backup-only")) { ProfileBackupChecks.Run(root); return; }
+if(args.Contains("--model-inventory-audit")){Environment.ExitCode=ModelInventoryAudit.Run(root)>0?1:0;return;}
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
 if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
 if (args.Contains("--materials-only")) { MaterialParity.Run(root); return; }
 if (args.Contains("--assets-only")) { ModelAssetParity.Run(root); TextureParity.Run(root); MotionParity.Run(root); CompanionModelChecks.Run(root); return; }
 if (args.Contains("--geometry-only")) { MaterialParity.Run(root); MeshParity.Run(root); RigParity.Run(root); return; }
 if (args.Contains("--companion-motion-only")) { CompanionMotionChecks.Run(root); return; }
-if (args.Contains("--companion-playback-only")) { CompanionPlaybackChecks.Run(root); return; }
+if (args.Contains("--companion-playback-only")) { CompanionPlaybackChecks.Run(root); CompanionLocomotionChecks.Run(root); return; }
 if (args.Contains("--farm-choreography-only")) { FarmChoreographyChecks.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
 if (args.Contains("--set-selection-only")) { SetSelectionChecks.Run(root, catalog); return; }
@@ -258,9 +269,16 @@ foreach (var trace in damageFixtures.RootElement.EnumerateArray())
     Check(actual.ManaAfter == expected.GetProperty("manaAfter").GetDouble(), "Damage mana gain mismatch.");
 }
 assertions += ModelAssetParity.Run(root);
+UnitNoteChecks.Run(root);
+CastFeedChecks.Run(root);
+LootNoticeChecks.Run(root);
+LiveMissionChecks.Run();
+MatchHudProjectionChecks.Run(root);
 assertions += CompanionModelChecks.Run(root);
 assertions += CompanionMotionChecks.Run(root);
 assertions += CompanionPlaybackChecks.Run(root);
+assertions += CompanionLocomotionChecks.Run(root);
+assertions += CombatLocomotionChecks.Run(root);
 assertions += FarmChoreographyChecks.Run(root);
 assertions += TextureParity.Run(root);
 assertions += MaterialParity.Run(root);
