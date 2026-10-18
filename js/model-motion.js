@@ -1,5 +1,6 @@
 // Skeletal fallback for rigged imports that ship without usable animation clips.
-// Authored clips always take priority. These motions preserve the original mesh and skin.
+// Authored clips take priority, with the documented source-specific repairs below.
+// These motions preserve the original mesh and skin.
 import * as THREE from 'three';
 
 const V = () => new THREE.Vector3();
@@ -12,17 +13,22 @@ const tailName = /(?:^|_)(?:tail|sippo|shippo)(?:0?1)?(?:_|$)/i;
 const valid = b => !/end|nub|twist|helper/i.test(b.name);
 
 export function modelClips(gltf, src) {
-  const authored = (gltf.animations || []).filter(c=>!src?.fallbackRoles?.includes(c.name));
+  if(src?.uid==='rip-l_garurumon_greymon_statue')return statueClips(gltf.scene);
+  const authored = heldWeaponOrigin(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src))).filter(c=>!src?.fallbackRoles?.includes(c.name));
   if (authored.length && src?.anim !== false) {
-    const missing = ['idle','attack','special','win'].filter(role => !authored.some(c => c.name === role));
+    // This Seadramon export labels a single unchanging pose "idle". Build a
+    // gentle skeletal loop from that assembled pose, retaining other actions.
+    const staticIdle=src?.uid==='rip-cat_cs_seadramon_chr347';
+    const missing = ['idle','attack','special','win'].filter(role => staticIdle&&role==='idle'||!authored.some(c => c.name === role));
     if (!missing.length) return authored;
     // Build missing actions from the authored neutral pose, retaining every original clip.
     const pose = new THREE.AnimationMixer(gltf.scene);
     pose.clipAction(authored.find(c => c.name === 'idle') || authored[0]).play();
     pose.update(0);
-    const extra = fallbackClips(gltf.scene, false).filter(c => missing.includes(c.name));
+    let extra = fallbackClips(gltf.scene, false).filter(c => missing.includes(c.name));
+    if(staticIdle)extra=serpentClips(gltf.scene,extra);
     pose.stopAllAction();pose.uncacheRoot(gltf.scene);
-    return [...authored, ...extra];
+    return [...authored.filter(clip=>!staticIdle||clip.name!=='idle'), ...extra];
   }
   // Disabled Noesis reels contain unrelated actions and root travel. Their first frame
   // still provides the assembled rest pose, including armor and weapon transforms.
@@ -32,6 +38,131 @@ export function modelClips(gltf, src) {
     pose.update(0);
   }
   return fallbackClips(gltf.scene);
+}
+
+// The imported right gun is parented to the hand but retains an idle origin
+// below the feet. Remove that constant attachment offset, retaining the authored
+// recoil/throw deltas and rotations rather than hiding or locking the weapon.
+function heldWeaponOrigin(gltf,src,clips){
+  if(src?.uid!=='rip-cs_beelzemon')return clips;
+  const name='J_gun_r.position',gun=gltf.scene.getObjectByName('J_gun_r');
+  const track=clips.find(c=>c.name==='idle')?.tracks.find(t=>t.name===name);
+  if(!track||gun?.parent?.name!=='J_hand_r')return clips;
+  const offset=Array.from(track.createInterpolant().evaluate(0));
+  return clips.map(clip=>{
+    if(!clip.tracks.some(t=>t.name===name))return clip;
+    const corrected=clip.clone(),out=corrected.tracks.find(t=>t.name===name);
+    for(let i=0;i<out.values.length;i++)out.values[i]-=offset[i%3];
+    return corrected;
+  });
+}
+
+// This long serpent's spine uses J_chine names rather than humanoid spine/tail
+// names. A small traveling bend makes the assembled body swim without changing
+// its root, segment lengths or scale. Every role shares the same loop endpoints.
+function serpentClips(scene,clips){
+  const names=['J_chine_e','J_chine_f','J_chine_g','J_chine_h','J_chine_i','J_chine_j',
+    'J_chine_a','J_chine_b','J_chine_c','J_chine','J_chine_k','J_chine_l','J_chine_m','J_chine_n'];
+  const segments=names.map((name,i)=>({bone:scene.getObjectByName(name),phase:(i<6?i+1:5-i)*.75})).filter(s=>s.bone);
+  return clips.map(clip=>{
+    const corrected=clip.clone();
+    for(const {bone,phase} of segments){
+      const times=[],values=[],base=bone.quaternion.clone();
+      for(let i=0;i<=32;i++){
+        const u=i/32,pulse=Math.sin(u*Math.PI)**2,boost=clip.name==='idle'?0:clip.name==='attack'?.03:.06;
+        const angle=(.12+boost*pulse)*Math.sin(u*Math.PI*2-phase),q=base.clone().multiply(Q().setFromAxisAngle(Y,angle));
+        times.push(clip.duration*u);values.push(q.x,q.y,q.z,q.w);
+      }
+      corrected.tracks.push(new THREE.QuaternionKeyframeTrack(bone.name+'.quaternion',times,values));
+    }
+    return corrected;
+  });
+}
+
+// Stone Guardian is an intentionally rigid statue, without a creature skeleton.
+// Move its assembled root gently; never deform the stone pieces or change size.
+function statueClips(scene){
+  const root=scene.getObjectByName('ModelRoot');if(!root)return [];
+  scene.updateMatrixWorld(true);
+  const box=new THREE.Box3().setFromObject(scene),parentScale=root.parent.getWorldScale(V());
+  const height=Math.max(.001,box.max.y-box.min.y)/Math.max(.001,Math.abs(parentScale.y));
+  const base=root.position.clone(),rotation=root.quaternion.clone();
+  return [['idle',2.8],['attack',.65],['special',1.2],['win',2]].map(([role,duration])=>{
+    const times=[],positions=[],rotations=[];
+    for(let i=0;i<=32;i++){
+      const u=i/32,wave=Math.sin(u*Math.PI*2),pulse=Math.sin(u*Math.PI)**2;
+      const y=role==='idle'?.006*(1-Math.cos(u*Math.PI*2)):role==='win'?.035*pulse:0;
+      const angle=role==='idle'?.012*wave:role==='win'?.045*wave:(role==='special'?-.09:-.06)*pulse;
+      const axis=role==='idle'||role==='win'?Z:X,q=rotation.clone().multiply(Q().setFromAxisAngle(axis,angle));
+      times.push(duration*u);positions.push(base.x,base.y+height*y,base.z);rotations.push(q.x,q.y,q.z,q.w);
+    }
+    return new THREE.AnimationClip(role,duration,[new THREE.VectorKeyframeTrack(root.name+'.position',times,positions),new THREE.QuaternionKeyframeTrack(root.name+'.quaternion',times,rotations)]);
+  });
+}
+
+// These imported attacks contain whole-body enlargement (14x, 13.5x, 4.79x)
+// or shrinkage (1/15x), rather than an independently animated attack effect.
+// Keep its idle body scale while retaining every authored joint, attachment and
+// root-position track. Match by asset UID so roster aliases share the correction.
+function boardBodyScale(gltf,src) {
+  const body = {
+    db64891d559b4d0cbcb5633d90779ee3: 'GRP_joint_02',
+    'rip-cat_cs_renamon_chr391': 'J_root',
+    '889b1324568743f3be36b32ac49c95da': 'GRP_joint_02',
+    bbeb1da28aca459da86b46cba6d57ca8: 'GRP_joint_03',
+  }[src?.uid];
+  const clips=gltf.animations||[];
+  if(!body)return clips;
+  const idle=clips.find(c=>c.name==='idle'),name=body+'.scale';
+  const idleTrack=idle?.tracks.find(track=>track.name===name);
+  const neutral=idleTrack?Array.from(idleTrack.createInterpolant().evaluate(0)):gltf.scene.getObjectByName(body)?.scale.toArray();
+  if(!neutral)return clips;
+  return clips.map(clip=>{
+    if(clip.name!=='attack'||!clip.tracks.some(track=>track.name===name))return clip;
+    const corrected=clip.clone();
+    for(const track of corrected.tracks)if(track.name===name)
+      for(let i=0;i<track.values.length;i++)track.values[i]=neutral[i%3];
+    return corrected;
+  });
+}
+
+// These actions carry cinematic scene travel in a skeletal root. The combat
+// simulation already owns the unit's hex, so keep that anchor in place. Retain
+// the authored vertical trajectory at a board-sized amplitude, easing its final
+// flight back to idle; limb and projectile/weapon animation remains untouched.
+function boardRootTravel(gltf,src,clips){
+  const policy={
+    'rip-cs_gallantmon_crimson_mode':['J_root','special'], 'rip-hisyaryumon':['J_center','special'],
+    'rip-cs_phantomon':['J_center','win'], 'rip-cs_icemon':['J_center','win'],
+    'rip-cat_cs_dracomon_chr208':['J_center','win'], 'rip-dracomon':['J_center','win'],
+    'rip-cs_raptordramon':['J_center','win'],
+    'rip-crescemon':['J_center','special'], 'rip-cs_pilevolcamon':['J_center','special'],
+    'rip-l_millenniummon':['J_center','special'], 'rip-l_omnimon_x':['J_center','special'],
+    'rip-nc_jupitermon':['Bip001','special'],
+    'rip-cs_skullsatamon':['J_center','win'], 'rip-cs_merukimon':['J_center','win'],
+  }[src?.uid];
+  if(!policy)return clips;
+  const [body,role]=policy,idle=clips.find(c=>c.name==='idle'),action=clips.find(c=>c.name===role),name=body+'.position';
+  const track=action?.tracks.find(t=>t.name===name),node=gltf.scene.getObjectByName(body);
+  if(!idle||!track||!node)return clips;
+  const mixer=new THREE.AnimationMixer(gltf.scene);mixer.clipAction(idle).play();mixer.update(0);gltf.scene.updateMatrixWorld(true);
+  const origin=node.getWorldPosition(V()),parent=node.parent.matrixWorld.clone(),inverse=parent.clone().invert();
+  const box=new THREE.Box3().setFromObject(gltf.scene),height=Math.max(1e-9,box.max.y-box.min.y);
+  // Some entrances contain only two root keys. Sample the settling envelope
+  // between them so a looping victory retains its small authored vertical sway.
+  const times=role==='win'?[...new Set([...track.times,...Array.from({length:65},(_,i)=>action.duration*i/64)])].sort((a,b)=>a-b):Array.from(track.times);
+  const interpolant=track.createInterpolant(),displacements=times.map(time=>new THREE.Vector3().fromArray(interpolant.evaluate(time)).applyMatrix4(parent).y-origin.y);
+  const up=Math.min(1,height*.35/Math.max(...displacements,1e-9)),down=Math.min(1,height*.08/Math.max(...displacements.map(y=>-y),1e-9));
+  const corrected=action.clone(),out=corrected.tracks.find(t=>t.name===name);
+  out.times=new Float32Array(times);out.values=new Float32Array(times.length*3);
+  for(let i=0;i<displacements.length;i++){
+    const u=times[i]/action.duration,end=Math.min(1,Math.max(0,(1-u)/.2)),start=role==='win'?Math.min(1,u/.15):1;
+    const settle=end*end*(3-2*end)*start*start*(3-2*start);
+    const y=displacements[i]*(displacements[i]<0?down:up)*settle;
+    origin.clone().add(new THREE.Vector3(0,y,0)).applyMatrix4(inverse).toArray(out.values,i*3);
+  }
+  mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);
+  return clips.map(clip=>clip===action?corrected:clip);
 }
 
 export function fallbackClips(scene, adjustRest = true) {
