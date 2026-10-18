@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="../../artifacts/model-content/**" Link="assets/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../artifacts/media-runtime/3e47bda1607740550141e37c0e49d1e5182b34699f15adfd137ee266d346811a/**" Link="media/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../content/**" Link="content/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../artifacts/audio-content/**" Link="audio/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

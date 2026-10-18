@@ -10,6 +10,7 @@ function Invoke-Checked([string]$Program, [string[]]$Arguments) {
 }
 Push-Location $nativeRoot
 try {
+    $mediaRuntime = & (Join-Path $nativeRoot 'tools/setup-media.ps1')
     $audioTools = Join-Path $nativeRoot 'artifacts/audio-tools'
     if (-not (Test-Path (Join-Path $audioTools 'node_modules/playwright/package.json'))) {
         Invoke-Checked 'npm.cmd' @('install', '--prefix', $audioTools, 'playwright@1.56.1', '--no-audit', '--no-fund')
@@ -144,6 +145,9 @@ try {
     Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Desktop', '--locked-mode')
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--', $nativeRoot)
     Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore')
+    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--music-decoder-only', '--ffmpeg', (Join-Path $mediaRuntime 'ffmpeg.exe'))
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--custom-music-smoke')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-routing-smoke')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--board-mesh-smoke', '--capture', 'artifacts/board-meshes.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--smoke', '--capture', 'artifacts/native-smoke.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--capture', 'artifacts/match-ui.bmp')
@@ -173,6 +177,8 @@ try {
             }
         }
         Invoke-Checked (Join-Path $destination 'DigiTactics.Desktop.exe') @('--smoke')
+        Invoke-Checked (Join-Path $destination 'DigiTactics.Desktop.exe') @('--custom-music-smoke')
+        Invoke-Checked (Join-Path $destination 'DigiTactics.Desktop.exe') @('--music-routing-smoke')
         Write-Host "Native migration build: $destination"
     }
 } finally { Pop-Location }

@@ -1,0 +1,18 @@
+Digi-Tactics native development media runtime
+
+FFmpeg, copyright (c) 2000-2026 the FFmpeg developers.
+Project: https://ffmpeg.org/
+Binary provider: https://github.com/BtbN/FFmpeg-Builds
+
+This directory contains the unmodified FFmpeg executable and shared libraries
+selected by provenance.json. LICENSE.txt contains the supplied LGPL v3 license.
+build-configuration.txt records the executable's version and build configuration.
+The application launches this executable as a separate process; it can be replaced
+with a compatible FFmpeg executable and shared libraries. Development launches
+also accept --ffmpeg <executable> to select another installation.
+
+Distribution status: development verification only. Before a public release,
+prepare the corresponding source and build materials for this exact binary and
+its included dependencies, retain their required notices, and verify the final
+release archive. The upstream binary download and these provenance files alone
+do not constitute that completed source distribution.

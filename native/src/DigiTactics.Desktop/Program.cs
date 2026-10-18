@@ -12,8 +12,8 @@ try
         return Path.GetFullPath(args[index + 1]);
     }
     string? profileDirectory = Option("--profile-directory");
-    if (args.Contains("--music-routing-smoke")) { GameAudio.MusicRoutingSmoke(Option("--ffmpeg") ?? throw new ArgumentException("Provide --ffmpeg.")); return 0; }
-    if (args.Contains("--custom-music-smoke")) { GameAudio.CustomMusicSmoke(Option("--ffmpeg") ?? throw new ArgumentException("Provide --ffmpeg.")); return 0; }
+    if (args.Contains("--music-routing-smoke")) { GameAudio.MusicRoutingSmoke(Option("--ffmpeg") ?? Path.Combine(AppContext.BaseDirectory,"media","ffmpeg.exe")); return 0; }
+    if (args.Contains("--custom-music-smoke")) { GameAudio.CustomMusicSmoke(Option("--ffmpeg") ?? Path.Combine(AppContext.BaseDirectory,"media","ffmpeg.exe")); return 0; }
     if (args.Contains("--steam-room-smoke"))
     {
         string library = Option("--steam-api") ?? throw new ArgumentException("Steam smoke requires --steam-api with the Steam API DLL path.");
