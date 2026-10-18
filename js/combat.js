@@ -53,7 +53,7 @@
   // Traits a unit contributes: its line's traits plus any emblems it holds.
   DT.unitTraits = function (u) {
     const L = DT.LINE[u.line];
-    const extra = (u.items || []).map((id) => DT.ITEMS[id] && DT.ITEMS[id].emblem).filter((t) => t && !L.traits.includes(t));
+    const extra = DT.fitItems(u.items || []).map((id) => DT.ITEMS[id] && DT.ITEMS[id].emblem).filter((t) => t && !L.traits.includes(t));
     return extra.length ? L.traits.concat([...new Set(extra)]) : L.traits;
   };
 
@@ -321,7 +321,7 @@
     equip(u, items) {
       const list = [];
       const pool = DT.CORE_ITEMS.filter((x) => !(DT.ITEMS[x] && DT.ITEMS[x].p && DT.ITEMS[x].p.thief));
-      for (const id of items) {
+      for (const id of DT.fitItems(items)) {
         list.push(id);
         if (DT.ITEMS[id] && DT.ITEMS[id].p && DT.ITEMS[id].p.thief) for (let k = 0; k < 2; k++) list.push(pool[Math.floor(this.rng() * pool.length)]);
       }

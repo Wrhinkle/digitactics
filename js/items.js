@@ -109,6 +109,8 @@
       if (ITEMS[id]) Object.assign(ITEMS[id], fields);
       else console.warn(`Digi-Tactics items (${setId}): extend for unknown item ${id}`);
     }
+    for (const item of Object.values(ITEMS)) if (item.p && item.p.thief)
+      item.desc = `${item.desc} Occupies all 3 item slots; cannot be equipped with other items.`;
     // completed items that random drops hand out (no emblems, specials, consumables)
     const CORE_ITEMS = def.core ? def.core.slice() : core.concat(listed.filter((id) => ITEMS[id].cat === 'completed' && !ITEMS[id].noDrop));
     const CONSUMABLE_IDS = Object.keys(ITEMS).filter((k) => ITEMS[k].consumable && !ITEMS[k].noDrop);
@@ -171,6 +173,15 @@
   };
   DT.isComponent = (id) => !!(DT.ITEMS[id] && DT.ITEMS[id].component);
   DT.isConsumable = (id) => !!(DT.ITEMS[id] && DT.ITEMS[id].consumable);
+  // Random-item gloves reserve the two slots that their combat rolls will fill.
+  DT.itemSlots = (id) => DT.ITEMS[id] && DT.ITEMS[id].p && DT.ITEMS[id].p.thief ? 3 : 1;
+  DT.itemSlotsUsed = (items) => items.reduce((sum, id) => sum + DT.itemSlots(id), 0);
+  DT.itemsFit = (held, id) => DT.itemSlotsUsed(held) + DT.itemSlots(id) <= 3;
+  DT.fitItems = (items, overflow = () => {}) => {
+    const kept = [];
+    for (const id of items) { if (DT.itemsFit(kept, id)) kept.push(id); else overflow(id); }
+    return kept;
+  };
   DT.itemText = (id) => {
     const it = DT.ITEMS[id];
     if (!it) return '';

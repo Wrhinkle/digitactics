@@ -493,8 +493,8 @@
         if (base.mods) up.mods = base.mods;
         const items = three.flatMap((e) => e.u.items);
         items.sort((a, b) => DT.isComponent(a) - DT.isComponent(b));
-        up.items = items.slice(0, 3);
-        for (const id of items.slice(3)) this.giveItem(p, id);
+        // These are owned items being returned, not new drops; keep overflow until equipped.
+        up.items = DT.fitItems(items, (id) => p.items.push(id));
         for (const e of three) {
           if (e.where === 'board') delete p.board[e.k];
           else if (e.where === 'bench') p.bench[e.i] = null;
@@ -623,12 +623,15 @@
     // Set equip rules (canEquip hook): null if item id may go on unit u, else a result string ('full', 'cantHold'...).
     // combine: the item it would make with a held component, or null.
     equipVeto(p, u, id, combine = null) {
-      if (!this.hasHook('canEquip', p)) return null;
-      const e = this.fireGame('canEquip', p, { unit: u, item: id, combine, ok: true, reason: null });
-      return e.ok === false ? e.reason || 'cantHold' : null;
+      if (this.hasHook('canEquip', p)) {
+        const e = this.fireGame('canEquip', p, { unit: u, item: id, combine, ok: true, reason: null });
+        if (e.ok === false) return e.reason || 'cantHold';
+      }
+      const ci = combine ? u.items.findIndex((held) => DT.isComponent(held) && DT.combineItems(held, id) === combine) : -1;
+      return DT.itemsFit(u.items.filter((_, i) => i !== ci), combine || id) ? null : 'full';
     }
     // can u take item id from the bench as a new held item (AI)
-    canHold(p, u, id) { return u.items.length < 3 && DT.holdsItems(u) && !this.equipVeto(p, u, id, null); }
+    canHold(p, u, id) { return DT.holdsItems(u) && !this.equipVeto(p, u, id, null); }
 
     // Consumables (item.use(ctx, unit, idx) in the set's mech file) return a result string for the UI.
     useConsumable(p, idx, u) {
@@ -1100,8 +1103,7 @@
 
     giveFromBench(p, id, u) {
       const i = p.items.indexOf(id);
-      if (i < 0 || u.items.length >= 3) return false;
-      if (!DT.holdsItems(u) || this.equipVeto(p, u, id, null)) return false;
+      if (i < 0 || !this.canHold(p, u, id)) return false;
       p.items.splice(i, 1);
       u.items.push(id);
       return true;
@@ -1125,27 +1127,27 @@
           const crowded = p.items.length >= 6 || this.stage >= 5;
           if (!(counts[t] >= 1) && !crowded) continue;
           const carriers = holders.slice(0, 2).map((h) => h.u);
-          const cands = board.filter((x) => x.items.length < 3 && !DT.unitTraits(x).includes(t))
+          const cands = board.filter((x) => DT.itemsFit(x.items, id) && !DT.unitTraits(x).includes(t))
             .sort((a, b) => carriers.includes(a) - carriers.includes(b) || a.items.length - b.items.length);
           if (cands[0]) { this.giveFromBench(p, id, cands[0]); counts[t] = (counts[t] || 0) + 1; }
           continue;
         }
         if (it.p && it.p.teamSize) {
           const u = (holders.find((h) => h.kind === 'tank') || holders[0]).u;
-          if (u.items.length < 3) this.giveFromBench(p, id, u);
+          if (DT.itemsFit(u.items, id)) this.giveFromBench(p, id, u);
           continue;
         }
         // off-role items wait on the bench until it gets crowded
-        const h = holders.find((x) => x.u.items.length < 3 && role(x.kind).includes(id)) ||
-          (p.items.length >= 6 || this.stage >= 5 ? holders.find((x) => x.u.items.length < 3) : null);
+        const h = holders.find((x) => DT.itemsFit(x.u.items, id) && role(x.kind).includes(id)) ||
+          (p.items.length >= 6 || this.stage >= 5 ? holders.find((x) => DT.itemsFit(x.u.items, id)) : null);
         if (h) this.giveFromBench(p, id, h.u);
       }
 
       // 2. build each holder's best items from components
       for (const h of holders) {
         for (const want of role(h.kind)) {
-          if (h.u.items.length >= 3) break;
-          if (h.u.items.includes(want)) continue;
+          if (DT.itemSlotsUsed(h.u.items) >= 3) break;
+          if (h.u.items.includes(want) || !DT.itemsFit(h.u.items, want)) continue;
           if (this.craft(p, want)) this.giveFromBench(p, want, h.u);
         }
       }
@@ -1159,7 +1161,7 @@
             const em = DT.combineItems(sc, c);
             const t = em && DT.ITEMS[em].emblem;
             if (!t) continue;
-            const u = board.find((x) => x.items.length < 3 && !DT.unitTraits(x).includes(t));
+            const u = board.find((x) => DT.itemsFit(x.items, em) && !DT.unitTraits(x).includes(t));
             if (p.items.includes(c) && nearBreak(t) && u && this.craft(p, em)) { this.giveFromBench(p, em, u); break; }
           }
         }
@@ -1171,14 +1173,14 @@
         const cs = comps();
         let made = null;
         for (const h of holders) {
-          if (h.u.items.length >= 3) continue;
-          made = role(h.kind).find((id) => this.recipeFrom(p.items, id));
+          if (DT.itemSlotsUsed(h.u.items) >= 3) continue;
+          made = role(h.kind).find((id) => DT.itemsFit(h.u.items, id) && this.recipeFrom(p.items, id));
           if (made) { this.craft(p, made); this.giveFromBench(p, made, h.u); break; }
         }
         if (!made) {
           const id = DT.combineItems(cs[0], cs[1]);
           if (!id || !this.craft(p, id)) break;
-          const h = holders.find((x) => x.u.items.length < 3);
+          const h = holders.find((x) => DT.itemsFit(x.u.items, id));
           if (!h) break;
           this.giveFromBench(p, id, h.u);
         }

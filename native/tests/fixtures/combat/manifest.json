@@ -8,9 +8,9 @@
       "sha256": "0e4ffd6975afff898cff926c8b7b61f4ce778d31e699fc60005d7c2f74f35d90"
     },
     {
-      "file": "gizmos-6798eeb945fd357d.json.gz",
+      "file": "gizmos-8ff03be0adb6a320.json.gz",
       "battles": 400,
-      "sha256": "6798eeb945fd357dce3599753cb51d86c25bc7c93f17ba7267e76e44d5afeac6"
+      "sha256": "8ff03be0adb6a320df4ecbdad0f4685e42c76a865c7ab2cd4df760c6d8a0602a"
     },
     {
       "file": "fates-3dcc7aaa3ce9e6d9.json.gz",
@@ -18,29 +18,29 @@
       "sha256": "3dcc7aaa3ce9e6d9f3e81c65938388cf943ef370d5b72fa3f2b5f01981801f83"
     },
     {
-      "file": "galaxies-1e459a7eed4ffd8a.json.gz",
+      "file": "galaxies-b2ab556bf56c1e76.json.gz",
       "battles": 446,
-      "sha256": "1e459a7eed4ffd8a1944c6a7c7f1343340202fd47113457af7ea36968b245a2a"
+      "sha256": "b2ab556bf56c1e76d5783f7b7252c4332918af5f60b30dbebd046e2f48beedf7"
     },
     {
-      "file": "reckoning-93ae3d433c35457d.json.gz",
+      "file": "reckoning-d54e141323cd857d.json.gz",
       "battles": 397,
-      "sha256": "93ae3d433c35457d4d1e9106c786b54dd577ff7aa2b7374c48f30d500e4caef7"
+      "sha256": "d54e141323cd857d3df96aba262d28986f24e4c793ae58eb091aedca6b7af08b"
     },
     {
-      "file": "dragonlands-88d9bf8e01a3e135.json.gz",
+      "file": "dragonlands-4c25fc123b2684e5.json.gz",
       "battles": 378,
-      "sha256": "88d9bf8e01a3e135b97b96d41fc2ccc0d844ec7c6feb3884c1ffc29136a639d6"
+      "sha256": "4c25fc123b2684e5da11035fd319695ce3b9feff495bbd04f15198c16f8a0681"
     },
     {
-      "file": "arcane-9700612a941a905e.json.gz",
+      "file": "arcane-4a72f23032fc0e8e.json.gz",
       "battles": 677,
-      "sha256": "9700612a941a905e7dce954e266b11c75c0ebb8422053a9ca572a1861631dba2"
+      "sha256": "4a72f23032fc0e8e6bc4dbeae3de31df1d6e3f9517c02b16ea9544bf21707030"
     },
     {
-      "file": "coliseum-310e3a710de53dfa.json.gz",
+      "file": "coliseum-c0d8cfe05a08aa01.json.gz",
       "battles": 676,
-      "sha256": "310e3a710de53dfa1f79337b884aa4722a0a5fd679873b44e686a9fd096fbd28"
+      "sha256": "c0d8cfe05a08aa0191204f147d662a3a4dd19250abd79c11a5197954d50b3870"
     },
     {
       "file": "underlords-5011bd86c435ceed.json.gz",

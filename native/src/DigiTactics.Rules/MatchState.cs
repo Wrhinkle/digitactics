@@ -11,6 +11,7 @@ public sealed class MatchPlayer
         itemCap = rules.Loot!.ItemCap;
         Id = id; Name = seat.Name; IsHuman = seat.Human; Health = rules.Economy!.StartHp;
         Economy = new(rules.Economy); Roster = new(rules, create);
+        Roster.MergeReturnHandler = Items.Add;
         Shop = new(rules, pool, Economy, Roster, create, GiveItem);
     }
     private readonly int itemCap;

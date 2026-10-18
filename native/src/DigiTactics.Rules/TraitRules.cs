@@ -18,9 +18,9 @@ public static class TraitRules
     public static string[] UnitTraits(CombatEntry unit, Ruleset rules)
     {
         var traits = new List<string>(rules.Lines.Concat(rules.ExtraLines).Single(l => l.Id == unit.Line).Traits);
-        foreach (var id in unit.Items ?? [])
+        foreach (var item in ItemCapacity.Equipped(unit.Items ?? [], rules.Items))
         {
-            string? emblem = rules.Items.FirstOrDefault(i => i.Id == id)?.Emblem;
+            string? emblem = item.Emblem;
             if (emblem is not null && !traits.Contains(emblem)) traits.Add(emblem);
         }
         return traits.ToArray();
@@ -43,9 +43,9 @@ public static class TraitRules
         foreach (var part in parts)
             if ((part.Augments ?? []).Contains("duo_crest_link"))
                 foreach (var unit in units.Where(u => u.Owner == part.Owner))
-                    foreach (string item in unit.Items ?? [])
+                    foreach (var item in ItemCapacity.Equipped(unit.Items ?? [], rules.Items))
                     {
-                        string? trait = rules.Items.FirstOrDefault(i => i.Id == item)?.Emblem;
+                        string? trait = item.Emblem;
                         if (trait is not null && !rules.Lines.Single(l => l.Id == unit.Line).Traits.Contains(trait))
                             result[trait] = result.GetValueOrDefault(trait) + 1;
                     }

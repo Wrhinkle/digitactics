@@ -1060,7 +1060,7 @@
         const made = DT.combineItems(p.items[i], x);
         if (!made || DT.ITEMS[made].emblem) return;
         let sc = 0;
-        for (const h of holders) { const list = DT.ITEM_ROLE[h.kind] || []; if (h.u.items.length < 3 && list.includes(made)) sc = Math.max(sc, 10 - list.indexOf(made) * 0.1); }
+        for (const h of holders) { const list = DT.ITEM_ROLE[h.kind] || []; if (DT.itemsFit(h.u.items, made) && list.includes(made)) sc = Math.max(sc, 10 - list.indexOf(made) * 0.1); }
         if (sc > bestSc) { bestSc = sc; best = j; }
       });
       if (best < 0 || (bestSc <= 0 && p.items.length < 6 && g.stage < 4)) break;

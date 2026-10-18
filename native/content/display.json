@@ -142,7 +142,7 @@
     },
     "thief_glove": {
       "name": "Thief Glove",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "emblem_striker": {
       "name": "Striker Crest",
@@ -2576,7 +2576,7 @@
     },
     "thief_glove": {
       "name": "Thief Glove",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "emblem_striker": {
       "name": "Striker Crest",
@@ -5010,7 +5010,7 @@
     },
     "fat_thief": {
       "name": "Thief Glove",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "fat_emblem_celes": {
       "name": "Celestial Crest",
@@ -7483,7 +7483,7 @@
     },
     "fat_thief": {
       "name": "Thief Glove",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "fat_emblem_celes": {
       "name": "Celestial Crest",
@@ -9956,7 +9956,7 @@
     },
     "gal_thief": {
       "name": "Thief Glove",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "emblem_bm": {
       "name": "Blade Masters Crest",
@@ -13268,7 +13268,7 @@
     },
     "gal_thief": {
       "name": "Thief Glove",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "emblem_bm": {
       "name": "Blade Masters Crest",
@@ -16580,7 +16580,7 @@
     },
     "giz_thief_glove": {
       "name": "Thief Glove",
-      "description": "Each combat, the holder gains two random completed items."
+      "description": "Each combat, the holder gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "giz_emblem_str": {
       "name": "Striker Chip",
@@ -16848,7 +16848,7 @@
     },
     "giz_oc_thief_glove": {
       "name": "Overclocked Thief Glove",
-      "description": "Each combat, the holder gains two random completed items. Overclocked: about 60% stronger."
+      "description": "Each combat, the holder gains two random completed items. Overclocked: about 60% stronger. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "giz_remover": {
       "name": "Magnetic Remover",
@@ -19208,7 +19208,7 @@
     },
     "giz_thief_glove": {
       "name": "Thief Glove",
-      "description": "Each combat, the holder gains two random completed items."
+      "description": "Each combat, the holder gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "giz_emblem_str": {
       "name": "Striker Chip",
@@ -19476,7 +19476,7 @@
     },
     "giz_oc_thief_glove": {
       "name": "Overclocked Thief Glove",
-      "description": "Each combat, the holder gains two random completed items. Overclocked: about 60% stronger."
+      "description": "Each combat, the holder gains two random completed items. Overclocked: about 60% stronger. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "giz_remover": {
       "name": "Magnetic Remover",
@@ -21836,7 +21836,7 @@
     },
     "rec_thief_gloves": {
       "name": "Thief Gloves",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "emblem_skr": {
       "name": "Skirmisher Crest",
@@ -22288,11 +22288,11 @@
     },
     "rec_s_thief_gloves": {
       "name": "Trickster Gloves",
-      "description": "Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP."
+      "description": "Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "rec_r_thief_gloves": {
       "name": "Rascal Gloves",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "rec_remover": {
       "name": "Magnetic Remover",
@@ -24530,7 +24530,7 @@
     },
     "choice:rec_bless:rec_thief_gloves": {
       "name": "Thief Gloves",
-      "description": "+20% crit, +16% dodge. Each combat, gains two random completed items. Upgrades your item if you hold one, otherwise goes to your item bench."
+      "description": "+20% crit, +16% dodge. Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your item if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_bless:emblem_skr": {
       "name": "Skirmisher Crest",
@@ -24982,11 +24982,11 @@
     },
     "choice:rec_bless:rec_s_thief_gloves": {
       "name": "Trickster Gloves",
-      "description": "+20% crit, +16% dodge, +25% AD, +25 AP. Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
+      "description": "+20% crit, +16% dodge, +25% AD, +25 AP. Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_bless:rec_r_thief_gloves": {
       "name": "Rascal Gloves",
-      "description": "+50% crit, +16% dodge, +25% AD, +25 AP, +200 HP. Each combat, gains two random completed items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
+      "description": "+50% crit, +16% dodge, +25% AD, +25 AP, +200 HP. Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_bless:rec_remover": {
       "name": "Magnetic Remover",
@@ -25142,7 +25142,7 @@
     },
     "choice:rec_radiant:rec_thief_gloves": {
       "name": "Thief Gloves",
-      "description": "+20% crit, +16% dodge. Each combat, gains two random completed items. Upgrades your item if you hold one, otherwise goes to your item bench."
+      "description": "+20% crit, +16% dodge. Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your item if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_radiant:emblem_skr": {
       "name": "Skirmisher Crest",
@@ -25594,11 +25594,11 @@
     },
     "choice:rec_radiant:rec_s_thief_gloves": {
       "name": "Trickster Gloves",
-      "description": "+20% crit, +16% dodge, +25% AD, +25 AP. Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
+      "description": "+20% crit, +16% dodge, +25% AD, +25 AP. Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_radiant:rec_r_thief_gloves": {
       "name": "Rascal Gloves",
-      "description": "+50% crit, +16% dodge, +25% AD, +25 AP, +200 HP. Each combat, gains two random completed items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
+      "description": "+50% crit, +16% dodge, +25% AD, +25 AP, +200 HP. Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_radiant:rec_remover": {
       "name": "Magnetic Remover",
@@ -25754,7 +25754,7 @@
     },
     "choice:rec_tome:rec_thief_gloves": {
       "name": "Thief Gloves",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "choice:rec_tome:emblem_skr": {
       "name": "Skirmisher Crest",
@@ -26206,11 +26206,11 @@
     },
     "choice:rec_tome:rec_s_thief_gloves": {
       "name": "Trickster Gloves",
-      "description": "Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP."
+      "description": "Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "choice:rec_tome:rec_r_thief_gloves": {
       "name": "Rascal Gloves",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "choice:rec_tome:rec_remover": {
       "name": "Magnetic Remover",
@@ -26364,7 +26364,7 @@
     },
     "rec_thief_gloves": {
       "name": "Thief Gloves",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "emblem_skr": {
       "name": "Skirmisher Crest",
@@ -26816,11 +26816,11 @@
     },
     "rec_s_thief_gloves": {
       "name": "Trickster Gloves",
-      "description": "Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP."
+      "description": "Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "rec_r_thief_gloves": {
       "name": "Rascal Gloves",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "rec_remover": {
       "name": "Magnetic Remover",
@@ -29058,7 +29058,7 @@
     },
     "choice:rec_bless:rec_thief_gloves": {
       "name": "Thief Gloves",
-      "description": "+20% crit, +16% dodge. Each combat, gains two random completed items. Upgrades your item if you hold one, otherwise goes to your item bench."
+      "description": "+20% crit, +16% dodge. Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your item if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_bless:emblem_skr": {
       "name": "Skirmisher Crest",
@@ -29510,11 +29510,11 @@
     },
     "choice:rec_bless:rec_s_thief_gloves": {
       "name": "Trickster Gloves",
-      "description": "+20% crit, +16% dodge, +25% AD, +25 AP. Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
+      "description": "+20% crit, +16% dodge, +25% AD, +25 AP. Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_bless:rec_r_thief_gloves": {
       "name": "Rascal Gloves",
-      "description": "+50% crit, +16% dodge, +25% AD, +25 AP, +200 HP. Each combat, gains two random completed items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
+      "description": "+50% crit, +16% dodge, +25% AD, +25 AP, +200 HP. Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_bless:rec_remover": {
       "name": "Magnetic Remover",
@@ -29670,7 +29670,7 @@
     },
     "choice:rec_radiant:rec_thief_gloves": {
       "name": "Thief Gloves",
-      "description": "+20% crit, +16% dodge. Each combat, gains two random completed items. Upgrades your item if you hold one, otherwise goes to your item bench."
+      "description": "+20% crit, +16% dodge. Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your item if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_radiant:emblem_skr": {
       "name": "Skirmisher Crest",
@@ -30122,11 +30122,11 @@
     },
     "choice:rec_radiant:rec_s_thief_gloves": {
       "name": "Trickster Gloves",
-      "description": "+20% crit, +16% dodge, +25% AD, +25 AP. Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
+      "description": "+20% crit, +16% dodge, +25% AD, +25 AP. Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_radiant:rec_r_thief_gloves": {
       "name": "Rascal Gloves",
-      "description": "+50% crit, +16% dodge, +25% AD, +25 AP, +200 HP. Each combat, gains two random completed items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
+      "description": "+50% crit, +16% dodge, +25% AD, +25 AP, +200 HP. Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items. Upgrades your Thief Gloves if you hold one, otherwise goes to your item bench."
     },
     "choice:rec_radiant:rec_remover": {
       "name": "Magnetic Remover",
@@ -30282,7 +30282,7 @@
     },
     "choice:rec_tome:rec_thief_gloves": {
       "name": "Thief Gloves",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "choice:rec_tome:emblem_skr": {
       "name": "Skirmisher Crest",
@@ -30734,11 +30734,11 @@
     },
     "choice:rec_tome:rec_s_thief_gloves": {
       "name": "Trickster Gloves",
-      "description": "Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP."
+      "description": "Each combat, gains two random completed items, plus 25% attack damage and 25 ability power. Drawback: 10% less max HP. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "choice:rec_tome:rec_r_thief_gloves": {
       "name": "Rascal Gloves",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "choice:rec_tome:rec_remover": {
       "name": "Magnetic Remover",
@@ -30892,7 +30892,7 @@
     },
     "drg_thief_glove": {
       "name": "Thief Glove",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "drg_emblem_gold": {
       "name": "Golden Armor Crest",
@@ -33256,7 +33256,7 @@
     },
     "drg_thief_glove": {
       "name": "Thief Glove",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "drg_emblem_gold": {
       "name": "Golden Armor Crest",
@@ -35620,7 +35620,7 @@
     },
     "arc_thief_program": {
       "name": "Thief Program",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "arc_sword": {
       "name": "Attack Plugin",
@@ -38365,7 +38365,7 @@
     },
     "choice:arcMarket:arc_thief_program": {
       "name": "Thief Program",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "choice:arcMarket:arc_sword": {
       "name": "Attack Plugin",
@@ -38803,7 +38803,7 @@
     },
     "arc_thief_program": {
       "name": "Thief Program",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "arc_sword": {
       "name": "Attack Plugin",
@@ -41548,7 +41548,7 @@
     },
     "choice:arcMarket:arc_thief_program": {
       "name": "Thief Program",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "choice:arcMarket:arc_sword": {
       "name": "Attack Plugin",
@@ -41986,7 +41986,7 @@
     },
     "col_thief_glove": {
       "name": "Thief Glove",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "col_golden_egg": {
       "name": "Golden Digi-Egg",
@@ -44903,7 +44903,7 @@
     },
     "col_thief_glove": {
       "name": "Thief Glove",
-      "description": "Each combat, gains two random completed items."
+      "description": "Each combat, gains two random completed items. Occupies all 3 item slots; cannot be equipped with other items."
     },
     "col_golden_egg": {
       "name": "Golden Digi-Egg",

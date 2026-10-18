@@ -36,10 +36,12 @@ internal sealed partial class MatchScreen
         if (item.Emblem is { } emblem && TraitRules.UnitTraits(new(unit.Line, unit.Stage, 0, 0, Items: unit.Items), Rules).Contains(emblem))
             return "Already has this trait";
         if (item.Component)
-            foreach (var held in unit.Items)
-                if (Rules.Items.Single(item => item.Id == held).Component && Session!.Units.Items.Combine(held, id) is { } result)
-                    return "Combines into " + Name(result);
+            for (int index = 0; index < unit.Items.Length; index++)
+                if (Rules.Items.Single(item => item.Id == unit.Items[index]).Component && Session!.Units.Items.Combine(unit.Items[index], id) is { } result)
+                    return Session.Units.Items.CanFit(unit, result, index) ? "Combines into " + Name(result) : "Needs all 3 item slots free";
         if (!Session!.Units.Items.HoldsItems(unit)) return "Can't hold items";
+        if (!Session.Units.Items.CanFit(unit, id) && (ItemCapacity.Slots(item) == 3 || unit.Items.Any(held => ItemCapacity.Slots(Rules.Items.Single(i => i.Id == held)) == 3)))
+            return "Gloves occupy all 3 item slots";
         return !Session.Units.Items.CanHold(Human, unit, id) ? "Item slots full" : "Equip " + Name(id);
     }
 

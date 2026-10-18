@@ -12,13 +12,17 @@ internal sealed class ItemDragSmoke
     private UnitSpot destination;
     private bool tooltipHovered, tooltipChecked;
     private string tooltipItem = "";
-    public string? CaptureName => tooltipHovered && !tooltipChecked ? "item-tooltip" : step == 9 ? "unit-equipment" : step == 8 ? "item-equip" : step == 12 ? "item-partner" : null;
+    private PlacedUnit[] preservedUnits = [];
+    private string[] preservedItems = [];
+    private int scrollWait;
+    public string? CaptureName => tooltipHovered && !tooltipChecked ? "item-tooltip" : step == 9 ? "unit-equipment" : step == 8 ? "item-equip" : step == 12 ? "item-partner" : step == 16 ? "item-overflow" : null;
     public bool Input(MatchScreen screen)
     {
         var session = screen.Session!; var player = session.State.Players[0]; var io = ImGui.GetIO();
         void Move(float2 point) => io.AddMousePosEvent(point.X, point.Y);
         void Start(int index) { Move(screen.Buttons[(step <= 3 ? "shelfItem/" : "item/") + index]); io.AddMouseButtonEvent(0, true); }
         void Up() => io.AddMouseButtonEvent(0, false);
+        if (scrollWait > 0) { scrollWait--; return false; }
         if (!tooltipChecked)
         {
             if (!tooltipHovered)
@@ -79,17 +83,71 @@ internal sealed class ItemDragSmoke
                 var equipped = player.Roster.Entries.Single(e => e.Unit.Id == holder).Unit;
                 if (screen.DetailedUnit != holder || !screen.DetailedItems.SequenceEqual(equipped.Items))
                     throw new InvalidOperationException("Unit hover did not show the equipped items.");
-                if (!session.State.Duos) return true;
+                if (!session.State.Duos) { step = 14; break; }
                 inventory = player.Items.ToArray(); item = inventory[0]; sends = player.PortalSends;
                 partnerItems = session.Units.Portal.Partner(player)!.Items.Count; Start(0); break;
             case 10:
                 var point = screen.Buttons["item/0"]; Move(new(point.X + 12, point.Y)); break;
-            case 11: Move(screen.Buttons["dropPartner"]); break;
+            case 11:
+                var partnerTarget = screen.Buttons["dropPartner"];
+                var sidebar = screen.TeamSidebarBounds;
+                if (partnerTarget.Y < sidebar.Min.Y + 34 || partnerTarget.Y > sidebar.Max.Y - 34)
+                {
+                    Move(new(sidebar.Max.X - 3, (sidebar.Min.Y + sidebar.Max.Y) / 2));
+                    io.AddMouseWheelEvent(0, partnerTarget.Y < sidebar.Min.Y + 34 ? 1 : -1);
+                    step--; scrollWait = 3; break;
+                }
+                Move(partnerTarget); break;
             case 12: Up(); break;
             case 13:
                 var partner = session.Units.Portal.Partner(player)!;
                 if (player.Items.Count != inventory.Length - 1 || player.PortalSends != sends + 1 || partner.Items.Count != partnerItems + 1 || partner.Items[^1] != item || screen.ItemDragging)
                     throw new InvalidOperationException("Item partner drop did not transfer exactly once.");
+                step = 14; break;
+            case 14:
+                var rules = session.State.Rules;
+                var glove = rules.Items.FirstOrDefault(i => ItemCapacity.Slots(i) == 3);
+                if (glove is null) return true;
+                var line = rules.Lines.First(l => !l.NoItems);
+                item = rules.CoreItems.First(id => ItemCapacity.Slots(rules.Items.Single(i => i.Id == id)) == 1);
+                preservedUnits = player.Roster.Entries.ToArray(); preservedItems = player.Items.ToArray();
+                foreach (var owned in preservedUnits) player.Roster.Remove(owned.Unit.Id, false);
+                player.Items.Clear(); player.Items.AddRange(Enumerable.Repeat(item, rules.Loot!.ItemCap));
+                for (int i = 0; i < line.Copies; i++)
+                    player.Roster.AddToBench(session.State.CreateUnit(line.Id, 0) with { Items = i == 0 ? [glove.Id] : i == 1 ? [item] : [] });
+                player.Roster.Combine(false, player.GiveItem);
+                if (player.Items.Count != rules.Loot.ItemCap + 1 || player.Items[^1] != item)
+                    throw new InvalidOperationException("Glove merge lost an item from a full inventory.");
+                var recipient = session.State.CreateUnit(line.Id, 0); holder = recipient.Id; player.Roster.AddToBench(recipient);
+                destination = player.Roster.Entries.Single(e => e.Unit.Id == holder).Spot;
+                slot = player.Items.Count - 1; break;
+            case 15:
+                var overflowButton = screen.Buttons["item/" + slot];
+                var bounds = screen.ShopViewportBounds;
+                if (overflowButton.Y < bounds.Min.Y + 21 || overflowButton.Y > bounds.Max.Y - 21)
+                {
+                    Move(new(bounds.Max.X - 10, (bounds.Min.Y + bounds.Max.Y) / 2));
+                    io.AddMouseWheelEvent(0, overflowButton.Y < bounds.Min.Y + 21 ? 1 : -1);
+                    step--; scrollWait = 3; break;
+                }
+                Move(overflowButton); break;
+            case 16: Start(slot); break;
+            case 17: Move(screen.Buttons["arenaBench/" + destination.Index]); break;
+            case 18:
+                if (screen.ItemDropFeedback != "Equip " + new DisplayText().Get(session.State.Rules.Id, item).Name)
+                    throw new InvalidOperationException("Returned item drag did not reach its empty recipient: " + screen.ItemDropFeedback);
+                Up(); break;
+            case 19:
+                if (player.Items.Count != session.State.Rules.Loot!.ItemCap || !player.Roster.Entries.Single(e => e.Unit.Id == holder).Unit.Items.Contains(item))
+                    throw new InvalidOperationException("Returned overflow item could not be equipped through the visible inventory control.");
+                foreach (var owned in player.Roster.Entries.ToArray()) player.Roster.Remove(owned.Unit.Id, false);
+                foreach (var owned in preservedUnits)
+                {
+                    int bench = player.Roster.FreeBenchSlot; player.Roster.AddToBench(owned.Unit);
+                    player.Roster.Move(UnitSpot.Bench(bench), owned.Spot, false, () => 100);
+                }
+                player.Items.Clear(); player.Items.AddRange(preservedItems);
+                Console.WriteLine("Item overflow UI: full-bench glove merge preserved and equipped its returned item.");
                 return true;
         }
         return false;

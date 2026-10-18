@@ -64,7 +64,7 @@
       for (const u of p.units) {
         const L = DT.LINE[u.line];
         if (!L || !L.shop) continue;
-        for (const id of u.items || []) {
+        for (const id of DT.fitItems(u.items || [])) {
           const it = DT.ITEMS[id];
           if (it && it.emblem && !L.traits.includes(it.emblem)) out[it.emblem] = (out[it.emblem] || 0) + 1;
         }

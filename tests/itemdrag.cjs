@@ -1,10 +1,20 @@
 // Item drag check: combine preview between bench items, recipe grid, drop-on-Digimon preview, swap on drop, layout at 1200x760.
-// Run: node tests/itemdrag.cjs <path-to-playwright> <outDir>
+// Run: node tests/itemdrag.cjs <path-to-playwright> <outDir> [path-to-esbuild]
+// Passing esbuild tests current sources in memory without changing the checked-in bundle.
 const path = require('path');
 const { spawn } = require('child_process');
 const { chromium } = require(process.argv[2] || 'playwright');
 const out = process.argv[3] || __dirname;
 const PORT = 8152;
+const sourceBundle = process.argv[4] ? (() => {
+  const root = path.join(__dirname, '..');
+  return require(path.resolve(process.argv[4])).buildSync({
+    absWorkingDir: root, entryPoints: [path.join(root, 'js/main.js')],
+    bundle: true, format: 'iife', write: false,
+    alias: { three: path.join(root, 'vendor/three/build/three.module.js'), 'three/addons': path.join(root, 'vendor/three/addons') },
+    logLevel: 'warning',
+  }).outputFiles[0].text;
+})() : null;
 
 let fails = 0;
 const check = (ok, what) => { console.log(`${ok ? 'ok  ' : 'FAIL'} ${what}`); if (!ok) fails++; };
@@ -19,6 +29,7 @@ const check = (ok, what) => { console.log(`${ok ? 'ok  ' : 'FAIL'} ${what}`); if
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   try {
+    if (sourceBundle) await page.route('**/js/bundle.js', route => route.fulfill({ contentType: 'application/javascript', body: sourceBundle }));
     await page.goto(`http://localhost:${PORT}/`);
     await page.waitForTimeout(2000);
     await page.click('#startBtn');
@@ -172,7 +183,35 @@ const check = (ok, what) => { console.log(`${ok ? 'ok  ' : 'FAIL'} ${what}`); if
     await page.waitForTimeout(100);
     check(!(await page.evaluate(() => window.__digi.ui.itemDrag)), 'touch end releases the drag');
 
+    // A glove merge may return an owned item onto an already full item bench.
+    // Its overflow control must still drag through the same equip command as the pedestals.
+    await page.evaluate(() => {
+      const g = window.__digi.game, p = g.human;
+      const line = window.DT.SHOP_LINES.find(l => !l.noItems).id;
+      p.board = {}; p.bench.fill(null); p.items = Array(g.R.itemCap).fill('sword');
+      for (let i = 0; i < g.copiesOf(line); i++) p.bench[i] = g.newUnit(line, 0);
+      p.bench[0].items = ['thief_glove']; p.bench[1].items = ['omni_blade'];
+      g.combine(p); p.bench[3] = g.newUnit(line, 0);
+      window.DT.UI.refresh();
+    });
+    const returned = page.locator('[data-returned-item="10"]');
+    await returned.waitFor({ state: 'visible', timeout: 5000 });
+    check((await items()).length === 11, 'full item bench preserves returned merge item');
+    const returnedBox = await returned.boundingBox();
+    check(returnedBox && returnedBox.x >= 0 && returnedBox.x + returnedBox.width <= 1200 && returnedBox.y + returnedBox.height <= 760,
+      'returned item control is visible within the viewport');
+    await page.screenshot({ path: path.join(out, 'itemdrag-7-overflow.png') });
+    await page.mouse.move(returnedBox.x + returnedBox.width / 2, returnedBox.y + returnedBox.height / 2);
+    await page.mouse.down();
+    u = await bench(3); await page.mouse.move(u.x, u.y - 10, { steps: 8 });
+    await page.waitForTimeout(100); await page.mouse.up(); await page.waitForTimeout(150);
+    check(await page.evaluate(() => window.__digi.game.human.bench[3].items.includes('omni_blade') && window.__digi.game.human.items.length === 10),
+      'returned item equips from overflow without loss');
+    check(await page.locator('[data-returned-item]').count() === 0, 'overflow controls disappear after equipping return');
     check(!errors.length, `no page errors${errors.length ? ': ' + errors.join(' | ') : ''}`);
+  } catch (error) {
+    await page.screenshot({ path: path.join(out, 'itemdrag-failure.png') });
+    throw error;
   } finally {
     await browser.close();
     server.kill();

@@ -16,7 +16,7 @@ public sealed class AiInventory(Ruleset rules, PlanningItems equipment)
         string[] Traits(int id) { var u = Unit(id); return TraitRules.UnitTraits(new(u.Line, u.Stage, 0, 4, Items: u.Items), rules); }
         var counts = TraitRules.Count(rules, board.Select(id => { var u = Unit(id); return new CombatEntry(u.Line, u.Stage, 0, 4, Items: u.Items, BonusTraits: u.BonusTraits); }), player.Augments.ToArray());
         string[] Role(string kind) => rules.ItemRoles!.GetValueOrDefault(kind) ?? [];
-        bool Room(AiItemHolder holder) => Unit(holder.Unit.Id).Items.Length < 3;
+        bool Room(AiItemHolder holder) => equipment.SlotsUsed(Unit(holder.Unit.Id)) < 3;
         bool Give(string item, int uid) => equipment.GiveFromBench(player, item, uid);
 
         foreach (string id in player.Items.ToArray())
@@ -27,7 +27,7 @@ public sealed class AiInventory(Ruleset rules, PlanningItems equipment)
             {
                 if (counts.GetValueOrDefault(trait) < 1 && player.Items.Count < 6 && stage < 5) continue;
                 var carriers = holders.Take(2).Select(h => h.Unit.Id).ToHashSet();
-                var target = board.Where(uid => Unit(uid).Items.Length < 3 && !Traits(uid).Contains(trait))
+                var target = board.Where(uid => equipment.CanFit(Unit(uid), id) && !Traits(uid).Contains(trait))
                     .OrderBy(carriers.Contains).ThenBy(uid => Unit(uid).Items.Length).Select(uid => (int?)uid).FirstOrDefault();
                 // The reference advances its planning count even when an equip veto rejects the emblem.
                 if (target is { } uid) { Give(id, uid); counts[trait] = counts.GetValueOrDefault(trait) + 1; }
@@ -36,11 +36,11 @@ public sealed class AiInventory(Ruleset rules, PlanningItems equipment)
             if (item.Passives.TryGetValue("teamSize", out var size) && size.GetDouble() != 0)
             {
                 var holder = holders.FirstOrDefault(h => h.Kind == "tank") ?? holders[0];
-                if (Room(holder)) Give(id, holder.Unit.Id);
+                if (equipment.CanFit(Unit(holder.Unit.Id), id)) Give(id, holder.Unit.Id);
                 continue;
             }
-            var chosen = holders.FirstOrDefault(h => Room(h) && Role(h.Kind).Contains(id)) ??
-                (player.Items.Count >= 6 || stage >= 5 ? holders.FirstOrDefault(Room) : null);
+            var chosen = holders.FirstOrDefault(h => equipment.CanFit(Unit(h.Unit.Id), id) && Role(h.Kind).Contains(id)) ??
+                (player.Items.Count >= 6 || stage >= 5 ? holders.FirstOrDefault(h => equipment.CanFit(Unit(h.Unit.Id), id)) : null);
             if (chosen is not null) Give(id, chosen.Unit.Id);
         }
 
@@ -48,7 +48,7 @@ public sealed class AiInventory(Ruleset rules, PlanningItems equipment)
             foreach (string wanted in Role(holder.Kind))
             {
                 if (!Room(holder)) break;
-                if (Unit(holder.Unit.Id).Items.Contains(wanted)) continue;
+                if (Unit(holder.Unit.Id).Items.Contains(wanted) || !equipment.CanFit(Unit(holder.Unit.Id), wanted)) continue;
                 if (equipment.Craft(player, wanted)) Give(wanted, holder.Unit.Id);
             }
 
@@ -66,7 +66,7 @@ public sealed class AiInventory(Ruleset rules, PlanningItems equipment)
             {
                 string? made = equipment.Combine(special, component);
                 if (made is null || items[made].Emblem is not { } trait) continue;
-                var target = board.Where(uid => Unit(uid).Items.Length < 3 && !Traits(uid).Contains(trait)).Select(uid => (int?)uid).FirstOrDefault();
+                var target = board.Where(uid => equipment.CanFit(Unit(uid), made) && !Traits(uid).Contains(trait)).Select(uid => (int?)uid).FirstOrDefault();
                 bool near = rules.Traits.Single(t => t.Id == trait).Breakpoints.Any(b => counts.GetValueOrDefault(trait) == b - 1);
                 if (player.Items.Contains(component) && near && target is { } uid && equipment.Craft(player, made)) { Give(made, uid); break; }
             }
@@ -81,13 +81,13 @@ public sealed class AiInventory(Ruleset rules, PlanningItems equipment)
             foreach (var holder in holders)
             {
                 if (!Room(holder)) continue;
-                made = Role(holder.Kind).FirstOrDefault(id => equipment.RecipeFrom(player.Items, id) is not null);
+                made = Role(holder.Kind).FirstOrDefault(id => equipment.CanFit(Unit(holder.Unit.Id), id) && equipment.RecipeFrom(player.Items, id) is not null);
                 if (made is not null) { equipment.Craft(player, made); Give(made, holder.Unit.Id); break; }
             }
             if (made is not null) continue;
             string? fallback = equipment.Combine(components[0], components[1]);
             if (fallback is null || !equipment.Craft(player, fallback)) break;
-            var target = holders.FirstOrDefault(Room);
+            var target = holders.FirstOrDefault(h => equipment.CanFit(Unit(h.Unit.Id), fallback));
             if (target is null) break;
             Give(fallback, target.Unit.Id);
         }

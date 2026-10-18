@@ -204,7 +204,10 @@ function unitCard(id, u, game, p) {
   } else {
     const ci = it.component ? u.items.findIndex((x) => DT.isComponent(x) && DT.combineItems(x, id)) : -1;
     const veto = game.equipVeto ? game.equipVeto(p, u, id, ci >= 0 ? DT.combineItems(u.items[ci], id) : null) : null;
-    if (veto) { act = veto === 'full' ? "Full: can't hold another item" : "Can't hold this item"; ok = false; }
+    if (veto) {
+      const glove = DT.itemSlots(ci >= 0 ? DT.combineItems(u.items[ci], id) : id) === 3 || u.items.some(held => DT.itemSlots(held) === 3);
+      act = veto === 'full' ? glove ? 'Gloves occupy all 3 item slots' : DT.itemSlotsUsed(u.items) >= 3 ? 'Full: 3 items' : "Full: can't hold another item" : "Can't hold this item"; ok = false;
+    }
     else if (ci >= 0) {
       const held = u.items[ci];
       result = DT.combineItems(held, id);
@@ -229,7 +232,7 @@ function unitCard(id, u, game, p) {
       extra = `: ${before} → ${after} on your board`;
     }
     inner += body(result, extra);
-    const slots = hl >= 0 ? u.items.length : u.items.length + 1;
+    const slots = DT.itemSlotsUsed(hl >= 0 && hl < u.items.length ? u.items.map((held, i) => i === hl ? result : held) : u.items.concat(result));
     inner += `<div class="ic-note">Items after: ${slots}/3</div>`;
   }
   const slots = [0, 1, 2].map((k) => `<span class="${k === hl ? 'hl' : ''}">${u.items[k] ? img(u.items[k], '', 32) : k === hl && ok ? img(id, 'ghost', 32) : ''}</span>`).join('');

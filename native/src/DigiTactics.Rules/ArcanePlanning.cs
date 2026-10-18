@@ -107,7 +107,7 @@ public sealed class ArcanePlanning(MatchState state) : IMatchShopHooks
         for (int i = player.Items.Count - 1; i >= 0; i--)
         {
             if (!items.TryGetValue(player.Items[i], out var item) || item.Category != "contraband") continue;
-            var holder = player.Roster.Entries.Select(e => e.Unit).Where(u => u.Items.Length < 3 &&
+            var holder = player.Roster.Entries.Select(e => e.Unit).Where(u => inventory.CanHold(player, u, player.Items[i]) &&
                 (lines[u.Line].Traits.Contains("SYN") || u.Items.Any(id => items.TryGetValue(id, out var equipped) && equipped.Emblem == "SYN")))
                 .OrderByDescending(u => UnitValues.Value(lines[u.Line], u.Stage)).ThenBy(u => u.Id).FirstOrDefault();
             if (holder is null) continue;

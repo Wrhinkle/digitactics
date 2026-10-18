@@ -6,8 +6,8 @@ const traces = [];
 for (const set of DT.Sets.pickable()) for (const pace of ['normal','hyper']) {
  DT.Sets.activate(set.id, pace);
  const R = DT.HYPER, g = Object.create(DT.Game.prototype), inventory = [];
- Object.assign(g, {R, uid:0, phase:'planning', hasHook:()=>false, clearMaxedShop(){}, giveItem(p,id){inventory.push(id);}});
- const p = {board:{},bench:Array(9).fill(null),isHuman:true,allUnits(){return Object.values(this.board).concat(this.bench.filter(Boolean));},freeBenchSlot(){return this.bench.indexOf(null);},boardCount(){return Object.values(this.board).reduce((n,u)=>n+DT.slotsOf(u),0);},cap(){return 5+Object.values(this.board).reduce((n,u)=>n+u.items.reduce((a,id)=>a+(DT.ITEMS[id]?.p?.teamSize||0),0),0);}};
+ Object.assign(g, {R, uid:0, phase:'planning', hasHook:()=>false, clearMaxedShop(){}});
+ const p = {items:inventory,board:{},bench:Array(9).fill(null),isHuman:true,allUnits(){return Object.values(this.board).concat(this.bench.filter(Boolean));},freeBenchSlot(){return this.bench.indexOf(null);},boardCount(){return Object.values(this.board).reduce((n,u)=>n+DT.slotsOf(u),0);},cap(){return 5+Object.values(this.board).reduce((n,u)=>n+u.items.reduce((a,id)=>a+(DT.ITEMS[id]?.p?.teamSize||0),0),0);}};
  const rng = DT.makeRng(456); const lines = DT.SHOP_LINES.slice(0,5).map(l=>l.id);
  const component=Object.keys(DT.ITEMS).find(id=>DT.isComponent(id));
  const completed=Object.keys(DT.ITEMS).find(id=>!DT.isComponent(id));

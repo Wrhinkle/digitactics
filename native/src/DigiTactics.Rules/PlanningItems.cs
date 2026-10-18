@@ -52,8 +52,11 @@ public sealed class PlanningItems(Ruleset rules, IMatchItemHooks hooks, ModeItem
         return true;
     }
     public bool HoldsItems(PlanningUnit unit) => !unit.NoItems && !lines[unit.Line].NoItems;
+    public int SlotsUsed(PlanningUnit unit) => ItemCapacity.Used(unit.Items, items);
+    public bool CanFit(PlanningUnit unit, string item, int replacedIndex = -1) =>
+        ItemCapacity.Fits(unit.Items.Where((_, index) => index != replacedIndex), item, items);
     public bool CanHold(MatchPlayer player, PlanningUnit unit, string item) =>
-        unit.Items.Length < 3 && HoldsItems(unit) && Veto(player, unit, item, null) is null;
+        HoldsItems(unit) && Veto(player, unit, item, null) is null;
 
     // Mode AI can use a consumable directly; unlike Equip this does not reject a locked board target.
     // The consumable's own combine operation still observes combat locks.
@@ -101,6 +104,8 @@ public sealed class PlanningItems(Ruleset rules, IMatchItemHooks hooks, ModeItem
     private string? Veto(MatchPlayer player, PlanningUnit unit, string id, string? combined)
     {
         if (rules.Id.StartsWith("underlords", StringComparison.Ordinal) && unit.Items.Length >= 1 && combined is null) return "full";
-        return hooks.EquipVeto(player, unit, id, combined);
+        if (hooks.EquipVeto(player, unit, id, combined) is { } veto) return veto;
+        int component = combined is null ? -1 : Array.FindIndex(unit.Items, held => IsComponent(held) && Combine(held, id) == combined);
+        return CanFit(unit, combined ?? id, component) ? null : "full";
     }
 }

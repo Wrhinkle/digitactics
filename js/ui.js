@@ -814,6 +814,23 @@
     $('lockBtn').classList.toggle('on', p.locked);
     const full = (a, b) => `<b class="${a >= b ? 'full' : ''}">${a}/${b}</b>`;
     $('capLabel').innerHTML = `Bench ${full(p.benchCount(), DT.BENCH)} · Items ${full(p.items.length, H.itemCap)}`;
+    let overflow = $('returnedItems');
+    if (!overflow) {
+      overflow = document.createElement('div'); overflow.id = 'returnedItems';
+      overflow.style.cssText = 'display:none;grid-column:1/-1;flex-wrap:wrap;gap:4px;max-height:96px;overflow-y:auto;min-width:0;max-width:100%';
+      $('capLabel').parentNode.insertBefore(overflow, $('capLabel').nextSibling);
+      overflow.addEventListener('mousedown', (event) => {
+        const button = event.target.closest('[data-returned-item]');
+        if (!button || event.button !== 0 || !ownView() || game.over) return;
+        const point = renderer.toLocal(event);
+        ui.itemDrag = { idx: Number(button.dataset.returnedItem), x: point.x, y: point.y };
+        canvas.classList.add('grabbing'); event.preventDefault();
+      });
+    }
+    const returned = p.items.slice(H.itemCap).map((id, i) => `<button type="button" data-returned-item="${H.itemCap + i}" style="min-height:36px" title="Drag onto a Digimon, or onto a pedestal to swap">${esc(itemName(id))}</button>`).join('');
+    const content = returned ? '<span>Returned items · drag to equip</span>' + returned : '';
+    if (overflow.innerHTML !== content) overflow.innerHTML = content;
+    overflow.style.display = returned ? 'flex' : 'none';
   }
 
   // the unit a shop slot sells: the line's base form, plus what a mechanic put in shopMeta[slot].unit (form, traits, mods)
@@ -1075,7 +1092,12 @@
     if (it.emblem && DT.unitTraits(u).includes(it.emblem)) return 'Already has this trait';
     if (it.component) {
       const c = u.items.find((x) => DT.isComponent(x) && DT.combineItems(x, id));
-      if (c) return `Combines into ${itemName(DT.combineItems(c, id))}`;
+      if (c) {
+        const made = DT.combineItems(c, id);
+        return game.equipVeto(game.human, u, id, made)
+          ? DT.itemSlots(made) === 3 ? 'Needs all 3 item slots free' : "Can't hold this item"
+          : `Combines into ${itemName(made)}`;
+      }
     }
     if (!DT.holdsItems(u)) return "Can't hold items";
     return u.items.length >= 3 || game.equipVeto(game.human, u, id, null) ? 'Item slots full' : `Equip ${it.name}`;

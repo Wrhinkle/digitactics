@@ -1174,7 +1174,7 @@
         for (let i = p.items.length - 1; i >= 0; i--) {
           const it = DT.ITEMS[p.items[i]];
           if (!it || it.cat !== 'contraband') continue;
-          const u = p.allUnits().filter((x) => isSyn(x) && x.items.length < 3).sort((a, b) => DT.unitValue(b) - DT.unitValue(a) || a.uid - b.uid)[0];
+          const u = p.allUnits().filter((x) => isSyn(x) && g.canHold(p, x, p.items[i])).sort((a, b) => DT.unitValue(b) - DT.unitValue(a) || a.uid - b.uid)[0];
           if (!u) continue;
           u.items.push(p.items[i]);
           p.items.splice(i, 1);

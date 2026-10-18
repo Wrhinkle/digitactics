@@ -19,7 +19,7 @@ internal sealed class EquipmentEffects
     internal void Apply(CombatUnit unit, IReadOnlyDictionary<string, ItemDefinition> definitions, string[] pool, DeterministicRandom random)
     {
         var equipped = new List<string>();
-        foreach (string id in unit.Entry.Items ?? [])
+        foreach (string id in ItemCapacity.Fit(unit.Entry.Items ?? [], definitions))
         {
             equipped.Add(id);
             if (definitions.TryGetValue(id, out var item) && item.Passives.TryGetValue("thief", out var thief) && thief.GetBoolean())

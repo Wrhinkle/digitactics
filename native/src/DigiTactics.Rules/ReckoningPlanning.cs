@@ -50,7 +50,7 @@ public sealed class ReckoningPlanning(MatchState state)
                 foreach (var holder in holders)
                 {
                     int rank = Array.IndexOf(rules.ItemRoles!.GetValueOrDefault(holder.Kind) ?? [], made);
-                    if (holder.Unit.Items.Length < 3 && rank >= 0) score = Math.Max(score, 10 - rank * .1);
+                    if (equipment.CanFit(holder.Unit, made) && rank >= 0) score = Math.Max(score, 10 - rank * .1);
                 }
                 if (score > bestScore) { bestScore = score; best = j; }
             }

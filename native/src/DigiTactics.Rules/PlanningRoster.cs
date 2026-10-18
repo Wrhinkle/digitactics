@@ -25,6 +25,8 @@ public sealed class PlanningRoster
     // The composed match supplies its lifecycle here. Explicit callbacks remain available
     // to low-level callers that dispatch the same lifecycle themselves (portal/carousel).
     internal Action<PlanningUnit, IReadOnlyList<PlanningUnit>>? CombineHandler { get; set; }
+    // Composed matches conserve owned equipment even when the item bench is full.
+    internal Action<string>? MergeReturnHandler { get; set; }
     public PlanningRoster(Ruleset rules, Func<string, int, PlanningUnit> create)
     {
         lines = rules.Lines.Concat(rules.ExtraLines).ToDictionary(l => l.Id);
@@ -111,9 +113,8 @@ public sealed class PlanningRoster
             var carried = copies.SelectMany(e => e.Unit.Items).OrderBy(id => items.TryGetValue(id, out var item) && item.Component ? 1 : 0).ToArray();
             var up = create(anchor.Unit.Line, anchor.Unit.Stage + 1) with
             {
-                Items = carried.Take(3).ToArray(), BonusTraits = anchor.Unit.BonusTraits, Mods = anchor.Unit.Mods,
+                Items = ItemCapacity.Fit(carried, items, MergeReturnHandler ?? giveItem), BonusTraits = anchor.Unit.BonusTraits, Mods = anchor.Unit.Mods,
             };
-            foreach (var id in carried.Skip(3)) giveItem(id);
             foreach (var copy in copies)
                 if (copy.Spot.Valid) Set(copy.Spot, null); else extra = null;
             Set(anchor.Spot.Valid ? anchor.Spot : UnitSpot.Bench(FreeBenchSlot), up);
