@@ -1,2 +1,5 @@
 # Preserve the upstream bytes verified by the managed-license SHA-256 pin.
 native/tools/licenses/dotnet/LICENSE.TXT -text
+# Canonical model review evidence is verified by SHA-256 on fresh checkouts.
+native/content/model-material-findings.json -text
+docs/MODEL_IDENTITY_*.md -text
