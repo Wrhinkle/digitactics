@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace DigiTactics.Storage;
 
-public sealed record AudioSettings(float Music = .6f, float Effects = .8f, bool Muted = false, bool MusicOff = false);
+public sealed record AudioSettings(float Music = .6f, float Effects = .8f, bool Muted = false, bool MusicOff = false, float Board = .8f, bool MuteOthers = false);
 
 /// <summary>Versioned native preferences. Atomic replacement retains the previous file;
 /// unreadable/newer documents and changes from another running instance are never overwritten.</summary>
@@ -27,7 +27,8 @@ public sealed class AudioSettingsStore
             var audio = document["audio"] as JsonObject;
             if (document["audio"] is not null && audio is null) throw new JsonException("Invalid audio settings.");
             Settings = new(audio?["music"]?.GetValue<float>() ?? .6f, audio?["sfx"]?.GetValue<float>() ?? .8f,
-                audio?["muted"]?.GetValue<bool>() ?? false, audio?["musicOff"]?.GetValue<bool>() ?? false);
+                audio?["muted"]?.GetValue<bool>() ?? false, audio?["musicOff"]?.GetValue<bool>() ?? false,
+                audio?["board"]?.GetValue<float>() ?? .8f, audio?["muteOthers"]?.GetValue<bool>() ?? false);
             Validate(Settings);
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException or FormatException)
@@ -35,7 +36,7 @@ public sealed class AudioSettingsStore
     }
     private static void Validate(AudioSettings settings)
     {
-        if (!float.IsFinite(settings.Music) || !float.IsFinite(settings.Effects) || settings.Music is < 0 or > 1 || settings.Effects is < 0 or > 1)
+        if (!float.IsFinite(settings.Music) || !float.IsFinite(settings.Effects) || !float.IsFinite(settings.Board) || settings.Music is < 0 or > 1 || settings.Effects is < 0 or > 1 || settings.Board is < 0 or > 1)
             throw new JsonException("Audio volume must be between 0 and 1.");
     }
     public bool Save(AudioSettings settings)
@@ -54,6 +55,7 @@ public sealed class AudioSettingsStore
             if (next["audio"] is null) next["audio"] = audio;
             audio["music"] = settings.Music; audio["sfx"] = settings.Effects;
             audio["muted"] = settings.Muted; audio["musicOff"] = settings.MusicOff;
+            audio["board"] = settings.Board; audio["muteOthers"] = settings.MuteOthers;
             string json = next.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n";
             temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
             using (var file = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None))

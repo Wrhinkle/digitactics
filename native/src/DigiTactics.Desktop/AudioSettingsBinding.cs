@@ -10,7 +10,7 @@ internal sealed class AudioSettingsBinding : IDisposable
     private AudioSettings observed;
     private bool dirty;
     private double quiet;
-    private AudioSettings Snapshot => new(audio.MusicVolume, audio.EffectsVolume, audio.Muted, audio.MusicOff);
+    private AudioSettings Snapshot => new(audio.MusicVolume, audio.EffectsVolume, audio.Muted, audio.MusicOff, audio.BoardVolume, audio.MuteOthers);
     public AudioSettingsBinding(GameAudio audio)
     {
         this.audio = audio;
@@ -18,6 +18,7 @@ internal sealed class AudioSettingsBinding : IDisposable
         observed = store.Settings;
         audio.MusicVolume = observed.Music; audio.EffectsVolume = observed.Effects;
         audio.Muted = observed.Muted; audio.MusicOff = observed.MusicOff; audio.SettingsError = store.Error;
+        audio.BoardVolume = observed.Board; audio.MuteOthers = observed.MuteOthers;
     }
     public void Update(double delta)
     {

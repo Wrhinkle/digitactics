@@ -44,6 +44,7 @@ function wave(samples) {
         new Function(source.music.replace('own.load();', '') + '\nDT.NativeMusic = { TRACKS, schedule(id) { ac = E().ac; attach(); const tr = TRACKS[id]; const p = new Player(tr, 0, 0, 0); const end = tr.bars.length * 240 / tr.bpm; p.schedule(end - 1e-6); return { end, loop: tr.loopBar * 240 / tr.bpm }; } };')();
         if (request === null) return {
           sounds: Object.keys(DT.NativeAudio.SOUNDS), clips: Object.keys(DT.NativeAudio.CLIPS),
+          clipDurations: Object.fromEntries(Object.entries(DT.NativeAudio.CLIPS).map(([id, clip]) => [id, clip.dur || 1])),
           themes: Object.keys(DT.NativeAudio.KILL), gaps: DT.NativeAudio.GAP,
           tracks: Object.fromEntries(Object.entries(DT.NativeMusic.TRACKS).map(([id, tr]) => [id, { duration: tr.bars.length * 240 / tr.bpm, name: tr.name }]))
         };
@@ -94,6 +95,7 @@ function wave(samples) {
       const file = request.key + '.wav', buffer = wave(samples);
       fs.writeFileSync(path.join(out, file), buffer);
       manifest.clips[request.key] = { file, ...metadata, gap: inventory.gaps[request.id] || 0,
+        duration: request.kind === 'clip' ? inventory.clipDurations[request.id] : null,
         sha256: crypto.createHash('sha256').update(buffer).digest('hex') };
       console.log(`${request.key}: ${(metadata.frames / rate).toFixed(2)}s`);
     }

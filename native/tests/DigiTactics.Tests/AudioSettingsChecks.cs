@@ -14,7 +14,7 @@ internal static class AudioSettingsChecks
             string path = Path.Combine(directory, "audio.json");
             var first = new AudioSettingsStore(path);
             Check(first.Settings == new AudioSettings() && !File.Exists(path), "defaults do not write files");
-            var edit = new AudioSettings(.2f, .4f, true, true);
+            var edit = new AudioSettings(.2f, .4f, true, true, .3f, true);
             Check(first.Save(edit), "first save");
             string saved = File.ReadAllText(path);
             Check(new AudioSettingsStore(path).Settings == edit, "restart retains all values");
@@ -26,6 +26,7 @@ internal static class AudioSettingsChecks
             Check(!slow.Save(edit) && slow.ReadOnly && File.ReadAllText(path) == latest, "concurrent instance cannot overwrite newer data");
             Check(!fast.Save(edit with { Music = float.NaN }) && File.ReadAllText(path) == latest, "non-finite volume rejected");
             Check(!fast.Save(edit with { Effects = 2 }) && File.ReadAllText(path) == latest, "out of range volume rejected");
+            Check(!fast.Save(edit with { Board = float.NaN }) && File.ReadAllText(path) == latest, "non-finite soundboard volume rejected");
             foreach (string malformed in new[] { "{", "null", "[]", "{\"version\":2}", "{\"version\":1,\"audio\":{\"muted\":\"yes\"}}", "{\"version\":1,\"audio\":{\"music\":-1}}" })
             {
                 File.WriteAllText(path, malformed); var bad = new AudioSettingsStore(path);

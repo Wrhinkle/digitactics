@@ -239,7 +239,7 @@ internal sealed partial class MatchScreen : IDisposable
         Roster(); Sidebar();
         if (battle is null) Board();
         else battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height);
-        Choices();
+        Choices(); Soundboard();
         if (showAudio)
         {
             Window("Sound settings", size.X / 2 - 210, Top + 20, 420, 250);
@@ -289,6 +289,7 @@ internal sealed partial class MatchScreen : IDisposable
         ImGui.Text(IsSpectating ? $"Spectating {Human.Name}" : $"{Human.Health} HP     {Human.Economy.Gold} gold     Level {Human.Economy.Level}     Streak {Human.Economy.Streak}");
         ImGui.SameLine(); if (Button("mute", audio.Muted ? "Unmute" : "Mute")) audio.Muted = !audio.Muted;
         ImGui.SameLine(); if (Button("audioSettings", "Sound settings")) showAudio = !showAudio;
+        ImGui.SameLine(); if (Button("soundboard", "Soundboard")) showSoundboard = !showSoundboard;
         if (session.State.Over)
         {
             ImGui.Text(IsSpectating ? "Match complete" : $"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
@@ -323,6 +324,10 @@ internal sealed partial class MatchScreen : IDisposable
         float effects = audio.EffectsVolume, music = audio.MusicVolume;
         if (ImGui.SliderFloat("Effects volume"u8, ref effects, 0, 1)) audio.EffectsVolume = effects;
         if (ImGui.SliderFloat("Music volume"u8, ref music, 0, 1)) audio.MusicVolume = music;
+        float board = audio.BoardVolume;
+        if (ImGui.SliderFloat("Soundboard volume"u8, ref board, 0, 1)) audio.BoardVolume = board;
+        bool muteOthers = audio.MuteOthers;
+        if (ImGui.Checkbox("Mute other players' soundboard"u8, ref muteOthers)) audio.MuteOthers = muteOthers;
         bool musicOff = audio.MusicOff, muted = audio.Muted;
         if (ImGui.Checkbox("Music off"u8, ref musicOff)) audio.MusicOff = musicOff;
         ImGui.SameLine(); if (ImGui.Checkbox("Mute all"u8, ref muted)) audio.Muted = muted;
@@ -390,8 +395,12 @@ internal sealed partial class MatchScreen : IDisposable
         foreach (string id in Human.Globals) { ImGui.TextWrapped(Name(id)); Tooltip(id); }
         ImGui.End();
         Window("Standings", size.X - 228, Top, 216, Height);
+        EnsureSoundboard(); var soundLabels = soundboard.Labels(Environment.TickCount64);
         foreach (var p in Session.State.Players.OrderByDescending(p => p.Alive).ThenByDescending(p => p.Health))
+        {
             if (Button("view/" + p.Id, $"{p.Name}  {(p.Alive ? p.Health + " HP" : "#" + p.Placement)}", 192, 28)) Watch(p.Id);
+            if (soundLabels.FirstOrDefault(label => label.Seat == p.Id) is { } clip) ImGui.TextWrapped("Playing: " + DigiTactics.Storage.CosmeticCollection.Item("sound", clip.Id)!.Name);
+        }
         if (Session.State.Duos && !IsSpectating) ImGui.TextWrapped("Your partner: " + Session.Units.Portal.Partner(Human)?.Name);
         if (!IsSpectating) foreach (var orb in Human.Orbs.ToArray()) if (Button("orb/" + orb.Id, $"Collect {orb.Kind} loot")) Act("orb", new { id = orb.Id });
         if (history?.Award is { } award)

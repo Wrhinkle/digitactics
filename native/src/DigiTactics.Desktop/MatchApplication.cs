@@ -37,7 +37,7 @@ internal static class MatchApplication
                 style.Colors[(int)ImGuiCol.ButtonActive] = new(.12f, .5f, .48f, 1);
                 using var platform = new GlfwBackend(window, GlfwBackend.ClientApi.OpenGL);
                 using var audio = new GameAudio();
-                audio.EffectsVolume = smoke ? 0 : .8f; audio.MusicVolume = smoke ? 0 : .6f;
+                audio.EffectsVolume = smoke ? 0 : .8f; audio.MusicVolume = smoke ? 0 : .6f; audio.BoardVolume = smoke ? 0 : .8f;
                 using var preferences = smoke ? null : new AudioSettingsBinding(audio);
                 var profile = smoke && profileDirectory is null ? null : new NativeProfileStore(profileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native"));
                 using var farmPointer = farmPointerSmoke ? new FarmPointerSmoke(profile!, profileDirectory!) : null;

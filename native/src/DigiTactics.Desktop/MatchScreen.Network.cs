@@ -18,6 +18,7 @@ internal sealed partial class MatchScreen
     public void AttachNetworkMatch(NetworkRoom room, Func<long>? clock = null)
     {
         DetachNetworkMatch(); networkRoom = room; networkClock = clock ?? (() => Environment.TickCount64);
+        room.Effect += NetworkEffect;
         localSeat = FindNetworkSeat();
         history = null;
         networkReplica = new(room, catalog); networkReplica.Rebuilt += NetworkRebuilt; networkReplica.Applied += NetworkApplied;
@@ -83,6 +84,7 @@ internal sealed partial class MatchScreen
     }
     public void DetachNetworkMatch()
     {
+        if (networkRoom is not null) networkRoom.Effect -= NetworkEffect;
         networkHost?.Dispose(); networkHost = null; networkHistory?.Dispose(); networkHistory = null; networkReplica?.Dispose(); networkReplica = null;
         networkRoom = null; networkDone = false;
     }

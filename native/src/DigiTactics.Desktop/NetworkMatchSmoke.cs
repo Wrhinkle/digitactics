@@ -20,15 +20,17 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private bool down, combatRendered, planningRendered;
     private readonly bool spectator;
     private bool spectatorVerified;
+    private int soundEffects;
     public string Pending => "network UI stage " + stage;
     public NetworkMatchSmoke(ContentCatalog catalog, MatchScreen screen, bool duos = false, bool spectator = false)
     {
-        this.spectator = spectator; if (spectator) stage = -2;
+        this.spectator = spectator; stage = spectator ? -2 : -5;
         var lobby = JsonNode.Parse("{\"host\":\"123\",\"name\":\"Test room\",\"hostName\":\"Host\",\"status\":\"playing\",\"slots\":{\"1\":{\"uid\":\"234\",\"name\":\"Guest\"}}}"u8)!.AsObject();
         if (spectator) { lobby["slots"]!.AsObject().Remove("1"); lobby["slots"]!["0"] = new JsonObject { ["uid"] = "123", ["name"] = "Host" }; }
         host = new("999", "123", lobby); guest = new("999", "234", lobby);
         host.Members(["123", "234"], "123", now); guest.Members(["123", "234"], "123", now);
         host.Send += p => packets.Enqueue(("123", p)); guest.Send += p => packets.Enqueue(("234", p));
+        host.Effect += (_, effect) => { if (effect.GetProperty("kind"u8).GetString() == "sound" && effect.GetProperty("s"u8).GetDouble() == 1) soundEffects++; };
         host.PublishInit(JsonSerializer.SerializeToElement(new { seed = 143, at = now, planTime = 30, setId = "faction-wars", pace = "hyper", format = duos ? "duos" : "solo", slots = Enumerable.Range(0, 8).Select(i => new { name = i == 1 ? "Guest" : "Tamer " + i, human = i == (spectator ? 0 : 1) }).ToArray() }));
         PumpPackets(); replica = new(host, catalog); controller = new(host, replica, () => now); replica.Pump(now);
         guest.SetPresence(new JsonObject { ["name"] = "Guest" }, false, now); PumpPackets();
@@ -43,12 +45,14 @@ internal sealed class NetworkMatchSmoke : IDisposable
         now += 200; PumpPackets(); controller.Pump(now); PumpPackets();
         if (cooldown-- > 0) return;
         if (down) { ImGui.GetIO().AddMouseButtonEvent(0, false); down = false; stage++; cooldown = 3; return; }
-        string? key = stage switch { -2 => "joinSeat", 0 when screen.Session?.Rounds.RoundType != "carousel" => "lock", 2 => "fight", 4 => "spectate", _ => null };
+        string? key = stage switch { -5 => "soundboard", -4 => "soundboard/0", -3 => "closeSoundboard", -2 => "joinSeat", 0 when screen.Session?.Rounds.RoundType != "carousel" => "lock", 2 => "fight", 4 => "spectate", _ => null };
         if (key is not null && screen.Buttons.TryGetValue(key, out var point)) { ImGui.GetIO().AddMousePosEvent(point.X, point.Y); ImGui.GetIO().AddMouseButtonEvent(0, true); down = true; }
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
         planningRendered |= screen.PlanningDrawCalls > 0;
+        if (!spectator && stage == -3 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "soundboard.bmp"), size.X, size.Y);
+        if (!spectator && stage == -2) { if (soundEffects != 1) throw new InvalidOperationException("Equipped soundboard clip did not reach host exactly once."); stage = 0; }
         if (stage == -2 && screen.IsSpectating)
         {
             if (screen.Buttons.ContainsKey("lock") || screen.Buttons.ContainsKey("fight") || screen.Buttons.ContainsKey("buy/0")) throw new InvalidOperationException("Spectator sees player controls.");

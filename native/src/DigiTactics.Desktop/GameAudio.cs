@@ -4,16 +4,17 @@ using Brutal.SdlApi;
 
 namespace DigiTactics.Desktop;
 
-internal sealed record AudioClipInfo(string File, int Frames, int? LoopFrame, int? EndFrame, double Gap);
+internal sealed record AudioClipInfo(string File, int Frames, int? LoopFrame, int? EndFrame, double Gap, double? Duration);
 internal sealed record AudioManifest(int SampleRate, int Channels, Dictionary<string, AudioClipInfo> Clips);
 
 /// <summary>One bounded PCM mixer feeding BRUTAL SDL. Audio never reads or advances gameplay RNG.</summary>
 internal sealed unsafe class GameAudio : IDisposable
 {
-    private sealed class Voice(float[] samples, float gain, bool music = false, int loop = 0, int end = 0)
+    private sealed class Voice(float[] samples, float gain, bool music = false, int loop = 0, int end = 0, bool board = false)
     {
         public readonly float[] Samples = samples;
         public readonly bool Music = music;
+        public readonly bool Board = board;
         public readonly int Loop = loop, End = end;
         public int Position;
         public int TailPosition = -1;
@@ -27,6 +28,14 @@ internal sealed unsafe class GameAudio : IDisposable
     private readonly float[] buffer = new float[882 * 2];
     private SdlAudioStream stream;
     private long frame;
+    private long duckStart = -1000000, duckEnd = -1000000;
+    private float duckFrom = 1;
+    private float MusicDuck(long at)
+    {
+        if (at < duckStart + 2205) return duckFrom + (.45f - duckFrom) * Math.Clamp((at - duckStart) / 2205f, 0, 1);
+        if (at <= duckEnd) return .45f;
+        return .45f + .55f * Math.Clamp((at - duckEnd) / 17640f, 0, 1);
+    }
     private string? music;
     public bool Available => !stream.IsNull();
     public string? Error { get; private set; }
@@ -34,11 +43,13 @@ internal sealed unsafe class GameAudio : IDisposable
     public float MusicVolume { get; set; } = .6f;
     public bool Muted { get; set; }
     public bool MusicOff { get; set; }
+    public float BoardVolume { get; set; } = .8f;
+    public bool MuteOthers { get; set; }
     public string? SettingsError { get; set; }
     public int Played { get; private set; }
     public static void Smoke()
     {
-        using var audio = new GameAudio { EffectsVolume = 0, MusicVolume = 0 };
+        using var audio = new GameAudio { EffectsVolume = 0, MusicVolume = 0, BoardVolume = 0 };
         if (!audio.Available) throw new InvalidOperationException(audio.Error);
         foreach (var (id, info) in audio.manifest.Clips)
         {
@@ -50,6 +61,10 @@ internal sealed unsafe class GameAudio : IDisposable
         }
         audio.Play("buy"); audio.Play("hit_normal"); audio.Play("hit_normal"); audio.Play("hit_big");
         if (audio.Played != 2) throw new InvalidOperationException("Sound rate limiting failed.");
+        string boardClip = audio.manifest.Clips.First(p => p.Key.StartsWith("clip_")).Key[5..];
+        audio.PlayBoard(boardClip);
+        if (audio.Played != 3 || !audio.voices.Any(v => v.Board) || Math.Abs(audio.MusicDuck(audio.duckStart + 2205) - .45f) > .001f || audio.MusicDuck(audio.duckEnd + 17640) != 1)
+            throw new InvalidOperationException("Soundboard bus or music duck failed.");
         audio.Music("planning");
         var track = audio.voices.Single(v => v.Music);
         track.Position = track.End - 2;
@@ -107,6 +122,13 @@ internal sealed unsafe class GameAudio : IDisposable
         string key = "music_" + id; var clip = manifest.Clips[key];
         voices.Add(new(Load(key), 0, true, clip.LoopFrame!.Value * 2, clip.EndFrame!.Value * 2) { Target = 1 });
     }
+    public void PlayBoard(string id)
+    {
+        string key = "clip_" + id;
+        if (!Available || Muted || !manifest.Clips.ContainsKey(key) || voices.Count(v => !v.Music) >= 40) return;
+        duckFrom = MusicDuck(frame); duckStart = frame; duckEnd = frame + (long)((manifest.Clips[key].Duration ?? 1) * manifest.SampleRate);
+        voices.Add(new(Load(key), 1, board: true)); Played++;
+    }
     public void Update()
     {
         if (!Available) return;
@@ -123,7 +145,8 @@ internal sealed unsafe class GameAudio : IDisposable
                     if (voice.Position >= voice.Samples.Length) break;
                     voice.Gain += Math.Clamp(voice.Target - voice.Gain, -1f / 66150, 1f / 52920);
                     // Assets carry 6 dB of headroom; restore it alongside the original bus gains.
-                    float gain = Muted || voice.Music && MusicOff ? 0 : voice.Gain * (voice.Music ? .84f * MusicVolume : 1.4f * EffectsVolume);
+                    float gain = Muted || voice.Music && MusicOff ? 0 : voice.Gain * (voice.Music ? .84f * MusicVolume : voice.Board ? 1.5f * BoardVolume : 1.4f * EffectsVolume);
+                    if (voice.Music) gain *= MusicDuck(frame + i / 2);
                     buffer[i] += voice.Samples[voice.Position++] * gain;
                     buffer[i + 1] += voice.Samples[voice.Position++] * gain;
                     // The final notes and reverb decay over the next loop rather than being cut off.
