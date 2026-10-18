@@ -2,7 +2,7 @@ using System.Text.Json;
 using DigiTactics.Rules;
 
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");
-if (args.Contains("--network-only")) { NetworkProtocolChecks.Run(root); ReplicatedLogChecks.Run(root); return; }
+if (args.Contains("--network-only")) { NetworkProtocolChecks.Run(root); ReplicatedLogChecks.Run(root); LobbyAuthorityChecks.Run(root); return; }
 if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--profile-only")) { LegacyProfileChecks.Run(root); return; }
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
@@ -214,6 +214,7 @@ assertions += FarmSimulationChecks.Run(root);
 assertions += FarmCareChecks.Run(root);
 assertions += NetworkProtocolChecks.Run(root);
 assertions += ReplicatedLogChecks.Run(root);
+assertions += LobbyAuthorityChecks.Run(root);
 assertions += TrainingGameChecks.Run(root);
 assertions += LegacyProfileChecks.Run(root);
 assertions += MotionParity.Run(root);
