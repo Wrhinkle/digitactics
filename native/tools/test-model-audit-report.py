@@ -98,6 +98,57 @@ class EvidenceChecks(unittest.TestCase):
         self.assertEqual(row["status"], "UNVERIFIED")
         self.assertEqual(row["visualReview"]["visualFidelityStatus"], "FAIL")
 
+    def two_sources(self):
+        self.catalog["sources"]["otherContext"] = self.catalog["sources"]["creature"].copy()
+        self.write(audit.NATIVE / "content/models.json", self.catalog)
+        self.hash = audit.sha(audit.NATIVE / "content/models.json")
+        self.inventory["catalogSha256"] = self.hash
+        self.inventory["sources"].append({**self.inventory["sources"][0], "sourceKey": "otherContext"})
+        self.write(self.args.inventory, self.inventory)
+        (self.args.visual / "0000.png").write_bytes(b"fixture-image")
+        self.write(self.args.visual / "0000.json", {"Index": 0, "Source": "creature", "Asset": "asset", "Motion": "motion-hash",
+                   "Image": "0000.png", "RuntimeHashes": {"models.json": self.hash}, "Samples": [{"Draws": 1, "VisiblePixels": 100}]})
+
+    def other_row(self):
+        audit.merge(self.args)
+        return next(row for row in audit.read(self.args.output)["sources"] if row["sourceKey"] == "otherContext")
+
+    def test_same_asset_cannot_implicitly_reuse_another_companion_context(self):
+        self.two_sources()
+        row = self.other_row()
+        self.assertEqual(row["renderedTechnicalStatus"], "UNVERIFIED")
+        self.assertIsNone(row["evidence"]["renderReusedFrom"])
+
+    def test_explicit_current_renderer_alias_reuses_exact_context(self):
+        self.two_sources()
+        self.write(self.args.visual / "identity-index.json", {"CatalogSha256": self.hash, "SourceCount": 2, "IdentityCount": 1,
+                   "Sources": [{"Index": 0, "Source": "creature", "Signature": "context", "Representative": 0},
+                               {"Index": 1, "Source": "otherContext", "Signature": "context", "Representative": 0}]})
+        self.write(self.args.visual / "0001.json", {"Index": 1, "Source": "otherContext", "Asset": "asset", "AliasOf": "creature",
+                   "RepresentativeIndex": 0, "Signature": "context", "Image": "0000.png", "Status": "alias-unreviewed", "RuntimeHashes": {"models.json": self.hash}})
+        row = self.other_row()
+        self.assertEqual(row["renderedTechnicalStatus"], "VERIFIED")
+        self.assertEqual(row["evidence"]["renderReusedFrom"], "creature")
+
+    def test_explicit_alias_with_different_context_is_rejected(self):
+        self.two_sources()
+        self.write(self.args.visual / "identity-index.json", {"CatalogSha256": self.hash, "SourceCount": 2, "IdentityCount": 2,
+                   "Sources": [{"Index": 0, "Source": "creature", "Signature": "normal", "Representative": 0},
+                               {"Index": 1, "Source": "otherContext", "Signature": "companion", "Representative": 1}]})
+        self.write(self.args.visual / "0001.json", {"Index": 1, "Source": "otherContext", "Asset": "asset", "AliasOf": "creature",
+                   "RepresentativeIndex": 0, "Signature": "normal", "Image": "0000.png", "Status": "alias-unreviewed", "RuntimeHashes": {"models.json": self.hash}})
+        self.assertEqual(self.other_row()["renderedTechnicalStatus"], "UNVERIFIED")
+
+    def test_separate_manual_review_scopes_preserve_unverified(self):
+        evidence = audit.ROOT / "review.txt"
+        evidence.write_text("Manual review.", encoding="utf-8")
+        self.write(self.args.visual / "reviews.json", {"sources": [{"sourceKey": "creature", "visualFidelityStatus": "UNVERIFIED",
+                   "motionReviewStatus": "VERIFIED", "fineTextureStatus": "UNVERIFIED", "runtimeHashes": {"models.json": self.hash}, "evidence": ["review.txt"]}]})
+        row = self.result()
+        self.assertEqual(row["motionReviewStatus"], "VERIFIED")
+        self.assertEqual(row["fineTextureStatus"], "UNVERIFIED")
+        self.assertEqual(row["visualFidelityStatus"], "UNVERIFIED")
+
 
 if __name__ == "__main__":
     unittest.main()
