@@ -22,7 +22,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         : ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
     private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
     private int collectionIndex;
-    private bool collectionVerified,treeScrolled;
+    private bool collectionVerified,treeScrolled,transformWhite,transformFlash;
     private readonly string[] farmCommands = evolutionSmoke
         ? ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "farmRoom", "farmOut/tsunomon", "farmIn/tsunomon", "farmOut/motimon", "farmSelect/tsunomon", "farmSwap/motimon", "farmIn/tsunomon", "farmExpand", "farmTheme/sewer", "closeFarm"]
         : ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "closeFarm"];
@@ -63,6 +63,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         {
             if (cooldown-- > 0) return;
             var input = ImGui.GetIO();
+            if(screen.EvolutionBusy && !down)return;
             if(evolutionSmoke && collectionIndex==12 && !down && !treeScrolled)
             {
                 var anchor=screen.Buttons["closeEvolutionTree"];
@@ -284,6 +285,14 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "drag.bmp"), size.X, size.Y);
         if (collectionProfile is not null && !collectionVerified)
         {
+            if(evolutionSmoke && screen.EvolutionTransitionTime>1 && screen.EvolutionTransitionTime<2.5 && !transformWhite)
+            {
+                transformWhite=true;if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"transform-white.bmp"),size.X,size.Y);
+            }
+            if(evolutionSmoke && screen.EvolutionTransitionTime>2.87 && screen.EvolutionTransitionTime<2.95 && !transformFlash)
+            {
+                transformFlash=true;if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"transform-flash.bmp"),size.X,size.Y);
+            }
             if (collectionIndex == 4 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "collection.bmp"), size.X, size.Y);
             if (collectionIndex == collectionCommands.Length - 1 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "egg.bmp"), size.X, size.Y);
             if(evolutionSmoke && collectionIndex==12 && cooldown==1)
@@ -310,6 +319,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 var record = legends["legends"]!["bukamon"]!;
                 if (record["xp"]!.GetValue<int>() < 200 || record["form"]!.GetValue<string>() == "bukamon" || record["nonce"]!.GetValue<int>() != 1 || record["care"]!["food"]!.GetValue<int>() != 1 || record["path"]!.AsArray().Count != 1)
                     throw new InvalidOperationException("Evolution actions did not persist the expected level, form, care and nonce.");
+                if(!transformWhite || !transformFlash)throw new InvalidOperationException("Evolution transition did not traverse white/flash stages.");
                 Console.WriteLine("Evolution UI smoke passed: buy levels, feed, digivolve, revert and digivolve again.");
             }
             if (wallet["owned"]!["legend"]!.AsArray().Count < 3 && !legends["legends"]!.AsObject().Any(x => x.Value?["xp"]?.GetValue<int>() > 0))

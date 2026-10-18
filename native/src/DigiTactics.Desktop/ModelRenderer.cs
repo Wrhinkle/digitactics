@@ -19,6 +19,7 @@ internal sealed partial class ModelRenderer : IDisposable
     public int ShadowMapSize { get; set; } = 1024;
     public float ShadowBias { get; set; } = -.0015f;
     public bool ReceiveShadow { get; set; }
+    public bool WhiteOverride { get; set; }
     private void SetFarmLight(Vector3 emissive = default, float roughness = -1, float metalness = 0, bool fog = true)
     {
         program.Uniform(15, BoardLight is not null ? 2 : FarmLight is null ? 0 : 1);
@@ -30,6 +31,7 @@ internal sealed partial class ModelRenderer : IDisposable
             V(37,BoardLighting.Srgb(board.FogColor)); V(38,new(board.FogNear,board.FogFar,fog ? 1 : 0));
         }
         else V(38,Vector3.Zero);
+        program.Uniform(40, WhiteOverride ? 1 : 0);
         program.Uniform(17, new Brutal.Numerics.float4(emissive.X, emissive.Y, emissive.Z, 0));
         program.Uniform(18, new Brutal.Numerics.float4(FarmEye.X, FarmEye.Y, FarmEye.Z, 0));
         program.Uniform(19, new Brutal.Numerics.float4(roughness, metalness, 0, 0));
@@ -258,6 +260,7 @@ internal sealed partial class ModelRenderer : IDisposable
         layout(location=37) uniform vec4 boardFogColor;
         layout(location=38) uniform vec4 boardFog;
         layout(location=39) uniform vec4 shadowSettings;
+        layout(location=40) uniform int whiteOverride;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
@@ -291,6 +294,7 @@ internal sealed partial class ModelRenderer : IDisposable
             return (f0*(1-fresnel)+vec3(f90*fresnel))*visibility*distribution;
         }
         void main() {
+            if(whiteOverride!=0) { outputColor=vec4(1); return; }
             vec3 pointUv=vec3(gl_PointCoord.x,1-gl_PointCoord.y,1);
             vec2 mapUv=pointSettings.w!=0 ? vec2(dot(pointU.xyz,pointUv),dot(pointV.xyz,pointUv)) : texCoord;
             vec4 c=color*(textured!=0?texture(colorTexture,mapUv):vec4(1));

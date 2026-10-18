@@ -1,6 +1,7 @@
 using System.Numerics;
 using Brutal.OpenGlApi;
 using DigiTactics.Assets;
+using DigiTactics.Presentation;
 
 namespace DigiTactics.Desktop;
 
@@ -17,6 +18,23 @@ internal sealed class CompanionPreview : IDisposable
     private CompanionAnimator? animator;
     private string? key;
     private double? lastTime;
+    private GpuModel? outgoing;
+    private CompanionAnimator? outgoingAnimator;
+    private EvolutionTransition? transition;
+    public double TransitionTime=>transition?.Time??0;
+    public bool Evolving=>transition is {Complete:false};
+    public double FlashOpacity=>transition?.FlashOpacity??0;
+    public Action? OnFlash { get; set; }
+    public void TransformTo(string next)
+    {
+        if(key==next || Evolving)return;
+        var previous=model; var previousAnimator=animator;
+        model=null;
+        try { Select(next); }
+        catch { model=previous;animator=previousAnimator;throw; }
+        outgoing?.Dispose();outgoing=previous;outgoingAnimator=previousAnimator;
+        transition=previous is null?null:new();
+    }
     public uint Texture=>color.Id;
     public int DrawCalls { get; private set; }
     public double AnimationTime=>animator?.Time??0;
@@ -54,7 +72,14 @@ internal sealed class CompanionPreview : IDisposable
     public void Draw(double time)
     {
         DrawCalls=0;if(model is null || animator is null)return;
-        animator.Update(lastTime is { } previous?Math.Clamp(time-previous,0,.05):0);lastTime=time;
+        double delta=lastTime is { } previous?Math.Clamp(time-previous,0,.05):0;lastTime=time;
+        animator.Update(delta);outgoingAnimator?.Update(delta);
+        if(transition is { } effect)
+        {
+            if(effect.Advance(delta))OnFlash?.Invoke();
+            if(effect.Complete && outgoing is not null) { outgoing.Dispose();outgoing=null;outgoingAnimator=null;animator.Play("happy"); }
+            if(effect.Time>=(effect.FlashStarted??double.PositiveInfinity)+.9)transition=null;
+        }
         Span<int> value=stackalloc int[1],viewport=stackalloc int[4];
         OpenGl.GetIntegerv(OpenGl.GL_DRAW_FRAMEBUFFER_BINDING,value);int previousDraw=value[0];
         OpenGl.GetIntegerv(OpenGl.GL_READ_FRAMEBUFFER_BINDING,value);int previousRead=value[0];
@@ -64,9 +89,14 @@ internal sealed class CompanionPreview : IDisposable
             OpenGl.BindFramebuffer(OpenGl.GL_FRAMEBUFFER,frame);ModelRenderer.Begin(Size,Size);
             OpenGl.ClearColor(new(.035f,.05f,.075f,1));OpenGl.Clear(GlClearBit.Color|GlClearBit.Depth);
             var camera=Matrix4x4.CreateLookAt(new(0,1,3.6f),new(0,.6f,0),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI/6,1,.01f,50);
+            renderer.WhiteOverride=transition?.White??false;
+            var active=transition is {ShowNew:false} && outgoing is not null?outgoing:model;
+            var pose=active==outgoing?outgoingAnimator!:animator;
+            var placement=active.PlaceCompanion(pose);
+            if(transition is { } motion) placement*=Matrix4D.Compose(new(),new(0,Math.Sin(motion.Yaw/2),0,Math.Cos(motion.Yaw/2)),new(motion.Scale,motion.Scale,motion.Scale));
             foreach(bool transparent in new[]{false,true})
             {
-                renderer.Draw(model,animator.Pose,model.PlaceCompanion(animator),camera,transparent);DrawCalls+=renderer.DrawCalls;
+                renderer.Draw(active,pose.Pose,placement,camera,transparent);DrawCalls+=renderer.DrawCalls;
             }
             ModelRenderer.End();
         }
@@ -77,5 +107,5 @@ internal sealed class CompanionPreview : IDisposable
             OpenGl.Viewport(viewport[0],viewport[1],viewport[2],viewport[3]);
         }
     }
-    public void Dispose() { model?.Dispose();renderer.Dispose();OpenGl.DeleteTextures(new[]{color,depth});OpenGl.DeleteFramebuffers(new[]{frame}); }
+    public void Dispose() { outgoing?.Dispose();model?.Dispose();renderer.Dispose();OpenGl.DeleteTextures(new[]{color,depth});OpenGl.DeleteFramebuffers(new[]{frame}); }
 }
