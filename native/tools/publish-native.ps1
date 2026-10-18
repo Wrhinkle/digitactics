@@ -13,8 +13,11 @@ function Checked([string]$Program,[string[]]$Arguments) {
     if($LASTEXITCODE -ne 0) {throw "$Program exited $LASTEXITCODE"}
 }
 $app=Join-Path $Destination 'app'
+$steamRuntime = & (Join-Path $PSScriptRoot 'setup-steam.ps1')
 Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Launcher'),'-c','Release','-r','win-x64','--self-contained','true','-o',$Destination)
 Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Desktop'),'-c','Release','-r','win-x64','--self-contained','true','-o',$app)
+$steamPin=Get-Content -LiteralPath (Join-Path $steamRuntime 'steam-runtime-provenance.json') -Raw | ConvertFrom-Json
+if ((Get-FileHash -LiteralPath (Join-Path $app 'steam_api64.dll') -Algorithm SHA256).Hash.ToLowerInvariant() -cne $steamPin.dllSha256) {throw 'Published Steam DLL is missing or does not match its pin.'}
 foreach($file in @('CREDITS.md','THIRD_PARTY_NOTICES.txt')) {Copy-Item -LiteralPath (Join-Path $repoRoot $file) -Destination $app}
 Copy-Item -LiteralPath (Join-Path $nativeRoot 'README.md') -Destination $app
 $assets=Get-Content (Join-Path $nativeRoot 'src/DigiTactics.Desktop/obj/project.assets.json') -Raw | ConvertFrom-Json

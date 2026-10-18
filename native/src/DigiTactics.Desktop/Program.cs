@@ -16,7 +16,7 @@ try
     if (args.Contains("--custom-music-smoke")) { GameAudio.CustomMusicSmoke(Option("--ffmpeg") ?? Path.Combine(AppContext.BaseDirectory,"media","ffmpeg.exe")); return 0; }
     if (args.Contains("--steam-room-smoke"))
     {
-        string library = Option("--steam-api") ?? throw new ArgumentException("Steam smoke requires --steam-api with the Steam API DLL path.");
+        string library = Option("--steam-api") ?? Path.Combine(AppContext.BaseDirectory, "steam_api64.dll");
         using var session = new DigiTactics.Networking.SteamRoomSession(library, 480);
         var created = session.Create(new System.Text.Json.Nodes.JsonObject { ["name"] = "Native private room smoke", ["hostName"] = "Host", ["status"] = "lobby", ["slots"] = new System.Text.Json.Nodes.JsonObject() }, DigiTactics.Networking.SteamLobbyVisibility.Private);
         var timer = System.Diagnostics.Stopwatch.StartNew();
@@ -33,7 +33,7 @@ try
     }
     if (args.Contains("--steam-client-smoke") || args.Contains("--steam-lobby-smoke"))
     {
-        string library = Option("--steam-api") ?? throw new ArgumentException("Steam smoke requires --steam-api with the Steam API DLL path.");
+        string library = Option("--steam-api") ?? Path.Combine(AppContext.BaseDirectory, "steam_api64.dll");
         using var client = new DigiTactics.Networking.SteamClient(library, _ => false, 480);
         if (args.Contains("--steam-lobby-smoke"))
         {

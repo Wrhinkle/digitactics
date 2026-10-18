@@ -59,7 +59,7 @@ internal sealed partial class MatchScreen
         try
         {
             string library = SteamLibraryPath ?? Path.Combine(AppContext.BaseDirectory, "steam_api64.dll");
-            if (!File.Exists(library)) throw new FileNotFoundException("Steam support is not installed. Launch this build with --steam-api followed by your steam_api64.dll path.");
+            if (!File.Exists(library)) throw new FileNotFoundException("Steam support is missing from this installation. Reinstall the full game package and try again.");
             steam = new(library, 480);
             steam.ConnectionLost += reason => { lobbyMessage = reason; EndOnlineView(); };
             steam.JoinRequested += (lobby, _) => invitedLobby = lobby;

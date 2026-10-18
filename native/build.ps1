@@ -12,6 +12,7 @@ $savedDotnetRoot=$env:DOTNET_ROOT
 $env:DOTNET_ROOT=Split-Path -Parent $dotnet
 Push-Location $nativeRoot
 try {
+    $steamRuntime = & (Join-Path $nativeRoot 'tools/setup-steam.ps1')
     $mediaRuntime = & (Join-Path $nativeRoot 'tools/setup-media.ps1')
     $audioTools = Join-Path $nativeRoot 'artifacts/audio-tools'
     if (-not (Test-Path (Join-Path $audioTools 'node_modules/playwright/package.json'))) {

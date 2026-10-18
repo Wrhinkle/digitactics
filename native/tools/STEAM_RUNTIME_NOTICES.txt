@@ -1,0 +1,15 @@
+Steam runtime
+
+steam_api64.dll is the Valve Steamworks redistributable supplied by the
+steamworks.js 0.4.0 npm package already pinned in desktop-steam/package-lock.json.
+Its rights are governed by Valve's Steamworks SDK terms, separately from the
+MIT-licensed steamworks.js wrapper. The wrapper license is included for
+provenance; it does not relicense Valve's binary.
+
+The native game loads the Valve flat API directly; no JavaScript wrapper or
+Electron runtime is required. The current development application ID is 480.
+Steam must be running and signed in for online play.
+
+Upstream: https://github.com/ceifa/steamworks.js
+Steamworks: https://partner.steamgames.com/doc/sdk/api
+See steam-runtime-provenance.json for the exact archive and DLL digests.
