@@ -25,6 +25,7 @@ internal sealed class CompanionPreview : IDisposable
     public double TransitionTime=>transition?.Time??0;
     public bool Evolving=>transition is {Complete:false};
     public double FlashOpacity=>transition?.FlashOpacity??0;
+    public Action? OnSettled { get; set; }
     public Action? OnFlash { get; set; }
     public void TransformTo(string next)
     {
@@ -87,7 +88,7 @@ internal sealed class CompanionPreview : IDisposable
         if(transition is { } effect)
         {
             if(effect.Advance(delta))OnFlash?.Invoke();
-            if(effect.Complete && outgoing is not null) { outgoing.Dispose();outgoing=null;outgoingAnimator=null;animator.Play("happy"); }
+            if(effect.Complete && outgoing is not null) { outgoing.Dispose();outgoing=null;outgoingAnimator=null;animator.Play("happy");OnSettled?.Invoke(); }
             if(effect.Time>=(effect.FlashStarted??double.PositiveInfinity)+.9)transition=null;
         }
         Span<int> value=stackalloc int[1],viewport=stackalloc int[4];

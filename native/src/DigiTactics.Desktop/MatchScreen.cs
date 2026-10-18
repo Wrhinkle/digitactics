@@ -242,7 +242,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
-        if((!showCollection || evolutionLegend is null) && evolutionPreview is not null) { evolutionPreview.Dispose(); evolutionPreview=null; }
+        if((!showCollection || evolutionLegend is null) && evolutionPreview is not null) { ClearEvolutionPreview(); }
         portraits.BeginFrame(); itemArtwork.BeginFrame(); CarouselCardsDrawn = 0; InventoryArtworkDrawCalls = 0; ItemTooltipRecipes = 0; DetailedUnit = null; DetailedItems = []; ItemDropFeedback = null;
         hoveredOwnedUnit = null; sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;

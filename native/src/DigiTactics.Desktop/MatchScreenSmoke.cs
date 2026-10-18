@@ -22,7 +22,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         : ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
     private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
     private int collectionIndex;
-    private bool collectionVerified,treeScrolled,transformWhite,transformFlash,settledPreview;
+    private bool collectionVerified,treeScrolled,transformWhite,transformFlash,settledPreview,announcementExpired;
     private readonly string[] farmCommands = evolutionSmoke
         ? ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "farmRoom", "farmOut/tsunomon", "farmIn/tsunomon", "farmOut/motimon", "farmSelect/tsunomon", "farmSwap/motimon", "farmIn/tsunomon", "farmExpand", "farmTheme/sewer", "closeFarm"]
         : ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "closeFarm"];
@@ -64,6 +64,11 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (cooldown-- > 0) return;
             var input = ImGui.GetIO();
             if(!down && (screen.EvolutionBusy || collectionIndex==11 && screen.EvolutionTransitionTime>0))return;
+            if(evolutionSmoke && collectionIndex==11 && settledPreview && !down && !announcementExpired)
+            {
+                if(screen.EvolutionAnnouncementVisible)return;
+                announcementExpired=true;cooldown=3;return;
+            }
             if(evolutionSmoke && collectionIndex==12 && !down && !treeScrolled)
             {
                 var anchor=screen.Buttons["closeEvolutionTree"];
@@ -288,6 +293,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if(evolutionSmoke && screen.EvolutionTransitionTime>1 && screen.EvolutionTransitionTime<2.5 && !transformWhite)
             {
                 if(screen.EvolutionFloorDrawn)throw new InvalidOperationException("Evolution floor remained visible during white stage.");
+                var savedForm=LegendEvolution.Discovery(collectionProfile.Storage.GetValueOrDefault("dt.legendevo.v1"),"bukamon").Current;
+                if(screen.DisplayedEvolutionForm!="bukamon" || savedForm=="bukamon" || screen.EvolutionAnnouncementVisible)throw new InvalidOperationException("Evolution revealed the saved result before the transformation finished.");
                 transformWhite=true;if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"transform-white.bmp"),size.X,size.Y);
             }
             if(evolutionSmoke && screen.EvolutionTransitionTime>2.87 && screen.EvolutionTransitionTime<2.95 && !transformFlash)
@@ -305,6 +312,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             }
             if(evolutionSmoke && collectionIndex==11 && screen.EvolutionTransitionTime==0 && !screen.EvolutionBusy && !settledPreview)
             {
+                if(screen.DisplayedEvolutionForm!=LegendEvolution.Discovery(collectionProfile.Storage.GetValueOrDefault("dt.legendevo.v1"),"bukamon").Current || !screen.EvolutionAnnouncementVisible)throw new InvalidOperationException("Evolution completion did not reveal the saved form and announcement.");
                 settledPreview=true;
                 if(!screen.EvolutionFloorDrawn)throw new InvalidOperationException("Evolution floor did not return after transformation.");
                 if(screen.EvolutionPreviewDrawCalls==0 || screen.EvolutionPreviewTime<=0) throw new InvalidOperationException("Evolution preview did not render and animate.");
@@ -322,7 +330,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 var record = legends["legends"]!["bukamon"]!;
                 if (record["xp"]!.GetValue<int>() < 200 || record["form"]!.GetValue<string>() == "bukamon" || record["nonce"]!.GetValue<int>() != 1 || record["care"]!["food"]!.GetValue<int>() != 1 || record["path"]!.AsArray().Count != 1)
                     throw new InvalidOperationException("Evolution actions did not persist the expected level, form, care and nonce.");
-                if(!transformWhite || !transformFlash)throw new InvalidOperationException("Evolution transition did not traverse white/flash stages.");
+                if(!transformWhite || !transformFlash || !announcementExpired)throw new InvalidOperationException("Evolution transition did not traverse white/flash stages.");
                 Console.WriteLine("Evolution UI smoke passed: buy levels, feed, digivolve, revert and digivolve again.");
             }
             if (wallet["owned"]!["legend"]!.AsArray().Count < 3 && !legends["legends"]!.AsObject().Any(x => x.Value?["xp"]?.GetValue<int>() > 0))

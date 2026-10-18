@@ -8,25 +8,44 @@ internal sealed partial class MatchScreen
     private void Evolve(string id, LegendAction action)
     {
         if(evolutionPreview?.Evolving==true)return;
+        var previous=action==LegendAction.Digivolve?LegendEvolution.Inspect(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"),profile.Storage.GetValueOrDefault("dt.cosmetics.v1"),profile.Storage.GetValueOrDefault("dt.farm.v1"),id):null;
         var result = LegendEvolution.Apply(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"), profile.Storage.GetValueOrDefault("dt.cosmetics.v1"), profile.Storage.GetValueOrDefault("dt.farm.v1"), id, action);
         if (!result.Changed) { collectionMessage = "That action is unavailable. Check your Bits, level and care."; return; }
         var changes = new Dictionary<string, string> { ["dt.legendevo.v1"] = result.Legends! };
         if (result.Wallet is not null && result.Wallet != profile.Storage.GetValueOrDefault("dt.cosmetics.v1")) changes["dt.cosmetics.v1"] = result.Wallet;
         if (!profile.UpdateStorage(changes)) { collectionMessage = profile.Error; return; }
+        evolutionAnnouncementUntil=0;
         if(evolutionPreview is not null)
         {
             var current=LegendEvolution.Discovery(profile.Storage.GetValueOrDefault("dt.legendevo.v1"),id).Current;
-            if(action==LegendAction.Digivolve) { evolutionPreview.TransformTo(LegendEvolution.VisualKey(id,current)); audio.Play("reroll"); }
+            if(action==LegendAction.Digivolve) { evolutionBeforeReveal=previous; evolutionAnnouncement=$"{LegendEvolution.Form(previous!.Form).Name} digivolved into {LegendEvolution.Form(current).Name}!"; evolutionPreview.TransformTo(LegendEvolution.VisualKey(id,current)); audio.Play("reroll"); }
             else evolutionPreview.Select(LegendEvolution.VisualKey(id,current));
             if(action==LegendAction.Feed)evolutionPreview.Play("eat");
 
         }
         collectionMessage = action switch {
-            LegendAction.Digivolve => "Digivolved into " + LegendEvolution.Form(result.Result!["to"]!.GetValue<string>()).Name + "!",
+            LegendAction.Digivolve => evolutionPreview?.Evolving==true?"Digivolving...":"Digivolution complete.",
             LegendAction.Revert => "Reverted to " + LegendEvolution.Form(result.Result!["to"]!.GetValue<string>()).Name + ".",
             LegendAction.Feed => "Fed your legend. Food care increased.",
             _ => "Your legend gained a level."
         };
+    }
+    private EvolutionView? evolutionBeforeReveal;
+    private string? evolutionAnnouncement;
+    private double evolutionAnnouncementUntil;
+    internal string? DisplayedEvolutionForm { get; private set; }
+    internal bool EvolutionAnnouncementVisible=>evolutionAnnouncementUntil>boardSceneTime;
+    private void RevealEvolution()
+    {
+        evolutionBeforeReveal=null;
+        collectionMessage=evolutionAnnouncement;evolutionAnnouncement=null;
+        evolutionAnnouncementUntil=boardSceneTime+3.2;
+    }
+    private void ClearEvolutionPreview()
+    {
+        if(evolutionAnnouncementUntil>0 || evolutionBeforeReveal is not null)collectionMessage=null;
+        evolutionPreview?.Dispose();evolutionPreview=null;
+        evolutionBeforeReveal=null;evolutionAnnouncement=null;evolutionAnnouncementUntil=0;DisplayedEvolutionForm=null;
     }
     private CompanionPreview? evolutionPreview;
     private bool showEvolutionTree;
@@ -48,9 +67,12 @@ internal sealed partial class MatchScreen
             if(Button("closeEvolutionTree","Back to care")) showEvolutionTree=false;
             EvolutionTreePanel(id,view); return;
         }
-        var form = LegendEvolution.Form(view.Form);
         ImGui.Text(CosmeticCollection.Item("legend", id)!.Name);
-        evolutionPreview??=new() {OnFlash=()=>audio.Play("digivolve")}; evolutionPreview.Select(LegendEvolution.VisualKey(id,view.Form)); evolutionPreview.Draw(boardSceneTime);
+        evolutionPreview??=new() {OnFlash=()=>audio.Play("digivolve"),OnSettled=RevealEvolution}; evolutionPreview.Select(LegendEvolution.VisualKey(id,view.Form)); evolutionPreview.Draw(boardSceneTime);
+        if(evolutionBeforeReveal is { } previous)view=previous;
+        DisplayedEvolutionForm=view.Form;
+        var form=LegendEvolution.Form(view.Form);
+        if(evolutionAnnouncementUntil>0 && boardSceneTime>=evolutionAnnouncementUntil) { collectionMessage=null;evolutionAnnouncementUntil=0; }
         var previewAt=ImGui.GetCursorScreenPos(); ImGui.Dummy(new(180,180));
         ImGui.GetWindowDrawList().AddImage(new ImTextureRef {_TexID=new((nint)evolutionPreview.Texture)},previewAt,new(previewAt.X+180,previewAt.Y+180),new(0,1),new(1,0));
         if(evolutionPreview.FlashOpacity>0) ImGui.GetWindowDrawList().AddRectFilled(previewAt,new(previewAt.X+180,previewAt.Y+180),new ImColor8(255,255,255,(byte)Math.Round(evolutionPreview.FlashOpacity*255)));
