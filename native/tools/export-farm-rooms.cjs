@@ -71,7 +71,7 @@ async function main(){
        motion={...ancestor.userData.motion,position:ancestor.position.toArray(),rotation:[ancestor.rotation.x,ancestor.rotation.y,ancestor.rotation.z],scale:ancestor.scale.toArray(),parent:ancestor.parent.matrixWorld.toArray(),relative:ancestor.matrixWorld.clone().invert().multiply(o.matrixWorld).toArray()};
        animated.push({index:meshes.length,object:o});
       }
-      meshes.push({vertices,indices,matrix:o.matrixWorld.toArray(),material:material(m),sprite:!!o.isSprite,meat,motion});
+      meshes.push({vertices,indices,matrix:o.matrixWorld.toArray(),material:material(m),sprite:!!o.isSprite,meat,motion,castShadow:o.castShadow,receiveShadow:o.receiveShadow});
      }
     });
     const snowChecks=[];

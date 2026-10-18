@@ -12,7 +12,7 @@ internal sealed class FarmView : IDisposable
 {
     private sealed record Material(float[] Color, int? Texture, bool Unlit, bool Transparent, bool DepthWrite, float[] Emissive, float EmissiveIntensity, bool Bulb, float Roughness, float Metalness);
     private sealed record Texture(int Width, int Height, string Rgba, bool Clamp);
-    private sealed record Mesh(float[] Vertices, uint[] Indices, double[] Matrix, int Material, bool Sprite, int Meat, FarmRoomMotion? Motion);
+    private sealed record Mesh(float[] Vertices, uint[] Indices, double[] Matrix, int Material, bool Sprite, int Meat, FarmRoomMotion? Motion, bool CastShadow, bool ReceiveShadow);
     private sealed record Points(float[] Positions, double[] Matrix);
     private sealed record Room(int SchemaVersion, string Theme, string[] Sky, Material[] Materials, Texture[] Textures, Mesh[] Meshes, Points[] Points);
     private sealed record Actor(GpuModel Model, CompanionAnimator Animator, FarmResident Resident, CompanionVisual Visual);
@@ -30,6 +30,9 @@ internal sealed class FarmView : IDisposable
     private readonly ModelCatalog models = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
     private readonly CompanionCatalog companions = CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/companion-models.json"));
     private readonly ModelRenderer renderer = new();
+    private readonly FarmShadowMap shadows = new();
+    public int ShadowDrawCalls { get; private set; }
+    internal bool EnableSunShadows { get; set; } = true;
     private readonly Dictionary<string, Actor> actors = [];
     private readonly Dictionary<string, GpuModel> loaded = [];
     private readonly List<GpuPrimitive> geometry = [];
@@ -137,7 +140,9 @@ internal sealed class FarmView : IDisposable
     public void Draw(int left, int bottom, int width, int height)
     {
         DrawCalls = 0; if (room is null || width <= 0 || height <= 0) return;
+        DrawShadows();
         var (camera, eye) = Camera(width, height); ModelRenderer.Begin(width, height);
+        renderer.ShadowTexture = EnableSunShadows ? shadows.Texture : 0;
         renderer.FarmLight = lighting;
         renderer.FarmEye = eye;
         Brutal.OpenGlApi.OpenGl.Viewport(left, bottom, width, height);
@@ -155,20 +160,48 @@ internal sealed class FarmView : IDisposable
                     matrix = Matrix4D.Compose(new(matrix.M41, matrix.M42, matrix.M43), new(rotation.X, rotation.Y, rotation.Z, rotation.W), new(.42, .42, .42));
                 }
                 float intensity = material.Bulb ? (float)lighting.BulbEmission : material.EmissiveIntensity;
+                renderer.ReceiveShadow = mesh.ReceiveShadow;
                 renderer.DrawRoom(geometry[i], matrix, camera, new(material.Color[0], material.Color[1], material.Color[2], material.Color[3]), material.Texture is { } texture ? textures[texture] : null, material.Unlit, transparent, material.DepthWrite, new(material.Emissive[0] * intensity, material.Emissive[1] * intensity, material.Emissive[2] * intensity), material.Roughness, material.Metalness); DrawCalls++;
             }
             foreach (var actor in actors.Values)
             {
+                renderer.ReceiveShadow = false;
                 var resident = actor.Resident;
                 var root = new CompanionTransform(new(resident.X, resident.Height, resident.Z), new(0, 0, resident.Tilt * 1.15), new(1, resident.Breathe, 1));
                 renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.PlaceCompanion(actor.Animator) * root.Matrix, camera, transparent); DrawCalls += renderer.DrawCalls;
             }
         }
+        renderer.ReceiveShadow = false;
         foreach (var particles in snow) { particles.Draw(renderer, camera, eye); DrawCalls++; }
         ModelRenderer.End();
     }
+    private void DrawShadows()
+    {
+        ShadowDrawCalls = 0; shadows.Begin(); renderer.ShadowPass = true;
+        try
+        {
+            for (int i = 0; i < room!.Meshes.Length; i++)
+            {
+                var mesh = room.Meshes[i];
+                if (!mesh.CastShadow || mesh.Meat >= meat && mesh.Meat >= 0) continue;
+                renderer.DrawRoom(geometry[i], mesh.Motion?.Evaluate(choreography.Time) ?? Matrix4D.From(mesh.Matrix), FarmShadowMap.Camera, new(1,1,1,1), null, true, false, true);
+                ShadowDrawCalls++;
+            }
+            foreach (var actor in actors.Values)
+            {
+                var a = actor.Resident;
+                var root = new CompanionTransform(new(a.X,a.Height,a.Z),new(0,0,a.Tilt*1.15),new(1,a.Breathe,1));
+                foreach (bool transparent in new[] { false, true })
+                {
+                    renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.PlaceCompanion(actor.Animator)*root.Matrix, FarmShadowMap.Camera, transparent);
+                    ShadowDrawCalls += renderer.DrawCalls;
+                }
+            }
+        }
+        finally { renderer.ShadowPass = false; shadows.End(); }
+    }
     public void Dispose()
     {
-        foreach (var particles in snow) particles.Dispose(); foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); renderer.Dispose();
+        foreach (var particles in snow) particles.Dispose(); foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); shadows.Dispose(); renderer.Dispose();
     }
 }

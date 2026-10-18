@@ -12,6 +12,9 @@ internal sealed class ModelRenderer : IDisposable
     public int DrawCalls { get; private set; }
     public FarmLighting? FarmLight { get; set; }
     public Vector3 FarmEye { get; set; }
+    public bool ShadowPass { get; set; }
+    public uint ShadowTexture { get; set; }
+    public bool ReceiveShadow { get; set; }
     private void SetFarmLight(Vector3 emissive = default, float roughness = -1, float metalness = 0)
     {
         program.Uniform(15, FarmLight is null ? 0 : 1);
@@ -23,6 +26,10 @@ internal sealed class ModelRenderer : IDisposable
         OpenGl.BindTextureUnit(1, 0); OpenGl.BindTextureUnit(2, 0);
         OpenGl.BindTextureUnit(3, 0); program.Uniform(21, 0);
         OpenGl.BindTextureUnit(4, 0); program.Uniform(22, new Brutal.Numerics.float4(0, 1, 0, 0));
+        program.Uniform(23, ShadowPass ? 1 : 0);
+        program.Uniform(24, !ShadowPass && ReceiveShadow && ShadowTexture != 0 ? 1 : 0);
+        Matrix(25, From(FarmShadowMap.Camera));
+        OpenGl.BindTextureUnit(5, ShadowPass ? 0 : ShadowTexture);
     }
     public ModelRenderer()
     {
@@ -94,7 +101,7 @@ internal sealed class ModelRenderer : IDisposable
                 if (material.DoubleSided) OpenGl.Native.glDisable((GlCapability)OpenGl.GL_CULL_FACE); else OpenGl.Native.glEnable((GlCapability)OpenGl.GL_CULL_FACE);
                 if (transparent) { OpenGl.Native.glEnable((GlCapability)OpenGl.GL_BLEND); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
                 else OpenGl.Native.glDisable((GlCapability)OpenGl.GL_BLEND);
-                OpenGl.Native.glDepthMask(material.DepthWrite);
+                OpenGl.Native.glDepthMask(ShadowPass || material.DepthWrite);
                 primitives[offset + i].Draw(); DrawCalls++;
             }
         }
@@ -126,7 +133,7 @@ internal sealed class ModelRenderer : IDisposable
         OpenGl.BindTextureUnit(0, texture?.Id ?? 0); OpenGl.Native.glDisable(GlCapability.CullFace);
         if (transparent) { OpenGl.Native.glEnable(GlCapability.Blend); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
         else OpenGl.Native.glDisable(GlCapability.Blend);
-        OpenGl.Native.glDepthMask(depthWrite); geometry.Draw();
+        OpenGl.Native.glDepthMask(ShadowPass || depthWrite); geometry.Draw();
     }
     private unsafe void Matrix(int location, Matrix4D value)
     {
@@ -170,6 +177,7 @@ internal sealed class ModelRenderer : IDisposable
         layout(binding=2) uniform sampler2D specularTexture;
         layout(binding=3) uniform sampler2D emissiveTexture;
         layout(binding=4) uniform sampler2D normalTexture;
+        layout(binding=5) uniform sampler2D shadowTexture;
         layout(location=9) uniform int hasNormals;
         layout(location=10) uniform int unlit;
         layout(location=11) uniform float cutoff;
@@ -184,9 +192,27 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=20) uniform vec4 surfaceMaps;
         layout(location=21) uniform int hasEmissiveMap;
         layout(location=22) uniform vec4 normalSettings;
+        layout(location=23) uniform int shadowPass;
+        layout(location=24) uniform int receiveShadow;
+        layout(location=25) uniform mat4 shadowCamera;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
+        }
+        float shadowCompare(vec2 uv, float depth) { return step(depth,texture(shadowTexture,uv).r); }
+        float sunVisibility() {
+            if(receiveShadow==0) return 1;
+            vec4 p=shadowCamera*vec4(worldPosition,1);
+            vec3 uv=p.xyz/p.w; uv.xy=uv.xy*.5+.5; uv.z-=.0015;
+            if(any(lessThan(uv,vec3(0))) || any(greaterThan(uv,vec3(1)))) return 1;
+            vec2 f=fract(uv.xy*1024.0+.5); vec2 base=uv.xy-f/1024.0;
+            float d=1.0/1024.0, z=uv.z;
+            return (shadowCompare(base,z)+shadowCompare(base+vec2(d,0),z)+shadowCompare(base+vec2(0,d),z)+shadowCompare(base+vec2(d,d),z)
+                +mix(shadowCompare(base+vec2(-d,0),z),shadowCompare(base+vec2(2*d,0),z),f.x)
+                +mix(shadowCompare(base+vec2(-d,d),z),shadowCompare(base+vec2(2*d,d),z),f.x)
+                +mix(shadowCompare(base+vec2(0,-d),z),shadowCompare(base+vec2(0,2*d),z),f.y)
+                +mix(shadowCompare(base+vec2(d,-d),z),shadowCompare(base+vec2(d,2*d),z),f.y)
+                +mix(mix(shadowCompare(base+vec2(-d,-d),z),shadowCompare(base+vec2(2*d,-d),z),f.x),mix(shadowCompare(base+vec2(-d,2*d),z),shadowCompare(base+vec2(2*d,2*d),z),f.x),f.y))/9;
         }
         // Isotropic MeshStandardMaterial BRDF from the bundled Three shader chunks.
         vec3 specularGGX(vec3 l, vec3 v, vec3 n, vec3 f0, float f90, float roughness) {
@@ -204,6 +230,7 @@ internal sealed class ModelRenderer : IDisposable
         void main() {
             vec4 c=color*(textured!=0?texture(colorTexture,texCoord):vec4(1));
             if(c.a<cutoff) discard;
+            if(shadowPass!=0) { outputColor=vec4(1); return; }
             vec3 n=normalize(hasNormals!=0?worldNormal:cross(dFdx(worldPosition),dFdy(worldPosition)));
             if(!gl_FrontFacing) n=-n;
             vec3 geometryNormal=n;
@@ -229,7 +256,7 @@ internal sealed class ModelRenderer : IDisposable
             vec3 specular=vec3(0);
             if(farmLighting!=0 && unlit==0) {
                 vec3 hemi=mix(toLinear(vec3(74,90,58)/255.0),vec3(1),n.y*.5+.5)*farmIntensity.x;
-                vec3 sun=toLinear(vec3(255,243,220)/255.0)*farmIntensity.y*max(dot(n,normalize(vec3(4,9,5))),0);
+                vec3 sun=toLinear(vec3(255,243,220)/255.0)*farmIntensity.y*max(dot(n,normalize(vec3(4,9,5))),0)*sunVisibility();
                 vec3 offset=vec3(1.6,2.1,-3.7)-worldPosition;
                 float distance=length(offset);
                 float attenuation=1.0/max(pow(distance,1.5),.01);

@@ -2400,3 +2400,22 @@ passed the 78-model GPU smoke, all six farm rooms and the Duos match smoke; its
 model capture was inspected. These checks establish asset/animation consistency
 and successful rendering, not pixel-identical normal-map shading. Shadow maps
 and broader visual acceptance remain required parts of the full-port goal.
+
+### Farm sun shadows
+
+The farm now renders a 1024-square depth map using the original sun position,
+orthographic bounds, near/far planes and -0.0015 comparison bias. Exported meshes
+retain cast/receive-shadow flags. Resident shadows follow current skeletal poses,
+movement and sleep transforms, with alpha-cutout materials respected. The map
+uses the bundled Three.js PCF-soft sampling pattern and attenuates only direct
+sun illumination. The shadow framebuffer restores prior read/draw bindings.
+
+All six Windows room smokes pass and now verify both caster draws and a visible
+pixel difference when shadows are disabled. Meadow, tropical and grid captures
+were inspected, including a final soft-shadow meadow capture. The integrated
+profile/evolution/farm/Solo flow and Duos match smoke also passed.
+
+Shadow rendering is implemented, but exact original shadow-side/culling behavior
+and broader pixel-level visual acceptance remain to be audited. Sky/night
+overlays, care props and feedback, production UI, multiplayer and release gates
+remain part of the active full-port objective.

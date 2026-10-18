@@ -27,8 +27,16 @@ internal static class FarmRoomSmoke
                 room.Draw(0, 0, 1000, 850);
                 if (room.Theme != theme.Id || room.DrawCalls < 150 || room.Residents.Count != 3) throw new InvalidOperationException("Farm room rendering failed: " + theme.Id);
                 if (room.SnowParticles != (theme.Id == "snowy" ? 260 : 0)) throw new InvalidOperationException("Farm snow theme lifecycle failed: " + theme.Id);
+                if (room.ShadowDrawCalls < 10) throw new InvalidOperationException("Farm shadow pass did not draw casters: " + theme.Id);
                 ModelPreview.VerifyVisible(1000, 850);
                 if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, theme.Id + ".bmp"), 1000, 850);
+                var withShadows = new byte[1000 * 850 * 4]; var withoutShadows = new byte[withShadows.Length];
+                fixed (byte* p = withShadows) OpenGl.ReadPixels(0,0,1000,850,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
+                room.EnableSunShadows = false; room.Draw(0,0,1000,850);
+                fixed (byte* p = withoutShadows) OpenGl.ReadPixels(0,0,1000,850,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
+                int changed = 0; for (int p = 0; p < withShadows.Length; p += 4) if (withShadows[p] != withoutShadows[p] || withShadows[p+1] != withoutShadows[p+1] || withShadows[p+2] != withoutShadows[p+2]) changed++;
+                if (changed < 100) throw new InvalidOperationException("Farm shadow map did not affect the room: " + theme.Id);
+                room.EnableSunShadows = true;
                 farm["lights"] = false;
                 foreach (var pet in farm["pets"]!.AsObject()) pet.Value!["flags"]!["asleep"] = true;
                 room.Sync(farm.ToJsonString(), null, null);
