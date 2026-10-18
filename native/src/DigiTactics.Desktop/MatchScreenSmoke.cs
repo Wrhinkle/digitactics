@@ -33,6 +33,8 @@ internal sealed class MatchScreenSmoke
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (index == 0 && cooldown == 1 && capture is not null)
+            FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "menu.bmp"), size.X, size.Y);
         if (index == 9 && cooldown == 1 && !planningCaptured)
         {
             if (screen.Session!.State.Players[0].Roster.Board.Count != 2 || screen.PlanningDrawCalls == 0)

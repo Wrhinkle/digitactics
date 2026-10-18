@@ -4,6 +4,21 @@ using DigiTactics.Storage;
 
 try
 {
+    string? Option(string name)
+    {
+        int index = Array.IndexOf(args, name);
+        if (index < 0) return null;
+        if (index + 1 >= args.Length || args[index + 1].StartsWith("--", StringComparison.Ordinal)) throw new ArgumentException($"Provide a path after {name}.");
+        return Path.GetFullPath(args[index + 1]);
+    }
+    string? profileDirectory = Option("--profile-directory");
+    if (Option("--import-profile") is { } importFile)
+    {
+        var profile = new NativeProfileStore(profileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native"));
+        profile.Import(new ProfileImport(importFile));
+        Console.WriteLine("Profile imported; original backup preserved. Identity and saved totals are available; other profile features remain in development.");
+        return 0;
+    }
     int profileIndex = Array.IndexOf(args, "--stage-profile");
     if (profileIndex >= 0)
     {
@@ -17,7 +32,7 @@ try
     int captureIndex = Array.IndexOf(args, "--capture");
     string? capture = captureIndex >= 0 && captureIndex + 1 < args.Length ? args[captureIndex + 1] : null;
     if (args.Contains("--smoke") || args.Contains("--workbench")) NativeApplication.Run(catalog, args.Contains("--smoke"), capture);
-    else MatchApplication.Run(catalog, args.Contains("--match-smoke"), capture, args.Contains("--duos"));
+    else MatchApplication.Run(catalog, args.Contains("--match-smoke"), capture, args.Contains("--duos"), profileDirectory);
     return 0;
 }
 catch (Exception error)

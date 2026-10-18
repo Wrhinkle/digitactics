@@ -58,6 +58,10 @@ public static class LegacyProfileArchive
     {
         if (new FileInfo(source).Length > MaximumArchiveBytes) throw new InvalidDataException("Profile backup exceeds the supported size.");
         byte[] bytes = File.ReadAllBytes(source);
+        return Stage(bytes, directory);
+    }
+    public static (string Path, LegacyProfileSummary Summary) Stage(byte[] bytes, string directory)
+    {
         var summary = Inspect(bytes);
         Directory.CreateDirectory(directory);
         string destination = Path.Combine(directory, summary.Sha256 + ".json");

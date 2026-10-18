@@ -4,12 +4,13 @@ using Brutal.ImGuiApi.Backends;
 using Brutal.Numerics;
 using Brutal.OpenGlApi;
 using DigiTactics.Rules;
+using DigiTactics.Storage;
 
 namespace DigiTactics.Desktop;
 
 internal static class MatchApplication
 {
-    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false)
+    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null)
     {
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
@@ -38,7 +39,8 @@ internal static class MatchApplication
                 using var audio = new GameAudio();
                 audio.EffectsVolume = smoke ? 0 : .8f; audio.MusicVolume = smoke ? 0 : .6f;
                 using var preferences = smoke ? null : new AudioSettingsBinding(audio);
-                using var renderer = new OpenGlBackend(); using var screen = new MatchScreen(catalog, audio, smoke ? 143u : null, duos);
+                var profile = smoke && profileDirectory is null ? null : new NativeProfileStore(profileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native"));
+                using var renderer = new OpenGlBackend(); using var screen = new MatchScreen(catalog, audio, smoke ? 143u : null, duos, profile);
                 var driver = smoke ? new MatchScreenSmoke() : null;
                 var clock = System.Diagnostics.Stopwatch.StartNew(); double last = 0;
                 for (int frame = 0; !window.ShouldClose; frame++)

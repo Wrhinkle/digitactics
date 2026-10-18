@@ -3,6 +3,7 @@ using Brutal.ImGuiApi;
 using Brutal.Numerics;
 using DigiTactics.Rules;
 using DigiTactics.Presentation;
+using DigiTactics.Storage;
 
 namespace DigiTactics.Desktop;
 
@@ -11,6 +12,10 @@ internal sealed class MatchScreen : IDisposable
     private readonly ContentCatalog catalog;
     private readonly uint? seed;
     private readonly GameAudio audio;
+    private readonly NativeProfileStore? profile;
+    private Task<ProfileImport?>? profilePreview;
+    private ProfileImport? profileCandidate;
+    private string? profileMessage;
     private readonly AbilityElements abilityElements = new(Path.Combine(AppContext.BaseDirectory, "content/ability-elements.json"));
     private CombatAudioCues? combatAudio;
     private readonly DisplayText text = new();
@@ -37,7 +42,7 @@ internal sealed class MatchScreen : IDisposable
     private int Width => Math.Max(300, size.X - 470);
     private int Height => Math.Max(240, size.Y - 335);
     private const ImGuiWindowFlags Fixed = ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
-    public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false) { this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; }
+    public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; }
     private void Window(string name, float x, float y, float width, float height, ImGuiWindowFlags flags = 0)
     {
         ImGui.SetNextWindowPos(new(x, y)); ImGui.SetNextWindowSize(new(width, height)); ImGui.Begin(name, Fixed | flags);
@@ -130,6 +135,12 @@ internal sealed class MatchScreen : IDisposable
     }
     public void Update(double delta)
     {
+        if (profilePreview is { IsCompleted: true })
+        {
+            try { profileCandidate = profilePreview.GetAwaiter().GetResult(); profileMessage = null; }
+            catch (Exception error) { profileMessage = "Could not read this backup: " + error.Message; }
+            profilePreview = null;
+        }
         if (Session is null) return;
         if (Session.Rounds.Phase == MatchPhase.Combat)
         {
@@ -206,8 +217,9 @@ internal sealed class MatchScreen : IDisposable
     }
     private void Menu()
     {
-        Window("DIGI-TACTICS", size.X * .25f, size.Y * .2f, size.X * .5f, 340);
+        Window("DIGI-TACTICS", size.X * .25f, size.Y * .12f, size.X * .5f, 560);
         ImGui.Text("Build your team. Digivolve. Be the last Tamer standing."u8); ImGui.Separator();
+        ProfileControls();
         if (ImGui.BeginCombo("Ruleset / pace"u8, $"{Rules.Name} / {Rules.Pace}"))
         {
             for (int i = 0; i < catalog.Variants.Length; i++) if (ImGui.Selectable($"{catalog.Variants[i].Name} / {catalog.Variants[i].Pace}", variant == i)) variant = i;
@@ -223,7 +235,7 @@ internal sealed class MatchScreen : IDisposable
         AudioControls();
         if (Button("start", "Start match", 220, 48))
         {
-            Session = new(Rules, seed ?? (uint)Random.Shared.Next(1, int.MaxValue), Enumerable.Range(0, 8).Select(i => new MatchSeat(i == 0 ? "You" : $"Tamer {i}", i == 0)).ToArray(), duos);
+            Session = new(Rules, seed ?? (uint)Random.Shared.Next(1, int.MaxValue), Enumerable.Range(0, 8).Select(i => new MatchSeat(i == 0 ? profile?.Progress.Name ?? "You" : $"Tamer {i}", i == 0)).ToArray(), duos);
             viewed = 0; CompletedRounds = 0;
             selectedUnit = null; selectedItem = null; backgroundTime = 0;
             audio.Music("planning");
@@ -275,6 +287,41 @@ internal sealed class MatchScreen : IDisposable
         ImGui.SameLine(); if (ImGui.Checkbox("Mute all"u8, ref muted)) audio.Muted = muted;
         if (audio.Error is { } error) ImGui.TextWrapped(error);
         if (audio.SettingsError is { } settingsError) ImGui.TextWrapped(settingsError);
+    }
+    private void ProfileControls()
+    {
+        if (profile is null) return;
+        static string Number(long? value) => value?.ToString("N0") ?? "Unavailable";
+        var saved = profile.Progress;
+        ImGui.Text($"{saved.Name}  |  {Number(saved.Bits)} Bits");
+        ImGui.Text($"Saved record: {Number(saved.Games)} games, {Number(saved.Wins)} wins, {Number(saved.TopFour)} top-four finishes");
+        if (profile.Error is { } error) ImGui.TextWrapped(error);
+        if (!profile.Exists)
+        {
+            if (profilePreview is not null) ImGui.Text("Reading backup..."u8);
+            else if (profileCandidate is { } candidate)
+            {
+                ImGui.TextWrapped($"Import {candidate.Progress.Name}'s saved profile? {candidate.Summary.StorageEntries} saved entries and {candidate.Summary.MusicTracks} music files will be preserved.");
+                ImGui.TextWrapped("Identity and saved totals are available now. Cosmetics, music-library playback and other migrated features are still being completed."u8);
+                if (Button("importProfile", "Import profile"))
+                {
+                    try { profile.Import(candidate); profileCandidate = null; profileMessage = "Profile imported. Your original backup is preserved."; }
+                    catch (Exception failure) { profileMessage = "Profile was not imported: " + failure.Message; }
+                }
+                ImGui.SameLine(); if (Button("cancelProfile", "Cancel")) profileCandidate = null;
+            }
+            else if (Button("chooseProfile", "Import save backup..."))
+            {
+                try
+                {
+                    var selection = ProfileFilePicker.Open();
+                    profilePreview = Task.Run(async () => { string? path = await selection; return path is null ? null : new ProfileImport(path); });
+                }
+                catch (Exception failure) { profileMessage = failure.Message; }
+            }
+        }
+        if (profileMessage is not null) ImGui.TextWrapped(profileMessage);
+        ImGui.Separator();
     }
     private void Sidebar()
     {

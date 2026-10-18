@@ -1792,3 +1792,28 @@ browser-produced fixture passed 18 native integrity/preservation checks,
 including corrupt payloads, duplicate IDs/fields, future format versions,
 byte-for-byte staging, repeated staging and conflict protection. The Windows
 package was rebuilt and its match smoke check passed.
+
+### First native profile import
+
+The menu can select a legacy backup through BRUTAL SDL's file chooser, preview
+its identity and entry/music counts, and explicitly import it. The import uses
+the already-validated preview bytes, preserves the complete original archive,
+then atomically creates `profile.json`. An existing native profile is never
+replaced, including an unreadable or newer-format profile. All saved storage
+strings remain intact; names, Bits and historical games/wins/top-four totals are
+read for the menu, and the imported name is used for the human match seat.
+Invalid progress sections display Unavailable rather than being overwritten.
+
+`--import-profile <backup.json>` uses the same transaction without the UI.
+`--profile-directory <directory>` supplies an isolated profile location for
+verification; default production storage remains the native LocalAppData folder.
+The existing `--stage-profile` command still only preserves a backup.
+
+Validation: 32 profile/staging checks passed, including restart readback, source
+changes after preview, all raw fields, exact original backup bytes, competing
+imports and damaged/future native-profile protection. Packaged CLI import into
+an isolated directory and a match click-through using that profile passed; Duos
+also passed. The imported-profile menu capture was visually checked. The native
+OS file chooser itself has not yet been exercised by automated UI control.
+Cosmetic/farm consumers, custom music playback, settings application and native
+match-progress updates still need completion; full migration is not yet done.
