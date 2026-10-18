@@ -11,11 +11,12 @@ internal sealed partial class MatchScreen
     private void CarouselChoices()
     {
         var carousel=Session!.Units.Carousel;
+        var intro=CurrentGalaxyIntro();
         bool myTurn=carousel.Turn==Human;
         float panelWidth=Math.Min(920,size.X-48),cardHeight=216;
         int columns=Math.Max(1,(int)((panelWidth-40)/164));
         int rows=(carousel.Options.Count+columns-1)/columns;
-        float panelHeight=Math.Min(size.Y-48,180+rows*(cardHeight+8));
+        float panelHeight=Math.Min(size.Y-48,180+rows*(cardHeight+8)+(intro is null?0:134));
         ImGui.PushStyleColor(ImGuiCol.WindowBg,new ImColor8(5,7,12,210));
         Window("Carousel",0,0,size.X,size.Y,ImGuiWindowFlags.NoTitleBar|ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
         ImGui.PopStyleColor();
@@ -25,13 +26,13 @@ internal sealed partial class MatchScreen
         ImGui.PushStyleVar(ImGuiStyleVar.ChildRounding,12);ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(16,16));
         ImGui.BeginChild("Carousel panel"u8,new(panelWidth,panelHeight),ImGuiChildFlags.Borders,ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
         ImGui.PopStyleVar(2);ImGui.PopStyleColor(2);
+        if(intro is not null)GalaxyIntroCard(intro);
         HudText(Session.Rounds.Position.Stage==1?"OPENING CAROUSEL":"CAROUSEL",22,HudGold);
         HudText(myTurn?"Your pick: choose one Digimon and its item.":carousel.Done?"Everyone has picked. Your team is ready.":$"Waiting for {carousel.Turn!.Name}...",16,myTurn?HudGold:HudInk);
         HudText(Session.Rounds.Position.Stage==1?"Pick order is random.":"Lowest HP picks first.",16,HudMuted);
         ImGui.Separator();
         ImGui.BeginChild("Carousel choices"u8,new(0,ImGui.GetContentRegionAvail().Y-50));
-        var choicesAt=ImGui.GetCursorScreenPos();
-        CarouselChoicesBounds=(choicesAt,choicesAt+ImGui.GetContentRegionAvail());
+        CarouselChoicesBounds=(ImGui.GetWindowDrawList().GetClipRectMin(),ImGui.GetWindowDrawList().GetClipRectMax());
         float width=(ImGui.GetContentRegionAvail().X-(columns-1)*8)/columns;
         for(int i=0;i<carousel.Options.Count;i++)
         {

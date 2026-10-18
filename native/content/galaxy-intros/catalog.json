@@ -1,0 +1,92 @@
+{
+  "normal": {
+    "title": "This game's Galaxy",
+    "name": "File Island",
+    "description": "No special rules this game. It changes the rules for every Tamer until the game ends.",
+    "color": "#7ed957"
+  },
+  "treasure": {
+    "title": "This game's Galaxy",
+    "name": "Spiral Mountain",
+    "description": "Every wild round drops an extra component. From stage 4 it drops a completed item instead. It changes the rules for every Tamer until the game ends.",
+    "color": "#ffb347"
+  },
+  "armory": {
+    "title": "This game's Galaxy",
+    "name": "Infinity Mountain",
+    "description": "Every Tamer starts with the same two components. It changes the rules for every Tamer until the game ends.",
+    "color": "#c0c6d0"
+  },
+  "cluster": {
+    "title": "This game's Galaxy",
+    "name": "Primary Village",
+    "description": "At 1-2, the Digimon you took from the opening carousel digivolves straight to its Mega form (3-star). It changes the rules for every Tamer until the game ends.",
+    "color": "#ff9ad5"
+  },
+  "mirror": {
+    "title": "This game's Galaxy",
+    "name": "Mirror Sector",
+    "description": "Every Tamer gets a Data Copier at 2-1 and at 3-1. Drag it onto a Digimon to get a Rookie copy of it. It changes the rules for every Tamer until the game ends.",
+    "color": "#4fb3ff"
+  },
+  "bigger": {
+    "title": "This game's Galaxy",
+    "name": "Folder Continent",
+    "description": "From 2-1, every team can field one more Digimon. It changes the rules for every Tamer until the game ends.",
+    "color": "#9ad8ff"
+  },
+  "trade": {
+    "title": "This game's Galaxy",
+    "name": "Trade Sector",
+    "description": "Every Tamer gets one free reroll every round. It changes the rules for every Tamer until the game ends.",
+    "color": "#ffd23f"
+  },
+  "superdense": {
+    "title": "This game's Galaxy",
+    "name": "Superdense",
+    "description": "At 3-1, every Tamer gets a Golden Digimental (+1 team size). It changes the rules for every Tamer until the game ends.",
+    "color": "#ffcf4a"
+  },
+  "salvage": {
+    "title": "This game's Galaxy",
+    "name": "Factorial Town",
+    "description": "Selling a Digimon breaks its completed items back into their components. It changes the rules for every Tamer until the game ends.",
+    "color": "#a0a8b8"
+  },
+  "plunder": {
+    "title": "This game's Galaxy",
+    "name": "Plunder Planet",
+    "description": "Each enemy your team knocks out in a PvP round has a 30% chance to drop 1 gold. It changes the rules for every Tamer until the game ends.",
+    "color": "#ffd84a"
+  },
+  "shrine": {
+    "title": "This game's Galaxy",
+    "name": "Digimental Shrine",
+    "description": "Every Tamer starts with a Digimental. It changes the rules for every Tamer until the game ends.",
+    "color": "#ffcf4a"
+  },
+  "bigbang": {
+    "title": "This game's Galaxy",
+    "name": "Big Bang",
+    "description": "One free reroll every round, an extra component from every wild round, and a Golden Digimental for every Tamer at 3-1. It changes the rules for every Tamer until the game ends.",
+    "color": "#e58bff"
+  },
+  "darkocean": {
+    "title": "This game's Galaxy",
+    "name": "Dark Ocean",
+    "description": "All Digimon deal 15% more damage, and all healing is 30% weaker. It changes the rules for every Tamer until the game ends.",
+    "color": "#5a3aa8"
+  },
+  "datastream": {
+    "title": "This game's Galaxy",
+    "name": "Data Stream",
+    "description": "All Digimon start combat with 25 extra mana. It changes the rules for every Tamer until the game ends.",
+    "color": "#3fe0b0"
+  },
+  "server": {
+    "title": "This game's Galaxy",
+    "name": "Server Continent",
+    "description": "Shops show 6 Digimon instead of 5. It changes the rules for every Tamer until the game ends.",
+    "color": "#7fd8ff"
+  }
+}
