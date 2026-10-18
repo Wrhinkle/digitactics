@@ -2,6 +2,7 @@ using System.Text.Json;
 using Brutal.ImGuiApi;
 using Brutal.Numerics;
 using DigiTactics.Rules;
+using DigiTactics.Presentation;
 
 namespace DigiTactics.Desktop;
 
@@ -10,11 +11,13 @@ internal sealed class MatchScreen : IDisposable
     private readonly ContentCatalog catalog;
     private readonly uint? seed;
     private readonly GameAudio audio;
+    private readonly AbilityElements abilityElements = new(Path.Combine(AppContext.BaseDirectory, "content/ability-elements.json"));
+    private CombatAudioCues? combatAudio;
     private readonly DisplayText text = new();
     private PlanningView planning = new();
     private BattleView? battle;
     private MatchBattle? watching;
-    private int variant, viewed, audioEvent;
+    private int variant, viewed;
     private bool duos;
     private int? selectedUnit, selectedItem;
     private string status = "Select a unit, then a hex. Select an item, then its holder.";
@@ -131,18 +134,7 @@ internal sealed class MatchScreen : IDisposable
         if (Session.Rounds.Phase == MatchPhase.Combat)
         {
             battle?.Advance(delta); backgroundTime += Math.Min(delta, .25);
-            if (watching is not null)
-                while (audioEvent < watching.Combat.Events.Count)
-                {
-                    var cue = watching.Combat.Events[audioEvent++];
-                    string? sound = cue.Type switch
-                    {
-                        "hit" => cue.Big ? "hit_big" : "hit_normal",
-                        "shot" or "death" or "shield" => cue.Type,
-                        _ => null
-                    };
-                    if (sound is not null) audio.Play(sound);
-                }
+            combatAudio?.Update(audio.Play);
             while (backgroundTime >= CombatSimulation.Tick)
             {
                 foreach (var match in Session.Battles) if (match != watching) match.Combat.Step();
@@ -162,7 +154,7 @@ internal sealed class MatchScreen : IDisposable
             !m.Ghost && m.TeamB is { } tb && Session.State.Teams[tb].Members.Any(p => p.Id == player)) ?? Session.Battles.FirstOrDefault();
         if (next == watching) return;
         battle?.Dispose(); battle = null; watching = next;
-        audioEvent = next?.Combat.Events.Count ?? 0;
+        combatAudio = next is null ? null : new(next.Combat, Rules.Id, abilityElements);
         if (next is not null)
         {
             bool mirror = next.B == player || next.TeamB is { } team && Session.State.Teams[team].Members.Any(p => p.Id == player);
@@ -190,7 +182,7 @@ internal sealed class MatchScreen : IDisposable
     }
     private void Next()
     {
-        battle?.Dispose(); battle = null; watching = null; viewed = 0;
+        battle?.Dispose(); battle = null; watching = null; combatAudio = null; viewed = 0;
         Session!.Advance(); selectedUnit = null; selectedItem = null;
         audio.Play("round");
         status = "Select a unit, then a hex. Select an item, then its holder.";

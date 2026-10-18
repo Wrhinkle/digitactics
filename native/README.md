@@ -1721,8 +1721,7 @@ all PCM assets and music loop bounds, effect rate limiting and consumption of
 silent PCM by an actual BRUTAL SDL playback stream. It requires an audio device
 (or SDL's dummy audio driver). Graphical smoke runs use zero playback volume.
 
-This audio integration is still in progress: full cast-element/ultimate cue
-routing, soundboard/cosmetic UI and network events, custom music, phase resume
+This audio integration is still in progress: soundboard/cosmetic UI and network events, custom music, phase resume
 positions, focus handling, device reconnect and persistent/migrated settings
 remain to be completed. Reward cards and base unit stat tooltips are now present;
 mode progress panels and the other production UI/release requirements above are
@@ -1733,3 +1732,15 @@ no-clipping checks. Cache hashes verified on the next exporter invocation.
 Packaged audio checks passed, including a forced loop rollover with release tail,
 rate limiting and SDL queue consumption. Packaged Solo/Duos click-through checks
 passed. A separate Duos run with an unavailable SDL audio driver also passed.
+
+
+Combat audio now resolves each ability's original element and stage, including
+set-specific move overrides. Its separate presentation cursor follows only the
+viewed battle and discards historical sounds on scouting switches. Cast variants
+share the source sound-family rate limit; healing sounds are limited to healing
+ultimates, as in the original renderer. `export-ability-elements.cjs` preserves
+all 22 variants' move resolutions. `export-audio-cues.cjs` executes the original
+renderer event handler with visuals stubbed and records 22 battle traces.
+`--audio-cues-only` passed 11,736 checks and matched 3,627 cues (501 casts and 27
+ultimate healing cues included), with repeated-frame and scouting-history checks.
+Packaged audio, Solo and Duos smoke checks passed after this integration.

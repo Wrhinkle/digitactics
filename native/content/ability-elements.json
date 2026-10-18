@@ -1,0 +1,8766 @@
+{
+  "faction-wars/normal": {
+    "agumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gabumon": [
+      "ice",
+      "ice",
+      "beast"
+    ],
+    "tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "palmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "gomamon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "numemon": [
+      "plant",
+      "dark",
+      "metal"
+    ],
+    "otamamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "gotsumon": [
+      "metal",
+      "holy",
+      "holy"
+    ],
+    "falcomon": [
+      "wind",
+      "wind",
+      "dark"
+    ],
+    "guilmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "renamon": [
+      "ice",
+      "fire",
+      "holy"
+    ],
+    "terriermon": [
+      "wind",
+      "metal",
+      "wind"
+    ],
+    "patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "salamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "betamon": [
+      "thunder",
+      "ice",
+      "thunder"
+    ],
+    "wormmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "lunamon": [
+      "water",
+      "water",
+      "dark"
+    ],
+    "armadillomon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "kudamon": [
+      "holy",
+      "wind",
+      "holy"
+    ],
+    "fanbeemon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "mamemon": [
+      "fire",
+      "metal",
+      "fire"
+    ],
+    "dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "elecmon": [
+      "thunder",
+      "fire",
+      "ice"
+    ],
+    "hawkmon": [
+      "beast",
+      "wind",
+      "holy"
+    ],
+    "keramon": [
+      "dark",
+      "metal",
+      "dark"
+    ],
+    "lopmon": [
+      "ice",
+      "beast",
+      "holy"
+    ],
+    "gizamon": [
+      "water",
+      "water",
+      "dark"
+    ],
+    "candlemon": [
+      "fire",
+      "thunder",
+      "dark"
+    ],
+    "agumonsv": [
+      "fire",
+      "metal",
+      "holy"
+    ],
+    "dracomon": [
+      "fire",
+      "fire",
+      "wind"
+    ],
+    "woodmon": [
+      "plant",
+      "plant",
+      "dark"
+    ],
+    "monodramon": [
+      "beast",
+      "fire",
+      "dark"
+    ],
+    "jazamon": [
+      "beast",
+      "beast",
+      "holy"
+    ],
+    "zubamon": [
+      "metal",
+      "wind",
+      "holy"
+    ],
+    "okuwamon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "veemon": [
+      "beast",
+      "holy",
+      "metal"
+    ],
+    "dorumon": [
+      "metal",
+      "metal",
+      "fire"
+    ],
+    "gaomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "lalamon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "commandramon": [
+      "fire",
+      "metal",
+      "metal"
+    ],
+    "agunimon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "lobomon": [
+      "holy",
+      "holy",
+      "metal"
+    ],
+    "hackmon": [
+      "fire",
+      "wind",
+      "holy"
+    ],
+    "blackgatomon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "meicoomon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "vorvomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ryudamon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "myotismon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "imperialdramon": [
+      "fire",
+      "fire",
+      "holy"
+    ],
+    "lucemon": [
+      "holy",
+      "dark",
+      "dark"
+    ],
+    "beelzemon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "machinedramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "veedramon": [
+      "fire",
+      "wind",
+      "holy"
+    ],
+    "omnimon": [
+      "fire",
+      "holy",
+      "ice"
+    ],
+    "alphamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "phoenixmon": [
+      "fire",
+      "fire",
+      "holy"
+    ],
+    "daemon": [
+      "dark",
+      "fire",
+      "dark"
+    ],
+    "goblimon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "kuwagamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ogremon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "etemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "skullgreymon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "sukamon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "nanimon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "monzaemon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "frigimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "bakemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "kimeramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "piedmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "metalseadramon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "crusadermon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "leopardmon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "craniamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "dynasmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "magnamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "diaboromon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "armageddemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "seraphimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ophanimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "magnadramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "leviamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "barbamon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "belphemon": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "faction-wars/hyper": {
+    "agumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gabumon": [
+      "ice",
+      "ice",
+      "beast"
+    ],
+    "tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "palmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "gomamon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "numemon": [
+      "plant",
+      "dark",
+      "metal"
+    ],
+    "otamamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "gotsumon": [
+      "metal",
+      "holy",
+      "holy"
+    ],
+    "falcomon": [
+      "wind",
+      "wind",
+      "dark"
+    ],
+    "guilmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "renamon": [
+      "ice",
+      "fire",
+      "holy"
+    ],
+    "terriermon": [
+      "wind",
+      "metal",
+      "wind"
+    ],
+    "patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "salamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "betamon": [
+      "thunder",
+      "ice",
+      "thunder"
+    ],
+    "wormmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "lunamon": [
+      "water",
+      "water",
+      "dark"
+    ],
+    "armadillomon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "kudamon": [
+      "holy",
+      "wind",
+      "holy"
+    ],
+    "fanbeemon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "mamemon": [
+      "fire",
+      "metal",
+      "fire"
+    ],
+    "dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "elecmon": [
+      "thunder",
+      "fire",
+      "ice"
+    ],
+    "hawkmon": [
+      "beast",
+      "wind",
+      "holy"
+    ],
+    "keramon": [
+      "dark",
+      "metal",
+      "dark"
+    ],
+    "lopmon": [
+      "ice",
+      "beast",
+      "holy"
+    ],
+    "gizamon": [
+      "water",
+      "water",
+      "dark"
+    ],
+    "candlemon": [
+      "fire",
+      "thunder",
+      "dark"
+    ],
+    "agumonsv": [
+      "fire",
+      "metal",
+      "holy"
+    ],
+    "dracomon": [
+      "fire",
+      "fire",
+      "wind"
+    ],
+    "woodmon": [
+      "plant",
+      "plant",
+      "dark"
+    ],
+    "monodramon": [
+      "beast",
+      "fire",
+      "dark"
+    ],
+    "jazamon": [
+      "beast",
+      "beast",
+      "holy"
+    ],
+    "zubamon": [
+      "metal",
+      "wind",
+      "holy"
+    ],
+    "okuwamon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "veemon": [
+      "beast",
+      "holy",
+      "metal"
+    ],
+    "dorumon": [
+      "metal",
+      "metal",
+      "fire"
+    ],
+    "gaomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "lalamon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "commandramon": [
+      "fire",
+      "metal",
+      "metal"
+    ],
+    "agunimon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "lobomon": [
+      "holy",
+      "holy",
+      "metal"
+    ],
+    "hackmon": [
+      "fire",
+      "wind",
+      "holy"
+    ],
+    "blackgatomon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "meicoomon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "vorvomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ryudamon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "myotismon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "imperialdramon": [
+      "fire",
+      "fire",
+      "holy"
+    ],
+    "lucemon": [
+      "holy",
+      "dark",
+      "dark"
+    ],
+    "beelzemon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "machinedramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "veedramon": [
+      "fire",
+      "wind",
+      "holy"
+    ],
+    "omnimon": [
+      "fire",
+      "holy",
+      "ice"
+    ],
+    "alphamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "phoenixmon": [
+      "fire",
+      "fire",
+      "holy"
+    ],
+    "daemon": [
+      "dark",
+      "fire",
+      "dark"
+    ],
+    "goblimon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "kuwagamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ogremon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "etemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "skullgreymon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "sukamon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "nanimon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "monzaemon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "frigimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "bakemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "kimeramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "piedmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "metalseadramon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "crusadermon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "leopardmon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "craniamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "dynasmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "magnamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "diaboromon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "armageddemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "seraphimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ophanimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "magnadramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "leviamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "barbamon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "belphemon": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "fates/normal": {
+    "fat_lunamon": [
+      "ice",
+      "ice",
+      "dark"
+    ],
+    "fat_keramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_zubamon": [
+      "metal",
+      "wind",
+      "metal"
+    ],
+    "fat_hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "fat_gotsumon": [
+      "metal",
+      "ice",
+      "ice"
+    ],
+    "fat_mushroomon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "fat_otamamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "fat_terriermon": [
+      "wind",
+      "metal",
+      "metal"
+    ],
+    "fat_numemon": [
+      "plant",
+      "plant",
+      "metal"
+    ],
+    "fat_betamon": [
+      "thunder",
+      "ice",
+      "thunder"
+    ],
+    "fat_demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "fat_ryudamon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "fat_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_gabumon": [
+      "ice",
+      "ice",
+      "beast"
+    ],
+    "fat_palmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "fat_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "fat_kudamon": [
+      "wind",
+      "holy",
+      "wind"
+    ],
+    "fat_gaomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "fat_lalamon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "fat_gizamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "fat_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_fanbeemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "fat_candlemon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "fat_agumon": [
+      "fire",
+      "fire",
+      "metal"
+    ],
+    "fat_falcomon": [
+      "wind",
+      "wind",
+      "fire"
+    ],
+    "fat_kotemon": [
+      "fire",
+      "metal",
+      "metal"
+    ],
+    "fat_blackgatomon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_hackmon": [
+      "beast",
+      "metal",
+      "metal"
+    ],
+    "fat_commandramon": [
+      "metal",
+      "dark",
+      "dark"
+    ],
+    "fat_syakomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "fat_gumdramon": [
+      "fire",
+      "metal",
+      "holy"
+    ],
+    "fat_tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "fat_labramon": [
+      "holy",
+      "dark",
+      "dark"
+    ],
+    "fat_salamon": [
+      "holy",
+      "thunder",
+      "holy"
+    ],
+    "fat_chuumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_aruraumon": [
+      "plant",
+      "plant",
+      "dark"
+    ],
+    "fat_dracomon": [
+      "beast",
+      "fire",
+      "fire"
+    ],
+    "fat_meicoomon": [
+      "beast",
+      "dark",
+      "thunder"
+    ],
+    "fat_blackagumon": [
+      "fire",
+      "fire",
+      "dark"
+    ],
+    "fat_renamon": [
+      "holy",
+      "fire",
+      "holy"
+    ],
+    "fat_biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "fat_tapirmon": [
+      "dark",
+      "thunder",
+      "dark"
+    ],
+    "fat_dorumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "fat_piddomon": [
+      "fire",
+      "holy",
+      "dark"
+    ],
+    "fat_guilmon": [
+      "fire",
+      "fire",
+      "thunder"
+    ],
+    "fat_gomamon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "fat_wormmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "fat_jazamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "fat_blackgabumon": [
+      "beast",
+      "beast",
+      "ice"
+    ],
+    "fat_imperialdramon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "fat_floramon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "fat_lopmon": [
+      "ice",
+      "beast",
+      "beast"
+    ],
+    "fat_veemon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "fat_myotismon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_leomon": [
+      "fire",
+      "beast",
+      "fire"
+    ],
+    "fat_ouryumon": [
+      "holy",
+      "dark",
+      "holy"
+    ],
+    "fat_clockmon": [
+      "metal",
+      "fire",
+      "dark"
+    ],
+    "fat_volcamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_impmon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "fat_goblimon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "fat_kuwagamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "fat_ogremon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "fat_witchmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "fat_etemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_asuramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_andiramon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "fat_mammothmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "fat_whamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "fat_metalseadramon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "fat_azulongmon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "fat_zhuqiaomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_baihumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "fat_ebonwumon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "fat_goldramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_shadow": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_statue": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "fat_construct": [
+      "metal",
+      "metal",
+      "metal"
+    ]
+  },
+  "fates/hyper": {
+    "fat_lunamon": [
+      "ice",
+      "ice",
+      "dark"
+    ],
+    "fat_keramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_zubamon": [
+      "metal",
+      "wind",
+      "metal"
+    ],
+    "fat_hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "fat_gotsumon": [
+      "metal",
+      "ice",
+      "ice"
+    ],
+    "fat_mushroomon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "fat_otamamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "fat_terriermon": [
+      "wind",
+      "metal",
+      "metal"
+    ],
+    "fat_numemon": [
+      "plant",
+      "plant",
+      "metal"
+    ],
+    "fat_betamon": [
+      "thunder",
+      "ice",
+      "thunder"
+    ],
+    "fat_demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "fat_ryudamon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "fat_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_gabumon": [
+      "ice",
+      "ice",
+      "beast"
+    ],
+    "fat_palmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "fat_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "fat_kudamon": [
+      "wind",
+      "holy",
+      "wind"
+    ],
+    "fat_gaomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "fat_lalamon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "fat_gizamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "fat_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_fanbeemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "fat_candlemon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "fat_agumon": [
+      "fire",
+      "fire",
+      "metal"
+    ],
+    "fat_falcomon": [
+      "wind",
+      "wind",
+      "fire"
+    ],
+    "fat_kotemon": [
+      "fire",
+      "metal",
+      "metal"
+    ],
+    "fat_blackgatomon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_hackmon": [
+      "beast",
+      "metal",
+      "metal"
+    ],
+    "fat_commandramon": [
+      "metal",
+      "dark",
+      "dark"
+    ],
+    "fat_syakomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "fat_gumdramon": [
+      "fire",
+      "metal",
+      "holy"
+    ],
+    "fat_tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "fat_labramon": [
+      "holy",
+      "dark",
+      "dark"
+    ],
+    "fat_salamon": [
+      "holy",
+      "thunder",
+      "holy"
+    ],
+    "fat_chuumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_aruraumon": [
+      "plant",
+      "plant",
+      "dark"
+    ],
+    "fat_dracomon": [
+      "beast",
+      "fire",
+      "fire"
+    ],
+    "fat_meicoomon": [
+      "beast",
+      "dark",
+      "thunder"
+    ],
+    "fat_blackagumon": [
+      "fire",
+      "fire",
+      "dark"
+    ],
+    "fat_renamon": [
+      "holy",
+      "fire",
+      "holy"
+    ],
+    "fat_biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "fat_tapirmon": [
+      "dark",
+      "thunder",
+      "dark"
+    ],
+    "fat_dorumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "fat_piddomon": [
+      "fire",
+      "holy",
+      "dark"
+    ],
+    "fat_guilmon": [
+      "fire",
+      "fire",
+      "thunder"
+    ],
+    "fat_gomamon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "fat_wormmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "fat_jazamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "fat_blackgabumon": [
+      "beast",
+      "beast",
+      "ice"
+    ],
+    "fat_imperialdramon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "fat_floramon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "fat_lopmon": [
+      "ice",
+      "beast",
+      "beast"
+    ],
+    "fat_veemon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "fat_myotismon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_leomon": [
+      "fire",
+      "beast",
+      "fire"
+    ],
+    "fat_ouryumon": [
+      "holy",
+      "dark",
+      "holy"
+    ],
+    "fat_clockmon": [
+      "metal",
+      "fire",
+      "dark"
+    ],
+    "fat_volcamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_impmon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "fat_goblimon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "fat_kuwagamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "fat_ogremon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "fat_witchmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "fat_etemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_asuramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_andiramon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "fat_mammothmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "fat_whamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "fat_metalseadramon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "fat_azulongmon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "fat_zhuqiaomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_baihumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "fat_ebonwumon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "fat_goldramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "fat_shadow": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "fat_statue": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "fat_construct": [
+      "metal",
+      "metal",
+      "metal"
+    ]
+  },
+  "galaxies/normal": {
+    "gal_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "gal_kotemon": [
+      "fire",
+      "metal",
+      "holy"
+    ],
+    "gal_gazimon": [
+      "thunder",
+      "dark",
+      "dark"
+    ],
+    "gal_syakomon": [
+      "water",
+      "water",
+      "dark"
+    ],
+    "gal_blackgabumon": [
+      "ice",
+      "ice",
+      "beast"
+    ],
+    "gal_keramon": [
+      "dark",
+      "metal",
+      "dark"
+    ],
+    "gal_armadillomon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "gal_tapirmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_gomamon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "gal_solarmon": [
+      "holy",
+      "metal",
+      "dark"
+    ],
+    "gal_hyokomon": [
+      "wind",
+      "fire",
+      "holy"
+    ],
+    "gal_chuumon": [
+      "fire",
+      "fire",
+      "metal"
+    ],
+    "gal_patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "gal_renamon": [
+      "ice",
+      "fire",
+      "holy"
+    ],
+    "gal_shoutmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_kokuwamon": [
+      "thunder",
+      "metal",
+      "metal"
+    ],
+    "gal_gizamon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "gal_falcomon": [
+      "beast",
+      "wind",
+      "dark"
+    ],
+    "gal_betamon": [
+      "thunder",
+      "ice",
+      "thunder"
+    ],
+    "gal_commandramon": [
+      "metal",
+      "metal",
+      "dark"
+    ],
+    "gal_tsukaimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_gotsumon": [
+      "metal",
+      "beast",
+      "holy"
+    ],
+    "gal_biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "gal_kudamon": [
+      "wind",
+      "beast",
+      "wind"
+    ],
+    "gal_ryudamon": [
+      "metal",
+      "metal",
+      "wind"
+    ],
+    "gal_monodramon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "gal_lunamon": [
+      "water",
+      "water",
+      "ice"
+    ],
+    "gal_starmon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "gal_floramon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "gal_agumon": [
+      "fire",
+      "fire",
+      "metal"
+    ],
+    "gal_crabmon": [
+      "water",
+      "beast",
+      "water"
+    ],
+    "gal_aruraumon": [
+      "plant",
+      "plant",
+      "dark"
+    ],
+    "gal_elecmon": [
+      "thunder",
+      "fire",
+      "beast"
+    ],
+    "gal_lopmon": [
+      "ice",
+      "beast",
+      "holy"
+    ],
+    "gal_toyagumon": [
+      "fire",
+      "metal",
+      "fire"
+    ],
+    "gal_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "gal_dorumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "gal_gaomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "gal_gumdramon": [
+      "beast",
+      "metal",
+      "wind"
+    ],
+    "gal_blackagumon": [
+      "fire",
+      "beast",
+      "metal"
+    ],
+    "gal_hackmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_impmon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "gal_terriermon": [
+      "wind",
+      "metal",
+      "metal"
+    ],
+    "gal_lobomon": [
+      "holy",
+      "holy",
+      "metal"
+    ],
+    "gal_salamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "gal_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_hagurumon": [
+      "metal",
+      "metal",
+      "fire"
+    ],
+    "gal_vegiemon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "gal_etemon": [
+      "dark",
+      "metal",
+      "metal"
+    ],
+    "gal_imperialdramon": [
+      "dark",
+      "holy",
+      "holy"
+    ],
+    "gal_leviamon": [
+      "dark",
+      "water",
+      "dark"
+    ],
+    "gal_kimeramon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "gal_vikemon": [
+      "ice",
+      "ice",
+      "thunder"
+    ],
+    "gal_lilamon": [
+      "plant",
+      "holy",
+      "holy"
+    ],
+    "gal_marineangemon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "gal_valkyrimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "gal_piedmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_machinedramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "gal_lucemon": [
+      "holy",
+      "dark",
+      "dark"
+    ],
+    "gal_w_goblimon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_w_kuwagamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "gal_w_ogremon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "gal_w_tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_w_monochromon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_w_snowgoblimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "gal_w_skullgreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_w_triceramon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "gal_w_kuramon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "gal_w_metalseadramon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "gal_w_diaboromon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_w_apocalymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_w_yggdrasil": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "gal_construct": [
+      "metal",
+      "metal",
+      "metal"
+    ]
+  },
+  "galaxies/hyper": {
+    "gal_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "gal_kotemon": [
+      "fire",
+      "metal",
+      "holy"
+    ],
+    "gal_gazimon": [
+      "thunder",
+      "dark",
+      "dark"
+    ],
+    "gal_syakomon": [
+      "water",
+      "water",
+      "dark"
+    ],
+    "gal_blackgabumon": [
+      "ice",
+      "ice",
+      "beast"
+    ],
+    "gal_keramon": [
+      "dark",
+      "metal",
+      "dark"
+    ],
+    "gal_armadillomon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "gal_tapirmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_gomamon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "gal_solarmon": [
+      "holy",
+      "metal",
+      "dark"
+    ],
+    "gal_hyokomon": [
+      "wind",
+      "fire",
+      "holy"
+    ],
+    "gal_chuumon": [
+      "fire",
+      "fire",
+      "metal"
+    ],
+    "gal_patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "gal_renamon": [
+      "ice",
+      "fire",
+      "holy"
+    ],
+    "gal_shoutmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_kokuwamon": [
+      "thunder",
+      "metal",
+      "metal"
+    ],
+    "gal_gizamon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "gal_falcomon": [
+      "beast",
+      "wind",
+      "dark"
+    ],
+    "gal_betamon": [
+      "thunder",
+      "ice",
+      "thunder"
+    ],
+    "gal_commandramon": [
+      "metal",
+      "metal",
+      "dark"
+    ],
+    "gal_tsukaimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_gotsumon": [
+      "metal",
+      "beast",
+      "holy"
+    ],
+    "gal_biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "gal_kudamon": [
+      "wind",
+      "beast",
+      "wind"
+    ],
+    "gal_ryudamon": [
+      "metal",
+      "metal",
+      "wind"
+    ],
+    "gal_monodramon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "gal_lunamon": [
+      "water",
+      "water",
+      "ice"
+    ],
+    "gal_starmon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "gal_floramon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "gal_agumon": [
+      "fire",
+      "fire",
+      "metal"
+    ],
+    "gal_crabmon": [
+      "water",
+      "beast",
+      "water"
+    ],
+    "gal_aruraumon": [
+      "plant",
+      "plant",
+      "dark"
+    ],
+    "gal_elecmon": [
+      "thunder",
+      "fire",
+      "beast"
+    ],
+    "gal_lopmon": [
+      "ice",
+      "beast",
+      "holy"
+    ],
+    "gal_toyagumon": [
+      "fire",
+      "metal",
+      "fire"
+    ],
+    "gal_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "gal_dorumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "gal_gaomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "gal_gumdramon": [
+      "beast",
+      "metal",
+      "wind"
+    ],
+    "gal_blackagumon": [
+      "fire",
+      "beast",
+      "metal"
+    ],
+    "gal_hackmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_impmon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "gal_terriermon": [
+      "wind",
+      "metal",
+      "metal"
+    ],
+    "gal_lobomon": [
+      "holy",
+      "holy",
+      "metal"
+    ],
+    "gal_salamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "gal_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_hagurumon": [
+      "metal",
+      "metal",
+      "fire"
+    ],
+    "gal_vegiemon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "gal_etemon": [
+      "dark",
+      "metal",
+      "metal"
+    ],
+    "gal_imperialdramon": [
+      "dark",
+      "holy",
+      "holy"
+    ],
+    "gal_leviamon": [
+      "dark",
+      "water",
+      "dark"
+    ],
+    "gal_kimeramon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "gal_vikemon": [
+      "ice",
+      "ice",
+      "thunder"
+    ],
+    "gal_lilamon": [
+      "plant",
+      "holy",
+      "holy"
+    ],
+    "gal_marineangemon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "gal_valkyrimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "gal_piedmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_machinedramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "gal_lucemon": [
+      "holy",
+      "dark",
+      "dark"
+    ],
+    "gal_w_goblimon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_w_kuwagamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "gal_w_ogremon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "gal_w_tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_w_monochromon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "gal_w_snowgoblimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "gal_w_skullgreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_w_triceramon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "gal_w_kuramon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "gal_w_metalseadramon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "gal_w_diaboromon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_w_apocalymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "gal_w_yggdrasil": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "gal_construct": [
+      "metal",
+      "metal",
+      "metal"
+    ]
+  },
+  "gizmos/normal": {
+    "giz_meramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "giz_commandramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "giz_zubamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "giz_goblimon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "giz_toyagumon": [
+      "fire",
+      "wind",
+      "fire"
+    ],
+    "giz_syakomon": [
+      "water",
+      "water",
+      "dark"
+    ],
+    "giz_kotemon": [
+      "fire",
+      "metal",
+      "holy"
+    ],
+    "giz_tsukaimon": [
+      "dark",
+      "dark",
+      "ice"
+    ],
+    "giz_bakemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_kamemon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "giz_mushroomon": [
+      "plant",
+      "plant",
+      "fire"
+    ],
+    "giz_chuumon": [
+      "fire",
+      "beast",
+      "beast"
+    ],
+    "giz_mamemon": [
+      "fire",
+      "thunder",
+      "fire"
+    ],
+    "giz_seadramon": [
+      "ice",
+      "ice",
+      "water"
+    ],
+    "giz_kokuwamon": [
+      "thunder",
+      "metal",
+      "thunder"
+    ],
+    "giz_terriermon": [
+      "wind",
+      "metal",
+      "metal"
+    ],
+    "giz_kazemon": [
+      "wind",
+      "wind",
+      "holy"
+    ],
+    "giz_kuwagamon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "giz_kumamon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "giz_falcomon": [
+      "wind",
+      "dark",
+      "wind"
+    ],
+    "giz_sorcermon": [
+      "ice",
+      "thunder",
+      "dark"
+    ],
+    "giz_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_blackgabumon": [
+      "beast",
+      "ice",
+      "ice"
+    ],
+    "giz_solarmon": [
+      "thunder",
+      "holy",
+      "holy"
+    ],
+    "giz_woodmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "giz_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "giz_airdramon": [
+      "wind",
+      "fire",
+      "dark"
+    ],
+    "giz_gumdramon": [
+      "fire",
+      "metal",
+      "holy"
+    ],
+    "giz_gizamon": [
+      "water",
+      "dark",
+      "dark"
+    ],
+    "giz_bearmon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "giz_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "giz_starmon": [
+      "fire",
+      "fire",
+      "holy"
+    ],
+    "giz_vegiemon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "giz_penguinmon": [
+      "ice",
+      "water",
+      "water"
+    ],
+    "giz_demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_salamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "giz_blackagumon": [
+      "fire",
+      "beast",
+      "fire"
+    ],
+    "giz_impmon": [
+      "fire",
+      "fire",
+      "dark"
+    ],
+    "giz_numemon": [
+      "beast",
+      "plant",
+      "metal"
+    ],
+    "giz_youkomon": [
+      "fire",
+      "fire",
+      "holy"
+    ],
+    "giz_tyrannomon": [
+      "fire",
+      "metal",
+      "dark"
+    ],
+    "giz_psychemon": [
+      "thunder",
+      "metal",
+      "metal"
+    ],
+    "giz_shoutmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "giz_lekismon": [
+      "ice",
+      "ice",
+      "holy"
+    ],
+    "giz_kunemon": [
+      "thunder",
+      "plant",
+      "metal"
+    ],
+    "giz_hagurumon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "giz_floramon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "giz_lalamon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "giz_dorumon": [
+      "metal",
+      "beast",
+      "metal"
+    ],
+    "giz_sistermonb": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "giz_gotsumon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "giz_justimon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "giz_sistermonn": [
+      "metal",
+      "fire",
+      "holy"
+    ],
+    "giz_keramon": [
+      "dark",
+      "fire",
+      "dark"
+    ],
+    "giz_myotismon": [
+      "dark",
+      "dark",
+      "ice"
+    ],
+    "giz_gekomon": [
+      "beast",
+      "beast",
+      "water"
+    ],
+    "giz_datamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "giz_renamon": [
+      "ice",
+      "holy",
+      "thunder"
+    ],
+    "giz_lucemon": [
+      "holy",
+      "dark",
+      "dark"
+    ],
+    "giz_arukenimon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "giz_inno": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "giz_decoy": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_w_guardromon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "giz_w_nanimon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "giz_w_gigadramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "giz_w_belphemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_w_apocalymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_w_ygg": [
+      "ice",
+      "ice",
+      "ice"
+    ]
+  },
+  "gizmos/hyper": {
+    "giz_meramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "giz_commandramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "giz_zubamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "giz_goblimon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "giz_toyagumon": [
+      "fire",
+      "wind",
+      "fire"
+    ],
+    "giz_syakomon": [
+      "water",
+      "water",
+      "dark"
+    ],
+    "giz_kotemon": [
+      "fire",
+      "metal",
+      "holy"
+    ],
+    "giz_tsukaimon": [
+      "dark",
+      "dark",
+      "ice"
+    ],
+    "giz_bakemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_kamemon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "giz_mushroomon": [
+      "plant",
+      "plant",
+      "fire"
+    ],
+    "giz_chuumon": [
+      "fire",
+      "beast",
+      "beast"
+    ],
+    "giz_mamemon": [
+      "fire",
+      "thunder",
+      "fire"
+    ],
+    "giz_seadramon": [
+      "ice",
+      "ice",
+      "water"
+    ],
+    "giz_kokuwamon": [
+      "thunder",
+      "metal",
+      "thunder"
+    ],
+    "giz_terriermon": [
+      "wind",
+      "metal",
+      "metal"
+    ],
+    "giz_kazemon": [
+      "wind",
+      "wind",
+      "holy"
+    ],
+    "giz_kuwagamon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "giz_kumamon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "giz_falcomon": [
+      "wind",
+      "dark",
+      "wind"
+    ],
+    "giz_sorcermon": [
+      "ice",
+      "thunder",
+      "dark"
+    ],
+    "giz_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_blackgabumon": [
+      "beast",
+      "ice",
+      "ice"
+    ],
+    "giz_solarmon": [
+      "thunder",
+      "holy",
+      "holy"
+    ],
+    "giz_woodmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "giz_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "giz_airdramon": [
+      "wind",
+      "fire",
+      "dark"
+    ],
+    "giz_gumdramon": [
+      "fire",
+      "metal",
+      "holy"
+    ],
+    "giz_gizamon": [
+      "water",
+      "dark",
+      "dark"
+    ],
+    "giz_bearmon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "giz_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "giz_starmon": [
+      "fire",
+      "fire",
+      "holy"
+    ],
+    "giz_vegiemon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "giz_penguinmon": [
+      "ice",
+      "water",
+      "water"
+    ],
+    "giz_demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_salamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "giz_blackagumon": [
+      "fire",
+      "beast",
+      "fire"
+    ],
+    "giz_impmon": [
+      "fire",
+      "fire",
+      "dark"
+    ],
+    "giz_numemon": [
+      "beast",
+      "plant",
+      "metal"
+    ],
+    "giz_youkomon": [
+      "fire",
+      "fire",
+      "holy"
+    ],
+    "giz_tyrannomon": [
+      "fire",
+      "metal",
+      "dark"
+    ],
+    "giz_psychemon": [
+      "thunder",
+      "metal",
+      "metal"
+    ],
+    "giz_shoutmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "giz_lekismon": [
+      "ice",
+      "ice",
+      "holy"
+    ],
+    "giz_kunemon": [
+      "thunder",
+      "plant",
+      "metal"
+    ],
+    "giz_hagurumon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "giz_floramon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "giz_lalamon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "giz_dorumon": [
+      "metal",
+      "beast",
+      "metal"
+    ],
+    "giz_sistermonb": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "giz_gotsumon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "giz_justimon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "giz_sistermonn": [
+      "metal",
+      "fire",
+      "holy"
+    ],
+    "giz_keramon": [
+      "dark",
+      "fire",
+      "dark"
+    ],
+    "giz_myotismon": [
+      "dark",
+      "dark",
+      "ice"
+    ],
+    "giz_gekomon": [
+      "beast",
+      "beast",
+      "water"
+    ],
+    "giz_datamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "giz_renamon": [
+      "ice",
+      "holy",
+      "thunder"
+    ],
+    "giz_lucemon": [
+      "holy",
+      "dark",
+      "dark"
+    ],
+    "giz_arukenimon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "giz_inno": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "giz_decoy": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_w_guardromon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "giz_w_nanimon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "giz_w_gigadramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "giz_w_belphemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_w_apocalymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "giz_w_ygg": [
+      "ice",
+      "ice",
+      "ice"
+    ]
+  },
+  "reckoning/normal": {
+    "rec_zubamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "rec_otamamon": [
+      "water",
+      "wind",
+      "beast"
+    ],
+    "rec_keramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_wormmon": [
+      "plant",
+      "plant",
+      "dark"
+    ],
+    "rec_chuumon": [
+      "fire",
+      "beast",
+      "beast"
+    ],
+    "rec_coronamon": [
+      "fire",
+      "holy",
+      "holy"
+    ],
+    "rec_penguinmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "rec_gomamon": [
+      "water",
+      "water",
+      "thunder"
+    ],
+    "rec_kamemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_sisnoir": [
+      "holy",
+      "fire",
+      "fire"
+    ],
+    "rec_demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_toyagumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_blackagumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_blackgabumon": [
+      "ice",
+      "ice",
+      "dark"
+    ],
+    "rec_falcomon": [
+      "wind",
+      "wind",
+      "fire"
+    ],
+    "rec_impmon": [
+      "fire",
+      "thunder",
+      "dark"
+    ],
+    "rec_hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_kumamon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "rec_monodramon": [
+      "beast",
+      "fire",
+      "dark"
+    ],
+    "rec_lalamon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "rec_patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "rec_tsukaimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_goblimon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "rec_lunamon": [
+      "water",
+      "water",
+      "ice"
+    ],
+    "rec_terriermon": [
+      "fire",
+      "metal",
+      "metal"
+    ],
+    "rec_dracomon": [
+      "fire",
+      "fire",
+      "wind"
+    ],
+    "rec_elecmon": [
+      "thunder",
+      "beast",
+      "wind"
+    ],
+    "rec_floramon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "rec_salamon": [
+      "holy",
+      "thunder",
+      "holy"
+    ],
+    "rec_gazimon": [
+      "thunder",
+      "fire",
+      "dark"
+    ],
+    "rec_blackgatomon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_kudamon": [
+      "wind",
+      "beast",
+      "wind"
+    ],
+    "rec_kuwagamon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "rec_tapirmon": [
+      "dark",
+      "fire",
+      "metal"
+    ],
+    "rec_lopmon": [
+      "ice",
+      "beast",
+      "holy"
+    ],
+    "rec_biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "rec_ryudamon": [
+      "metal",
+      "metal",
+      "wind"
+    ],
+    "rec_palmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "rec_gaomon": [
+      "beast",
+      "beast",
+      "holy"
+    ],
+    "rec_dorumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_raremon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "rec_coredramon": [
+      "plant",
+      "metal",
+      "metal"
+    ],
+    "rec_woodmon": [
+      "plant",
+      "plant",
+      "beast"
+    ],
+    "rec_hackmon": [
+      "beast",
+      "holy",
+      "holy"
+    ],
+    "rec_hawkmon": [
+      "wind",
+      "wind",
+      "thunder"
+    ],
+    "rec_rapidarmor": [
+      "metal",
+      "thunder",
+      "metal"
+    ],
+    "rec_blackgreymon": [
+      "fire",
+      "fire",
+      "dark"
+    ],
+    "rec_veemon": [
+      "beast",
+      "holy",
+      "holy"
+    ],
+    "rec_unimon": [
+      "holy",
+      "fire",
+      "holy"
+    ],
+    "rec_valkyrimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "rec_growlmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_guilmon": [
+      "fire",
+      "holy",
+      "holy"
+    ],
+    "rec_sisciel": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "rec_clockmon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_lucemon": [
+      "holy",
+      "dark",
+      "holy"
+    ],
+    "rec_renamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "rec_mushroomon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "rec_myotismon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_bearmon": [
+      "beast",
+      "thunder",
+      "thunder"
+    ],
+    "rec_kimeramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_daisy": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "rec_gumdramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_wolf": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "rec_voidspawn": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_pagumon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "rec_w_numemon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "rec_w_geremon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "rec_w_tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_w_etemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_metaltyrannomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_w_icedevimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "rec_w_skullgreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_kingetemon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "rec_w_gigadramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_w_rusttyranomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_w_dragomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "rec_w_daemon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_w_leviamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "rec_w_barbamon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_belphemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_millenniummon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_apocalymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_armageddemon": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "reckoning/hyper": {
+    "rec_zubamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "rec_otamamon": [
+      "water",
+      "wind",
+      "beast"
+    ],
+    "rec_keramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_wormmon": [
+      "plant",
+      "plant",
+      "dark"
+    ],
+    "rec_chuumon": [
+      "fire",
+      "beast",
+      "beast"
+    ],
+    "rec_coronamon": [
+      "fire",
+      "holy",
+      "holy"
+    ],
+    "rec_penguinmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "rec_gomamon": [
+      "water",
+      "water",
+      "thunder"
+    ],
+    "rec_kamemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_sisnoir": [
+      "holy",
+      "fire",
+      "fire"
+    ],
+    "rec_demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_toyagumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_blackagumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_blackgabumon": [
+      "ice",
+      "ice",
+      "dark"
+    ],
+    "rec_falcomon": [
+      "wind",
+      "wind",
+      "fire"
+    ],
+    "rec_impmon": [
+      "fire",
+      "thunder",
+      "dark"
+    ],
+    "rec_hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_kumamon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "rec_monodramon": [
+      "beast",
+      "fire",
+      "dark"
+    ],
+    "rec_lalamon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "rec_patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "rec_tsukaimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_goblimon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "rec_lunamon": [
+      "water",
+      "water",
+      "ice"
+    ],
+    "rec_terriermon": [
+      "fire",
+      "metal",
+      "metal"
+    ],
+    "rec_dracomon": [
+      "fire",
+      "fire",
+      "wind"
+    ],
+    "rec_elecmon": [
+      "thunder",
+      "beast",
+      "wind"
+    ],
+    "rec_floramon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "rec_salamon": [
+      "holy",
+      "thunder",
+      "holy"
+    ],
+    "rec_gazimon": [
+      "thunder",
+      "fire",
+      "dark"
+    ],
+    "rec_blackgatomon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_kudamon": [
+      "wind",
+      "beast",
+      "wind"
+    ],
+    "rec_kuwagamon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "rec_tapirmon": [
+      "dark",
+      "fire",
+      "metal"
+    ],
+    "rec_lopmon": [
+      "ice",
+      "beast",
+      "holy"
+    ],
+    "rec_biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "rec_ryudamon": [
+      "metal",
+      "metal",
+      "wind"
+    ],
+    "rec_palmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "rec_gaomon": [
+      "beast",
+      "beast",
+      "holy"
+    ],
+    "rec_dorumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_raremon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "rec_coredramon": [
+      "plant",
+      "metal",
+      "metal"
+    ],
+    "rec_woodmon": [
+      "plant",
+      "plant",
+      "beast"
+    ],
+    "rec_hackmon": [
+      "beast",
+      "holy",
+      "holy"
+    ],
+    "rec_hawkmon": [
+      "wind",
+      "wind",
+      "thunder"
+    ],
+    "rec_rapidarmor": [
+      "metal",
+      "thunder",
+      "metal"
+    ],
+    "rec_blackgreymon": [
+      "fire",
+      "fire",
+      "dark"
+    ],
+    "rec_veemon": [
+      "beast",
+      "holy",
+      "holy"
+    ],
+    "rec_unimon": [
+      "holy",
+      "fire",
+      "holy"
+    ],
+    "rec_valkyrimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "rec_growlmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_guilmon": [
+      "fire",
+      "holy",
+      "holy"
+    ],
+    "rec_sisciel": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "rec_clockmon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_lucemon": [
+      "holy",
+      "dark",
+      "holy"
+    ],
+    "rec_renamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "rec_mushroomon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "rec_myotismon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_bearmon": [
+      "beast",
+      "thunder",
+      "thunder"
+    ],
+    "rec_kimeramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_daisy": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "rec_gumdramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_wolf": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "rec_voidspawn": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_pagumon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "rec_w_numemon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "rec_w_geremon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "rec_w_tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_w_etemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_metaltyrannomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_w_icedevimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "rec_w_skullgreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_kingetemon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "rec_w_gigadramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_w_rusttyranomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "rec_w_dragomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "rec_w_daemon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "rec_w_leviamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "rec_w_barbamon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_belphemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_millenniummon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_apocalymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "rec_w_armageddemon": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "dragonlands/normal": {
+    "drg_gazimon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_gotsumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_patamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_crabmon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_kamemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_lunamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_elecmon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_impmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_gaomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "drg_fanbeemon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "drg_syakomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_armadillomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "drg_gabumon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "drg_gomamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_blackagumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_chuumon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "drg_betamon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_tsukaimon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_salamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_biyomon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "drg_monodramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_mushroomon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "drg_kotemon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_otamamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_aruraumon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "drg_renamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_veemon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_lalamon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "drg_snowgoblimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "drg_blackgabumon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "drg_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "drg_penguinmon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_psychemon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_kudamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_gumdramon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_kokuwamon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_toyagumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_dorumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_dracomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_guilmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_hackmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_gizamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_goblimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_ryudamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_coredramon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_dorugamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_hyokomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_jazardmon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_growlmon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_baohuckmon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_bakemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_greymon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_leomon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_zubamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_clockmon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_ankylomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_volcamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_w_commandramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_w_sealsdramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_w_devidramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_w_tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_w_gigadramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_w_metaltyrannomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_w_goldveedramon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_w_magnadramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_w_megidramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_w_chaosdromon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_w_blackwargreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_w_imperialdramon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_w_azulongmon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_stone": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_voidling": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "dragonlands/hyper": {
+    "drg_gazimon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_gotsumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_patamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_crabmon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_kamemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_lunamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_elecmon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_impmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_gaomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "drg_fanbeemon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "drg_syakomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_armadillomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "drg_gabumon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "drg_gomamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_blackagumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_chuumon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "drg_betamon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_tsukaimon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_salamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_biyomon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "drg_monodramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_mushroomon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "drg_kotemon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_otamamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_aruraumon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "drg_renamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_veemon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_lalamon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "drg_snowgoblimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "drg_blackgabumon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "drg_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "drg_penguinmon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_psychemon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_kudamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_gumdramon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_kokuwamon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_toyagumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_dorumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_dracomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_guilmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_hackmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_gizamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_goblimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_ryudamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_coredramon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "drg_dorugamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_hyokomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_jazardmon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_growlmon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_baohuckmon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_bakemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_greymon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_leomon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_zubamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_clockmon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_ankylomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_volcamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_w_commandramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_w_sealsdramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_w_devidramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_w_tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_w_gigadramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_w_metaltyrannomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_w_goldveedramon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_w_magnadramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "drg_w_megidramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_w_chaosdromon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_w_blackwargreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "drg_w_imperialdramon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "drg_w_azulongmon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "drg_stone": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "drg_voidling": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "arcane/normal": {
+    "arc_kokuwamon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "arc_goblimon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_impmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_zubamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_lalamon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "arc_commandramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_tsukaimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_chuumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_mushroomon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "arc_snowgoblimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "arc_psychemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_gaomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_aruraumon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "arc_hyokomon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "arc_lopmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "arc_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_monodramon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_kotemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_floramon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "arc_jazamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_terriermon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "arc_crabmon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_elecmon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "arc_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_kamemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_gotsumon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_betamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_shamanmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "arc_gomamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_keramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_armadillomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_syakomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_penguinmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "arc_numemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_gazimon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "arc_saberdramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_renamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "arc_tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "arc_ryudamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "arc_tapirmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_kunemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_hackmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_gizamon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_fanbeemon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "arc_bearmon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_lunamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_biyomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_kentaurosmon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "arc_gallantmon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "arc_beelzemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_piedmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_diaboromon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_craniamon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "arc_chaosdromon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_blackwargreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_millenniummon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_witchmon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_w_toyagumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_w_otamamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_w_kuwagamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_w_gekomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_w_tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_w_shogun": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_w_skullgreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_w_megadramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_w_metaltyranno": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_w_machinedramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_w_megidramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_s_belphemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_s_shellnumemon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_s_garurumon": [
+      "ice",
+      "ice",
+      "ice"
+    ]
+  },
+  "arcane/hyper": {
+    "arc_kokuwamon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "arc_goblimon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_impmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_zubamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_lalamon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "arc_commandramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_tsukaimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_chuumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_mushroomon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "arc_snowgoblimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "arc_psychemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_gaomon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_aruraumon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "arc_hyokomon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "arc_lopmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "arc_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_monodramon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_kotemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_floramon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "arc_jazamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_terriermon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "arc_crabmon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_elecmon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "arc_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_kamemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_gotsumon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_betamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_shamanmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "arc_gomamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_keramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_armadillomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_syakomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_penguinmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "arc_numemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_gazimon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "arc_saberdramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_renamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "arc_tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "arc_ryudamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "arc_tapirmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_kunemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_hackmon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_gizamon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_fanbeemon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "arc_bearmon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_lunamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_biyomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_kentaurosmon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "arc_gallantmon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "arc_beelzemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_piedmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_diaboromon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_craniamon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "arc_chaosdromon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_blackwargreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_millenniummon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_witchmon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_w_toyagumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_w_otamamon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_w_kuwagamon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "arc_w_gekomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_w_tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_w_shogun": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_w_skullgreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_w_megadramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_w_metaltyranno": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_w_machinedramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "arc_w_megidramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "arc_s_belphemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "arc_s_shellnumemon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "arc_s_garurumon": [
+      "ice",
+      "ice",
+      "ice"
+    ]
+  },
+  "coliseum/normal": {
+    "col_hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "col_lunamon": [
+      "water",
+      "water",
+      "ice"
+    ],
+    "col_zubamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "col_gabumon": [
+      "ice",
+      "fire",
+      "beast"
+    ],
+    "col_lobomon": [
+      "holy",
+      "holy",
+      "metal"
+    ],
+    "col_tsukaimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_elecmon": [
+      "thunder",
+      "thunder",
+      "ice"
+    ],
+    "col_kokuwamon": [
+      "thunder",
+      "metal",
+      "metal"
+    ],
+    "col_armadillomon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "col_gotsumon": [
+      "metal",
+      "holy",
+      "holy"
+    ],
+    "col_betamon": [
+      "thunder",
+      "ice",
+      "thunder"
+    ],
+    "col_syakomon": [
+      "water",
+      "ice",
+      "holy"
+    ],
+    "col_numemon": [
+      "plant",
+      "plant",
+      "dark"
+    ],
+    "col_goblimon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "col_monodramon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "col_wormmon": [
+      "plant",
+      "wind",
+      "plant"
+    ],
+    "col_demidevimon": [
+      "dark",
+      "ice",
+      "dark"
+    ],
+    "col_fanbeemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "col_falcomon": [
+      "wind",
+      "wind",
+      "fire"
+    ],
+    "col_kamemon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "col_patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "col_biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "col_lopmon": [
+      "ice",
+      "beast",
+      "metal"
+    ],
+    "col_gaomon": [
+      "beast",
+      "wind",
+      "beast"
+    ],
+    "col_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "col_ryudamon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "col_kyubimon": [
+      "fire",
+      "holy",
+      "holy"
+    ],
+    "col_sistermonnoir": [
+      "metal",
+      "fire",
+      "fire"
+    ],
+    "col_kuwagamon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "col_ikkakumon": [
+      "water",
+      "metal",
+      "thunder"
+    ],
+    "col_labramon": [
+      "holy",
+      "dark",
+      "dark"
+    ],
+    "col_vegiemon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "col_lalamon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "col_tyrannomon": [
+      "fire",
+      "metal",
+      "metal"
+    ],
+    "col_saberdramon": [
+      "dark",
+      "metal",
+      "fire"
+    ],
+    "col_reppamon": [
+      "beast",
+      "wind",
+      "holy"
+    ],
+    "col_sangloupmon": [
+      "dark",
+      "dark",
+      "ice"
+    ],
+    "col_kotemon": [
+      "wind",
+      "beast",
+      "wind"
+    ],
+    "col_mamemon": [
+      "fire",
+      "metal",
+      "fire"
+    ],
+    "col_sistermonciel": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "col_coredramon": [
+      "fire",
+      "metal",
+      "metal"
+    ],
+    "col_gargomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "col_bakemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_keramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_geogreymon": [
+      "fire",
+      "fire",
+      "holy"
+    ],
+    "col_bearmon": [
+      "beast",
+      "beast",
+      "holy"
+    ],
+    "col_wizardmon": [
+      "thunder",
+      "dark",
+      "holy"
+    ],
+    "col_impmon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "col_leomon": [
+      "fire",
+      "ice",
+      "fire"
+    ],
+    "col_salamon": [
+      "holy",
+      "thunder",
+      "holy"
+    ],
+    "col_ravemon": [
+      "dark",
+      "holy",
+      "fire"
+    ],
+    "col_craniamon": [
+      "metal",
+      "wind",
+      "holy"
+    ],
+    "col_puppetmon": [
+      "plant",
+      "metal",
+      "plant"
+    ],
+    "col_justimon": [
+      "thunder",
+      "thunder",
+      "metal"
+    ],
+    "col_ophanimon": [
+      "holy",
+      "holy",
+      "fire"
+    ],
+    "col_piedmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_myotismon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_hiandromon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "col_lotosmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "col_merukimon": [
+      "beast",
+      "holy",
+      "holy"
+    ],
+    "col_mech": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "col_root": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "col_spine": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "col_w_gazimon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "col_w_mushroomon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "col_w_crabmon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "col_w_snowgoblimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "col_w_monochromon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "col_w_meramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "col_w_hyogamon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "col_w_unimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "col_w_knightmon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "col_w_triceramon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "col_w_etemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_w_skullgreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_w_kimeramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "col_w_darkdramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_w_alphamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "col_w_omnimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "col_w_imperialdramon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "col_w_millenniummon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_w_apocalymon": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "coliseum/hyper": {
+    "col_hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "col_lunamon": [
+      "water",
+      "water",
+      "ice"
+    ],
+    "col_zubamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "col_gabumon": [
+      "ice",
+      "fire",
+      "beast"
+    ],
+    "col_lobomon": [
+      "holy",
+      "holy",
+      "metal"
+    ],
+    "col_tsukaimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_elecmon": [
+      "thunder",
+      "thunder",
+      "ice"
+    ],
+    "col_kokuwamon": [
+      "thunder",
+      "metal",
+      "metal"
+    ],
+    "col_armadillomon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "col_gotsumon": [
+      "metal",
+      "holy",
+      "holy"
+    ],
+    "col_betamon": [
+      "thunder",
+      "ice",
+      "thunder"
+    ],
+    "col_syakomon": [
+      "water",
+      "ice",
+      "holy"
+    ],
+    "col_numemon": [
+      "plant",
+      "plant",
+      "dark"
+    ],
+    "col_goblimon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "col_monodramon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "col_wormmon": [
+      "plant",
+      "wind",
+      "plant"
+    ],
+    "col_demidevimon": [
+      "dark",
+      "ice",
+      "dark"
+    ],
+    "col_fanbeemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "col_falcomon": [
+      "wind",
+      "wind",
+      "fire"
+    ],
+    "col_kamemon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "col_patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "col_biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "col_lopmon": [
+      "ice",
+      "beast",
+      "metal"
+    ],
+    "col_gaomon": [
+      "beast",
+      "wind",
+      "beast"
+    ],
+    "col_hawkmon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "col_ryudamon": [
+      "metal",
+      "metal",
+      "holy"
+    ],
+    "col_kyubimon": [
+      "fire",
+      "holy",
+      "holy"
+    ],
+    "col_sistermonnoir": [
+      "metal",
+      "fire",
+      "fire"
+    ],
+    "col_kuwagamon": [
+      "beast",
+      "beast",
+      "dark"
+    ],
+    "col_ikkakumon": [
+      "water",
+      "metal",
+      "thunder"
+    ],
+    "col_labramon": [
+      "holy",
+      "dark",
+      "dark"
+    ],
+    "col_vegiemon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "col_lalamon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "col_tyrannomon": [
+      "fire",
+      "metal",
+      "metal"
+    ],
+    "col_saberdramon": [
+      "dark",
+      "metal",
+      "fire"
+    ],
+    "col_reppamon": [
+      "beast",
+      "wind",
+      "holy"
+    ],
+    "col_sangloupmon": [
+      "dark",
+      "dark",
+      "ice"
+    ],
+    "col_kotemon": [
+      "wind",
+      "beast",
+      "wind"
+    ],
+    "col_mamemon": [
+      "fire",
+      "metal",
+      "fire"
+    ],
+    "col_sistermonciel": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "col_coredramon": [
+      "fire",
+      "metal",
+      "metal"
+    ],
+    "col_gargomon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "col_bakemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_keramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_geogreymon": [
+      "fire",
+      "fire",
+      "holy"
+    ],
+    "col_bearmon": [
+      "beast",
+      "beast",
+      "holy"
+    ],
+    "col_wizardmon": [
+      "thunder",
+      "dark",
+      "holy"
+    ],
+    "col_impmon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "col_leomon": [
+      "fire",
+      "ice",
+      "fire"
+    ],
+    "col_salamon": [
+      "holy",
+      "thunder",
+      "holy"
+    ],
+    "col_ravemon": [
+      "dark",
+      "holy",
+      "fire"
+    ],
+    "col_craniamon": [
+      "metal",
+      "wind",
+      "holy"
+    ],
+    "col_puppetmon": [
+      "plant",
+      "metal",
+      "plant"
+    ],
+    "col_justimon": [
+      "thunder",
+      "thunder",
+      "metal"
+    ],
+    "col_ophanimon": [
+      "holy",
+      "holy",
+      "fire"
+    ],
+    "col_piedmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_myotismon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_hiandromon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "col_lotosmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "col_merukimon": [
+      "beast",
+      "holy",
+      "holy"
+    ],
+    "col_mech": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "col_root": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "col_spine": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "col_w_gazimon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "col_w_mushroomon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "col_w_crabmon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "col_w_snowgoblimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "col_w_monochromon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "col_w_meramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "col_w_hyogamon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "col_w_unimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "col_w_knightmon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "col_w_triceramon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "col_w_etemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_w_skullgreymon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_w_kimeramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "col_w_darkdramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_w_alphamon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "col_w_omnimon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "col_w_imperialdramon": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "col_w_millenniummon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "col_w_apocalymon": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "underlords/normal": {
+    "ul_antimage": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_batrider": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_bounty": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_crystal": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_dazzle": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_drow": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_enchantress": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_lich": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_magnus": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_phantom": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_shadowdemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_slardar": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_snapfire": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_tusk": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_vengeful": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_venomancer": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_bristleback": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_chaosknight": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_earthspirit": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_juggernaut": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_kunkka": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_legion": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_luna": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_meepo": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_prophet": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_pudge": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_queenofpain": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_spiritbreaker": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_stormspirit": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_windranger": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "ul_abaddon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_alchemist": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_beastmaster": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_emberspirit": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lifestealer": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_lycan": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_omniknight": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_puck": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_shadowshaman": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_slark": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_spectre": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_terrorblade": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_treant": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_deathprophet": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_doom": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lina": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lonedruid": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_mirana": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_pangolier": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_rubick": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_sven": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_templar": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_tidehunter": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_viper": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_voidspirit": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_axe": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_dragonknight": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_faceless": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_keeper": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_medusa": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_trollwarlord": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_wraithking": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_tamer_anessa": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_tamer_hob": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_tamer_jules": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_tamer_enno": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_archer": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_s_golem": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_s_wolf": [
+      "dark",
+      "ice",
+      "ice"
+    ],
+    "ul_s_hatchling": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_s_blackdragon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_s_ward": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_treant": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_bear": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_s_serpent": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_s_bruiser": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_s_thunderhide": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_w_melee": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_w_ranged": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_w_mega": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_w_golem": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_w_troll": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_w_yearbeast": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_w_roshan": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "underlords/hyper": {
+    "ul_antimage": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_batrider": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_bounty": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_crystal": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_dazzle": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_drow": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_enchantress": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_lich": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_magnus": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_phantom": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_shadowdemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_slardar": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_snapfire": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_tusk": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_vengeful": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_venomancer": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_bristleback": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_chaosknight": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_earthspirit": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_juggernaut": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_kunkka": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_legion": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_luna": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_meepo": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_prophet": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_pudge": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_queenofpain": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_spiritbreaker": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_stormspirit": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_windranger": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "ul_abaddon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_alchemist": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_beastmaster": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_emberspirit": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lifestealer": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_lycan": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_omniknight": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_puck": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_shadowshaman": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_slark": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_spectre": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_terrorblade": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_treant": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_deathprophet": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_doom": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lina": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lonedruid": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_mirana": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_pangolier": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_rubick": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_sven": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_templar": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_tidehunter": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_viper": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_voidspirit": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_axe": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_dragonknight": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_faceless": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_keeper": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_medusa": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_trollwarlord": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_wraithking": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_tamer_anessa": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_tamer_hob": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_tamer_jules": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_tamer_enno": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_archer": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_s_golem": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_s_wolf": [
+      "dark",
+      "ice",
+      "ice"
+    ],
+    "ul_s_hatchling": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_s_blackdragon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_s_ward": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_treant": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_bear": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_s_serpent": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_s_bruiser": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_s_thunderhide": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_w_melee": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_w_ranged": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_w_mega": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_w_golem": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_w_troll": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_w_yearbeast": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_w_roshan": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "autochess/normal": {
+    "ac_lopmon": [
+      "ice",
+      "beast",
+      "metal"
+    ],
+    "ac_agumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_fanbeemon": [
+      "metal",
+      "metal",
+      "fire"
+    ],
+    "ac_keramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_kudamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "ac_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ac_kokuwamon": [
+      "thunder",
+      "metal",
+      "metal"
+    ],
+    "ac_gotsumon": [
+      "metal",
+      "metal",
+      "fire"
+    ],
+    "ac_bearmon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ac_dracomon": [
+      "fire",
+      "water",
+      "wind"
+    ],
+    "ac_candlemon": [
+      "fire",
+      "thunder",
+      "dark"
+    ],
+    "ac_hackmon": [
+      "metal",
+      "metal",
+      "fire"
+    ],
+    "ac_goblimon": [
+      "beast",
+      "metal",
+      "fire"
+    ],
+    "ac_salamon": [
+      "holy",
+      "thunder",
+      "holy"
+    ],
+    "ac_palmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ac_blackagumon": [
+      "fire",
+      "fire",
+      "dark"
+    ],
+    "ac_tsukaimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_lalamon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "ac_hyokomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_gumdramon": [
+      "fire",
+      "wind",
+      "holy"
+    ],
+    "ac_floramon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "ac_gomamon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "ac_solarmon": [
+      "holy",
+      "metal",
+      "dark"
+    ],
+    "ac_kunemon": [
+      "thunder",
+      "plant",
+      "dark"
+    ],
+    "ac_labramon": [
+      "beast",
+      "dark",
+      "holy"
+    ],
+    "ac_lunamon": [
+      "water",
+      "water",
+      "ice"
+    ],
+    "ac_gizamon": [
+      "water",
+      "dark",
+      "dark"
+    ],
+    "ac_wormmon": [
+      "plant",
+      "plant",
+      "holy"
+    ],
+    "ac_biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "ac_gabumon": [
+      "ice",
+      "ice",
+      "beast"
+    ],
+    "ac_patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "ac_falcomon": [
+      "beast",
+      "wind",
+      "fire"
+    ],
+    "ac_snowgoblimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ac_gazimon": [
+      "thunder",
+      "dark",
+      "dark"
+    ],
+    "ac_commandramon": [
+      "metal",
+      "dark",
+      "dark"
+    ],
+    "ac_monodramon": [
+      "beast",
+      "fire",
+      "metal"
+    ],
+    "ac_hawkmon": [
+      "wind",
+      "holy",
+      "wind"
+    ],
+    "ac_mushroomon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ac_guilmon": [
+      "fire",
+      "fire",
+      "metal"
+    ],
+    "ac_dorumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_tapirmon": [
+      "dark",
+      "metal",
+      "metal"
+    ],
+    "ac_armadillomon": [
+      "metal",
+      "metal",
+      "thunder"
+    ],
+    "ac_impmon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "ac_veemon": [
+      "beast",
+      "holy",
+      "holy"
+    ],
+    "ac_shamanmon": [
+      "wind",
+      "ice",
+      "fire"
+    ],
+    "ac_kotemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_gaomon": [
+      "beast",
+      "beast",
+      "metal"
+    ],
+    "ac_betamon": [
+      "thunder",
+      "ice",
+      "thunder"
+    ],
+    "ac_demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_renamon": [
+      "holy",
+      "fire",
+      "holy"
+    ],
+    "ac_dokunemon": [
+      "plant",
+      "beast",
+      "dark"
+    ],
+    "ac_psychemon": [
+      "holy",
+      "wind",
+      "dark"
+    ],
+    "ac_dexdorugamon": [
+      "metal",
+      "dark",
+      "dark"
+    ],
+    "ac_vorvomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_jazamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_terriermon": [
+      "wind",
+      "metal",
+      "fire"
+    ],
+    "ac_lucemon": [
+      "holy",
+      "dark",
+      "fire"
+    ],
+    "ac_syakomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ac_elecmon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ac_s_tanemon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ac_s_vegiemon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ac_s_kumamon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ac_w_numemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_w_gekomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ac_w_blackgarurmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ac_w_ogremon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ac_w_fugamon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_w_tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_w_metaltyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_w_monochromon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_w_mammothmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ac_w_airdramon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "ac_w_gigadramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_w_diaboromon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_w_goldguardromon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_w_machinedramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_w_kimeramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_w_millenniummon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_w_apocalymon": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "autochess/hyper": {
+    "ac_lopmon": [
+      "ice",
+      "beast",
+      "metal"
+    ],
+    "ac_agumon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_fanbeemon": [
+      "metal",
+      "metal",
+      "fire"
+    ],
+    "ac_keramon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_hagurumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_dracmon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_kudamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "ac_coronamon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_tentomon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ac_kokuwamon": [
+      "thunder",
+      "metal",
+      "metal"
+    ],
+    "ac_gotsumon": [
+      "metal",
+      "metal",
+      "fire"
+    ],
+    "ac_bearmon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ac_dracomon": [
+      "fire",
+      "water",
+      "wind"
+    ],
+    "ac_candlemon": [
+      "fire",
+      "thunder",
+      "dark"
+    ],
+    "ac_hackmon": [
+      "metal",
+      "metal",
+      "fire"
+    ],
+    "ac_goblimon": [
+      "beast",
+      "metal",
+      "fire"
+    ],
+    "ac_salamon": [
+      "holy",
+      "thunder",
+      "holy"
+    ],
+    "ac_palmon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ac_blackagumon": [
+      "fire",
+      "fire",
+      "dark"
+    ],
+    "ac_tsukaimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_lalamon": [
+      "plant",
+      "holy",
+      "plant"
+    ],
+    "ac_hyokomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_gumdramon": [
+      "fire",
+      "wind",
+      "holy"
+    ],
+    "ac_floramon": [
+      "plant",
+      "dark",
+      "dark"
+    ],
+    "ac_gomamon": [
+      "water",
+      "water",
+      "metal"
+    ],
+    "ac_solarmon": [
+      "holy",
+      "metal",
+      "dark"
+    ],
+    "ac_kunemon": [
+      "thunder",
+      "plant",
+      "dark"
+    ],
+    "ac_labramon": [
+      "beast",
+      "dark",
+      "holy"
+    ],
+    "ac_lunamon": [
+      "water",
+      "water",
+      "ice"
+    ],
+    "ac_gizamon": [
+      "water",
+      "dark",
+      "dark"
+    ],
+    "ac_wormmon": [
+      "plant",
+      "plant",
+      "holy"
+    ],
+    "ac_biyomon": [
+      "plant",
+      "fire",
+      "fire"
+    ],
+    "ac_gabumon": [
+      "ice",
+      "ice",
+      "beast"
+    ],
+    "ac_patamon": [
+      "wind",
+      "holy",
+      "holy"
+    ],
+    "ac_falcomon": [
+      "beast",
+      "wind",
+      "fire"
+    ],
+    "ac_snowgoblimon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ac_gazimon": [
+      "thunder",
+      "dark",
+      "dark"
+    ],
+    "ac_commandramon": [
+      "metal",
+      "dark",
+      "dark"
+    ],
+    "ac_monodramon": [
+      "beast",
+      "fire",
+      "metal"
+    ],
+    "ac_hawkmon": [
+      "wind",
+      "holy",
+      "wind"
+    ],
+    "ac_mushroomon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ac_guilmon": [
+      "fire",
+      "fire",
+      "metal"
+    ],
+    "ac_dorumon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_tapirmon": [
+      "dark",
+      "metal",
+      "metal"
+    ],
+    "ac_armadillomon": [
+      "metal",
+      "metal",
+      "thunder"
+    ],
+    "ac_impmon": [
+      "fire",
+      "dark",
+      "dark"
+    ],
+    "ac_veemon": [
+      "beast",
+      "holy",
+      "holy"
+    ],
+    "ac_shamanmon": [
+      "wind",
+      "ice",
+      "fire"
+    ],
+    "ac_kotemon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_gaomon": [
+      "beast",
+      "beast",
+      "metal"
+    ],
+    "ac_betamon": [
+      "thunder",
+      "ice",
+      "thunder"
+    ],
+    "ac_demidevimon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_renamon": [
+      "holy",
+      "fire",
+      "holy"
+    ],
+    "ac_dokunemon": [
+      "plant",
+      "beast",
+      "dark"
+    ],
+    "ac_psychemon": [
+      "holy",
+      "wind",
+      "dark"
+    ],
+    "ac_dexdorugamon": [
+      "metal",
+      "dark",
+      "dark"
+    ],
+    "ac_vorvomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_jazamon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_terriermon": [
+      "wind",
+      "metal",
+      "fire"
+    ],
+    "ac_lucemon": [
+      "holy",
+      "dark",
+      "fire"
+    ],
+    "ac_syakomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ac_elecmon": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ac_s_tanemon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ac_s_vegiemon": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ac_s_kumamon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ac_w_numemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_w_gekomon": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ac_w_blackgarurmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ac_w_ogremon": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ac_w_fugamon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_w_tyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_w_metaltyrannomon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_w_monochromon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_w_mammothmon": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ac_w_airdramon": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "ac_w_gigadramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_w_diaboromon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_w_goldguardromon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_w_machinedramon": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ac_w_kimeramon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ac_w_millenniummon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ac_w_apocalymon": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "underlords_ko/normal": {
+    "ul_antimage": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_batrider": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_bounty": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_crystal": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_dazzle": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_drow": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_enchantress": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_lich": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_magnus": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_phantom": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_shadowdemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_slardar": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_snapfire": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_tusk": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_vengeful": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_venomancer": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_bristleback": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_chaosknight": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_earthspirit": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_juggernaut": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_kunkka": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_legion": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_luna": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_meepo": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_prophet": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_pudge": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_queenofpain": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_spiritbreaker": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_stormspirit": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_windranger": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "ul_abaddon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_alchemist": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_beastmaster": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_emberspirit": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lifestealer": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_lycan": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_omniknight": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_puck": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_shadowshaman": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_slark": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_spectre": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_terrorblade": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_treant": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_deathprophet": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_doom": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lina": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lonedruid": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_mirana": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_pangolier": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_rubick": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_sven": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_templar": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_tidehunter": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_viper": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_voidspirit": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_axe": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_dragonknight": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_faceless": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_keeper": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_medusa": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_trollwarlord": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_wraithking": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_tamer_anessa": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_tamer_hob": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_tamer_jules": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_tamer_enno": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_archer": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_s_golem": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_s_wolf": [
+      "dark",
+      "ice",
+      "ice"
+    ],
+    "ul_s_hatchling": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_s_blackdragon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_s_ward": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_treant": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_bear": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_s_serpent": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_s_bruiser": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_s_thunderhide": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_w_melee": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_w_ranged": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_w_mega": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_w_golem": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_w_troll": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_w_yearbeast": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_w_roshan": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  },
+  "underlords_ko/hyper": {
+    "ul_antimage": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_batrider": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_bounty": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_crystal": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_dazzle": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_drow": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_enchantress": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_lich": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_magnus": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_phantom": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_shadowdemon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_slardar": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_snapfire": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_tusk": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_vengeful": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_venomancer": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_bristleback": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_chaosknight": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_earthspirit": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_juggernaut": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_kunkka": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_legion": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_luna": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_meepo": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_prophet": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_pudge": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_queenofpain": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_spiritbreaker": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_stormspirit": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_windranger": [
+      "wind",
+      "wind",
+      "wind"
+    ],
+    "ul_abaddon": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_alchemist": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_beastmaster": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_emberspirit": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lifestealer": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_lycan": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_omniknight": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_puck": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_shadowshaman": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_slark": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_spectre": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_terrorblade": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_treant": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_deathprophet": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_doom": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lina": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_lonedruid": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_mirana": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_pangolier": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_rubick": [
+      "thunder",
+      "thunder",
+      "thunder"
+    ],
+    "ul_sven": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_templar": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_tidehunter": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_viper": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_voidspirit": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_axe": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_dragonknight": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_faceless": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_keeper": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_medusa": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_trollwarlord": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_wraithking": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_tamer_anessa": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_tamer_hob": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_tamer_jules": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "ul_tamer_enno": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_archer": [
+      "dark",
+      "dark",
+      "dark"
+    ],
+    "ul_s_golem": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_s_wolf": [
+      "dark",
+      "ice",
+      "ice"
+    ],
+    "ul_s_hatchling": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_s_blackdragon": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_s_ward": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_treant": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_s_bear": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_s_serpent": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_s_bruiser": [
+      "holy",
+      "holy",
+      "holy"
+    ],
+    "ul_s_thunderhide": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_w_melee": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_w_ranged": [
+      "water",
+      "water",
+      "water"
+    ],
+    "ul_w_mega": [
+      "plant",
+      "plant",
+      "plant"
+    ],
+    "ul_w_golem": [
+      "metal",
+      "metal",
+      "metal"
+    ],
+    "ul_w_troll": [
+      "beast",
+      "beast",
+      "beast"
+    ],
+    "ul_w_yearbeast": [
+      "fire",
+      "fire",
+      "fire"
+    ],
+    "ul_w_roshan": [
+      "dark",
+      "dark",
+      "dark"
+    ]
+  }
+}

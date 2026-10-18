@@ -46,7 +46,7 @@ internal sealed unsafe class GameAudio : IDisposable
             if (info.LoopFrame is { } loop && (loop < 0 || info.EndFrame <= loop || info.EndFrame > info.Frames))
                 throw new InvalidDataException("Invalid music loop: " + id);
         }
-        audio.Play("buy"); audio.Play("hit_normal"); audio.Play("hit_normal");
+        audio.Play("buy"); audio.Play("hit_normal"); audio.Play("hit_normal"); audio.Play("hit_big");
         if (audio.Played != 2) throw new InvalidOperationException("Sound rate limiting failed.");
         audio.Music("planning");
         var track = audio.voices.Single(v => v.Music);
@@ -90,9 +90,11 @@ internal sealed unsafe class GameAudio : IDisposable
     public void Play(string id)
     {
         if (!Available || Muted || !manifest.Clips.TryGetValue(id, out var info)) return;
-        if (last.TryGetValue(id, out long previous) && frame - previous < info.Gap * manifest.SampleRate) return;
+        // Source rate limits are per sound family, shared by its element/star/critical variants.
+        string family = id.StartsWith("cast_") ? "cast" : id.StartsWith("hit_") ? "hit" : id.StartsWith("tick_") ? "tick" : id;
+        if (last.TryGetValue(family, out long previous) && frame - previous < info.Gap * manifest.SampleRate) return;
         if (voices.Count(v => !v.Music) >= 40) return;
-        last[id] = frame; voices.Add(new(Load(id), 1)); Played++;
+        last[family] = frame; voices.Add(new(Load(id), 1)); Played++;
     }
     public void Music(string? id)
     {
