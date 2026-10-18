@@ -12,6 +12,7 @@ internal static class MatchApplication
 {
     public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false, bool evolutionSmoke = false, bool trainingSmoke = false, bool farmPointerSmoke = false, bool networkMatchSmoke = false, string? steamLibrary = null, bool steamLobbyUiSmoke = false, bool spectatorSmoke = false, bool modeBonusSmoke = false, bool audioVisibilitySmoke = false, string? musicDecoder = null, bool musicLibrarySmoke = false, bool minimumWindow = false)
     {
+        using var startupSignal=NativeStartupSignal.FromEnvironment();
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
         {
@@ -76,6 +77,7 @@ internal static class MatchApplication
                     if (networkDriver is not null && networkDriver.Verify(screen, size, capture)) break;
                     if (lobbyDriver is not null && lobbyDriver.Verify(screen, size, capture)) break;
                     window.SwapBuffers();
+                    if(frame==0 && startupSignal is not null)_=startupSignal.ReportReady();
                     if (smoke && frame > (trainingSmoke ? 6000 : 1400))
                     {
                         if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "failure.bmp"), size.X, size.Y);

@@ -149,6 +149,7 @@ try {
     Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Desktop', '--locked-mode')
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--', $nativeRoot)
     Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore')
+    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--startup-desktop-only', '--desktop', (Join-Path $nativeRoot 'src/DigiTactics.Desktop/bin/Release/net10.0/win-x64/DigiTactics.Desktop.exe'))
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--music-decoder-only', '--ffmpeg', (Join-Path $mediaRuntime 'ffmpeg.exe'))
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--custom-music-smoke')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-routing-smoke')

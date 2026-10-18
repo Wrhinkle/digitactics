@@ -2,6 +2,7 @@ using System.Text.Json;
 using DigiTactics.Rules;
 
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");
+if (args.Contains("--startup-desktop-only")) { await NativeStartupChecks.RunDesktop(args[Array.IndexOf(args,"--desktop")+1]); return; }
 if (args.Contains("--board-scenes-only")) { BoardSceneChecks.Run(root); return; }
 if (args.Contains("--ai-emotes-only")) { AiEmoteChecks.Run(root); return; }
 if (args.Contains("--retro-particles-only")) { RetroParticleChecks.Run(root); return; }
@@ -22,7 +23,7 @@ if (args.Contains("--music-decoder-only"))
 if (args.Contains("--combat-picking-only")) { CombatPickingChecks.Run(root); return; }
 if (args.Contains("--music-playlist-only")) { MusicPlaylistChecks.Run(root); return; }
 if (args.Contains("--music-library-only")) { MusicLibraryChecks.Run(root); return; }
-if (args.Contains("--native-update-only")) { NativeUpdateChecks.Run(); NativeLaunchChecks.Run(); return; }
+if (args.Contains("--native-update-only")) { NativeUpdateChecks.Run(); NativeLaunchChecks.Run(); await NativeStartupChecks.Run(); return; }
 if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--soundboard-only")) { SoundboardChecks.Run(); return; }
 if (args.Contains("--player-mutes-only")) { PlayerMuteChecks.Run(); return; }
@@ -236,6 +237,7 @@ assertions += ChoreographyParity.Run(root, catalog);
 assertions += AudioCueParity.Run(root, catalog);
 assertions += NativeUpdateChecks.Run();
 assertions += NativeLaunchChecks.Run();
+assertions += await NativeStartupChecks.Run();
 assertions += AudioSettingsChecks.Run();
 assertions += MatchHistoryChecks.Run(root, catalog);
 assertions += PlayOnChecks.Run(catalog);
