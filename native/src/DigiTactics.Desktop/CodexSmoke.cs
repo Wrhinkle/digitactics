@@ -14,6 +14,8 @@ internal sealed class CodexSmoke
     private ImGuiKey key;
     private string? liveVariant;
     private string? recipeItem;
+    private string? selectedTarget;
+    private float2 selectedPoint;
     public bool HomeDone {get;private set;}
     public bool LiveDone {get;private set;}
     public string HomePending=>$"Codex home/{homeStep}";
@@ -32,14 +34,18 @@ internal sealed class CodexSmoke
     }
     private bool VisibleClick(MatchScreen screen,string prefix,bool side=false)
     {
-        var size=ImGui.GetIO().DisplaySize;
-        var pair=screen.Buttons.FirstOrDefault(pair=>pair.Key.StartsWith(prefix,StringComparison.Ordinal)&&pair.Value.X>20&&pair.Value.X<(side?220:size.X-20)&&pair.Value.Y>220&&pair.Value.Y<size.Y-(side?280:55));
+        // The body moves with header/font/viewport size. A center recorded by Button
+        // can be above its child clip rectangle even while a portrait sliver is visible.
+        var min=screen.CodexBodyMin+new float2(20,20);var max=screen.CodexBodyMax-new float2(20,20);
+        var pair=screen.Buttons.FirstOrDefault(pair=>pair.Key.StartsWith(prefix,StringComparison.Ordinal)&&pair.Value.X>=min.X&&pair.Value.X<=max.X&&pair.Value.Y>=min.Y&&pair.Value.Y<=max.Y);
         if(pair.Key is not null)
         {
+            selectedTarget=pair.Key;selectedPoint=pair.Value;
             if(prefix=="codexRecipe/"){var indices=pair.Key.Split('/');recipeItem=catalog.Variant(screen.CodexVariantId).RecipeGrid[int.Parse(indices[1])][int.Parse(indices[2])];}
             return Click(screen,pair.Key);
         }
-        ImGui.GetIO().AddMousePosEvent(side?100:size.X*.5f,side?350:size.Y*.6f);ImGui.GetIO().AddMouseWheelEvent(0,-4);cooldown=3;return false;
+        var center=(screen.CodexBodyMin+screen.CodexBodyMax)*.5f;
+        ImGui.GetIO().AddMousePosEvent(center.X,center.Y);ImGui.GetIO().AddMouseWheelEvent(0,side?-.5f:-4);cooldown=3;return false;
     }
     public void HomeInput(MatchScreen screen)
     {
@@ -113,7 +119,7 @@ internal sealed class CodexSmoke
                 var session=screen.Session;var human=session.State.Players[0];var expected=TraitRules.Count(session.State.Rules,session.CombatProjection.Board(human),human.Augments.ToArray());
                 if(expected.Count!=screen.CodexBoardCounts.Count||expected.Any(pair=>screen.CodexBoardCounts.GetValueOrDefault(pair.Key)!=pair.Value))throw new InvalidOperationException("Codex local board counts did not match deployed units.");
             }
-            if(liveStep==3&&screen.CodexUnit is null)throw new InvalidOperationException("Side Codex did not open the selected Digimon.");
+            if(liveStep==3&&screen.CodexUnit is null)throw new InvalidOperationException($"Side Codex did not open {selectedTarget} at {selectedPoint}; body clip {screen.CodexBodyMin} to {screen.CodexBodyMax}.");
             if(liveStep==7&&screen.CodexVariantId!=liveVariant)throw new InvalidOperationException("Codex allowed set browsing during a running game.");
         }
         int step=live?liveStep:homeStep;
