@@ -10,7 +10,7 @@ namespace DigiTactics.Desktop;
 
 internal static class MatchApplication
 {
-    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false, bool evolutionSmoke = false, bool trainingSmoke = false, bool farmPointerSmoke = false, bool networkMatchSmoke = false, string? steamLibrary = null, bool steamLobbyUiSmoke = false, bool spectatorSmoke = false)
+    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false, bool evolutionSmoke = false, bool trainingSmoke = false, bool farmPointerSmoke = false, bool networkMatchSmoke = false, string? steamLibrary = null, bool steamLobbyUiSmoke = false, bool spectatorSmoke = false, bool modeBonusSmoke = false)
     {
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
@@ -44,7 +44,8 @@ internal static class MatchApplication
                 using var farmPointer = farmPointerSmoke ? new FarmPointerSmoke(profile!, profileDirectory!) : null;
                 using var renderer = new OpenGlBackend(); using var screen = new MatchScreen(catalog, audio, smoke ? 143u : null, duos, profile);
                 screen.SteamLibraryPath = steamLibrary;
-                var driver = smoke && !trainingSmoke && !farmPointerSmoke && !networkMatchSmoke && !steamLobbyUiSmoke ? new MatchScreenSmoke(collectionSmoke ? profile : null, evolutionSmoke) : null;
+                var driver = smoke && !modeBonusSmoke && !trainingSmoke && !farmPointerSmoke && !networkMatchSmoke && !steamLobbyUiSmoke ? new MatchScreenSmoke(collectionSmoke ? profile : null, evolutionSmoke) : null;
+                var modeDriver = modeBonusSmoke ? new ModeBonusSmoke(catalog) : null;
                 var lobbyDriver = steamLobbyUiSmoke ? new SteamLobbyUiSmoke() : null;
                 using var networkDriver = networkMatchSmoke ? new NetworkMatchSmoke(catalog, screen, duos, spectatorSmoke) : null;
                 using var trainer = trainingSmoke ? new TrainingSmoke(profile!, profileDirectory!) : null;
@@ -52,7 +53,7 @@ internal static class MatchApplication
                 for (int frame = 0; !window.ShouldClose; frame++)
                 {
                     Glfw.PollEvents(); renderer.NewFrame(); platform.NewFrame(); driver?.Input(screen); trainer?.Input(screen); farmPointer?.Input(screen); networkDriver?.Input(screen);
-                    lobbyDriver?.Input(screen);
+                    lobbyDriver?.Input(screen); modeDriver?.Input(screen);
                     ImGui.NewFrame(); double now = clock.Elapsed.TotalSeconds;
                     double delta = smoke ? CombatSimulation.Tick : Math.Clamp(now - last, 0, .1);
                     screen.Update(delta, smoke ? delta : now - last); last = now;
@@ -63,6 +64,7 @@ internal static class MatchApplication
                     var size = window.FramebufferSize;
                     OpenGl.Viewport(0, 0, size.X, size.Y); OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
                     screen.Render(size); OpenGl.Viewport(0, 0, size.X, size.Y); renderer.RenderDrawData(ImGui.GetDrawData());
+                    if (modeDriver is not null && modeDriver.Verify(screen, size, capture)) break;
                     if (driver is not null && driver.Verify(screen, size, capture)) break;
                     if (trainer is not null && trainer.Verify(screen, size, capture)) break;
                     if (farmPointer is not null && farmPointer.Verify(screen, size, capture)) break;

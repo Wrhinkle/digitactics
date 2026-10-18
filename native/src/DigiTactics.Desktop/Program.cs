@@ -87,8 +87,9 @@ try
         if (collectionSmoke && profileDirectory is null) throw new ArgumentException("Collection smoke requires an isolated --profile-directory.");
         bool spectatorSmoke = args.Contains("--spectator-smoke");
         bool networkMatchSmoke = args.Contains("--network-match-smoke") || spectatorSmoke;
+        bool modeBonusSmoke = args.Contains("--mode-bonus-smoke");
         bool steamLobbyUiSmoke = args.Contains("--steam-lobby-ui-smoke");
-        MatchApplication.Run(catalog, args.Contains("--match-smoke") || collectionSmoke || trainingSmoke || farmPointerSmoke || networkMatchSmoke || steamLobbyUiSmoke, capture, args.Contains("--duos"), profileDirectory, collectionSmoke, evolutionSmoke, trainingSmoke, farmPointerSmoke, networkMatchSmoke, Option("--steam-api"), steamLobbyUiSmoke, spectatorSmoke);
+        MatchApplication.Run(catalog, args.Contains("--match-smoke") || collectionSmoke || trainingSmoke || farmPointerSmoke || networkMatchSmoke || steamLobbyUiSmoke || modeBonusSmoke, capture, args.Contains("--duos"), profileDirectory, collectionSmoke, evolutionSmoke, trainingSmoke, farmPointerSmoke, networkMatchSmoke, Option("--steam-api"), steamLobbyUiSmoke, spectatorSmoke, modeBonusSmoke);
     }
     return 0;
 }
