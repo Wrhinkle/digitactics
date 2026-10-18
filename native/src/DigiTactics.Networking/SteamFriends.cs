@@ -4,6 +4,7 @@ namespace DigiTactics.Networking;
 
 public sealed record SteamFriend(ulong Id, string Name);
 public sealed record SteamFriendRoom(SteamLobby Lobby, IReadOnlyList<SteamFriend> Friends);
+public sealed record SteamAvatar(int Handle, int Width, int Height, byte[] Rgba);
 
 /// <summary>Read-only friend room discovery. Results complete on the Steam client's game-thread pump.</summary>
 public sealed class SteamFriends : IDisposable
@@ -19,6 +20,10 @@ public sealed class SteamFriends : IDisposable
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)] [return: MarshalAs(UnmanagedType.I1)] private delegate bool GameFn(nint self, ulong id, out GameInfo info);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate nint NameFn(nint self, ulong id);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)] [return: MarshalAs(UnmanagedType.I1)] private delegate bool DataFn(nint self, ulong lobby);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int AvatarFn(nint self, ulong user);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] [return: MarshalAs(UnmanagedType.I1)] private delegate bool UserFn(nint self, ulong user, [MarshalAs(UnmanagedType.I1)] bool nameOnly);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] [return: MarshalAs(UnmanagedType.I1)] private delegate bool SizeFn(nint self, int image, out uint width, out uint height);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] [return: MarshalAs(UnmanagedType.I1)] private delegate bool PixelsFn(nint self, int image, [Out] byte[] bytes, int size);
     private readonly SteamClient client;
     private readonly nint friends, matchmaking;
     private readonly CountFn count;
@@ -26,6 +31,13 @@ public sealed class SteamFriends : IDisposable
     private readonly GameFn game;
     private readonly NameFn name;
     private readonly DataFn request;
+    private readonly AvatarFn avatar;
+    private readonly UserFn user;
+    private readonly SizeFn imageSize;
+    private readonly PixelsFn pixels;
+    private readonly nint utils;
+    private readonly HashSet<ulong> requestedPeople = [];
+    private readonly Dictionary<int, SteamAvatar> avatars = [];
     private readonly Dictionary<ulong, List<SteamFriend>> found = [];
     private readonly Dictionary<ulong, bool> finished = [];
     private TaskCompletionSource<IReadOnlyList<SteamFriendRoom>>? pending;
@@ -41,10 +53,32 @@ public sealed class SteamFriends : IDisposable
         game = client.Bind<GameFn>("SteamAPI_ISteamFriends_GetFriendGamePlayed");
         name = client.Bind<NameFn>("SteamAPI_ISteamFriends_GetFriendPersonaName");
         request = client.Bind<DataFn>("SteamAPI_ISteamMatchmaking_RequestLobbyData");
+        utils = client.Bind<InterfaceFn>("SteamAPI_SteamUtils_v010")();
+        avatar = client.Bind<AvatarFn>("SteamAPI_ISteamFriends_GetMediumFriendAvatar");
+        user = client.Bind<UserFn>("SteamAPI_ISteamFriends_RequestUserInformation");
+        imageSize = client.Bind<SizeFn>("SteamAPI_ISteamUtils_GetImageSize");
+        pixels = client.Bind<PixelsFn>("SteamAPI_ISteamUtils_GetImageRGBA");
         client.Matchmaking.DataChanged += DataChanged;
     }
     private void Verify() { client.VerifyThread(); ObjectDisposedException.ThrowIf(disposed, this); }
     public string Name(ulong id) { Verify(); return id == 0 ? "" : Marshal.PtrToStringUTF8(name(friends, id)) ?? ""; }
+    public SteamAvatar? Avatar(ulong id)
+    {
+        Verify(); if (id == 0) return null;
+        if (id != client.SteamId && !requestedPeople.Contains(id))
+        {
+            if (requestedPeople.Count >= 256) requestedPeople.Clear();
+            requestedPeople.Add(id); user(friends, id, false);
+        }
+        int handle = avatar(friends, id);
+        if (handle <= 0) return null; // -1 is still downloading; callers retry on a later frame.
+        if (avatars.TryGetValue(handle, out var cached)) return cached;
+        if (!imageSize(utils, handle, out uint width, out uint height) || width is 0 or > 256 || height is 0 or > 256) return null;
+        byte[] rgba = new byte[checked((int)(width * height * 4))];
+        if (!pixels(utils, handle, rgba, rgba.Length)) return null;
+        if (avatars.Count >= 64) avatars.Remove(avatars.Keys.First());
+        var result = new SteamAvatar(handle, (int)width, (int)height, rgba); avatars.Add(handle, result); return result;
+    }
     public Task<IReadOnlyList<SteamFriendRoom>> ListRooms()
     {
         Verify(); if (pending is not null) return pending.Task;
@@ -81,6 +115,6 @@ public sealed class SteamFriends : IDisposable
     public void Dispose()
     {
         if (disposed) return; client.VerifyThread(); client.Matchmaking.DataChanged -= DataChanged;
-        pending?.TrySetException(new ObjectDisposedException(nameof(SteamFriends))); pending = null; found.Clear(); finished.Clear(); disposed = true;
+        pending?.TrySetException(new ObjectDisposedException(nameof(SteamFriends))); pending = null; found.Clear(); finished.Clear(); avatars.Clear(); requestedPeople.Clear(); disposed = true;
     }
 }

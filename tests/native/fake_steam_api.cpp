@@ -273,20 +273,24 @@ static char nameBuf[64];
 EXPORT const char *SteamAPI_ISteamFriends_GetFriendPersonaName(void *, uint64_t id) { snprintf(nameBuf, sizeof nameBuf, "Tamer %llu", id % 1000); return nameBuf; }
 EXPORT bool SteamAPI_ISteamFriends_RequestUserInformation(void *, uint64_t, bool) { return true; }
 // someone else: -1 on the first ask (Steam still downloading), then image 7. Ourselves: image 7. Id 0: no avatar.
+static int imageMode, imageReads;
+EXPORT void FakeSteam_ImageMode(int mode) { imageMode=mode; }
+EXPORT int FakeSteam_ImageReads() { return imageReads; }
 EXPORT int SteamAPI_ISteamFriends_GetMediumFriendAvatar(void *, uint64_t id) {
   if (id == 0) return 0;
-  if (id == self) return 7;
-  return avatarCalls[id]++ == 0 ? -1 : 7;
+  if (id == self) return 7+imageMode;
+  return avatarCalls[id]++ == 0 ? -1 : 7+imageMode;
 }
 
 // ---- ISteamUtils ----
 EXPORT bool SteamAPI_ISteamUtils_GetImageSize(void *, int image, uint32_t *w, uint32_t *h) {
   if (!w || !h) { st.badBuffer++; return false; }
-  if (image != 7) return false;
-  *w = 64; *h = 64;
+  if (image < 7 || image > 10) return false;
+  *w = image==8?512:image==10?0:64; *h = 64;
   return true;
 }
 EXPORT bool SteamAPI_ISteamUtils_GetImageRGBA(void *, int image, uint8_t *dest, int size) {
+  imageReads++;
   if (image != 7) return false;
   if (!dest || size != 64 * 64 * 4) { st.badBuffer++; return false; }
   for (int i = 0; i < size; i += 4) { dest[i] = 200; dest[i + 1] = 100; dest[i + 2] = 50; dest[i + 3] = 255; }

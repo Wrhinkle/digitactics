@@ -19,6 +19,34 @@ internal sealed partial class MatchScreen
     private SteamLobbyVisibility visibility = SteamLobbyVisibility.Friends;
     private long presenceAt;
     private ulong? invitedLobby;
+    private sealed record LobbyAvatar(long At, int Handle, GpuTexture? Texture);
+    private readonly Dictionary<ulong, LobbyAvatar> lobbyAvatars = [];
+    private bool clearLobbyAvatars;
+    private void ClearLobbyAvatars() { foreach (var item in lobbyAvatars.Values) item.Texture?.Dispose(); lobbyAvatars.Clear(); }
+    private void DrawLobbyAvatar(string? uid)
+    {
+        GpuTexture? texture = null;
+        if (steam is not null && ulong.TryParse(uid, out ulong id))
+        {
+            long now = Environment.TickCount64;
+            if (!lobbyAvatars.TryGetValue(id, out var cached) || now - cached.At >= 2000)
+            {
+                if (cached is null && lobbyAvatars.Count >= 32)
+                { ulong oldest = lobbyAvatars.MinBy(p => p.Value.At).Key; lobbyAvatars[oldest].Texture?.Dispose(); lobbyAvatars.Remove(oldest); }
+                var image = steam.Friends.Avatar(id);
+                texture = cached?.Texture;
+                if (image is not null && image.Handle != cached?.Handle)
+                {
+                    texture?.Dispose(); texture = new(new(image.Width, image.Height, image.Rgba), new(MinFilter: 9729, WrapS: 33071, WrapT: 33071), false);
+                }
+                lobbyAvatars[id] = new(now, image?.Handle ?? cached?.Handle ?? 0, texture);
+            }
+            else texture = cached.Texture;
+        }
+        var point = ImGui.GetCursorScreenPos();
+        if (texture is not null) ImGui.GetWindowDrawList().AddImage(new ImTextureRef { _TexID = new((nint)texture.Id) }, point, new(point.X + 28, point.Y + 28));
+        ImGui.Dummy(new(28, 28)); ImGui.SameLine();
+    }
     internal void UsePrivateLobbyForSmoke() => visibility = SteamLobbyVisibility.Private;
     internal bool InSteamRoom => steam?.Room is not null;
     private string SteamName => LobbyAuthority.CleanName(profile?.Progress.Name ?? steam?.Name) is { Length: > 0 } name ? name : "Tamer";
@@ -57,6 +85,7 @@ internal sealed partial class MatchScreen
     }
     private void UpdateSteamLobby()
     {
+        if (clearLobbyAvatars) { ClearLobbyAvatars(); clearLobbyAvatars = false; }
         if (steam is null) return;
         long now = Environment.TickCount64;
         try { steam.Pump(now); } catch (Exception error) { lobbyMessage = "Connection error: " + error.Message; LeaveSteamRoom(); return; }
@@ -95,7 +124,7 @@ internal sealed partial class MatchScreen
     }
     private void LeaveSteamRoom()
     {
-        EndOnlineView(); steam?.Leave(); enteringRoom = null;
+        EndOnlineView(); steam?.Leave(); enteringRoom = null; clearLobbyAvatars = true;
     }
     private void StartSteamMatch(NetworkRoom room)
     {
@@ -125,6 +154,7 @@ internal sealed partial class MatchScreen
                 {
                     var seat = lobby["slots"]?[i.ToString()]; string? uid = seat?["uid"]?.GetValue<string>();
                     bool yours = uid == room.Authority.LocalId;
+                    DrawLobbyAvatar(uid);
                     ImGui.Text($"Seat {i + 1}: {seat?["name"]?.GetValue<string>() ?? "AI"}{(yours ? " (you)" : "")}"); ImGui.SameLine();
                     if (uid is null && Button("steamSeat/" + i, "Take seat")) room.ClaimSeat(i, SteamName, Environment.TickCount64);
                     if (yours && Button("steamFree/" + i, "Leave seat")) room.FreeSeat(i);
