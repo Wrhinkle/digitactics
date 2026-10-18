@@ -2339,3 +2339,19 @@ day/night and grid night captures were inspected.
 This is the diffuse and emissive lighting pass. Specular/metallic material
 response, shadow maps, the sky gradient/night overlay and complete original
 material fidelity remain unfinished and are still required for the full port.
+
+### Room roughness and metalness
+
+Exported room materials now retain their original roughness and metalness.
+The farm shader uses the bundled Three.js isotropic GGX distribution, correlated
+Smith visibility and Schlick Fresnel approximation for direct sun/lamp specular
+lighting. It retains the original minimum roughness and derivative-based geometry
+roughness, and removes the metallic portion from diffuse lighting. Camera
+position is provided explicitly for view-dependent highlights.
+
+The rebuilt Windows app compiled the shader and passed all six day/night room
+smokes plus the Duos match smoke. Sewer, tropical and grid-night renders were
+inspected. Existing farm motion/light reference checks remain green (1,381,756).
+These checks do not establish pixel-identical shading. Companion material
+roughness/metalness, shadow maps, sky/night overlays and broader visual acceptance
+remain open work under the full-port goal.

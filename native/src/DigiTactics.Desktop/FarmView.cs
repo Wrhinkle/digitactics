@@ -10,7 +10,7 @@ namespace DigiTactics.Desktop;
 
 internal sealed class FarmView : IDisposable
 {
-    private sealed record Material(float[] Color, int? Texture, bool Unlit, bool Transparent, bool DepthWrite, float[] Emissive, float EmissiveIntensity, bool Bulb);
+    private sealed record Material(float[] Color, int? Texture, bool Unlit, bool Transparent, bool DepthWrite, float[] Emissive, float EmissiveIntensity, bool Bulb, float Roughness, float Metalness);
     private sealed record Texture(int Width, int Height, string Rgba, bool Clamp);
     private sealed record Mesh(float[] Vertices, uint[] Indices, double[] Matrix, int Material, bool Sprite, int Meat, FarmRoomMotion? Motion);
     private sealed record Points(float[] Positions, double[] Matrix);
@@ -139,6 +139,7 @@ internal sealed class FarmView : IDisposable
         DrawCalls = 0; if (room is null || width <= 0 || height <= 0) return;
         var (camera, eye) = Camera(width, height); ModelRenderer.Begin(width, height);
         renderer.FarmLight = lighting;
+        renderer.FarmEye = eye;
         Brutal.OpenGlApi.OpenGl.Viewport(left, bottom, width, height);
         foreach (bool transparent in new[] { false, true })
         {
@@ -154,7 +155,7 @@ internal sealed class FarmView : IDisposable
                     matrix = Matrix4D.Compose(new(matrix.M41, matrix.M42, matrix.M43), new(rotation.X, rotation.Y, rotation.Z, rotation.W), new(.42, .42, .42));
                 }
                 float intensity = material.Bulb ? (float)lighting.BulbEmission : material.EmissiveIntensity;
-                renderer.DrawRoom(geometry[i], matrix, camera, new(material.Color[0], material.Color[1], material.Color[2], material.Color[3]), material.Texture is { } texture ? textures[texture] : null, material.Unlit, transparent, material.DepthWrite, new(material.Emissive[0] * intensity, material.Emissive[1] * intensity, material.Emissive[2] * intensity)); DrawCalls++;
+                renderer.DrawRoom(geometry[i], matrix, camera, new(material.Color[0], material.Color[1], material.Color[2], material.Color[3]), material.Texture is { } texture ? textures[texture] : null, material.Unlit, transparent, material.DepthWrite, new(material.Emissive[0] * intensity, material.Emissive[1] * intensity, material.Emissive[2] * intensity), material.Roughness, material.Metalness); DrawCalls++;
             }
             foreach (var actor in actors.Values)
             {

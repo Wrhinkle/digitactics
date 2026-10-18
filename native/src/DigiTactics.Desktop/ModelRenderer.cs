@@ -11,11 +11,14 @@ internal sealed class ModelRenderer : IDisposable
     private float[] paletteFloats = [];
     public int DrawCalls { get; private set; }
     public FarmLighting? FarmLight { get; set; }
-    private void SetFarmLight(Vector3 emissive = default)
+    public Vector3 FarmEye { get; set; }
+    private void SetFarmLight(Vector3 emissive = default, float roughness = -1, float metalness = 0)
     {
         program.Uniform(15, FarmLight is null ? 0 : 1);
         program.Uniform(16, new Brutal.Numerics.float4((float)(FarmLight?.Hemisphere ?? 0), (float)(FarmLight?.Sun ?? 0), (float)(FarmLight?.Lamp ?? 0), 0));
         program.Uniform(17, new Brutal.Numerics.float4(emissive.X, emissive.Y, emissive.Z, 0));
+        program.Uniform(18, new Brutal.Numerics.float4(FarmEye.X, FarmEye.Y, FarmEye.Z, 0));
+        program.Uniform(19, new Brutal.Numerics.float4(roughness, metalness, 0, 0));
     }
     public ModelRenderer()
     {
@@ -102,10 +105,10 @@ internal sealed class ModelRenderer : IDisposable
         geometry.Draw();
     }
     public void Dispose() { OpenGl.DeleteBuffers(new[] { bones }); program.Dispose(); }
-    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default)
+    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0)
     {
         program.Use(); Matrix(0, world); Matrix(4, From(camera));
-        SetFarmLight(emissive);
+        SetFarmLight(emissive, roughness, metalness);
         program.Uniform(8, 0); program.Uniform(9, 1); program.Uniform(10, unlit ? 1 : 0); program.Uniform(11, 0f);
         program.Uniform(12, color); program.Uniform(13, texture is null ? 0 : 1); program.Uniform(14, 0f);
         OpenGl.BindTextureUnit(0, texture?.Id ?? 0); OpenGl.Native.glDisable(GlCapability.CullFace);
@@ -158,9 +161,24 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=15) uniform int farmLighting;
         layout(location=16) uniform vec4 farmIntensity;
         layout(location=17) uniform vec4 materialEmission;
+        layout(location=18) uniform vec4 farmEye;
+        layout(location=19) uniform vec4 surface;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
+        }
+        // Isotropic MeshStandardMaterial BRDF from the bundled Three shader chunks.
+        vec3 specularGGX(vec3 l, vec3 v, vec3 n, vec3 f0, float roughness) {
+            vec3 h=normalize(l+v);
+            float nl=clamp(dot(n,l),0,1), nv=clamp(dot(n,v),0,1);
+            float nh=clamp(dot(n,h),0,1), vh=clamp(dot(v,h),0,1);
+            float alpha=roughness*roughness, a2=alpha*alpha;
+            float gv=nl*sqrt(a2+(1-a2)*nv*nv), gl=nv*sqrt(a2+(1-a2)*nl*nl);
+            float visibility=.5/max(gv+gl,1e-6);
+            float denom=nh*nh*(a2-1)+1;
+            float distribution=a2/(3.141592653589793*denom*denom);
+            float fresnel=exp2((-5.55473*vh-6.98316)*vh);
+            return (f0*(1-fresnel)+vec3(fresnel))*visibility*distribution;
         }
         void main() {
             vec4 c=color*(textured!=0?texture(colorTexture,texCoord):vec4(1));
@@ -168,6 +186,7 @@ internal sealed class ModelRenderer : IDisposable
             vec3 n=normalize(hasNormals!=0?worldNormal:cross(dFdx(worldPosition),dFdy(worldPosition)));
             if(!gl_FrontFacing) n=-n;
             vec3 light=unlit!=0?vec3(1):vec3(.35)+vec3(.65)*max(dot(n,normalize(vec3(2,4,3))),0);
+            vec3 specular=vec3(0);
             if(farmLighting!=0 && unlit==0) {
                 vec3 hemi=mix(toLinear(vec3(74,90,58)/255.0),vec3(1),n.y*.5+.5)*farmIntensity.x;
                 vec3 sun=toLinear(vec3(255,243,220)/255.0)*farmIntensity.y*max(dot(n,normalize(vec3(4,9,5))),0);
@@ -177,9 +196,18 @@ internal sealed class ModelRenderer : IDisposable
                 attenuation*=pow(clamp(1.0-pow(distance/9.0,4.0),0.0,1.0),2.0);
                 vec3 lamp=toLinear(vec3(255,200,120)/255.0)*farmIntensity.z*attenuation*max(dot(n,normalize(offset)),0);
                 light=(hemi+sun+lamp)/3.141592653589793;
+                if(surface.x>=0) {
+                    vec3 derivatives=max(abs(dFdx(n)),abs(dFdy(n)));
+                    float roughness=min(1,max(surface.x,.0525)+max(derivatives.x,max(derivatives.y,derivatives.z)));
+                    vec3 v=normalize(farmEye.xyz-worldPosition);
+                    vec3 f0=mix(vec3(.04),c.rgb,surface.y);
+                    specular=sun*specularGGX(normalize(vec3(4,9,5)),v,n,f0,roughness)
+                        +lamp*specularGGX(normalize(offset),v,n,f0,roughness);
+                    light*=1-surface.y;
+                }
             }
             vec3 linear=max(c.rgb*light+vec3(unlit!=0?0:emission),vec3(0));
-            if(farmLighting!=0 && unlit==0) linear+=materialEmission.rgb;
+            if(farmLighting!=0 && unlit==0) linear+=materialEmission.rgb+specular;
             vec3 srgb=mix(12.92*linear,1.055*pow(linear,vec3(1.0/2.4))-.055,step(vec3(.0031308),linear));
             outputColor=vec4(srgb,c.a);
         }
