@@ -6,6 +6,13 @@ const root=path.resolve(__dirname,'../..');
  const ctx={THREE,DT:{Cosmetics:{register(){}}},C:{equipped:()=> 'floss'}};vm.createContext(ctx);
  vm.runInContext(mystery.slice(0,mystery.indexOf('export const killThemes')).replace(/export /g,'')+';const mysteryDances=dances;const TAU=Math.PI*2,DEG=Math.PI/180;',ctx);
  vm.runInContext(source.slice(source.indexOf('const D ='),source.indexOf('// ---------- LegendView driver')).replace('export class Dancer','class Dancer')+';this.Dancer=Dancer;this.dances=DANCES;',ctx);
+ const choreography=[];
+ for(const dance of ctx.dances){
+  const beats=[...Array.from({length:65},(_,i)=>i).flatMap(b=>[Math.max(0,b-1e-7),b,b+1e-7]),...Array.from({length:200},(_,i)=>i*.31971),4.22,5.5,14.8,15.22];
+  for(const beat of beats){const seconds=beat*60/dance.bpm;choreography.push({id:dance.id,bpm:dance.bpm,seconds,pose:dance.pose(seconds*dance.bpm/60)});}
+ }
+ fs.writeFileSync(path.join(root,'native/tests/fixtures/dance-choreography.json.gz'),zlib.gzipSync(JSON.stringify(choreography)));
+ console.log(`Exported ${choreography.length} continuous choreography samples, including phrase boundaries.`);
  const kinds=['hips','spine','neck','head','up','fore','thigh','shin','foot','wing','ear','tail','up','fore','thigh','shin','foot','wing','ear','tail'];
  const cases=[];
  for(let shape=0;shape<4;shape++){

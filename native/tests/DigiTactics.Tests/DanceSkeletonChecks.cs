@@ -18,14 +18,10 @@ internal static class DanceSkeletonChecks
         {
             if (row.TryGetProperty("binding", out var b))
                 dancer = new(new(b.GetProperty("bones").EnumerateArray().Select(e => new DanceBone(e.GetProperty("node").GetInt32(), e.GetProperty("kind").GetString()!, e.GetProperty("parentEntry").GetInt32(), V(e.GetProperty("direction")), Q(e.GetProperty("parentRotation")), Q(e.GetProperty("restRotation")), e.GetProperty("side").GetInt32(), e.GetProperty("share").GetSingle(), e.GetProperty("index").GetInt32(), e.GetProperty("limit").GetSingle())).ToArray(), b.GetProperty("limbless").GetBoolean(), b.GetProperty("stubby").GetBoolean(), b.GetProperty("yaw").GetSingle()));
-            var vectors = new Dictionary<string, Vector3>(); var scalars = new Dictionary<string, float>(); var roots = new Dictionary<string, float>();
-            foreach (var p in row.GetProperty("pose").EnumerateObject())
-                if (p.Value.ValueKind == JsonValueKind.Array) vectors[p.Name] = V(p.Value);
-                else if (p.Value.ValueKind == JsonValueKind.Number) scalars[p.Name] = p.Value.GetSingle();
-                else if (p.Name == "rt") foreach (var r in p.Value.EnumerateObject()) roots[r.Name] = r.Value.GetSingle();
+            var choreography = DanceChoreography.Evaluate(row.GetProperty("dance").GetString(), row.GetProperty("time").GetDouble());
             var initial = row.GetProperty("initial");
             for (int i = 0; i < target.Local.Length; i++) { var q = Q(initial[i]); target.Local[i] = target.Local[i] with { Rotation = new(q.X, q.Y, q.Z, q.W) }; }
-            var actual = dancer!.Apply(new(vectors, scalars, roots), target, row.GetProperty("weight").GetSingle());
+            var actual = dancer!.Apply(choreography, target, row.GetProperty("weight").GetSingle());
             void Near(double a, double e) { checks++; if (Math.Abs(a - e) > .00003) throw new InvalidOperationException($"Dance skeleton {row.GetProperty("dance")}/{row.GetProperty("shape")}/{row.GetProperty("time")}: {a} vs {e}"); }
             var expected = row.GetProperty("expected");
             for (int i = 0; i < target.Local.Length; i++)
