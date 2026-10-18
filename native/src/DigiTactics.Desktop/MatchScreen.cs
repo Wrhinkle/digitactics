@@ -47,7 +47,7 @@ internal sealed partial class MatchScreen : IDisposable
     private int Left => 230;
     private int Top => 118;
     private int Width => Math.Max(300, size.X - 470);
-    private int Height => Math.Max(240, size.Y - 335);
+    private int Height => Math.Max(240, size.Y - 383);
     private const ImGuiWindowFlags Fixed = ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
     public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { planning=new(arenaEnvironment); this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; farm = profile is null ? null : new(profile); }
     private void Window(string name, float x, float y, float width, float height, ImGuiWindowFlags flags = 0)
@@ -254,6 +254,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
+        portraits.BeginFrame();
         sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
@@ -453,7 +454,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private void Roster()
     {
-        Window("Shop and bench", 12, size.Y - 207, size.X - 24, 195, ImGuiWindowFlags.NoTitleBar);
+        Window("Shop and bench", 12, size.Y - 255, size.X - 24, 243, ImGuiWindowFlags.NoTitleBar);
         if (IsSpectating) { ImGui.TextWrapped("Spectating. Take an available seat to control a team."u8); ImGui.End(); return; }
         if (SellDropZone()) { ImGui.End(); return; }
         ImGui.BeginDisabled(Session!.State.Over || !Human.Alive);
@@ -464,10 +465,8 @@ internal sealed partial class MatchScreen : IDisposable
         float card = (size.X - 64f) / Human.Shop.Slots.Count;
         for (int i = 0; i < Human.Shop.Slots.Count; i++)
         {
-            if (i > 0) ImGui.SameLine(); string? id = Human.Shop.Slots[i];
-            string label = id is null ? "Empty" : $"{Rules.Lines.Single(l => l.Id == id).Forms[Human.Shop.Metadata[i]?.Unit?.Stage ?? 0]}\n{Human.Shop.Cost(i)} gold {Human.Shop.Metadata[i]?.Tag}";
-            if (Button("buy/" + i, label, card, 48)) Act("buy", new { slot = i });
-            if (id is not null) UnitTooltip(id, Human.Shop.Metadata[i]?.Unit?.Stage ?? 0);
+            if (i > 0) ImGui.SameLine();
+            ShopCard(i,card);
         }
         for (int i = 0; i < 9; i++)
         {
@@ -543,5 +542,5 @@ internal sealed partial class MatchScreen : IDisposable
         arenaEnvironment.Actors = DrawCompanions;
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
     }
-    public void Dispose() { DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
+    public void Dispose() { portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
 }

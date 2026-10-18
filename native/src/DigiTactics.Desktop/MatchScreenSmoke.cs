@@ -190,6 +190,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         }
         if (index == 5 && cooldown == 1)
         {
+            if (screen.ShopPortraitDrawCalls != screen.Session!.State.Players[0].Shop.Slots.Count(id => id is not null))
+                throw new InvalidOperationException("Shop cards did not render each available unit portrait.");
             var roster = screen.Session!.State.Players[0].Roster;
             if (!roster.Entries.Any(e => !e.Spot.IsBoard) || !screen.PlanningRenderedUnits.SetEquals(roster.Entries.Select(e => e.Unit.Id)))
                 throw new InvalidOperationException("Planning scene omitted a purchased bench unit.");

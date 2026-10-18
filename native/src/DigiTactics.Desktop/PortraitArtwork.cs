@@ -1,0 +1,31 @@
+using System.Text.Json;
+using Brutal.ImGuiApi;
+using Brutal.Numerics;
+using DigiTactics.Assets;
+
+namespace DigiTactics.Desktop;
+
+internal sealed class PortraitArtwork : IDisposable
+{
+    private static readonly string folder = Path.Combine(AppContext.BaseDirectory,"content/portraits");
+    private static readonly ModelCatalog models = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/models.json"));
+    private static readonly Dictionary<string,string> files = JsonSerializer.Deserialize<Dictionary<string,string>>(File.ReadAllText(Path.Combine(folder,"manifest.json")))!;
+    private readonly Dictionary<string,(GpuTexture Texture,long Used)> cache = [];
+    private long frame;
+    public int DrawCalls { get; private set; }
+    public void BeginFrame()
+    {
+        frame++; DrawCalls=0;
+        foreach(var file in cache.Where(p=>p.Value.Used<frame-1).Select(p=>p.Key).ToArray()) {cache[file].Texture.Dispose();cache.Remove(file);}
+    }
+    public void Draw(string variant,string line,int stage,float2 position,float size,byte alpha=255)
+    {
+        if (!models.Variants.TryGetValue(variant,out var lines) || !lines.TryGetValue(line,out var forms) || forms[stage] is not { } key) return;
+        if (!files.TryGetValue(key,out var file)) throw new InvalidDataException($"Missing portrait for {key}.");
+        if (!cache.TryGetValue(file,out var entry)) entry=(new(PngImage.Decode(File.ReadAllBytes(Path.Combine(folder,file))),new(MinFilter:9729,WrapS:33071,WrapT:33071),false),frame);
+        cache[file]=(entry.Texture,frame);
+        ImGui.GetWindowDrawList().AddImage(new ImTextureRef {_TexID=new((nint)entry.Texture.Id)},position,new(position.X+size,position.Y+size),new(0,0),new(1,1),new ImColor8(255,255,255,alpha));
+        DrawCalls++;
+    }
+    public void Dispose(){foreach(var entry in cache.Values)entry.Texture.Dispose();cache.Clear();}
+}
