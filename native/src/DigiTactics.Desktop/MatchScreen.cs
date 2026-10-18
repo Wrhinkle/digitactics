@@ -18,7 +18,7 @@ internal sealed class MatchScreen : IDisposable
     private BattleView? battle;
     private MatchBattle? watching;
     private int variant, viewed;
-    private bool duos;
+    private bool duos, showAudio;
     private int? selectedUnit, selectedItem;
     private string status = "Select a unit, then a hex. Select an item, then its holder.";
     private double backgroundTime;
@@ -196,6 +196,13 @@ internal sealed class MatchScreen : IDisposable
         if (battle is null) Board();
         else battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height);
         Choices();
+        if (showAudio)
+        {
+            Window("Sound settings", size.X / 2 - 210, Top + 20, 420, 250);
+            AudioControls();
+            if (Button("closeAudio", "Close")) showAudio = false;
+            ImGui.End();
+        }
     }
     private void Menu()
     {
@@ -231,6 +238,7 @@ internal sealed class MatchScreen : IDisposable
         ImGui.Text($"{Rules.Name}  /  {Rules.Pace}  /  {(session.State.Duos ? "Duos" : "Solo")}     Round {session.Rounds.Position.Label}  -  {session.Rounds.RoundType.ToUpperInvariant()}");
         ImGui.Text($"{Human.Health} HP     {Human.Economy.Gold} gold     Level {Human.Economy.Level}     Streak {Human.Economy.Streak}");
         ImGui.SameLine(); if (Button("mute", audio.Muted ? "Unmute" : "Mute")) audio.Muted = !audio.Muted;
+        ImGui.SameLine(); if (Button("audioSettings", "Sound settings")) showAudio = !showAudio;
         if (session.State.Over)
         {
             ImGui.Text($"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
@@ -262,7 +270,11 @@ internal sealed class MatchScreen : IDisposable
         float effects = audio.EffectsVolume, music = audio.MusicVolume;
         if (ImGui.SliderFloat("Effects volume"u8, ref effects, 0, 1)) audio.EffectsVolume = effects;
         if (ImGui.SliderFloat("Music volume"u8, ref music, 0, 1)) audio.MusicVolume = music;
+        bool musicOff = audio.MusicOff, muted = audio.Muted;
+        if (ImGui.Checkbox("Music off"u8, ref musicOff)) audio.MusicOff = musicOff;
+        ImGui.SameLine(); if (ImGui.Checkbox("Mute all"u8, ref muted)) audio.Muted = muted;
         if (audio.Error is { } error) ImGui.TextWrapped(error);
+        if (audio.SettingsError is { } settingsError) ImGui.TextWrapped(settingsError);
     }
     private void Sidebar()
     {

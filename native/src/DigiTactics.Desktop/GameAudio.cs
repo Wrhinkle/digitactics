@@ -33,6 +33,8 @@ internal sealed unsafe class GameAudio : IDisposable
     public float EffectsVolume { get; set; } = .8f;
     public float MusicVolume { get; set; } = .6f;
     public bool Muted { get; set; }
+    public bool MusicOff { get; set; }
+    public string? SettingsError { get; set; }
     public int Played { get; private set; }
     public static void Smoke()
     {
@@ -121,7 +123,7 @@ internal sealed unsafe class GameAudio : IDisposable
                     if (voice.Position >= voice.Samples.Length) break;
                     voice.Gain += Math.Clamp(voice.Target - voice.Gain, -1f / 66150, 1f / 52920);
                     // Assets carry 6 dB of headroom; restore it alongside the original bus gains.
-                    float gain = Muted ? 0 : voice.Gain * (voice.Music ? .84f * MusicVolume : 1.4f * EffectsVolume);
+                    float gain = Muted || voice.Music && MusicOff ? 0 : voice.Gain * (voice.Music ? .84f * MusicVolume : 1.4f * EffectsVolume);
                     buffer[i] += voice.Samples[voice.Position++] * gain;
                     buffer[i + 1] += voice.Samples[voice.Position++] * gain;
                     // The final notes and reverb decay over the next loop rather than being cut off.

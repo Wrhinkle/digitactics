@@ -8,7 +8,7 @@ namespace DigiTactics.Desktop;
 internal sealed class MatchScreenSmoke
 {
     private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "bench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
-        "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next"];
+        "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "closeAudio", "mute", "mute"];
     private int index, cooldown = 3, battleFrames, pvpFrames;
     private bool down, planningCaptured, battleCaptured, pvpCaptured;
     public void Input(MatchScreen screen)

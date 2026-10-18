@@ -1744,3 +1744,23 @@ renderer event handler with visuals stubbed and records 22 battle traces.
 `--audio-cues-only` passed 11,736 checks and matched 3,627 cues (501 casts and 27
 ultimate healing cues included), with repeated-frame and scouting-history checks.
 Packaged audio, Solo and Duos smoke checks passed after this integration.
+
+### Native audio preferences
+
+The native app persists music/effects volumes, mute and music-off in
+`%LOCALAPPDATA%/DigiTactics/native/audio-settings.json`. Settings are available
+from the menu and the in-match Sound settings button. Slider writes are debounced
+and the final edit is flushed at exit. The storage project has no renderer or
+gameplay dependencies. It writes through a flushed temporary file and atomic
+replacement, retaining the previous file as `.bak`. Unknown JSON fields survive
+edits. Malformed/newer files remain untouched and a visible error explains why
+saving is disabled. An exclusive writer lock and optimistic document comparison
+prevent two running native instances from silently overwriting one another.
+Graphical/audio smoke runs do not load or save real user preferences.
+
+`--settings-only` passed 20 checks covering persistence, backup, contention,
+invalid values/documents, future versions, unknown fields and temporary cleanup.
+Packaged Solo/Duos clicks now also open/close the audio panel and toggle mute.
+Those flows and the packaged audio playback check passed. Existing Electron or
+browser data has not been migrated yet; progress, cosmetics, soundboard/custom
+music and the remaining settings still require their migration and native UI.
