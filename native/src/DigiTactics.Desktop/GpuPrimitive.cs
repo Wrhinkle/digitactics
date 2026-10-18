@@ -29,6 +29,10 @@ internal sealed class GpuPrimitive : IDisposable
         catch { Dispose(); throw; }
     }
     public unsafe void Draw() { array.Bind(); OpenGl.Native.glDrawElements(OpenGl.GL_TRIANGLES, count, OpenGl.GL_UNSIGNED_INT, null); }
+    public unsafe void UpdateVertices(float[] vertices)
+    {
+        fixed (float* data = vertices) OpenGl.NamedBufferSubData(buffers[0], 0, vertices.Length * sizeof(float), data);
+    }
     public void Dispose() { OpenGl.DeleteBuffers(buffers); OpenGl.DeleteVertexArrays(new[] { array }); }
 }
 

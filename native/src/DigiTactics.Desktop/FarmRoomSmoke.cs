@@ -26,6 +26,7 @@ internal static class FarmRoomSmoke
                 OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
                 room.Draw(0, 0, 1000, 850);
                 if (room.Theme != theme.Id || room.DrawCalls < 150 || room.Residents.Count != 3) throw new InvalidOperationException("Farm room rendering failed: " + theme.Id);
+                if (room.SnowParticles != (theme.Id == "snowy" ? 260 : 0)) throw new InvalidOperationException("Farm snow theme lifecycle failed: " + theme.Id);
                 ModelPreview.VerifyVisible(1000, 850);
                 if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, theme.Id + ".bmp"), 1000, 850);
                 foreach (var pet in farm["pets"]!.AsObject()) pet.Value!["flags"]!["asleep"] = true;

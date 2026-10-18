@@ -49,6 +49,7 @@ internal static class FarmChoreographyChecks
         }
         checks += CareTransitions();
         checks += RoomMotion(root);
+        checks += Snow(root);
         Console.WriteLine($"Farm choreography: {checks} movement, social, sleep, care and animation-command checks passed.");
         return checks;
     }
@@ -76,6 +77,30 @@ internal static class FarmChoreographyChecks
             }
         }
         Console.WriteLine($"Farm room animation: {checks} original world-transform comparisons passed.");
+        return checks;
+    }
+    private static int Snow(string root)
+    {
+        using var file = File.OpenRead(Path.Combine(root, "tests/fixtures/farm-snow.json.gz"));
+        using var gzip = new GZipStream(file, CompressionMode.Decompress);
+        using var doc = JsonDocument.Parse(gzip);
+        var snow = doc.RootElement.GetProperty("initial").EnumerateArray().Select(x => new FarmSnow(x.EnumerateArray().Select(v => v.GetSingle()).ToArray())).ToArray();
+        int checks = 0, frame = 0;
+        foreach (var sample in doc.RootElement.GetProperty("frames").EnumerateArray())
+        {
+            for (int i = 0; i < snow.Length; i++)
+            {
+                snow[i].Update(sample.GetProperty("delta").GetDouble(), sample.GetProperty("time").GetDouble());
+                int component = 0;
+                foreach (var expected in sample.GetProperty("positions")[i].EnumerateArray())
+                {
+                    checks++;
+                    if (snow[i].Positions[component++] != expected.GetSingle()) throw new InvalidOperationException($"Snow drift mismatch frame {frame}, component {component}");
+                }
+            }
+            frame++;
+        }
+        Console.WriteLine($"Farm snow: {checks} original float32 particle comparisons passed.");
         return checks;
     }
     private static int CareTransitions()

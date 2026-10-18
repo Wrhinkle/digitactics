@@ -2305,3 +2305,20 @@ The exporter samples the original room callbacks at seven times from zero to
 and sleep/wake checks; the tropical render was inspected. Snowfall still requires
 native particle rendering. Night lighting, shadows and material fidelity remain
 open parts of the full port.
+
+### Native snowfall
+
+The snowy room now renders its original 260 square snow particles in one GPU
+batch, with camera-facing geometry matching the original perspective point size
+and opacity. Particle positions retain float32 rounding, per-particle fall speed,
+sinusoidal drift and the original reset height. Theme changes dispose the snow
+batch; other rooms contain no snow. Reference snapshots live in a test fixture
+rather than the distributed room content.
+
+All 546,000 particle components match 700 frames of original JavaScript output,
+including varying frame intervals and repeated particle resets. The combined
+farm movement, care, decoration and snow checks total 1,377,436 passes. The rebuilt
+Windows app passed all six room GPU checks, including theme-specific particle
+counts and sleep/wake transitions. The snowy render was inspected. This closes
+the snowfall rendering limitation above; lighting, shadows, materials and other
+remaining full-port requirements are still open.

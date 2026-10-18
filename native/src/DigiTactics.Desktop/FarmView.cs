@@ -13,7 +13,8 @@ internal sealed class FarmView : IDisposable
     private sealed record Material(float[] Color, int? Texture, bool Unlit, bool Transparent, bool DepthWrite);
     private sealed record Texture(int Width, int Height, string Rgba, bool Clamp);
     private sealed record Mesh(float[] Vertices, uint[] Indices, double[] Matrix, int Material, bool Sprite, int Meat, FarmRoomMotion? Motion);
-    private sealed record Room(int SchemaVersion, string Theme, string[] Sky, Material[] Materials, Texture[] Textures, Mesh[] Meshes);
+    private sealed record Points(float[] Positions, double[] Matrix);
+    private sealed record Room(int SchemaVersion, string Theme, string[] Sky, Material[] Materials, Texture[] Textures, Mesh[] Meshes, Points[] Points);
     private sealed record Actor(GpuModel Model, CompanionAnimator Animator, FarmResident Resident, CompanionVisual Visual);
     private sealed class MotionView(CompanionAnimator animator) : IFarmCompanionView
     {
@@ -32,6 +33,8 @@ internal sealed class FarmView : IDisposable
     private readonly List<GpuPrimitive> geometry = [];
     private readonly List<GpuTexture> textures = [];
     private Room? room;
+    private readonly List<FarmSnowView> snow = [];
+    public int SnowParticles => room?.Points.Sum(x => x.Positions.Length / 3) ?? 0;
     private string? lastFarm, lastLegends;
     private int meat;
     public int DrawCalls { get; private set; }
@@ -72,16 +75,22 @@ internal sealed class FarmView : IDisposable
         if (next.SchemaVersion != 2 || next.Theme != theme) throw new InvalidDataException("Unsupported farm room.");
         foreach (var primitive in geometry) primitive.Dispose(); geometry.Clear();
         foreach (var texture in textures) texture.Dispose(); textures.Clear();
+        foreach (var particles in snow) particles.Dispose(); snow.Clear();
         room = null;
         try
         {
             foreach (var texture in next.Textures) textures.Add(new(new(texture.Width, texture.Height, Convert.FromBase64String(texture.Rgba)), new(WrapS: texture.Clamp ? 33071 : 10497, WrapT: texture.Clamp ? 33071 : 10497), true));
             foreach (var mesh in next.Meshes) geometry.Add(new(new(mesh.Vertices, mesh.Indices, -1, true, false)));
+            foreach (var points in next.Points) snow.Add(new(points.Positions, points.Matrix));
             room = next;
         }
-        catch { foreach (var primitive in geometry) primitive.Dispose(); geometry.Clear(); foreach (var texture in textures) texture.Dispose(); textures.Clear(); throw; }
+        catch { foreach (var particles in snow) particles.Dispose(); snow.Clear(); foreach (var primitive in geometry) primitive.Dispose(); geometry.Clear(); foreach (var texture in textures) texture.Dispose(); textures.Clear(); throw; }
     }
-    public void Update(double delta) => choreography.Update(delta);
+    public void Update(double delta)
+    {
+        choreography.Update(delta);
+        foreach (var particles in snow) particles.Update(delta, choreography.Time);
+    }
     public void React(string? id, string role) { if (id is not null && actors.TryGetValue(id, out var actor)) actor.Animator.Play(role); }
     public void StartTraining(string id) => choreography.StartTraining(id);
     public void FinishTraining(string id, double score) => choreography.FinishTraining(id, score);
@@ -148,10 +157,11 @@ internal sealed class FarmView : IDisposable
                 renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.PlaceCompanion(actor.Animator) * root.Matrix, camera, transparent); DrawCalls += renderer.DrawCalls;
             }
         }
+        foreach (var particles in snow) { particles.Draw(renderer, camera, eye); DrawCalls++; }
         ModelRenderer.End();
     }
     public void Dispose()
     {
-        foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); renderer.Dispose();
+        foreach (var particles in snow) particles.Dispose(); foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); renderer.Dispose();
     }
 }

@@ -66,10 +66,22 @@ async function main(){
       meshes.push({vertices,indices,matrix:o.matrixWorld.toArray(),material:material(m),sprite:!!o.isSprite,meat,motion});
      }
     });
+    const snowChecks=[];
+    if(points.length){
+     let time=0;
+     for(let frame=0;frame<700;frame++){
+      const delta=[1/60,.05,.1][frame%3];time+=delta;
+      for(const tick of S.ticks)tick(delta,time);
+      const snapshots=[];S.world.traverse(o=>{if(o.isPoints)snapshots.push(Array.from(o.geometry.attributes.position.array));});
+      snowChecks.push({delta,time,positions:snapshots});
+     }
+    }
     const motionChecks=[];
     for(const time of [0,.05,.5,1,3,17,123]){for(const tick of S.ticks)tick(.05,time);S.world.updateMatrixWorld(true);motionChecks.push({time,meshes:animated.map(a=>({index:a.index,matrix:a.object.matrixWorld.toArray()}))});}
-    return {schemaVersion:2,theme,sky:LOOK[theme].sky,materials,textures,meshes,points,motionChecks};
+    return {schemaVersion:2,theme,sky:LOOK[theme].sky,materials,textures,meshes,points,motionChecks,snowChecks};
    },theme);
+   if(room.snowChecks.length)fs.writeFileSync(path.join(root,'native/tests/fixtures/farm-snow.json.gz'),zlib.gzipSync(JSON.stringify({initial:room.points.map(p=>p.positions),frames:room.snowChecks})));
+   delete room.snowChecks;
    fs.writeFileSync(path.join(output,theme+'.json.gz'),zlib.gzipSync(JSON.stringify(room)));
    console.log(`${theme}: ${room.meshes.length} original room meshes, ${room.textures.length} canvas textures.`);
   }
