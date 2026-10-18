@@ -25,6 +25,8 @@ internal sealed partial class MatchScreen
     private bool SocialDocked => SocialEnabled && socialWindowSize.X >= 1200;
     internal IReadOnlyList<SocialRow> DisplayedSocialRows { get; private set; } = [];
     internal bool SocialVisible { get; private set; }
+    internal float SocialBodyFontSize { get; private set; }
+    internal float SocialPanelTop { get; private set; }
 
     private int2 ClientContentSize(int2 windowSize)
     {
@@ -45,8 +47,7 @@ internal sealed partial class MatchScreen
     private void SocialNavigation()
     {
         if (!SocialEnabled || SocialDocked) return;
-        ImGui.SameLine();
-        if (HomeButton("socialToggle", socialDrawer ? "Hide friends" : "Friends", 100, 32)) socialDrawer = !socialDrawer;
+        if (HomeButton("socialToggle", socialDrawer ? "Hide friends" : "Friends", 122, 36)) socialDrawer = !socialDrawer;
     }
 
     private void RefreshSocial()
@@ -104,65 +105,82 @@ internal sealed partial class MatchScreen
         catch (Exception error) when (error is JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException)
         { socialError = "The friends list could not be displayed: " + error.Message; }
         SocialVisible = true;
-        float top = docked ? 16 : 124;
+        float top = ClientPageTop;
         if (!docked && (!wasVisible || socialDisplayedModule!=socialDrawnModule)) ImGui.SetNextWindowFocus();
         socialDisplayedModule=socialDrawnModule;
         HomeCard("Friends", new(size.X - SocialWidth - 12, top), new(SocialWidth, size.Y - top - 24), false, bringToFront: !docked);
-        HomeLabel("FRIENDS", 18, HomeInk);
+        ImGui.PushFont(NativeUiTheme.BodyFont,17);ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(8,8));
+        SocialBodyFontSize=17;SocialPanelTop=top;
+        HomeLabel("FRIENDS", 22, HomeInk);
         if (!docked)
-        { ImGui.SameLine(); if (HomeButton("closeSocial", "Close", 70, 24)) socialDrawer = false; }
-        HomeLabel(steam is null ? "Steam is not connected" : "Steam friends", 12, HomeMute);
+        { ImGui.SameLine(ImGui.GetWindowWidth()-94); if (HomeButton("closeSocial", "Close", 78, 36)) socialDrawer = false; }
+        HomeLabel(steam is null ? "Steam is not connected" : "Steam friends", 16, HomeMute);
         if (steam is null)
-        { if (HomeButton("socialConnect", "Connect to Steam", 160, 28)) ConnectSteam(); }
-        else if (HomeButton("socialRefresh", "Refresh", 90, 26)) { socialPollAt = 0; RefreshSocial(); }
+        { if (HomeButton("socialConnect", "Connect to Steam", ImGui.GetContentRegionAvail().X, 38)) ConnectSteam(); }
+        else if (HomeButton("socialRefresh", "Refresh", 102, 36)) { socialPollAt = 0; RefreshSocial(); }
         ImGui.Separator();
-        ImGui.BeginChild("Social people"u8, new(0, -70));
+        ImGui.BeginChild("Social people"u8, new(0, -112));
         foreach (var group in Enum.GetValues<SocialGroup>())
         {
             var rows = socialGroups.GetValueOrDefault(group) ?? [];
             if (group == SocialGroup.Party && steam?.Room is null) continue;
             string title = group switch { SocialGroup.InGame => "In Game", SocialGroup.Recent => "Recent players", _ => group.ToString() };
             bool open = socialOpen.Contains(group);
-            if (HomeButton("socialGroup/" + group, (open ? "- " : "+ ") + title + " (" + rows.Length + ")", ImGui.GetContentRegionAvail().X, 28))
+            ImGui.PushStyleColor(ImGuiCol.Header,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.HeaderHovered,new ImColor8(200,170,110,24));
+            bool toggled=ImGui.Selectable((open ? "v  " : ">  ") + title.ToUpperInvariant() + " (" + rows.Length + ")",false,ImGuiSelectableFlags.None,new(0,36));
+            SelectionButton("socialGroup/"+group);ClientItemSound("socialGroup/"+group,toggled);ImGui.PopStyleColor(2);
+            if (toggled)
             { if (open) socialOpen.Remove(group); else socialOpen.Add(group); open = !open; }
             if (!open) continue;
             if (rows.Length == 0) HomeLabel(group switch
             {
                 SocialGroup.Online => "No friends online right now.", SocialGroup.InGame => "Nobody is mid-game.",
                 SocialGroup.Offline => "No offline friends.", SocialGroup.Recent => "Players you meet appear here.", _ => "Nobody here yet."
-            }, 12, HomeMute);
+            }, 16, HomeMute);
             foreach (var row in rows) DrawSocialRow(row, top);
         }
         ImGui.EndChild(); ImGui.Separator();
-        if (socialError is not null) UiText.Wrapped(socialError);
-        if (HomeButton("socialLobby", steam?.Room is null ? "Open multiplayer" : "Open party", 170, 28))
+        if (socialError is not null) { HomeLabel("Friends unavailable",16,HomeMute); if(ImGui.IsItemHovered())ResultTooltip(socialError); }
+        else if(steam?.Room?.Authority.Lobby is {} lobby)
+        {
+            HomeLabel(LobbyEllipsis(lobby["name"]?.GetValue<string>()??"Your party",ImGui.GetContentRegionAvail().X),17,HomeInk);
+            HomeLabel(lobby["status"]?.GetValue<string>()=="playing"?"In game":$"{(lobby["slots"] as JsonObject)?.Count??0}/8 Tamers seated",16,HomeMute);
+        }
+        else {HomeLabel("No party",17,HomeInk);HomeLabel("Play with your friends",16,HomeMute);}
+        ImGui.BeginDisabled(EvolutionBusy);
+        if (HomeButton("socialLobby", steam?.Room is null ? "Lobbies" : "Open party", ImGui.GetContentRegionAvail().X, 38))
         { OpenMultiplayerView(); }
-        ImGui.End();
+        ImGui.EndDisabled();
+        ImGui.PopStyleVar();ImGui.PopFont();ImGui.End();
     }
 
     private void DrawSocialRow(SocialRow row, float top)
     {
         var at = ImGui.GetCursorScreenPos();
-        bool visible = at.Y > top - 48 && at.Y < size.Y - 24;
+        float width=ImGui.GetContentRegionAvail().X,height=row.JoinLobby is null?62:102;
+        bool visible = at.Y > top - height && at.Y < size.Y - 24;
+        var draw=ImGui.GetWindowDrawList();var rowColor=row.Online?HomeInk:HomeMute;
+        var stateColor = !row.Online ? HomeMute : row.Group == SocialGroup.InGame ? new ImColor8(79,166,255) : new ImColor8(112,196,132);
+        if(ImGui.IsMouseHoveringRect(at,at+new float2(width,height)))draw.AddRectFilledMultiColor(at,at+new float2(width,height),new ImColor8(200,170,110,22),new ImColor8(200,170,110,0),new ImColor8(200,170,110,0),new ImColor8(200,170,110,22));
         if (visible)
         {
-            DrawLobbyAvatar(row.Id == 0 ? null : row.Id.ToString());
+            DrawLobbyAvatar(row.Id == 0 ? null : row.Id.ToString(),40,false);
             if (!lobbyAvatars.TryGetValue(row.Id, out var cached) || cached.Texture is null)
-                ImGui.GetWindowDrawList().AddText(at + new float2(3, 5), HomeGold, row.Name[..Math.Min(2, row.Name.Length)].ToUpperInvariant());
-            var color = !row.Online ? HomeMute : row.Group == SocialGroup.InGame ? new ImColor8(112,196,132) : new ImColor8(79,187,220);
-            ImGui.GetWindowDrawList().AddCircleFilled(at + new float2(24, 24), 3, color);
+            {string initials=row.Name[..Math.Min(2,row.Name.Length)].ToUpperInvariant();draw.AddText(at+(new float2(40)-ImGui.CalcTextSize(initials))*.5f,HomeGold,initials);}
+            draw.AddCircleFilled(at+new float2(36,36),6,new ImColor8(1,10,19));draw.AddCircleFilled(at+new float2(36,36),4,stateColor);
         }
-        else { ImGui.Dummy(new(28, 28)); ImGui.SameLine(); }
-        ImGui.BeginGroup();
-        HomeLabel(row.Name, 13, HomeInk);
-        ImGui.PushTextWrapPos(ImGui.GetCursorPosX() + Math.Max(120, ImGui.GetContentRegionAvail().X)); HomeLabel(row.Note, 11, HomeMute); ImGui.PopTextWrapPos();
+        ImGui.SetCursorScreenPos(at+new float2(50,0));HomeLabel(LobbyEllipsis(row.Name,width-50),17,rowColor);
+        if(ImGui.IsItemHovered())ResultTooltip(row.Name);
+        ImGui.SetCursorScreenPos(at+new float2(50,25));HomeLabel(LobbyEllipsis(row.Note,width-50),16,stateColor);
+        if(ImGui.IsItemHovered())ResultTooltip(row.Note);
         if (row.JoinLobby is { } lobby)
         {
-            ImGui.BeginDisabled(!row.CanJoin || enteringRoom is not null);
-            if (HomeButton("socialJoin/" + row.Id, "Join", 70, 24)) { JoinSteamRoom(lobby); OpenMultiplayerView(); }
+            ImGui.SetCursorScreenPos(at+new float2(50,52));
+            ImGui.BeginDisabled(!row.CanJoin || enteringRoom is not null || EvolutionBusy);
+            if (HomeButton("socialJoin/" + row.Id, "Join lobby", width-50, 36)) { JoinSteamRoom(lobby); OpenMultiplayerView(); }
             ImGui.EndDisabled();
             if (!row.CanJoin && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ResultTooltip("Leave your current party before joining another.");
         }
-        ImGui.EndGroup(); ImGui.Spacing();
+        ImGui.SetCursorScreenPos(at+new float2(0,height));ImGui.Dummy(new(width,1));
     }
 }

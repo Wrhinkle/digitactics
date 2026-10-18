@@ -22,6 +22,8 @@ internal sealed partial class MatchScreen
     internal void SteamStartupError(string? error) {if(error is not null)lobbyMessage=error;}
     private void OpenMultiplayerView()
     {
+        if(EvolutionBusy)return;
+        if(evolutionLegend is not null)CloseEvolution();
         // Every entry route leaves the current client module, like the original
         // client's play-page navigation. Async save/file work keeps completing
         // in Update even when its panel is no longer visible.
@@ -45,17 +47,20 @@ internal sealed partial class MatchScreen
     }
     private void ApplySteamJoinRequest()
     {
-        if(invitedLobby is not {} lobby || steam is null || enteringRoom is not null || steam.IsEntering)return;
+        // An accepted invite waits for the visible transformation to settle;
+        // retaining invitedLobby also preserves callbacks received mid-animation.
+        if(invitedLobby is not {} lobby || steam is null || enteringRoom is not null || steam.IsEntering || EvolutionBusy)return;
         invitedLobby=null;
         if(steam.Room?.Authority.RoomId==lobby.ToString(System.Globalization.CultureInfo.InvariantCulture))return;
         if(Session is not null || training is not null)
         {status=lobbyMessage="Leave your current game first, then accept the invite again.";return;}
+        OpenMultiplayerView();
         if(steam.Room is not null)LeaveSteamRoom();
         JoinSteamRoom(lobby);
     }
     private void InviteFriendsButton(string key)
     {
-        if(steam?.Room is not {} room || !Button(key,"Invite Steam friends"))return;
+        if(steam?.Room is not {} room || !HomeButton(key,"Invite Steam friends",200,40))return;
         try
         {
             string message=steam.Friends.OpenInviteOverlay(ulong.Parse(room.Authority.RoomId,System.Globalization.CultureInfo.InvariantCulture))

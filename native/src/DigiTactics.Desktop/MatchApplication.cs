@@ -67,7 +67,7 @@ internal static class MatchApplication
                 var driver = options.Smoke && !options.MysteryLootUiSmoke && !options.SetSelectionSmoke && !options.MatchKeyboardSmoke && !options.ClientPreferencesSmoke && !options.SocialUiSmoke && !options.SaveDataUiSmoke && !options.EliminationCinematicSmoke && !options.PostgameSmoke && !options.ProfileUiSmoke && !options.UpdateUiSmoke && !options.MusicLibrarySmoke && !options.AudioVisibilitySmoke && !options.ModeBonusSmoke && !options.TrainingSmoke && !options.FarmPointerSmoke && !options.NetworkMatchSmoke && !options.SteamLobbyUiSmoke ? new MatchScreenSmoke(options.CollectionSmoke ? profile : null, options.EvolutionSmoke) : null;
                 var visibilityDriver = options.AudioVisibilitySmoke ? new AudioVisibilitySmoke() : null;
                 var modeDriver = options.ModeBonusSmoke ? new ModeBonusSmoke(catalog) : null;
-                using var lobbyDriver = options.SteamLobbyUiSmoke ? new SteamLobbyUiSmoke(options.SteamLibrary) : null;
+                using var lobbyDriver = options.SteamLobbyUiSmoke ? new SteamLobbyUiSmoke(options.SteamLibrary,profile) : null;
                 using var networkDriver = options.NetworkMatchSmoke ? new NetworkMatchSmoke(catalog, screen, options.Duos, options.SpectatorSmoke) : null;
                 using var trainer = options.TrainingSmoke ? new TrainingSmoke(profile!, options.ProfileDirectory!) : null;
                 var clock = System.Diagnostics.Stopwatch.StartNew(); double last = 0;

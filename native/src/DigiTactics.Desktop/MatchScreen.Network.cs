@@ -78,9 +78,9 @@ internal sealed partial class MatchScreen
         {
             var slots = networkRoom.Authority.Lobby?["slots"];
             int available = Enumerable.Range(0, 8).FirstOrDefault(i => slots?[i.ToString()] is null && Session.State.Players[i].Alive, -1);
-            if (available >= 0 && Button("joinSeat", $"Take seat {available + 1}")) networkRoom.ClaimSeat(available, SteamName, networkClock());
+            if (available >= 0 && HomeButton("joinSeat", $"Take seat {available + 1}",140,36)) networkRoom.ClaimSeat(available, SteamName, networkClock());
         }
-        else if (Button("spectate", "Spectate")) networkRoom.FreeSeat(localSeat);
+        else if (HomeButton("spectate", "Spectate",110,36)) networkRoom.FreeSeat(localSeat);
     }
     public void DetachNetworkMatch()
     {
