@@ -36,14 +36,14 @@ public sealed class LockstepMatch
             case "a":
                 MatchActionResult? result;
                 string action = entry.GetProperty("a").GetString()!;
-                try { result = Session.Actions.Apply(entry.GetProperty("s").GetInt32(), action, entry.TryGetProperty("g", out var args) ? args : default); }
+                try { result = Session.Actions.Apply((int)entry.GetProperty("s").GetDouble(), action, entry.TryGetProperty("g", out var args) ? args : default); }
                 catch (Exception e) when (e is ArgumentException or InvalidOperationException or KeyNotFoundException) { result = null; }
                 if (Session.State.Duos) Session.State.SyncTeams();
                 bool ok = result is not null and not MatchActionResult.Flag { Value: false } and not MatchActionResult.Code { Value: "" };
                 if (action == "carousel" && ok) TurnAt = at;
                 return new(ok, result);
             case "vote":
-                if (rounds.Phase == MatchPhase.Planning) votes.Add(entry.GetProperty("s").GetInt32());
+                if (rounds.Phase == MatchPhase.Planning) votes.Add((int)entry.GetProperty("s").GetDouble());
                 return new(true);
             case "start":
                 if (Session.State.Over || rounds.Phase != MatchPhase.Planning || rounds.RoundType == "carousel") return new(false);
