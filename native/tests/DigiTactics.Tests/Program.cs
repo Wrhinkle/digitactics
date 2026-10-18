@@ -64,7 +64,7 @@ if (args.Contains("--profile-backup-only")) { ProfileBackupChecks.Run(root); ret
 if(args.Contains("--model-inventory-audit")){Environment.ExitCode=ModelInventoryAudit.Run(root)>0?1:0;return;}
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
 if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
-if (args.Contains("--materials-only")) { MaterialParity.Run(root); return; }
+if (args.Contains("--materials-only")) { GltfVertexColorChecks.Run(root); MaterialParity.Run(root); return; }
 if (args.Contains("--assets-only")) { ModelAssetParity.Run(root); TextureParity.Run(root); MotionParity.Run(root); CompanionModelChecks.Run(root); return; }
 if (args.Contains("--geometry-only")) { MaterialParity.Run(root); MeshParity.Run(root); RigParity.Run(root); return; }
 if (args.Contains("--companion-motion-only")) { CompanionMotionChecks.Run(root); return; }
@@ -282,6 +282,7 @@ assertions += CombatLocomotionChecks.Run(root);
 assertions += FarmChoreographyChecks.Run(root);
 assertions += TextureParity.Run(root);
 assertions += MaterialParity.Run(root);
+assertions += GltfVertexColorChecks.Run(root);
 assertions += ActionParity.Run(root);
 assertions += ChoreographyParity.Run(root, catalog);
 assertions += AudioCueParity.Run(root, catalog);

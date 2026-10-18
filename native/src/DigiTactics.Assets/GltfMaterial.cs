@@ -32,7 +32,7 @@ public sealed record GltfMaterial(MaterialColor Color, bool Unlit, bool DoubleSi
     public double EmissiveIntensity { get; init; } = 1;
     public TextureBinding? EmissiveMap { get; init; }
     public double NormalScale { get; init; } = 1;
-    public static GltfMaterial Load(GltfAsset asset, int index, bool frontOnly = false)
+    public static GltfMaterial Load(GltfAsset asset, int index, bool frontOnly = false, bool vertexAlpha = false)
     {
         var material = asset.Root.GetProperty("materials")[index];
         var pbr = Property(material, "pbrMetallicRoughness");
@@ -52,7 +52,8 @@ public sealed record GltfMaterial(MaterialColor Color, bool Unlit, bool DoubleSi
         string mode = Property(material, "alphaMode").GetStringOrDefault("OPAQUE");
         bool transparent = mode == "BLEND";
         double cutoff = mode == "MASK" ? Number(material, "alphaCutoff", .5) : 0;
-        if (transparent && color.A >= 1 && map is not null) { transparent = false; cutoff = .5; }
+        // The rip cutout correction must not discard an authored per-vertex opacity gradient.
+        if (transparent && color.A >= 1 && map is not null && !vertexAlpha) { transparent = false; cutoff = .5; }
         var specular = Property(extensions, "KHR_materials_specular");
         return new(color, unlit, !frontOnly && Property(material, "doubleSided").ValueKind == JsonValueKind.True,
             transparent, !transparent, cutoff, unlit ? 1 : Number(pbr, "roughnessFactor", 1), Number(specular, "specularFactor", 1),

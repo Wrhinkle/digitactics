@@ -177,6 +177,41 @@ the normal asset, mapping and portrait; normal checks detect either model or
 portrait drift. This avoids inventing transparency rules for the mistakenly
 selected Burst effect cards.
 
+MachGaogamon's four sonic jet meshes lost the original FBX `COLOR_0` opacity
+streams. `recover-model-vertex-colors.py` restores all 216 source RGBA vertices
+after matching 320 triangles by position, UV and winding. The exact source
+levels are 0, 64/255, 128/255, 191/255 and 1; RGB remains white. All 179 original
+accessors, compressed data, images, geometry, rig and animation remain unchanged.
+The sonic material uses `BLEND`; separate opaque glow cards are untouched and
+still require their own source blending investigation.
+
+The native loader supports float and normalized unsigned byte/short RGB/RGBA.
+It preserves the legacy path for absent/RGB colors, and resolves the source
+cutout correction separately for RGBA primitives so a shared material cannot
+erase authored opacity. OPAQUE ignores vertex alpha; MASK and BLEND use it.
+The source browser correction follows the same rule. CPU contracts, shared
+material tests and `--model-vertex-colors-smoke` cover these behaviors. The
+[glTF specification](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#meshes-overview)
+defines the supported color accessors and alpha modes.
+
+MagnaGarurumon's body material recovery restores two missing UV streams and
+five original diffuse assignments. `recover-model-body-materials.py` uniquely
+matches all 11,300 body triangles using positions, surviving UVs and preserved
+winding, including coincident front/back faces. It appends the exact original
+`chr675a01.png` and `chr675a02.png` atlases and material variants; all 398 old
+accessors, original primitive indices, rig and animation remain unchanged.
+The already correct body mesh and sword/effect meshes are preserved. Plain
+white sword imagery is supplied by the source and is not recolored.
+
+Both helpers produce isolated candidates and enforce pinned archive, member,
+original and output hashes. Their `sourceRecoveries` entries gate normal builds;
+source correspondence alone is not native visual acceptance.
+
+```powershell
+python native/tools/recover-model-vertex-colors.py --model machgaogamon --archive C:/path/304020.zip --original C:/path/original.glb
+python native/tools/recover-model-body-materials.py --model magnagarurumon --archive C:/path/331597.zip --original C:/path/original.glb
+```
+
 Source archive pages:
 
 - [PileVolcamon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324353/)
@@ -192,3 +227,5 @@ Source archive pages:
 - [Tsunomon](https://models.spriters-resource.com/playstation/digimonworld/asset/334142/)
 - [Sukamon / PlatinumSukamon](https://models.spriters-resource.com/mobile/digimonlinks/asset/304086/)
 - [Ravemon / Burst Mode](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/)
+- [MachGaogamon](https://models.spriters-resource.com/mobile/digimonlinks/asset/304020/)
+- [MagnaGarurumon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331597/)

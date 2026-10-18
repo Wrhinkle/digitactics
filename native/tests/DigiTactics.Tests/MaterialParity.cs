@@ -18,14 +18,14 @@ internal static class MaterialParity
                 checks++;
                 if (!condition) throw new InvalidOperationException($"Material differs from original loader: {id}/{index}/{field}.");
             }
-            foreach (var expected in trace.GetProperty("materials").EnumerateArray())
+            void Validate(JsonElement expected, bool vertexAlpha = false)
             {
-                var actual = GltfMaterial.Load(asset, index);
+                var actual = GltfMaterial.Load(asset, index, vertexAlpha: vertexAlpha);
                 double[] color = [actual.Color.R, actual.Color.G, actual.Color.B, actual.Color.A];
                 for (int c = 0; c < 4; c++) Check(Math.Abs(color[c] - expected.GetProperty("color")[c].GetDouble()) < 1e-10, "color");
                 Check(actual.Unlit == expected.GetProperty("unlit").GetBoolean(), "unlit");
                 Check(actual.DoubleSided == expected.GetProperty("doubleSided").GetBoolean(), "doubleSided");
-                Check(!GltfMaterial.Load(asset, index, frontOnly: true).DoubleSided, "frontOnly");
+                Check(!GltfMaterial.Load(asset, index, frontOnly: true, vertexAlpha: vertexAlpha).DoubleSided, "frontOnly");
                 Check(actual.Transparent == expected.GetProperty("transparent").GetBoolean(), "transparent");
                 Check(actual.DepthWrite == expected.GetProperty("depthWrite").GetBoolean(), "depthWrite");
                 Check(actual.AlphaCutoff == expected.GetProperty("alphaCutoff").GetDouble(), "alphaCutoff");
@@ -45,7 +45,12 @@ internal static class MaterialParity
                 Binding(actual.ColorMap, "colorMap"); Binding(actual.RoughnessMap, "roughnessMap");
                 Binding(actual.NormalMap, "normalMap"); Binding(actual.SpecularMap, "specularMap");
                 Binding(actual.EmissiveMap, "emissiveMap");
-                index++; materials++;
+                materials++;
+            }
+            foreach (var expected in trace.GetProperty("materials").EnumerateArray()) { Validate(expected); index++; }
+            if (trace.TryGetProperty("vertexAlphaMaterials", out var variants)) foreach (var variant in variants.EnumerateArray())
+            {
+                index = variant.GetProperty("index").GetInt32(); Validate(variant.GetProperty("material"), vertexAlpha: true);
             }
             index = 0;
             foreach (var expected in trace.GetProperty("textures").EnumerateArray())

@@ -24,19 +24,27 @@ async function main() {
     parser.plugins.specular = new GLTFMaterialsSpecularExtension(parser);
     parser.plugins.emission = new GLTFMaterialsEmissiveStrengthExtension(parser);
     parser.loadImageSource = async () => new THREE.Texture();
-    const materials = [];
-    for (let index = 0; index < (json.materials || []).length; index++) {
-      const material = await parser.loadMaterial(index);
-      vm.runInNewContext(correction, {scene:{traverse:fn => fn({isMesh:true,material})},src:{}});
+    const materials = [], vertexAlphaMaterials = [];
+    const alphaMaterials = new Set((json.meshes || []).flatMap(m => m.primitives).filter(p =>
+      p.attributes.COLOR_0 !== undefined && json.accessors[p.attributes.COLOR_0].type === 'VEC4').map(p => p.material));
+    async function correctedMaterial(index, vertexAlpha) {
+      const mesh = {isMesh:true, material:await parser.loadMaterial(index),geometry:{getAttribute:() => vertexAlpha ? {itemSize:4} : undefined}};
+      vm.runInNewContext(correction, {scene:{traverse:fn => fn(mesh)},src:{}});
+      const material = mesh.material;
       const binding = name => {
         const map = material[name]; if (!map) return null;
         return {texture:parser.associations.get(map).textures, texCoord:map.channel, srgb:map.colorSpace === THREE.SRGBColorSpace};
       };
-      materials.push({color:[material.color.r,material.color.g,material.color.b,material.opacity], unlit:!!material.isMeshBasicMaterial,
+      return {color:[material.color.r,material.color.g,material.color.b,material.opacity], unlit:!!material.isMeshBasicMaterial,
         doubleSided:material.side===THREE.DoubleSide,transparent:material.transparent,depthWrite:material.depthWrite,
         alphaCutoff:material.alphaTest,roughness:material.roughness??1,specularIntensity:material.specularIntensity??1,normalScale:material.normalScale?.x??1,
         colorMap:binding('map'),roughnessMap:binding('roughnessMap'),normalMap:binding('normalMap'),specularMap:binding('specularIntensityMap'),
-        emissive:material.emissive?.toArray()||[0,0,0],emissiveIntensity:material.emissiveIntensity??1,emissiveMap:binding('emissiveMap')});
+        emissive:material.emissive?.toArray()||[0,0,0],emissiveIntensity:material.emissiveIntensity??1,emissiveMap:binding('emissiveMap')};
+    }
+    for (let index = 0; index < (json.materials || []).length; index++) {
+      // Capture the RGBA variant before a cached material's legacy correction can mutate it.
+      if (alphaMaterials.has(index)) vertexAlphaMaterials.push({index,material:await correctedMaterial(index,true)});
+      materials.push(await correctedMaterial(index,false));
     }
     const textures = [];
     for (let index = 0; index < (json.textures || []).length; index++) {
@@ -44,7 +52,7 @@ async function main() {
       textures.push({image:json.textures[index].source,magFilter:filters.get(texture.magFilter),minFilter:filters.get(texture.minFilter),
         wrapS:wraps.get(texture.wrapS),wrapT:wraps.get(texture.wrapT),mipmaps:texture.generateMipmaps});
     }
-    traces.push({asset,materials,textures});
+    traces.push({asset,materials,textures,...(vertexAlphaMaterials.length ? {vertexAlphaMaterials} : {})});
   }
   fs.writeFileSync(path.join(root,'native/tests/fixtures/materials.json'),JSON.stringify(traces)+'\n');
   console.log(`Exported ${traces.reduce((n,t)=>n+t.materials.length,0)} original-loader materials.`);

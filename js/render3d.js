@@ -101,6 +101,12 @@ export function prepareTemplate(gltf, src) {
   const center = box.getCenter(new THREE.Vector3());
   inner.position.set(-center.x / h, -box.min.y / h, -center.z / h);
   wrapper.add(inner);
+  // GLTFLoader may share a material between RGB and RGBA geometries. Preserve an
+  // independent original before the cutout pass mutates any of its other users.
+  scene.traverse((o) => {
+    if (!o.isMesh || o.geometry?.getAttribute('color')?.itemSize !== 4) return;
+    o.material = Array.isArray(o.material) ? o.material.map(m => m.clone()) : o.material.clone();
+  });
   scene.traverse((o) => {
     if (!o.isMesh) return;
     o.castShadow = true;
@@ -111,7 +117,8 @@ export function prepareTemplate(gltf, src) {
       if (src && src.frontOnly) m.side = THREE.FrontSide;
       // No environment map in the scene, so metallic surfaces render near-black. Treat everything as non-metal.
       if (m.isMeshStandardMaterial) { m.metalness = 0; m.metalnessMap = null; }
-      if (m.transparent && m.opacity >= 1 && m.map) { m.transparent = false; m.alphaTest = 0.5; m.depthWrite = true; }
+      // Authored RGBA vertices contain opacity gradients that must survive the rip cutout correction.
+      if (m.transparent && m.opacity >= 1 && m.map && o.geometry?.getAttribute('color')?.itemSize !== 4) { m.transparent = false; m.alphaTest = 0.5; m.depthWrite = true; }
     }
   });
   const actions = {};

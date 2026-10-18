@@ -10,6 +10,8 @@ internal sealed class GpuModel : IDisposable
     public GltfRig Rig { get; }
     public GltfMesh Mesh { get; }
     public GltfMaterial[] Materials { get; }
+    private readonly Dictionary<int, GltfMaterial> vertexAlphaMaterials = [];
+    public GltfMaterial MaterialFor(GltfPrimitive primitive) => primitive.ColorComponents == 4 && vertexAlphaMaterials.TryGetValue(primitive.Material, out var material) ? material : Materials[primitive.Material];
     public List<GpuPrimitive> Primitives { get; } = [];
     public Dictionary<int, GpuTexture> Textures { get; } = [];
     public Dictionary<int, GpuTexture> SurfaceTextures { get; } = [];
@@ -43,6 +45,9 @@ internal sealed class GpuModel : IDisposable
             Normalization = Transform(-(min.X + max.X) / (2 * height), -min.Y / height, -(min.Z + max.Z) / (2 * height), 0, 1 / height);
             bool front = source.Metadata.TryGetProperty("frontOnly"u8, out var frontOnly) && frontOnly.GetBoolean();
             Materials = asset.Root.GetProperty("materials"u8).EnumerateArray().Select((_, i) => GltfMaterial.Load(asset, i, front)).ToArray();
+            // A source material can be shared by RGB and RGBA meshes; the rip correction is per geometry.
+            foreach (int index in Mesh.Meshes.SelectMany(m => m).Where(p => p.ColorComponents == 4).Select(p => p.Material).Distinct())
+                vertexAlphaMaterials.Add(index, GltfMaterial.Load(asset, index, front, vertexAlpha: true));
             foreach (var binding in Materials.SelectMany(m => new[] { m.ColorMap, m.EmissiveMap }).OfType<TextureBinding>())
                 if (!Textures.ContainsKey(binding.Texture))
                 {

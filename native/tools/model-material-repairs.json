@@ -515,6 +515,282 @@
         "scope": "Material/identity correction only",
         "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
       }
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_machgaogamon.glb",
+      "originalSha256": "de6be2d027173db22c670a7c03f69218991f56f079c7be644fa5340079ee9933",
+      "repairedSha256": "a787dd3b90f7df49b3d18608618ea4368e3dfd43806ee845174f4ebfc6fe9e07",
+      "archiveSha256": "eb881926c655c791b72ff330212b2411b41908833a0ae852343a67ebab6f169c",
+      "sourceUrl": "https://models.spriters-resource.com/mobile/digimonlinks/asset/304020/",
+      "sourceFbx": "MachGaogamon/chr074 With Animations.fbx",
+      "fbxSha256": "78c3ae259885048e99428a5d331019e3fb422fcb40b6067094dc40ca11352992",
+      "changedMaterial": {
+        "index": 2,
+        "name": "EFF_jet_sonic_mat",
+        "alphaMode": "BLEND"
+      },
+      "preservedOriginalBinaryBytes": true,
+      "preservedAllExistingAccessorsBitForBit": true,
+      "preservedGeometryUvsRigAnimationsImagesAndGlowCards": true,
+      "verifiedExistingAccessors": 179,
+      "sourceProof": [
+        {
+          "matchedTriangles": 80,
+          "vertices": 54,
+          "duplicatedVertices": 0,
+          "maximumNormalizedPositionError": 8.632623267221406e-05,
+          "maximumUvError": 5.960464477539063e-08,
+          "mesh": "EFF_jet_R_sonic_0",
+          "geometryId": 716507792,
+          "modelId": 717933776,
+          "alphaHistogram": {
+            "0.0": 18,
+            "0.250980406999588": 9,
+            "0.501960813999176": 9,
+            "0.7490196228027344": 9,
+            "1.0": 9
+          },
+          "rgb": [
+            1,
+            1,
+            1
+          ],
+          "sourceColorBinding": "LayerElementColor 0 / ByVertice / Direct",
+          "sourceUvBinding": "sole LayerElementUV 0 / ByVertice / Direct",
+          "sourceToGltfUv": "U=sourceU, V=1-sourceV",
+          "uniqueSignedAxisPermutation": "identity"
+        },
+        {
+          "matchedTriangles": 80,
+          "vertices": 54,
+          "duplicatedVertices": 0,
+          "maximumNormalizedPositionError": 6.429741631548946e-05,
+          "maximumUvError": 5.960464477539063e-08,
+          "mesh": "EFF_jet_R_sonic1_0",
+          "geometryId": 716163264,
+          "modelId": 717935776,
+          "alphaHistogram": {
+            "0.0": 18,
+            "0.250980406999588": 9,
+            "0.501960813999176": 9,
+            "0.7490196228027344": 9,
+            "1.0": 9
+          },
+          "rgb": [
+            1,
+            1,
+            1
+          ],
+          "sourceColorBinding": "LayerElementColor 0 / ByVertice / Direct",
+          "sourceUvBinding": "sole LayerElementUV 0 / ByVertice / Direct",
+          "sourceToGltfUv": "U=sourceU, V=1-sourceV",
+          "uniqueSignedAxisPermutation": "identity"
+        },
+        {
+          "matchedTriangles": 80,
+          "vertices": 54,
+          "duplicatedVertices": 0,
+          "maximumNormalizedPositionError": 8.636508427515179e-05,
+          "maximumUvError": 5.960464477539063e-08,
+          "mesh": "EFF_jet_L_sonic_0",
+          "geometryId": 716164800,
+          "modelId": 721366832,
+          "alphaHistogram": {
+            "0.0": 18,
+            "0.250980406999588": 9,
+            "0.501960813999176": 9,
+            "0.7490196228027344": 9,
+            "1.0": 9
+          },
+          "rgb": [
+            1,
+            1,
+            1
+          ],
+          "sourceColorBinding": "LayerElementColor 0 / ByVertice / Direct",
+          "sourceUvBinding": "sole LayerElementUV 0 / ByVertice / Direct",
+          "sourceToGltfUv": "U=sourceU, V=1-sourceV",
+          "uniqueSignedAxisPermutation": "identity"
+        },
+        {
+          "matchedTriangles": 80,
+          "vertices": 54,
+          "duplicatedVertices": 0,
+          "maximumNormalizedPositionError": 6.428631266672869e-05,
+          "maximumUvError": 5.960464477539063e-08,
+          "mesh": "EFF_jet_L_sonic1_0",
+          "geometryId": 716165312,
+          "modelId": 721368832,
+          "alphaHistogram": {
+            "0.0": 18,
+            "0.250980406999588": 9,
+            "0.501960813999176": 9,
+            "0.7490196228027344": 9,
+            "1.0": 9
+          },
+          "rgb": [
+            1,
+            1,
+            1
+          ],
+          "sourceColorBinding": "LayerElementColor 0 / ByVertice / Direct",
+          "sourceUvBinding": "sole LayerElementUV 0 / ByVertice / Direct",
+          "sourceToGltfUv": "U=sourceU, V=1-sourceV",
+          "uniqueSignedAxisPermutation": "identity"
+        }
+      ],
+      "recoveryTool": "native/tools/recover-model-vertex-colors.py",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Source recovery only; separate opaque glow cards remain unresolved",
+        "catalogSha256": "7d7ecc00436c2b6815ab7778d0a1f088e097a75cd2d9f91f780a54f63bc25a1e"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_magnagarurumon.glb",
+      "originalSha256": "b9ff4ebdbf1333bf1991997c282e11edf5e176b99b1a16269bbe889002e0feb5",
+      "repairedSha256": "4d58856d87b3c385779bcc7b407bc7af0f18fa2d867b5b83d6e8fc3f874722b8",
+      "archiveSha256": "b3dc1ffd6880c6981d076e442a1def1c9372b315d1e201a3d4344044725fb99d",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331597/",
+      "sourceDae": "MagnaGarurumon MagnaGarurumon (SV)/chr678.dae",
+      "daeSha256": "373d813bbeedf9e5990dc4548a5e5e38da85e4dc4124f63ac09682e6e7c89a41",
+      "originalInputFbxSha256": "704512baa298369e64ec53f96ce631d6e8b1ba45b0c9837add0d77cb9fca8a94",
+      "albedos": {
+        "chr675a01.png": "7a81a7d00bb28b88f7e999939ce261cb0b9e9701127396aa2c840b8f3e0ad403",
+        "chr675a02.png": "79314126f19988d33a94eca27739d5dc77fe10c8b769729fb295debf18b60c1d"
+      },
+      "verifiedExistingAccessors": 398,
+      "preservedOriginalBinaryBytesAndStoredAccessors": true,
+      "preservedEveryTriangleAttributeAndWinding": true,
+      "preservedRigAnimationsAndSwordEffects": true,
+      "sourceProof": [
+        {
+          "sourceGeometry": "chr678_4",
+          "sourceDiffuse": "chr675a02.png",
+          "sourceMaterial": "chr678spec_02-material",
+          "sourceUvInput": "chr678_4-mesh-map-0",
+          "sourceUvSet": 0,
+          "sourceToGltfUv": "U=sourceU, V=1-sourceV",
+          "mesh": "chr675_4",
+          "matchedTriangles": 2812,
+          "ambiguousTriangles": 0,
+          "maximumNormalizedPositionError": 0.00011142790984738438,
+          "existingUvMaximumError": 0.0001216902204928677,
+          "trianglesDisambiguatedByExistingUvs": 0,
+          "matching": "direct corner positions, identity axes, cyclic winding, surviving diffuse UVs",
+          "originalVertices": 2257,
+          "duplicatedUvSeamVertices": 0,
+          "restoredUv": false,
+          "repairedBinding": true
+        },
+        {
+          "sourceGeometry": "chr678_5",
+          "sourceDiffuse": "chr675a01.png",
+          "sourceMaterial": "chr678cube_01-material",
+          "sourceUvInput": "chr678_5-mesh-map-0",
+          "sourceUvSet": 0,
+          "sourceToGltfUv": "U=sourceU, V=1-sourceV",
+          "mesh": "chr675_5",
+          "matchedTriangles": 3072,
+          "ambiguousTriangles": 0,
+          "maximumNormalizedPositionError": 0.00011821081459716298,
+          "existingUvMaximumError": null,
+          "trianglesDisambiguatedByExistingUvs": 0,
+          "matching": "direct corner positions, identity axes, cyclic winding, surviving diffuse UVs",
+          "originalVertices": 2399,
+          "duplicatedUvSeamVertices": 0,
+          "restoredUv": true,
+          "repairedBinding": true
+        },
+        {
+          "sourceGeometry": "chr678_6",
+          "sourceDiffuse": "chr675a02.png",
+          "sourceMaterial": "chr678cube_02-material",
+          "sourceUvInput": "chr678_6-mesh-map-0",
+          "sourceUvSet": 0,
+          "sourceToGltfUv": "U=sourceU, V=1-sourceV",
+          "mesh": "chr675_6",
+          "matchedTriangles": 990,
+          "ambiguousTriangles": 0,
+          "maximumNormalizedPositionError": 0.00010403862294617026,
+          "existingUvMaximumError": null,
+          "trianglesDisambiguatedByExistingUvs": 0,
+          "matching": "direct corner positions, identity axes, cyclic winding, surviving diffuse UVs",
+          "originalVertices": 1108,
+          "duplicatedUvSeamVertices": 0,
+          "restoredUv": true,
+          "repairedBinding": true
+        },
+        {
+          "sourceGeometry": "chr678_7",
+          "sourceDiffuse": "chr675a02.png",
+          "sourceMaterial": "chr678base_02-material",
+          "sourceUvInput": "chr678_7-mesh-map-0",
+          "sourceUvSet": 0,
+          "sourceToGltfUv": "U=sourceU, V=1-sourceV",
+          "mesh": "chr675_7",
+          "matchedTriangles": 902,
+          "ambiguousTriangles": 0,
+          "maximumNormalizedPositionError": 0.00010598118321686053,
+          "existingUvMaximumError": 0.00011484435797659565,
+          "trianglesDisambiguatedByExistingUvs": 0,
+          "matching": "direct corner positions, identity axes, cyclic winding, surviving diffuse UVs",
+          "originalVertices": 726,
+          "duplicatedUvSeamVertices": 0,
+          "restoredUv": false,
+          "repairedBinding": true
+        },
+        {
+          "sourceGeometry": "chr678_8",
+          "sourceDiffuse": "chr675a01.png",
+          "sourceMaterial": "chr678base_01-material",
+          "sourceUvInput": "chr678_8-mesh-map-0",
+          "sourceUvSet": 0,
+          "sourceToGltfUv": "U=sourceU, V=1-sourceV",
+          "mesh": "chr675_8",
+          "matchedTriangles": 1332,
+          "ambiguousTriangles": 0,
+          "maximumNormalizedPositionError": 0.00010381870281069446,
+          "existingUvMaximumError": 0.00012970168612191912,
+          "trianglesDisambiguatedByExistingUvs": 0,
+          "matching": "direct corner positions, identity axes, cyclic winding, surviving diffuse UVs",
+          "originalVertices": 1016,
+          "duplicatedUvSeamVertices": 0,
+          "restoredUv": false,
+          "repairedBinding": false
+        },
+        {
+          "sourceGeometry": "chr678_9",
+          "sourceDiffuse": "chr675a01.png",
+          "sourceMaterial": "chr678spec_01-material",
+          "sourceUvInput": "chr678_9-mesh-map-0",
+          "sourceUvSet": 0,
+          "sourceToGltfUv": "U=sourceU, V=1-sourceV",
+          "mesh": "chr675_9",
+          "matchedTriangles": 2192,
+          "ambiguousTriangles": 0,
+          "maximumNormalizedPositionError": 0.00011504814865672234,
+          "existingUvMaximumError": 0.00012161524376283483,
+          "trianglesDisambiguatedByExistingUvs": 0,
+          "matching": "direct corner positions, identity axes, cyclic winding, surviving diffuse UVs",
+          "originalVertices": 2193,
+          "duplicatedUvSeamVertices": 0,
+          "restoredUv": false,
+          "repairedBinding": true
+        }
+      ],
+      "recoveryTool": "native/tools/recover-model-body-materials.py",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Source recovery only; no whole-model action or identity approval",
+        "catalogSha256": "7d7ecc00436c2b6815ab7778d0a1f088e097a75cd2d9f91f780a54f63bc25a1e"
+      }
     }
   ],
   "geometryRecoveries": [

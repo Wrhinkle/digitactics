@@ -7,6 +7,7 @@ public sealed record GltfPrimitive(float[] Vertices, uint[] Indices, int Materia
     public int VertexCount => Vertices.Length / Stride;
     public float[] Tangents { get; init; } = [];
     public float[] Colors { get; init; } = [];
+    public int ColorComponents => Colors.Length == 0 ? 0 : VertexCount > 0 && Colors.Length == VertexCount * 3 ? 3 : VertexCount > 0 && Colors.Length == VertexCount * 4 ? 4 : throw new InvalidDataException("Vertex color count mismatch.");
 }
 public sealed record MeshInstance(int Node, int Mesh, int Skin);
 public sealed record GltfMesh(GltfPrimitive[][] Meshes, MeshInstance[] Instances)
@@ -73,7 +74,29 @@ public sealed record GltfMesh(GltfPrimitive[][] Meshes, MeshInstance[] Instances
                         for (int c = 0; c < 4; c++) tangents[i * 4 + c] = (float)values[c];
                     }
                 }
-                primitives.Add(new(vertices, indices, primitive.TryGetProperty("material", out var material) ? material.GetInt32() : -1, normal, skin) { Tangents = tangents });
+                float[] colors = [];
+                if (attributes.TryGetProperty("COLOR_0", out var color))
+                {
+                    int accessor = color.GetInt32();
+                    var description = root.GetProperty("accessors")[accessor];
+                    int components = description.GetProperty("type").GetString() switch { "VEC3" => 3, "VEC4" => 4, _ => throw new InvalidDataException("Invalid vertex color shape.") };
+                    int componentType = description.GetProperty("componentType").GetInt32();
+                    bool normalized = description.TryGetProperty("normalized", out var n) && n.GetBoolean();
+                    if (description.GetProperty("count").GetInt32() != count) throw new InvalidDataException("Vertex color count differs from positions.");
+                    if (componentType != 5126 && (!(componentType is 5121 or 5123) || !normalized)) throw new InvalidDataException("Vertex colors require floats or normalized unsigned bytes/shorts.");
+                    colors = new float[checked(count * components)];
+                    for (int i = 0; i < count; i++)
+                    {
+                        var values = asset.AccessorElement(accessor, i);
+                        for (int c = 0; c < components; c++)
+                        {
+                            float value = (float)values[c];
+                            if (!float.IsFinite(value)) throw new InvalidDataException("Invalid vertex color value.");
+                            colors[i * components + c] = Math.Clamp(value, 0, 1);
+                        }
+                    }
+                }
+                primitives.Add(new(vertices, indices, primitive.TryGetProperty("material", out var material) ? material.GetInt32() : -1, normal, skin) { Tangents = tangents, Colors = colors });
             }
             meshes.Add(primitives.ToArray());
         }

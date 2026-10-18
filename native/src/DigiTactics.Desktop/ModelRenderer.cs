@@ -101,7 +101,7 @@ internal sealed partial class ModelRenderer : IDisposable
     public unsafe void Draw(GpuModel model, RigPose pose, Matrix4D placement, Matrix4x4 camera, bool transparent, double emission = 0, int onlyNode = -1, int onlyPrimitive = -1)
     {
         if (collecting && transparent && !ShadowPass) { QueueModel(model, pose, placement, camera, emission); return; }
-        var rig = model.Rig; var mesh = model.Mesh; var materials = model.Materials; var textures = model.Textures; var primitives = model.Primitives;
+        var rig = model.Rig; var mesh = model.Mesh; var textures = model.Textures; var primitives = model.Primitives;
         int required = Math.Max(1, rig.Skins.Select(s => s.Joints.Length).DefaultIfEmpty(0).Max());
         if (palette.Length < required)
         {
@@ -132,10 +132,11 @@ internal sealed partial class ModelRenderer : IDisposable
             {
                 if (onlyPrimitive >= 0 && i != onlyPrimitive) continue;
                 var geometry = mesh.Meshes[instance.Mesh][i];
-                var material = materials[geometry.Material];
+                var material = model.MaterialFor(geometry);
                 if (material.Transparent != transparent) continue;
                 SetFarmLight(new((float)(material.Emissive.R * material.EmissiveIntensity), (float)(material.Emissive.G * material.EmissiveIntensity), (float)(material.Emissive.B * material.EmissiveIntensity)), roughness: (float)material.Roughness);
                 program.Uniform(21, material.EmissiveMap is null ? 0 : 1);
+                program.Uniform(29, VertexColorMode(geometry.ColorComponents, material.Transparent, material.AlphaCutoff));
                 OpenGl.BindTextureUnit(3, material.EmissiveMap is { } emissiveMap ? model.Textures[emissiveMap.Texture].Id : 0);
                 program.Uniform(22, new Brutal.Numerics.float4(material.NormalMap is null ? 0 : 1, (float)material.NormalScale, geometry.Tangents.Length > 0 ? 1 : 0, 0));
                 OpenGl.BindTextureUnit(4, material.NormalMap is { } normalMap ? model.SurfaceTextures[normalMap.Texture].Id : 0);
@@ -190,7 +191,7 @@ internal sealed partial class ModelRenderer : IDisposable
         if(receiveShadow is {} receive)program.Uniform(24,!ShadowPass && receive && ShadowTexture!=0?1:0);
         program.Uniform(21,emissiveMap is null?0:1);OpenGl.BindTextureUnit(3,emissiveMap?.Id??0);
         program.Uniform(8, 0); program.Uniform(9, flatShading ? 0 : 1); program.Uniform(10, unlit ? 1 : 0); program.Uniform(11, alphaTest);
-        program.Uniform(29, vertexColors && geometry.HasColors ? 1 : 0);
+        program.Uniform(29, vertexColors ? VertexColorMode(geometry.ColorComponents, transparent, alphaTest) : 0);
         program.Uniform(12, color); program.Uniform(13, texture is null ? 0 : 1); program.Uniform(14, 0f);
         OpenGl.BindTextureUnit(0, texture?.Id ?? 0); SetSides(side, shadowSide);
         double determinant = world.M11 * (world.M22 * world.M33 - world.M23 * world.M32)
@@ -219,6 +220,8 @@ internal sealed partial class ModelRenderer : IDisposable
             OpenGl.CullFace(side == 0 ? GlFace.Back : GlFace.Front);
         }
     }
+    // OPAQUE ignores vertex opacity, while MASK and BLEND multiply it into material/texture alpha.
+    private static int VertexColorMode(int components, bool transparent, double alphaCutoff) => components == 0 ? 0 : components == 4 && (transparent || alphaCutoff > 0) ? 2 : 1;
     private unsafe void Matrix(int location, Matrix4D value)
     {
         Span<float> values = stackalloc float[16]; Copy(value, values);
@@ -238,14 +241,14 @@ internal sealed partial class ModelRenderer : IDisposable
         layout(location=3) in vec4 joints;
         layout(location=4) in vec4 weights;
         layout(location=5) in vec4 tangent;
-        layout(location=6) in vec3 vertexColor;
+        layout(location=6) in vec4 vertexColor;
         layout(std430,binding=0) readonly buffer Bones { mat4 bones[]; };
         layout(location=0) uniform mat4 world;
         layout(location=4) uniform mat4 camera;
         layout(location=8) uniform int skinned;
         layout(location=30) uniform vec4 pointSettings;
         out vec2 texCoord; out vec3 worldPosition; out vec3 worldNormal; out vec4 worldTangent;
-        out vec3 meshColor; out float eyeDepth;
+        out vec4 meshColor; out float eyeDepth;
         void main() {
             mat4 skin = mat4(1);
             if(skinned!=0) skin=bones[int(joints.x)]*weights.x+bones[int(joints.y)]*weights.y+bones[int(joints.z)]*weights.z+bones[int(joints.w)]*weights.w;
@@ -260,7 +263,7 @@ internal sealed partial class ModelRenderer : IDisposable
     private const string FragmentShader = """
         #version 450 core
         in vec2 texCoord; in vec3 worldPosition; in vec3 worldNormal; in vec4 worldTangent;
-        in vec3 meshColor; in float eyeDepth;
+        in vec4 meshColor; in float eyeDepth;
         layout(binding=0) uniform sampler2D colorTexture;
         layout(binding=1) uniform sampler2D roughnessTexture;
         layout(binding=2) uniform sampler2D specularTexture;
@@ -336,7 +339,8 @@ internal sealed partial class ModelRenderer : IDisposable
             vec3 pointUv=vec3(gl_PointCoord.x,1-gl_PointCoord.y,1);
             vec2 mapUv=pointSettings.w!=0 ? vec2(dot(pointU.xyz,pointUv),dot(pointV.xyz,pointUv)) : texCoord;
             vec4 c=color*(textured!=0?texture(colorTexture,mapUv):vec4(1));
-            if(hasVertexColors!=0) c.rgb*=meshColor;
+            if(hasVertexColors!=0) c.rgb*=meshColor.rgb;
+            if(hasVertexColors==2) c.a*=meshColor.a;
             if(c.a<cutoff) discard;
             if(shadowPass!=0) { outputColor=vec4(1); return; }
             vec3 n=normalize(hasNormals!=0?worldNormal:cross(dFdx(worldPosition),dFdy(worldPosition)));

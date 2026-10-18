@@ -7,14 +7,18 @@ internal sealed class GpuPrimitive : IDisposable
     private GlVertexArray array;
     private readonly GlBuffer[] buffers = new GlBuffer[4];
     public bool HasColors { get; }
+    public int ColorComponents { get; }
     public System.Numerics.Vector3 SortCenter { get; }
     private readonly int count;
+    private readonly int colorCount;
     private readonly uint topology;
     public unsafe GpuPrimitive(GltfPrimitive data, uint topology = OpenGl.GL_TRIANGLES)
     {
         this.topology = topology;
         count = data.Indices.Length;
-        HasColors = data.Colors.Length > 0;
+        ColorComponents = data.ColorComponents;
+        colorCount = data.Colors.Length;
+        HasColors = ColorComponents > 0;
         var min = new System.Numerics.Vector3(float.PositiveInfinity); var max = new System.Numerics.Vector3(float.NegativeInfinity);
         for (int i = 0; i < data.Vertices.Length; i += GltfPrimitive.Stride)
         {
@@ -22,7 +26,6 @@ internal sealed class GpuPrimitive : IDisposable
             min = System.Numerics.Vector3.Min(min, point); max = System.Numerics.Vector3.Max(max, point);
         }
         SortCenter = data.VertexCount == 0 ? default : (min + max) / 2;
-        if (HasColors && data.Colors.Length != data.VertexCount * 3) throw new InvalidDataException("Vertex color count mismatch.");
         Span<GlVertexArray> arrays = stackalloc GlVertexArray[1]; OpenGl.CreateVertexArrays(arrays); array = arrays[0];
         try
         {
@@ -34,9 +37,9 @@ internal sealed class GpuPrimitive : IDisposable
             if (HasColors)
             {
                 fixed (float* colors = data.Colors) OpenGl.NamedBufferData(buffers[3], data.Colors.Length * sizeof(float), colors, OpenGl.GL_STATIC_DRAW);
-                OpenGl.VertexArrayVertexBuffer(array.Id, 2, buffers[3], 0, 3 * sizeof(float));
+                OpenGl.VertexArrayVertexBuffer(array.Id, 2, buffers[3], 0, ColorComponents * sizeof(float));
                 OpenGl.EnableVertexArrayAttrib(array.Id, 6); OpenGl.VertexArrayAttribBinding(array.Id, 6, 2);
-                OpenGl.VertexArrayAttribFormat(array.Id, 6, 3, OpenGl.GL_FLOAT, false, 0);
+                OpenGl.VertexArrayAttribFormat(array.Id, 6, ColorComponents, OpenGl.GL_FLOAT, false, 0);
             }
             if (data.Tangents.Length > 0)
             {
@@ -65,6 +68,12 @@ internal sealed class GpuPrimitive : IDisposable
     public unsafe void UpdateVertices(float[] vertices)
     {
         fixed (float* data = vertices) OpenGl.NamedBufferSubData(buffers[0], 0, vertices.Length * sizeof(float), data);
+    }
+    public unsafe void UpdateColors(ReadOnlySpan<float> colors)
+    {
+        if (!HasColors || colors.Length != colorCount) throw new InvalidDataException("Updated vertex color count differs.");
+        foreach (float value in colors) if (!float.IsFinite(value)) throw new InvalidDataException("Non-finite updated vertex color.");
+        fixed (float* data = colors) OpenGl.NamedBufferSubData(buffers[3], 0, colors.Length * sizeof(float), data);
     }
     public void Dispose() { OpenGl.DeleteBuffers(buffers); OpenGl.DeleteVertexArrays(new[] { array }); }
 }

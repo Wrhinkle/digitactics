@@ -44,7 +44,7 @@ internal sealed partial class ModelRenderer
         for (int i = 0; i < model.Mesh.Meshes[instance.Mesh].Length; i++)
         {
             var geometry = model.Mesh.Meshes[instance.Mesh][i];
-            if (!model.Materials[geometry.Material].Transparent) continue;
+            if (!model.MaterialFor(geometry).Transparent) continue;
             var key = (instance.Node, i);
             if (!centers.TryGetValue(key, out var center))
             {
