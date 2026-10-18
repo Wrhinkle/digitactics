@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Brutal.ImGuiApi;
+using Brutal.Numerics;
 using DigiTactics.Presentation;
 using DigiTactics.Rules;
 using DigiTactics.Storage;
@@ -9,6 +10,10 @@ namespace DigiTactics.Desktop;
 internal sealed partial class MatchScreen
 {
     private bool showEmotes, muteEmotes;
+    private bool emotesToggleHovered;
+    internal (float2 Min,float2 Max)[] EmoteSlotBounds {get;private set;}=[];
+    internal float2 EmoteWheelCenter {get;private set;}
+    internal bool OtherEmotesMuted=>muteEmotes;
     private MatchPlanningSession? emoteSession;
     private MatchEmotes emotes = new();
     private readonly EmoteArtwork emoteArtwork = new();
@@ -40,7 +45,7 @@ internal sealed partial class MatchScreen
         ArenaEmoteDraws = 0;
         if (showEmotes || showSoundboard || showAudio || showPlayers) return;
         EnsureEmotes(); long now = Environment.TickCount64;
-        Window("Arena emote overlay", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoInputs);
+        Window("Arena emote overlay", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoFocusOnAppearing);
         void Draw(int seat, ArenaCompanionView? view)
         {
             if (view is null || emotes.At(seat, now) is not { } emote) return;
@@ -75,8 +80,18 @@ internal sealed partial class MatchScreen
         if (keyboard && ImGui.IsKeyPressed(ImGuiKey.T, false)) { showEmotes = !showEmotes; if (showEmotes) showSoundboard = false;overlayShortcutConsumed=true; }
         if (!showEmotes) return;
         if(keyboard&&Enumerable.Range(0,6).Any(SlotKeyPressed))overlayShortcutConsumed=true;
-        Window("Emotes", size.X / 2 - 220, Top + 20, 440, 540);
-        ImGui.Text("Three emotes per six seconds - T to close"u8);
+        // The original six image buttons surround a ring over the arena. Keep
+        // the board visible and put the hovered name in the centre of the wheel.
+        const float radius=124,diameter=88;
+        float2 center=new(Left+Width*.5f,Math.Clamp(Top+Math.Max(174,Height*.45f),190,size.Y-230));
+        float2 origin=center-new float2(198,178);
+        if(PressedOutsideSocialPanel(origin,origin+new float2(396,410),emotesToggleHovered)){showEmotes=false;return;}
+        EmoteWheelCenter=center;EmoteSlotBounds=new (float2,float2)[6];
+        Window("Emotes",origin.X,origin.Y,396,410,ImGuiWindowFlags.NoTitleBar|ImGuiWindowFlags.NoBackground|ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
+        var draw=ImGui.GetWindowDrawList();
+        draw.AddCircle(center,124,new ImColor8(12,16,26,225),96,54);
+        draw.AddCircle(center,153,new ImColor8(92,102,124,160),96,1);
+        string hoveredName="Emotes";
         try
         {
             var collection = new CosmeticCollection(profile?.Storage.GetValueOrDefault("dt.cosmetics.v1"));
@@ -84,26 +99,52 @@ internal sealed partial class MatchScreen
             for (int i = 0; i < 6; i++)
             {
                 string? id = slots.ElementAtOrDefault(i)?.GetValue<string>();
-                if (id is not null) emoteArtwork.Draw(id, now % 2600, ImGui.GetCursorScreenPos(), 60);
-                ImGui.Dummy(new(60, 60)); ImGui.SameLine();
+                double angle=-Math.PI/2+i*Math.PI/3;
+                float2 slotCenter=center+new float2((float)Math.Cos(angle)*radius,(float)Math.Sin(angle)*radius);
+                float2 at=slotCenter-new float2(diameter*.5f,diameter*.5f);
+                EmoteSlotBounds[i]=(at,at+new float2(diameter,diameter));
+                ImGui.SetCursorScreenPos(at);
                 ImGui.BeginDisabled(IsSpectating || id is null);
-                if (Button("emote/" + i, $"{i + 1}: {CosmeticCollection.Item("emote", id)?.Name ?? "Empty slot"}", 320, 50) || keyboard && !IsSpectating && SlotKeyPressed(i))
+                ImGui.PushStyleColor(ImGuiCol.Button,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.ButtonHovered,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.ButtonActive,new ImColor8(0,0,0,0));ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,0);
+                bool pressed=Button("emote/"+i,"",diameter,diameter);
+                ImGui.PopStyleVar();ImGui.PopStyleColor(3);
+                bool focused=ImGui.IsItemFocused();
+                var mouse=ImGui.GetMousePos()-slotCenter;
+                bool circleHit=mouse.X*mouse.X+mouse.Y*mouse.Y<=diameter*diameter*.25f;
+                bool hover=ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)&&circleHit;
+                string name=CosmeticCollection.Item("emote",id)?.Name??"Empty slot";
+                draw.AddCircleFilled(slotCenter,diameter*.5f,hover?new ImColor8(35,52,68):new ImColor8(18,28,43),64);
+                draw.AddCircle(slotCenter,diameter*.5f,hover||focused?new ImColor8(240,218,155):new ImColor8(88,106,132),64,hover||focused?3:2);
+                if(id is not null)emoteArtwork.Draw(id,now%2600,at+new float2(9,9),70);
+                else {var textAt=slotCenter-new float2(25,10);draw.AddText(ImGui.GetFont(),16,textAt,new ImColor8(165,178,196),"Empty"u8);}
+                var badge=at+new float2(4,4);draw.AddCircleFilled(badge,13,new ImColor8(200,170,110),32);
+                draw.AddText(ImGui.GetFont(),16,badge-new float2(4,9),new ImColor8(15,20,29),(i+1).ToString());
+                if(hover||focused)hoveredName=name;
+                if(hover)ResultTooltip(id is null?"Choose an emote for this slot in Collection.":name+" ("+(i+1)+")");
+                if ((pressed&&(!ImGui.IsMouseReleased(ImGuiMouseButton.Left)||circleHit)) || keyboard && !IsSpectating && SlotKeyPressed(i))
                 {
                     if (id is not null && emotes.Send(collection, id, localSeat, now, networkRoom is null ? null : clip => networkRoom.SendEffect(JsonSerializer.SerializeToElement(new { s = localSeat, kind = "emote", id = clip })))) showEmotes = false;
                     else status = "Too many emotes. Wait a few seconds.";
                 }
                 ImGui.EndDisabled();
             }
-            bool muted = muteEmotes;
-            if (ImGui.Checkbox("Mute other players' emotes"u8, ref muted))
+            ImGui.PushFont(default,18);
+            ImGui.SetCursorScreenPos(center-ImGui.CalcTextSize(hoveredName,false,140)*.5f);
+            ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+140);ImGui.Text(hoveredName);ImGui.PopTextWrapPos();ImGui.PopFont();
+            ImGui.SetCursorScreenPos(center+new float2(-178,178));
+            if (HomeButton("muteEmotes",muteEmotes?"Others muted":"Mute others",230,36,muteEmotes))
             {
+                bool muted=!muteEmotes;
                 if (profile is null || profile.UpdateStorage(new Dictionary<string, string> { ["dt.emotes.muteOthers"] = muted ? "1" : "0" })) { muteEmotes = muted; if (muted) emotes.ClearOthers(localSeat); }
                 else status = profile.Error ?? "Mute preference could not be saved.";
             }
+            ImGui.SameLine();if(HomeButton("closeEmotes","Close (T)",118,36))showEmotes=false;
         }
         catch (Exception error) when (error is JsonException or InvalidDataException or InvalidOperationException or IOException or FormatException)
         { UiText.Wrapped("Emotes could not be loaded: " + error.Message); }
-        if (Button("closeEmotes", "Close")) showEmotes = false;
         ImGui.End();
     }
+    private static bool PressedOutsideSocialPanel(float2 min,float2 max,bool toggleHovered)=>
+        !toggleHovered&&!ImGui.IsMouseHoveringRect(min,max,false)&&
+        (ImGui.IsMouseClicked(ImGuiMouseButton.Left)||ImGui.IsMouseClicked(ImGuiMouseButton.Right)||ImGui.IsMouseClicked(ImGuiMouseButton.Middle));
 }
