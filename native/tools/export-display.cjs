@@ -44,6 +44,7 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
         abilityCases.push({ variant: `${set.id}/${pace}`, line: line.id, stage, ap, text: DT.abilityText(line, stage, ap) });
     } else {
       const compiled = customTemplate(DT,line,stage);
+      if (!compiled) throw Error(`Unported ability description: ${set.id}/${line.id}/${stage}`);
       if (compiled) {
         Object.assign(entries[`ability:${line.id}:${stage}`], compiled);
         for (const ap of [0, .1, 1, 33.3, 99.5, 100, 127.25, 200, 999.9, 10000])

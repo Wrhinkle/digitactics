@@ -1,9 +1,28 @@
 // Specialize authored template expressions while executing their original closures for static text.
 // Unsupported expressions stay explicit so they cannot silently become approximate formulas.
+const fs = require('fs'), path = require('path');
+const underlordsSource = fs.readFileSync(path.join(__dirname, '../../js/sets/underlords-mech.js'), 'utf8');
+const delegated = new Map();
+for (const block of underlordsSource.split(/(?=^    ul_\w+: \{)/m)) {
+  const id = block.match(/^    (ul_\w+): \{/);
+  const text = block.match(/^      text: T\((.+)\),\s*$/m);
+  if (id && text) delegated.set(id[1], text[1]);
+}
 module.exports = function customTemplate(DT, line, stage) {
   const formatter = line.abilText || DT.abilityDef?.(line.type)?.text;
   if (typeof formatter !== 'function') return null;
-  const source = formatter.toString();
+  let source = formatter.toString();
+  if (source === '(line, stage, v) => s(line, stage, Math.round(v))') {
+    source = delegated.get(line.type);
+    if (!source) throw Error(`Missing original Underlords delegated formatter: ${line.type}`);
+    // abilityText already rounds v; the wrapper's second round is therefore an identity.
+  } else if (formatter.length < (line.abilText ? 2 : 3)) {
+    // These authored functions accept only line/stage, never the computed AP value.
+    const description = DT.abilityText(line,stage);
+    for (const ap of [0,.1,1,33.3,99.5,100,127.25,200,999.9,10000])
+      if (description !== DT.abilityText(line,stage,ap)) throw Error(`Unexpected AP dependence: ${line.id}/${stage}`);
+    return { scaledDescription: description, abilityValue: 0, formulas: [] };
+  }
   const expressions = [...source.matchAll(/\$\{([^}]*)\}/g)].map(match => match[1]).filter(expr => /\bv\b/.test(expr));
   const body = source.slice(source.indexOf('=>') + 2).replace(/\$\{[^}]*\}/g, '');
   if (/\bv\b/.test(body) || expressions.length === 0) return null;

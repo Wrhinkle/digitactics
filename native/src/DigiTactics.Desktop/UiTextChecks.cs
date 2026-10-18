@@ -34,6 +34,7 @@ internal static class UiTextChecks
                 {
                     var ability = display.Ability(rules.Id, line.Id, stage);
                     if (ability.Name != line.Ability.Names[stage]) throw new InvalidOperationException($"Ability display name mismatch: {rules.Id}/{line.Id}/{stage}");
+                    if (ability.ScaledDescription is null) throw new InvalidOperationException($"Missing AP-aware ability description: {rules.Id}/{line.Id}/{stage}");
                     abilities++;
                 }
         Console.WriteLine($"Ability display coverage passed: {abilities} forms across {catalog.Variants.Length} rulesets.");
