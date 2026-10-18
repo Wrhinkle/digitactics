@@ -33,7 +33,7 @@ internal static class BoardMeshSmoke
             }
             OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
             var camera = Matrix4x4.CreateLookAt(new(0, 25, 28), Vector3.Zero, Vector3.UnitY) * Matrix4x4.CreatePerspectiveFieldOfView(.9f, 1, .1f, 150);
-            using var board = new ArenaBoard(7);
+            var surfaceGeometry=BoardSurfaceGeometry.Load(Path.Combine(AppContext.BaseDirectory,"content/board-surfaces.json"));
             using var shadows = new SceneShadowMap(2048);
             renderer.ShadowCamera=SceneShadowMap.BoardCamera; renderer.ShadowMapSize=shadows.Size; renderer.ShadowBias=-.0005f;
             int index = 0, draws = 0;
@@ -41,6 +41,7 @@ internal static class BoardMeshSmoke
             {
                 renderer.BoardLight = new(scene); renderer.FarmEye = new(0,25,28);
                 using var layer = new BoardMeshLayer(scene);
+                using var board = new BoardSurfaceView(scene,surfaceGeometry);
                 using var background = new BoardBackground(scene);
                 shadows.Begin(); renderer.ShadowPass=true;
                 try
@@ -53,19 +54,22 @@ internal static class BoardMeshSmoke
                 finally { renderer.ShadowPass=false; shadows.End(); }
                 int expected = scene.Objects.Where(o => o.Visible).Sum(o => (o.Instances?.Length ?? 1) * (o.Materials.Length == 1 ? 1 : scene.Geometries[o.Geometry].Groups.Length));
                 int left=index%columns*cell,bottom=(rows-1-index/columns)*cell;
-                void Render(bool withShadows)
+                void Render(bool withShadows,bool planning=false,int columns=7)
                 {
                     renderer.ShadowTexture=withShadows ? shadows.Texture : 0;
                     ModelRenderer.Begin(cell,cell); OpenGl.Viewport(left,bottom,cell,cell); background.Draw(renderer);
                     layer.Draw(renderer,camera,false,cell); int actual=layer.DrawCalls;
-                    board.Draw(renderer,camera);
+                    board.Draw(renderer,camera,columns,planning);
+                    if(board.DrawCalls!=(columns==7?75:140)) throw new InvalidOperationException("Board gameplay surface count mismatch.");
                     layer.Draw(renderer,camera,true,cell); actual+=layer.DrawCalls;
                     if(actual!=expected || actual==0) throw new InvalidOperationException("Board mesh draw inventory mismatch: "+scene.Id);
                     ModelRenderer.End();
                 }
+                Render(true,true,7);
                 if(scene.Id=="file-island")
                 {
                     byte[] Pixels() { var pixels=new byte[cell*cell*4]; fixed(byte* p=pixels) OpenGl.ReadPixels(left,bottom,cell,cell,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p); return pixels; }
+                    Render(true,true,14);
                     Render(false); var lit=Pixels(); Render(true); var shaded=Pixels();
                     int darkened=Enumerable.Range(0,cell*cell).Count(i=>lit[i*4]+lit[i*4+1]+lit[i*4+2]-shaded[i*4]-shaded[i*4+1]-shaded[i*4+2]>8);
                     if(darkened<10) throw new InvalidOperationException("Board shadows did not darken receiving surfaces.");

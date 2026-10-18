@@ -65,7 +65,21 @@ internal static class BoardSceneChecks
             Vector(lighting.Sky,"sky"); Vector(lighting.Ground,"ground"); Vector(lighting.Sun,"sun");
             Near(lighting.HemisphereIntensity,row.GetProperty("hemiIntensity").GetSingle()); Near(lighting.SunIntensity,row.GetProperty("sunIntensity").GetSingle()); Near(lighting.Flash,row.GetProperty("flash").GetSingle());
         }
-        Console.WriteLine($"Board scenes: {checks:N0} asset and lighting checks passed for {ids.Count} themes and {instances:N0} instances; geometry, materials and references validated.");
+        using var surfaceFixture=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"tests/fixtures/board-surface-materials.json")));
+        foreach(var row in surfaceFixture.RootElement.EnumerateArray())
+        {
+            var surfaces=BoardSurfaces.From(BoardScene.Load(Path.Combine(folder,row.GetProperty("id").GetString()+".json.gz")));
+            foreach(var expected in row.GetProperty("materials").EnumerateArray())
+            {
+                var material=expected.GetProperty("kind").GetString() switch { "mine"=>surfaces.Mine,"enemy"=>surfaces.Enemy,"enemyPlanning"=>surfaces.EnemyPlanning,"slot"=>surfaces.Slot,"ped"=>surfaces.Ped,_=>throw new InvalidDataException() };
+                void Near(float a,float b)=>Check(Math.Abs(a-b)<2e-6,"source surface material");
+                for(int i=0;i<4;i++) Near(material.Color[i],expected.GetProperty("color")[i].GetSingle());
+                for(int i=0;i<3;i++) Near(material.Emissive[i],expected.GetProperty("emissive")[i].GetSingle());
+                Near(material.Roughness,expected.GetProperty("roughness").GetSingle()); Near(material.Metalness,expected.GetProperty("metalness").GetSingle());
+                Check((material.Map is not null)==expected.GetProperty("map").GetBoolean(),"source surface texture assignment");
+            }
+        }
+        Console.WriteLine($"Board scenes: {checks:N0} asset, surface and lighting checks passed for {ids.Count} themes and {instances:N0} instances; geometry, materials and references validated.");
         return checks;
     }
 }

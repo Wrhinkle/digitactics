@@ -9,7 +9,8 @@ async function main(){
  const module="import * as THREE from '/vendor/three/build/three.module.js';import {mergeGeometries} from '/vendor/three/addons/utils/BufferGeometryUtils.js';import {extraThemes} from '/js/boards-extra.js';import {mysteryBoards} from '/js/mystery-boards.js';"
   +`const DT={BENCH:9,CELLS:Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})),makeRng:${rng}},COLS=7,ROWS=8,BENCH=9;const LAYOUT=(()=>{`+layout+';return LAYOUT;})();'
   +source.slice(source.indexOf('const { cellWorld'),source.indexOf('// ---------- renderer integration ----------'))
-  +'\nexport {THREE,THEMES,buildEnv,disposeEnv};';
+  +'\nexport {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
+  +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  try{
   const page=await browser.newPage();
@@ -22,6 +23,15 @@ async function main(){
   });
   await page.goto('http://boards.local/');
   const ids=await page.evaluate(async()=> (await import('/boards.js')).THEMES.map(t=>t.id));
+  const surfaces=await page.evaluate(async()=>{
+   const {surfaceGeometry}=await import('/boards.js'),result={version:1};
+   for(const [key,g] of Object.entries(surfaceGeometry())){
+    const data={};for(const name of ['position','normal','uv'])data[name]=Array.from(g.attributes[name].array);
+    result[key]={...data,indices:g.index?Array.from(g.index.array):null,groups:g.groups};g.dispose();
+   }
+   return result;
+  });
+  fs.writeFileSync(path.join(root,'native/content/board-surfaces.json'),JSON.stringify(surfaces));
   const folder=path.join(root,'native/content/boards');fs.mkdirSync(folder,{recursive:true});const manifest=[];
   for(const id of ids){
    const scene=await page.evaluate(async id=>{
@@ -86,6 +96,20 @@ async function main(){
    return rows;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-lighting.json'),JSON.stringify(lightingFixture));
+  const surfaceFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook}=await import('/boards.js');
+   return THEMES.map(spec=>{
+    const env=buildEnv(spec),look=tileLook(spec);
+    const mine=new THREE.MeshStandardMaterial({color:look.mine,emissive:look.glowMine});
+    const enemy=new THREE.MeshStandardMaterial({color:look.enemy,emissive:look.glowEnemy});
+    const enemyPlanning=new THREE.MeshStandardMaterial({color:look.enemyPlan,emissive:look.glowEnemy});
+    const slot=new THREE.MeshStandardMaterial(),ped=new THREE.MeshStandardMaterial();
+    applySurface(spec,env,{tiles:[mine,enemy,enemyPlanning],slots:[slot],peds:[ped]});
+    const materials=Object.entries({mine,enemy,enemyPlanning,slot,ped}).map(([kind,m])=>({kind,color:[...m.color.toArray(),m.opacity],emissive:m.emissive.toArray(),roughness:m.roughness,metalness:m.metalness,map:!!m.map}));
+    for(const m of [mine,enemy,enemyPlanning,slot,ped])m.dispose();disposeEnv(env);return {id:spec.id,materials};
+   });
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-surface-materials.json'),JSON.stringify(surfaceFixture));
   console.log(`Exported ${manifest.length} board themes, ${manifest.reduce((n,t)=>n+t.instances,0)} scene instances; animation tick counts retained for native port.`);
  }finally{await browser.close();}
 }
