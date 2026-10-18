@@ -81,6 +81,15 @@ internal static class BoardMeshSmoke
                     ModelRenderer.End();
                 }
                 Render(true,true,7);
+                if(scene.Id=="file-beach")
+                {
+                    byte[] Pixels() { var pixels=new byte[cell*cell*4]; fixed(byte* p=pixels) OpenGl.ReadPixels(left,bottom,cell,cell,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p); return pixels; }
+                    Render(false); var resting=Pixels(); layer.Update(2.7); Render(false); var moving=Pixels();
+                    int changed=Enumerable.Range(0,cell*cell).Count(i=>Math.Abs(resting[i*4]-moving[i*4])+Math.Abs(resting[i*4+1]-moving[i*4+1])+Math.Abs(resting[i*4+2]-moving[i*4+2])>3);
+                    if(changed<10) throw new InvalidOperationException("Beach animation did not change rendered pixels.");
+                    Console.WriteLine($"Beach animation pixels verified: {changed} pixels changed.");
+                    layer.Update(0); Render(true,true,7);
+                }
                 if(scene.Id=="file-island")
                 {
                     byte[] Pixels() { var pixels=new byte[cell*cell*4]; fixed(byte* p=pixels) OpenGl.ReadPixels(left,bottom,cell,cell,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p); return pixels; }

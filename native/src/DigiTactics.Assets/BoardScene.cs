@@ -85,5 +85,6 @@ public sealed record BoardGeometryGroup(int Start, int Count, int MaterialIndex)
 public sealed record BoardObject(string Kind, int Geometry, int[] Materials, double[] Matrix, bool Visible,
     bool CastShadow, bool ReceiveShadow, BoardInstance[]? Instances, BoardMotion? Motion = null);
 public sealed record BoardInstance(double[] Matrix, float[] Color);
-public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0);
+public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0,BoardPalm[]? Palms=null,double[]? Matrix=null);
 public sealed record BoardCrystal(double X,double Z,double Sx,double Sy,double Sz,double Phase);
+public sealed record BoardPalm(double X,double Z,double Ry,double S,double Phase);

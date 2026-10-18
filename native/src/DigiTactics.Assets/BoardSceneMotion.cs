@@ -29,4 +29,11 @@ public static class BoardSceneMotion
             vertices[at+2]=Wrap(vertices[at+2]+(velocity[2]*speed+Math.Cos(time*1.1+i*.7)*motion.Wobble)*delta,box[4],box[5]);
         }
     }
+    public static Matrix4D Palm(BoardPalm palm,double time)=>new CompanionTransform(new(palm.X,0,palm.Z),
+        new(Math.Cos(time*.7+palm.Phase)*.025,palm.Ry,Math.Sin(time*.9+palm.Phase)*.035),new(palm.S,palm.S,palm.S)).Matrix;
+    public static (Matrix4D Matrix,float Opacity) Surf(BoardMotion motion,double time)
+    {
+        double k=.5+.5*Math.Sin(time*.9),scale=.97+k*.05;
+        return (Matrix4D.Compose(new(0,0,0),new(0,0,0,1),new(scale,scale,scale))*Matrix4D.From(motion.Matrix!),(float)(.2+.35*(1-k)));
+    }
 }

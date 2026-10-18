@@ -21,16 +21,24 @@ internal static class BoardMotionChecks
                 BoardSceneMotion.Sea(vertices,time,motion); i=0;
                 foreach(var sample in samples.EnumerateArray()) { Near(vertices[i+1],sample[2].GetSingle(),1e-7); Near(vertices[i],sample[0].GetSingle(),0); Near(vertices[i+2],sample[1].GetSingle(),0); i+=GltfPrimitive.Stride; }
             }
+            else if(motion.Kind=="beach-surf")
+            {
+                var surf=BoardSceneMotion.Surf(motion,time); double[] values=new double[16]; surf.Matrix.CopyTo(values);
+                for(int j=0;j<16;j++) Near(values[j],row.GetProperty("matrix")[j].GetDouble(),1e-10);
+                Near(surf.Opacity,row.GetProperty("opacity").GetDouble(),1e-7);
+            }
             else
             {
                 var expected=row.GetProperty("matrices");
-                for(int i=0;i<motion.Items!.Length;i++)
+                for(int i=0;i<(motion.Kind=="beach-palms"?motion.Palms!.Length:motion.Items!.Length);i++)
                 {
-                    double[] values=new double[16]; BoardSceneMotion.Crystal(motion.Items[i],time).CopyTo(values);
+                    double[] values=new double[16];
+                    var matrix=motion.Kind=="beach-palms"?BoardSceneMotion.Palm(motion.Palms![i],time):BoardSceneMotion.Crystal(motion.Items![i],time);
+                    matrix.CopyTo(values);
                     for(int j=0;j<16;j++) Near(values[j],expected[i][j].GetDouble(),1e-6);
                 }
             }
         }
-        Console.WriteLine($"Board motion: {checks:N0} original sea vertex and crystal matrix comparisons passed."); return checks;
+        Console.WriteLine($"Board motion: {checks:N0} original wave, crystal, palm and surf comparisons passed."); return checks;
     }
 }

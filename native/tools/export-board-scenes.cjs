@@ -12,6 +12,8 @@ async function main(){
    .replace('const base = Float32Array.from(pos.array);','const base = Float32Array.from(pos.array); m.userData.nativeMotion={kind:"sea",amp,speed};')
    .replace('const pts = new THREE.Points(geo, mat);','const pts = new THREE.Points(geo, mat); pts.userData.nativeMotion={kind:"particles",box,velocity:v,wobble,speeds:Array.from(spd)};')
    .replace(/const cm = inst\(ctx, new THREE.OctahedronGeometry\(0.45, 0\)[^\n]+;/,line=>line+' cm.userData.nativeMotion={kind:"island-crystals",items:crystals.map(c=>({...c}))};')
+   .replace(/const foam = mesh\(ctx, new THREE.RingGeometry\(13.4[^\n]+;/,line=>line+' foam.updateMatrix(); foam.userData.nativeMotion={kind:"beach-surf",matrix:foam.matrix.toArray()};')
+   .replace(/const pm = inst\(ctx, palmGeo\(\)[^\n]+;/,line=>line+' pm.userData.nativeMotion={kind:"beach-palms",palms:palms.map(p=>({...p}))};')
   +'\nexport {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
   +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}'
   +'\nexport const originalHighlight='+render.slice(render.indexOf('  highlight(ui, planning) {'),render.indexOf('  benchPos(i, partner')).trim().replace('highlight(','function(')+';'
@@ -149,16 +151,18 @@ async function main(){
    for(const spec of THEMES){
     const env=buildEnv(spec),moving=[];env.group.traverse(o=>{if(o.userData.nativeMotion)moving.push(o);});
     for(const time of [0,.016,.37,1,2.7,10,31.25,120]){
-     env.tick(.016,time);
+     env.tick(.016,time);env.group.updateMatrixWorld(true);
      for(const o of moving){
       const motion=o.userData.nativeMotion;
       if(motion.kind==='sea'){
        const a=o.geometry.attributes.position.array,vertices=[];
        for(let i=0;i<a.length/3;i+=13)vertices.push([a[i*3],a[i*3+2],a[i*3+1]]);
        rows.push({id:spec.id,time,motion,vertices});
-      }else if(motion.kind==='island-crystals'){
+      }else if(motion.kind==='island-crystals'||motion.kind==='beach-palms'){
        const matrix=new THREE.Matrix4(),matrices=[];for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
        rows.push({id:spec.id,time,motion,matrices});
+      }else if(motion.kind==='beach-surf'){
+       rows.push({id:spec.id,time,motion,matrix:o.matrixWorld.toArray(),opacity:o.material.opacity});
       }
      }
     }

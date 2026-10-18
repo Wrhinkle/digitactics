@@ -62,6 +62,11 @@ internal sealed class BoardMeshLayer : IDisposable
             if (!item.Object.Visible) continue;
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = Matrix4D.From(item.Object.Matrix) * Root;
+            float? opacity=null;
+            if(item.Object.Motion is { Kind:"beach-surf" } surf)
+            {
+                var animated=BoardSceneMotion.Surf(surf,time); world=animated.Matrix*Root; opacity=animated.Opacity;
+            }
             foreach (var part in item.Parts)
             {
                 var material = part.Material;
@@ -70,7 +75,7 @@ internal sealed class BoardMeshLayer : IDisposable
                 {
                     renderer.ReceiveShadow = item.Object.ReceiveShadow;
                     renderer.DrawRoom(part.Geometry, matrix, camera,
-                        new(material.Color[0] * r, material.Color[1] * g, material.Color[2] * b, material.Color[3]),
+                        new(material.Color[0] * r, material.Color[1] * g, material.Color[2] * b, opacity??material.Color[3]),
                         material.Map is { } map ? textures[map] : null, material.Unlit, transparent, material.DepthWrite,
                         new Vector3(material.Emissive[0], material.Emissive[1], material.Emissive[2]) * material.EmissiveIntensity,
                         material.Roughness, material.Metalness, material.Side, additive: material.Blending == 2,
@@ -82,7 +87,12 @@ internal sealed class BoardMeshLayer : IDisposable
                     for(int i=0;i<instances.Length;i++)
                     {
                         var instance=instances[i];
-                        var matrix=item.Object.Motion is { Kind:"island-crystals",Items:{ } crystals } ? BoardSceneMotion.Crystal(crystals[i],time) : Matrix4D.From(instance.Matrix);
+                        var matrix=item.Object.Motion switch
+                        {
+                            { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
+                            { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
+                            _=>Matrix4D.From(instance.Matrix)
+                        };
                         Draw(matrix*world,instance.Color[0],instance.Color[1],instance.Color[2]);
                     }
                 else Draw(world, 1, 1, 1);
