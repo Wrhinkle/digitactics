@@ -19,6 +19,8 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private int stage, cooldown = 3;
     private bool down, combatRendered, planningRendered;
     private bool companionRendered;
+    private int travelStep;
+    private double travelX, travelZ;
     private readonly bool spectator;
     private bool spectatorVerified;
     private int soundEffects;
@@ -63,6 +65,21 @@ internal sealed class NetworkMatchSmoke : IDisposable
             if (screen.Buttons.Keys.Any(k => k.StartsWith("playerRemove/", StringComparison.Ordinal))) throw new InvalidOperationException("Guest sees host removal controls.");
             if (screen.Buttons.TryGetValue(socialCommands[socialStep], out var socialPoint))
             { ImGui.GetIO().AddMousePosEvent(socialPoint.X, socialPoint.Y); ImGui.GetIO().AddMouseButtonEvent(0, true); down = true; }
+            return;
+        }
+        if (!spectator && stage == 0 && screen.Session?.Rounds.RoundType != "carousel" && travelStep < 3)
+        {
+            if (travelStep == 0 && screen.Buttons.TryGetValue("hex/0/7", out var destination) && screen.CompanionTravel is { } initial)
+            {
+                travelX = initial.X; travelZ = initial.Z;
+                ImGui.GetIO().AddMousePosEvent(destination.X, destination.Y); ImGui.GetIO().AddMouseButtonEvent(1, true); travelStep = 1;
+            }
+            else if (travelStep == 1) { ImGui.GetIO().AddMouseButtonEvent(1, false); travelStep = 2; }
+            else if (travelStep == 2 && screen.CompanionTravel is { TargetX: null, Moving: false } arrived)
+            {
+                if (Math.Abs(arrived.X - travelX) + Math.Abs(arrived.Z - travelZ) < .1) throw new InvalidOperationException("Right-click did not move the arena companion.");
+                travelStep = 3;
+            }
             return;
         }
         if (down) { ImGui.GetIO().AddMouseButtonEvent(0, false); down = false; stage++; cooldown = 3; return; }

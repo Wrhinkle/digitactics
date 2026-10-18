@@ -239,7 +239,13 @@ internal sealed partial class MatchScreen : IDisposable
         Header(); if (Session is null) return;
         Roster(); Sidebar();
         if (battle is null) Board();
-        else battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height);
+        else
+        {
+            Window("Arena", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+            CompanionPointer(); ImGui.End();
+            battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height);
+        }
+        CompanionClickMark();
         Choices(); Soundboard(); EmotePanel(); PlayersPanel();
         if (showAudio)
         {
@@ -308,7 +314,8 @@ internal sealed partial class MatchScreen : IDisposable
     private void Board()
     {
         Window("Arena", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-        ImGui.Text(viewed == localSeat ? "Choose a unit or item, then a hex." : $"Scouting {Session!.State.Players[viewed].Name}");
+        CompanionPointer();
+        ImGui.Text(viewed == localSeat ? "Choose a unit or item, then a hex. Right-click to move your companion." : $"Scouting {Session!.State.Players[viewed].Name}");
         for (int row = 4; row < 8; row++) for (int column = 0; column < 7; column++)
         {
             var point = PlanningView.Cell(column, row, Width, Height); var spot = UnitSpot.Board(column, row);
