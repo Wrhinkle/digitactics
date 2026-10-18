@@ -9,6 +9,7 @@ internal sealed class OfferChoiceSmoke
     private int step, count;
     private PlayerOffer? offer;
     public bool Capture => step == 7;
+    public bool AugmentCapture => step == 12;
     public bool Input(MatchScreen screen)
     {
         var session = screen.Session!; var player = session.State.Players[0]; var io = ImGui.GetIO();
@@ -36,6 +37,19 @@ internal sealed class OfferChoiceSmoke
             case 9:
                 if (player.Offer is not null || player.Items.Count != count + 1 || player.Items[^1] != offer!.Options[0])
                     throw new InvalidOperationException("Reward selection did not grant exactly the selected item.");
+                offer = new("augment", session.State.Rules.Offers!.Augments.Where(augment => !player.Augments.Contains(augment.Id)).Take(3).Select(augment => augment.Id).ToArray(), 0, null);
+                typeof(MatchPlayer).GetProperty(nameof(MatchPlayer.Offer))!.SetValue(player, offer);
+                count = player.Augments.Count;
+                break;
+            case 10:
+                if (screen.OfferArtworkCount != offer!.Options.Length) throw new InvalidOperationException("Augment choices omitted original artwork.");
+                break;
+            case 11: break;
+            case 12: Click("offer/0"); break;
+            case 13: io.AddMouseButtonEvent(0, false); break;
+            case 14:
+                if (player.Offer is not null || player.Augments.Count != count + 1 || !player.Augments.Contains(offer!.Options[0]))
+                    throw new InvalidOperationException("Augment selection did not grant exactly the selected augment.");
                 return true;
         }
         return false;

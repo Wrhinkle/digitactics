@@ -8,10 +8,12 @@ internal sealed partial class MatchScreen
 {
     private PlayerOffer? displayedOffer;
     private bool peekChoices;
+    internal int OfferArtworkCount { get; private set; }
     internal bool PeekingChoices => peekChoices;
 
     private void Choices()
     {
+        OfferArtworkCount = 0;
         if (IsSpectating) return;
         if (Session!.Units.Carousel.Active) { CarouselChoices(); return; }
         var offer = Human.Offer;
@@ -28,13 +30,15 @@ internal sealed partial class MatchScreen
             string id = offer.Options[i];
             var choice = text.Choice(Rules, offer.Kind, id);
             var item = offer.Kind is "armory" or "itemTier" ? Rules.Items.FirstOrDefault(item => item.Id == id) : null;
+            string? artwork = item is not null ? id : offer.Kind == "augment" && ItemArtwork.Has(Rules.Id, "aug:" + id) ? "aug:" + id : null;
             bool pick;
-            if (item is not null)
+            if (artwork is not null)
             {
                 pick = Button("offer/" + i, "", Width - 65, 52);
                 var min = ImGui.GetItemRectMin(); var max = ImGui.GetItemRectMax(); var draw = ImGui.GetWindowDrawList();
                 draw.PushClipRect(min, max, true);
-                itemArtwork.Draw(Rules.Id, id, new(min.X + 4, min.Y + 4), 44);
+                itemArtwork.Draw(Rules.Id, artwork, new(min.X + 4, min.Y + 4), 44);
+                OfferArtworkCount++;
                 draw.AddText(ImGui.GetFont(), 15, new(min.X + 58, min.Y + 17), new ImColor8(235, 240, 248), choice.Name);
                 draw.PopClipRect();
             }

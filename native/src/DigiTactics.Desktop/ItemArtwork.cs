@@ -22,6 +22,8 @@ internal sealed class ItemArtwork : IDisposable
         { textures[file].Texture.Dispose(); textures.Remove(file); }
     }
 
+    public static bool Has(string variant, string id) => manifest.Sets.TryGetValue(variant.Split('/')[0], out var icons) && icons.ContainsKey(id);
+
     public void Draw(string variant, string item, float2 position, float size)
     {
         if (!manifest.Sets.TryGetValue(variant.Split('/')[0], out var icons) || !icons.TryGetValue(item, out var file))

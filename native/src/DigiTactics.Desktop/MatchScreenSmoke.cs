@@ -209,6 +209,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (capture is not null && chartStep is 3 or 5)
                 FrameCapture.SaveBitmap(Path.ChangeExtension(capture, screen.ChartMetric == 1 ? "taken.bmp" : "healed.bmp"), size.X, size.Y);
         }
+        if (index == 22 && cooldown == 1 && offerSmoke.AugmentCapture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "augment.bmp"), size.X, size.Y);
         if (index == 22 && cooldown == 1 && offerSmoke.Capture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "reward.bmp"), size.X, size.Y);
         if (index == 1 && cooldown == 1 && screen.Session!.Units.Carousel.Active)
         {

@@ -29,6 +29,13 @@ async function main() {
           const canvas = itemCanvas(id); await canvas.ready;
           result[id] = canvas.toDataURL('image/png').split(',')[1];
         }
+        for (const augment of set === '_template' ? [] : [...new Map([...DT.AUGMENTS, ...(DT.Duos?.AUGMENTS || [])].map(a => [a.id, a])).values()]) {
+          const id = 'aug:' + augment.id;
+          if (!DT.ItemArt.has(id)) continue; // Original UI also omits artwork when no painter exists.
+          const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
+          if (!await DT.ItemArt.paint(canvas, id)) throw Error(`Missing original augment art: ${set}/${id}`);
+          result[id] = canvas.toDataURL('image/png').split(',')[1];
+        }
         return result;
       }, set);
       manifest.sets[set] = {};
