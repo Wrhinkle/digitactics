@@ -13,7 +13,20 @@ internal sealed class LootOrbSmoke
     public void Input(MatchScreen screen)
     {
         var session=screen.Session!; var player=session.State.Players[0]; var io=ImGui.GetIO();
-        void Click(string key,int button=0) { var p=screen.Buttons[key]; io.AddMousePosEvent(p.X,p.Y); io.AddMouseButtonEvent(button,true); }
+        bool Click(string key,int button=0)
+        {
+            var p=screen.Buttons[key];
+            if(key.StartsWith("view/",StringComparison.Ordinal))
+            {
+                var bounds=screen.ScoutingBounds;
+                if(p.Y<bounds.Min.Y+20 || p.Y>bounds.Max.Y-20)
+                {
+                    io.AddMousePosEvent((bounds.Min.X+bounds.Max.X)/2,(bounds.Min.Y+bounds.Max.Y)/2);
+                    io.AddMouseWheelEvent(0,p.Y<bounds.Min.Y+20?1:-1);return false;
+                }
+            }
+            io.AddMousePosEvent(p.X,p.Y);io.AddMouseButtonEvent(button,true);return true;
+        }
         switch(step)
         {
             case 0:
@@ -28,13 +41,15 @@ internal sealed class LootOrbSmoke
                 step++; break;
             case 1:
                 if(screen.LootOrbDrawCalls!=4 || screen.LootOrbShadowDrawCalls!=2) throw new InvalidOperationException("Orb core/glow/shadow passes missing.");
-                Click("view/1"); step++; break;
+                if(Click("view/1"))step++; break;
             case 2: io.AddMouseButtonEvent(0,false); step++; break;
             case 3:
-                if(screen.LootOrbDrawCalls!=0 || player.Orbs.Count!=2) throw new InvalidOperationException("Scouting exposed or collected another board's loot.");
-                Click("view/0"); step++; break;
+                if(screen.ViewedPlayer!=1 || screen.LootOrbDrawCalls!=0 || player.Orbs.Count!=2) throw new InvalidOperationException("Scouting did not select the other player or exposed/collected another board's loot.");
+                if(Click("view/0"))step++; break;
             case 4: io.AddMouseButtonEvent(0,false); step++; break;
-            case 5: Click("hex/3/6",1); step++; break;
+            case 5:
+                if(screen.ViewedPlayer!=0)throw new InvalidOperationException("Loot collection did not return to the local player's board.");
+                Click("hex/3/6",1); step++; break;
             case 6: io.AddMouseButtonEvent(1,false); step++; break;
             case 7:
                 if(player.Orbs.Count==2) { if(++waits>90) throw new InvalidOperationException("Companion failed to reach the gold orb."); return; }

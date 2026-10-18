@@ -73,6 +73,10 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private long emoteTime;
     private bool combatBenchVerified;
     private bool reservePurchased, purchasingReserve;
+    private PlayerOffer? scheduledOffer;
+    private int scheduledAugmentsBefore;
+    private bool choosingScheduledOffer;
+    private MatchBattle? scoutingBattle;
     private int scoutSwitches;
     private bool switchingScout;
     private int chartStep;
@@ -192,6 +196,13 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             {
                 int metric = (chartStep / 2 + 1) % 3;
                 var chartPoint = screen.Buttons["chart/" + metric];
+                var bounds=screen.TeamSidebarBounds;
+                if(chartPoint.Y<bounds.Min.Y+18 || chartPoint.Y>bounds.Max.Y-18)
+                {
+                    // Scroll the outer sidebar beside its nested trait list.
+                    chartIo.AddMousePosEvent(bounds.Max.X-3,(bounds.Min.Y+bounds.Max.Y)/2);
+                    chartIo.AddMouseWheelEvent(0,chartPoint.Y<bounds.Min.Y+18?1:-1);cooldown=3;return;
+                }
                 chartIo.AddMousePosEvent(chartPoint.X, chartPoint.Y); chartIo.AddMouseButtonEvent(0, true);
             }
             else if (chartStep < 6) chartIo.AddMouseButtonEvent(0, false);
@@ -243,10 +254,19 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         {
             io.AddKeyEvent(ImGuiKey.Space,false);
             io.AddMouseButtonEvent(0, false); down = false;
-            if (purchasingReserve) { reservePurchased = true; purchasingReserve = false; }
+            if (choosingScheduledOffer) choosingScheduledOffer = false;
+            else if (purchasingReserve) { reservePurchased = true; purchasingReserve = false; }
             else if (switchingScout) { scoutSwitches++; switchingScout = false; }
             else index++;
             cooldown = 3; return;
+        }
+        if(scheduledOffer is { } picked)
+        {
+            var player=screen.Session!.State.Players[0];
+            if(player.Offer is not null || player.Augments.Count!=scheduledAugmentsBefore+1 || !player.Augments.Contains(picked.Options[0]))
+                throw new InvalidOperationException("Scheduled augment click did not grant exactly the selected choice before Fight.");
+            Console.WriteLine($"Scheduled {screen.Session.Rounds.Position.Label} augment selected through its visible card: {picked.Options[0]}.");
+            scheduledOffer=null;
         }
         if (index == 11)
         {
@@ -262,6 +282,16 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         }
         if (index == 12) { if (planningTimer.Input(screen)) index++; cooldown = 3; return; }
         string command = commands[index];
+        if(command=="fight" && screen.Session!.State.Players[0].Offer is { } pendingOffer)
+        {
+            // Normal Faction Wars presents its first augment at 2-1. Manual
+            // Fight correctly refuses a pending choice, so make that real choice
+            // before advancing this driver into the PvP scouting assertions.
+            if(pendingOffer.Kind!="augment")throw new InvalidOperationException("Unexpected scheduled offer in the Faction Wars scouting fixture: "+pendingOffer.Kind);
+            if(!screen.Buttons.TryGetValue("offer/0",out var offerPoint))return;
+            scheduledOffer=pendingOffer;scheduledAugmentsBefore=screen.Session.State.Players[0].Augments.Count;choosingScheduledOffer=true;
+            io.AddMousePosEvent(offerPoint.X,offerPoint.Y);io.AddMouseButtonEvent(0,true);down=true;return;
+        }
         if (index == 19 && !reservePurchased)
         {
             // Buy a reserve through the real shop during combat, after automatic deployment.
@@ -277,14 +307,37 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (command == "buy") command = "buy/" + screen.Session!.State.Players[0].Shop.Slots.Select((id, i) => (id, i)).First(e => e.id is not null).i;
         if (command is "opponent" or "ally")
         {
-            var match = screen.Session!.Battles[0];
+            var session=screen.Session!;
+            if(session.Rounds.Phase!=MatchPhase.Combat || session.Rounds.RoundType!="pvp")
+                throw new InvalidOperationException($"Scouting requires live PvP; reached {session.Rounds.Position.Label} {session.Rounds.RoundType}/{session.Rounds.Phase}, pending offer={session.State.Players[0].Offer?.Kind??"none"}.");
+            var match=scoutingBattle??=session.Battles.FirstOrDefault(battle=>!battle.Pve&&!battle.Ghost&&battle.B is not null)
+                ??throw new InvalidOperationException("Scouting fixture did not create a real two-sided PvP matchup.");
+            if(!session.Battles.Contains(match))throw new InvalidOperationException("Scouting fixture changed battles between its two sides.");
             int? team = command == "ally" ? match.TeamA : match.TeamB;
-            int player = team is { } t ? screen.Session.State.Teams[t].Members[0].Id : command == "ally" ? match.A : match.B!.Value;
+            int player = team is { } t ? session.State.Teams[t].Members[0].Id : command == "ally" ? match.A : match.B!.Value;
             command = "view/" + player;
         }
         if (command == "finish" && screen.Session!.Rounds.Phase == MatchPhase.Result) { index++; return; }
         if (command == "fight") { io.AddKeyEvent(ImGuiKey.Space,true); down=true; return; }
         if (!screen.Buttons.TryGetValue(command, out var point)) return;
+        if(command is "reconnectAudio" or "closeAudio")
+        {
+            var bounds=screen.AudioSettingsBounds;
+            if(point.Y<bounds.Min.Y+16 || point.Y>bounds.Max.Y-16)
+            {
+                io.AddMousePosEvent((bounds.Min.X+bounds.Max.X)/2,(bounds.Min.Y+bounds.Max.Y)/2);
+                io.AddMouseWheelEvent(0,point.Y<bounds.Min.Y+16?1:-1);cooldown=3;return;
+            }
+        }
+        if(command.StartsWith("view/",StringComparison.Ordinal))
+        {
+            var bounds=screen.ScoutingBounds;
+            if(point.Y<bounds.Min.Y+20 || point.Y>bounds.Max.Y-20)
+            {
+                io.AddMousePosEvent((bounds.Min.X+bounds.Max.X)/2,(bounds.Min.Y+bounds.Max.Y)/2);
+                io.AddMouseWheelEvent(0,point.Y<bounds.Min.Y+20?1:-1);cooldown=3;return;
+            }
+        }
         io.AddMousePosEvent(point.X, point.Y); io.AddMouseButtonEvent(0, true); down = true;
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
@@ -326,6 +379,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (index == 20 && !combatHoverVerified && screen.DetailedCombatUnit is not null && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "combat-tooltip.bmp"),size.X,size.Y);
         if (index == 20 && cooldown == 1 && screen.ChartCombat is { } chartCombat)
         {
+            if(scoutingBattle is null || !ReferenceEquals(chartCombat,scoutingBattle.Combat))
+                throw new InvalidOperationException("Scouting did not display the selected live PvP fight.");
             var session = screen.Session!;
             var player = session.State.Players[screen.ViewedPlayer];
             if (!screen.DisplayedAugments.SequenceEqual(player.Augments) || screen.AugmentPortraits != player.Augments.Count(id => ItemArtwork.Has(session.State.Rules.Id, "aug:" + id)))
@@ -349,7 +404,15 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (capture is not null && chartStep is 3 or 5)
                 FrameCapture.SaveBitmap(Path.ChangeExtension(capture, screen.ChartMetric == 1 ? "taken.bmp" : "healed.bmp"), size.X, size.Y);
         }
-        if (index == 23 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"audio-settings.bmp"),size.X,size.Y);
+        if(index==23 && cooldown==1)
+        {
+            var bounds=screen.AudioSettingsBounds;
+            foreach(string key in new[]{"matchEffectsVolume","matchMusicVolume","matchBoardVolume","reconnectAudio","closeAudio"})
+                if(!screen.Buttons.TryGetValue(key,out var point)||point.X<bounds.Min.X||point.X>bounds.Max.X||point.Y<bounds.Min.Y+18||point.Y>bounds.Max.Y-18)
+                    throw new InvalidOperationException("Sound setting is outside the visible panel: "+key);
+            if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"audio-settings.bmp"),size.X,size.Y);
+        }
+        if(index==25 && cooldown==1 && screen.AudioSettingsVisible)throw new InvalidOperationException("Sound settings Close did not dismiss the panel before arena interaction.");
         if (index == 22 && cooldown == 1 && offerSmoke.AugmentCapture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "augment.bmp"), size.X, size.Y);
         if (index == 22 && cooldown == 1 && offerSmoke.Capture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "reward.bmp"), size.X, size.Y);
         if (index == 1 && cooldown == 1 && screen.Session!.Units.Carousel.Active)
@@ -478,6 +541,11 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         }
         if (index == 5 && cooldown == 1)
         {
+            var bounds=screen.ShopViewportBounds;
+            if(screen.ShopCardBounds.Count!=screen.Session!.State.Players[0].Shop.Slots.Count || screen.ShopCardBounds.Values.Any(card=>
+                card.Min.X<bounds.Min.X || card.Max.X>bounds.Max.X || card.Min.Y<bounds.Min.Y || card.Max.Y>bounds.Max.Y ||
+                card.Min.X<0 || card.Max.X>size.X || card.Min.Y<0 || card.Max.Y>size.Y))
+                throw new InvalidOperationException("Shop cards extend beyond the visible shop viewport.");
             if (screen.ShopPortraitDrawCalls != screen.Session!.State.Players[0].Shop.Slots.Count(id => id is not null))
                 throw new InvalidOperationException("Shop cards did not render each available unit portrait.");
             var roster = screen.Session!.State.Players[0].Roster;
