@@ -149,6 +149,7 @@ try {
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--capture', 'artifacts/match-ui.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--duos', '--capture', 'artifacts/match-duos.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--mode-bonus-smoke', '--capture', 'artifacts/mode-bonuses.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-library-ui-smoke', '--capture', 'artifacts/music-library.bmp')
     if ($Publish) {
         $destination = Join-Path $nativeRoot 'artifacts\win-x64'
         Invoke-Checked $dotnet @('publish', 'src/DigiTactics.Desktop', '-c', 'Release', '-r', 'win-x64', '--self-contained', 'true', '-o', $destination)

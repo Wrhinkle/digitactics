@@ -33,6 +33,10 @@ internal sealed unsafe partial class GameAudio
             }
             audio.Music("planning"); Until(()=>controller.CurrentTrackId==planning && audio.activeCustom is not null && !controller.Loading,"Planning routing failed");
             audio.Music("combat"); Until(()=>controller.CurrentTrackId==combat && audio.activeCustom is not null && !controller.Loading,"Combat routing failed");
+            if(!controller.SetUse(combat,"planning")) throw new InvalidOperationException("Could not edit current track phase.");
+            Until(()=>!controller.LibraryBusy,"Current phase edit did not finish");
+            if(!controller.SetUse(planning,"combat")) throw new InvalidOperationException("Could not edit replacement track phase.");
+            Until(()=>!controller.LibraryBusy && controller.CurrentTrackId==planning && audio.activeCustom is not null && !controller.Loading,"Phase edit did not select the newly eligible track");
             var old=audio.activeCustom; controller.Next(); Until(()=>audio.activeCustom is not null && audio.activeCustom!=old && !controller.Loading,"Next did not replace the stream");
             old=audio.activeCustom; Until(()=>audio.activeCustom is not null && audio.activeCustom!=old && !controller.Loading,"End-of-track did not advance");
             audio.Muted=true; controller.Update(); if(audio.activeCustom is not null) throw new InvalidOperationException("Mute did not stop custom music.");
@@ -42,6 +46,7 @@ internal sealed unsafe partial class GameAudio
             if(audio.voices.Count(v=>v.Music && v.Target==1)!=1) throw new InvalidOperationException("Repeated routing duplicated the built-in track.");
             audio.MusicSource="own"; Until(()=>audio.activeCustom is not null && !controller.Loading,"Own source did not restart");
             audio.Music(null); controller.Update(); if(audio.activeCustom is not null) throw new InvalidOperationException("Leaving the match did not stop custom music.");
+            library=profile.OpenMusicLibrary();
             foreach(var track in library.Tracks.ToArray()) if(!library.Remove(track.Id)) throw new InvalidOperationException(library.Error);
             string corrupt=Path.Combine(directory,"broken.wav"); File.WriteAllText(corrupt,"not audio"); if(!library.AddFile(corrupt)) throw new InvalidOperationException(library.Error);
             controller.Reload(); audio.Music("planning");

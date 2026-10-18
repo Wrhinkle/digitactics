@@ -246,7 +246,7 @@ internal sealed partial class MatchScreen : IDisposable
         hoveredOwnedUnit = null; sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
-        if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
+        if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); MusicLibraryPanel(); } return; }
         if (showGameMenu) { PausePanel(); return; }
         Header(); if (Session is null) return;
         if (showGameMenu) { PausePanel(); return; }
@@ -269,7 +269,8 @@ internal sealed partial class MatchScreen : IDisposable
             if (Button("closeAudio", "Close")) showAudio = false;
             ImGui.End();
         }
-        MatchShortcuts();
+        MusicLibraryPanel();
+        if(!showMusicLibrary) MatchShortcuts();
     }
     private void Menu()
     {
@@ -371,6 +372,7 @@ internal sealed partial class MatchScreen : IDisposable
         if (Button("reconnectAudio", "Reconnect audio")) audio.Reconnect();
         if (audio.MusicController is { } controller)
         {
+            if(Button("musicLibrary","Manage music...")) showMusicLibrary=true;
             bool own=audio.MusicSource=="own";
             if (ImGui.Checkbox("Use my music"u8, ref own)) audio.MusicSource=own?"own":"builtin";
             if(controller.Library is { } library)
