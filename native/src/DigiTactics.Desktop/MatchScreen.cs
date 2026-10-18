@@ -253,6 +253,7 @@ internal sealed partial class MatchScreen : IDisposable
             ArenaPointer(); ImGui.End();
             battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height);
         }
+        ResultBanner();
         CompanionClickMark();
         ArenaEmotes();
         Choices(); Soundboard(); EmotePanel(); PlayersPanel();

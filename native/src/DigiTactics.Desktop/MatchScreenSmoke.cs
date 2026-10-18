@@ -33,6 +33,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private bool switchingScout;
     private int chartStep;
     private bool combinedTraitsVerified;
+    private readonly HashSet<string> resultRounds = [];
     private int traitHoverStep;
     private string hoveredTrait = "";
     private int dragStep, draggedId;
@@ -172,6 +173,19 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (cooldown == 1 && screen.Session is { } resultSession && resultSession.Rounds.Phase == MatchPhase.Result && resultSession.Rounds.Results.Count > 0)
+        {
+            var player = resultSession.State.Players[0];
+            var result = resultSession.Rounds.Results.First(result => result.Match.TeamA is { } a
+                ? player.Team == a || !result.Match.Ghost && player.Team == result.Match.TeamB
+                : result.Match.A == player.Id || !result.Match.Ghost && result.Match.B == player.Id);
+            bool isA = result.Match.TeamA is { } team ? player.Team == team : result.Match.A == player.Id;
+            string title = result.Match.Winner == (isA ? 0 : 1) ? "Victory" : result.Match.Winner == (isA ? 1 : 0) ? "Defeat" : "Draw";
+            if (screen.ResultTitle != title || screen.ResultHealthLoss != (isA ? result.DamageA : result.DamageB))
+                throw new InvalidOperationException("Result banner does not match the local player's settled outcome.");
+            if (resultRounds.Add(resultSession.Rounds.Position.Label) && capture is not null)
+                FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "result-" + resultSession.Rounds.Position.Label + ".bmp"), size.X, size.Y);
+        }
         if (index == 9 && traitHoverStep == 1 && cooldown == 1 && capture is not null)
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "trait-tooltip.bmp"), size.X, size.Y);
         if (index == 20 && cooldown == 1 && screen.ChartCombat is { } chartCombat)
@@ -304,6 +318,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "combat-bench.bmp"), size.X, size.Y);
         }
         if (index < commands.Length || cooldown > 0) return false;
+        if (resultRounds.Count < 3) throw new InvalidOperationException("Result banner smoke did not observe enough settled rounds.");
         if (screen.Session!.State.Duos && !combinedTraitsVerified) throw new InvalidOperationException("Duos trait fixture did not exercise counts different from the solo board.");
         if (!planningCaptured || !battleCaptured || !pvpCaptured || !combatBenchVerified || screen.CompletedRounds != 5 || screen.Session!.Rounds.Phase != MatchPhase.Planning || screen.AiEmotesShown == 0)
             throw new InvalidOperationException($"Match UI round transition smoke failed: planning={planningCaptured}, battle={battleCaptured}, pvp={pvpCaptured}, bench={combatBenchVerified}, rounds={screen.CompletedRounds}, phase={screen.Session!.Rounds.Phase}, emotes={screen.AiEmotesShown}.");
