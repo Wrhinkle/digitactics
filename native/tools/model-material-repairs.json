@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "repairs": [
+    {
+      "asset": "models/files/rip_cs_tankmon.glb",
+      "originalSha256": "fb07334696b253f1e1bb2e0a78cdcbe07d527beecd0f2a63cddcf26d84bbf3d7",
+      "repairedSha256": "ec08d0b20d0dd8c11ff53ee1a82c7e9d88a3f5af28d077ff0eccf836513d90b1",
+      "material": "chr621spec_01",
+      "incorrectImage": "chr621a01s.png",
+      "albedoImage": "chr621a01.png",
+      "reason": "The armor mesh retains atlas UVs, but the FBX conversion used the reflection gradient as diffuse. The embedded albedo contains its green armor and tread details."
+    },
+    {
+      "asset": "models/files/rip_agunimon.glb",
+      "originalSha256": "99d7c959e2f1a6964c2ef1b341c46df7d2db2dfb723d535a51aa37f4b075a5c5",
+      "repairedSha256": "b9497f90e41053d881244341e857cc930b44006e4269aa8215f480c2b35efd88",
+      "material": "chr676spec_01",
+      "incorrectImage": "chr676a01s.png",
+      "albedoImage": "chr676a01.png",
+      "reason": "The armor mesh retains atlas UVs and its orange/red/gold albedo is embedded; the gradient was incorrectly used as diffuse."
+    },
+    {
+      "asset": "models/files/rip_emperorgreymon.glb",
+      "originalSha256": "87411a470601b1ddd4725b8fb4050caca3bb16ffcaa4af105b9facc7ffc47e43",
+      "repairedSha256": "3ca12ec13053a4e76c02c79c753d516c8eef8266f98bb4bb6e88c5079a02ab7d",
+      "material": "chr677spec_02",
+      "incorrectImage": "chr677a01s.png",
+      "albedoImage": "chr677a01.png",
+      "reason": "The textured armor surfaces retain atlas UVs and their red/gold albedo is embedded. Separate cube material meshes have no UVs and are not changed by this repair."
+    }
+  ]
+}
