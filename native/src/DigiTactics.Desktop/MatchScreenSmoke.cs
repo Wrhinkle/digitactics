@@ -10,6 +10,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
 {
     private readonly GameMenuSmoke gameMenu = new();
     private readonly EliminationSmoke elimination = new();
+    private readonly LootOrbSmoke loot = new();
     private bool gameplayVerified, eliminationCaptured, spectatingCaptured;
     private readonly Dictionary<int, PauseSmoke> pauseChecks = new() { [9] = new(true), [10] = new(), [11] = new() };
     private readonly PlanningTimerSmoke planningTimer = new();
@@ -74,7 +75,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (!screen.Buttons.TryGetValue(farmCommands[farmIndex], out var target)) return;
             input.AddMousePosEvent(target.X, target.Y); input.AddMouseButtonEvent(0, true); down = true; return;
         }
-        if (index >= commands.Length) { if (cooldown-- > 0) return; if (!elimination.Done) elimination.Input(screen); else gameMenu.Input(screen); cooldown = 3; return; }
+        if (index >= commands.Length) { if (cooldown-- > 0) return; if (!loot.Done) loot.Input(screen); else if (!elimination.Done) elimination.Input(screen); else gameMenu.Input(screen); cooldown = 3; return; }
         if (cooldown-- > 0) return;
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
@@ -210,6 +211,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     {
         if (gameplayVerified)
         {
+            if (loot.Capture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"loot.bmp"),size.X,size.Y);
             if (!eliminationCaptured && capture is not null && screen.Buttons.ContainsKey("spectateRemaining"))
             { FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"eliminated.bmp"),size.X,size.Y); eliminationCaptured = true; }
             if (!spectatingCaptured && capture is not null && !screen.Buttons.ContainsKey("spectateRemaining") && screen.WatchingAfterElimination && screen.Session!.Rounds.Phase == MatchPhase.Planning)

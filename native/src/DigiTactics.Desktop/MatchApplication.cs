@@ -73,7 +73,7 @@ internal static class MatchApplication
                     if (networkDriver is not null && networkDriver.Verify(screen, size, capture)) break;
                     if (lobbyDriver is not null && lobbyDriver.Verify(screen, size, capture)) break;
                     window.SwapBuffers();
-                    if (smoke && frame > (trainingSmoke ? 6000 : 900))
+                    if (smoke && frame > (trainingSmoke ? 6000 : 1400))
                     {
                         if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "failure.bmp"), size.X, size.Y);
                         throw new InvalidOperationException("Match UI smoke did not complete: " + (lobbyDriver?.Pending ?? networkDriver?.Pending ?? farmPointer?.Pending ?? trainer?.Pending ?? driver?.Pending));

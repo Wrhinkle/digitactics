@@ -167,6 +167,7 @@ internal sealed partial class MatchScreen : IDisposable
         UpdateBattleBench(delta);
         UpdateAiEmotes();
         UpdateArenaCompanion(delta);
+        UpdateLootCollection();
     }
     private void Watch(int player)
     {
@@ -341,7 +342,7 @@ internal sealed partial class MatchScreen : IDisposable
     {
         Window("Arena", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
         ArenaPointer();
-        ImGui.Text(viewed == localSeat ? "Drag units to place. Wheel: zoom. Middle-drag: pan. Right-drag: orbit. R: reset." : $"Scouting {Session!.State.Players[viewed].Name}");
+        ImGui.Text(viewed == localSeat ? "Drag units to place. Wheel: zoom. Middle-drag: pan. Right-click: walk/collect loot. Right-drag: orbit. R: reset." : $"Scouting {Session!.State.Players[viewed].Name}");
         for (int row = 4; row < 8; row++) for (int column = 0; column < 7; column++)
         {
             var point = planning.Cell(column, row, Width, Height);
@@ -502,8 +503,9 @@ internal sealed partial class MatchScreen : IDisposable
         var sceneCamera = arenaEnvironment.Camera.Matrix(w, h, battle?.Combat.Columns ?? 7);
         var sceneEye = arenaEnvironment.Camera.Eye(w, h, battle?.Combat.Columns ?? 7);
         arenaCompanion?.PrepareScene(sceneCamera, sceneEye); opponentCompanion?.PrepareScene(sceneCamera, sceneEye);
-        arenaEnvironment.Actors = DrawCompanions;
+        lootOrbs.Sync(Human.Orbs,boardSceneTime,!IsSpectating && viewed == localSeat);
+        arenaEnvironment.Actors = (renderer,camera,transparent) => { DrawCompanions(renderer,camera,transparent); lootOrbs.Draw(renderer,camera,transparent); };
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
     }
-    public void Dispose() { itemArtwork.Dispose(); portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
+    public void Dispose() { lootOrbs.Dispose(); itemArtwork.Dispose(); portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
 }

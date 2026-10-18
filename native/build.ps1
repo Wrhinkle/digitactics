@@ -23,6 +23,7 @@ try {
     Invoke-Checked 'node' @('tools/export-cosmetics.cjs')
     Invoke-Checked 'node' @('tools/export-emotes.cjs')
     Invoke-Checked 'node' @('tools/export-item-tokens.cjs')
+    Invoke-Checked 'node' @('tools/export-loot-geometry.cjs')
     Invoke-Checked 'node' @('tools/export-ai-emotes.cjs')
     Invoke-Checked 'node' @('tools/export-emote-motion.cjs')
     Invoke-Checked 'node' @('tools/export-retro-motion.cjs')

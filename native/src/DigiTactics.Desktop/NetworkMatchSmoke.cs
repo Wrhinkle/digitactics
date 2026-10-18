@@ -23,6 +23,9 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private bool danceRendered;
     private int networkMenuStep;
     private double menuCountdown;
+    private int lootStep;
+    private int? lootId;
+    private bool lootVerified;
     private int travelStep;
     private double travelX, travelZ;
     private readonly bool spectator;
@@ -59,7 +62,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
     }
     public void Input(MatchScreen screen)
     {
-        now += 200; PumpPackets(); controller.Pump(now); PumpPackets();
+        now += !spectator && stage == 3 && screen.CompletedRounds > 0 ? 16 : 200; PumpPackets(); controller.Pump(now); PumpPackets();
         if (cooldown-- > 0) return;
         if (!spectator && socialStep < socialCommands.Length)
         {
@@ -104,6 +107,17 @@ internal sealed class NetworkMatchSmoke : IDisposable
                 if (Math.Abs(arrived.X - travelX) + Math.Abs(arrived.Z - travelZ) < .1) throw new InvalidOperationException("Right-click did not move the arena companion.");
                 travelStep = 3;
             }
+            return;
+        }
+        if (!spectator && stage == 3 && screen.CompletedRounds > 0 && screen.Session?.Rounds.Phase == MatchPhase.Planning && !lootVerified)
+        {
+            if (lootStep == 0)
+            {
+                var orb=screen.Session.State.Players[1].Orbs.FirstOrDefault() ?? throw new InvalidOperationException("Network loot fixture has no PvE reward.");
+                lootId=orb.Id; var lootPoint=screen.LootGroundScreen(orb);
+                ImGui.GetIO().AddMousePosEvent(lootPoint.X,lootPoint.Y); ImGui.GetIO().AddMouseButtonEvent(1,true); lootStep++;
+            }
+            else if (lootStep == 1) { ImGui.GetIO().AddMouseButtonEvent(1,false); lootStep++; }
             return;
         }
         if (down) { ImGui.GetIO().AddMouseButtonEvent(0, false); down = false; stage++; cooldown = 3; return; }
@@ -156,6 +170,13 @@ internal sealed class NetworkMatchSmoke : IDisposable
             combatRendered = true;
         }
         if (stage < 3 || screen.CompletedRounds < 1 || screen.Session?.Rounds.Phase != MatchPhase.Planning) return false;
+        if (!spectator && !lootVerified)
+        {
+            if (lootId is not { } id || screen.Session.State.Players[1].Orbs.Any(o=>o.Id==id) || replica.Match!.Session.State.Players[1].Orbs.Any(o=>o.Id==id)) return false;
+            int actions=host.Log.Entries.Count(e=>e.GetProperty("k"u8).GetString()=="a" && e.GetProperty("a"u8).GetString()=="orb" && e.GetProperty("s"u8).GetDouble()==1);
+            if(actions!=1) throw new InvalidOperationException("Proximity pickup submitted duplicate or incorrectly seated network actions.");
+            lootVerified=true; Console.WriteLine("Network loot pickup: actual PvE orb collected through guest travel and exactly one host-confirmed action.");
+        }
         if (spectator && stage == 3) { stage = 4; return false; }
         if (spectator && (stage < 5 || !screen.IsSpectating)) return false;
         if (spectator && (!spectatorVerified || screen.Buttons.ContainsKey("lock") || screen.Buttons.ContainsKey("fight"))) throw new InvalidOperationException("Returning to spectating did not remove player controls.");
