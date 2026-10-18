@@ -12,6 +12,28 @@ internal sealed partial class MatchScreen
     private MatchPlanningSession? emoteSession;
     private MatchEmotes emotes = new();
     private readonly EmoteArtwork emoteArtwork = new();
+    private AiEmoteReactions? aiEmotes;
+    internal Func<double>? AiEmoteRandom { get; set; }
+    internal Func<long> AiEmoteClock { get; set; } = () => Environment.TickCount64;
+    internal int AiEmotesShown { get; private set; }
+    private readonly List<(AiEmoteReaction Reaction, double At)> pendingAiEmotes = [];
+    private void ScheduleAiEmotes()
+    {
+        EnsureEmotes(); if(Session is null || aiEmotes is null) return;
+        var players=Session.State.Players.Select(p=>new AiEmotePlayer(p.Id,p.Name,p.IsHuman,p.Alive)).ToArray();
+        var results=Session.Rounds.Results.Select(r=>new AiEmoteResult(r.Match.A,r.Match.B,r.Match.Pve,r.Match.Ghost,r.Match.Winner));
+        if(aiEmotes.Choose(players,results,localSeat,AiEmoteRandom) is { } reaction) pendingAiEmotes.Add((reaction,AiEmoteClock()+reaction.Delay));
+    }
+    private void UpdateAiEmotes()
+    {
+        EnsureEmotes();long now=Environment.TickCount64;
+        for(int i=pendingAiEmotes.Count-1;i>=0;i--)
+        {
+            var pending=pendingAiEmotes[i];if(AiEmoteClock()<pending.At)continue;
+            if(emotes.Receive(pending.Reaction.Seat,pending.Reaction.Id,localSeat,muteEmotes,now))AiEmotesShown++;
+            pendingAiEmotes.RemoveAt(i);
+        }
+    }
     internal int ArenaEmoteDraws { get; private set; }
     private void ArenaEmotes()
     {
@@ -37,6 +59,7 @@ internal sealed partial class MatchScreen
     {
         if (ReferenceEquals(emoteSession, Session)) return;
         emoteSession = Session; emotes = new(); emotes.Played += () => audio.Play("emote");
+        pendingAiEmotes.Clear();aiEmotes=Session is null?null:new(Session.State.Players.Where(p=>p.Alive).Select(p=>p.Id));
         muteEmotes = profile?.Storage.GetValueOrDefault("dt.emotes.muteOthers") == "1";
     }
     private void EmoteRow(int seat)

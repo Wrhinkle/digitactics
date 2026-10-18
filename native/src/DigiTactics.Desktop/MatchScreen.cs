@@ -169,6 +169,7 @@ internal sealed partial class MatchScreen : IDisposable
         }
         else if (Session.Rounds.Phase == MatchPhase.Result) battle?.Advance(delta);
         planning.Update(Rules, Session.State.Players[viewed], delta);
+        UpdateAiEmotes();
         UpdateArenaCompanion(delta);
     }
     private void Watch(int player)
@@ -209,6 +210,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private void RoundFinished()
     {
+        ScheduleAiEmotes();
         CompletedRounds++; status = "Round complete.";
         if (networkRoom is null) history?.Complete(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         if (history?.Error is { } saveError) { status = saveError; profileMessage = saveError; }

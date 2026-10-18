@@ -26,8 +26,10 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "closeAudio", "mute", "mute"];
     private int index, cooldown = 3, battleFrames, pvpFrames;
     private bool down, planningCaptured, battleCaptured, pvpCaptured;
+    private long emoteTime;
     public void Input(MatchScreen screen)
     {
+        emoteTime+=100;screen.AiEmoteClock=()=>emoteTime;screen.AiEmoteRandom=()=>.01;
         if (collectionProfile is not null && collectionIndex < collectionCommands.Length)
         {
             if (cooldown-- > 0) return;
@@ -135,7 +137,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             }
         }
         if (index < commands.Length || cooldown > 0) return false;
-        if (!planningCaptured || !battleCaptured || !pvpCaptured || screen.CompletedRounds != 5 || screen.Session!.Rounds.Phase != MatchPhase.Planning)
+        if (!planningCaptured || !battleCaptured || !pvpCaptured || screen.CompletedRounds != 5 || screen.Session!.Rounds.Phase != MatchPhase.Planning || screen.AiEmotesShown == 0)
             throw new InvalidOperationException("Match UI round transition smoke failed.");
         Console.WriteLine("Match UI smoke passed: menu, carousel, purchase, two placements, 3D planning, PvE, mirrored PvP, five settlements and round advances.");
         return true;
