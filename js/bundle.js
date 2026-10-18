@@ -56003,6 +56003,8 @@ void main() {
         <h3 class="card-h sp">Data</h3>
         <p class="muted small">Your Bits, cosmetics, Little Legend levels, farm and match history are saved in this browser only.</p>
         <button class="btn btn-danger" id="setReset">Reset save...</button>
+        <button class="btn btn-secondary" data-profile-backup>Export save backup</button>
+        <p class="muted small">Includes progress, settings and your music files. Keep this backup private.</p>
         ${UPD ? '<h3 class="card-h sp">About</h3><p class="muted small" id="setVer">Digi-Tactics</p>' : ""}
       </div>
       <div class="box keys"><h3 class="card-h">Keys</h3>
@@ -56334,6 +56336,103 @@ void main() {
     rank: tamerRank,
     _save: () => save2
   };
+
+  // js/profile-backup.js
+  (function(G3) {
+    const MAX_MUSIC = 256 * 1024 * 1024;
+    function storage() {
+      const result = {};
+      for (const key2 of Object.keys(localStorage).sort())
+        if (key2.startsWith("dt.") || key2.startsWith("dt-")) result[key2] = localStorage.getItem(key2);
+      return result;
+    }
+    function musicRecords() {
+      return new Promise((resolve3, reject) => {
+        if (!G3.indexedDB) {
+          reject(new Error("Music storage is unavailable; backup was not created."));
+          return;
+        }
+        let missing = false;
+        const request = indexedDB.open("dt-music");
+        request.onupgradeneeded = () => {
+          missing = true;
+          request.transaction.abort();
+        };
+        request.onerror = () => missing ? resolve3([]) : reject(request.error);
+        request.onblocked = () => reject(new Error("Close other game windows and try the backup again."));
+        request.onsuccess = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains("tracks")) {
+            db.close();
+            reject(new Error("Unrecognized music storage; backup was not created."));
+            return;
+          }
+          const tx = db.transaction("tracks", "readonly"), query = tx.objectStore("tracks").getAll();
+          tx.oncomplete = () => {
+            db.close();
+            resolve3(query.result);
+          };
+          tx.onerror = tx.onabort = () => {
+            db.close();
+            reject(tx.error || new Error("Could not read music storage."));
+          };
+        };
+      });
+    }
+    async function snapshot2() {
+      const before = storage(), records = await musicRecords();
+      if (records.reduce((sum, record) => sum + (record.blob?.size || 0), 0) > MAX_MUSIC)
+        throw new Error("Your music exceeds the 256 MB backup limit. Keep a separate copy of the files before reducing your in-game music library.");
+      const music = [];
+      for (const record of records) {
+        if (!(record.blob instanceof Blob)) throw new Error("A music file is unreadable; backup was not created.");
+        const { blob, ...metadata } = record;
+        const bytes = new Uint8Array(await blob.arrayBuffer());
+        let binary = "";
+        for (let i = 0; i < bytes.length; i += 8192) binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+        const hash4 = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+        music.push({
+          metadata,
+          blob: {
+            type: blob.type,
+            name: blob instanceof File ? blob.name : null,
+            lastModified: blob instanceof File ? blob.lastModified : null
+          },
+          data: btoa(binary),
+          sha256: [...hash4].map((b) => b.toString(16).padStart(2, "0")).join("")
+        });
+      }
+      if (JSON.stringify(before) !== JSON.stringify(storage())) throw new Error("Your save changed during backup. Try again while the game is idle.");
+      return { format: "digitactics-profile", version: 1, exportedAt: (/* @__PURE__ */ new Date()).toISOString(), storage: before, music };
+    }
+    async function download() {
+      const backup = await snapshot2();
+      const blob = new Blob([JSON.stringify(backup)], { type: "application/json" });
+      const url2 = URL.createObjectURL(blob), link = document.createElement("a");
+      link.href = url2;
+      link.download = `digi-tactics-profile-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url2), 6e4);
+    }
+    G3.DT.ProfileBackup = { snapshot: snapshot2, download };
+    document.addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-profile-backup]");
+      if (!button || button.disabled) return;
+      button.disabled = true;
+      button.textContent = "Preparing backup...";
+      try {
+        await download();
+        button.textContent = "Backup downloaded";
+      } catch (error) {
+        button.textContent = "Export save backup";
+        G3.DT.Client?.toast(error.message || "Backup failed.", "bad");
+      } finally {
+        button.disabled = false;
+      }
+    });
+  })(window);
 
   // js/emotes.js
   var DT16 = window.DT;

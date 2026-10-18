@@ -1,8 +1,17 @@
 using DigiTactics.Desktop;
 using DigiTactics.Rules;
+using DigiTactics.Storage;
 
 try
 {
+    int profileIndex = Array.IndexOf(args, "--stage-profile");
+    if (profileIndex >= 0)
+    {
+        if (profileIndex + 1 >= args.Length) throw new ArgumentException("Provide the exported profile backup file.");
+        var staged = LegacyProfileArchive.Stage(args[profileIndex + 1], Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native", "imports"));
+        Console.WriteLine($"Preserved backup: {staged.Path}\n{staged.Summary.StorageEntries} saved entries, {staged.Summary.MusicTracks} music files. Player data has not been applied.");
+        return 0;
+    }
     if (args.Contains("--audio-smoke")) { GameAudio.Smoke(); return 0; }
     var catalog = ContentCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content", "catalog.json"));
     int captureIndex = Array.IndexOf(args, "--capture");

@@ -15,6 +15,7 @@ try {
         Invoke-Checked 'npm.cmd' @('install', '--prefix', $audioTools, 'playwright@1.56.1', '--no-audit', '--no-fund')
     }
     Invoke-Checked 'node' @('tools/export-audio.cjs')
+    Invoke-Checked 'node' @('../tests/profile-backup.cjs')
     Invoke-Checked 'node' @('tools/export-content.cjs')
     Invoke-Checked 'node' @('tools/export-display.cjs')
     Invoke-Checked 'node' @('tools/export-ability-elements.cjs')

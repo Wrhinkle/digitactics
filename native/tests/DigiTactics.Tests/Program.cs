@@ -3,6 +3,7 @@ using DigiTactics.Rules;
 
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");
 if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
+if (args.Contains("--profile-only")) { LegacyProfileChecks.Run(root); return; }
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
 if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
@@ -185,6 +186,7 @@ assertions += ActionParity.Run(root);
 assertions += ChoreographyParity.Run(root, catalog);
 assertions += AudioCueParity.Run(root, catalog);
 assertions += AudioSettingsChecks.Run();
+assertions += LegacyProfileChecks.Run(root);
 assertions += MotionParity.Run(root);
 assertions += MeshParity.Run(root);
 assertions += RigParity.Run(root);

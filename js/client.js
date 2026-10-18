@@ -1567,6 +1567,8 @@ RENDER.settings = () => {
         <h3 class="card-h sp">Data</h3>
         <p class="muted small">Your Bits, cosmetics, Little Legend levels, farm and match history are saved in this browser only.</p>
         <button class="btn btn-danger" id="setReset">Reset save...</button>
+        <button class="btn btn-secondary" data-profile-backup>Export save backup</button>
+        <p class="muted small">Includes progress, settings and your music files. Keep this backup private.</p>
         ${UPD ? '<h3 class="card-h sp">About</h3><p class="muted small" id="setVer">Digi-Tactics</p>' : ''}
       </div>
       <div class="box keys"><h3 class="card-h">Keys</h3>

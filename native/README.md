@@ -1764,3 +1764,31 @@ Packaged Solo/Duos clicks now also open/close the audio panel and toggle mute.
 Those flows and the packaged audio playback check passed. Existing Electron or
 browser data has not been migrated yet; progress, cosmetics, soundboard/custom
 music and the remaining settings still require their migration and native UI.
+
+### Legacy profile backup and staging
+
+The existing game's Settings > Data page now has **Export save backup**. It
+captures every durable `dt.`/`dt-` localStorage value exactly (including unknown
+keys and values that are not valid JSON), plus all `dt-music/tracks` records,
+original music bytes, metadata and File names/timestamps. Rebuildable portrait
+caches and session-only state are excluded. A changed save or unreadable music
+file aborts export instead of silently omitting data. The current JSON transport
+supports up to 256 MiB of music and rejects larger libraries explicitly. The
+exporter never clears or edits the source save.
+
+`DigiTactics.Desktop.exe --stage-profile <backup.json>` validates the archive and
+music SHA-256 hashes, then preserves its exact bytes under
+`%LOCALAPPDATA%/DigiTactics/native/imports/<archive-sha256>.json`. Music names are
+metadata, never extraction paths. Restaging the same backup is idempotent;
+conflicting stored data is preserved and reported. This command does **not**
+apply progress or settings: the native profile consumers and import UI remain
+unfinished, so this is a migration preparation step rather than completed save
+migration. The source backup and current native preferences remain untouched.
+
+Validation: isolated Edge tests covered empty profiles (without creating a music
+database), raw/unknown storage, binary music, File metadata, corrupt music and
+both a direct download and the rebuilt game's real Settings-page button. The
+browser-produced fixture passed 18 native integrity/preservation checks,
+including corrupt payloads, duplicate IDs/fields, future format versions,
+byte-for-byte staging, repeated staging and conflict protection. The Windows
+package was rebuilt and its match smoke check passed.

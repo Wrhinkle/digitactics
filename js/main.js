@@ -12,6 +12,7 @@ import './itemcards.js'; // item preview cards, used by ui.js
 import './ui.js';
 import './net.js';
 import './client.js'; // client shell: nav, Home, Play, Collection, Profile, Settings; before shop/farm/codex so its Esc handler runs first
+import './profile-backup.js';
 import './emotes.js';
 import './shop.js';
 import './legendevo-ui.js'; // Digivolve panel, opened from the Locker
