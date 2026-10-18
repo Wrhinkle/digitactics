@@ -11,6 +11,8 @@ public sealed class LobbyAuthority
     private string[] members = [];
     private readonly Dictionary<string, double> lastIntent = [];
     private long? hostGoneAt;
+    private string? recoveryHost;
+    public bool RecoveringHost => recoveryHost is not null;
     public string LocalId { get; }
     public string RoomId { get; }
     public string? Owner { get; private set; }
@@ -44,12 +46,19 @@ public sealed class LobbyAuthority
             if (lobby?["slots"]?[i.ToString()]?["uid"]?.GetValue<string>() is { } id && id != exclude && Member(id)) return id;
         return members.FirstOrDefault(id => id != exclude && !Banned(id));
     }
-    public bool ExpectedHost(string id) => id == (Host ?? Owner) || Host is { } host && !members.Contains(host) && id == Successor(host);
+    public bool ExpectedHost(string id) => id == (Host ?? Owner) || id == recoveryHost && Member(id) || Host is { } host && !members.Contains(host) && id == Successor(host);
+    public void BeginHostRecovery() { if (IsHost) recoveryHost = Successor(LocalId); }
+    public void CancelHostRecovery() => recoveryHost = null;
+    public bool TakeOverRestartedHost(string requester)
+    {
+        if (lobby is null || IsHost || requester != Host || !Member(requester) || Successor(requester) != LocalId) return false;
+        lobby["host"] = LocalId; lobby["hostName"] = SeatName(LocalId); hostGoneAt = null; return true;
+    }
     public bool AcceptLobby(string sender, JsonObject? next)
     {
         if (next is not null && !NetworkProtocol.Lobby(JsonSerializer.SerializeToElement(next))) return false;
         if (!Member(sender) || !ExpectedHost(sender) || sender != Host && next?["host"]?.GetValue<string>() != sender) return false;
-        lobby = next?.DeepClone().AsObject();
+        lobby = next?.DeepClone().AsObject(); recoveryHost = null;
         return true;
     }
     public bool TryClaimHost(long now, string? name = null)

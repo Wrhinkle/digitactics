@@ -22,6 +22,7 @@ public sealed class NetworkRoom
     public event Action<bool>? SnapshotResult;
     public event Action<string>? BlockPeer;
     public long Dropped { get; private set; }
+    public bool IsClosed { get; private set; }
     private readonly PeerMessageLimits limits = new();
     private long requestId, intentSequence, snapshotAt, lastPing;
     private long? snapshotRequest;
@@ -50,6 +51,7 @@ public sealed class NetworkRoom
     private void PresenceChanged() { Broadcast(new { t = "presence", presence = Authority.Presence }); Changed?.Invoke(); }
     public void Members(IEnumerable<string> members, string? owner, long now)
     {
+        if (IsClosed) return;
         var priorPresence = Authority.Presence;
         if (!Authority.SetMembers(members, owner, now)) return;
         limits.Prune(Authority.Members); Changed?.Invoke();
@@ -57,6 +59,9 @@ public sealed class NetworkRoom
     }
     public long RequestSnapshot(long now)
     {
+        if (IsClosed) throw new InvalidOperationException("The room is closed.");
+        if (Authority.IsHost && (Init is not null || Log.Count > 0)) { SnapshotResult?.Invoke(true); return 0; }
+        if (Authority.IsHost && Init is null && Log.Count == 0) Authority.BeginHostRecovery();
         long rid = ++requestId; snapshotRequest = rid; snapshotAt = now; snapshotRetried = false; Log.BeginSnapshot(rid);
         if (Authority.Host is { } host && Authority.Member(host) && host != Authority.LocalId) To(host, new { t = "snapreq", rid });
         else Broadcast(new { t = "snapreq", rid });
@@ -64,10 +69,11 @@ public sealed class NetworkRoom
     }
     public void Tick(long now)
     {
+        if (IsClosed) return;
         foreach (var expired in seatRequests.Where(r => now >= r.Value).Select(r => r.Key).ToArray()) { seatRequests.Remove(expired); SeatResult?.Invoke(expired, false); }
         if (snapshotRequest is { } rid)
         {
-            if (now - snapshotAt >= 9000) { Log.ExpireSnapshot(rid); snapshotRequest = null; SnapshotResult?.Invoke(false); Changed?.Invoke(); }
+            if (now - snapshotAt >= 9000) { Log.ExpireSnapshot(rid); snapshotRequest = null; Authority.CancelHostRecovery(); SnapshotResult?.Invoke(false); Changed?.Invoke(); }
             else if (!snapshotRetried && now - snapshotAt >= 2500) { snapshotRetried = true; Broadcast(new { t = "snapreq", rid }); }
         }
         if (Authority.TryClaimHost(now))
@@ -85,7 +91,7 @@ public sealed class NetworkRoom
     }
     public bool Receive(string sender, string text, long now)
     {
-        if (sender == Authority.LocalId || !Authority.Member(sender)) return false;
+        if (IsClosed || sender == Authority.LocalId || !Authority.Member(sender)) return false;
         if (!limits.Allow(sender, "wire", 100, 300, now)) { Dropped++; return false; }
         if (NetworkProtocol.Parse(text) is not { } m || m.GetProperty("l").GetString() != Authority.RoomId) { Dropped++; return false; }
         string type = m.GetProperty("t").GetString()!;
@@ -94,7 +100,13 @@ public sealed class NetworkRoom
         JsonObject Object(string key) => JsonNode.Parse(m.GetProperty(key).GetRawText())!.AsObject();
         switch (type)
         {
-            case "snapreq": SnapshotTo(sender, (long)m.GetProperty("rid").GetDouble(), now); return Authority.IsHost;
+            case "snapreq":
+                if (!Authority.IsHost && !Log.Syncing && Authority.TakeOverRestartedHost(sender))
+                {
+                    if (myPresence is not null) Authority.SetPresence(Authority.LocalId, myPresence, false, (long)ServerTime(now));
+                    LobbyChanged(); PresenceChanged(); Broadcast(new { t = "head", n = Log.Count });
+                }
+                SnapshotTo(sender, (long)m.GetProperty("rid").GetDouble(), now); return Authority.IsHost;
             case "seat":
                 if (!Authority.IsHost) return false;
                 bool seated = Authority.ClaimSeat(sender, (int)m.GetProperty("i").GetDouble(), m.GetProperty("name").GetString());
@@ -122,7 +134,11 @@ public sealed class NetworkRoom
                 if (sender != Authority.Host || !seatRequests.Remove(seatRequest)) return false;
                 SeatResult?.Invoke(seatRequest, m.GetProperty("ok").GetBoolean()); return true;
             case "lobby":
+                bool recovering = Authority.RecoveringHost;
                 if (!Authority.AcceptLobby(sender, m.GetProperty("lobby").ValueKind == JsonValueKind.Null ? null : Object("lobby"))) return false;
+                // The former host confirms its chosen successor to peers that still see it in Steam membership.
+                if (recovering && Authority.Lobby is not null) Broadcast(new { t = "lobby", lobby = Authority.Lobby });
+                if (Authority.Lobby is null) FinishClose();
                 ApplyBans(); Changed?.Invoke(); return true;
             case "presence": if (!Authority.AcceptPresence(sender, Object("presence"))) return false; Changed?.Invoke(); return true;
             case "init": if (sender != Authority.Host || Init is not null) return false; Init = m.GetProperty("init").Clone(); Changed?.Invoke(); return true;
@@ -151,6 +167,7 @@ public sealed class NetworkRoom
     private void DeliverIntent(string sender, JsonElement message) => Intent?.Invoke(new(sender, (int)message.GetProperty("s").GetDouble(), message.GetProperty("a").GetString()!, message.TryGetProperty("g", out var g) ? g.Clone() : JsonSerializer.SerializeToElement(new { }), (int)message.GetProperty("round").GetDouble()));
     public long ClaimSeat(int seat, string name, long now)
     {
+        if (IsClosed) throw new InvalidOperationException("The room is closed.");
         long rid = ++requestId;
         if (Authority.IsHost) { bool ok = Authority.ClaimSeat(Authority.LocalId, seat, name); if (ok) LobbyChanged(); SeatResult?.Invoke(rid, ok); }
         else { seatRequests[rid] = now + 6000; To(Authority.Host, new { t = "seat", rid, i = seat, name = LobbyAuthority.CleanName(name) }); }
@@ -158,6 +175,7 @@ public sealed class NetworkRoom
     }
     public void SetPresence(JsonObject record, bool patch, long now)
     {
+        if (IsClosed) return;
         if (!NetworkProtocol.Presence(JsonSerializer.SerializeToElement(record))) throw new ArgumentException("Invalid presence.");
         if (!patch || myPresence is null) myPresence = record.DeepClone().AsObject();
         else foreach (var field in record) myPresence[field.Key] = field.Value?.DeepClone();
@@ -166,6 +184,7 @@ public sealed class NetworkRoom
     }
     public bool SubmitIntent(int seat, string action, JsonElement arguments, int round)
     {
+        if (IsClosed || Authority.Host is null) return false;
         string wire = Wire(new { t = "intent", s = seat, a = action, g = arguments, round, q = ++intentSequence });
         if (NetworkProtocol.Parse(wire) is not { } message) return false;
         if (Authority.IsHost) { if (!Authority.AcceptIntent(Authority.LocalId, message)) return false; DeliverIntent(Authority.LocalId, message); }
@@ -179,10 +198,23 @@ public sealed class NetworkRoom
     }
     public bool Append(int sequence, JsonElement entry, long now)
     {
+        if (Authority.IsHost && sequence >= NetworkProtocol.MaximumLog) { Close(); return false; }
         if (!Authority.IsHost || Log.Syncing || sequence != Log.Count || sequence >= NetworkProtocol.MaximumLog || !NetworkProtocol.Entry(entry)) return false;
         var message = new { t = "log", n = sequence, e = entry }; string wire = Wire(message);
         if (!Log.Receive(Authority.LocalId, Authority.LocalId, wire, now).Accepted) return false;
         Broadcast(message); Changed?.Invoke(); return true;
+    }
+    public bool Close()
+    {
+        if (!Authority.IsHost || IsClosed) return false;
+        Broadcast(new { t = "lobby", lobby = (object?)null });
+        Authority.AcceptLobby(Authority.LocalId, null); FinishClose(); Changed?.Invoke(); return true;
+    }
+    private void FinishClose()
+    {
+        IsClosed = true; Authority.CancelHostRecovery();
+        if (snapshotRequest is { } rid) { Log.ExpireSnapshot(rid); snapshotRequest = null; SnapshotResult?.Invoke(false); }
+        foreach (var seat in seatRequests.Keys.ToArray()) { seatRequests.Remove(seat); SeatResult?.Invoke(seat, false); }
     }
     public void FreeSeat(int seat)
     {
