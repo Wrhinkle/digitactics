@@ -10,6 +10,7 @@ internal sealed partial class MatchScreen
     private void OverlayShortcuts()
     {
         overlayShortcutConsumed=false;
+        if(LootAwardEscape()){overlayShortcutConsumed=true;return;}
         if(!ImGui.IsKeyPressed(ImGuiKey.Escape,false)||ShortcutModifiers||EliminationCinematicActive||CodexVisible||codexConsumedShortcut)return;
         // NewFrame may already have closed a combo popup for this Escape.
         // Its enclosing panel must retain the same one-layer dismissal rule.
@@ -41,6 +42,7 @@ internal sealed partial class MatchScreen
         {
             if(training is not null){if(trainingScore is not null&&trainingSaved)training=null;}
             else if(farmManagement)farmManagement=false;
+            else if(farmActionMenu is not null)farmActionMenu=null;
             else showFarm=false;
         }
         else return;

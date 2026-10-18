@@ -20,8 +20,34 @@ internal static class MatchApplication
         {
             Glfw.WindowHint(GlfwWindowHint.ContextVersionMajor, 4); Glfw.WindowHint(GlfwWindowHint.ContextVersionMinor, 5);
             Glfw.WindowHint(GlfwWindowHint.Visible, options.Smoke && !options.AudioVisibilitySmoke ? 0 : 1);
-            using var window = Glfw.CreateWindow(new GlfwWindow.CreateInfo { Title = "Digi-Tactics", Size = options.MinimumWindow ? new int2(1100, 760) : new int2(1440, 900) });
-            window.SetSizeLimits(new(1100, 760), new(-1, -1));
+            var desiredLogical = options.Smoke && options.ShortWindow ? new int2(1342,670) : options.MinimumWindow ? NativeUiMetrics.MinimumLogicalSize : options.FarmPointerSmoke ? new int2(1200,800) : new int2(1440, 900);
+            var initialSize = desiredLogical;
+            var workOrigin = new int2(0, 0);
+            var workArea = new int2(0, 0);
+            float monitorScale = 1;
+            if (!options.Smoke)
+            {
+                var monitor = Glfw.PrimaryMonitor;
+                if (!monitor.IsNull())
+                {
+                    monitor.GetMonitorWorkArea(out workOrigin, out workArea);
+                    monitorScale = OperatingSystem.IsWindows() ? monitor.ContentScale.X : 1;
+                    if (workArea.X > 0 && workArea.Y > 0)
+                        initialSize = NativeUiMetrics.WindowSize(desiredLogical, workArea, monitorScale);
+                }
+            }
+            using var window = Glfw.CreateWindow(new GlfwWindow.CreateInfo { Title = "Digi-Tactics", Size = initialSize });
+            NativeWindowIcon.Apply(window);
+            if (!options.Smoke && workArea.X > 0 && workArea.Y > 0)
+            {
+                Glfw.PInvoke.GetWindowFrameSize(window, out int left, out int top, out int right, out int bottom);
+                var frame = new int4(left, top, right, bottom);
+                var clientSize = NativeUiMetrics.WindowSize(desiredLogical, workArea, monitorScale, frame);
+                window.Size = clientSize;
+                window.SetSizeLimits(NativeUiMetrics.WindowSize(NativeUiMetrics.MinimumLogicalSize, workArea, monitorScale, frame), new(-1, -1));
+                window.Position = NativeUiMetrics.WindowPosition(clientSize, workOrigin, workArea, frame);
+            }
+            else window.SetSizeLimits(options.ShortWindow?desiredLogical:NativeUiMetrics.MinimumLogicalSize, new(-1, -1));
             window.MakeContextCurrent();
             if (!Glad.Initialize(name => Glfw.PInvoke.GetProcAddress(name))) throw new InvalidOperationException("OpenGL initialization failed.");
             Glfw.SwapInterval(options.Smoke ? 0 : 1);
@@ -29,19 +55,11 @@ internal static class MatchApplication
             try
             {
                 ImGui.GetIO().ConfigFlags |= ImGuiConfigFlags.NavEnableKeyboard;
-                ImGui.StyleColorsDark(); ImGui.GetIO().IniFilename = default; ImGui.GetStyle().FontSizeBase = 16;
-                string font = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "segoeui.ttf");
-                if (File.Exists(font)) ImGui.GetIO().Fonts.AddFontFromFileTTF(font, 17);
+                ImGui.GetIO().IniFilename = default;
+                NativeUiTheme.Initialize();
                 MatchScreen.LoadEvolutionFont();
                 MatchScreen.LoadEliminationFonts();
-                var style = ImGui.GetStyle(); style.WindowRounding = 8; style.FrameRounding = 5;
-                style.WindowPadding = new(12, 10); style.ItemSpacing = new(6, 6);
-                style.Colors[(int)ImGuiCol.WindowBg] = new(.045f, .065f, .095f, .98f);
-                style.Colors[(int)ImGuiCol.TitleBgActive] = new(.08f, .14f, .2f, 1);
-                style.Colors[(int)ImGuiCol.Button] = new(.10f, .22f, .31f, 1);
-                style.Colors[(int)ImGuiCol.ButtonHovered] = new(.13f, .38f, .47f, 1);
-                style.Colors[(int)ImGuiCol.ButtonActive] = new(.12f, .5f, .48f, 1);
-                using var platform = new GlfwBackend(window, GlfwBackend.ClientApi.OpenGL);
+                using var platform = new NativeUiPlatform(window, options.Smoke ? 1f : null);
                 using var audio = new GameAudio();
                 audio.EffectsVolume = options.Smoke ? 0 : .8f; audio.MusicVolume = options.Smoke ? 0 : .6f; audio.BoardVolume = options.Smoke ? 0 : .8f;
                 string saveDirectory = options.ProfileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native");
@@ -49,12 +67,20 @@ internal static class MatchApplication
                 using var preferences = options.Smoke ? null : new AudioSettingsBinding(audio, profile!, saveDirectory);
                 using var customMusic = options.Smoke ? null : new CustomMusicController(audio, profile!, options.MusicDecoder ?? Path.Combine(AppContext.BaseDirectory,"media","ffmpeg.exe"));
                 using var farmPointer = options.FarmPointerSmoke ? new FarmPointerSmoke(profile!, options.ProfileDirectory!) : null;
+                var caretakerDriver = options.FarmCaretakerSmoke ? new FarmCaretakerUiSmoke(profile!, options.ProfileDirectory!) : null;
                 using var renderer = new OpenGlBackend(); using var screen = new MatchScreen(catalog, audio, options.Smoke ? 143u : null, options.Duos, profile);
                 var mysteryDriver=options.MysteryLootUiSmoke?new MysteryLootUiSmoke(screen,profile!):null;
                 var selectionDriver=options.SetSelectionSmoke?new SetSelectionSmoke(catalog,screen,profile!,audio,options.SteamLibrary!):null;
                 using var keyboardDriver=options.MatchKeyboardSmoke?new MatchKeyboardSmoke(screen,profile!,audio):null;
                 var eliminationDriver=options.EliminationCinematicSmoke?new EliminationCinematicSmoke():null;
                 var postgameDriver=options.PostgameSmoke?new PostgameSmoke(catalog,profile!):null;
+                var unitNoteDriver=options.UnitNoteUiSmoke?new UnitNoteUiSmoke(catalog):null;
+                var matchCosmeticsDriver=options.MatchCosmeticsSmoke?new MatchCosmeticsSmoke(catalog,profile!):null;
+                var legendNavigationDriver=options.LegendNavigationSmoke?new LegendNavigationSmoke(profile!):null;
+                var galaxyIntroDriver=options.GalaxyIntroUiSmoke?new GalaxyIntroUiSmoke(catalog):null;
+                var choicePresentationDriver=options.ChoicePresentationUiSmoke?new ChoicePresentationUiSmoke(catalog):null;
+                var castFeedDriver=options.CastFeedUiSmoke?new CastFeedUiSmoke(catalog):null;
+                var lootNoticeDriver=options.LootNoticeUiSmoke?new LootNoticeUiSmoke(catalog,profile!):null;
                 using var profileDriver=options.ProfileUiSmoke?new ProfileUiSmoke(screen,profile!):null;
                 using var saveDataDriver=options.SaveDataUiSmoke?new SaveDataUiSmoke(screen,profile!,audio):null;
                 using var socialDriver=options.SocialUiSmoke?new SocialUiSmoke(profile!,options.SteamLibrary,options.MinimumWindow):null;
@@ -64,7 +90,7 @@ internal static class MatchApplication
                 screen.SteamLibraryPath = options.SteamLibrary;if(!options.UpdateUiSmoke)screen.UpdateClient=updateClient;
                 if(earlySteam is not null)screen.AdoptSteam(earlySteam,borrowed:true);
                 screen.SteamStartupError(steamStartupError);
-                var driver = options.Smoke && !options.MysteryLootUiSmoke && !options.SetSelectionSmoke && !options.MatchKeyboardSmoke && !options.ClientPreferencesSmoke && !options.SocialUiSmoke && !options.SaveDataUiSmoke && !options.EliminationCinematicSmoke && !options.PostgameSmoke && !options.ProfileUiSmoke && !options.UpdateUiSmoke && !options.MusicLibrarySmoke && !options.AudioVisibilitySmoke && !options.ModeBonusSmoke && !options.TrainingSmoke && !options.FarmPointerSmoke && !options.NetworkMatchSmoke && !options.SteamLobbyUiSmoke ? new MatchScreenSmoke(options.CollectionSmoke ? profile : null, options.EvolutionSmoke) : null;
+                var driver = options.Smoke && !options.ChoicePresentationUiSmoke && !options.GalaxyIntroUiSmoke && !options.LegendNavigationSmoke && !options.LootNoticeUiSmoke && !options.MatchCosmeticsSmoke && !options.CastFeedUiSmoke && !options.UnitNoteUiSmoke && !options.MysteryLootUiSmoke && !options.SetSelectionSmoke && !options.MatchKeyboardSmoke && !options.ClientPreferencesSmoke && !options.SocialUiSmoke && !options.SaveDataUiSmoke && !options.EliminationCinematicSmoke && !options.PostgameSmoke && !options.ProfileUiSmoke && !options.UpdateUiSmoke && !options.MusicLibrarySmoke && !options.AudioVisibilitySmoke && !options.ModeBonusSmoke && !options.TrainingSmoke && !options.FarmPointerSmoke && !options.FarmCaretakerSmoke && !options.NetworkMatchSmoke && !options.SteamLobbyUiSmoke ? new MatchScreenSmoke(options.CollectionSmoke ? profile : null, options.EvolutionSmoke, options.CollectionLayoutSmoke) : null;
                 var visibilityDriver = options.AudioVisibilitySmoke ? new AudioVisibilitySmoke() : null;
                 var modeDriver = options.ModeBonusSmoke ? new ModeBonusSmoke(catalog) : null;
                 using var lobbyDriver = options.SteamLobbyUiSmoke ? new SteamLobbyUiSmoke(options.SteamLibrary,profile) : null;
@@ -73,15 +99,20 @@ internal static class MatchApplication
                 var clock = System.Diagnostics.Stopwatch.StartNew(); double last = 0;
                 for (int frame = 0; ; frame++)
                 {
-                    UiFrameLifetime.Begin(); Glfw.PollEvents(); if(window.ShouldClose){window.ShouldClose=false;screen.RequestWindowClose();} if(options.Instance is not null)while(options.Instance.TryTake(out var requestedLobby)){if(window.IsIconified)window.Restore();window.Focus();if(requestedLobby is {} lobby)screen.ReceiveSteamJoin(lobby);} audio.SetHidden(window.IsIconified); renderer.NewFrame(); platform.NewFrame(); driver?.Input(screen); trainer?.Input(screen); farmPointer?.Input(screen); networkDriver?.Input(screen);
+                    UiFrameLifetime.Begin(); Glfw.PollEvents(); if(window.ShouldClose){window.ShouldClose=false;screen.RequestWindowClose();} if(options.Instance is not null)while(options.Instance.TryTake(out var requestedLobby)){if(window.IsIconified)window.Restore();window.Focus();if(requestedLobby is {} lobby)screen.ReceiveSteamJoin(lobby);} audio.SetHidden(window.IsIconified); renderer.NewFrame(); platform.NewFrame(); driver?.Input(screen); trainer?.Input(screen); farmPointer?.Input(screen); caretakerDriver?.Input(screen); networkDriver?.Input(screen);
                     lobbyDriver?.Input(screen); modeDriver?.Input(screen); musicDriver?.Input(screen);updateDriver?.Input(screen); profileDriver?.Input(screen); postgameDriver?.Input(screen); eliminationDriver?.Input(screen);
+                    unitNoteDriver?.Input(screen); castFeedDriver?.Input(screen); lootNoticeDriver?.Input(screen);
+                    matchCosmeticsDriver?.Input(screen);
+                    legendNavigationDriver?.Input(screen);
+                    galaxyIntroDriver?.Input(screen);
+                    choicePresentationDriver?.Input(screen);
                     saveDataDriver?.Input(screen); keyboardDriver?.Input(screen);socialDriver?.Input(screen);
                     clientPreferencesDriver?.Input(screen); selectionDriver?.Input(screen); mysteryDriver?.Input(screen);
                     ImGui.NewFrame(); double now = clock.Elapsed.TotalSeconds;
                     double delta = options.Smoke ? CombatSimulation.Tick : Math.Clamp(now - last, 0, .1);
                     screen.Update(delta, options.Smoke ? delta : now - last); last = now;
                     if (options.Smoke && frame == 1) UiTextChecks.Run(catalog);
-                    screen.Draw(window.Size); ImGui.Render();
+                    screen.Draw(platform.LogicalSize); ImGui.Render(); platform.CompleteFrame();
                     if(screen.RestartForUpdateRequested) {updateDriver?.VerifyRestart(screen);break;}
                     audio.Update();
                     screen.UpdateFileOperationClose();
@@ -93,6 +124,13 @@ internal static class MatchApplication
                     updateDriver?.Verify(screen,size,options.Capture);
                     if(eliminationDriver is not null && eliminationDriver.Verify(screen,size,options.Capture))break;
                     if(postgameDriver is not null && postgameDriver.Verify(screen,size,options.Capture))break;
+                    if(unitNoteDriver is not null && unitNoteDriver.Verify(screen,size,options.Capture))break;
+                    if(matchCosmeticsDriver is not null && matchCosmeticsDriver.Verify(screen,size,options.Capture))break;
+                    if(legendNavigationDriver is not null && legendNavigationDriver.Verify(screen,size,options.Capture))break;
+                    if(galaxyIntroDriver is not null && galaxyIntroDriver.Verify(screen,size,options.Capture))break;
+                    if(choicePresentationDriver is not null && choicePresentationDriver.Verify(screen,size,options.Capture))break;
+                    if(castFeedDriver is not null && castFeedDriver.Verify(screen,size,options.Capture))break;
+                    if(lootNoticeDriver is not null && lootNoticeDriver.Verify(screen,size,options.Capture))break;
                     if(profileDriver is not null && profileDriver.Verify(screen,size,options.Capture))break;
                     if(saveDataDriver is not null && saveDataDriver.Verify(screen,size,options.Capture))break;
                     if(socialDriver is not null && socialDriver.Verify(screen,size,options.Capture))break;
@@ -107,6 +145,7 @@ internal static class MatchApplication
                     {Console.WriteLine($"Match UI smoke completed in {frame+1} frames.");break;}
                     if (trainer is not null && trainer.Verify(screen, size, options.Capture)) break;
                     if (farmPointer is not null && farmPointer.Verify(screen, size, options.Capture)) break;
+                    if (caretakerDriver is not null && caretakerDriver.Verify(screen, size, options.Capture)) break;
                     if (networkDriver is not null && networkDriver.Verify(screen, size, options.Capture)) break;
                     if (lobbyDriver is not null && lobbyDriver.Verify(screen, size, options.Capture)) break;
                     if(screen.ExitAfterFileOperationsReady)break;
@@ -116,7 +155,7 @@ internal static class MatchApplication
                     if (options.Smoke && (phaseTimeout is not null || driver is null && frame > (options.TrainingSmoke ? 6000 : options.PostgameSmoke ? 1800 : 1400)))
                     {
                         if (options.Capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(options.Capture, "failure.bmp"), size.X, size.Y);
-                        throw new InvalidOperationException("Match UI smoke did not complete: " + (mysteryDriver?.Step.ToString() ?? postgameDriver?.Pending ?? selectionDriver?.Pending ?? keyboardDriver?.Pending ?? socialDriver?.Pending ?? lobbyDriver?.Pending ?? networkDriver?.Pending ?? farmPointer?.Pending ?? trainer?.Pending ?? driver?.Pending)+(phaseTimeout is null?"":"; "+phaseTimeout));
+                        throw new InvalidOperationException("Match UI smoke did not complete: " + (choicePresentationDriver?.Pending ?? galaxyIntroDriver?.Pending ?? lootNoticeDriver?.Pending ?? mysteryDriver?.Step.ToString() ?? legendNavigationDriver?.Pending ?? matchCosmeticsDriver?.Pending ?? unitNoteDriver?.Pending ?? castFeedDriver?.Pending ?? postgameDriver?.Pending ?? selectionDriver?.Pending ?? keyboardDriver?.Pending ?? socialDriver?.Pending ?? lobbyDriver?.Pending ?? networkDriver?.Pending ?? farmPointer?.Pending ?? caretakerDriver?.Pending ?? trainer?.Pending ?? driver?.Pending)+(phaseTimeout is null?"":"; "+phaseTimeout));
                     }
                 }
             }
