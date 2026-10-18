@@ -1,11 +1,17 @@
 using System.Text.Json;
 using DigiTactics.Rules;
+if(args.Length>0 && args[0]=="--native-game-instance-child") {await NativeGameInstanceChecks.RunChild(args);return;}
+if(args.Contains("--native-launch-instance-child")){await NativeSteamLaunchChecks.Child(args);return;}
 
 if(args.Length==2 && args[0]=="--native-release-artifacts") {await NativeReleaseArtifactChecks.Run(args[1]);return;}
 if(args.Length>=2 && args[0].StartsWith("--native-job-",StringComparison.Ordinal)) {await NativeJobChecks.Child(args);return;}
 if(args.Length==2 && args[0]=="--native-supervisor-child") {await NativeSupervisorChecks.Child(args[1]);return;}
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");
+if(args.Contains("--native-game-instance-only")){await NativeGameInstanceChecks.Run();return;}
+if(args.Contains("--native-launch-only")){NativeLaunchChecks.Run();await NativeSupervisorChecks.Run();return;}
+if(args.Contains("--native-launch-routing-only")){await NativeSteamLaunchChecks.Run(args[Array.IndexOf(args,"--launcher")+1],args[Array.IndexOf(args,"--desktop")+1]);return;}
 if (args.Contains("--startup-desktop-only")) { await NativeStartupChecks.RunDesktop(args[Array.IndexOf(args,"--desktop")+1]); return; }
+if (args.Contains("--move-effects-only")) { MovePrimitiveChecks.Run(root); MovePlaybackChecks.Run(root); LegacyCombatEffectChecks.Run(root); return; }
 if (args.Contains("--board-scenes-only")) { BoardSceneChecks.Run(root); return; }
 if (args.Contains("--ai-emotes-only")) { AiEmoteChecks.Run(root); return; }
 if (args.Contains("--retro-particles-only")) { RetroParticleChecks.Run(root); return; }
@@ -15,18 +21,22 @@ if (args.Contains("--dance-skeleton-only")) { DanceSkeletonChecks.Run(root); ret
 if (args.Contains("--dance-choreography-only")) { DanceChoreographyChecks.Run(root); return; }
 if (args.Contains("--loadouts-only")) { LoadoutChecks.Run(root); return; }
 if (args.Contains("--emote-layout-only")) { EmoteLayoutChecks.Run(root); return; }
-if (args.Contains("--steam-native-only")) { SteamMessageChecks.Run(root); SteamClientChecks.Run(root); SteamMatchmakingChecks.Run(root); SteamRoomSessionChecks.Run(root); SteamFriendsChecks.Run(root); return; }
+if (args.Contains("--steam-native-only")) { SteamMessageChecks.Run(root); SteamClientChecks.Run(root); SteamMatchmakingChecks.Run(root); SteamRoomSessionChecks.Run(root); SteamFriendsChecks.Run(root); SteamPresenceChecks.Run(root); return; }
+if (args.Contains("--social-only")) { SocialRosterChecks.Run(); SteamPresenceChecks.Run(root); return; }
 if (args.Contains("--network-only")) { NetworkProtocolChecks.Run(root); ReplicatedLogChecks.Run(root); LobbyAuthorityChecks.Run(root); NetworkRoomChecks.Run(); return; }
 if (args.Contains("--music-decoder-only"))
 {
     int option=Array.IndexOf(args,"--ffmpeg");
     if(option<0 || option+1>=args.Length) throw new ArgumentException("Provide --ffmpeg with the decoder executable path.");
-    await StreamingMusicChecks.Run(Path.GetFullPath(args[option+1])); return;
+    int encoderOption=Array.IndexOf(args,"--fixture-ffmpeg");
+    if(encoderOption>=0 && encoderOption+1>=args.Length) throw new ArgumentException("Provide --fixture-ffmpeg with the fixture encoder executable path.");
+    await StreamingMusicChecks.Run(Path.GetFullPath(args[option+1]),encoderOption>=0?Path.GetFullPath(args[encoderOption+1]):null); return;
 }
 if (args.Contains("--combat-picking-only")) { CombatPickingChecks.Run(root); return; }
 if (args.Contains("--music-playlist-only")) { MusicPlaylistChecks.Run(root); return; }
 if (args.Contains("--music-library-only")) { MusicLibraryChecks.Run(root); return; }
 if (args.Contains("--native-update-only")) { NativeUpdateChecks.Run(); NativeLaunchChecks.Run(); await NativeStartupChecks.Run(); await NativeSupervisorChecks.Run(); await NativeDownloadChecks.Run(); await NativeReleaseChecks.Run(); await NativeUpdateSessionChecks.Run(); await NativeJobChecks.Run(); return; }
+if (args.Contains("--client-preferences-only")) { ClientPreferenceChecks.Run(root); ClientUpdateChecks.Run(); return; }
 if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--soundboard-only")) { SoundboardChecks.Run(); return; }
 if (args.Contains("--player-mutes-only")) { PlayerMuteChecks.Run(); return; }
@@ -36,6 +46,7 @@ if (args.Contains("--companion-travel-only")) { CompanionTravelChecks.Run(root);
 if (args.Contains("--recent-players-only")) { RecentPlayerChecks.Run(root); return; }
 if (args.Contains("--profile-summary-only")) { ProfileSummaryChecks.Run(root); return; }
 if (args.Contains("--profile-only")) { LegacyProfileChecks.Run(root); return; }
+if (args.Contains("--profile-backup-only")) { ProfileBackupChecks.Run(root); return; }
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
 if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
 if (args.Contains("--materials-only")) { MaterialParity.Run(root); return; }
@@ -45,6 +56,13 @@ if (args.Contains("--companion-motion-only")) { CompanionMotionChecks.Run(root);
 if (args.Contains("--companion-playback-only")) { CompanionPlaybackChecks.Run(root); return; }
 if (args.Contains("--farm-choreography-only")) { FarmChoreographyChecks.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
+if (args.Contains("--set-selection-only")) { SetSelectionChecks.Run(root, catalog); return; }
+if (args.Contains("--home-content-only")) { HomeContentChecks.Run(root); return; }
+if (args.Contains("--pedestal-interaction-only")) { PedestalInteractionChecks.Run(root); return; }
+if (args.Contains("--mystery-loot-only")) { MysteryLootChecks.Run(root); return; }
+if (args.Contains("--collection-filters-only")) { CollectionFilterChecks.Run(root); return; }
+if (args.Contains("--elimination-cinematics-only")) { EliminationCinematicChecks.Run(root, catalog); return; }
+if (args.Contains("--match-keyboard-only")) { MatchKeyboardChecks.Run(root); return; }
 if (args.Contains("--play-on-only")) { PlayOnChecks.Run(catalog); return; }
 if (args.Contains("--lockstep-only")) { LockstepParity.Run(root, catalog); return; }
 if (args.Contains("--match-replica-only")) { MatchReplicaChecks.Run(catalog); return; }
@@ -54,6 +72,7 @@ if (args.Contains("--history-only")) { MatchHistoryChecks.Run(root, catalog); re
 if (args.Contains("--network-history-only")) { NetworkHistoryChecks.Run(catalog); return; }
 if (args.Contains("--rewards-only")) { MatchRewardChecks.Run(root, catalog); LegendRewardChecks.Run(root); return; }
 if (args.Contains("--cosmetics-only")) { CosmeticChecks.Run(root); return; }
+if (args.Contains("--codex-only")) { CodexCatalogChecks.Run(root); return; }
 if (args.Contains("--eggs-only")) { EggChecks.Run(root); return; }
 if (args.Contains("--elimination-themes-only")) { EliminationThemeChecks.Run(root); return; }
 if (args.Contains("--evolution-only")) { EvolutionChecks.Run(root); EvolutionTransitionChecks.Run(root); return; }
@@ -123,7 +142,7 @@ if (args.Contains("--planning-only")) { AiDecisionParity.Run(root, catalog); AiH
 if (args.Contains("--economy-only")) { EconomyParity.Run(root, catalog); return; }
 if (args.Contains("--choreography-only")) { ChoreographyParity.Run(root, catalog); return; }
 using var fixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests/fixtures/parity.json")));
-int assertions = BoardSceneChecks.Run(root) + AiEmoteChecks.Run(root) + RetroParticleChecks.Run(root) + RetroMotionChecks.Run(root) + DanceBindingChecks.Run(root) + DanceChoreographyChecks.Run(root) + DanceSkeletonChecks.Run(root) + EmoteLayoutChecks.Run(root) + LoadoutChecks.Run(root) + CompanionTravelChecks.Run(root) + EmoteMotionChecks.Run(root) + EmoteChecks.Run(root) + PlayerMuteChecks.Run() + SoundboardChecks.Run() + RecentPlayerChecks.Run(root) + NetworkHistoryChecks.Run(catalog) + MatchHostChecks.Run(catalog) + MatchReplicaChecks.Run(catalog) + LockstepParity.Run(root, catalog) + MatchActionsParity.Run(root, catalog) + PveWaveParity.Run(root, catalog) + FullMatchParity.Run(root, catalog) + SettlementEffectsParity.Run(root, catalog) + CombatProjectionParity.Run(root, catalog) + PlanningSessionParity.Run(root, catalog) + ComposedAiParity.Run(root, catalog) + OfferEffectsParity.Run(root, catalog) + FactionPlanningParity.Run(root, catalog) + UnitLifecycleParity.Run(root, catalog) + ReckoningAiParity.Run(root, catalog) + ReckoningPlanningParity.Run(root, catalog) + ArcaneSettlementParity.Run(root, catalog) + ArcaneAiParity.Run(root, catalog) + ArcaneAugmentParity.Run(root, catalog) + ArcaneRoundParity.Run(root, catalog) + AutoChessPriestParity.Run(root, catalog) + GalaxyAugmentParity.Run(root, catalog) + GizmosAugmentParity.Run(root, catalog) + GizmosPlanningParity.Run(root, catalog) + FatesAugmentParity.Run(root, catalog) + FatesTraitRewardParity.Run(root, catalog) + DragonAugmentParity.Run(root, catalog) + DragonSettlementParity.Run(root, catalog) + DragonPlanningParity.Run(root, catalog) + UnderlordsSettlementParity.Run(root, catalog) + UnderlordsPlanningParity.Run(root, catalog) + UnderlordsTamerParity.Run(root, catalog) + MatchPlacementParity.Run(root, catalog) + FatesSettlementParity.Run(root, catalog) + FatesAiParity.Run(root, catalog) + GalaxiesSettlementParity.Run(root, catalog) + GalaxiesPlanningParity.Run(root, catalog) + OpeningRoundParity.Run(root, catalog) + MatchStartParity.Run(root, catalog) + MatchShopRollParity.Run(root, catalog) + DragonShopParity.Run(root, catalog) + FatesPartnerParity.Run(root, catalog) + ShopRollParity.Run(root, catalog) + AutoChessPlanningParity.Run(root, catalog) + CarouselParity.Run(root, catalog) + AiTurnParity.Run(root, catalog) + ArcaneOfferParity.Run(root, catalog) + RelicUpgradeParity.Run(root, catalog, true) + RelicUpgradeParity.Run(root, catalog) + AiOfferParity.Run(root, catalog, true) + AiOfferParity.Run(root, catalog) + PortalParity.Run(root, catalog, true) + PortalParity.Run(root, catalog) + AiShoppingParity.Run(root, catalog) + AiDecisionParity.Run(root, catalog) + AiInventoryParity.Run(root, catalog) + AiHolderParity.Run(root, catalog) + ColiseumSettlementParity.Run(root, catalog) + ColiseumRoundParity.Run(root, catalog) + ColiseumShopParity.Run(root, catalog) + ColiseumChoiceParity.Run(root, catalog) + ColiseumCoreParity.Run(root, catalog) + SpecialConsumableParity.Run(root, catalog) + CopyConsumableParity.Run(root, catalog) + ConsumableParity.Run(root, catalog) + RadiantOfferParity.Run(root, catalog) + PlanningItemParity.Run(root, catalog) + CustomOfferParity.Run(root, catalog) + RoundFlowParity.Run(root, catalog) + OfferParity.Run(root, catalog) + LootParity.Run(root, catalog, true) + LootParity.Run(root, catalog) + SettlementParity.Run(root, catalog) + MatchStateParity.Run(root, catalog) + EconomyParity.Run(root, catalog) + PlanningParity.Run(root, catalog) + PlanningShopParity.Run(root, catalog);
+int assertions = HomeContentChecks.Run(root) + PedestalInteractionChecks.Run(root) + MysteryLootChecks.Run(root) + SetSelectionChecks.Run(root, catalog) + CollectionFilterChecks.Run(root) + ClientPreferenceChecks.Run(root) + ClientUpdateChecks.Run() + MovePrimitiveChecks.Run(root) + MovePlaybackChecks.Run(root) + LegacyCombatEffectChecks.Run(root) + BoardSceneChecks.Run(root) + AiEmoteChecks.Run(root) + RetroParticleChecks.Run(root) + RetroMotionChecks.Run(root) + DanceBindingChecks.Run(root) + DanceChoreographyChecks.Run(root) + DanceSkeletonChecks.Run(root) + EmoteLayoutChecks.Run(root) + LoadoutChecks.Run(root) + CompanionTravelChecks.Run(root) + EmoteMotionChecks.Run(root) + EmoteChecks.Run(root) + PlayerMuteChecks.Run() + SoundboardChecks.Run() + RecentPlayerChecks.Run(root) + NetworkHistoryChecks.Run(catalog) + MatchHostChecks.Run(catalog) + MatchReplicaChecks.Run(catalog) + LockstepParity.Run(root, catalog) + MatchActionsParity.Run(root, catalog) + PveWaveParity.Run(root, catalog) + FullMatchParity.Run(root, catalog) + SettlementEffectsParity.Run(root, catalog) + CombatProjectionParity.Run(root, catalog) + PlanningSessionParity.Run(root, catalog) + ComposedAiParity.Run(root, catalog) + OfferEffectsParity.Run(root, catalog) + FactionPlanningParity.Run(root, catalog) + UnitLifecycleParity.Run(root, catalog) + ReckoningAiParity.Run(root, catalog) + ReckoningPlanningParity.Run(root, catalog) + ArcaneSettlementParity.Run(root, catalog) + ArcaneAiParity.Run(root, catalog) + ArcaneAugmentParity.Run(root, catalog) + ArcaneRoundParity.Run(root, catalog) + AutoChessPriestParity.Run(root, catalog) + GalaxyAugmentParity.Run(root, catalog) + GizmosAugmentParity.Run(root, catalog) + GizmosPlanningParity.Run(root, catalog) + FatesAugmentParity.Run(root, catalog) + FatesTraitRewardParity.Run(root, catalog) + DragonAugmentParity.Run(root, catalog) + DragonSettlementParity.Run(root, catalog) + DragonPlanningParity.Run(root, catalog) + UnderlordsSettlementParity.Run(root, catalog) + UnderlordsPlanningParity.Run(root, catalog) + UnderlordsTamerParity.Run(root, catalog) + MatchPlacementParity.Run(root, catalog) + FatesSettlementParity.Run(root, catalog) + FatesAiParity.Run(root, catalog) + GalaxiesSettlementParity.Run(root, catalog) + GalaxiesPlanningParity.Run(root, catalog) + OpeningRoundParity.Run(root, catalog) + MatchStartParity.Run(root, catalog) + MatchShopRollParity.Run(root, catalog) + DragonShopParity.Run(root, catalog) + FatesPartnerParity.Run(root, catalog) + ShopRollParity.Run(root, catalog) + AutoChessPlanningParity.Run(root, catalog) + CarouselParity.Run(root, catalog) + AiTurnParity.Run(root, catalog) + ArcaneOfferParity.Run(root, catalog) + RelicUpgradeParity.Run(root, catalog, true) + RelicUpgradeParity.Run(root, catalog) + AiOfferParity.Run(root, catalog, true) + AiOfferParity.Run(root, catalog) + PortalParity.Run(root, catalog, true) + PortalParity.Run(root, catalog) + AiShoppingParity.Run(root, catalog) + AiDecisionParity.Run(root, catalog) + AiInventoryParity.Run(root, catalog) + AiHolderParity.Run(root, catalog) + ColiseumSettlementParity.Run(root, catalog) + ColiseumRoundParity.Run(root, catalog) + ColiseumShopParity.Run(root, catalog) + ColiseumChoiceParity.Run(root, catalog) + ColiseumCoreParity.Run(root, catalog) + SpecialConsumableParity.Run(root, catalog) + CopyConsumableParity.Run(root, catalog) + ConsumableParity.Run(root, catalog) + RadiantOfferParity.Run(root, catalog) + PlanningItemParity.Run(root, catalog) + CustomOfferParity.Run(root, catalog) + RoundFlowParity.Run(root, catalog) + OfferParity.Run(root, catalog) + LootParity.Run(root, catalog, true) + LootParity.Run(root, catalog) + SettlementParity.Run(root, catalog) + MatchStateParity.Run(root, catalog) + EconomyParity.Run(root, catalog) + PlanningParity.Run(root, catalog) + PlanningShopParity.Run(root, catalog);
 void Check(bool condition, string message)
 {
     assertions++;
@@ -243,6 +262,7 @@ assertions += ChoreographyParity.Run(root, catalog);
 assertions += AudioCueParity.Run(root, catalog);
 assertions += NativeUpdateChecks.Run();
 assertions += NativeLaunchChecks.Run();
+assertions += await NativeGameInstanceChecks.Run();
 assertions += await NativeStartupChecks.Run();
 assertions += await NativeSupervisorChecks.Run();
 assertions += await NativeDownloadChecks.Run();
@@ -250,6 +270,7 @@ assertions += await NativeReleaseChecks.Run();
 assertions += await NativeUpdateSessionChecks.Run();
 assertions += await NativeJobChecks.Run();
 assertions += AudioSettingsChecks.Run();
+assertions += SocialRosterChecks.Run();
 assertions += MatchHistoryChecks.Run(root, catalog);
 assertions += PostgameChecks.Run(root,catalog);
 assertions += PlayOnChecks.Run(catalog);
@@ -259,10 +280,13 @@ assertions += MusicLibraryChecks.Run(root);
 assertions += MatchRewardChecks.Run(root, catalog);
 assertions += LegendRewardChecks.Run(root);
 assertions += CosmeticChecks.Run(root);
+assertions += CodexCatalogChecks.Run(root);
 assertions += EggChecks.Run(root);
 assertions += EvolutionChecks.Run(root);
 assertions += EvolutionTransitionChecks.Run(root);
 assertions += EliminationThemeChecks.Run(root);
+assertions += EliminationCinematicChecks.Run(root, catalog);
+assertions += MatchKeyboardChecks.Run(root);
 assertions += FarmSimulationChecks.Run(root);
 assertions += FarmCareChecks.Run(root);
 assertions += NetworkProtocolChecks.Run(root);
@@ -271,6 +295,7 @@ assertions += LobbyAuthorityChecks.Run(root);
 assertions += NetworkRoomChecks.Run();
 assertions += TrainingGameChecks.Run(root);
 assertions += LegacyProfileChecks.Run(root);
+assertions += ProfileBackupChecks.Run(root);
 assertions += ProfileSummaryChecks.Run(root);
 assertions += MotionParity.Run(root);
 assertions += MeshParity.Run(root);

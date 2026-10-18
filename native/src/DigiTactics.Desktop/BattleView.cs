@@ -7,13 +7,14 @@ using DigiTactics.Rules;
 namespace DigiTactics.Desktop;
 
 /// <summary>Combat workbench using the real fixed-tick simulation; round/match flow is separate.</summary>
-internal sealed class BattleView : ICombatModelDriver, IDisposable
+internal sealed partial class BattleView : ICombatModelDriver, IDisposable
 {
     private readonly Ruleset rules;
-    private readonly ModelCatalog catalog = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
+    private readonly ModelCatalog catalog;
     private readonly ModelRenderer renderer = new();
     private readonly Dictionary<ModelSource, GpuModel> models = [];
     private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
+    private PlaceholderCreature? placeholder;
     private readonly RosterModelView bench = new();
     internal IReadOnlySet<int> RenderedBenchUnits => bench.RenderedUnits;
     public int? DraggedUnit { get => bench.DraggedUnit; set => bench.DraggedUnit = value; }
@@ -32,26 +33,29 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     private bool mirror;
     public CombatSimulation Combat { get; }
     public int DrawCalls { get; private set; }
+    internal int FallbackDrawCalls { get; private set; }
     public bool BackRequested { get; private set; }
     public int ModelCount => models.Count;
     public bool Mirrored => mirror;
 
-    public BattleView(Ruleset rules, CombatEntry[]? roster = null, int columns = 7)
+    public BattleView(Ruleset rules, CombatEntry[]? roster = null, int columns = 7, ModelCatalog? modelCatalog = null)
     {
+        catalog=modelCatalog??ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/models.json"));
         board=new(); ownsBoard=true;
         this.rules = rules;
         var side = roster is { Length: > 0 } ? roster : rules.Lines.Take(6).Select((line, i) => new CombatEntry(line.Id, i % 3, i % columns, 4 + i / columns, Items: [])).ToArray();
         var enemy = rules.Lines.Skip(3).Take(side.Length).Select((line, i) => new CombatEntry(line.Id, i % 3, i % columns, 4 + i / columns, Items: [])).ToArray();
         Combat = new(rules, side, enemy, 84219, columns, setup: new(new(), new()));
         boardBursts=new(columns,false);
-        choreography = new(Combat, this); choreography.Update(0);
+        choreography = new(Combat, this); choreography.Update(0); InitializeMoveEffects();
     }
-    public BattleView(Ruleset rules, CombatSimulation combat, bool mirror,ArenaEnvironment? environment=null)
+    public BattleView(Ruleset rules, CombatSimulation combat, bool mirror,ArenaEnvironment? environment=null,ModelCatalog? modelCatalog=null)
     {
+        catalog=modelCatalog??ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/models.json"));
         board=environment??new(); ownsBoard=environment is null; board.Feedback.ClearFlashes();
         this.rules = rules; Combat = combat; this.mirror = mirror;
         boardBursts=new(combat.Columns,mirror);
-        choreography = new(combat, this); choreography.Update(0, mirror);
+        choreography = new(combat, this); choreography.Update(0, mirror); InitializeMoveEffects();
     }
     public void Create(CombatUnit unit)
     {
@@ -72,13 +76,14 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     }
     public bool Play(int unit, string role) => actors.TryGetValue(unit, out var actor) && actor.Animator.Play(role);
     public void Update(int unit, double delta) { if (actors.TryGetValue(unit, out var actor)) actor.Animator.Update(delta); }
-    public void Advance(double delta)
+    public void Advance(double delta, int speed = 1)
     {
         SceneTime+=Math.Clamp(delta,0,.1);
         if (paused) return;
-        accumulator += Math.Min(delta, .25);
+        double playbackDelta = Math.Clamp(delta, 0, .1) * speed;
+        accumulator += playbackDelta;
         while (accumulator >= CombatSimulation.Tick && !Combat.Done) { Combat.Step(); accumulator -= CombatSimulation.Tick; }
-        choreography.Update(delta, mirror);
+        choreography.Update(delta, mirror); AdvanceMoveEffects(playbackDelta);
     }
     public void Controls(Brutal.Numerics.int2 size)
     {
@@ -136,7 +141,7 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     public void Draw(int width, int height, int left = 0, int bottom = 0)
     {
         if (width <= 0 || height <= 0) return;
-        var camera=board.Camera.Matrix(width,height,Combat.Columns); board.SetTheme(BoardTheme); DrawCalls=0;
+        var camera=MoveCamera(board.Camera.Matrix(width,height,Combat.Columns)); board.SetTheme(BoardTheme); DrawCalls=FallbackDrawCalls=0;
         bench.RenderedUnits.Clear();
         board.Feedback.Time=Combat.Time;
         boardBursts.Update(Combat.Events,flash=>board.Feedback.Flash(flash.Column,flash.Row,flash.Until,flash.ViewTeam==0?allyBurst:enemyBurst));
@@ -145,13 +150,24 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
             DrawCalls += bench.Draw(renderer, viewCamera, transparent);
             foreach(var view in choreography.Views)
             {
-                if(!actors.TryGetValue(view.UnitId,out var actor)) continue;
                 var unit=Combat.Units[view.UnitId];
+                if(!actors.TryGetValue(view.UnitId,out var actor))
+                {
+                    if(!transparent)
+                    {
+                        var placement=GpuModel.Transform(view.BodyOffset.X,view.BodyOffset.Y,view.BodyOffset.Z,view.Yaw,1)*GpuModel.Transform(view.Position.X,view.Position.Y,view.Position.Z,0,view.Scale);
+                        int drawn=(placeholder??=new()).Draw(renderer,viewCamera,placement,rules.Id,unit.Line.Id,fog:true,emission:view.Flash>0?view.Flash:view.Glow);
+                        if(!renderer.ShadowPass){DrawCalls+=drawn;FallbackDrawCalls+=drawn;}
+                    }
+                    continue;
+                }
                 renderer.Draw(actor.Model,actor.Animator.Pose,actor.Model.Place(view,unit.Stage,unit.Line.Tier),viewCamera,transparent,view.Flash>0?view.Flash:view.Glow);
                 if(!renderer.ShadowPass) DrawCalls+=renderer.DrawCalls;
             }
+            if(!renderer.ShadowPass)DrawCalls+=moveEffects!.DrawLit(renderer,viewCamera,transparent);
         }
         board.Draw(renderer,camera,board.Camera.Eye(width,height,Combat.Columns),Combat.Columns,false,left,bottom,width,height,Units);
+        DrawMoveEffects(camera,width,height);
     }
-    public void Dispose() { bench.Dispose(); foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
+    public void Dispose() { combatMoves?.Clear();moveEffects?.Dispose(); placeholder?.Dispose();bench.Dispose(); foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
 }

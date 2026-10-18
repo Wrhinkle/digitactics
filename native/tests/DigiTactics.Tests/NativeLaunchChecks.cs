@@ -65,6 +65,17 @@ internal static class NativeLaunchChecks
             using(var launcher=new NativeLaunchState(root,"2.0.0"))
                 Check(launcher.BeginLaunch()==new NativeLaunchSelection(null,null),"interrupted later trial retains newer bundled fallback");
             Check(Directory.GetFiles(root,"*.tmp").Length==0,"atomic state writes leave no temporary files");
+            using(var launcher=new NativeLaunchState(Path.Combine(root,"defer"),"1.0.0"))
+            {
+                launcher.Queue(first);launcher.Confirm(launcher.BeginLaunch().TrialToken!);
+                launcher.Queue(next);var selected=launcher.BeginLaunch();
+                Check(!launcher.DeferTrial("wrong"),"wrong token cannot defer a trial");
+                Check(launcher.DeferTrial(selected.TrialToken!) && launcher.CurrentVersion==first.Version,"deferred trial retains previous active version");
+                Check(!launcher.Confirm(selected.TrialToken!),"deferred trial cannot be confirmed by stale readiness");
+                var retried=launcher.BeginLaunch();
+                Check(retried.Release==next && retried.TrialToken is not null && retried.TrialToken!=selected.TrialToken,"deferred candidate retries with a fresh readiness token");
+                launcher.DeferTrial(retried.TrialToken!);
+            }
             string failureRoot=Path.Combine(root,"write-failure");
             using(var launcher=new NativeLaunchState(failureRoot,"1.0.0"))
             {

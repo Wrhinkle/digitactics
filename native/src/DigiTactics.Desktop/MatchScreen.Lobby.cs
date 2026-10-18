@@ -2,6 +2,8 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Brutal.ImGuiApi;
 using DigiTactics.Networking;
+using DigiTactics.Presentation;
+using DigiTactics.Rules;
 using DigiTactics.Storage;
 
 namespace DigiTactics.Desktop;
@@ -53,17 +55,15 @@ internal sealed partial class MatchScreen
     }
     internal void UsePrivateLobbyForSmoke() => visibility = SteamLobbyVisibility.Private;
     internal bool InSteamRoom => steam?.Room is not null;
-    private string SteamName => LobbyAuthority.CleanName(profile?.Progress.Name ?? steam?.Name) is { Length: > 0 } name ? name : "Tamer";
+    private string SteamName => LobbyAuthority.CleanName(steam?.Name ?? profile?.Progress.Name) is { Length: > 0 } name ? name : "Tamer";
     private void ConnectSteam()
     {
+        if(steam is not null)return;
         try
         {
             string library = SteamLibraryPath ?? Path.Combine(AppContext.BaseDirectory, "steam_api64.dll");
             if (!File.Exists(library)) throw new FileNotFoundException("Steam support is missing from this installation. Reinstall the full game package and try again.");
-            steam = new(library, 480);
-            steam.ConnectionLost += reason => { lobbyMessage = reason; EndOnlineView(); };
-            steam.JoinRequested += (lobby, _) => invitedLobby = lobby;
-            lobbyMessage = "Connected as " + steam.Name; RefreshSteamRooms();
+            AdoptSteam(new(library,480));
         }
         catch (Exception error) { lobbyMessage = "Could not connect: " + error.Message; }
     }
@@ -78,7 +78,7 @@ internal sealed partial class MatchScreen
         var lobby = new JsonObject
         {
             ["host"] = steam.SteamId.ToString(), ["hostName"] = SteamName, ["name"] = SteamName + "'s room", ["status"] = "lobby",
-            ["setId"] = Rules.Id.Split('/')[0], ["pace"] = Rules.Pace, ["format"] = duos ? "duos" : "solo", ["planTime"] = lobbyPlanningSeconds,
+            ["setId"] = selectedSet, ["pace"] = lobbyPaceChoice, ["format"] = lobbyDuos ? "duos" : "solo", ["planTime"] = lobbyPlanningSeconds,
             ["slots"] = new JsonObject { ["0"] = new JsonObject { ["uid"] = steam.SteamId.ToString(), ["name"] = SteamName } }
         };
         try { enteringRoom = steam.Create(lobby, visibility); lobbyMessage = "Creating room..."; } catch (Exception error) { lobbyMessage = error.Message; }
@@ -114,6 +114,7 @@ internal sealed partial class MatchScreen
             catch (Exception error) { lobbyMessage = "Could not enter room: " + error.Message; }
             enteringRoom = null;
         }
+        ApplySteamJoinRequest();
         if (steam.Room is not { } room) return;
         if (now - presenceAt > 5000)
         {
@@ -153,20 +154,22 @@ internal sealed partial class MatchScreen
     }
     private void LeaveSteamRoom()
     {
-        EndOnlineView(); steam?.Leave(); enteringRoom = null; clearLobbyAvatars = true;
+        EndOnlineView(); steam?.Leave(); enteringRoom = null; invitedLobby=null; clearLobbyAvatars = true;
+        lobbyPaceChoice=selectedPace;lobbyDuos=duos;
     }
     private void StartSteamMatch(NetworkRoom room)
     {
         var lobby = room.Authority.Lobby!;
         string[] names = ["Tai", "Matt", "Sora", "Izzy", "Mimi", "Joe", "Kari", "T.K."];
-        var slots = Enumerable.Range(0, 8).Select(i => new { name = lobby["slots"]?[i.ToString()]?["name"]?.GetValue<string>() ?? names[i], human = lobby["slots"]?[i.ToString()] is not null }).ToArray();
+        var slots = Enumerable.Range(0, 8).Select(i => new MatchSeat(lobby["slots"]?[i.ToString()]?["name"]?.GetValue<string>() ?? names[i],lobby["slots"]?[i.ToString()] is not null)).ToArray();
         long now = (long)room.ServerTime(Environment.TickCount64);
-        var init = JsonSerializer.SerializeToElement(new { seed = Random.Shared.Next(1, int.MaxValue), at = now, slots,
-            setId = lobby["setId"]!.GetValue<string>(), pace = lobby["pace"]!.GetValue<string>(), format = lobby["format"]!.GetValue<string>(), planTime = lobby["planTime"]?.GetValue<int>() ?? 30 });
+        var init = MatchInitialization.Host(SetChoices,lobby["setId"]?.GetValue<string>(),lobby["pace"]?.GetValue<string>(),(uint)Random.Shared.Next(1_000_000_000),slots,
+            lobby["format"]?.GetValue<string>()=="duos",lobby["planTime"]?.GetValue<int>()??30,now);
         if (room.PublishInit(init)) room.UpdateLobby(new JsonObject { ["status"] = "playing", ["round"] = "1-1", ["alive"] = new JsonArray(Enumerable.Repeat(true, 8).Select(v => JsonValue.Create(v)).ToArray()) });
     }
     private void MultiplayerMenu()
     {
+        RefreshSetSelection();
         Window("Steam multiplayer", size.X * .15f, 70, size.X * .7f, size.Y - 140);
         if (steam is null)
         {
@@ -178,7 +181,8 @@ internal sealed partial class MatchScreen
             var lobby = room.Authority.Lobby;
             if (lobby is not null)
             {
-                ImGui.Text(lobby["name"]!.GetValue<string>()); ImGui.Text($"{lobby["setId"]} / {lobby["pace"]} / {lobby["format"]}");
+                ImGui.Text(lobby["name"]!.GetValue<string>()); ImGui.Text($"{SetChoices.Label(lobby["setId"]?.GetValue<string>())} / {SetSelection.PaceLabel(lobby["pace"]?.GetValue<string>())} / {lobby["format"]}");
+                if(room.Authority.IsHost && room.Init is null)LobbySetChoices(room);
                 ImGui.Text($"Planning: {lobby["planTime"]?.GetValue<int>() ?? 30}s");
                 for (int i = 0; i < 8; i++)
                 {
@@ -201,17 +205,15 @@ internal sealed partial class MatchScreen
             }
             if (Button("steamLeave", "Leave room")) LeaveSteamRoom();
             ImGui.SameLine(); if (Button("players", "Players")) showPlayers = !showPlayers;
+            InviteFriendsButton("steamInvite");
         }
         else
         {
             ImGui.Text("Connected as " + steam.Name);
             ImGui.BeginDisabled(enteringRoom is not null);
-            if (ImGui.BeginCombo("Ruleset / pace"u8, $"{Rules.Name} / {Rules.Pace}"))
-            {
-                for (int i = 0; i < catalog.Variants.Length; i++) if (ImGui.Selectable($"{catalog.Variants[i].Name} / {catalog.Variants[i].Pace}", variant == i)) variant = i;
-                ImGui.EndCombo();
-            }
-            ImGui.Checkbox("Duos"u8, ref duos);
+            ImGui.Text("Set"u8);ImGui.SetNextItemWidth(260);DrawSetChoice("steamSet",selectedSet,SelectSet);
+            ImGui.Text("Pace"u8);ImGui.SetNextItemWidth(260);DrawPaceChoice("steamPace",lobbyPaceChoice,true,pace=>SelectPace(pace,true));
+            ImGui.Text("Format"u8);ImGui.SetNextItemWidth(260);DrawFormatChoice("steamFormat",lobbyDuos,format=>lobbyDuos=format=="duos");
             ImGui.Text("Planning time"u8);
             foreach (int seconds in new[] { 30, 45, 60 })
             {
@@ -225,7 +227,6 @@ internal sealed partial class MatchScreen
             }
             if (Button("steamCreate", "Create room")) CreateSteamRoom(); ImGui.SameLine();
             if (Button("steamRefresh", listingRooms is null && listingFriendRooms is null ? "Refresh rooms" : "Searching...")) RefreshSteamRooms();
-            if (invitedLobby is { } invited && Button("steamAcceptInvite", "Join invited room")) { invitedLobby = null; JoinSteamRoom(invited); }
             ImGui.Separator();
             var displayed = friendRooms.Select(r => r.Lobby).Concat(availableRooms).DistinctBy(r => r.Id).Where(r => r.Data["state"] != "over").ToArray();
             foreach (var listed in displayed)
@@ -250,7 +251,7 @@ internal sealed partial class MatchScreen
         }
         if (recentPlayersError.Length > 0) UiText.Wrapped(recentPlayersError);
         ImGui.Separator(); UiText.Wrapped(lobbyMessage);
-        if (Button("steamBack", "Back to menu")) { LeaveSteamRoom(); showMultiplayer = false; }
+        if (Button("steamBack", "Back to menu")) { if(!PostgameHomeVisible)LeaveSteamRoom(); showMultiplayer = false; }
         ImGui.End();
     }
 }

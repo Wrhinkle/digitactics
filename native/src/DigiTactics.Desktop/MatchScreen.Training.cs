@@ -73,8 +73,10 @@ internal sealed partial class MatchScreen
             ImGui.SameLine(); if (Button("trainingDone", "Done")) training = null;
             return;
         }
-        if (Button("trainingQuit", "Quit")) { FinishTraining(0); return; }
-        if (ImGui.IsKeyPressed(ImGuiKey.Escape, false)) { FinishTraining(0); return; }
+        // Cancellation is separate from a completed zero-score game. The original caller
+        // expected a negative cancellation result, but its game runner clamped it to zero.
+        // Honour that intended contract without charging care or granting training rewards.
+        if (Button("trainingQuit", "Quit") || ImGui.IsKeyPressed(ImGuiKey.Escape, false)) { training = null; return; }
         CollectionText(trainingName switch
         {
             "strength" => "Press Space / Enter or click when the marker enters the gold zone. Five swings.",

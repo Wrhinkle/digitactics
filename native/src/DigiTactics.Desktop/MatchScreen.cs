@@ -13,7 +13,7 @@ internal sealed partial class MatchScreen : IDisposable
     private readonly uint? seed;
     private readonly GameAudio audio;
     private readonly NativeProfileStore? profile;
-    private readonly FarmProgress? farm;
+    private FarmProgress? farm;
     private Task<ProfileImport?>? profilePreview;
     private ProfileImport? profileCandidate;
     private string? profileMessage;
@@ -49,7 +49,7 @@ internal sealed partial class MatchScreen : IDisposable
     private int Width => Math.Max(300, size.X - 470);
     private int Height => Math.Max(240, size.Y - 383);
     private const ImGuiWindowFlags Fixed = ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
-    public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { planning=new(arenaEnvironment); this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; farm = profile is null ? null : new(profile); }
+    public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { planning=new(arenaEnvironment); this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; farm = profile is null ? null : new(profile); InitializeSetSelection(duos); }
     private void Window(string name, float x, float y, float width, float height, ImGuiWindowFlags flags = 0)
     {
         ImGui.SetNextWindowPos(new(x, y)); ImGui.SetNextWindowSize(new(width, height)); ImGui.Begin(name, Fixed | flags);
@@ -58,8 +58,10 @@ internal sealed partial class MatchScreen : IDisposable
     {
         if (active) ImGui.PushStyleColor(ImGuiCol.Button, new ImColor8(32, 131, 113));
         bool pressed = ImGui.Button(label + "##" + key, new float2(width, height));
+        if(ImGui.IsItemFocused())KeyboardFocusedButton=key;
         if (active) ImGui.PopStyleColor();
         var min = ImGui.GetItemRectMin(); var max = ImGui.GetItemRectMax(); Buttons[key] = new((min.X + max.X) / 2, (min.Y + max.Y) / 2);
+        ClientButtonSound(key, pressed);
         return pressed;
     }
     private string Name(string id) => text.Get(Rules.Id, id).Name;
@@ -72,6 +74,7 @@ internal sealed partial class MatchScreen : IDisposable
     private string UnitName(PlanningUnit unit) => Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == unit.Line).Forms[unit.Stage];
     private MatchActionResult? Act(string action, object? args = null)
     {
+        if(viewed!=localSeat&&MatchKeyboard.RequiresOwnBoard(action)){status="Return to your board first (Space).";return null;}
         var arguments = JsonSerializer.SerializeToElement(args ?? new { });
         if (networkRoom is not null) { SendNetworkAction(action, arguments); return null; }
         var result = Session!.Actions.Apply(localSeat, action, arguments);
@@ -122,6 +125,7 @@ internal sealed partial class MatchScreen : IDisposable
     private static object Spot(UnitSpot spot) => spot.IsBoard ? new { type = "board", c = spot.Column, r = spot.Row } : (object)new { type = "bench", i = spot.Index };
     private void Select(UnitSpot spot)
     {
+        if(viewed!=localSeat){status="Return to your board first (Space).";return;}
         var unit = Human.Roster.At(spot);
         if (selectedItem is { } item && unit is not null) { Act("equip", new { idx = item, uid = unit.Id }); selectedItem = null; return; }
         if (selectedUnit is { } id && Human.Roster.Entries.FirstOrDefault(e => e.Unit.Id == id) is { } from)
@@ -133,10 +137,15 @@ internal sealed partial class MatchScreen : IDisposable
     }
     public void Update(double delta, double? wallDelta = null)
     {
+        UpdateClientPreferences();
         if (!IsPaused) boardSceneTime+=Math.Clamp(wallDelta??delta,0,.1);
         UpdateSteamLobby();
         UpdateNetworkMatch();
         UpdateNetworkCountdown();
+        UpdatePostgameAward();
+        UpdateSaveData();
+        UpdateMysteryLoot();
+        UpdateEliminationCinematic(wallDelta ?? delta);
         if (farm is not null) farm.ResidentPosition = id => showFarm && training is null ? farmView?.Position(id) : null;
         if (training is null) farm?.Update(delta, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         else UpdateTraining(delta, wallDelta ?? delta);
@@ -151,7 +160,7 @@ internal sealed partial class MatchScreen : IDisposable
         bool wasResult = Session.Rounds.Phase == MatchPhase.Result;
         if (Session.Rounds.Phase == MatchPhase.Combat)
         {
-            battle?.Advance(delta); backgroundTime += Math.Min(delta, .25);
+            battle?.Advance(delta, ReplaySpeed); backgroundTime += Math.Clamp(delta, 0, .1) * ReplaySpeed;
             combatAudio?.Update(audio.Play);
             while (backgroundTime >= CombatSimulation.Tick)
             {
@@ -160,7 +169,7 @@ internal sealed partial class MatchScreen : IDisposable
             }
             if (Session.Battles.All(m => m.Combat.Done)) { if (networkRoom is null) Finish(); else NetworkReplayDone(); }
         }
-        else if (Session.Rounds.Phase == MatchPhase.Result) battle?.Advance(delta);
+        else if (Session.Rounds.Phase == MatchPhase.Result) battle?.Advance(delta, ReplaySpeed);
         if (wasResult) UpdateResultCountdown(wallDelta ?? delta);
         else UpdatePlanningCountdown(delta);
         planning.Update(Rules, Session.State.Players[viewed], delta);
@@ -173,6 +182,7 @@ internal sealed partial class MatchScreen : IDisposable
     {
         cameraDrag = null;
         CancelArenaDrag();
+        selectedUnit=selectedItem=null;hoveredOwnedUnit=null;
         viewed = player;
         if (Session is null || Session.Rounds.Phase == MatchPhase.Planning) return;
         var next = Session.Battles.FirstOrDefault(m => m.A == player || !m.Ghost && m.B == player ||
@@ -217,11 +227,13 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private void RoundFinished()
     {
+        QueueEliminations();
         resultCountdown = 2.2;
         ScheduleAiEmotes();
         CompletedRounds++; status = "Round complete.";
         if (networkRoom is null) history?.Complete(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         if (history?.Error is { } saveError) { status = saveError; profileMessage = saveError; }
+        AwardMysteryRound();
         var own = PlayerRoundResult.Find(Session!.Rounds.Results, Human);
         audio.Play(IsSpectating ? "round" : Session.State.Over ? Human.Placement == 1 ? "champion" : "gameover" : own?.Sound ?? "round");
         audio.Music(Session.State.Over ? null : "planning");
@@ -241,16 +253,35 @@ internal sealed partial class MatchScreen : IDisposable
     }
     public void Draw(int2 windowSize)
     {
-        size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
+        BeginClientMenuFrame();
+        size = ClientContentSize(windowSize); Buttons.Clear(); emoteArtwork.BeginFrame();
+        KeyboardFocusedButton=null;
+        try
+        {
         if((!showCollection || evolutionLegend is null) && evolutionPreview is not null) { ClearEvolutionPreview(); }
         portraits.BeginFrame(); itemArtwork.BeginFrame(); CarouselCardsDrawn = 0; InventoryArtworkDrawCalls = 0; ItemTooltipRecipes = 0; DetailedUnit = null; DetailedItems = []; ItemDropFeedback = null;
         hoveredOwnedUnit = null; sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;
+        CodexShortcuts();
+        OverlayShortcuts();
+        ReserveMatchSpace();
+        if(codexFull){DrawCodexFull();return;}
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
-        if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); MusicLibraryPanel(); } return; }
-        if (showGameMenu) { PausePanel(); return; }
+        if(showSettings && ClientHomeVisible) {ClientSettingsPanel();return;}
+        if(showSaveData) {SaveDataPanel();return;}
+        if(showProfile) {ProfilePanel();DrawEliminationCinematic();return;}
+        if (ClientHomeVisible)
+        {
+            if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); }
+            else if (showFarm) FarmPanel();
+            else { Menu(); if (showCollection) Collection(); MusicLibraryPanel(); }
+            if(Session is not null)DrawEliminationCinematic();
+            return;
+        }
+        if (showGameMenu) { PausePanel(); if(Session is not null)DrawEliminationCinematic(); return; }
+        if (DrawPostgame()) { if(Session is not null)DrawEliminationCinematic(); return; }
         Header(); if (Session is null) return;
-        if (showGameMenu) { PausePanel(); return; }
+        if (showGameMenu) { PausePanel(); if(Session is not null)DrawEliminationCinematic(); return; }
         Roster(); Sidebar();
         if (battle is null) Board();
         else
@@ -270,49 +301,18 @@ internal sealed partial class MatchScreen : IDisposable
             if (Button("closeAudio", "Close")) showAudio = false;
             ImGui.End();
         }
-        MusicLibraryPanel();
-        if(!showMusicLibrary) MatchShortcuts();
+        MusicLibraryPanel();DrawCodexSide();
+        if(!showMusicLibrary && !EliminationCinematicActive && !CodexVisible && !codexConsumedShortcut) MatchShortcuts();
+        DrawEliminationCinematic();
+        }
+        finally { DrawClientSocial(); DrawMysteryLootNotice(); keyboardPopupLastFrame=KeyboardPopup; }
     }
-    private void Menu()
-    {
-        Window("DIGI-TACTICS", size.X * .25f, size.Y * .12f, size.X * .5f, 560);
-        ImGui.Text("Build your team. Digivolve. Be the last Tamer standing."u8); ImGui.Separator();
-        ProfileControls();
-        if (Button("multiplayer", "Steam multiplayer")) showMultiplayer = true;
-        if (profile is not null && Button("collection", "Collection and store")) showCollection = true;
-        if (farm is not null && Button("farm", "Digi-Farm")) { farm.Refresh(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()); showFarm = true; }
-        if (farm?.Error is { } farmError) CollectionText(farmError);
-        if (ImGui.BeginCombo("Ruleset / pace"u8, $"{Rules.Name} / {Rules.Pace}"))
-        {
-            for (int i = 0; i < catalog.Variants.Length; i++) if (ImGui.Selectable($"{catalog.Variants[i].Name} / {catalog.Variants[i].Pace}", variant == i)) variant = i;
-            ImGui.EndCombo();
-        }
-        if (ImGui.BeginCombo("Format"u8, duos ? "Duos" : "Solo"))
-        {
-            if (ImGui.Selectable("Solo"u8, !duos)) duos = false;
-            if (ImGui.Selectable("Duos"u8, duos)) duos = true;
-            ImGui.EndCombo();
-        }
-        UiText.Wrapped(duos ? "Team up with an AI partner. Share health and send units or items through your portal." : "Face seven AI Tamers. Your choices decide the team.");
-        AudioControls();
-        if (Button("start", "Start match", 220, 48))
-        {
-            Session = new(Rules, seed ?? (uint)Random.Shared.Next(1, int.MaxValue), Enumerable.Range(0, 8).Select(i => new MatchSeat(i == 0 ? profile?.Progress.Name ?? "You" : $"Tamer {i}", i == 0)).ToArray(), duos);
-            history = profile is null ? null : new(Session, profile);
-            localPaused = showGameMenu = confirmLeave = false;
-            viewed = localSeat = 0; CompletedRounds = 0;
-            selectedUnit = null; selectedItem = null; backgroundTime = 0;
-            audio.Music("planning");
-            status = "Select a unit, then a hex. Select an item, then its holder.";
-        }
-        ImGui.End();
-        UpdatePanel();
-    }
+    private void Menu()=>HomePanel();
     private void Header()
     {
         var session = Session!;
         Window("Match", 12, 12, size.X - 24, 96, ImGuiWindowFlags.NoTitleBar);
-        ImGui.Text($"{Rules.Name}  /  {Rules.Pace}  /  {(session.State.Duos ? "Duos" : "Solo")}     Round {session.Rounds.Position.Label}  -  {session.Rounds.RoundType.ToUpperInvariant()}");
+        ImGui.Text($"{MatchSetTitle}  /  {MatchPaceTitle}  /  {(session.State.Duos ? "Duos" : "Solo")}     Round {session.Rounds.Position.Label}  -  {session.Rounds.RoundType.ToUpperInvariant()}");
         ImGui.Text(WatchingAfterElimination ? $"Placement #{Human.Placement} - spectating {session.State.Players[viewed].Name}" : IsSpectating ? $"Spectating {Human.Name}" : $"{Human.Health} HP     {Human.Economy.Gold} gold     Level {Human.Economy.Level}     Streak {Human.Economy.Streak}");
         if (Human.Alive) IncomeDisplay();
         ImGui.SameLine(); if (Button("mute", audio.Muted ? "Unmute" : "Mute")) audio.Muted = !audio.Muted;
@@ -336,6 +336,8 @@ internal sealed partial class MatchScreen : IDisposable
         else { if (Button("finish", networkRoom is null ? "Skip to results" : "Finish my replay")) Finish(); ImGui.SameLine(); ImGui.Text($"{battle?.Combat.Time ?? 0:F1}s"); }
         if (Session is null) { ImGui.End(); return; }
         ImGui.SameLine(); if (Button("gameMenu", "Menu")) OpenGameMenu();
+        ImGui.SameLine(); if(Button("codex","Codex (C)"))ToggleCodex();
+        PlaybackSpeedControl();
         PlanningTimerControls();
         if (networkRoom is null && !session.State.Over) { ImGui.SameLine(); if (Button("pause", "Pause")) PauseLocal(); }
         if (networkRoom is not null) { ImGui.SameLine(); NetworkSeatControls(); ImGui.SameLine(); if (Button("leaveOnline", "Leave match")) { OpenGameMenu(); confirmLeave = true; } }
@@ -362,6 +364,7 @@ internal sealed partial class MatchScreen : IDisposable
     {
         float effects = audio.EffectsVolume, music = audio.MusicVolume;
         if (ImGui.SliderFloat("Effects volume"u8, ref effects, 0, 1)) audio.EffectsVolume = effects;
+        if (ClientMenuActive && ImGui.IsItemDeactivatedAfterEdit()) audio.PlayClient("buy", false);
         if (ImGui.SliderFloat("Music volume"u8, ref music, 0, 1)) audio.MusicVolume = music;
         float board = audio.BoardVolume;
         if (ImGui.SliderFloat("Soundboard volume"u8, ref board, 0, 1)) audio.BoardVolume = board;
@@ -396,13 +399,13 @@ internal sealed partial class MatchScreen : IDisposable
         ImGui.Text($"{saved.Name}  |  {Number(saved.Bits)} Bits");
         ImGui.Text($"Saved record: {Number(saved.Games)} games, {Number(saved.Wins)} wins, {Number(saved.TopFour)} top-four finishes");
         if (profile.Error is { } error) UiText.Wrapped(error);
-        if (!profile.Exists)
+        if (profile.CanImport)
         {
             if (profilePreview is not null) ImGui.Text("Reading backup..."u8);
             else if (profileCandidate is { } candidate)
             {
                 UiText.Wrapped($"Import {candidate.Progress.Name}'s saved profile? {candidate.Summary.StorageEntries} saved entries and {candidate.Summary.MusicTracks} music files will be preserved.");
-                UiText.Wrapped("Identity and saved totals are available now. Cosmetics, music-library playback and other migrated features are still being completed."u8);
+                UiText.Wrapped("Your progress, collection, settings and music files will be imported. Your original backup will be preserved."u8);
                 if (Button("importProfile", "Import profile"))
                 {
                     try { profile.Import(candidate); audio.MusicController?.Reload(); profileCandidate = null; profileMessage = "Profile imported. Your original backup is preserved."; }
@@ -421,6 +424,7 @@ internal sealed partial class MatchScreen : IDisposable
             }
         }
         if (profileMessage is not null) UiText.Wrapped(profileMessage);
+        if (Button("saveData", "Save data...")) OpenSaveData();
         ImGui.Separator();
     }
     private void Sidebar()
@@ -446,8 +450,9 @@ internal sealed partial class MatchScreen : IDisposable
         ImGui.End();
         Window("Standings", size.X - 228, Top, 216, Height);
         EnsureSoundboard(); var soundLabels = soundboard.Labels(Environment.TickCount64);
-        foreach (var p in Session.State.Players.OrderByDescending(p => p.Alive).ThenByDescending(p => p.Health))
+        foreach (var seat in ScoutOrder())
         {
+            var p=Session.State.Players[seat.Id];
             if (Button("view/" + p.Id, $"{p.Name}  {(p.Alive ? p.Health + " HP" : "#" + p.Placement)}", 192, 28)) Watch(p.Id);
             if (soundLabels.FirstOrDefault(label => label.Seat == p.Id) is { } clip) UiText.Wrapped("Playing: " + DigiTactics.Storage.CosmeticCollection.Item("sound", clip.Id)!.Name);
             EmoteRow(p.Id);
@@ -485,7 +490,7 @@ internal sealed partial class MatchScreen : IDisposable
         {
             if (i > 0) ImGui.SameLine(); var unit = Human.Roster.Bench[i];
             if (Button("bench/" + i, unit is null ? "-" : UnitName(unit) + "\n" + new string('*', unit.Stage + 1), (size.X - 96f) / 9, 40, selectedUnit is not null && unit?.Id == selectedUnit)) Select(UnitSpot.Bench(i));
-            if (unit is not null) { if (ImGui.IsItemHovered()) hoveredOwnedUnit = unit.Id; UnitTooltip(unit); }
+            if (unit is not null) { if (viewed==localSeat&&ImGui.IsItemHovered()) hoveredOwnedUnit = unit.Id; UnitTooltip(unit); }
         }
         for (int i = 0; i < Human.Items.Count; i++)
         {
@@ -503,14 +508,14 @@ internal sealed partial class MatchScreen : IDisposable
     }
     public void Render(int2 framebuffer)
     {
-        if (Session is null && showFarm && training is null && farmViewError is null && size.X > 0 && size.Y > 0)
+        if (ClientHomeVisible && showFarm && training is null && farmViewError is null && size.X > 0 && size.Y > 0)
         {
-            float scaleX = (float)framebuffer.X / size.X, scaleY = (float)framebuffer.Y / size.Y;
+            float scaleX = (float)framebuffer.X / Math.Max(1,socialWindowSize.X), scaleY = (float)framebuffer.Y / size.Y;
             if (farmView is not null) farmView.Selected = farmPet;
             farmView?.Draw((int)(12 * scaleX), (int)((size.Y - 70 - FarmSceneHeight) * scaleY), (int)(FarmSceneWidth * scaleX), (int)(FarmSceneHeight * scaleY));
             return;
         }
-        if (Session is null || framebuffer.X <= 0 || framebuffer.Y <= 0 || size.X <= 0 || size.Y <= 0) return;
+        if (Session is null || ClientHomeVisible || framebuffer.X <= 0 || framebuffer.Y <= 0 || size.X <= 0 || size.Y <= 0) return;
         // GLFW logical and framebuffer sizes can differ on high-DPI displays.
         float sx = (float)framebuffer.X / size.X, sy = (float)framebuffer.Y / size.Y;
         int x = (int)(Left * sx), y = (int)((size.Y - Top - Height) * sy), w = (int)(Width * sx), h = (int)(Height * sy);
@@ -525,5 +530,5 @@ internal sealed partial class MatchScreen : IDisposable
         arenaEnvironment.Actors = (renderer,camera,transparent) => { DrawCompanions(renderer,camera,transparent); lootOrbs.Draw(renderer,camera,transparent); };
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
     }
-    public void Dispose() { evolutionPreview?.Dispose(); lootOrbs.Dispose(); itemArtwork.Dispose(); portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
+    public void Dispose() { DisposeHome(); ClearEliminationCinematics(); DisposeCollectionPreview(); postgameArtwork.Dispose(); ClearEvolutionPreview(); lootOrbs.Dispose(); itemArtwork.Dispose(); portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); DisposeSteamConnection(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
 }

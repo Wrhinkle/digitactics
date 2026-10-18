@@ -1,24 +1,41 @@
 # Digi-Tactics native BRUTAL port
 
-This development build now starts a playable native match screen. It is not yet
-a production replacement for v1.0.14.
+The native port is undergoing integrated acceptance testing and is not yet a
+production replacement for v1.0.14. Gameplay, rendering, audio, Steam networking,
+profile migration and launcher updates are implemented; the final source audit
+and complete packaged-app checks must pass before release.
+The integrated CPU suite passes 219,330,297 checks, including 5,699 reference
+battles across all 22 variants. Codex, save export/reset, Steam invites, social
+display, keyboard/preferences, collection filters and seeded Chaos are implemented
+and covered by source comparisons and focused UI tests. Result dismissal keeps
+multiplayer rooms connected; explicit Leave disconnects. Mystery rewards, the
+incubator, pedestal interaction and expanded Home content are in final UI
+verification. A fresh self-contained package and release acceptance remain
+outstanding; simulation counts alone do not establish release readiness.
 It is a native C# application using BRUTAL GLFW, OpenGL and ImGui. No Electron,
 WebView, JavaScript interpreter or browser runs inside it.
 
 ## Build and run
 
-Windows x64, .NET SDK 10.0.402, Node.js and Python with Pillow for the build-time content exporter,
+Windows x64, .NET SDK 10.0.402, MSVC x64 tools for the Steam ABI tests,
+Node.js and Python with Pillow for the build-time content exporter,
 and an OpenGL 4.5 capable graphics driver are required.
 
 From the repository root:
 
 ```powershell
 python -m pip install -r native/tools/requirements.txt
-./native/build.ps1 -Publish
-./native/artifacts/win-x64/DigiTactics.Desktop.exe
+./native/build.ps1 -Publish -NativeVersion 2.0.0
 ```
 
 The publish output is self-contained and does not require an installed .NET runtime.
+The script prints a fresh package directory under
+`%LOCALAPPDATA%/DigiTacticsBuild/releases/`; start `DigiTactics.Launcher.exe`
+there. Publishing here means building the local package, not uploading a GitHub
+release. Release assembly and source-attachment instructions are in
+[tools/NATIVE_RELEASE_ARTIFACTS.md](tools/NATIVE_RELEASE_ARTIFACTS.md).
+The bundled minimal audio runtime and rebuilding prerequisites are described in
+[tools/MEDIA_AUDIO_RUNTIME.md](tools/MEDIA_AUDIO_RUNTIME.md).
 `build.ps1` checks the SDK installed at `%LOCALAPPDATA%\DigiTacticsBuild\dotnet`
 before using `dotnet` from PATH. Package versions and transitive dependencies are locked.
 For manual development, run dotnet commands from `native/` so `global.json` applies.
@@ -28,8 +45,8 @@ variants. Buy units, select a bench unit and then a hex to place it, select an
 item and then a holder to equip it, and use Ready for battle / Next round to
 progress. Standings buttons scout players and switch the watched battle. Offers,
 carousels, loot, Wisps and Duos transfers use the native action boundary.
-This first playable screen still needs the remaining production presentation,
-mode details, audio, networking, persistence and release work described below.
+The chronological checkpoints below record earlier implementation states; their
+outstanding-work notes are historical, not the current acceptance result.
 
 Use `--match-smoke` for the hidden click-through UI test (`--duos` selects Duos).
 Use `--workbench` for the earlier shop/model diagnostic screen; `--smoke` continues

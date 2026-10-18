@@ -15,6 +15,15 @@ try
     }
     int separator=Array.IndexOf(args,"--");
     string[] options=separator<0?args:args[..separator],gameArgs=separator<0?[]:args[(separator+1)..];
+    // Steam appends this switch directly to the launcher command, without our
+    // developer-facing '--' separator. Forward only the recognized lobby pair.
+    var launcherOptions=new List<string>();var steamArguments=new List<string>();
+    for(int i=0;i<options.Length;i++)
+    {
+        if(options[i]!="+connect_lobby"){launcherOptions.Add(options[i]);continue;}
+        steamArguments.Add(options[i]);if(i+1<options.Length)steamArguments.Add(options[++i]);
+    }
+    options=launcherOptions.ToArray();gameArgs=steamArguments.Concat(gameArgs).ToArray();
     int index=0;string command="run";
     if(options.Length>0 && options[0] is "run" or "stage" or "fetch" or "check")command=options[index++];
     string? owner=null,repository=null;
@@ -55,7 +64,26 @@ try
     }
     if(!NativeUpdatePackage.ValidVersion(version))throw new InvalidDataException("Invalid bundled application version.");
     if(!File.Exists(Path.Combine(bundle,"DigiTactics.Desktop.exe")))throw new FileNotFoundException("Bundled native application is missing.");
-    using var state=new NativeLaunchState(stateDirectory,version!);
+    bool interactive=command=="run" && NativeGameInstance.IsInteractiveLaunch(gameArgs);
+    string launchProfile=NativeGameInstance.ProfileDirectory(gameArgs);
+    ulong? launchLobby=NativeGameInstance.ParseLobbyArguments(gameArgs);
+    if(interactive && NativeGameInstance.TryForward(launchProfile,launchLobby,TimeSpan.FromMilliseconds(200)))return 0;
+    NativeLaunchState lease;
+    try {lease=new NativeLaunchState(stateDirectory,version!);}
+    catch(IOException error) when(interactive && (error.HResult & 0xffff) is 32 or 33)
+    {
+        // A first launcher may hold its state lease while its window is still
+        // starting. Do not steal that lease or start another supervised child.
+        var startupWait=Stopwatch.StartNew();
+        while(true)
+        {
+            if(NativeGameInstance.TryForward(launchProfile,launchLobby,TimeSpan.FromMilliseconds(250)))return 0;
+            try {lease=new NativeLaunchState(stateDirectory,version!);break;}
+            catch(IOException retry) when((retry.HResult & 0xffff) is 32 or 33)
+            {if(startupWait.Elapsed>=TimeSpan.FromSeconds(8))throw;Thread.Sleep(25);}
+        }
+    }
+    using var state=lease;
     string candidates=Path.Combine(stateDirectory,"candidates");
     if(command=="check")
     {
@@ -121,6 +149,7 @@ try
             candidate?.Dispose();
         }
         if(result.RolledBack)Console.Error.WriteLine("Update rolled back: "+result.Failure);
+        else if(result.Failure is not null)Console.Error.WriteLine("Game startup failed: "+result.Failure);
         if(result.ExitCode==0 && updates?.RestartRequested()==true)continue;
         return result.ExitCode;
     }

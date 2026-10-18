@@ -83,13 +83,15 @@ internal sealed class CompanionPreview : IDisposable
         model?.Dispose();model=replacement;animator=nextAnimator;key=next;lastTime=null;
     }
     public void Play(string role)=>animator?.Play(role);
-    public void Draw(double time)
+    public bool MotionEnabled { get; set; } = true;
+    public void Draw(double time,float width=180,float height=180)
     {
         FloorDrawn=false;DrawCalls=0;if(model is null || animator is null)return;
         double delta=lastTime is { } previous?Math.Clamp(time-previous,0,.05):0;lastTime=time;
         animator.Update(delta);outgoingAnimator?.Update(delta);
         if(transition is { } effect)
         {
+            effect.MotionEnabled=MotionEnabled;
             if(effect.Advance(delta))OnFlash?.Invoke();
             if(effect.Complete && outgoing is not null) { outgoing.Dispose();outgoing=null;outgoingAnimator=null;animator.Play("happy");OnSettled?.Invoke(); }
             if(effect.Time>=(effect.FlashStarted??double.PositiveInfinity)+.9)transition=null;
@@ -102,8 +104,8 @@ internal sealed class CompanionPreview : IDisposable
         {
             OpenGl.BindFramebuffer(OpenGl.GL_FRAMEBUFFER,frame);ModelRenderer.Begin(Size,Size);
             OpenGl.ClearColor(new(.035f,.05f,.075f,1));OpenGl.Clear(GlClearBit.Color|GlClearBit.Depth);
-            backdrop!.Draw(renderer,transition);
-            var camera=Matrix4x4.CreateLookAt(new(0,1,3.6f),new(0,.6f,0),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI/6,1,.01f,50);
+            backdrop!.Draw(renderer,transition,width,height);
+            var camera=Matrix4x4.CreateLookAt(new(0,1,3.6f),new(0,.6f,0),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI/6,width/height,.01f,50);
             renderer.WhiteOverride=transition?.White??false;
             var active=transition is {ShowNew:false} && outgoing is not null?outgoing:model;
             var pose=active==outgoing?outgoingAnimator!:animator;

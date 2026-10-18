@@ -56,6 +56,6 @@ internal static class EggChecks
             if (Directory.Exists(resolved)) Directory.Delete(resolved, true);
         }
         Console.WriteLine($"Digi-Eggs: {checks} original odds, award, save and transaction checks passed.");
-        return checks;
+        return checks + IncubatorChecks.Run(root);
     }
 }

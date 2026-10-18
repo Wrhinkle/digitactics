@@ -11,7 +11,7 @@ internal static class FarmCareChecks
         using var file = File.OpenRead(Path.Combine(root, "tests/fixtures/farm-care.json.gz"));
         using var gzip = new GZipStream(file, CompressionMode.Decompress);
         using var fixture = JsonDocument.Parse(gzip);
-        int checks = FarmEventChecks.Run();
+        int checks = FarmEventChecks.Run()+FarmCardChecks.Run(root);
         using (var moodFile = File.OpenRead(Path.Combine(root, "tests/fixtures/farm-moods.json.gz")))
         using (var moodGzip = new GZipStream(moodFile, CompressionMode.Decompress))
         using (var moods = JsonDocument.Parse(moodGzip))

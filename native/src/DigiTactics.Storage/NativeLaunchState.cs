@@ -88,6 +88,15 @@ public sealed class NativeLaunchState : IDisposable
         Save(state with {Active=state.Trial.Release,Trial=null});return true;
     }
 
+    /// <summary>A second launch reached an existing window instead of rendering this candidate.
+    /// Preserve the previous active release and retry the candidate on the next real launch.</summary>
+    public bool DeferTrial(string token)
+    {
+        ObjectDisposedException.ThrowIf(disposed,this);
+        if(state.Trial is null || state.Trial.Token!=token)return false;
+        Save(state with {Pending=state.Trial.Release,Trial=null});return true;
+    }
+
     public bool Rollback(string token)
     {
         ObjectDisposedException.ThrowIf(disposed,this);

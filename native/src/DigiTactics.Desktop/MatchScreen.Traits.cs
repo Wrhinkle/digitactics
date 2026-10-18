@@ -44,6 +44,7 @@ internal sealed partial class MatchScreen
             ImGui.PopStyleColor();
             var min = ImGui.GetItemRectMin(); var max = ImGui.GetItemRectMax();
             Buttons["trait/" + row.Trait.Id] = new((min.X + max.X) / 2, (min.Y + max.Y) / 2);
+            if(ImGui.IsItemClicked())OpenCodexPanel(row.Trait.Id);
             if (ImGui.IsItemHovered())
             {
                 ImGui.SetNextWindowSize(new(340,0)); ImGui.BeginTooltip();

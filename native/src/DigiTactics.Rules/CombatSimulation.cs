@@ -18,6 +18,8 @@ public sealed partial class CombatSimulation
     private readonly double timeLimit;
     public IReadOnlyList<CombatUnit> Units { get; }
     public IReadOnlyList<CombatEvent> Events { get; }
+    private readonly CombatFinalHit?[] finalHits = new CombatFinalHit?[2];
+    public IReadOnlyList<CombatFinalHit?> FinalHits { get; }
     public double Time { get; private set; }
     public bool Done { get; private set; }
     public int? Winner { get; private set; }
@@ -33,7 +35,7 @@ public sealed partial class CombatSimulation
         this.rules = rules;
         grid = new(columns, 8); occupancy = new CombatUnit?[grid.Count]; occupied = new bool[grid.Count];
         random = new(seed); this.overtimeStart = overtimeStart; this.timeLimit = timeLimit;
-        Units = units.AsReadOnly(); Events = events.AsReadOnly();
+        Units = units.AsReadOnly(); Events = events.AsReadOnly(); FinalHits = Array.AsReadOnly(finalHits);
         Hooks = new(this, duos || setup?.SideA.Parts is not null || setup?.SideB.Parts is not null);
         lines = rules.Lines.Concat(rules.ExtraLines).ToDictionary(l => l.Id);
         items = rules.Items.ToDictionary(i => i.Id);

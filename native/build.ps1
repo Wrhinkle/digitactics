@@ -4,12 +4,11 @@ $nativeRoot = $PSScriptRoot
 $repoRoot = Split-Path -Parent $nativeRoot
 $localSdk = Join-Path $env:LOCALAPPDATA 'DigiTacticsBuild\dotnet\dotnet.exe'
 $dotnet = if (Test-Path -LiteralPath $localSdk) { $localSdk } else { (Get-Command dotnet).Source }
-function Invoke-Checked([string]$Program, [string[]]$Arguments) {
-    & $Program @Arguments
-    if ($LASTEXITCODE -ne 0) { throw "$Program failed with exit code $LASTEXITCODE" }
-}
+. (Join-Path $nativeRoot 'tools/NativeProcess.ps1')
 $savedDotnetRoot=$env:DOTNET_ROOT
+$savedNodeReuse=$env:MSBUILDDISABLENODEREUSE
 $env:DOTNET_ROOT=Split-Path -Parent $dotnet
+$env:MSBUILDDISABLENODEREUSE='1'
 Push-Location $nativeRoot
 try {
     $steamRuntime = & (Join-Path $nativeRoot 'tools/setup-steam.ps1')
@@ -25,6 +24,8 @@ try {
     Invoke-Checked 'node' @('tools/export-audio.cjs')
     Invoke-Checked 'node' @('../tests/profile-backup.cjs')
     Invoke-Checked 'node' @('tools/export-cosmetics.cjs')
+    Invoke-Checked 'node' @('tools/export-collection-filters.cjs')
+    Invoke-Checked 'node' @('tools/export-client-preferences.cjs')
     Invoke-Checked 'node' @('tools/export-emotes.cjs')
     Invoke-Checked 'node' @('tools/export-item-tokens.cjs')
     Invoke-Checked 'node' @('tools/export-loot-geometry.cjs')
@@ -37,21 +38,33 @@ try {
     Invoke-Checked 'node' @('tools/export-companion-travel.cjs')
     Invoke-Checked 'node' @('tools/export-music-playlist.cjs')
     Invoke-Checked 'node' @('tools/export-combat-picking.cjs')
+    Invoke-Checked 'node' @('tools/export-match-keyboard.cjs')
     Invoke-Checked 'node' @('tools/export-content.cjs')
+    Invoke-Checked 'node' @('tools/export-set-selection.cjs')
+    Invoke-Checked 'node' @('tools/export-codex.cjs')
     Invoke-Checked 'node' @('tools/export-display.cjs')
     Invoke-Checked 'node' @('tools/export-match-history.cjs')
     Invoke-Checked 'node' @('tools/export-recent-players.cjs')
     Invoke-Checked 'node' @('tools/export-match-rewards.cjs')
     Invoke-Checked 'node' @('tools/export-legend-rewards.cjs')
     Invoke-Checked 'node' @('tools/export-eggs.cjs')
+    Invoke-Checked 'node' @('tools/export-incubator.cjs')
+    Invoke-Checked 'node' @('tools/export-mystery-loot.cjs')
     Invoke-Checked 'node' @('tools/export-evolution.cjs')
     Invoke-Checked 'node' @('tools/export-evolution-transition.cjs')
     Invoke-Checked 'node' @('tools/export-elimination-themes.cjs')
+    Invoke-Checked 'node' @('tools/export-elimination-cinematics.cjs')
+    Invoke-Checked 'node' @('tools/export-placeholder-creatures.cjs')
+    Invoke-Checked 'node' @('tools/export-move-effects.cjs')
+    Invoke-Checked 'node' @('tools/export-move-playback.cjs')
+    Invoke-Checked 'node' @('tools/export-move-primitives.cjs')
+    Invoke-Checked 'node' @('tools/export-legacy-combat-effects.cjs')
     Invoke-Checked 'node' @('tools/export-postgame-progress.cjs')
     Invoke-Checked 'node' @('tools/export-profile-summary.cjs')
     Invoke-Checked 'node' @('tools/export-loadouts.cjs')
     Invoke-Checked 'node' @('tools/export-farm-simulation.cjs')
     Invoke-Checked 'node' @('tools/export-farm-care.cjs')
+    Invoke-Checked 'node' @('tools/export-farm-card.cjs')
     Invoke-Checked 'node' @('tools/export-network-protocol.cjs')
     Invoke-Checked 'node' @('tools/export-replicated-log.cjs')
     Invoke-Checked 'node' @('tools/export-lobby-authority.cjs')
@@ -133,6 +146,11 @@ try {
     Invoke-Checked 'node' @('tools/export-portraits.cjs')
     Invoke-Checked 'node' @('tools/export-evolution-portraits.cjs')
     Invoke-Checked 'node' @('tools/export-evolution-stage.cjs')
+    Invoke-Checked 'node' @('tools/export-postgame-art.cjs')
+    Invoke-Checked 'node' @('tools/export-profile-art.cjs')
+    Invoke-Checked 'node' @('tools/export-home-art.cjs')
+    Invoke-Checked 'node' @('tools/export-home-content.cjs')
+    Invoke-Checked 'node' @('tools/export-pedestal-interaction.cjs')
     Invoke-Checked 'node' @('tools/export-companion-models.cjs')
     Invoke-Checked 'node' @('tools/export-dance-bindings.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
@@ -154,9 +172,12 @@ try {
     Invoke-Checked 'node' @('tools/export-audio-cues.cjs')
     Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Desktop', '--locked-mode')
     Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Launcher', '--locked-mode')
-    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--', $nativeRoot)
-    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore')
-    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Launcher', '-c', 'Release', '--no-restore')
+    Invoke-Checked $dotnet @('restore', 'tests/DigiTactics.Tests', '--locked-mode')
+    Invoke-Checked $dotnet @('build', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
+    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot)
+    & (Join-Path $nativeRoot 'test-steam.ps1')
+    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
+    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Launcher', '-c', 'Release', '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
     & (Join-Path $nativeRoot 'tools/test-launcher.ps1') -Launcher (Join-Path $nativeRoot 'src/DigiTactics.Launcher/bin/Release/net10.0/win-x64/DigiTactics.Launcher.exe') -TestsDirectory (Join-Path $nativeRoot 'tests/DigiTactics.Tests/bin/Release/net10.0/win-x64')
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--startup-desktop-only', '--desktop', (Join-Path $nativeRoot 'src/DigiTactics.Desktop/bin/Release/net10.0/win-x64/DigiTactics.Desktop.exe'))
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--music-decoder-only', '--ffmpeg', (Join-Path $mediaRuntime 'ffmpeg.exe'))
@@ -165,12 +186,24 @@ try {
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--elimination-audio-smoke')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--elimination-theme-smoke', '--capture', 'artifacts/elimination-themes-native.bmp')
     Invoke-Checked 'node' @('tools/render-elimination-theme-reference.cjs',(Join-Path $audioTools 'node_modules/playwright'),'artifacts/elimination-themes-original.png','artifacts/elimination-themes-native.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--elimination-composite-smoke', '--capture', 'artifacts/elimination-composite-native.bmp')
+    Invoke-Checked 'node' @('tools/render-elimination-composite-reference.cjs',(Join-Path $audioTools 'node_modules/playwright'),'artifacts/elimination-composite-original.png','artifacts/elimination-composite-native.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--move-effect-smoke', '--capture', 'artifacts/move-effects.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--board-mesh-smoke', '--capture', 'artifacts/board-meshes.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--smoke', '--capture', 'artifacts/native-smoke.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--capture', 'artifacts/match-ui.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--duos', '--capture', 'artifacts/match-duos.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--mode-bonus-smoke', '--capture', 'artifacts/mode-bonuses.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-library-ui-smoke', '--capture', 'artifacts/music-library.bmp')
+    foreach($screen in @('postgame','profile-ui','collection','evolution','elimination-cinematic','training','farm-pointer','network-match','spectator','save-data-ui','client-preferences','social-ui','match-keyboard','set-selection','mystery-loot-ui')) {
+        foreach($minimum in @($false,$true)) {
+            $profile=Join-Path $env:TEMP ('digitactics-'+$screen+'-'+[Guid]::NewGuid().ToString('N'))
+            $screenArguments=@('run','--project','src/DigiTactics.Desktop','-c','Release','--no-build','--',('--'+$screen+'-smoke'),'--profile-directory',$profile,'--capture',('artifacts/'+$screen+'-'+$minimum+'.bmp'))
+            if($screen -in @('social-ui','set-selection')) {$screenArguments+=@('--steam-api',(Join-Path $nativeRoot 'artifacts/steam-native/fake_steam_api.dll'))}
+            if($minimum) {$screenArguments+='--minimum-window'}
+            Invoke-Checked $dotnet $screenArguments
+        }
+    }
     # Exercise the same controls at the enforced minimum window size, where clipping is most likely.
     foreach ($scenario in @(
         @{ Flag = '--match-smoke'; Name = 'minimum-solo'; Duos = $false },
@@ -187,4 +220,4 @@ try {
         $destination=Join-Path $env:LOCALAPPDATA ('DigiTacticsBuild/releases/'+$NativeVersion+'-'+[Guid]::NewGuid().ToString('N'))
         & (Join-Path $nativeRoot 'tools/publish-native.ps1') -Destination $destination -Version $NativeVersion
     }
-} finally { Pop-Location; $env:DOTNET_ROOT=$savedDotnetRoot }
+} finally { Pop-Location; $env:DOTNET_ROOT=$savedDotnetRoot; $env:MSBUILDDISABLENODEREUSE=$savedNodeReuse }

@@ -31,9 +31,10 @@ internal sealed partial class MatchScreen
     private void Soundboard()
     {
         EnsureSoundboard(); long now = Environment.TickCount64;
-        bool keyboard = !ImGui.GetIO().WantTextInput;
-        if (keyboard && ImGui.IsKeyPressed(ImGuiKey.G, false)) { showSoundboard = !showSoundboard; if (showSoundboard) showEmotes = false; }
+        bool keyboard = SocialKeyboardAllowed;
+        if (keyboard && ImGui.IsKeyPressed(ImGuiKey.G, false)) { showSoundboard = !showSoundboard; if (showSoundboard) showEmotes = false;overlayShortcutConsumed=true; }
         if (!showSoundboard) return;
+        if(keyboard&&Enumerable.Range(0,6).Any(SlotKeyPressed))overlayShortcutConsumed=true;
         Window("Soundboard", size.X / 2 - 210, Top + 30, 420, 330);
         ImGui.Text("Two clips per five seconds - G to close"u8);
         try
@@ -45,7 +46,7 @@ internal sealed partial class MatchScreen
                 string? id = slots.ElementAtOrDefault(i)?.GetValue<string>();
                 ImGui.BeginDisabled(IsSpectating || id is null || soundboard.Cooldown(now) > 0);
                 if (Button("soundboard/" + i, $"{i + 1}: {CosmeticCollection.Item("sound", id)?.Name ?? "Empty slot"}", 370, 30) ||
-                    keyboard && !IsSpectating && ImGui.IsKeyPressed((ImGuiKey)((int)ImGuiKey._1 + i), false))
+                    keyboard && !IsSpectating && SlotKeyPressed(i))
                     soundboard.Send(collection, i, localSeat, now, networkRoom is null ? null : clip => networkRoom.SendEffect(JsonSerializer.SerializeToElement(new { s = localSeat, kind = "sound", id = clip })));
                 ImGui.EndDisabled();
             }

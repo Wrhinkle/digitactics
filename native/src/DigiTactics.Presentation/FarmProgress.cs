@@ -48,7 +48,7 @@ public sealed class FarmProgress(NativeProfileStore profile)
     }
     public void Update(double delta, long timestamp)
     {
-        if (!profile.Exists) return;
+        if (profile.CanImport) return;
         elapsed += delta;
         if (elapsed < 30) return;
         elapsed = 0; Refresh(timestamp);

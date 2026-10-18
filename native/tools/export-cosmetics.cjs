@@ -18,9 +18,10 @@ const root = path.resolve(__dirname, '../..');
   for (const [kind, items] of Object.entries(catalog)) ctx.DT.Cosmetics.register(kind, items);
   const source = fs.readFileSync(path.join(root, 'js/shop.js'), 'utf8');
   vm.runInContext(`const C=DT.Cosmetics; let date='2026-10-17'; const today=()=>date;` + source.slice(source.indexOf('const KINDS'), source.indexOf('// Daily missions')) + source.match(/^const hash = .*$/m)[0] + source.slice(source.indexOf('const sellable'), source.indexOf('function eggPool')) + '\nthis.setDay=d=>date=d;this.priceOf=priceOf;', ctx);
-  const prices = [];
+  const prices = [], featured = [];
   for (const day of ['2026-10-17','2026-10-18','2026-11-01']) {
     ctx.setDay(day);
+    featured.push({day,items:vm.runInContext('featured().map(x=>x.kind+"/"+x.item.id)',ctx)});
     for (const [kind, items] of Object.entries(catalog)) for (const item of items) prices.push({ day, kind, id:item.id, price:ctx.priceOf(kind,item) });
   }
   const cases = [];
@@ -33,6 +34,6 @@ const root = path.resolve(__dirname, '../..');
     for (let i=0;i<items.length;i++) { const id=items[i].id; act('equip',kind,id,i%6); act('grant',kind,id); act('equip',kind,id,i%6); if(i%5===0)act('equip',kind,id,(i+1)%6); }
     act('equip',kind,null,0);
   }
-  fs.writeFileSync(path.join(root,'native/tests/fixtures/cosmetics.json.gz'),zlib.gzipSync(JSON.stringify({initial,cases,prices})));
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/cosmetics.json.gz'),zlib.gzipSync(JSON.stringify({initial,cases,prices,featured})));
   console.log(`Exported ${Object.values(catalog).flat().length} cosmetics, ${cases.length} operations and ${prices.length} prices.`);
 })().catch(e=>{console.error(e);process.exitCode=1;});

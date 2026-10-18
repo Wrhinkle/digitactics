@@ -55,6 +55,7 @@ internal sealed partial class MatchScreen
             }
         }
         if (!any) ImGui.Text("No other seated players."u8);
+        InviteFriendsButton("steamInvitePlayers");
         if (playerMessage is not null) UiText.Wrapped(playerMessage);
         if (Button("closePlayers", "Close")) showPlayers = false;
         ImGui.End();

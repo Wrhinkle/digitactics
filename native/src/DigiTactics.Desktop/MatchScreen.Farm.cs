@@ -102,6 +102,7 @@ internal sealed partial class MatchScreen
     }
     private void FarmPanel()
     {
+        DisplayedFarmDetails=null;FarmEvolutionBranches=0;
         if (training is null)
         {
             Window("Digi-Farm room", 12, 70, FarmSceneWidth, FarmSceneHeight, ImGuiWindowFlags.NoBackground);
@@ -162,18 +163,30 @@ internal sealed partial class MatchScreen
             if (farmPet is not null)
             {
                 var pet = state["pets"]![farmPet]!;
+                var details=FarmDetails(farmPet);DisplayedFarmDetails=details;
+                var form=LegendEvolution.Form(details.Evolution.Form);
+                ImGui.Text($"{form.Name} / {form.Level} / level {details.Evolution.Level}");
                 if (farmView?.Mood(farmPet) is { } mood) ImGui.Text(mood.Text);
                 ImGui.Text($"Hunger {pet["hunger"]!.GetValue<double>():0}    Energy {pet["energy"]!.GetValue<double>():0}    Happiness {pet["happy"]!.GetValue<double>():0}    Discipline {pet["disc"]!.GetValue<double>():0}");
-                ImGui.Text($"Weight {pet["weight"]}    {(pet["sick"]!.GetValue<bool>() ? "Sick: " + pet["sickWhy"] : "Healthy")}    {(pet["flags"]?["asleep"]?.GetValue<bool>() == true ? "Sleeping" : "Awake")}");
+                UiText.Wrapped($"Weight {pet["weight"]} G / ideal {details.IdealWeight} G"+(details.Fat?" / chubby":details.Thin?" / thin":"")+$" / age {details.AgeDays} days / {details.Mistakes} care mistakes");
+                ImGui.Text($"{(pet["sick"]!.GetValue<bool>() ? "Sick: " + pet["sickWhy"] : "Healthy")} / {(pet["flags"]?["asleep"]?.GetValue<bool>() == true ? "Sleeping" : "Awake")}");
                 ImGui.Text($"Strength {pet["str"]}    Speed {pet["spd"]}    Wisdom {pet["wis"]}    Stamina {pet["sta"]} (cap 300)");
+                if(Button("farmDigivolve","Open Digivolve"+(details.Evolution.CanDigivolve?" / ready now":""))) {OpenFarmEvolution(farmPet);ImGui.End();return;}
+                if(details.TrainingRefusal is {} refusal)UiText.Wrapped("Training: "+refusal);
+                ImGui.BeginDisabled(details.TrainingRefusal is not null);
                 foreach (var game in TrainingTitles)
                 {
                     if (Button("farmTrain/" + game.Key, game.Value)) StartTraining(game.Key);
                     ImGui.SameLine();
                 }
+                ImGui.EndDisabled();
                 ImGui.NewLine();
+                int foodIndex=0;
                 foreach (var food in new[] { ("meat", "Meat (tray, then 5 Bits)"), ("carrot", "Supercarrot (8 Bits)"), ("bigmeat", "Giant Meat (15 Bits)"), ("sirloin", "Sirloin (25 Bits)"), ("cake", "Digi-Cake (10 Bits)") })
+                {
+                    if(foodIndex++%2!=0)ImGui.SameLine();
                     if (Button("farmFeed/" + food.Item1, food.Item2)) FarmAct(FarmCareAction.Feed, food.Item1);
+                }
                 if (Button("farmBandage", "Use bandage")) FarmAct(FarmCareAction.Cure);
                 ImGui.SameLine(); if (Button("farmMedicine", "Medicine (20 Bits)")) FarmAct(FarmCareAction.Cure, "medicine");
                 if (Button("farmPraise", "Praise")) FarmAct(FarmCareAction.Praise);
@@ -183,6 +196,7 @@ internal sealed partial class MatchScreen
                 foreach (string other in residents.Where(x => x != farmPet))
                     if (Button("farmPlay/" + other, "Play with " + CosmeticCollection.Item("legend", other)!.Name)) FarmAct(FarmCareAction.Play, other);
                 foreach (var pile in pet["poop"]!.AsArray()) if (Button("farmPile/" + pile!["k"], "Clean pile " + pile["k"])) FarmAct(FarmCareAction.CleanPile, pile: pile["k"]!.GetValue<int>());
+                FarmEvolutionDetails(farmPet,details);
             }
         }
         catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or KeyNotFoundException)

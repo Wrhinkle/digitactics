@@ -17,6 +17,7 @@ internal sealed partial class MatchScreen
     }
     private void LeaveMatch()
     {
+        ClearEliminationCinematics();
         if (networkRoom is not null) LeaveSteamRoom();
         CancelArenaDrag(); cameraDrag = null;
         Session = null; history = null; audio.Music(null);
@@ -31,7 +32,7 @@ internal sealed partial class MatchScreen
         UiText.Wrapped(confirmLeave
             ? networkRoom is null ? "This ends your current match. You cannot resume it, and no unfinished match result will be saved." : "You will leave the lobby. Remaining players can continue the match."
             : IsPaused ? "Your local match is paused. Resume whenever you are ready." : "The match continues while this menu is open.");
-        if (Button("resume", IsPaused ? "Resume game" : confirmLeave ? "Keep playing" : "Return to game", 220, 36) || ImGui.IsKeyPressed(ImGuiKey.Escape, false))
+        if (Button("resume", IsPaused ? "Resume game" : confirmLeave ? "Keep playing" : "Return to game", 220, 36) || !EliminationCinematicActive && ImGui.IsKeyPressed(ImGuiKey.Escape, false))
             localPaused = showGameMenu = confirmLeave = false;
         else if (confirmLeave)
         {

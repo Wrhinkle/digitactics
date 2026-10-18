@@ -13,15 +13,16 @@ while($ancestor) {
 }
 $sdk=Join-Path $env:LOCALAPPDATA 'DigiTacticsBuild/dotnet/dotnet.exe'
 if(-not(Test-Path -LiteralPath $sdk)) {$sdk=(Get-Command dotnet).Source}
-function Checked([string]$Program,[string[]]$Arguments) {
-    & $Program @Arguments
-    if($LASTEXITCODE -ne 0) {throw "$Program exited $LASTEXITCODE"}
-}
+. (Join-Path $PSScriptRoot 'NativeProcess.ps1')
 $app=Join-Path $Destination 'app'
 $steamRuntime = & (Join-Path $PSScriptRoot 'setup-steam.ps1')
 $mediaRuntime = & (Join-Path $PSScriptRoot 'setup-media.ps1')
-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Launcher'),'-c','Release','-r','win-x64','--self-contained','true','-o',$Destination)
-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Desktop'),'-c','Release','-r','win-x64','--self-contained','true','-o',$app)
+Invoke-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Launcher'),'-c','Release','-r','win-x64','--self-contained','true','-m:1','-nr:false','-p:UseSharedCompilation=false',('-p:Version='+$Version),'-o',$Destination)
+Invoke-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Desktop'),'-c','Release','-r','win-x64','--self-contained','true','-m:1','-nr:false','-p:UseSharedCompilation=false',('-p:Version='+$Version),'-o',$app)
+foreach($assembly in @((Join-Path $Destination 'DigiTactics.Launcher.dll'),(Join-Path $app 'DigiTactics.Desktop.dll'))) {
+    $metadata=[Diagnostics.FileVersionInfo]::GetVersionInfo($assembly)
+    if($metadata.ProductVersion.Split('+')[0] -cne $Version -or $metadata.FileVersion -cne ($Version+'.0')) {throw "Published assembly version does not match release $Version`: $assembly"}
+}
 $steamPin=Get-Content -LiteralPath (Join-Path $steamRuntime 'steam-runtime-provenance.json') -Raw | ConvertFrom-Json
 if ((Get-FileHash -LiteralPath (Join-Path $app 'steam_api64.dll') -Algorithm SHA256).Hash.ToLowerInvariant() -cne $steamPin.dllSha256) {throw 'Published Steam DLL is missing or does not match its pin.'}
 $expectedMedia=@(Get-ChildItem -LiteralPath $mediaRuntime -File -Recurse)
@@ -56,10 +57,10 @@ try {
     $env:DOTNET_ROOT=Join-Path $Destination 'no-installed-dotnet'
     $env:DOTNET_ROOT_X64=$env:DOTNET_ROOT;$env:DOTNET_MULTILEVEL_LOOKUP='0'
     $state=Join-Path $env:TEMP ('digitactics-package-smoke-'+[Guid]::NewGuid().ToString('N'))
-    Checked (Join-Path $app 'DigiTactics.Desktop.exe') @('--smoke')
-    Checked (Join-Path $Destination 'DigiTactics.Launcher.exe') @('run','--no-updates','--state',$state,'--','--match-smoke','--minimum-window')
-    Checked (Join-Path $app 'DigiTactics.Desktop.exe') @('--custom-music-smoke')
-    Checked (Join-Path $app 'DigiTactics.Desktop.exe') @('--music-routing-smoke')
+    Invoke-Checked (Join-Path $app 'DigiTactics.Desktop.exe') @('--smoke')
+    Invoke-Checked (Join-Path $Destination 'DigiTactics.Launcher.exe') @('run','--no-updates','--state',$state,'--','--match-smoke','--minimum-window')
+    Invoke-Checked (Join-Path $app 'DigiTactics.Desktop.exe') @('--custom-music-smoke')
+    Invoke-Checked (Join-Path $app 'DigiTactics.Desktop.exe') @('--music-routing-smoke')
     & (Join-Path $PSScriptRoot 'test-packaged-update.ps1') -PackageDirectory $Destination
 } finally {$env:DOTNET_ROOT=$savedRoot;$env:DOTNET_ROOT_X64=$savedX64;$env:DOTNET_MULTILEVEL_LOOKUP=$savedLookup}
 Write-Host "Self-contained native launcher/game layout verified: $Destination"

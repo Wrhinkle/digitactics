@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace DigiTactics.Storage;
 
-public sealed record CosmeticItem(string Id, string Name, string? Desc, string? Rarity, int Price, bool Free, bool EggOnly, bool Secret, string[]? Linked, bool? Egg, JsonElement Data = default);
+public sealed record CosmeticItem(string Id, string Name, string? Desc, string? Rarity, int Price, bool Free, bool EggOnly, bool Secret, string[]? Linked, bool? Egg, JsonElement Data = default, string? Tag = null, string? LootPool = null);
 
 /// <summary>A private editable snapshot. Persist Json only after an operation succeeds.</summary>
 public sealed class CosmeticCollection
@@ -83,13 +83,17 @@ public sealed class CosmeticCollection
         else equipped[kind] = id;
         return true;
     }
+    public static (string Kind,CosmeticItem Item)[] Featured(DateOnly day)
+    {
+        static uint Hash(string s) { uint h = 2166136261; foreach (char c in s) h = unchecked((h ^ c) * 16777619); return h; }
+        string date = day.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        return Kinds.SelectMany(k => Items(k).Where(x => !x.Secret && !x.Free && x.Price > 0 && !x.EggOnly).Select(x => (Kind: k, Item: x)))
+            .OrderBy(x => Hash($"{date}:{x.Kind}:{x.Item.Id}")).Take(4).ToArray();
+    }
     public static int Price(string kind, CosmeticItem item, DateOnly day)
     {
         if (item.Free) return 0;
-        static uint Hash(string s) { uint h = 2166136261; foreach (char c in s) h = unchecked((h ^ c) * 16777619); return h; }
-        string date = day.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-        var featured = Kinds.SelectMany(k => Items(k).Where(x => !x.Secret && !x.Free && x.Price > 0 && !x.EggOnly).Select(x => (Kind: k, Item: x)))
-            .OrderBy(x => Hash($"{date}:{x.Kind}:{x.Item.Id}")).Take(4);
+        var featured=Featured(day);
         return featured.Any(x => x.Kind == kind && x.Item.Id == item.Id) ? Math.Max(5, (int)Math.Floor(item.Price * .75 / 5 + .5) * 5) : item.Price;
     }
     public bool Buy(string kind, string id, DateOnly day)

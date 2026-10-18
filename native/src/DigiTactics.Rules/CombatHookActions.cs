@@ -88,6 +88,9 @@ public sealed partial class CombatSimulation
     {
         unit.Alive = false; unit.Health = 0;
         if (occupancy[grid.Index(unit.Cell)] == unit) occupancy[grid.Index(unit.Cell)] = null;
+        // Freeze the form and owner before death hooks can transform or replace the attacker.
+        if (source is not null && source.Team != unit.Team)
+            finalHits[source.Team] = new(source.Id, source.Entry.Uid, source.Line.Id, source.Stage, source.Entry.Owner, unit.Id, Time);
         Emit("death", unit, source);
         if (Hooks.Has(CombatHook.Death, unit, CombatHook.AnyDeath))
             Hooks.Fire(CombatHook.Death, unit, new() { Source = source }, CombatHook.AnyDeath);

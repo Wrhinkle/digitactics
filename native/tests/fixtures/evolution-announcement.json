@@ -1,0 +1,263 @@
+{
+  "style": {
+    "fontSize": "15px",
+    "fontWeight": "800",
+    "color": "rgb(255, 255, 255)",
+    "textShadow": "rgb(0, 0, 0) 0px 2px 6px, rgb(255, 211, 106) 0px 0px 16px",
+    "bottom": "10px",
+    "padding": "0px 8px",
+    "textAlign": "center",
+    "lineHeight": "20.25px",
+    "transitionDuration": "0.3s, 0.3s"
+  },
+  "samples": [
+    {
+      "showing": true,
+      "time": 0,
+      "opacity": 0,
+      "slide": 6
+    },
+    {
+      "showing": true,
+      "time": 0.001,
+      "opacity": 0.00138696,
+      "slide": 5.99168
+    },
+    {
+      "showing": true,
+      "time": 0.025,
+      "opacity": 0.0708059,
+      "slide": 5.57516
+    },
+    {
+      "showing": true,
+      "time": 0.05,
+      "opacity": 0.220674,
+      "slide": 4.67596
+    },
+    {
+      "showing": true,
+      "time": 0.075,
+      "opacity": 0.408511,
+      "slide": 3.54894
+    },
+    {
+      "showing": true,
+      "time": 0.1,
+      "opacity": 0.575862,
+      "slide": 2.54483
+    },
+    {
+      "showing": true,
+      "time": 0.15,
+      "opacity": 0.802403,
+      "slide": 1.18558
+    },
+    {
+      "showing": true,
+      "time": 0.2,
+      "opacity": 0.924824,
+      "slide": 0.451056
+    },
+    {
+      "showing": true,
+      "time": 0.25,
+      "opacity": 0.983474,
+      "slide": 0.0991551
+    },
+    {
+      "showing": true,
+      "time": 0.299,
+      "opacity": 0.999994,
+      "slide": 0.0000356268
+    },
+    {
+      "showing": true,
+      "time": 0.3,
+      "opacity": 1,
+      "slide": 0
+    },
+    {
+      "showing": false,
+      "time": 0,
+      "opacity": 1,
+      "slide": 0
+    },
+    {
+      "showing": false,
+      "time": 0.001,
+      "opacity": 0.998613,
+      "slide": 0.00832174
+    },
+    {
+      "showing": false,
+      "time": 0.025,
+      "opacity": 0.929194,
+      "slide": 0.424835
+    },
+    {
+      "showing": false,
+      "time": 0.05,
+      "opacity": 0.779326,
+      "slide": 1.32404
+    },
+    {
+      "showing": false,
+      "time": 0.075,
+      "opacity": 0.591489,
+      "slide": 2.45106
+    },
+    {
+      "showing": false,
+      "time": 0.1,
+      "opacity": 0.424138,
+      "slide": 3.45517
+    },
+    {
+      "showing": false,
+      "time": 0.15,
+      "opacity": 0.197597,
+      "slide": 4.81442
+    },
+    {
+      "showing": false,
+      "time": 0.2,
+      "opacity": 0.075176,
+      "slide": 5.54894
+    },
+    {
+      "showing": false,
+      "time": 0.25,
+      "opacity": 0.0165259,
+      "slide": 5.90085
+    },
+    {
+      "showing": false,
+      "time": 0.299,
+      "opacity": 0.00000593779,
+      "slide": 5.99996
+    },
+    {
+      "showing": false,
+      "time": 0.3,
+      "opacity": 0,
+      "slide": 6
+    }
+  ],
+  "reversal": [
+    {
+      "time": 0,
+      "opacity": 0.575862,
+      "slide": 2.54483
+    },
+    {
+      "time": 0.025,
+      "opacity": 0.475253,
+      "slide": 3.14848
+    },
+    {
+      "time": 0.05,
+      "opacity": 0.292435,
+      "slide": 4.24539
+    },
+    {
+      "time": 0.075,
+      "opacity": 0.156421,
+      "slide": 5.06147
+    },
+    {
+      "time": 0.1,
+      "opacity": 0.0747149,
+      "slide": 5.55171
+    },
+    {
+      "time": 0.15,
+      "opacity": 0.0058029,
+      "slide": 5.96518
+    },
+    {
+      "time": 0.2,
+      "opacity": 0,
+      "slide": 6
+    }
+  ],
+  "reduced": {
+    "duration": "0.001s",
+    "samples": [
+      {
+        "showing": true,
+        "time": 0,
+        "opacity": 0,
+        "slide": 6
+      },
+      {
+        "showing": true,
+        "time": 0.00025,
+        "opacity": 0.408511,
+        "slide": 3.54894
+      },
+      {
+        "showing": true,
+        "time": 0.0005,
+        "opacity": 0.802403,
+        "slide": 1.18558
+      },
+      {
+        "showing": true,
+        "time": 0.00075,
+        "opacity": 0.960459,
+        "slide": 0.237246
+      },
+      {
+        "showing": true,
+        "time": 0.001,
+        "opacity": 1,
+        "slide": 0
+      },
+      {
+        "showing": true,
+        "time": 0.002,
+        "opacity": 1,
+        "slide": 0
+      },
+      {
+        "showing": false,
+        "time": 0,
+        "opacity": 1,
+        "slide": 0
+      },
+      {
+        "showing": false,
+        "time": 0.00025,
+        "opacity": 0.591489,
+        "slide": 2.45106
+      },
+      {
+        "showing": false,
+        "time": 0.0005,
+        "opacity": 0.197597,
+        "slide": 4.81442
+      },
+      {
+        "showing": false,
+        "time": 0.00075,
+        "opacity": 0.039541,
+        "slide": 5.76275
+      },
+      {
+        "showing": false,
+        "time": 0.001,
+        "opacity": 0,
+        "slide": 6
+      },
+      {
+        "showing": false,
+        "time": 0.002,
+        "opacity": 0,
+        "slide": 6
+      }
+    ]
+  },
+  "completionSeconds": 3.2,
+  "actionSeconds": 1.8
+}

@@ -3,7 +3,7 @@ using System.Numerics;
 namespace DigiTactics.Assets;
 
 public sealed record DanceBone(int Node, string Kind, int ParentEntry, Vector3 Direction,
-    Quaternion ParentRotation, Quaternion RestRotation, int Side = 0, float Share = 1, int Index = 0, float Limit = 0);
+    Quaternion ParentRotation, Quaternion RestRotation, int Side = 0, float Share = 1, int Index = 0, float Limit = 0, QuaternionD? ExactParentRotation = null, QuaternionD? ExactRestRotation = null);
 public sealed record DanceBinding(DanceBone[] Bones, bool Limbless, bool Stubby, float Yaw = 0);
 public sealed record DancePose(Dictionary<string, Vector3> Vectors, Dictionary<string, float> Scalars, Dictionary<string, float> Root);
 public sealed record DanceRoot(Vector3 Position, Vector3 Rotation, float Pivot, float Squash, Quaternion Facing);
@@ -53,8 +53,23 @@ public sealed class DanceSkeleton(DanceBinding binding)
         double sin = Math.Sqrt(sinSquared), angle = Math.Atan2(sin, dot);
         return from * (float)(Math.Sin((1 - weight) * angle) / sin) + to * (float)(Math.Sin(weight * angle) / sin);
     }
-    public DanceRoot Apply(DancePose pose, RigPose target, float weight = 1)
+    private static QuaternionD D(Quaternion q) => new(q.X,q.Y,q.Z,q.W);
+    private static QuaternionD Multiply(QuaternionD a,QuaternionD b) => new(a.X*b.W+a.W*b.X+a.Y*b.Z-a.Z*b.Y,a.Y*b.W+a.W*b.Y+a.Z*b.X-a.X*b.Z,a.Z*b.W+a.W*b.Z+a.X*b.Y-a.Y*b.X,a.W*b.W-a.X*b.X-a.Y*b.Y-a.Z*b.Z);
+    private static QuaternionD BlendExact(QuaternionD from,QuaternionD to,double weight)
     {
+        double dot=from.X*to.X+from.Y*to.Y+from.Z*to.Z+from.W*to.W;
+        if(dot<0){to=new(-to.X,-to.Y,-to.Z,-to.W);dot=-dot;}
+        if(dot>=1)return from;
+        double squared=1-dot*dot;
+        double a=1-weight,b=weight;
+        if(squared>2.220446049250313e-16){double sin=Math.Sqrt(squared),angle=Math.Atan2(sin,dot);a=Math.Sin((1-weight)*angle)/sin;b=Math.Sin(weight*angle)/sin;}
+        var result=new QuaternionD(from.X*a+to.X*b,from.Y*a+to.Y*b,from.Z*a+to.Z*b,from.W*a+to.W*b);
+        if(squared<=2.220446049250313e-16){double length=Math.Sqrt(result.X*result.X+result.Y*result.Y+result.Z*result.Z+result.W*result.W);result=new(result.X/length,result.Y/length,result.Z/length,result.W/length);}
+        return result;
+    }
+    public DanceRoot Apply(DancePose pose, RigPose? target, float weight = 1)
+    {
+        if (target is null && binding.Bones.Length != 0) throw new ArgumentNullException(nameof(target));
         float w = Math.Clamp(weight, 0, 1), body = binding.Limbless ? 1.5f : binding.Stubby ? 1.25f : 1;
         float Scalar(string key) => pose.Scalars.GetValueOrDefault(key);
         Vector3 V(string key) => pose.Vectors.GetValueOrDefault(key);
@@ -94,12 +109,14 @@ public sealed class DanceSkeleton(DanceBinding binding)
             }
             rotation = Clamp(rotation, bone.Limit != 0 ? bone.Limit : Limit(bone.Kind) * Degree);
             accumulated[i] = (bone.ParentEntry >= 0 ? accumulated[bone.ParentEntry] : Quaternion.Identity) * rotation;
-            var local = Quaternion.Conjugate(bone.ParentRotation) * rotation * bone.ParentRotation * bone.RestRotation;
-            var current = target.Local[bone.Node]; var q = current.Rotation;
-            if (w < 1) local = Blend(new((float)q.X, (float)q.Y, (float)q.Z, (float)q.W), local, w);
-            target.Local[bone.Node] = current with { Rotation = new(local.X, local.Y, local.Z, local.W) };
+            var parent = bone.ExactParentRotation ?? D(bone.ParentRotation);
+            var rest = bone.ExactRestRotation ?? D(bone.RestRotation);
+            var local = Multiply(Multiply(Multiply(new(-parent.X,-parent.Y,-parent.Z,parent.W),D(rotation)),parent),rest);
+            var current = target!.Local[bone.Node];
+            if (w < 1) local = BlendExact(current.Rotation, local, w);
+            target.Local[bone.Node] = current with { Rotation = local };
         }
-        target.UpdateWorld();
+        target?.UpdateWorld();
         float Root(string key) => pose.Root.GetValueOrDefault(key);
         var position = new Vector3(Root("x"), Root("y"), Root("z")) * w;
         var angles = new Vector3(Root("rx"), Root("ry"), Root("rz")) * w;

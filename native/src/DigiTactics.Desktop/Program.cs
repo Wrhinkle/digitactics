@@ -12,8 +12,10 @@ try
         return Path.GetFullPath(args[index + 1]);
     }
     string? profileDirectory = Option("--profile-directory");
+    if(Option("--native-file-picker-smoke") is { } pickerDirectory) {NativeFilePickerSmoke.Run(pickerDirectory).GetAwaiter().GetResult();return 0;}
     if (args.Contains("--music-routing-smoke")) { GameAudio.MusicRoutingSmoke(Option("--ffmpeg") ?? Path.Combine(AppContext.BaseDirectory,"media","ffmpeg.exe")); return 0; }
     if (args.Contains("--custom-music-smoke")) { GameAudio.CustomMusicSmoke(Option("--ffmpeg") ?? Path.Combine(AppContext.BaseDirectory,"media","ffmpeg.exe")); return 0; }
+    if(args.Contains("--steam-live-smoke"))return SteamLiveSmoke.Run(Option("--steam-api") ?? Path.Combine(AppContext.BaseDirectory,"steam_api64.dll"));
     if (args.Contains("--steam-room-smoke"))
     {
         string library = Option("--steam-api") ?? Path.Combine(AppContext.BaseDirectory, "steam_api64.dll");
@@ -58,7 +60,7 @@ try
     {
         var profile = new NativeProfileStore(profileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native"));
         profile.Import(new ProfileImport(importFile));
-        Console.WriteLine("Profile imported; original backup preserved. Identity and saved totals are available; other profile features remain in development.");
+        Console.WriteLine("Profile imported, including progress, collection, settings and music files. Original backup preserved.");
         return 0;
     }
     int profileIndex = Array.IndexOf(args, "--stage-profile");
@@ -76,12 +78,24 @@ try
     int captureIndex = Array.IndexOf(args, "--capture");
     string? capture = captureIndex >= 0 && captureIndex + 1 < args.Length ? args[captureIndex + 1] : null;
     if (args.Contains("--elimination-theme-smoke")) { EliminationThemeSmoke.Run(capture); return 0; }
+    if (args.Contains("--elimination-composite-smoke")) { EliminationCompositeSmoke.Run(capture); return 0; }
+    if (args.Contains("--move-effect-smoke")) { MoveEffectSmoke.Run(catalog,capture); return 0; }
     if (args.Contains("--board-mesh-smoke")) { BoardMeshSmoke.Run(capture); return 0; }
     if (args.Contains("--companion-model-smoke")) { CompanionModelSmoke.Run(capture); return 0; }
     if (args.Contains("--farm-room-smoke")) { FarmRoomSmoke.Run(capture); return 0; }
     if (args.Contains("--smoke") || args.Contains("--workbench")) NativeApplication.Run(catalog, args.Contains("--smoke"), capture);
     else
     {
+        using var instance=NativeGameInstance.IsInteractiveLaunch(args)?NativeGameInstance.Open(profileDirectory??NativeGameInstance.DefaultProfileDirectory,NativeGameInstance.ParseLobbyArguments(args)):null;
+        if(instance is {IsPrimary:false})return NativeGameInstance.ForwardedExitCode;
+        if(args.Contains("--mystery-loot-ui-smoke") && profileDirectory is null)throw new ArgumentException("Mystery loot UI smoke requires an isolated --profile-directory.");
+        if(args.Contains("--set-selection-smoke") && (profileDirectory is null || Option("--steam-api") is null))throw new ArgumentException("Set selection smoke requires an isolated --profile-directory and fake --steam-api.");
+        if(args.Contains("--match-keyboard-smoke") && profileDirectory is null)throw new ArgumentException("Keyboard UI smoke requires an isolated --profile-directory.");
+        if(args.Contains("--postgame-smoke") && profileDirectory is null)throw new ArgumentException("Postgame UI smoke requires an isolated --profile-directory.");
+        if(args.Contains("--profile-ui-smoke") && profileDirectory is null)throw new ArgumentException("Profile UI smoke requires an isolated --profile-directory.");
+        if(args.Contains("--social-ui-smoke") && profileDirectory is null)throw new ArgumentException("Social UI smoke requires an isolated --profile-directory.");
+        if(args.Contains("--client-preferences-smoke") && profileDirectory is null)throw new ArgumentException("Client preferences smoke requires an isolated --profile-directory.");
+        if(args.Contains("--save-data-ui-smoke") && profileDirectory is null)throw new ArgumentException("Save data UI smoke requires an isolated --profile-directory.");
         bool evolutionSmoke = args.Contains("--evolution-smoke");
         bool collectionSmoke = args.Contains("--collection-smoke") || evolutionSmoke;
         bool trainingSmoke = args.Contains("--training-smoke");
@@ -94,7 +108,53 @@ try
         bool audioVisibilitySmoke = args.Contains("--audio-visibility-smoke");
         bool modeBonusSmoke = args.Contains("--mode-bonus-smoke");
         bool steamLobbyUiSmoke = args.Contains("--steam-lobby-ui-smoke");
-        MatchApplication.Run(catalog, args.Contains("--match-smoke") || args.Contains("--update-ui-smoke") || args.Contains("--music-library-ui-smoke") || collectionSmoke || trainingSmoke || farmPointerSmoke || networkMatchSmoke || steamLobbyUiSmoke || modeBonusSmoke || audioVisibilitySmoke, capture, args.Contains("--duos"), profileDirectory, collectionSmoke, evolutionSmoke, trainingSmoke, farmPointerSmoke, networkMatchSmoke, Option("--steam-api"), steamLobbyUiSmoke, spectatorSmoke, modeBonusSmoke, audioVisibilitySmoke, Option("--ffmpeg"), args.Contains("--music-library-ui-smoke"), args.Contains("--minimum-window"), args.Contains("--update-ui-smoke"));
+        MatchApplication.Run(catalog, new MatchRunOptions
+        {
+            Smoke = args.Contains("--mystery-loot-ui-smoke") || args.Contains("--set-selection-smoke") || args.Contains("--match-keyboard-smoke") ||
+                args.Contains("--client-preferences-smoke") ||
+                args.Contains("--social-ui-smoke") ||
+                args.Contains("--save-data-ui-smoke") ||
+                args.Contains("--elimination-cinematic-smoke") ||
+                args.Contains("--match-smoke") ||
+                args.Contains("--postgame-smoke") ||
+                args.Contains("--profile-ui-smoke") ||
+                args.Contains("--update-ui-smoke") ||
+                args.Contains("--music-library-ui-smoke") ||
+                collectionSmoke ||
+                trainingSmoke ||
+                farmPointerSmoke ||
+                networkMatchSmoke ||
+                steamLobbyUiSmoke ||
+                modeBonusSmoke ||
+                audioVisibilitySmoke,
+            Capture = capture,
+            Duos = args.Contains("--duos"),
+            ProfileDirectory = profileDirectory,
+            CollectionSmoke = collectionSmoke,
+            EvolutionSmoke = evolutionSmoke,
+            TrainingSmoke = trainingSmoke,
+            FarmPointerSmoke = farmPointerSmoke,
+            NetworkMatchSmoke = networkMatchSmoke,
+            SteamLibrary = Option("--steam-api"),
+            SteamLobbyUiSmoke = steamLobbyUiSmoke,
+            SpectatorSmoke = spectatorSmoke,
+            ModeBonusSmoke = modeBonusSmoke,
+            AudioVisibilitySmoke = audioVisibilitySmoke,
+            MusicDecoder = Option("--ffmpeg"),
+            MusicLibrarySmoke = args.Contains("--music-library-ui-smoke"),
+            MinimumWindow = args.Contains("--minimum-window"),
+            UpdateUiSmoke = args.Contains("--update-ui-smoke"),
+            ProfileUiSmoke = args.Contains("--profile-ui-smoke"),
+            PostgameSmoke = args.Contains("--postgame-smoke"),
+            EliminationCinematicSmoke = args.Contains("--elimination-cinematic-smoke"),
+            SaveDataUiSmoke = args.Contains("--save-data-ui-smoke"),
+            Instance = instance,
+            SocialUiSmoke = args.Contains("--social-ui-smoke"),
+            ClientPreferencesSmoke = args.Contains("--client-preferences-smoke"),
+            MysteryLootUiSmoke = args.Contains("--mystery-loot-ui-smoke"),
+            SetSelectionSmoke = args.Contains("--set-selection-smoke"),
+            MatchKeyboardSmoke = args.Contains("--match-keyboard-smoke"),
+        });
     }
     return 0;
 }

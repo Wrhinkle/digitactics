@@ -35,6 +35,11 @@ internal static class CosmeticChecks
                 Check(owned.SequenceEqual(test.GetProperty("owned").GetProperty(k).EnumerateArray().Select(x => x.GetString())), "ownership " + k);
             }
         }
+        foreach(var test in fixture.RootElement.GetProperty("featured").EnumerateArray())
+        {
+            var day=DateOnly.ParseExact(test.GetProperty("day").GetString()!,"yyyy-MM-dd");
+            Check(CosmeticCollection.Featured(day).Select(offer=>offer.Kind+"/"+offer.Item.Id).SequenceEqual(test.GetProperty("items").EnumerateArray().Select(x=>x.GetString())),"featured original order "+day);
+        }
         foreach (var test in fixture.RootElement.GetProperty("prices").EnumerateArray())
         {
             string kind = test.GetProperty("kind").GetString()!, id = test.GetProperty("id").GetString()!;

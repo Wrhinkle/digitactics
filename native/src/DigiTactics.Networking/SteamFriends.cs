@@ -7,7 +7,7 @@ public sealed record SteamFriendRoom(SteamLobby Lobby, IReadOnlyList<SteamFriend
 public sealed record SteamAvatar(int Handle, int Width, int Height, byte[] Rgba);
 
 /// <summary>Read-only friend room discovery. Results complete on the Steam client's game-thread pump.</summary>
-public sealed class SteamFriends : IDisposable
+public sealed partial class SteamFriends : IDisposable
 {
     [StructLayout(LayoutKind.Explicit, Size = 24)] private struct GameInfo
     {
@@ -24,6 +24,8 @@ public sealed class SteamFriends : IDisposable
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)] [return: MarshalAs(UnmanagedType.I1)] private delegate bool UserFn(nint self, ulong user, [MarshalAs(UnmanagedType.I1)] bool nameOnly);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)] [return: MarshalAs(UnmanagedType.I1)] private delegate bool SizeFn(nint self, int image, out uint width, out uint height);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)] [return: MarshalAs(UnmanagedType.I1)] private delegate bool PixelsFn(nint self, int image, [Out] byte[] bytes, int size);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void InviteOverlayFn(nint self, ulong lobby);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] [return: MarshalAs(UnmanagedType.I1)] private delegate bool OverlayEnabledFn(nint self);
     private readonly SteamClient client;
     private readonly nint friends, matchmaking;
     private readonly CountFn count;
@@ -35,6 +37,8 @@ public sealed class SteamFriends : IDisposable
     private readonly UserFn user;
     private readonly SizeFn imageSize;
     private readonly PixelsFn pixels;
+    private readonly InviteOverlayFn inviteOverlay;
+    private readonly OverlayEnabledFn overlayEnabled;
     private readonly nint utils;
     private readonly HashSet<ulong> requestedPeople = [];
     private readonly Dictionary<int, SteamAvatar> avatars = [];
@@ -58,9 +62,28 @@ public sealed class SteamFriends : IDisposable
         user = client.Bind<UserFn>("SteamAPI_ISteamFriends_RequestUserInformation");
         imageSize = client.Bind<SizeFn>("SteamAPI_ISteamUtils_GetImageSize");
         pixels = client.Bind<PixelsFn>("SteamAPI_ISteamUtils_GetImageRGBA");
+        inviteOverlay = client.Bind<InviteOverlayFn>("SteamAPI_ISteamFriends_ActivateGameOverlayInviteDialog");
+        overlayEnabled = client.Bind<OverlayEnabledFn>("SteamAPI_ISteamUtils_IsOverlayEnabled");
         client.Matchmaking.DataChanged += DataChanged;
     }
     private void Verify() { client.VerifyThread(); ObjectDisposedException.ThrowIf(disposed, this); }
+    /// <summary>Opens Steam's friend-selection dialog. This method sends no invitations itself.</summary>
+    public bool OpenInviteOverlay(ulong lobby)
+    {
+        Verify();if(lobby==0)throw new ArgumentOutOfRangeException(nameof(lobby));
+        if(!overlayEnabled(utils))return false;
+        inviteOverlay(friends,lobby);return true;
+    }
+    public IReadOnlyList<SteamFriend> ListFriends()
+    {
+        Verify();var result=new List<SteamFriend>();var seen=new HashSet<ulong>();
+        for(int i=0,size=Math.Clamp(count(friends,4),0,2000);i<size;i++)
+        {
+            ulong id=byIndex(friends,i,4);
+            if(id!=0 && seen.Add(id))result.Add(new(id,Name(id)));
+        }
+        return result.AsReadOnly();
+    }
     public string Name(ulong id) { Verify(); return id == 0 ? "" : Marshal.PtrToStringUTF8(name(friends, id)) ?? ""; }
     public SteamAvatar? Avatar(ulong id)
     {

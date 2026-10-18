@@ -5,6 +5,7 @@ internal static class SteamFriendsChecks
 {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ModeFn(int mode);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CountFn();
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate ulong LobbyFn();
     public static int Run(string root)
     {
         int checks=0;void Check(bool ok,string why){checks++;if(!ok)throw new InvalidOperationException("Steam friends: "+why);}
@@ -14,6 +15,19 @@ internal static class SteamFriendsChecks
         {
             var mode=Marshal.GetDelegateForFunctionPointer<ModeFn>(NativeLibrary.GetExport(module,"FakeSteam_DataRequestMode"));
             using var client=new SteamClient(path,_=>false,480);
+            var people=client.Friends.ListFriends();
+            Check(people.Count>0 && people.All(p=>p.Id!=0 && p.Name.Length>0) && people.Select(p=>p.Id).Distinct().Count()==people.Count,"bounded distinct friend enumeration and persona names");
+            var overlayMode=Marshal.GetDelegateForFunctionPointer<ModeFn>(NativeLibrary.GetExport(module,"FakeSteam_OverlayEnabled"));
+            var overlayCalls=Marshal.GetDelegateForFunctionPointer<CountFn>(NativeLibrary.GetExport(module,"FakeSteam_InviteOverlayCalls"));
+            var overlayLobby=Marshal.GetDelegateForFunctionPointer<LobbyFn>(NativeLibrary.GetExport(module,"FakeSteam_InviteOverlayLobby"));
+            int invites=overlayCalls();overlayMode(0);
+            Check(!client.Friends.OpenInviteOverlay(109775240000000001) && overlayCalls()==invites,"disabled overlay reports failure without native invitation call");
+            overlayMode(1);
+            Check(client.Friends.OpenInviteOverlay(109775240000000001) && overlayCalls()==invites+1 && overlayLobby()==109775240000000001,"invite dialog preserves 64-bit lobby identity");
+            bool invalid=false;try {client.Friends.OpenInviteOverlay(0);}catch(ArgumentOutOfRangeException){invalid=true;}
+            Check(invalid && overlayCalls()==invites+1,"invalid lobby rejected before overlay call");
+            bool wrongThread=Task.Run(()=>{try{client.Friends.OpenInviteOverlay(109775240000000001);return false;}catch(InvalidOperationException){return true;}}).GetAwaiter().GetResult();
+            Check(wrongThread && overlayCalls()==invites+1,"invite overlay requires game thread");
             var imageMode=Marshal.GetDelegateForFunctionPointer<ModeFn>(NativeLibrary.GetExport(module,"FakeSteam_ImageMode"));
             var imageReads=Marshal.GetDelegateForFunctionPointer<CountFn>(NativeLibrary.GetExport(module,"FakeSteam_ImageReads"));
             Check(client.Friends.Avatar(0) is null,"missing user has no image");

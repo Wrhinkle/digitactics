@@ -5,7 +5,8 @@ namespace DigiTactics.Desktop;
 /// <summary>Debounces slider writes; flushes the last edit on normal app exit.</summary>
 internal sealed class AudioSettingsBinding : IDisposable
 {
-    private readonly AudioSettingsStore store;
+    private AudioSettingsStore store;
+    private string dataDirectory;
     private readonly GameAudio audio;
     private readonly NativeProfileStore profile;
     private AudioSettings observed = new();
@@ -16,7 +17,8 @@ internal sealed class AudioSettingsBinding : IDisposable
     public AudioSettingsBinding(GameAudio audio, NativeProfileStore profile, string directory)
     {
         this.audio = audio; this.profile = profile;
-        store = new(Path.Combine(directory, "audio-settings.json"));
+        dataDirectory = profile.DataDirectory;
+        store = new(Path.Combine(dataDirectory, "audio-settings.json"));
         store.ImportLegacy(profile.Storage);
         Apply();
     }
@@ -30,6 +32,7 @@ internal sealed class AudioSettingsBinding : IDisposable
     }
     public void Update(double delta)
     {
+        FollowProfile();
         var current = Snapshot;
         if (current != observed) { observed = current; dirty = true; quiet = 0; }
         else quiet += delta;
@@ -46,5 +49,11 @@ internal sealed class AudioSettingsBinding : IDisposable
     {
         dirty = !store.Save(Snapshot); audio.SettingsError = store.Error; quiet = 0;
     }
-    public void Dispose() { if (dirty || Snapshot != observed) Flush(); }
+    private void FollowProfile()
+    {
+        if (dataDirectory == profile.DataDirectory) return;
+        dataDirectory = profile.DataDirectory; dirty = false; quiet = importRetry = 0;
+        store = new(Path.Combine(dataDirectory, "audio-settings.json")); store.ImportLegacy(profile.Storage); Apply();
+    }
+    public void Dispose() { FollowProfile(); if (dirty || Snapshot != observed) Flush(); }
 }

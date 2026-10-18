@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "defaultId": "faction-wars",
+  "sets": [
+    {
+      "id": "faction-wars",
+      "name": "Faction Wars",
+      "description": "The original roster: Digi-Destined partners, Tamers, Savers, Frontier and Xros Wars lines, with Royal Knights and Demon Lords at 5 cost. Hyper Roll rules and Data Wisps.",
+      "mode": "tft",
+      "nativePace": "hyper",
+      "hidden": false,
+      "chaosEligible": true
+    },
+    {
+      "id": "galaxies",
+      "name": "Galaxies",
+      "description": "TFT Set 3 on Digimon: DigiDestined, Dark Area, DigiXros fusions and Data Pirates. Every game rolls one Galaxy, a rule that changes the game for every Tamer.",
+      "mode": "tft",
+      "nativePace": "hyper",
+      "hidden": false,
+      "chaosEligible": true
+    },
+    {
+      "id": "fates",
+      "name": "Fates",
+      "description": "Partner Digimon: some shop slots offer a Champion-form Partner whose marked trait counts double. One Partner at a time. Hyper Roll rules, Digi-Forge artifacts.",
+      "mode": "tft",
+      "nativePace": "hyper",
+      "hidden": false,
+      "chaosEligible": true
+    },
+    {
+      "id": "reckoning",
+      "name": "Reckoning",
+      "description": "The Dark Spore spreads: Shadow items trade a drawback for power, and the Radiant Blessing lifts Tamers who fall low. Hyper Roll rules.",
+      "mode": "tft",
+      "nativePace": "hyper",
+      "hidden": false,
+      "chaosEligible": true
+    },
+    {
+      "id": "gizmos",
+      "name": "Gizmos & Gadgets",
+      "description": "Inventors, pirates and Dark Masters in a gadget city. Three Digivice upgrades per game in Silver, Gold and Prismatic, with the tiers shown in advance by Hextech Gates.",
+      "mode": "tft",
+      "nativePace": "hyper",
+      "hidden": false,
+      "chaosEligible": true
+    },
+    {
+      "id": "dragonlands",
+      "name": "Dragonlands",
+      "description": "Mega Dragons that take two team slots, a Treasure Dragon round, Golden Armor gold items and fixed augment rounds with one reroll. Hyper Roll rules.",
+      "mode": "tft",
+      "nativePace": "hyper",
+      "hidden": false,
+      "chaosEligible": true
+    },
+    {
+      "id": "arcane",
+      "name": "Into the Arcane",
+      "description": "Kowloon gangs, the Bagra Army, DigiPolice and the Rebels. At 4-3 you mutate one Digimon with an Anomaly; Syndicate Digimon trade Shimmer at the black market. Hyper Roll rules.",
+      "mode": "tft",
+      "nativePace": "hyper",
+      "hidden": false,
+      "chaosEligible": true
+    },
+    {
+      "id": "coliseum",
+      "name": "K.O. Coliseum",
+      "description": "A Digimon fighting tournament. Feed Digi-Cores to pick digivolution paths, choose Justimon's arm and Labramon's partner, and bank gems with Jewel Gambit. Plays at Hyper Roll or Normal pace.",
+      "mode": "tft",
+      "nativePace": "hyper",
+      "hidden": false,
+      "chaosEligible": true
+    },
+    {
+      "id": "underlords",
+      "name": "Undermons",
+      "description": "Undermons: 26 alliances, tiered items with no recipes, creep rounds, and a Tamer on your board from round 10 who ranks up every 5 rounds.",
+      "mode": "underlords",
+      "nativePace": "normal",
+      "hidden": false,
+      "chaosEligible": true
+    },
+    {
+      "id": "underlords_ko",
+      "name": "Undermons Knockout",
+      "description": "Undermons Knockout: 4 lives, 2 copies digivolve, a starter crew, an item every other round and a Tamer from round 2. About 10 minutes.",
+      "mode": "underlords",
+      "nativePace": "normal",
+      "hidden": false,
+      "chaosEligible": false
+    },
+    {
+      "id": "autochess",
+      "name": "Auto Chess",
+      "description": "Auto Chess: races and classes, 2-copy Druids, Wizards, creep loot, interest and XP.",
+      "mode": "autochess",
+      "nativePace": "normal",
+      "hidden": false,
+      "chaosEligible": true
+    },
+    {
+      "id": "_template",
+      "name": "Template",
+      "description": "A small test set that shows every part of the set format.",
+      "mode": "tft",
+      "nativePace": "normal",
+      "hidden": true,
+      "chaosEligible": true
+    }
+  ],
+  "pickableIds": [
+    "faction-wars",
+    "fates",
+    "galaxies",
+    "gizmos",
+    "reckoning",
+    "dragonlands",
+    "arcane",
+    "coliseum",
+    "underlords",
+    "autochess",
+    "underlords_ko"
+  ]
+}

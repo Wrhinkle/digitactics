@@ -1,5 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$PackageDirectory)
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'NativeProcess.ps1')
 $PackageDirectory=(Resolve-Path -LiteralPath $PackageDirectory).Path
 $launcher=Join-Path $PackageDirectory 'DigiTactics.Launcher.exe'
 $config=Get-Content (Join-Path $PackageDirectory 'native-launcher.json') -Raw | ConvertFrom-Json
@@ -12,9 +13,7 @@ $archive=Join-Path $testRoot 'test-update.zip'
 $descriptor=Join-Path $testRoot 'test-update.json'
 $stateRoot=Join-Path $testRoot 'state'
 function Run-Launcher([string[]]$Arguments) {
-    $result=& $launcher @Arguments
-    if($LASTEXITCODE -ne 0) {throw "Packaged launcher exited $LASTEXITCODE ($Arguments)"}
-    return $result
+    Invoke-Checked $launcher $Arguments
 }
 $metadata=Run-Launcher @('package',(Join-Path $PackageDirectory 'app'),$archive,$testVersion)
 [IO.File]::WriteAllText($descriptor,($metadata -join "`n"))

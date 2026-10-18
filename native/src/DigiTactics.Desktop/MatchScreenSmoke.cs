@@ -9,6 +9,13 @@ namespace DigiTactics.Desktop;
 internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = null, bool evolutionSmoke = false)
 {
     private readonly GameMenuSmoke gameMenu = new();
+    private readonly HomeSmoke home = new(collectionProfile);
+    private readonly CodexSmoke codex = new();
+    private readonly PlaybackSpeedSmoke playbackSpeed = new();
+    private readonly CollectionPreviewSmoke collectionPreviews = new();
+    private readonly CollectionFilterSmoke collectionFilters = new();
+    private readonly IncubatorSmoke incubator = new();
+    private bool eggWobble,eggCrack,eggBurst,eggReveal;
     private readonly EliminationSmoke elimination = new();
     private readonly LootOrbSmoke loot = new();
     private bool gameplayVerified, eliminationCaptured, spectatingCaptured;
@@ -22,14 +29,14 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         : ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
     private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
     private int collectionIndex;
-    private bool collectionVerified,treeScrolled,transformWhite,transformFlash,settledPreview,announcementExpired;
+    private bool collectionVerified,treeScrolled,transformWhite,transformFlash,settledPreview,announcementExpired,announcementFadedIn,announcementFadedOut;
     private readonly string[] farmCommands = evolutionSmoke
         ? ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "farmRoom", "farmOut/tsunomon", "farmIn/tsunomon", "farmOut/motimon", "farmSelect/tsunomon", "farmSwap/motimon", "farmIn/tsunomon", "farmExpand", "farmTheme/sewer", "closeFarm"]
         : ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "closeFarm"];
     private int farmIndex;
     private bool farmVerified;
     private long farmInitialBits;
-    public string Pending => collectionProfile is not null && collectionIndex < collectionCommands.Length ? collectionCommands[collectionIndex]
+    public string Pending => collectionProfile is not null && collectionIndex < collectionCommands.Length ? collectionCommands[collectionIndex] == "egg/legend" && !incubator.Done ? incubator.Pending : collectionCommands[collectionIndex]
         : collectionProfile is not null && farmIndex < farmCommands.Length ? farmCommands[farmIndex] : commands.ElementAtOrDefault(index) ?? "verification";
     private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "arenaBench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
         "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "reconnectAudio", "closeAudio", "mute", "mute"];
@@ -56,13 +63,22 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private bool itemDragsVerified;
     private readonly CameraSmoke cameraSmoke = new();
     private bool cameraVerified;
+    private bool eliminationSkipDown;
     public void Input(MatchScreen screen)
     {
+        if(!home.Done){home.Input(screen);return;}
+        if(!codex.HomeDone){codex.HomeInput(screen);return;}
+        if (eliminationSkipDown) { ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,false); eliminationSkipDown=false; return; }
+        if (screen.EliminationCinematicActive) { ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,true); eliminationSkipDown=true; return; }
         emoteTime+=100;screen.AiEmoteClock=()=>emoteTime;screen.AiEmoteRandom=()=>.01;
         if (collectionProfile is not null && collectionIndex < collectionCommands.Length)
         {
             if (cooldown-- > 0) return;
             var input = ImGui.GetIO();
+            if(collectionIndex==1 && !down && !collectionFilters.Done){collectionFilters.Input(screen,collectionProfile);return;}
+            if(collectionIndex==4 && !down && !collectionPreviews.Done){collectionPreviews.Input(screen);return;}
+            if(collectionCommands[collectionIndex]=="egg/legend" && !down && !incubator.Done){incubator.Input(screen);return;}
+            if(collectionCommands[collectionIndex]=="closeCollection" && screen.EggHatchBusy)return;
             if(!down && (screen.EvolutionBusy || collectionIndex==11 && screen.EvolutionTransitionTime>0))return;
             if(evolutionSmoke && collectionIndex==11 && settledPreview && !down && !announcementExpired)
             {
@@ -77,6 +93,23 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             }
             if (down) { input.AddMouseButtonEvent(0, false); down = false; collectionIndex++; cooldown = 3; return; }
             if (!screen.Buttons.TryGetValue(collectionCommands[collectionIndex], out var target)) return;
+            if(collectionCommands[collectionIndex].StartsWith("egg/",StringComparison.Ordinal) && screen.IncubatorInventoryBounds is { } inventory)
+            {
+                if(target.Y<inventory.Min.Y+12||target.Y>inventory.Max.Y-12)
+                {
+                    input.AddMousePosEvent((inventory.Min.X+inventory.Max.X)*.5f,(inventory.Min.Y+inventory.Max.Y)*.5f);
+                    input.AddMouseWheelEvent(0,target.Y<inventory.Min.Y?5:-5);cooldown=3;return;
+                }
+            }
+            if(collectionCommands[collectionIndex].StartsWith("buyCosmetic/",StringComparison.Ordinal)||collectionCommands[collectionIndex].StartsWith("evolution/",StringComparison.Ordinal))
+            {
+                var bounds=screen.CollectionListBounds;
+                if(target.Y<bounds.Min.Y+12||target.Y>bounds.Max.Y-12)
+                {
+                    input.AddMousePosEvent((bounds.Min.X+bounds.Max.X)*.5f,(bounds.Min.Y+bounds.Max.Y)*.5f);
+                    input.AddMouseWheelEvent(0,target.Y<bounds.Min.Y?5:-5);cooldown=3;return;
+                }
+            }
             input.AddMousePosEvent(target.X, target.Y); input.AddMouseButtonEvent(0, true); down = true; return;
         }
         if (collectionProfile is not null && farmIndex < farmCommands.Length)
@@ -92,6 +125,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
         if (pauseChecks.TryGetValue(index, out var pauseCheck)) { if (pauseCheck.Input(screen)) pauseChecks.Remove(index); cooldown = 3; return; }
+        if (index == 9 && !playbackSpeed.Done) { playbackSpeed.Input(screen); cooldown = 3; return; }
+        if (index == 9 && !codex.LiveDone) { codex.LiveInput(screen); return; }
         if (index == 9 && traitHoverStep < 2)
         {
             if (traitHoverStep == 0)
@@ -221,6 +256,14 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if(incubator.CaptureRequested is { } incubatorCapture)
+        {
+            if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,incubatorCapture+".bmp"),size.X,size.Y);
+            incubator.CaptureRequested=null;
+        }
+        if(!home.Done){home.Verify(screen,size,capture);return false;}
+        if(!codex.HomeDone){codex.Verify(screen,size,capture,false);return false;}
+        if(index==9&&!codex.LiveDone)codex.Verify(screen,size,capture,true);
         if (gameplayVerified)
         {
             if (loot.Capture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"loot.bmp"),size.X,size.Y);
@@ -290,23 +333,42 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "drag.bmp"), size.X, size.Y);
         if (collectionProfile is not null && !collectionVerified)
         {
+            if(collectionIndex==1&&!collectionFilters.Done)collectionFilters.Verify(screen,collectionProfile,size,capture);
+            collectionPreviews.Capture(screen,size,capture);
+            double eggAge=screen.EggHatchAge;
+            if(eggAge>=0)
+            {
+                string? stage=null;
+                if(eggAge>.3&&eggAge<1.2&&!eggWobble){eggWobble=true;stage="wobble";}
+                if(eggAge>1.4&&eggAge<2&&!eggCrack){eggCrack=true;stage="crack";}
+                if(eggAge>2.1&&eggAge<2.4&&!eggBurst){eggBurst=true;stage="burst";}
+                if(eggAge>=2.43&&!screen.EggHatchBusy&&!eggReveal){eggReveal=true;stage="reveal";if(screen.CollectionPreviewDrawCalls<=0)throw new InvalidOperationException("Egg reward omitted its cosmetic preview.");}
+                if(stage is not null && capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"egg-"+stage+".bmp"),size.X,size.Y);
+            }
             if(evolutionSmoke && screen.EvolutionTransitionTime>1 && screen.EvolutionTransitionTime<2.5 && !transformWhite)
             {
                 if(screen.EvolutionRaysOpacity!=1)throw new InvalidOperationException("Transformation rays did not fade in.");
                 if(screen.EvolutionFloorDrawn)throw new InvalidOperationException("Evolution floor remained visible during white stage.");
                 var savedForm=LegendEvolution.Discovery(collectionProfile.Storage.GetValueOrDefault("dt.legendevo.v1"),"bukamon").Current;
                 if(screen.DisplayedEvolutionForm!="bukamon" || savedForm=="bukamon" || screen.EvolutionAnnouncementVisible)throw new InvalidOperationException("Evolution revealed the saved result before the transformation finished.");
+                if(screen.EvolutionTreeKnownPortraits!=1)throw new InvalidOperationException("Inline evolution tree revealed the new discovery before the transformation finished.");
                 transformWhite=true;if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"transform-white.bmp"),size.X,size.Y);
             }
             if(evolutionSmoke && screen.EvolutionTransitionTime>2.87 && screen.EvolutionTransitionTime<2.95 && !transformFlash)
             {
                 transformFlash=true;if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"transform-flash.bmp"),size.X,size.Y);
             }
+            if(evolutionSmoke && collectionIndex==11 && !screen.EvolutionBusy && screen.EvolutionAnnouncementOpacity is > .1 and < .95)
+            {
+                if(screen.EvolutionAnnouncementSlide is <= 0 or >= 6 || screen.EvolutionAnnouncementLines<1)throw new InvalidOperationException("Evolution announcement did not slide over its stage.");
+                if(!settledPreview && !announcementFadedIn) { announcementFadedIn=true;if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"announcement-in.bmp"),size.X,size.Y); }
+                if(settledPreview && !announcementFadedOut) { announcementFadedOut=true;if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"announcement-out.bmp"),size.X,size.Y); }
+            }
             if (collectionIndex == 4 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "collection.bmp"), size.X, size.Y);
             if (collectionIndex == collectionCommands.Length - 1 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "egg.bmp"), size.X, size.Y);
             if(evolutionSmoke && collectionIndex==12 && cooldown==1)
             {
-                if(treeScrolled && screen.EvolutionTreeScroll<=0) throw new InvalidOperationException("Illustrated evolution tree did not scroll.");
+                if(treeScrolled && screen.EvolutionTreeScrollMax>0 && screen.EvolutionTreeScroll<=0) throw new InvalidOperationException("Illustrated evolution tree did not scroll.");
                 if(screen.EvolutionTreePortraits!=screen.EvolutionTreeNodes) throw new InvalidOperationException("Evolution tree omitted portraits.");
                 if(screen.EvolutionTreeNodes!=LegendEvolution.Tree("bukamon").Tiers.Sum(t=>t.Length)) throw new InvalidOperationException("Evolution tree omitted reachable forms.");
                 if(capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"evolution-tree.bmp"),size.X,size.Y);
@@ -314,6 +376,10 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if(evolutionSmoke && collectionIndex==11 && screen.EvolutionTransitionTime==0 && !screen.EvolutionBusy && !settledPreview)
             {
                 if(screen.DisplayedEvolutionForm!=LegendEvolution.Discovery(collectionProfile.Storage.GetValueOrDefault("dt.legendevo.v1"),"bukamon").Current || !screen.EvolutionAnnouncementVisible)throw new InvalidOperationException("Evolution completion did not reveal the saved form and announcement.");
+                if(screen.EvolutionAnnouncementOpacity!=1 || screen.EvolutionAnnouncementSlide!=0 || screen.EvolutionAnnouncementLines<1)throw new InvalidOperationException("Evolution completion announcement did not settle into its stage overlay.");
+                if(screen.EvolutionStageWidth!=330 || screen.EvolutionStageHeight!=(size.Y<=800?196:230))throw new InvalidOperationException("Evolution stage did not use the source responsive dimensions.");
+                if(screen.EvolutionTreeNodes!=LegendEvolution.Tree("bukamon").Tiers.Sum(t=>t.Length) || screen.EvolutionTreePortraits!=screen.EvolutionTreeNodes || screen.EvolutionTreePortraitSize<25)throw new InvalidOperationException("Care panel omitted its simultaneously visible adaptive evolution tree.");
+                if(screen.EvolutionAnnouncementInkPixels<20 || screen.EvolutionAnnouncementShadowPixels<20)throw new InvalidOperationException("Evolution announcement omitted its native glyph mask or gold shadow.");
                 if(screen.EvolutionRaysOpacity!=0)throw new InvalidOperationException("Transformation rays did not fade out.");
                 settledPreview=true;
                 if(!screen.EvolutionFloorDrawn)throw new InvalidOperationException("Evolution floor did not return after transformation.");
@@ -332,11 +398,12 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 var record = legends["legends"]!["bukamon"]!;
                 if (record["xp"]!.GetValue<int>() < 200 || record["form"]!.GetValue<string>() == "bukamon" || record["nonce"]!.GetValue<int>() != 1 || record["care"]!["food"]!.GetValue<int>() != 1 || record["path"]!.AsArray().Count != 1)
                     throw new InvalidOperationException("Evolution actions did not persist the expected level, form, care and nonce.");
-                if(!transformWhite || !transformFlash || !announcementExpired)throw new InvalidOperationException("Evolution transition did not traverse white/flash stages.");
+                if(!transformWhite || !transformFlash || !announcementExpired || !announcementFadedIn || !announcementFadedOut)throw new InvalidOperationException("Evolution transition did not traverse white/flash and announcement fade stages.");
                 Console.WriteLine("Evolution UI smoke passed: buy levels, feed, digivolve, revert and digivolve again.");
             }
             if (wallet["owned"]!["legend"]!.AsArray().Count < 3 && !legends["legends"]!.AsObject().Any(x => x.Value?["xp"]?.GetValue<int>() > 0))
                 throw new InvalidOperationException("Egg granted neither an item nor duplicate Digi-Data.");
+            if(!eggWobble||!eggCrack||!eggBurst||!eggReveal)throw new InvalidOperationException("Egg opening skipped its original wobble/crack/burst/reveal stages.");
             collectionVerified = true;
             farmInitialBits = collection.Bits;
             Console.WriteLine("Collection UI smoke passed: purchase, equipment, egg confirmation, wallet debit and hatch reward persistence.");
@@ -356,8 +423,15 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 throw new InvalidOperationException("Farm room management persistence failed.");
             farmVerified = true; Console.WriteLine("Farm UI smoke passed: feed, play, praise, pet, lights and saved rewards.");
         }
-        if (index == 0 && cooldown == 1 && capture is not null)
-            FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "menu.bmp"), size.X, size.Y);
+        if (index == 0 && cooldown == 1)
+        {
+            if(!screen.HomeLayoutFits || screen.HomeHeroArt is null || screen.HomeLegendDrawCalls==0)
+                throw new InvalidOperationException("Home omitted its selected set artwork, live Little Legend or responsive panel layout.");
+            foreach(string key in new[]{"start","multiplayer","homeRuleset","reconnectAudio"})
+                if(!screen.Buttons.TryGetValue(key,out var point) || point.X<0 || point.X>=size.X || point.Y<0 || point.Y>=size.Y)
+                    throw new InvalidOperationException("Home control is not visible inside the supported window: "+key);
+            if (capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "menu.bmp"), size.X, size.Y);
+        }
         if (index == 9 && cooldown == 1 && !planningCaptured)
         {
             if (screen.Session!.State.Players[0].Roster.Board.Count != 2 || screen.PlanningDrawCalls == 0 || screen.BoardDrawCalls <= 75)

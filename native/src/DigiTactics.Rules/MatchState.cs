@@ -79,6 +79,8 @@ public sealed class MatchState
     public IReadOnlyList<MatchPlayer> Players { get; }
     public IReadOnlyList<MatchTeam> Teams { get; }
     public bool Duos { get; }
+    public bool Chaos { get; internal set; }
+    public bool ChaosPace { get; internal set; }
     public bool Over { get; private set; }
     public bool PlayOut { get; set; }
     public int[]? GizmosGates { get; set; }

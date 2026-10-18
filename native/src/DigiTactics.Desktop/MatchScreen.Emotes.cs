@@ -71,9 +71,10 @@ internal sealed partial class MatchScreen
     private void EmotePanel()
     {
         EnsureEmotes(); long now = Environment.TickCount64;
-        bool keyboard = !ImGui.GetIO().WantTextInput;
-        if (keyboard && ImGui.IsKeyPressed(ImGuiKey.T, false)) { showEmotes = !showEmotes; if (showEmotes) showSoundboard = false; }
+        bool keyboard = SocialKeyboardAllowed;
+        if (keyboard && ImGui.IsKeyPressed(ImGuiKey.T, false)) { showEmotes = !showEmotes; if (showEmotes) showSoundboard = false;overlayShortcutConsumed=true; }
         if (!showEmotes) return;
+        if(keyboard&&Enumerable.Range(0,6).Any(SlotKeyPressed))overlayShortcutConsumed=true;
         Window("Emotes", size.X / 2 - 220, Top + 20, 440, 540);
         ImGui.Text("Three emotes per six seconds - T to close"u8);
         try
@@ -86,7 +87,7 @@ internal sealed partial class MatchScreen
                 if (id is not null) emoteArtwork.Draw(id, now % 2600, ImGui.GetCursorScreenPos(), 60);
                 ImGui.Dummy(new(60, 60)); ImGui.SameLine();
                 ImGui.BeginDisabled(IsSpectating || id is null);
-                if (Button("emote/" + i, $"{i + 1}: {CosmeticCollection.Item("emote", id)?.Name ?? "Empty slot"}", 320, 50) || keyboard && !IsSpectating && ImGui.IsKeyPressed((ImGuiKey)((int)ImGuiKey._1 + i), false))
+                if (Button("emote/" + i, $"{i + 1}: {CosmeticCollection.Item("emote", id)?.Name ?? "Empty slot"}", 320, 50) || keyboard && !IsSpectating && SlotKeyPressed(i))
                 {
                     if (id is not null && emotes.Send(collection, id, localSeat, now, networkRoom is null ? null : clip => networkRoom.SendEffect(JsonSerializer.SerializeToElement(new { s = localSeat, kind = "emote", id = clip })))) showEmotes = false;
                     else status = "Too many emotes. Wait a few seconds.";

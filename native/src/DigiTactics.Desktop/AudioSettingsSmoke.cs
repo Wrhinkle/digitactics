@@ -32,6 +32,18 @@ internal static class AudioSettingsSmoke
             audio.MusicVolume = 0; audio.BoardVolume = 0;
             using (var restart = new AudioSettingsBinding(audio, new NativeProfileStore(directory), directory))
                 if (audio.MusicSource != "builtin" || audio.MusicVolume != .9f || audio.BoardVolume != .7f) throw new InvalidOperationException("Restart did not preserve native edits over imported preferences.");
+            using (var reset = new AudioSettingsBinding(audio, profile, directory))
+            {
+                audio.MusicVolume = .12f; reset.Update(.1);
+                if (!profile.Reset("RESET")) throw new InvalidOperationException(profile.Error);
+                reset.Update(.1);
+                if (audio.MusicVolume != .6f || audio.EffectsVolume != .8f || audio.BoardVolume != .8f || audio.Muted || audio.MusicOff || audio.MuteOthers || audio.MusicSource != "builtin")
+                    throw new InvalidOperationException("Reset did not apply fresh mixer defaults before flushing pending edits.");
+                if (File.Exists(Path.Combine(profile.DataDirectory, "audio-settings.json"))) throw new InvalidOperationException("Pending pre-reset edit leaked into fresh preferences.");
+                audio.MusicVolume = .45f;
+            }
+            if (new AudioSettingsStore(Path.Combine(profile.DataDirectory, "audio-settings.json")).Settings.Music != .45f)
+                throw new InvalidOperationException("Post-reset settings were not written to the active generation.");
             Console.WriteLine("Audio settings smoke passed: late profile import applies all controls, locked writes retry, exit flushes edits, restart preserves native choices.");
         }
         finally

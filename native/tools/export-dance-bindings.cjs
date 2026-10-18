@@ -13,7 +13,7 @@ async function main(){
  vm.runInContext(source.slice(source.indexOf('const WORDS ='),source.indexOf('// ---------- LegendView driver')).replace(/export /g,'')+';this.Dancer=Dancer;this.applyRoot=applyRoot;',ctx);
  vm.runInContext(render.slice(render.indexOf('const IDLE_RE'),render.indexOf('// undefined = still loading')).replace('export function','function')+';this.prepareTemplate=prepareTemplate;',ctx);
  const bindings={},fixtures=[];
- const sources=[...new Set([...Object.values(companions.bases),...Object.values(companions.forms)].map(v=>v.source))];
+ const sources=[...new Set([...Object.values(companions.bases),...Object.values(companions.forms)].map(v=>v.source).concat(Object.values(models.variants).flatMap(lines=>Object.values(lines).flat()).filter(Boolean)))];
  for(const key of sources){
   const source=models.sources[key],asset=models.assets[source.asset];
   const bytes=zlib.gunzipSync(fs.readFileSync(path.join(root,'native/artifacts/model-content',asset.file))),len=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+len)),binary=bytes.subarray(28+len);
@@ -23,9 +23,18 @@ async function main(){
   const nodes=await Promise.all(json.nodes.map((_,i)=>parser.getDependency('node',i)));
   const template=ctx.prepareTemplate(gltf,source.metadata.companion?null:source.metadata);
   const dancer=new ctx.Dancer(template.root);
-  const binding={limbless:dancer.limbless,stubby:dancer.stubby,yaw:dancer.rig.yaw,bones:dancer.E.map(e=>{
+  // Several authored rigs hide attachments by zeroing an ancestor scale. Three's matrix
+  // decomposition yields NaN rotations for those invisible bones; retain their idle pose
+  // instead of exporting NaNs. Every visible/finite source binding stays unchanged.
+  const finite=q=>q.toArray().every(Number.isFinite);
+  const visible=e=>{const bone=dancer.rig.bones[e.bi];return finite(bone.P0)&&finite(bone.q0)&&finite(bone.dir);};
+  const retained=dancer.E.map((e,i)=>visible(e)?i:-1).filter(i=>i>=0),remap=new Map(retained.map((old,i)=>[old,i]));
+  const binding={limbless:dancer.limbless,stubby:dancer.stubby,yaw:dancer.rig.yaw,
+   hiddenAttachments:dancer.E.filter(e=>!visible(e)).map(e=>{const bone=dancer.rig.bones[e.bi];let o=bone.bone,hidden=false;while(o){hidden ||= o.scale.x===0||o.scale.y===0||o.scale.z===0;o=o.parent;}if(!hidden)throw Error('Nonfinite visible dance bone '+key+'/'+bone.name);return nodes.indexOf(bone.bone);}),
+   bones:retained.map(old=>{const e=dancer.E[old];
    const bone=dancer.rig.bones[e.bi],node=nodes.indexOf(bone.bone);if(node<0)throw Error('Unmapped bone '+key+'/'+bone.name);
-   return {node,kind:e.kind,parentEntry:e.pe,direction:bone.dir.toArray(),parentRotation:bone.P0.toArray(),restRotation:bone.q0.toArray(),side:e.side||0,share:e.share??1,index:e.n||0,limit:e.lim||0};
+   let parent=e.pe;while(parent>=0&&!remap.has(parent))parent=dancer.E[parent].pe;
+   return {node,kind:e.kind,parentEntry:parent<0?-1:remap.get(parent),direction:bone.dir.toArray(),parentRotation:bone.P0.toArray(),restRotation:bone.q0.toArray(),side:e.side||0,share:e.share??1,index:e.n||0,limit:e.lim||0};
   })};
   if(!JSON.stringify(binding).includes('null'))bindings[key]=binding;else throw Error('Nonfinite dance binding '+key);
   const samples=[];
@@ -34,13 +43,13 @@ async function main(){
    for(let i=0;i<dancer.bones.length;i++)dancer.bones[i].quaternion.copy(dancer.rig.bones[i].q0);
    const weight=time<1?.3:1;dancer.set(id);const rt=dancer.apply(time,weight);
    const obj=new THREE.Object3D();obj.position.set(.1,.2,-.3);obj.rotation.set(.17,.37,-.12);obj.scale.setScalar(1.2);ctx.applyRoot(obj,rt,1.2);obj.updateMatrix();delete rt.fq;
-   samples.push({id,time,weight,root:rt,matrix:obj.matrix.toArray(),rotations:dancer.E.map(e=>dancer.bones[e.bi].quaternion.toArray())});
+   samples.push({id,time,weight,root:rt,matrix:obj.matrix.toArray(),rotations:retained.map(old=>dancer.bones[dancer.E[old].bi].quaternion.toArray())});
   }
   fixtures.push({source:key,samples});
   template.root.traverse(o=>{o.geometry?.dispose();for(const m of [].concat(o.material||[]))m.dispose();});
  }
  fs.writeFileSync(path.join(root,'native/content/dance-bindings.json'),JSON.stringify({version:1,bindings}));
  fs.writeFileSync(path.join(root,'native/tests/fixtures/dance-bindings.json.gz'),zlib.gzipSync(JSON.stringify(fixtures)));
- console.log(`Exported ${sources.length} actual companion rigs and ${fixtures.reduce((n,f)=>n+f.samples.length,0)} original dance samples.`);
+ console.log(`Exported ${sources.length} actual companion and battle-unit rigs and ${fixtures.reduce((n,f)=>n+f.samples.length,0)} original dance samples.`);
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

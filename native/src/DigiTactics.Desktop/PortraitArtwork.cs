@@ -31,6 +31,11 @@ internal sealed class PortraitArtwork : IDisposable
         if(!evolutionFiles.TryGetValue(form,out var file)) throw new InvalidDataException($"Missing evolution portrait for {form}.");
         DrawFile(Path.Combine(evolutionFolder,file),position,size,discovered?new ImColor8(255,255,255):new ImColor8(0,0,0));
     }
+    public bool DrawCompanion(string? key,float2 position,float size)
+    {
+        if(key is null || !evolutionFiles.TryGetValue(key.Split('@')[^1],out var file))return false;
+        DrawFile(Path.Combine(evolutionFolder,file),position,size,new ImColor8(255,255,255)); return true;
+    }
     private void DrawFile(string path,float2 position,float size,ImColor8 tint)
     {
         if (!cache.TryGetValue(path,out var entry)) entry=(new(PngImage.Decode(File.ReadAllBytes(path)),new(MinFilter:9729,WrapS:33071,WrapT:33071),false),frame);

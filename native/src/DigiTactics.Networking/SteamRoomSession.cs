@@ -21,6 +21,7 @@ public sealed class SteamRoomSession : IDisposable
     private bool disposed, membershipDirty = true;
     private string lastMetadata = "";
     public NetworkRoom? Room { get; private set; }
+    public bool IsEntering => entering is not null;
     public ulong SteamId => client.SteamId;
     public string Name => client.Name;
     public SteamMatchmaking Matchmaking => client.Matchmaking;

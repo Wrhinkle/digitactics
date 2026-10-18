@@ -3,6 +3,7 @@ namespace DigiTactics.Presentation;
 /// <summary>Original digivolution spin, pulse and increasingly rapid old/new alternation.</summary>
 public sealed class EvolutionTransition
 {
+    public bool MotionEnabled { get; set; } = true;
     public double Time { get; private set; }
     public double? FlashStarted { get; private set; }
     public bool Complete=>FlashStarted is { } start && Time>=start+.26;
@@ -24,9 +25,9 @@ public sealed class EvolutionTransition
         return false;
     }
     public double RayOpacity=>Complete
-        ? 1-CssEase(Math.Clamp((Time-FlashStarted!.Value-.26)/.4,0,1),.25,.1,.25,1)
-        : CssEase(Math.Min(1,Time/.4),.25,.1,.25,1);
-    public double RayAngle=>Complete?0:Time/2.4*Math.PI*2;
+        ? 1-CssEase(Math.Clamp((Time-FlashStarted!.Value-.26)/(MotionEnabled ? .4 : .001),0,1),.25,.1,.25,1)
+        : CssEase(Math.Min(1,Time/(MotionEnabled ? .4 : .001)),.25,.1,.25,1);
+    public double RayAngle=>Complete || !MotionEnabled && Time>=.001?0:Time/(MotionEnabled?2.4:.001)*Math.PI*2;
     private static double CssEase(double x,double x1,double y1,double x2,double y2)
     {
         if(x<=0)return 0;if(x>=1)return 1;
@@ -39,7 +40,7 @@ public sealed class EvolutionTransition
         get
         {
             if(FlashStarted is not { } start)return 0;
-            double t=(Time-start)/.9;
+            double t=(Time-start)/(MotionEnabled ? .9 : .001);
             if(t<.18)return Ease(t/.18);
             if(t<.45)return 1;
             return t<1?1-Ease((t-.45)/.55):0;

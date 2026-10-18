@@ -24,11 +24,15 @@ public sealed class ProfileImport
 
 /// <summary>First-import transaction. The preserved archive is durable before the native profile
 /// becomes visible. Existing native profiles are never merged or replaced implicitly.</summary>
-public sealed class NativeProfileStore
+public sealed partial class NativeProfileStore
 {
     private readonly string directory, path;
     private string? loadedText;
     private bool readOnly;
+    private string? generation;
+    private bool freshReset;
+    public string DataDirectory => generation is null ? directory : Path.Combine(directory, "profiles", generation);
+    public bool CanImport => !Exists || !readOnly && freshReset && Storage.Count == 0;
     public bool Exists => File.Exists(path);
     public string? Error { get; private set; }
     public IReadOnlyDictionary<string, string> Storage { get; private set; } = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
@@ -42,6 +46,13 @@ public sealed class NativeProfileStore
             loadedText = File.ReadAllText(path);
             using var doc = JsonDocument.Parse(loadedText);
             if (doc.RootElement.GetProperty("version").GetInt32() != 1) throw new InvalidDataException("Unsupported native profile version.");
+            if (doc.RootElement.TryGetProperty("generation", out var savedGeneration))
+            {
+                string? value = savedGeneration.GetString();
+                if (value is null || !Guid.TryParseExact(value, "N", out _)) throw new InvalidDataException("Invalid profile generation.");
+                generation = value;
+            }
+            freshReset = doc.RootElement.TryGetProperty("freshReset", out var reset) && reset.GetBoolean();
             Storage = new ReadOnlyDictionary<string, string>(doc.RootElement.GetProperty("storage").EnumerateObject()
                 .ToDictionary(p => p.Name, p => p.Value.GetString() ?? throw new JsonException("Saved values must be strings."), StringComparer.Ordinal));
         }
@@ -52,16 +63,19 @@ public sealed class NativeProfileStore
     {
         Directory.CreateDirectory(directory);
         using var guard = new FileStream(path + ".lock", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-        if (Exists) throw new IOException("A native profile already exists. It has not been replaced.");
+        string? current = Exists ? File.ReadAllText(path) : null;
+        if (!CanImport || current != loadedText) throw new IOException("A native profile already exists or changed. It has not been replaced.");
         var staged = LegacyProfileArchive.Stage(candidate.Bytes, Path.Combine(directory, "imports"));
         if (staged.Summary != candidate.Summary) throw new InvalidDataException("The profile backup changed after preview.");
-        byte[] data = JsonSerializer.SerializeToUtf8Bytes(new { version = 1, sourceSha256 = candidate.Summary.Sha256, storage = candidate.Storage }, new JsonSerializerOptions { WriteIndented = true });
+        var document = new JsonObject { ["version"] = 1, ["sourceSha256"] = candidate.Summary.Sha256, ["storage"] = JsonSerializer.SerializeToNode(candidate.Storage) };
+        if (generation is not null) document["generation"] = generation;
+        byte[] data = JsonSerializer.SerializeToUtf8Bytes(document, new JsonSerializerOptions { WriteIndented = true });
         string temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
         try
         {
             using (var file = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None)) { file.Write(data); file.Flush(true); }
-            File.Move(temporary, path);
-            Storage = candidate.Storage; loadedText = System.Text.Encoding.UTF8.GetString(data); Error = null;
+            if (current is null) File.Move(temporary, path); else File.Replace(temporary, path, path + ".bak");
+            Storage = candidate.Storage; loadedText = System.Text.Encoding.UTF8.GetString(data); freshReset = false; Error = null;
         }
         finally { if (File.Exists(temporary)) File.Delete(temporary); }
     }
@@ -77,6 +91,7 @@ public sealed class NativeProfileStore
             if (current != loadedText) { readOnly = true; Error = "Your profile changed in another app instance. Restart before saving more progress."; return false; }
             var next = current is null ? new JsonObject { ["version"] = 1, ["storage"] = new JsonObject() } : JsonNode.Parse(current)!.AsObject();
             var values = next["storage"]!.AsObject();
+            if (changes.Count > 0) next.Remove("freshReset");
             var updated = new Dictionary<string, string>(Storage, StringComparer.Ordinal);
             foreach (var (key, value) in changes)
             {
@@ -89,7 +104,7 @@ public sealed class NativeProfileStore
             using (var file = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             { file.Write(System.Text.Encoding.UTF8.GetBytes(json)); file.Flush(true); }
             if (current is null) File.Move(temporary, path); else File.Replace(temporary, path, path + ".bak");
-            temporary = null; loadedText = json; Storage = new ReadOnlyDictionary<string, string>(updated); Error = null; return true;
+            temporary = null; loadedText = json; Storage = new ReadOnlyDictionary<string, string>(updated); if (changes.Count > 0) freshReset = false; Error = null; return true;
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException)
         { Error = "Progress could not be saved: " + error.Message; return false; }
@@ -100,7 +115,7 @@ public sealed class NativeProfileStore
     }
     public MusicLibrary OpenMusicLibrary()
     {
-        var library = new MusicLibrary(Path.Combine(directory, "music"));
+        var library = new MusicLibrary(Path.Combine(DataDirectory, "music"));
         if (loadedText is null || readOnly) return library;
         using var document = JsonDocument.Parse(loadedText);
         if (!document.RootElement.TryGetProperty("sourceSha256", out var source)) return library;

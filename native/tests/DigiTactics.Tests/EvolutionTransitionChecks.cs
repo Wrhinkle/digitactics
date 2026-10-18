@@ -26,6 +26,17 @@ internal static class EvolutionTransitionChecks
         if(!effect.Advance(2.7)||effect.Complete||effect.FlashOpacity!=0)throw new InvalidOperationException("Transformation flash did not start once.");
         if(effect.Advance(.26)||!effect.Complete||!effect.ShowNew||effect.White||effect.Scale!=1||effect.Yaw!=0||effect.FlashOpacity!=1)throw new InvalidOperationException("Transformation did not settle after flash delay.");
         effect.Advance(1);if(effect.FlashOpacity!=0 || effect.RayOpacity!=0)throw new InvalidOperationException("Transformation flash did not fade.");
-        Console.WriteLine($"Evolution transformation: {count-2} source samples, stage artwork and flash/ray/settlement checks passed.");return count+5;
+        var reduced=new EvolutionTransition{MotionEnabled=false};var normal=new EvolutionTransition();
+        foreach(double delta in new[]{.0005,.001,.2,.7,1.8,.002,.26,.002})
+        {
+            reduced.Advance(delta);normal.Advance(delta);
+            if(reduced.Complete!=normal.Complete || reduced.White!=normal.White || reduced.ShowNew!=normal.ShowNew || reduced.Scale!=normal.Scale || reduced.Yaw!=normal.Yaw)
+                throw new InvalidOperationException("Reduced motion must not alter JavaScript transformation timing/model motion.");
+            if(reduced.Time>=.001 && reduced.RayAngle!=0)throw new InvalidOperationException("Reduced-motion rays must stop after one 1ms spin.");
+            if(reduced.FlashStarted is {} start && reduced.Time>=start+.001 && reduced.FlashOpacity!=0)throw new InvalidOperationException("Reduced-motion flash must finish in 1ms.");
+            count++;
+        }
+        if(reduced.RayOpacity!=0)throw new InvalidOperationException("Reduced-motion rays did not disappear after settlement.");
+        Console.WriteLine($"Evolution transformation: {data.RootElement.GetArrayLength()} source samples, stage artwork, flash/ray/settlement and reduced-motion checks passed.");return count+5+EvolutionAnnouncementChecks.Run(root);
     }
 }

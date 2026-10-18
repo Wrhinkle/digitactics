@@ -3,11 +3,12 @@ namespace DigiTactics.Rules;
 /// <summary>Owns the match loop, from planning through native combat and settlement.</summary>
 public sealed class MatchPlanningSession
 {
-    public MatchPlanningSession(Ruleset rules, uint seed, IReadOnlyList<MatchSeat> seats, bool duos = false, int[][]? teams = null)
+    public MatchPlanningSession(Ruleset rules, uint seed, IReadOnlyList<MatchSeat> seats, bool duos = false, int[][]? teams = null,bool chaos=false,bool chaosPace=false)
     {
         MatchRounds? rounds = null;
         MatchPhase Phase() => rounds?.Phase ?? MatchPhase.Planning;
         State = MatchStart.Create(rules, seed, seats, () => rounds?.Position ?? RoundPosition.First, duos, teams);
+        State.Chaos=chaos;State.ChaosPace=chaosPace;
         Units = State.Units!;
         CombatProjection = new(State);
         Offers = new(State, Units, Phase);

@@ -28,15 +28,17 @@ public static class NativeProcessSupervisor
             if(start.UseShellExecute)throw new ArgumentException("Native child launch must not use a shell.");
             // A normal launch must not inherit a stale startup capability.
             start.Environment.Remove(NativeStartupSignal.PipeVariable);start.Environment.Remove(NativeStartupSignal.TokenVariable);
-            using var listener=selection.TrialToken is null?null:new NativeStartupListener();
+            bool renderedStartup=selection.TrialToken is not null || NativeGameInstance.IsInteractiveLaunch(start.ArgumentList.ToArray());
+            using var listener=renderedStartup?new NativeStartupListener():null;
             using var deadline=CancellationTokenSource.CreateLinkedTokenSource(cancellation);
             Task? ready=null;
             if(listener is not null)
             {
+                string token=selection.TrialToken??Guid.NewGuid().ToString("N");
                 start.Environment[NativeStartupSignal.PipeVariable]=listener.PipeName;
-                start.Environment[NativeStartupSignal.TokenVariable]=selection.TrialToken;
+                start.Environment[NativeStartupSignal.TokenVariable]=token;
                 deadline.CancelAfter(timeout);
-                ready=listener.WaitReady(selection.TrialToken!,deadline.Token);
+                ready=listener.WaitReady(token,deadline.Token);
             }
             Process? child=null;NativeChildProcess? lifetime=null;
             try
@@ -49,15 +51,21 @@ public static class NativeProcessSupervisor
                 {
                     await Task.WhenAny(ready,exited).ConfigureAwait(false);
                     cancellation.ThrowIfCancellationRequested();
+                    if(exited.IsCompletedSuccessfully && child.ExitCode==NativeGameInstance.ForwardedExitCode)
+                    {
+                        if(selection.TrialToken is not null && !state.DeferTrial(selection.TrialToken))throw new InvalidOperationException("Forwarded startup trial disappeared.");
+                        return new(0,rolledBack,failure);
+                    }
                     if(ready.IsCompletedSuccessfully)
                     {
-                        if(!state.Confirm(selection.TrialToken!))throw new InvalidOperationException("Startup trial disappeared before confirmation.");
+                        if(selection.TrialToken is not null && !state.Confirm(selection.TrialToken))throw new InvalidOperationException("Startup trial disappeared before confirmation.");
                         deadline.CancelAfter(Timeout.InfiniteTimeSpan);
                     }
                     else
                     {
                         failure=ready.IsFaulted?ready.Exception!.GetBaseException().Message:ready.IsCanceled?"Startup did not become ready before its deadline.":"Game exited before startup was ready.";
                         await Stop(child).ConfigureAwait(false);
+                        if(selection.TrialToken is null)return new(child.ExitCode==0?1:child.ExitCode,rolledBack,failure);
                         state.Rollback(selection.TrialToken!);rolledBack=true;continue;
                     }
                 }

@@ -20,11 +20,16 @@ internal sealed partial class ModelRenderer : IDisposable
     public float ShadowBias { get; set; } = -.0015f;
     public bool ReceiveShadow { get; set; }
     public bool EvolutionStage { get; set; }
+    public bool CosmeticStage { get; set; }
+    public bool EliminationStage { get; set; }
+    public Vector3 EliminationRim { get; set; } = Vector3.One;
+    public float EliminationRimIntensity { get; set; } = 3;
+    public bool SilhouetteOverride { get; set; }
     private static readonly Vector3 stageGround=BoardLighting.Linear("#3a4660"),stageKey=BoardLighting.Linear("#fff6e8"),stageRim=BoardLighting.Linear("#9fd0ff");
     public bool WhiteOverride { get; set; }
     private void SetFarmLight(Vector3 emissive = default, float roughness = -1, float metalness = 0, bool fog = true)
     {
-        program.Uniform(15, EvolutionStage ? 3 : BoardLight is not null ? 2 : FarmLight is null ? 0 : 1);
+        program.Uniform(15, (EvolutionStage || EliminationStage || CosmeticStage) ? 3 : BoardLight is not null ? 2 : FarmLight is null ? 0 : 1);
         program.Uniform(16, new Brutal.Numerics.float4((float)(FarmLight?.Hemisphere ?? 0), (float)(FarmLight?.Sun ?? 0), (float)(FarmLight?.Lamp ?? 0), 0));
         void V(int location, Vector3 value, float w = 0) => program.Uniform(location, new Brutal.Numerics.float4(value.X,value.Y,value.Z,w));
         if (BoardLight is { } board)
@@ -33,12 +38,22 @@ internal sealed partial class ModelRenderer : IDisposable
             V(37,BoardLighting.Srgb(board.FogColor)); V(38,new(board.FogNear,board.FogFar,fog ? 1 : 0));
         }
         else V(38,Vector3.Zero);
+        if(CosmeticStage)
+        {
+            V(33,Vector3.One,2.2f);V(34,stageGround);V(35,stageKey,2.4f);V(36,Vector3.Normalize(new(1.5f,3,4)));
+            V(41,Vector3.Zero);V(42,Vector3.UnitY);V(38,Vector3.Zero);
+        }
         if(EvolutionStage)
         {
             V(33,Vector3.One,2.2f);V(34,stageGround);V(35,stageKey,2.4f);V(36,Vector3.Normalize(new(1.5f,3,4)));
             V(41,stageRim,1.2f);V(42,Vector3.Normalize(new(-3,2,-2)));V(38,Vector3.Zero);
         }
-        program.Uniform(40, WhiteOverride ? 1 : 0);
+        if(EliminationStage)
+        {
+            V(33,Vector3.One,2.2f);V(34,BoardLighting.Linear("#334455"));V(35,Vector3.One,2.2f);V(36,Vector3.Normalize(new(2,4,5)));
+            V(41,EliminationRim,EliminationRimIntensity);V(42,Vector3.Normalize(new(-3,2,-4)));V(38,Vector3.Zero);
+        }
+        program.Uniform(40, WhiteOverride ? 1 : SilhouetteOverride ? 2 : 0);
         program.Uniform(17, new Brutal.Numerics.float4(emissive.X, emissive.Y, emissive.Z, 0));
         program.Uniform(18, new Brutal.Numerics.float4(FarmEye.X, FarmEye.Y, FarmEye.Z, 0));
         program.Uniform(19, new Brutal.Numerics.float4(roughness, metalness, 0, 0));
@@ -69,6 +84,7 @@ internal sealed partial class ModelRenderer : IDisposable
     {
         OpenGl.Viewport(0, 0, width, height);
         OpenGl.Native.glEnable(GlCapability.DepthTest);
+        OpenGl.Native.glDepthFunc((GlFunc)OpenGl.GL_LEQUAL);
         OpenGl.Native.glDisable(GlCapability.ScissorTest);
         OpenGl.Native.glDisable((GlCapability)OpenGl.GL_FRAMEBUFFER_SRGB);
         OpenGl.Native.glDepthMask(true); if (clearDepth) OpenGl.Clear(GlClearBit.Depth);
@@ -127,7 +143,7 @@ internal sealed partial class ModelRenderer : IDisposable
                 SetSides(material.DoubleSided ? 2 : 0);
                 if (transparent) { OpenGl.Native.glEnable((GlCapability)OpenGl.GL_BLEND); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
                 else OpenGl.Native.glDisable((GlCapability)OpenGl.GL_BLEND);
-                if(EvolutionStage && transparent) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA,OpenGl.GL_ONE_MINUS_SRC_ALPHA,OpenGl.GL_ONE,OpenGl.GL_ONE_MINUS_SRC_ALPHA);
+                if((EvolutionStage || EliminationStage || CosmeticStage) && transparent) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA,OpenGl.GL_ONE_MINUS_SRC_ALPHA,OpenGl.GL_ONE,OpenGl.GL_ONE_MINUS_SRC_ALPHA);
                 OpenGl.Native.glDepthMask(ShadowPass || material.DepthWrite);
                 primitives[offset + i].Draw(); DrawCalls++;
             }
@@ -152,16 +168,17 @@ internal sealed partial class ModelRenderer : IDisposable
         geometry.Draw();
     }
     public void Dispose() { ClearTransparency(); OpenGl.DeleteBuffers(new[] { bones }); program.Dispose(); }
-    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false, PointSprite? points = null, bool fog = true,GpuTexture? emissiveMap=null, int renderOrder=0, double? sortDepth=null)
+    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false, PointSprite? points = null, bool fog = true,GpuTexture? emissiveMap=null, int renderOrder=0, double? sortDepth=null,bool? receiveShadow=null)
     {
         if (collecting && transparent && !ShadowPass)
         {
             Enqueue(renderOrder, sortDepth ?? Depth(new(geometry.SortCenter.X, geometry.SortCenter.Y, geometry.SortCenter.Z), world, camera),
-                () => DrawRoom(geometry, world, camera, color, texture, unlit, transparent, depthWrite, emissive, roughness, metalness, side, shadowSide, additive, vertexColors, flatShading, alphaTest, wireframe, points, fog, emissiveMap));
+                () => DrawRoom(geometry, world, camera, color, texture, unlit, transparent, depthWrite, emissive, roughness, metalness, side, shadowSide, additive, vertexColors, flatShading, alphaTest, wireframe, points, fog, emissiveMap,receiveShadow:receiveShadow));
             return;
         }
         program.Use(); Matrix(0, world); Matrix(4, From(camera));
         SetFarmLight(emissive, roughness, metalness, fog);
+        if(receiveShadow is {} receive)program.Uniform(24,!ShadowPass && receive && ShadowTexture!=0?1:0);
         program.Uniform(21,emissiveMap is null?0:1);OpenGl.BindTextureUnit(3,emissiveMap?.Id??0);
         program.Uniform(8, 0); program.Uniform(9, flatShading ? 0 : 1); program.Uniform(10, unlit ? 1 : 0); program.Uniform(11, alphaTest);
         program.Uniform(29, vertexColors && geometry.HasColors ? 1 : 0);
@@ -172,7 +189,7 @@ internal sealed partial class ModelRenderer : IDisposable
         OpenGl.Native.glFrontFace(determinant < 0 ? GlFrontFace.Clockwise : GlFrontFace.CounterClockwise);
         if (transparent) { OpenGl.Native.glEnable(GlCapability.Blend); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, additive ? OpenGl.GL_ONE : OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
         else OpenGl.Native.glDisable(GlCapability.Blend);
-        if(EvolutionStage && transparent) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA,OpenGl.GL_ONE_MINUS_SRC_ALPHA,OpenGl.GL_ONE,OpenGl.GL_ONE_MINUS_SRC_ALPHA);
+        if((EvolutionStage || EliminationStage || CosmeticStage) && transparent && !additive) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA,OpenGl.GL_ONE_MINUS_SRC_ALPHA,OpenGl.GL_ONE,OpenGl.GL_ONE_MINUS_SRC_ALPHA);
         if (points is not null)
         {
             program.Uniform(30, new Brutal.Numerics.float4(points.Size, points.ViewportHeight * .5f, points.Attenuate ? 1 : 0, 1));
@@ -305,7 +322,8 @@ internal sealed partial class ModelRenderer : IDisposable
             return (f0*(1-fresnel)+vec3(f90*fresnel))*visibility*distribution;
         }
         void main() {
-            if(whiteOverride!=0) { outputColor=vec4(1); return; }
+            if(whiteOverride==1) { outputColor=vec4(1); return; }
+            if(whiteOverride==2) { outputColor=vec4(26.0/255.0,3.0/255.0,3.0/255.0,1); return; }
             vec3 pointUv=vec3(gl_PointCoord.x,1-gl_PointCoord.y,1);
             vec2 mapUv=pointSettings.w!=0 ? vec2(dot(pointU.xyz,pointUv),dot(pointV.xyz,pointUv)) : texCoord;
             vec4 c=color*(textured!=0?texture(colorTexture,mapUv):vec4(1));

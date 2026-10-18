@@ -21,10 +21,10 @@ public sealed class LockstepMatch
     public IReadOnlySet<int> Votes => votes;
     private double? maxCombatMs;
     private static readonly JsonSerializerOptions Json = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
-    public LockstepMatch(Ruleset rules, uint seed, IReadOnlyList<MatchSeat> seats, double planSeconds, long at = 0, bool duos = false, int[][]? teams = null)
+    public LockstepMatch(Ruleset rules, uint seed, IReadOnlyList<MatchSeat> seats, double planSeconds, long at = 0, bool duos = false, int[][]? teams = null,bool chaos=false,bool chaosPace=false)
     {
         if (!double.IsFinite(planSeconds) || planSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(planSeconds));
-        Session = new(rules, seed, seats, duos, teams); PlanMs = planSeconds * 1000; PhaseAt = TurnAt = at;
+        Session = new(rules, seed, seats, duos, teams,chaos,chaosPace); PlanMs = planSeconds * 1000; PhaseAt = TurnAt = at;
     }
     public LockstepResult Apply(JsonElement entry)
     {

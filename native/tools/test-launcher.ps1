@@ -1,5 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$Launcher,[Parameter(Mandatory=$true)][string]$TestsDirectory)
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'NativeProcess.ps1')
 $Launcher=(Resolve-Path -LiteralPath $Launcher).Path
 $TestsDirectory=(Resolve-Path -LiteralPath $TestsDirectory).Path
 $testRoot=Join-Path $env:TEMP ('digitactics-launcher-smoke-'+[Guid]::NewGuid().ToString('N'))
@@ -9,9 +10,7 @@ New-Item -ItemType Directory -Path $bundle | Out-Null
 Copy-Item -Path (Join-Path $TestsDirectory '*') -Destination $bundle
 Copy-Item -LiteralPath (Join-Path $bundle 'DigiTactics.Tests.exe') -Destination (Join-Path $bundle 'DigiTactics.Desktop.exe')
 function Run-Launcher([string[]]$Arguments) {
-    $result=& $Launcher @Arguments
-    if($LASTEXITCODE -ne 0) {throw "Launcher exited $LASTEXITCODE ($Arguments)"}
-    return $result
+    Invoke-Checked $Launcher $Arguments
 }
 $archive=Join-Path $testRoot 'candidate.zip'
 $descriptor=Join-Path $testRoot 'candidate.json'

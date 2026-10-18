@@ -53,6 +53,23 @@ internal static class EvolutionChecks
             if (!JsonNode.DeepEquals(actual, JsonNode.Parse(test.GetProperty("view").GetRawText()))) throw new InvalidOperationException("Evolution mismatch: " + test + " got " + actual);
             checks++;
         }
+        using(var careFile=File.OpenRead(Path.Combine(root,"tests/fixtures/evolution-care.json.gz")))
+        using(var careZip=new GZipStream(careFile,CompressionMode.Decompress))
+        using(var careCases=JsonDocument.Parse(careZip))
+        foreach(var test in careCases.RootElement.EnumerateArray())
+        {
+            string? Read(string name)=>test.GetProperty(name).ValueKind==JsonValueKind.Null?null:test.GetProperty(name).GetRawText();
+            var care=LegendEvolution.Care(Read("legend"),Read("farm"),test.GetProperty("id").GetString()!);
+            if(!JsonNode.DeepEquals(JsonSerializer.SerializeToNode(care.Values,options),JsonNode.Parse(test.GetProperty("values").GetRawText())) || !JsonNode.DeepEquals(JsonSerializer.SerializeToNode(care.Bonus,options),JsonNode.Parse(test.GetProperty("bonus").GetRawText())))throw new InvalidOperationException("Evolution care projection differs from source.");
+            checks++;
+        }
+        using(var layouts=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"tests/fixtures/evolution-tree-layout.json"))))
+        foreach(var test in layouts.RootElement.EnumerateArray())
+        {
+            var layout=DigiTactics.Presentation.EvolutionTreeLayout.Fit(test.GetProperty("width").GetDouble(),test.GetProperty("height").GetDouble(),test.GetProperty("rows").EnumerateArray().Select(v=>v.GetInt32()).ToArray());
+            if(layout.NodeWidth!=test.GetProperty("nodeWidth").GetInt32() || layout.PortraitSize!=test.GetProperty("portraitSize").GetInt32() || layout.ShowNames!=test.GetProperty("showNames").GetBoolean())throw new InvalidOperationException("Evolution tree fit differs from source.");
+            checks++;
+        }
         using var actionsFile = File.OpenRead(Path.Combine(root, "tests/fixtures/evolution-actions.json.gz"));
         using var actionsGzip = new GZipStream(actionsFile, CompressionMode.Decompress);
         using var actions = JsonDocument.Parse(actionsGzip);

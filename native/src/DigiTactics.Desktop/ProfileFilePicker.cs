@@ -14,6 +14,14 @@ internal static unsafe class ProfileFilePicker
         catch { handle.Free(); throw; }
         return completion.Task;
     }
+    public static Task<string?> Save(string defaultName)
+    {
+        var completion = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var handle = GCHandle.Alloc(completion);
+        try { Sdl.PInvoke.ShowSaveFileDialog(&Selected, (void*)GCHandle.ToIntPtr(handle), default, null, 0, defaultName); }
+        catch { handle.Free(); throw; }
+        return completion.Task;
+    }
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void Selected(void* context, byte** files, int filter)
     {

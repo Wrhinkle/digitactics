@@ -10,7 +10,7 @@ internal sealed partial class MatchScreen
     private string? updateError;
     private void UpdatePanel()
     {
-        if(Session is not null || UpdateClient is null)return;
+        if(!ClientHomeVisible || networkRoom is not null || steam?.Room is not null || UpdateClient is null)return;
         UpdateClient.Refresh();var update=UpdateClient.Status;
         if(update is null || update.Phase is "idle" or "current" or "unavailable")return;
         Window("Game update",16,size.Y-100,size.X-32,84);
@@ -23,7 +23,7 @@ internal sealed partial class MatchScreen
                 ImGui.Text($"Update {update.Version??""} is ready. Restart when you're ready to play the new version.");
                 if(Button("restartUpdate","Restart to update"))
                 {
-                    try {RestartForUpdateRequested=UpdateClient.RequestRestart();}
+                    try {RestartForUpdateRequested=UpdateClient.RequestRestart();if(RestartForUpdateRequested && PostgameHomeVisible)LeaveMatch();}
                     catch(Exception error) when(error is IOException or UnauthorizedAccessException) {updateError="Could not request restart. Please close and reopen the game.";}
                 }
                 break;

@@ -6,3 +6,4 @@ const sample=Function('dt',`let t=0;const stage={scene:{},floor:{}},make=()=>({g
 const times=[0,.5,.500001,.9,.900001,2.699999,...Array.from({length:2700},(_,i)=>i/1000)];
 fs.writeFileSync(path.join(root,'native/tests/fixtures/evolution-transition.json'),JSON.stringify(times.map(sample)));
 console.log(`Exported ${times.length} original transformation samples.`);
+require('child_process').execFileSync(process.execPath,[path.join(__dirname,'export-evolution-announcement.cjs')],{stdio:'inherit'});

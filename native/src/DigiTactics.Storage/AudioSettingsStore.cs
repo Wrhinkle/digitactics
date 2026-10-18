@@ -64,6 +64,15 @@ public sealed class AudioSettingsStore
             throw new JsonException("Audio volume must be between 0 and 1.");
     }
     public bool Save(AudioSettings settings) => Save(settings, null);
+    public string ExportLegacy(AudioSettings? current = null, string? fallback = null)
+    {
+        if (ReadOnly) throw new InvalidDataException(Error);
+        var audio = document["audio"] is JsonObject saved ? (JsonObject)saved.DeepClone() : fallback is not null ? JsonNode.Parse(fallback) as JsonObject ?? throw new JsonException("Invalid audio settings.") : new JsonObject();
+        var settings = current ?? (HasSavedSettings ? Settings : ReadAudio(audio)); Validate(settings);
+        audio["music"] = settings.Music; audio["sfx"] = settings.Effects; audio["board"] = settings.Board;
+        audio["muted"] = settings.Muted; audio["musicOff"] = settings.MusicOff; audio["muteOthers"] = settings.MuteOthers; audio["source"] = settings.Source;
+        return audio.ToJsonString();
+    }
     private bool Save(AudioSettings settings, JsonObject? imported)
     {
         if (ReadOnly) return false;

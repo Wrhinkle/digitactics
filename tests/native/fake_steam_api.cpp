@@ -258,8 +258,15 @@ EXPORT bool SteamAPI_ISteamMatchmaking_SetLobbyOwner(void *, uint64_t, uint64_t 
 
 // ---- ISteamFriends ----
 static const uint64_t FRIEND_A = 76561190000000002ull, FRIEND_B = 76561190000000003ull, LOBBY = 109775240000000001ull;
-EXPORT int SteamAPI_ISteamFriends_GetFriendCount(void *, int) { return 2; }
-EXPORT uint64_t SteamAPI_ISteamFriends_GetFriendByIndex(void *, int i, int) { return i == 0 ? FRIEND_A : i == 1 ? FRIEND_B : 0; }
+static int personaMode;
+EXPORT void FakeSteam_PersonaMode(int mode) { personaMode=mode; }
+EXPORT int SteamAPI_ISteamFriends_GetFriendPersonaState(void *, uint64_t id) {
+  if(personaMode==1) return id==FRIEND_A?0:3;
+  if(personaMode==2) return 99;
+  return id==FRIEND_A?1:0;
+}
+EXPORT int SteamAPI_ISteamFriends_GetFriendCount(void *, int) { return personaMode==3?5:2; }
+EXPORT uint64_t SteamAPI_ISteamFriends_GetFriendByIndex(void *, int i, int) { return i == 0 ? FRIEND_A : i == 1 ? FRIEND_B : personaMode==3 && i==2?FRIEND_A:personaMode==3 && i==3?self:0; }
 EXPORT bool SteamAPI_ISteamFriends_GetFriendGamePlayed(void *, uint64_t id, FriendGameInfo_t *g) {
   if (!g) return false;
   memset(g, 0, sizeof(*g));
@@ -272,6 +279,14 @@ EXPORT bool SteamAPI_ISteamFriends_GetFriendGamePlayed(void *, uint64_t id, Frie
 static char nameBuf[64];
 EXPORT const char *SteamAPI_ISteamFriends_GetFriendPersonaName(void *, uint64_t id) { snprintf(nameBuf, sizeof nameBuf, "Tamer %llu", id % 1000); return nameBuf; }
 EXPORT bool SteamAPI_ISteamFriends_RequestUserInformation(void *, uint64_t, bool) { return true; }
+static bool overlayEnabled = true;
+static uint64_t invitedOverlayLobby;
+static int inviteOverlayCalls;
+EXPORT void FakeSteam_OverlayEnabled(int enabled) { overlayEnabled = enabled != 0; }
+EXPORT uint64_t FakeSteam_InviteOverlayLobby() { return invitedOverlayLobby; }
+EXPORT int FakeSteam_InviteOverlayCalls() { return inviteOverlayCalls; }
+EXPORT bool SteamAPI_ISteamUtils_IsOverlayEnabled(void *) { return overlayEnabled; }
+EXPORT void SteamAPI_ISteamFriends_ActivateGameOverlayInviteDialog(void *, uint64_t lobby) { invitedOverlayLobby = lobby; inviteOverlayCalls++; }
 // someone else: -1 on the first ask (Steam still downloading), then image 7. Ourselves: image 7. Id 0: no avatar.
 static int imageMode, imageReads;
 EXPORT void FakeSteam_ImageMode(int mode) { imageMode=mode; }

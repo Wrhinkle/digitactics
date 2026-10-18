@@ -38,7 +38,7 @@ internal sealed class ShopScreen
         ImGui.SetNextWindowSize(new float2(size.X - 40, Math.Max(300, size.Y * .53f)));
         ImGui.Begin("Digi-Tactics - native migration"u8, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
         ImGui.Text("DIGI-TACTICS / BRUTAL"u8);
-        ImGui.Text("Shop and model workbench. Full matches, production rendering and online play are still being ported."u8);
+        ImGui.Text("Shop and model workbench. Launch without --workbench to play Digi-Tactics."u8);
         ImGui.Separator();
         if (ImGui.BeginCombo("Ruleset / pace"u8, $"{session.Rules.Name} / {session.Rules.Pace}"))
         {

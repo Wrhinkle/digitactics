@@ -66,6 +66,11 @@ public sealed class MusicLibrary
         using var file=OpenAudio(id);
         byte[] bytes=new byte[checked((int)file.Length)]; file.ReadExactly(bytes); return bytes;
     }
+    public void VerifySnapshot()
+    {
+        if (readOnly || (File.Exists(indexPath) ? File.ReadAllText(indexPath) : null) != loadedText)
+            throw new IOException(Error ?? "Music changed during backup. Try again while the game is idle.");
+    }
     private void SaveAudio(string sha,byte[] bytes)
     {
         string path=AudioPath(sha);

@@ -30,17 +30,7 @@ public sealed class MatchReplica : IDisposable
     }
     private void Reset() => reset = true;
     private void Snapshot(bool success) { if (success) reset = true; }
-    private LockstepMatch Create(JsonElement init)
-    {
-        if (!NetworkProtocol.Init(init)) throw new InvalidDataException("Invalid multiplayer match initialization.");
-        string variant = init.GetProperty("setId").GetString() + "/" + init.GetProperty("pace").GetString();
-        var rules = catalog.Variants.SingleOrDefault(v => v.Id == variant) ?? throw new InvalidDataException("This build does not contain the room's ruleset: " + variant);
-        var seats = init.GetProperty("slots").EnumerateArray().Select(s => new MatchSeat(s.GetProperty("name").GetString()!,s.GetProperty("human").GetBoolean())).ToArray();
-        int[][]? teams = init.TryGetProperty("teams",out var teamData) && teamData.ValueKind == JsonValueKind.Array
-            ? teamData.EnumerateArray().Select(t => t.EnumerateArray().Select(s => (int)s.GetDouble()).ToArray()).ToArray() : null;
-        return new(rules,(uint)init.GetProperty("seed").GetDouble(),seats,init.GetProperty("planTime").GetDouble(),(long)init.GetProperty("at").GetDouble(),
-            init.TryGetProperty("format",out var format) && format.ValueKind == JsonValueKind.String && format.GetString() == "duos",teams);
-    }
+    private LockstepMatch Create(JsonElement init)=>MatchInitialization.Load(catalog,init);
     private static bool Mismatch(LockstepMatch match, JsonElement entry) => entry.TryGetProperty("d",out var hash) && hash.ValueKind == JsonValueKind.String && hash.GetString() != match.Check();
     private void Rebuild(JsonElement init)
     {
