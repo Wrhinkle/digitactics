@@ -116,6 +116,11 @@ export function prepareTemplate(gltf, src) {
   });
   const actions = {};
   if (idle) for (const role of ACTION_ROLES) { const c = clips.find((x) => x.name === role); if (c) actions[role] = c; }
+  // These reviewed rigid-part rips now have an actual limb/wing gait. Expose it
+  // to unitTemplate/CompanionView without changing other models' action maps.
+  if (idle && ['rip-dw1_agumon', 'rip-dw1_airdramon', 'rip-dw1_akatorimon'].includes(src?.uid)) {
+    const run = clips.find(c => c.name === 'run'); if (run) actions.run = run;
+  }
   return { root: wrapper, clip: idle, actions, footprint: Math.max(size.x, size.z) / h };
 }
 

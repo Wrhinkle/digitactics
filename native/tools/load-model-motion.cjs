@@ -9,6 +9,7 @@ module.exports=async function(){
   const data=source=>'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
   const read=file=>fs.readFileSync(path.join(root,'js',file),'utf8').replace("from 'three'",`from '${three}'`);
   const anatomy=data(read('model-anatomy.js'));
-  const motion=read('model-motion.js').replace("from './model-anatomy.js'",`from '${anatomy}'`);
+  const rigid=data(read('model-rigid-parts.js'));
+  const motion=read('model-motion.js').replace("from './model-anatomy.js'",`from '${anatomy}'`).replace("from './model-rigid-parts.js'",`from '${rigid}'`);
   return import(data(motion));
 };

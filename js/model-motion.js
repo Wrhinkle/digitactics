@@ -3,6 +3,7 @@
 // These motions preserve the original mesh and skin.
 import * as THREE from 'three';
 import { anatomyFallbackClips, generatedBipedClips } from './model-anatomy.js';
+import { rigidPartClips } from './model-rigid-parts.js';
 
 const V = () => new THREE.Vector3();
 const Q = () => new THREE.Quaternion();
@@ -14,6 +15,8 @@ const tailName = /(?:^|_)(?:tail|sippo|shippo)(?:0?1)?(?:_|$)/i;
 const valid = b => !/end|nub|twist|helper/i.test(b.name);
 
 export function modelClips(gltf, src) {
+  const rigid = rigidPartClips(gltf, src);
+  if (rigid) return rigid;
   if(src?.uid==='rip-l_garurumon_greymon_statue')return statueClips(gltf.scene);
   const authored = generatedBipedClips(gltf,src,blobBodyClips(gltf,src,heldWeaponOrigin(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src))))).filter(c=>!src?.fallbackRoles?.includes(c.name));
   if (authored.length && src?.anim !== false) {
