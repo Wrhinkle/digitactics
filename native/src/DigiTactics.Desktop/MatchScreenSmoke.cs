@@ -22,7 +22,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         : ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
     private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
     private int collectionIndex;
-    private bool collectionVerified;
+    private bool collectionVerified,treeScrolled;
     private readonly string[] farmCommands = evolutionSmoke
         ? ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "farmRoom", "farmOut/tsunomon", "farmIn/tsunomon", "farmOut/motimon", "farmSelect/tsunomon", "farmSwap/motimon", "farmIn/tsunomon", "farmExpand", "farmTheme/sewer", "closeFarm"]
         : ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "closeFarm"];
@@ -63,6 +63,12 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         {
             if (cooldown-- > 0) return;
             var input = ImGui.GetIO();
+            if(evolutionSmoke && collectionIndex==12 && !down && !treeScrolled)
+            {
+                var anchor=screen.Buttons["closeEvolutionTree"];
+                input.AddMousePosEvent(anchor.X+300,anchor.Y+220); input.AddMouseWheelEvent(0,-15);
+                treeScrolled=true; cooldown=3; return;
+            }
             if (down) { input.AddMouseButtonEvent(0, false); down = false; collectionIndex++; cooldown = 3; return; }
             if (!screen.Buttons.TryGetValue(collectionCommands[collectionIndex], out var target)) return;
             input.AddMousePosEvent(target.X, target.Y); input.AddMouseButtonEvent(0, true); down = true; return;
@@ -282,6 +288,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (collectionIndex == collectionCommands.Length - 1 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "egg.bmp"), size.X, size.Y);
             if(evolutionSmoke && collectionIndex==12 && cooldown==1)
             {
+                if(treeScrolled && screen.EvolutionTreeScroll<=0) throw new InvalidOperationException("Illustrated evolution tree did not scroll.");
+                if(screen.EvolutionTreePortraits!=screen.EvolutionTreeNodes) throw new InvalidOperationException("Evolution tree omitted portraits.");
                 if(screen.EvolutionTreeNodes!=LegendEvolution.Tree("bukamon").Tiers.Sum(t=>t.Length)) throw new InvalidOperationException("Evolution tree omitted reachable forms.");
                 if(capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"evolution-tree.bmp"),size.X,size.Y);
             }

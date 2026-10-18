@@ -12,6 +12,22 @@ internal static class EvolutionChecks
         using var fixture = JsonDocument.Parse(gzip);
         var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
         int checks = 0;
+        string portraitFolder=Path.Combine(root,"content/evolution-portraits");
+        var portraits=JsonSerializer.Deserialize<Dictionary<string,string>>(File.ReadAllText(Path.Combine(portraitFolder,"manifest.json")))!;
+        using(var content=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"src/DigiTactics.Storage/evolution.json"))))
+        foreach(var form in content.RootElement.GetProperty("forms").EnumerateObject())
+        {
+            if(!portraits.ContainsKey(form.Name)) throw new InvalidOperationException("Missing form portrait: "+form.Name);
+            checks++;
+        }
+        foreach(string name in portraits.Values.Distinct())
+        {
+            byte[] bytes=File.ReadAllBytes(Path.Combine(portraitFolder,name));
+            if(Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(bytes))+".png"!=name) throw new InvalidDataException("Evolution portrait hash mismatch.");
+            var image=DigiTactics.Assets.PngImage.Decode(bytes);
+            if(image.Width<32 || image.Height<32 || !Enumerable.Range(0,image.Width*image.Height).Any(i=>image.Rgba[i*4+3]>0)) throw new InvalidDataException("Empty evolution portrait.");
+            checks++;
+        }
         using(var trees=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"tests/fixtures/evolution-trees.json"))))
         foreach(var tree in trees.RootElement.EnumerateArray())
         {

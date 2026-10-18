@@ -21,9 +21,11 @@ internal sealed partial class MatchScreen
     }
     private bool showEvolutionTree;
     internal int EvolutionTreeNodes { get; private set; }
+    internal float EvolutionTreeScroll { get; private set; }
+    internal int EvolutionTreePortraits { get; private set; }
     private void EvolutionControls(string id)
     {
-        EvolutionTreeNodes=0;
+        EvolutionTreeNodes=0; EvolutionTreePortraits=0;
         if (Button("closeEvolution", "Back to collection")) { evolutionLegend = null; showEvolutionTree=false; return; }
         var view = LegendEvolution.Inspect(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"), profile.Storage.GetValueOrDefault("dt.cosmetics.v1"), profile.Storage.GetValueOrDefault("dt.farm.v1"), id);
         if(showEvolutionTree)
@@ -32,7 +34,9 @@ internal sealed partial class MatchScreen
             EvolutionTreePanel(id,view); return;
         }
         var form = LegendEvolution.Form(view.Form);
-        ImGui.Text(CosmeticCollection.Item("legend", id)!.Name); ImGui.Text($"Current form: {form.Name} ({form.Level})");
+        ImGui.Text(CosmeticCollection.Item("legend", id)!.Name);
+        var portraitAt=ImGui.GetCursorScreenPos(); ImGui.Dummy(new(64,64)); portraits.DrawEvolution(view.Form,portraitAt,64,true);
+        ImGui.SameLine(); ImGui.Text($"Current form: {form.Name} ({form.Level})");
         ImGui.Text($"Level {view.Level} / 10");
         ImGui.Text(view.Need > 0 ? $"Digi-Data: {view.Data} / {view.Need}" : "Maximum level");
         if (view.Next is { } next) ImGui.Text($"Next digivolution unlocks at level {next}");

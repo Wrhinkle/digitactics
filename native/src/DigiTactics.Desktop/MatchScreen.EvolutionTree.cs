@@ -16,9 +16,10 @@ internal sealed partial class MatchScreen
         CollectionText($"{CosmeticCollection.Item("legend",id)!.Name}'s tree - Dex {discovery.Dex.Length}/{EvolutionTreeNodes} discovered");
         CollectionText("Green: current form. Gold: previous path. Blue: next possibilities. Dark forms are undiscovered.");
         ImGui.BeginChild("evolutionTreeCanvas"u8,new(0,0),ImGuiChildFlags.None);
+        EvolutionTreeScroll=ImGui.GetScrollY();
         float width=ImGui.GetContentRegionAvail().X;
         int columns=Math.Max(1,(int)(width/140));
-        float cardWidth=Math.Min(134,width),cardHeight=52;
+        float cardWidth=Math.Min(134,width),cardHeight=96;
         var origin=ImGui.GetCursorScreenPos();
         var nodes=new Dictionary<string,float2>(); float y=22;
         var headings=new List<(string Text,float Y)>();
@@ -29,9 +30,9 @@ internal sealed partial class MatchScreen
             {
                 int line=i/columns,count=Math.Min(columns,row.Length-line*columns);
                 float start=(width-count*140+6)/2;
-                nodes[row[i]]=new(origin.X+start+(i%columns)*140,origin.Y+y+line*76);
+                nodes[row[i]]=new(origin.X+start+(i%columns)*140,origin.Y+y+line*120);
             }
-            y+=(float)Math.Ceiling((double)row.Length/columns)*76+28;
+            y+=(float)Math.Ceiling((double)row.Length/columns)*120+28;
         }
         ImGui.Dummy(new(width,y)); var draw=ImGui.GetWindowDrawList();
         var chain=discovery.Path.Append(discovery.Current).ToArray();
@@ -50,10 +51,11 @@ internal sealed partial class MatchScreen
             var color=current?new ImColor8(30,110,80):path.Contains(formId)?new ImColor8(100,80,30):odds.ContainsKey(formId)?new ImColor8(35,85,120):new ImColor8(25,34,45);
             draw.AddRectFilled(at,new(at.X+cardWidth,at.Y+cardHeight),color);
             draw.PushClipRect(at,new(at.X+cardWidth,at.Y+cardHeight),true);
+            portraits.DrawEvolution(formId,new(at.X+(cardWidth-52)/2,at.Y+3),52,discovered); EvolutionTreePortraits++;
             string name=discovered?form.Name:"???";
-            draw.AddText(ImGui.GetFont(),12,new(at.X+6,at.Y+6),new ImColor8(235,240,245),name);
+            draw.AddText(ImGui.GetFont(),12,new(at.X+6,at.Y+60),new ImColor8(235,240,245),name);
             string status=current?"Current":odds.TryGetValue(formId,out int chance)?$"{chance}%":path.Contains(formId)?"Previous form":discovered?"Discovered":"Undiscovered";
-            draw.AddText(ImGui.GetFont(),12,new(at.X+6,at.Y+29),new ImColor8(170,200,220),status);
+            draw.AddText(ImGui.GetFont(),12,new(at.X+6,at.Y+78),new ImColor8(170,200,220),status);
             draw.PopClipRect();
             if(ImGui.IsMouseHoveringRect(at,new(at.X+cardWidth,at.Y+cardHeight)))
             {
