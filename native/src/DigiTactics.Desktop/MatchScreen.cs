@@ -254,7 +254,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
-        portraits.BeginFrame();
+        portraits.BeginFrame(); itemArtwork.BeginFrame();
         sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
@@ -477,7 +477,7 @@ internal sealed partial class MatchScreen : IDisposable
         for (int i = 0; i < Human.Items.Count; i++)
         {
             if (i % 6 != 0) ImGui.SameLine();
-            if (Button("item/" + i, Name(Human.Items[i]), (size.X - 78f) / 6, 24, selectedItem == i) && !itemDragMoved)
+            if (ItemButton(i, (size.X - 78f) / 6) && !itemDragMoved)
             {
                 if (selectedItem is { } old && old != i) { Act("swapItems", new { a = old, b = i }); selectedItem = null; }
                 else { selectedItem = selectedItem == i ? null : i; selectedUnit = null; status = "Select a holder to equip, or another item to swap positions."; }
@@ -542,5 +542,5 @@ internal sealed partial class MatchScreen : IDisposable
         arenaEnvironment.Actors = DrawCompanions;
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
     }
-    public void Dispose() { portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
+    public void Dispose() { itemArtwork.Dispose(); portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
 }

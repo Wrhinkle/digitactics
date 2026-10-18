@@ -22,6 +22,7 @@ internal sealed class ItemDragSmoke
             case 0:
                 inventory = player.Items.ToArray();
                 if (inventory.Length < 2) throw new InvalidOperationException("Item drag smoke requires two earned items.");
+                if (screen.InventoryArtworkDrawCalls != inventory.Length) throw new InvalidOperationException("Inventory controls omitted original item artwork.");
                 if (screen.ItemShelfDrawCalls != Math.Min(10, inventory.Length)) throw new InvalidOperationException("Planning shelf omitted item tokens.");
                 Start(0); break;
             case 1: Move(screen.Buttons["shelfItem/1"]); break;

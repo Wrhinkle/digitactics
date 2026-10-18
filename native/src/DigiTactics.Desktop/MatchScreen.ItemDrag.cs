@@ -6,6 +6,21 @@ namespace DigiTactics.Desktop;
 
 internal sealed partial class MatchScreen
 {
+    private readonly ItemArtwork itemArtwork = new();
+    internal int InventoryArtworkDrawCalls => itemArtwork.DrawCalls;
+
+    private bool ItemButton(int index, float width)
+    {
+        bool pressed = Button("item/" + index, "", width, 24, selectedItem == index);
+        var min = ImGui.GetItemRectMin(); var max = ImGui.GetItemRectMax();
+        var draw = ImGui.GetWindowDrawList();
+        draw.PushClipRect(min, max, true);
+        itemArtwork.Draw(Rules.Id, Human.Items[index], new(min.X + 2, min.Y + 1), 22);
+        draw.AddText(ImGui.GetFont(), 13, new(min.X + 29, min.Y + 5), new ImColor8(235, 240, 248), Name(Human.Items[index]));
+        draw.PopClipRect();
+        return pressed;
+    }
+
     private sealed record ItemDrag(int Index, string Id, string[] Inventory, float2 Start, MatchPhase Phase);
     private ItemDrag? itemDrag;
     private bool itemDragMoved;
