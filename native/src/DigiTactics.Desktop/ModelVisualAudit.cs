@@ -227,8 +227,9 @@ internal static class ModelVisualAudit
 
     public static unsafe void RunFitted(string directory, int index, string role, double? peakTime = null)
     {
-        if (role is not ("idle" or "attack" or "special" or "win")) throw new ArgumentException("Choose idle, attack, special or win.");
+        if (role is not ("idle" or "attack" or "special" or "win" or "movement")) throw new ArgumentException("Choose idle, attack, special, win or movement.");
         if (peakTime is < 0 || peakTime is { } peak && !double.IsFinite(peak)) throw new ArgumentOutOfRangeException(nameof(peakTime));
+        if (role == "movement" && peakTime is not null) throw new ArgumentException("Movement uses the actual simulation ticks through arrival; do not request an arbitrary pose time.");
         Directory.CreateDirectory(directory);
         var runtimeHashes = CaptureHashes(directory);
         var catalog = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
@@ -243,11 +244,14 @@ internal static class ModelVisualAudit
             using var model = new GpuModel(catalog, source); using var renderer = new ModelRenderer { CosmeticStage = true };
             var idle = new ModelAnimator(model.Rig); idle.Update(.17);
             var (camera, eye) = FittedCamera(model, idle.Pose); renderer.FarmEye = eye;
-            var animator = new ModelAnimator(model.Rig); bool available = role == "idle" || animator.Play(role);
+            var animator = new ModelAnimator(model.Rig); bool available = role is "idle" or "movement" || animator.Play(role);
+            var movement = role == "movement" ? ProductionMovement(model.Rig, key, throughArrival: true) : null;
+            int[] movementFrames = movement is null ? [] : Enumerable.Range(0, Frames).Select(frame => (int)Math.Round((movement.Length - 1d) * frame / (Frames - 1))).ToArray();
             var clip = role == "idle" ? ModelAnimator.FindIdle(model.Rig) : model.Rig.Animations.FirstOrDefault(value => value.Name == role);
             double span = role == "attack" ? Math.Min(clip?.Duration ?? .55, .55) + .24 : role == "special" ? Math.Min(clip?.Duration ?? 1.1, 1.1) + .24 : Math.Max(.5, clip?.Duration ?? 1) * 1.1;
             if (peakTime is { } requested) span = Math.Max(span, requested + .24);
             double previous = 0; var times = Enumerable.Range(0, Frames).Select(frame => span * frame / (Frames - 1)).ToArray();
+            if (movement is not null) times = movementFrames.Select(frame => movement[frame].Time).ToArray();
             if (peakTime is { } exact)
             {
                 int closest = Enumerable.Range(0, Frames).MinBy(frame => Math.Abs(times[frame] - exact));
@@ -259,15 +263,20 @@ internal static class ModelVisualAudit
                 double time = times[frame];
                 while (previous + 1e-10 < time) { double step = Math.Min(1d / 60, time - previous); animator.Update(step); previous += step; }
                 animator.Update(0);
+                var pose = movement is null ? animator.Pose : movement[movementFrames[frame]].Pose;
                 ModelRenderer.Begin(512, 512); OpenGl.Viewport(frame % 3 * 512, (3 - frame / 3) * 512, 512, 512);
-                renderer.Draw(model, animator.Pose, model.PreviewPlacement, camera, false);
-                renderer.BeginTransparency(); renderer.Draw(model, animator.Pose, model.PreviewPlacement, camera, true); renderer.FlushTransparency(); ModelRenderer.End();
+                renderer.Draw(model, pose, model.PreviewPlacement, camera, false);
+                renderer.BeginTransparency(); renderer.Draw(model, pose, model.PreviewPlacement, camera, true); renderer.FlushTransparency(); ModelRenderer.End();
             }
             string stem = $"{index:D4}.fitted-{role}" + (peakTime is { } selected ? "-peak" + selected.ToString("F6", System.Globalization.CultureInfo.InvariantCulture) : "");
             string image = stem + ".png";
             SavePng(Path.Combine(directory, image), 1536, 2048);
             File.WriteAllText(Path.Combine(directory, stem + ".json"), JsonSerializer.Serialize(new { Source = key, Image = image, Role = role, Times = times, PeakTime = peakTime, Clip = clip?.Name, Available = available,
-                Policy = "Production ModelAnimator; fixed camera fitted to idle bounds, no per-frame reframing", RuntimeHashes = runtimeHashes, Status = "unreviewed" }, new JsonSerializerOptions { WriteIndented = true }));
+                Policy = movement is null ? "Production ModelAnimator; fixed camera fitted to idle bounds, no per-frame reframing"
+                    : "Production CombatChoreography + CombatModelAnimator ticks through arrival; world translation omitted only for fitted skeletal gait inspection; live board placement verified separately",
+                LocomotionKind = movement?[0].LocomotionKind,
+                MovementSamples = movement is null ? null : movementFrames.Select(frame => new { movement[frame].Time, movement[frame].Position, movement[frame].Scale }).ToArray(),
+                RuntimeHashes = runtimeHashes, Status = "unreviewed" }, new JsonSerializerOptions { WriteIndented = true }));
             Console.WriteLine($"Fitted temporal evidence: {key}/{role}, {Frames} samples at 512 pixels.");
         }
         finally { Glfw.Terminate(); }
