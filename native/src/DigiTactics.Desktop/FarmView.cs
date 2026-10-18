@@ -230,4 +230,3 @@ internal sealed partial class FarmView : IDisposable
         foreach (var particles in snow) particles.Dispose(); foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); selectionRing.Dispose(); atmosphere.Dispose(); shadows.Dispose(); renderer.Dispose();
     }
 }
-

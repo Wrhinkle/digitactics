@@ -53,6 +53,7 @@ internal static class FarmChoreographyChecks
         checks += RoomMotion(root);
         checks += Snow(root);
         checks += Lighting(root);
+        checks += Picking(root);
         Console.WriteLine($"Farm choreography: {checks} movement, social, sleep, care and animation-command checks passed.");
         return checks;
     }
@@ -179,5 +180,21 @@ internal static class FarmChoreographyChecks
             (FarmCareAction.Pet,"{\"ok\":false}","emote")
         }) Check(FarmFeedback.Sound(action, JsonNode.Parse(receipt)!.AsObject()) == sound, "care sound " + action + receipt);
         return checks;
+    }
+    private static int Picking(string root)
+    {
+        using var file=File.OpenRead(Path.Combine(root,"tests/fixtures/farm-picking.json.gz"));
+        using var gzip=new GZipStream(file,CompressionMode.Decompress);using var doc=JsonDocument.Parse(gzip);
+        int checks=0;
+        foreach(var sample in doc.RootElement.EnumerateArray())
+        {
+            System.Numerics.Vector3 Vector(string name) {var v=sample.GetProperty(name);return new(v[0].GetSingle(),v[1].GetSingle(),v[2].GetSingle());}
+            var m=sample.GetProperty("matrix").EnumerateArray().Select(x=>x.GetSingle()).ToArray();
+            var matrix=new System.Numerics.Matrix4x4(m[0],m[1],m[2],m[3],m[4],m[5],m[6],m[7],m[8],m[9],m[10],m[11],m[12],m[13],m[14],m[15]);
+            var distance=FarmPicking.Cylinder(Vector("origin"),Vector("direction"),matrix,sample.GetProperty("radius").GetDouble(),sample.GetProperty("height").GetDouble(),sample.GetProperty("segments").GetInt32());
+            var expected=sample.GetProperty("distance");checks++;
+            if(expected.ValueKind==JsonValueKind.Null ? distance is not null : distance is null || Math.Abs(distance.Value-expected.GetDouble())>1e-4)throw new InvalidOperationException("Farm raycast differs from original: "+checks);
+        }
+        Console.WriteLine($"Farm picking: {checks} original raycasts passed.");return checks;
     }
 }

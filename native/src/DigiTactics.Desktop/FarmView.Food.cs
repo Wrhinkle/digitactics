@@ -70,4 +70,3 @@ internal sealed partial class FarmView
             }
     }
 }
-

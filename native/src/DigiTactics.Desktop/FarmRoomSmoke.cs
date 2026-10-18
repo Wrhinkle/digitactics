@@ -61,9 +61,13 @@ internal static class FarmRoomSmoke
                 waste.Add(new JsonObject { ["k"]=902,["x"]=1.0,["z"]=2.0,["n"]=true });
                 room.Sync(farm.ToJsonString(),null,null); room.Update(.4); room.Draw(0,0,1000,850);
                 if (room.PileCount != 2 || room.PileAnchors(1000,850).Count()!=2) throw new InvalidOperationException("Saved piles did not appear.");
+                var pileTargets=room.PileAnchors(1000,850).ToArray();
+                foreach(var target in pileTargets)
+                    if(room.Pick(target.X,target.Y,1000,850) is not { } hit || hit.Id!=target.Id || hit.Pile!=target.Key) throw new InvalidOperationException("Projected pile ray missed its original hit shape.");
                 if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,theme.Id+"-piles.bmp"),1000,850);
                 waste.Clear(); room.Sync(farm.ToJsonString(),null,null); room.Update(.1); room.Draw(0,0,1000,850);
                 if (room.PileCount != 0 || room.RemovingPileCount != 2) throw new InvalidOperationException("Pile cleanup animation did not start.");
+                foreach(var target in pileTargets) if(room.Pick(target.X,target.Y,1000,850)?.Pile is not null) throw new InvalidOperationException("Removed pile remained clickable.");
                 room.Update(.2);
                 if (room.RemovingPileCount != 0) throw new InvalidOperationException("Removed piles did not expire.");
                 if (theme.Id == "meadow") foreach (string food in new[] { "meat", "carrot", "bigmeat", "sirloin", "cake" })

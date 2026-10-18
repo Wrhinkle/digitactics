@@ -52,10 +52,14 @@ internal sealed partial class MatchScreen
                     ImGui.SetCursorScreenPos(new(12 + x - 25, 70 + y));
                     if (Button("farmResident/" + id, CosmeticCollection.Item("legend", id)!.Name, active: id == farmPet)) { farmPet = id; FarmAct(FarmCareAction.Pet); }
                 }
-            if (farmView is not null) foreach(var (id,key,x,y) in farmView.PileAnchors(FarmSceneWidth,FarmSceneHeight))
+            if (farmView is not null && ImGui.IsWindowHovered() && !ImGui.IsAnyItemHovered() && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
             {
-                ImGui.SetCursorScreenPos(new(12+x-14,70+y-14));
-                if (ImGui.InvisibleButton("farmPileScene/"+id+"/"+key,new(28,28))) FarmAct(FarmCareAction.CleanPile,pile:key,resident:id);
+                var mouse=ImGui.GetMousePos();
+                if(farmView.Pick(mouse.X-12,mouse.Y-70,FarmSceneWidth,FarmSceneHeight) is { } hit)
+                {
+                    if(hit.Pile is { } key) FarmAct(FarmCareAction.CleanPile,pile:key,resident:hit.Id);
+                    else { farmPet=hit.Id; FarmAct(FarmCareAction.Pet); }
+                }
             }
             ImGui.End();
         }

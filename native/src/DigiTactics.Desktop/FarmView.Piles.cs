@@ -69,4 +69,3 @@ internal sealed partial class FarmView
             DrawProp(model,GpuModel.Transform(pile.X,pile.Y,pile.Z,pile.Yaw,pile.Scale),camera,shadow);
     }
 }
-

@@ -2517,3 +2517,19 @@ The integrated profile/evolution/farm/Solo flow passed. Scene targets currently
 use projected 28-pixel hit areas; exact mesh raycasting and an automated pointer
 cleanup check remain pending. New simulation-event placement near the resident,
 toilet routing, bubbles and reward feedback remain open farm fidelity work.
+
+### Farm scene raycasting
+
+Scene clicks now intersect the original closed polygonal hit cylinders: eight
+sides for piles and ten for residents. Picking accounts for pile growth/wobble,
+resident movement, breathing and sleeping tilt, and chooses the nearest hit
+across both kinds. Resident hits select/pet; pile hits clean the owning resident
+without changing selection. Care-control/name-button clicks retain priority.
+Removed piles stop accepting hits immediately while their exit animation plays.
+
+All 5,712 raycast fixtures from Three.js pass across scales and rotations. The
+combined farm checks total 1,387,484. The rebuilt six-theme GPU smoke verifies
+projected pile-center hits and removal from picking; the integrated farm/evolution/
+Solo flow passed. This replaces the prior fixed 28-pixel targets. A full automated
+pointer-to-persisted-cleanup UI check remains pending, along with simulation-event
+feedback and the broader full-port requirements.
