@@ -4,14 +4,14 @@ using DigiTactics.Storage;
 namespace DigiTactics.Presentation;
 
 /// <summary>Read-only reward statistics. Each settlement contributes at most once.</summary>
-public sealed class MatchRewardTracker(MatchPlanningSession session)
+public sealed class MatchRewardTracker(MatchPlanningSession session, int seat = 0)
 {
     private IReadOnlyList<MatchRoundResult>? seen;
     private int wins, kills, stars = 1, level;
-    public RewardStats Stats => new(wins, kills, stars, level, session.State.Players[0].Placement);
+    public RewardStats Stats => new(wins, kills, stars, level, session.State.Players[seat].Placement);
     public void Update()
     {
-        var state = session.State; var me = state.Players[0];
+        var state = session.State; var me = state.Players[seat];
         if (me.Alive)
         {
             level = Math.Max(level, me.Economy.Level);

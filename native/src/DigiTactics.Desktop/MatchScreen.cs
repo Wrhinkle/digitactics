@@ -209,7 +209,7 @@ internal sealed partial class MatchScreen : IDisposable
     private void RoundFinished()
     {
         CompletedRounds++; status = "Round complete.";
-        history?.Complete(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+        if (networkRoom is null) history?.Complete(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         if (history?.Error is { } saveError) { status = saveError; profileMessage = saveError; }
         var own = Session!.Battles.FirstOrDefault(m => m.A == localSeat || m.B == localSeat ||
             m.TeamA is { } a && Session.State.Teams[a].Members.Any(p => p.Id == localSeat) ||

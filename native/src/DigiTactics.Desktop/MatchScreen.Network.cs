@@ -10,6 +10,7 @@ internal sealed partial class MatchScreen
     private NetworkRoom? networkRoom;
     private MatchReplica? networkReplica;
     private MatchHostController? networkHost;
+    private NetworkMatchHistory? networkHistory;
     private Func<long> networkClock = () => Environment.TickCount64;
     private bool networkDone;
     internal string? NetworkStateHash => networkReplica?.Match?.Check();
@@ -20,6 +21,7 @@ internal sealed partial class MatchScreen
         if (localSeat < 0) { networkRoom = null; localSeat = 0; throw new InvalidOperationException("Claim a seat before entering the match."); }
         history = null;
         networkReplica = new(room, catalog); networkReplica.Rebuilt += NetworkRebuilt; networkReplica.Applied += NetworkApplied;
+        networkHistory = profile is null ? null : new(networkReplica, profile, localSeat);
         networkReplica.Desync += _ => status = "Match state differed from the host; rebuilding from shared history.";
         networkHost = new(room, networkReplica, networkClock);
         networkReplica.Pump(networkClock());
@@ -34,6 +36,7 @@ internal sealed partial class MatchScreen
     {
         battle?.Dispose(); battle = null; watching = null; combatAudio = null;
         Session = match.Session; selectedItem = selectedUnit = null; viewed = localSeat; backgroundTime = 0; networkDone = false;
+        history = networkHistory?.Recorder;
         CompletedRounds = networkRoom!.Log.Entries.Count(e => e.GetProperty("k"u8).GetString() == "end");
         Watch(localSeat); audio.Music(Session.Rounds.Phase == MatchPhase.Combat ? "combat" : "planning");
         status = "Connected. Your actions are confirmed by the host.";
@@ -68,7 +71,7 @@ internal sealed partial class MatchScreen
     }
     public void DetachNetworkMatch()
     {
-        networkHost?.Dispose(); networkHost = null; networkReplica?.Dispose(); networkReplica = null;
+        networkHost?.Dispose(); networkHost = null; networkHistory?.Dispose(); networkHistory = null; networkReplica?.Dispose(); networkReplica = null;
         networkRoom = null; networkDone = false;
     }
 }

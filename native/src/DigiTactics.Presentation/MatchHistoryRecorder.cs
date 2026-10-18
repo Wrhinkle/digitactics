@@ -4,9 +4,9 @@ using DigiTactics.Storage;
 namespace DigiTactics.Presentation;
 
 /// <summary>Captures the last living board before elimination clears it, then records placement once.</summary>
-public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativeProfileStore profile)
+public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativeProfileStore profile, int seat = 0, bool multiplayer = false)
 {
-    private readonly MatchRewardTracker tracker = new(session);
+    private readonly MatchRewardTracker tracker = new(session, seat);
     public void Observe() => tracker.Update();
     private HistoryTrait[] traits = [];
     private HistoryUnit[] units = [];
@@ -21,7 +21,7 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
     public void Capture()
     {
         tracker.Update();
-        var player = session.State.Players[0];
+        var player = session.State.Players[seat];
         if (!player.Alive || player.Roster.BoardCount == 0) return;
         var rules = session.State.Rules;
         var counts = TraitRules.Count(rules, session.CombatProjection.Board(player), player.Augments.ToArray());
@@ -35,11 +35,12 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
     public bool Complete(long timestamp)
     {
         tracker.Update();
-        var player = session.State.Players[0];
+        var player = session.State.Players[seat];
         if (saved) return true;
         if (player.Placement == 0) return false;
         if (pending is null) { rewardDay = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime); rewardStats = tracker.Stats; }
-        pending ??= new($"solo:{session.State.Seed}:{player.Id}", timestamp, "solo", session.State.Duos ? "duos" : "solo",
+        string mode = multiplayer ? "mp" : "solo";
+        pending ??= new($"{mode}:{session.State.Seed}:{player.Id}", timestamp, mode, session.State.Duos ? "duos" : "solo",
             session.State.Rules.Id.Split('/')[0], player.Placement, session.Rounds.Position.Label, Math.Max(level, player.Economy.Level), traits, units,
             System.Text.Json.JsonSerializer.SerializeToNode(tracker.Stats, new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase }));
         try

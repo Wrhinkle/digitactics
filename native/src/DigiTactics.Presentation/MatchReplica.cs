@@ -21,6 +21,9 @@ public sealed class MatchReplica : IDisposable
     public event Action<LockstepMatch>? Rebuilt;
     public event Action<JsonElement, LockstepResult>? Applied;
     public event Action<MatchDesync>? Desync;
+    public event Action<LockstepMatch>? Building;
+    public event Action<LockstepMatch, JsonElement>? Applying;
+    public event Action<LockstepMatch, JsonElement, bool>? Advanced;
     public MatchReplica(NetworkRoom room, ContentCatalog catalog)
     {
         this.room = room; this.catalog = catalog; room.Reset += Reset; room.SnapshotResult += Snapshot;
@@ -42,10 +45,11 @@ public sealed class MatchReplica : IDisposable
     private void Rebuild(JsonElement init)
     {
         var next = Create(init); MatchDesync? bad = null;
+        Building?.Invoke(next);
         foreach (var entry in room.Log.Entries)
         {
             if (bad is null && Mismatch(next,entry)) bad = new(next.Sequence,true);
-            next.Apply(entry);
+            Applying?.Invoke(next, entry); next.Apply(entry); Advanced?.Invoke(next, entry, true);
         }
         Match = next; initText = init.GetRawText(); reset = false; Rebuilds++; LastDesync = bad;
         Rebuilt?.Invoke(next);
@@ -67,7 +71,8 @@ public sealed class MatchReplica : IDisposable
                 lastResync = localTime; LastDesync = new(Match.Sequence,false); Desync?.Invoke(LastDesync);
                 Rebuild(init); return;
             }
-            var result = Match.Apply(entry); Applied?.Invoke(entry,result);
+            Applying?.Invoke(Match, entry);
+            var result = Match.Apply(entry); Advanced?.Invoke(Match, entry, false); Applied?.Invoke(entry,result);
         }
     }
     public void Dispose() { if (disposed) return; room.Reset -= Reset; room.SnapshotResult -= Snapshot; disposed = true; }
