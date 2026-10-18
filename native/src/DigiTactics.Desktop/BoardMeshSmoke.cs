@@ -288,7 +288,9 @@ internal static class BoardMeshSmoke
             ("gear-savanna","savanna-gears"),("infinity-mountain","mountain-stars"),
             ("digital-grid","grid-polys"),("digital-grid","grid-rings"),("digital-grid","grid-floor"),("dark-ocean","rotating-parent"),
             ("spiral-mountain","spiral-rocks"),("spiral-mountain","spiral-islets"),
-            ("spiral-mountain","spiral-crystals"),("spiral-mountain","spiral-halos")})
+            ("spiral-mountain","spiral-crystals"),("spiral-mountain","spiral-halos"),
+            ("vampire-castle","castle-flames"),("vampire-castle","castle-bats"),
+            ("vampire-castle","castle-moon"),("vampire-castle","castle-halo")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
@@ -299,13 +301,18 @@ internal static class BoardMeshSmoke
                 ModelRenderer.Begin(256,256); OpenGl.ClearColor(new(0,0,0,1)); OpenGl.Clear(GlClearBit.Color);
                 var camera=Matrix4x4.CreateLookAt(new(0,25,28),Vector3.Zero,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
                 if(kind=="mountain-stars") camera=Matrix4x4.CreateLookAt(Vector3.Zero,new(0,30,-50),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,200);
+                if(kind=="castle-flames")
+                {
+                    var flame=objects[0].Motion!.Castle![0];var target=new Vector3((float)flame.X,(float)flame.Y,(float)flame.Z);
+                    camera=Matrix4x4.CreateLookAt(target+new Vector3(0,1,2),target,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
+                }
                 layer.Draw(renderer,camera,false,256);
                 layer.Draw(renderer,camera,true,256);
                 var pixels=new byte[256*256*4]; fixed(byte* p=pixels) OpenGl.ReadPixels(0,0,256,256,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
                 ModelRenderer.End(); return pixels;
             }
             var initial=Render();
-            for(int frame=1;frame<=162;frame++) layer.Update(frame/60d,1/60d,true);
+            for(int frame=1;frame<=162;frame++) layer.Update(frame/60d,1/60d,true,7);
             var moved=Render();
             int changed=Enumerable.Range(0,256*256).Count(i=>Math.Abs(initial[i*4]-moved[i*4])+Math.Abs(initial[i*4+1]-moved[i*4+1])+Math.Abs(initial[i*4+2]-moved[i*4+2])>3);
             if(changed<5) throw new InvalidOperationException("Board prop animation did not reach the framebuffer: "+kind);

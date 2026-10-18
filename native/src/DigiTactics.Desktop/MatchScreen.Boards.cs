@@ -13,6 +13,7 @@ internal sealed partial class MatchScreen
     private void SyncBoardTheme()
     {
         arenaEnvironment.CombatActive=Session?.Rounds.Phase==DigiTactics.Rules.MatchPhase.Combat;
+        arenaEnvironment.Stage=Session?.Rounds.Position.Stage??1;
         string? wallet=profile?.Storage.GetValueOrDefault("dt.cosmetics.v1");
         if(!boardLoaded || wallet!=boardWallet)
         {

@@ -21,6 +21,7 @@ internal sealed class ArenaEnvironment : IDisposable
     public BoardSurfaceFeedback Feedback { get; } = new();
     public double Time { get; set; }
     public bool? CombatActive { get; set; }
+    public int Stage { get; set; }=1;
     private double? previousTime;
 
     public void SetTheme(string? id)
@@ -40,7 +41,7 @@ internal sealed class ArenaEnvironment : IDisposable
     {
         if(scene is null) SetTheme("file-island");
         double delta=previousTime is { } previous?Math.Clamp(Time-previous,0,.1):0;
-        previousTime=Time; meshes!.Update(Time,delta,CombatActive??!planning);
+        previousTime=Time; meshes!.Update(Time,delta,CombatActive??!planning,Stage);
         if(meshes.LightningColor is {} flashColor)
         {
             lighting!.FlashColor=flashColor;lighting.Flash=meshes.LightningFlash;lighting.Update(0);

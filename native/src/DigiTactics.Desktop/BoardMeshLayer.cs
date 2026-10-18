@@ -16,6 +16,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly List<(GpuPrimitive Geometry,float[] Vertices,float[] Initial,string Kind)> animatedUv=[];
     private double time;
     private BoardLightning? lightning;
+    private readonly BoardCastleMotion? castle;
     public float LightningFlash=>(float)(lightning?.Flash??0);
     public Vector3? LightningColor { get; private set; }
     private readonly Dictionary<BoardObject,BoardSpiralMotion> spirals=[];
@@ -23,6 +24,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public Matrix4D Root { get; set; } = Matrix4D.Identity;
     public BoardMeshLayer(BoardScene scene,bool initialCombat=false)
     {
+        if(scene.Id=="vampire-castle")castle=new(initialCombat);
         try
         {
             foreach (var texture in scene.Textures)
@@ -57,10 +59,11 @@ internal sealed class BoardMeshLayer : IDisposable
         catch { Dispose(); throw; }
     }
 
-    public void Update(double seconds,double delta=0,bool combat=false)
+    public void Update(double seconds,double delta=0,bool combat=false,int stage=1)
     {
         time=seconds;
         lightning?.Advance(delta,time,combat);
+        castle?.Advance(delta,time,combat,stage);
         foreach(var spiral in spirals.Values) spiral.Advance(delta,time,combat);
         foreach(var uv in animatedUv)
         {
@@ -88,6 +91,7 @@ internal sealed class BoardMeshLayer : IDisposable
             if(bolt is not null) world=new CompanionTransform(new(lightning!.X,lightning.Y,lightning.Z),new(0,lightning.Yaw,0),new(1,1,1)).Matrix*Root;
             if(item.Object.Motion is { Kind:"rotating-parent" } rotating) world=BoardSceneMotion.RotatingParent(rotating,time)*Root;
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
+            if(item.Object.Motion?.Kind=="castle-halo")opacity=castle!.HaloOpacity(time);
             if(item.Object.Motion is { Kind:"beach-surf" } surf)
             {
                 var animated=BoardSceneMotion.Surf(surf,time); world=animated.Matrix*Root; opacity=animated.Opacity;
@@ -95,12 +99,13 @@ internal sealed class BoardMeshLayer : IDisposable
             foreach (var part in item.Parts)
             {
                 var material = part.Material;
+                var color=item.Object.Motion?.Kind=="castle-moon"?castle!.MoonColor:new Vector3(material.Color[0],material.Color[1],material.Color[2]);
                 if (material.Transparent != transparent) continue;
                 void Draw(Matrix4D matrix, float r, float g, float b)
                 {
                     renderer.ReceiveShadow = item.Object.ReceiveShadow;
                     renderer.DrawRoom(part.Geometry, matrix, camera,
-                        new(material.Color[0] * r, material.Color[1] * g, material.Color[2] * b, opacity??material.Color[3]),
+                        new(color.X * r, color.Y * g, color.Z * b, opacity??material.Color[3]),
                         material.Map is { } map ? textures[map] : null, material.Unlit, transparent, material.DepthWrite,
                         new Vector3(material.Emissive[0], material.Emissive[1], material.Emissive[2]) * material.EmissiveIntensity,
                         material.Roughness, material.Metalness, material.Side, additive: material.Blending == 2,
@@ -117,6 +122,7 @@ internal sealed class BoardMeshLayer : IDisposable
                             { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
                             { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
                             { Props:{ } props } motion=>BoardSceneMotion.Prop(motion.Kind,props[i],time),
+                            { Castle:{ } items } motion=>castle!.Instance(motion.Kind,items[i],i,time),
                             _=>Matrix4D.From(instance.Matrix)
                         };
                         Draw(matrix*world,instance.Color[0],instance.Color[1],instance.Color[2]);
