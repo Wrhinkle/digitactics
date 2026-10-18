@@ -53,6 +53,22 @@ internal sealed class MatchScreen : IDisposable
         var entry = text.Get(Rules.Id, id); ImGui.BeginTooltip(); ImGui.Text(entry.Name); ImGui.TextWrapped(entry.Description); ImGui.EndTooltip();
     }
     private string UnitName(PlanningUnit unit) => Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == unit.Line).Forms[unit.Stage];
+    private void UnitDetails(string lineId, int stage)
+    {
+        var line = Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == lineId);
+        var stats = UnitValues.Stats(line, stage);
+        ImGui.TextWrapped($"{line.Forms[stage]}  {new string('*', stage + 1)}");
+        ImGui.TextWrapped(string.Join(" / ", line.Traits.Select(Name)));
+        ImGui.TextWrapped($"Base stats: {stats.MaxHealth} HP, {stats.AttackDamage} attack, {stats.AttackSpeed:0.##} attacks/s");
+        ImGui.TextWrapped($"{stats.Armor} armor / {stats.MagicResist} magic resist / {stats.Range} range");
+        ImGui.TextWrapped($"Mana {stats.StartMana}/{stats.MaxMana}");
+        ImGui.TextWrapped(line.Ability.Names.ElementAtOrDefault(stage) ?? line.Ability.Kind);
+    }
+    private void UnitTooltip(string line, int stage)
+    {
+        if (!ImGui.IsItemHovered()) return;
+        ImGui.BeginTooltip(); UnitDetails(line, stage); ImGui.EndTooltip();
+    }
     private MatchActionResult? Act(string action, object? args = null)
     {
         var result = Session!.Actions.Apply(0, action, JsonSerializer.SerializeToElement(args ?? new { }));
@@ -199,7 +215,7 @@ internal sealed class MatchScreen : IDisposable
             ImGui.BeginDisabled(viewed != 0);
             if (Button($"hex/{column}/{row}", unit is null ? "+" : new string('*', unit.Stage + 1), 60, 25, selectedUnit is not null && selectedUnit == unit?.Id)) Select(spot);
             ImGui.EndDisabled();
-            if (unit is not null && ImGui.IsItemHovered()) { ImGui.BeginTooltip(); ImGui.Text(UnitName(unit)); ImGui.EndTooltip(); }
+            if (unit is not null) UnitTooltip(unit.Line, unit.Stage);
         }
         ImGui.End();
     }
@@ -218,7 +234,7 @@ internal sealed class MatchScreen : IDisposable
         var selected = Human.Roster.Entries.FirstOrDefault(e => e.Unit.Id == selectedUnit);
         if (selected is not null)
         {
-            ImGui.TextWrapped(UnitName(selected.Unit));
+            UnitDetails(selected.Unit.Line, selected.Unit.Stage);
             foreach (string item in selected.Unit.Items) { ImGui.Text(Name(item)); Tooltip(item); }
             if (Button("sell", "Sell unit")) { Act("sell", new { uid = selected.Unit.Id }); selectedUnit = null; }
             if (Session.State.Duos && Button("sendUnit", "Send to partner")) { Act("portal", new { uid = selected.Unit.Id }); selectedUnit = null; }
@@ -249,12 +265,13 @@ internal sealed class MatchScreen : IDisposable
             if (i > 0) ImGui.SameLine(); string? id = Human.Shop.Slots[i];
             string label = id is null ? "Empty" : $"{Rules.Lines.Single(l => l.Id == id).Forms[Human.Shop.Metadata[i]?.Unit?.Stage ?? 0]}\n{Human.Shop.Cost(i)} gold {Human.Shop.Metadata[i]?.Tag}";
             if (Button("buy/" + i, label, card, 48)) Act("buy", new { slot = i });
+            if (id is not null) UnitTooltip(id, Human.Shop.Metadata[i]?.Unit?.Stage ?? 0);
         }
         for (int i = 0; i < 9; i++)
         {
             if (i > 0) ImGui.SameLine(); var unit = Human.Roster.Bench[i];
             if (Button("bench/" + i, unit is null ? "-" : UnitName(unit) + "\n" + new string('*', unit.Stage + 1), (size.X - 96f) / 9, 40, selectedUnit is not null && unit?.Id == selectedUnit)) Select(UnitSpot.Bench(i));
-            if (unit is not null && ImGui.IsItemHovered()) { ImGui.BeginTooltip(); ImGui.Text(UnitName(unit)); ImGui.EndTooltip(); }
+            if (unit is not null) UnitTooltip(unit.Line, unit.Stage);
         }
         for (int i = 0; i < Human.Items.Count; i++)
         {
@@ -284,11 +301,16 @@ internal sealed class MatchScreen : IDisposable
         }
         else if (Human.Offer is { } offer)
         {
-            Window("Choose your reward", Left + 12, Top + 12, Width - 24, 215);
+            var heading = text.Offer(Rules.Id, offer.Kind);
+            Window(heading.Name + "##reward", Left + 12, Top + 12, Width - 24, Math.Min(Height - 24, 440));
+            ImGui.TextWrapped(heading.Description);
+            ImGui.Separator();
             for (int i = 0; i < offer.Options.Length; i++)
             {
-                string id = offer.Options[i]; if (Button("offer/" + i, Name(id), Width - 65, 34)) { Act("offer", new { i }); break; }
-                Tooltip(id);
+                var choice = text.Choice(Rules, offer.Kind, offer.Options[i]);
+                if (Button("offer/" + i, choice.Name, Width - 65, 34)) { Act("offer", new { i }); break; }
+                ImGui.TextWrapped(choice.Description);
+                ImGui.Separator();
             }
             if (offer.Rerolls > 0 && Button("offerReroll", $"Reroll choices ({offer.Rerolls})")) Act("offerReroll");
             ImGui.End();
