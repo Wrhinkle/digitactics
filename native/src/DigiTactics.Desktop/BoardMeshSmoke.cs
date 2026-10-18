@@ -25,6 +25,7 @@ internal static class BoardMeshSmoke
             CheckPoints(renderer);
             CheckLines(renderer);
             CheckFog(renderer);
+            CheckParticleMotion(renderer);
             using(var arena=new ArenaEnvironment())
             {
                 var view=BattleView.Camera(256,256,14);
@@ -217,5 +218,26 @@ internal static class BoardMeshSmoke
         }
         for(int i=0;i<pixels.Length;i++)
             if(Math.Abs(pixels[i]-expected[i])>1) throw new InvalidOperationException($"Board sky color/orientation mismatch: {scene.Id}, byte {i}: {pixels[i]} vs {expected[i]}.");
+    }
+
+    private static unsafe void CheckParticleMotion(ModelRenderer renderer)
+    {
+        var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/server-desert.json.gz"));
+        var particles=scene.Objects.Where(o=>o.Motion?.Kind=="particles").ToArray();
+        if(particles.Length==0) throw new InvalidOperationException("Particle GPU check requires original desert dust.");
+        using var layer=new BoardMeshLayer(scene with { Objects=particles });
+        byte[] Render()
+        {
+            ModelRenderer.Begin(256,256); OpenGl.ClearColor(new(0,0,0,1)); OpenGl.Clear(GlClearBit.Color);
+            layer.Draw(renderer,BattleView.Camera(256,256,7),true,256);
+            var pixels=new byte[256*256*4]; fixed(byte* p=pixels) OpenGl.ReadPixels(0,0,256,256,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
+            ModelRenderer.End(); return pixels;
+        }
+        var initial=Render();
+        for(int frame=1;frame<=120;frame++) layer.Update(frame/60d,1/60d);
+        var moved=Render();
+        int changed=Enumerable.Range(0,256*256).Count(i=>Math.Abs(initial[i*4]-moved[i*4])+Math.Abs(initial[i*4+1]-moved[i*4+1])+Math.Abs(initial[i*4+2]-moved[i*4+2])>3);
+        if(changed<5) throw new InvalidOperationException("Board particle updates did not reach the framebuffer.");
+        Console.WriteLine($"Board particle GPU updates verified: {changed} pixels changed.");
     }
 }

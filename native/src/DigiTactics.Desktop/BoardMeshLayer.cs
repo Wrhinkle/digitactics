@@ -11,7 +11,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly List<GpuPrimitive> geometry = [];
     private readonly List<GpuTexture> textures = [];
     private readonly List<ObjectParts> objects = [];
-    private readonly List<(GpuPrimitive Geometry,float[] Vertices,BoardMotion Motion)> waves=[];
+    private readonly List<(GpuPrimitive Geometry,float[] Vertices,BoardMotion Motion)> animatedGeometry=[];
     private double time;
     public int DrawCalls { get; private set; }
     public Matrix4D Root { get; set; } = Matrix4D.Identity;
@@ -31,7 +31,7 @@ internal sealed class BoardMeshLayer : IDisposable
                     parts = BoardMesh.Create(scene, obj).Select(part =>
                     {
                         var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
-                        if(obj.Motion is { Kind:"sea" } motion) waves.Add((gpu,part.Primitive.Vertices,motion));
+                        if(obj.Motion is { Kind:"sea" or "particles" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
                         var material = scene.Materials[part.Material];
                         return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
                     }).ToArray();
@@ -43,10 +43,15 @@ internal sealed class BoardMeshLayer : IDisposable
         catch { Dispose(); throw; }
     }
 
-    public void Update(double seconds)
+    public void Update(double seconds,double delta=0)
     {
         time=seconds;
-        foreach(var wave in waves) { BoardSceneMotion.Sea(wave.Vertices,time,wave.Motion); wave.Geometry.UpdateVertices(wave.Vertices); }
+        foreach(var wave in animatedGeometry)
+        {
+            if(wave.Motion.Kind=="sea") BoardSceneMotion.Sea(wave.Vertices,time,wave.Motion);
+            else BoardSceneMotion.Particles(wave.Vertices,delta,time,wave.Motion);
+            wave.Geometry.UpdateVertices(wave.Vertices);
+        }
     }
 
     public void Draw(ModelRenderer renderer, Matrix4x4 camera, bool transparent, int viewportHeight)
@@ -90,6 +95,6 @@ internal sealed class BoardMeshLayer : IDisposable
         foreach (var primitive in geometry) primitive.Dispose(); geometry.Clear();
         foreach (var texture in textures) texture.Dispose(); textures.Clear();
         objects.Clear();
-        waves.Clear();
+        animatedGeometry.Clear();
     }
 }

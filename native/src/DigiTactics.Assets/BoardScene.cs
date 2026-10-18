@@ -56,6 +56,12 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             Require(obj.Geometry >= 0 && obj.Geometry < Geometries.Length, "geometry reference");
             Require(obj.Materials.Length > 0 && obj.Materials.All(i => i >= 0 && i < Materials.Length), "material references");
             Require(obj.Matrix.Length == 16 && obj.Matrix.All(double.IsFinite), "world matrix");
+            if(obj.Motion is { Kind:"particles" } motion)
+            {
+                Require(motion.Box?.Length==6 && motion.Velocity?.Length==3 && motion.Speeds?.Length==Geometries[obj.Geometry].Position.Length/3,"particle motion dimensions");
+                Require(motion.Box!.All(double.IsFinite) && motion.Velocity!.All(double.IsFinite) && Finite(motion.Speeds!),"particle motion values");
+                var box=motion.Box!; Require(box[0]<box[1] && box[2]<box[3] && box[4]<box[5],"particle bounds");
+            }
             // Three ignores geometry groups for single-material meshes.
             if (obj.Materials.Length > 1)
                 foreach (var group in Geometries[obj.Geometry].Groups) Require(group.MaterialIndex >= 0 && group.MaterialIndex < obj.Materials.Length, "group material");
@@ -79,5 +85,5 @@ public sealed record BoardGeometryGroup(int Start, int Count, int MaterialIndex)
 public sealed record BoardObject(string Kind, int Geometry, int[] Materials, double[] Matrix, bool Visible,
     bool CastShadow, bool ReceiveShadow, BoardInstance[]? Instances, BoardMotion? Motion = null);
 public sealed record BoardInstance(double[] Matrix, float[] Color);
-public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null);
+public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0);
 public sealed record BoardCrystal(double X,double Z,double Sx,double Sy,double Sz,double Phase);

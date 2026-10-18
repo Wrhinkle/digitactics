@@ -10,6 +10,7 @@ async function main(){
   +`const DT={BENCH:9,CELLS:Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})),makeRng:${rng},hexDist:${distance}},COLS=7,ROWS=8,BENCH=9;const LAYOUT=(()=>{`+layout+';return LAYOUT;})();'
   +source.slice(source.indexOf('const { cellWorld'),source.indexOf('// ---------- renderer integration ----------'))
    .replace('const base = Float32Array.from(pos.array);','const base = Float32Array.from(pos.array); m.userData.nativeMotion={kind:"sea",amp,speed};')
+   .replace('const pts = new THREE.Points(geo, mat);','const pts = new THREE.Points(geo, mat); pts.userData.nativeMotion={kind:"particles",box,velocity:v,wobble,speeds:Array.from(spd)};')
    .replace(/const cm = inst\(ctx, new THREE.OctahedronGeometry\(0.45, 0\)[^\n]+;/,line=>line+' cm.userData.nativeMotion={kind:"island-crystals",items:crystals.map(c=>({...c}))};')
   +'\nexport {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
   +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}'
@@ -155,7 +156,7 @@ async function main(){
        const a=o.geometry.attributes.position.array,vertices=[];
        for(let i=0;i<a.length/3;i+=13)vertices.push([a[i*3],a[i*3+2],a[i*3+1]]);
        rows.push({id:spec.id,time,motion,vertices});
-      }else{
+      }else if(motion.kind==='island-crystals'){
        const matrix=new THREE.Matrix4(),matrices=[];for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
        rows.push({id:spec.id,time,motion,matrices});
       }
@@ -166,6 +167,22 @@ async function main(){
    return rows;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-motion.json.gz'),zlib.gzipSync(JSON.stringify(motionFixture)));
+  const particleFixture=await page.evaluate(async()=>{
+   const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
+   for(const spec of THEMES){
+    const env=buildEnv(spec),moving=[];env.group.traverse(o=>{if(o.userData.nativeMotion?.kind==='particles')moving.push(o);});
+    if(!moving.length){disposeEnv(env);continue;}
+    const objects=moving.map(o=>({motion:o.userData.nativeMotion,initial:Array.from(o.geometry.attributes.position.array),steps:[]}));
+    let time=0;
+    for(let frame=0;frame<2400;frame++){
+     const dt=[1/60,.033,0,.1,.1,.1][frame%6];time+=dt;env.tick(dt,time);
+     if(frame<12 || frame%120===119)for(let i=0;i<moving.length;i++)objects[i].steps.push({frame,time,positions:Array.from(moving[i].geometry.attributes.position.array)});
+    }
+    rows.push({id:spec.id,objects});disposeEnv(env);
+   }
+   return rows;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-particles.json.gz'),zlib.gzipSync(JSON.stringify(particleFixture)));
   console.log(`Exported ${manifest.length} board themes, ${manifest.reduce((n,t)=>n+t.instances,0)} scene instances; animation tick counts retained for native port.`);
  }finally{await browser.close();}
 }
