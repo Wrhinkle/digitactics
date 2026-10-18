@@ -8,6 +8,7 @@ namespace DigiTactics.Desktop;
 /// <summary>Exercises visible controls through ImGui mouse events, not direct gameplay mutations.</summary>
 internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = null, bool evolutionSmoke = false)
 {
+    private readonly Dictionary<int, PauseSmoke> pauseChecks = new() { [9] = new(true), [10] = new(), [11] = new() };
     private readonly PlanningTimerSmoke planningTimer = new();
     private double automaticAdvanceWait;
     private int combatHoverFrames, combatHoverVisible;
@@ -73,6 +74,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (cooldown-- > 0 || index >= commands.Length) return;
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
+        if (pauseChecks.TryGetValue(index, out var pauseCheck)) { if (pauseCheck.Input(screen)) pauseChecks.Remove(index); cooldown = 3; return; }
         if (index == 9 && traitHoverStep < 2)
         {
             if (traitHoverStep == 0)
@@ -215,6 +217,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (resultRounds.Add(resultSession.Rounds.Position.Label) && capture is not null)
                 FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "result-" + resultSession.Rounds.Position.Label + ".bmp"), size.X, size.Y);
         }
+        if (screen.IsPaused && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "paused.bmp"), size.X,size.Y);
         if (index == 9 && traitHoverStep == 1 && cooldown == 1 && capture is not null)
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "trait-tooltip.bmp"), size.X, size.Y);
         if (index == 20 && !combatHoverVerified && screen.DetailedCombatUnit is not null && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "combat-tooltip.bmp"),size.X,size.Y);

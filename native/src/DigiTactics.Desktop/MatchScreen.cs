@@ -133,7 +133,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     public void Update(double delta, double? wallDelta = null)
     {
-        boardSceneTime+=Math.Clamp(wallDelta??delta,0,.1);
+        if (!IsPaused) boardSceneTime+=Math.Clamp(wallDelta??delta,0,.1);
         UpdateSteamLobby();
         UpdateNetworkMatch();
         if (farm is not null) farm.ResidentPosition = id => showFarm && training is null ? farmView?.Position(id) : null;
@@ -146,7 +146,7 @@ internal sealed partial class MatchScreen : IDisposable
             catch (Exception error) { profileMessage = "Could not read this backup: " + error.Message; }
             profilePreview = null;
         }
-        if (Session is null) return;
+        if (Session is null || IsPaused) return;
         bool wasResult = Session.Rounds.Phase == MatchPhase.Result;
         if (Session.Rounds.Phase == MatchPhase.Combat)
         {
@@ -245,7 +245,9 @@ internal sealed partial class MatchScreen : IDisposable
         itemDropSlot = -1;
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
         if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
+        if (IsPaused) { PausePanel(); return; }
         Header(); if (Session is null) return;
+        if (IsPaused) { PausePanel(); return; }
         Roster(); Sidebar();
         if (battle is null) Board();
         else
@@ -293,6 +295,7 @@ internal sealed partial class MatchScreen : IDisposable
         {
             Session = new(Rules, seed ?? (uint)Random.Shared.Next(1, int.MaxValue), Enumerable.Range(0, 8).Select(i => new MatchSeat(i == 0 ? profile?.Progress.Name ?? "You" : $"Tamer {i}", i == 0)).ToArray(), duos);
             history = profile is null ? null : new(Session, profile);
+            localPaused = false;
             viewed = localSeat = 0; CompletedRounds = 0;
             selectedUnit = null; selectedItem = null; backgroundTime = 0;
             audio.Music("planning");
@@ -322,6 +325,7 @@ internal sealed partial class MatchScreen : IDisposable
         else if (session.Rounds.Phase == MatchPhase.Result) { if (networkRoom is not null) ImGui.Text("Next round starts shortly..."u8); else if (Button("next", "Next round")) Next(); }
         else { if (Button("finish", networkRoom is null ? "Skip to results" : "Finish my replay")) Finish(); ImGui.SameLine(); ImGui.Text($"{battle?.Combat.Time ?? 0:F1}s"); }
         PlanningTimerControls();
+        if (networkRoom is null && !session.State.Over) { ImGui.SameLine(); if (Button("pause", "Pause")) PauseLocal(); }
         if (networkRoom is not null) { ImGui.SameLine(); NetworkSeatControls(); ImGui.SameLine(); if (Button("leaveOnline", "Leave match")) LeaveSteamRoom(); }
         ImGui.End();
     }
