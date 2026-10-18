@@ -11,7 +11,7 @@ public enum LegendAction { Digivolve, Revert, BuyLevel, Feed }
 public sealed record EvolutionChange(bool Changed, string? Legends, string? Wallet, JsonNode? Result);
 
 /// <summary>Read-only evolution projection using original branch order, farm care and seeded rolls.</summary>
-public static class LegendEvolution
+public static partial class LegendEvolution
 {
     private sealed record Branch(string Form, string Care);
     private sealed record Catalog(Dictionary<string, EvolutionForm> Forms, Dictionary<string, Branch[]> Children, int[] DataFor, int[] TierLevel, int ItLevel);

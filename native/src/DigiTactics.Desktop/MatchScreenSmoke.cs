@@ -18,7 +18,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private int combatHoverFrames, combatHoverVisible;
     private bool combatHoverVerified;
     private readonly string[] collectionCommands = evolutionSmoke
-        ? ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "evolution/bukamon", "levelLegend", "levelLegend", "feedLegend", "digivolve", "revertLegend", "digivolve", "closeEvolution", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"]
+        ? ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "evolution/bukamon", "levelLegend", "levelLegend", "feedLegend", "digivolve", "revertLegend", "digivolve", "openEvolutionTree", "closeEvolutionTree", "closeEvolution", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"]
         : ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
     private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
     private int collectionIndex;
@@ -280,6 +280,11 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         {
             if (collectionIndex == 4 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "collection.bmp"), size.X, size.Y);
             if (collectionIndex == collectionCommands.Length - 1 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "egg.bmp"), size.X, size.Y);
+            if(evolutionSmoke && collectionIndex==12 && cooldown==1)
+            {
+                if(screen.EvolutionTreeNodes!=LegendEvolution.Tree("bukamon").Tiers.Sum(t=>t.Length)) throw new InvalidOperationException("Evolution tree omitted reachable forms.");
+                if(capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"evolution-tree.bmp"),size.X,size.Y);
+            }
             if (evolutionSmoke && collectionIndex == 11 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "evolution.bmp"), size.X, size.Y);
             if (collectionIndex < collectionCommands.Length) return false;
             var collection = new CosmeticCollection(collectionProfile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
