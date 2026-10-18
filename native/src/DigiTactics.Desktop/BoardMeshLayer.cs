@@ -33,6 +33,8 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly BoardGraveyardMotion? graveyard;
     private readonly BoardPyramidMotion? pyramid;
     private readonly BoardHolidayMotion? holiday;
+    private readonly BoardFireworks? fireworks;
+    private readonly Vector3[] fireworkColors=[];
     private readonly BoardConfetti? confetti;
     private static readonly Vector3 libraryTint=BoardLighting.Linear("#ffd090");
     private static readonly Vector3 freezeCalmFog=BoardLighting.Linear("#24405e"),freezeStormFog=BoardLighting.Linear("#8aa6c0");
@@ -49,6 +51,8 @@ internal sealed class BoardMeshLayer : IDisposable
     {
         currentStage=initialStage;
         foreach(var obj in scene.Objects)if(obj.Motion?.Building is {} building)buildings.Add(obj,new(building,initialStage));
+        if(scene.Objects.Select(o=>o.Motion?.Fireworks).FirstOrDefault(f=>f is not null) is {} fw)
+        {fireworks=new(fw.Count,fw.Max,fw.Colors.Length,fw.Seed,fw.Calls,initialWon);fireworkColors=fw.Colors.Select(BoardLighting.Linear).ToArray();}
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
         if(scene.Id=="holiday-world")holiday=new(initialWon);
         if(scene.Id=="server-pyramid")pyramid=new(initialCombat);
@@ -84,7 +88,7 @@ internal sealed class BoardMeshLayer : IDisposable
                     parts = BoardMesh.Create(scene, obj).Select(part =>
                     {
                         var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
-                        if(obj.Motion is { Kind:"sea" or "particles" or "circuit-pulses" or "freeze-aurora" or "knights-flashes" or "studio-sticks" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
+                        if(obj.Motion is { Kind:"sea" or "particles" or "circuit-pulses" or "freeze-aurora" or "knights-flashes" or "studio-sticks" or "carnival-fireworks" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
                         if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" or "temple-lava" or "underwater-caustics" or "underwater-caustics2" or "sewer-pour" or "studio-led" or "pyramid-bands" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
                         var material = scene.Materials[part.Material];
                         return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
@@ -111,6 +115,7 @@ internal sealed class BoardMeshLayer : IDisposable
         graveyard?.Advance(delta,combat);
         pyramid?.Advance(delta,time,combat,stage);
         holiday?.Advance(time,won);
+        fireworks?.Advance(delta,time,won);
         confetti?.Advance(delta,won);
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
@@ -131,6 +136,8 @@ internal sealed class BoardMeshLayer : IDisposable
         {
             if(wave.Motion.Kind=="sea") BoardSceneMotion.Sea(wave.Vertices,time,wave.Motion);
             else if(wave.Motion.Kind=="circuit-pulses")circuit!.Pulses(wave.Vertices,wave.Motion.Pulses!);
+            else if(wave.Motion.Fireworks is {} fw)
+            {var burst=fireworks!.Bursts[fw.Index];if(!burst.Visible)continue;var positions=burst.Positions;for(int i=0;i<positions.Length/3;i++)Array.Copy(positions,i*3,wave.Vertices,i*GltfPrimitive.Stride,3);}
             else if(wave.Motion.Kind=="studio-sticks")BoardStudioMotion.Sticks(wave.Vertices,wave.Motion.Crowd!,time);
             else if(wave.Motion.Kind=="knights-flashes")crowd!.Flashes(wave.Vertices,wave.Motion.Crowd!,time);
             else if(wave.Motion.Aurora is {} aurora)BoardFreezeMotion.Aurora(wave.Vertices,aurora,time);
@@ -154,12 +161,14 @@ internal sealed class BoardMeshLayer : IDisposable
             var bolt=item.Object.Motion?.Lightning;
             if(bolt is not null) { if(lightning is not { Visible:true } || lightning.Active!=bolt.Index) continue; }
             else if(item.Object.Motion?.Kind is "knights-confetti" or "studio-confetti"){if(confetti?.Visible!=true)continue;}
+            else if(item.Object.Motion?.Fireworks is {} burst){if(!fireworks!.Bursts[burst.Index].Visible)continue;}
             else if(buildings.TryGetValue(item.Object,out var building)){if(!building.Visible)continue;}
             else if(item.Object.Motion?.Kind=="city-crops"){if(currentStage<2)continue;}
             else if (!item.Object.Visible) continue;
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = World(item.Object);
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
+            if(item.Object.Motion?.Fireworks is {} firework)opacity=(float)fireworks!.Bursts[firework.Index].Opacity;
             if(item.Object.Motion?.Kind is "pyramid-beams" or "pyramid-bands")opacity=pyramid!.Opacity(item.Object.Motion.Kind,(int)item.Object.Motion.Speed,time);
             if(item.Object.Motion?.HolidaySparkle==true)opacity=holiday!.SparkleOpacity;
             if(item.Object.Motion?.TrainSteam==true)opacity=train!.SteamOpacity;
@@ -181,6 +190,7 @@ internal sealed class BoardMeshLayer : IDisposable
             {
                 var material = part.Material;
                 var color=item.Object.Motion?.Kind=="castle-moon"?castle!.MoonColor:new Vector3(material.Color[0],material.Color[1],material.Color[2]);
+                if(item.Object.Motion?.Fireworks is {} fw){int c=fireworks!.Bursts[fw.Index].ColorIndex;color=c<0?Vector3.One:fireworkColors[c];}
                 if(item.Object.Motion?.Kind is "studio-beam" or "studio-pool")color=studio!.LightColor((int)item.Object.Motion.Speed);
                 if(item.Object.Motion?.Kind=="studio-strip")color=BoardStudioMotion.Strip((int)item.Object.Motion.Speed,time);
                 if(item.Object.Motion?.Kind=="studio-sticks")color=studio!.StickColor;

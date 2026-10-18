@@ -11,7 +11,7 @@ async function main(){
  const module="import * as THREE from '/vendor/three/build/three.module.js';import {mergeGeometries} from '/vendor/three/addons/utils/BufferGeometryUtils.js';import {extraThemes} from '/js/boards-extra.js';import {mysteryBoards} from '/js/mystery-boards.js';"
   +`const DT={BENCH:9,CELLS:Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})),makeRng:seed=>{const next=(${rng})(seed);const r=()=>{r.calls++;return next();};r.calls=0;return r;},hexDist:${distance}},COLS=7,ROWS=8,BENCH=9;const LAYOUT=(()=>{`+layout+';return LAYOUT;})();'
   +source.slice(source.indexOf('const { cellWorld'),source.indexOf('// ---------- renderer integration ----------'))
-   .replace('spec.props(ctx);','spec.props(ctx); g.traverse(o=>{if(o.userData.nativeMotion?.lightning)Object.assign(o.userData.nativeMotion.lightning,{delaySeed:spec.id.length*101+spec.id.charCodeAt(0),delayCalls:ctx.rng.calls});});')
+   .replace('spec.props(ctx);','spec.props(ctx); g.traverse(o=>{if(o.userData.nativeMotion?.fireworks)Object.assign(o.userData.nativeMotion.fireworks,{seed:spec.id.length*101+spec.id.charCodeAt(0),calls:ctx.rng.calls});if(o.userData.nativeMotion?.lightning)Object.assign(o.userData.nativeMotion.lightning,{delaySeed:spec.id.length*101+spec.id.charCodeAt(0),delayCalls:ctx.rng.calls});});')
    .replace('const base = Float32Array.from(pos.array);','const base = Float32Array.from(pos.array); m.userData.nativeMotion={kind:"sea",amp,speed};')
    .replace('const pts = new THREE.Points(geo, mat);','const pts = new THREE.Points(geo, mat); pts.userData.nativeMotion={kind:"particles",box,velocity:v,wobble,speeds:Array.from(spd)};')
    .replace(/const cm = inst\(ctx, new THREE.OctahedronGeometry\(0.45, 0\)[^\n]+;/,line=>line+' cm.userData.nativeMotion={kind:"island-crystals",items:crystals.map(c=>({...c}))};')
@@ -37,6 +37,8 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+  .replace('const bursts = Array.from({ length: max }, () => {','const bursts = Array.from({ length: max }, (_,burstIndex) => {')
+  .replace('return { p, pos, vel, mat, t0: -9, o: new THREE.Vector3() };','p.userData.nativeMotion={kind:"carnival-fireworks",fireworks:{index:burstIndex,count:per,max,colors}}; return { p, pos, vel, mat, t0: -9, o: new THREE.Vector3() };')
    .replace('wheel.add(rimM);','wheel.add(rimM); rimM.userData.nativeMotion={kind:"carnival-wheel"};')
   .replace('const cosA = Math.cos(-0.6), sinA = Math.sin(-0.6);','gond.nativeCarnival="carnival-gondolas"; const cosA = Math.cos(-0.6), sinA = Math.sin(-0.6);')
   .replace(/const bl = inst\(ctx, new THREE.SphereGeometry\(0.1, 6, 4\)[^\n]+;/,line=>line+' bl.userData.nativeMotion={kind:"carnival-bulbs",carnival:bulbs.map(p=>({...p}))};')
@@ -406,9 +408,25 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const fireworkFixture=await page.evaluate(async()=>{
+   const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
+   for(const initialWon of [false,true]){
+    const env=buildEnv(THEMES.find(s=>s.id==='gargomon-carnival')),objects=[],frames=[];
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.fireworks)objects.push(o);});
+    env.signal({phase:'combat',stage:1,won:initialWon,evo:0});env.tick(0,0);let time=0;
+    for(let frame=0;frame<1000;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],won=frame<150?initialWon:frame<400||frame>=650;time+=delta;
+     env.signal({phase:'combat',stage:1,won,evo:0});env.tick(delta,time);
+     frames.push({time,delta,won,bursts:objects.map(o=>({visible:o.visible,color:o.material.color.toArray(),opacity:o.material.opacity,positions:Array.from(o.geometry.attributes.position.array)}))});
+    }
+    scenarios.push({initialWon,config:objects[0].userData.nativeMotion.fireworks,frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-fireworks.json.gz'),zlib.gzipSync(JSON.stringify(fireworkFixture)));
   const carnivalFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),env=buildEnv(THEMES.find(s=>s.id==='gargomon-carnival')),objects=[],frames=[];
-   env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('carnival-'))objects.push(o);});
+   env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('carnival-')&&!o.userData.nativeMotion.fireworks)objects.push(o);});
    for(const time of [0,.016,.37,1,2.7,10,31.25,120,1000]){
     env.tick(.016,time);env.group.updateMatrixWorld(true);
     frames.push({time,objects:objects.map(o=>{
