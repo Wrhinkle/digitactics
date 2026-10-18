@@ -147,6 +147,7 @@ internal sealed partial class MatchScreen : IDisposable
             profilePreview = null;
         }
         if (Session is null) return;
+        bool wasResult = Session.Rounds.Phase == MatchPhase.Result;
         if (Session.Rounds.Phase == MatchPhase.Combat)
         {
             battle?.Advance(delta); backgroundTime += Math.Min(delta, .25);
@@ -159,6 +160,7 @@ internal sealed partial class MatchScreen : IDisposable
             if (Session.Battles.All(m => m.Combat.Done)) { if (networkRoom is null) Finish(); else NetworkReplayDone(); }
         }
         else if (Session.Rounds.Phase == MatchPhase.Result) battle?.Advance(delta);
+        if (wasResult) UpdateResultCountdown(wallDelta ?? delta);
         planning.Update(Rules, Session.State.Players[viewed], delta);
         UpdateBattleBench(delta);
         UpdateAiEmotes();
@@ -212,6 +214,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private void RoundFinished()
     {
+        resultCountdown = 2.2;
         ScheduleAiEmotes();
         CompletedRounds++; status = "Round complete.";
         if (networkRoom is null) history?.Complete(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
@@ -227,6 +230,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private void RoundAdvanced()
     {
+        resultCountdown = null;
         battle?.Dispose(); battle = null; watching = null; combatAudio = null; viewed = localSeat >= 0 ? localSeat : viewed;
         selectedUnit = null; selectedItem = null;
         audio.Play("round");
