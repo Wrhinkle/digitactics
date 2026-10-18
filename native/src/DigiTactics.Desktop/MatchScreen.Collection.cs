@@ -8,6 +8,7 @@ internal sealed partial class MatchScreen
 {
     private bool showCollection;
     private bool showEggs;
+    private bool collectionStore;
     private string? evolutionLegend;
     private (string Id, double RarityRoll, double ItemRoll, long At)? eggPurchase;
     private int collectionKind, collectionSlot;
@@ -32,14 +33,23 @@ internal sealed partial class MatchScreen
     }
     private void Collection()
     {
+        ImGui.PushFont(default,17);
+        ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(10,9));
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(8,8));
+        try { CollectionPage(); }
+        finally { ImGui.PopStyleVar(2); ImGui.PopFont(); }
+    }
+    private void CollectionPage()
+    {
         ImGui.SetNextWindowBgAlpha(1);
         if(evolutionLegend is not null)
         {
-            float width=Math.Min(1180,size.X-20),height=Math.Min(740,size.Y-20);
-            Window("Digivolve",(size.X-width)/2,(size.Y-height)/2,width,height);
+            float top=ClientHomeVisible?ClientPageTop:10;
+            float width=Math.Min(1180,size.X-20),height=Math.Min(740,size.Y-top-10);
+            Window("Digivolve",(size.X-width)/2,top+(size.Y-top-10-height)/2,width,height);
         }
-        else Window("Collection and store", size.X * .12f, size.Y * .06f, size.X * .76f, size.Y * .88f);
-        if (Button("closeCollection", "Back")) { CloseEvolution();showCollection = false; purchase = null; eggPurchase = null; hatching = null; boughtCosmetic=null; mysteryReward=null; DisposeCollectionPreview(); ImGui.End(); return; }
+        else HomeCard("Collection page",new(16,ClientPageTop),new(size.X-32,size.Y-ClientPageTop-16),false,true);
+        if (Button("closeCollection", "Back")&&!EvolutionBusy) { CloseEvolution();showCollection = false; purchase = null; eggPurchase = null; hatching = null; boughtCosmetic=null; mysteryReward=null; DisposeCollectionPreview(); ImGui.End(); return; }
         try
         {
             var collection = new CosmeticCollection(profile!.Storage.GetValueOrDefault("dt.cosmetics.v1"));
@@ -82,73 +92,14 @@ internal sealed partial class MatchScreen
                 ImGui.SameLine(); if (Button("cancelPurchase", "Cancel")) purchase = null;
                 ImGui.End(); return;
             }
-            if (Button("toggleEggs", showEggs ? "Cosmetics" : "Loot / Digi-Eggs")) showEggs = !showEggs;
             if (showEggs)
             {
+                ImGui.SameLine();HomeLabel("LOOT / DIGI-EGGS",24,HomeInk);
+                if (Button("toggleEggs", "Cosmetics")) showEggs=false;
                 IncubatorControls(collection);
                 ImGui.End(); return;
             }
-            ImGui.SetNextItemWidth(240);bool categoryOpen=ImGui.BeginCombo("Category"u8, CollectionNames[collectionKind]);
-            var categoryMin=ImGui.GetItemRectMin();var categoryMax=ImGui.GetItemRectMax();Buttons["collectionCategory"]=new((categoryMin.X+categoryMax.X)/2,(categoryMin.Y+categoryMax.Y)/2);
-            if (categoryOpen)
-            {
-                for (int i = 0; i < CollectionNames.Length; i++)
-                {
-                    bool chosen=ImGui.Selectable(CollectionNames[i], collectionKind == i);
-                    ClientItemSound("collectionCategory/"+i,chosen);
-                    if (chosen) CollectionCategoryChanged(i);
-                    var min=ImGui.GetItemRectMin();var max=ImGui.GetItemRectMax();Buttons["collectionCategory/"+i]=new((min.X+max.X)/2,(min.Y+max.Y)/2);
-                }
-                ImGui.EndCombo();
-            }
-            string kind = CosmeticCollection.Kinds[collectionKind];
-            var visible=CosmeticCollection.Items(kind).Where(item=>!item.Secret||collection.Owns(kind,item.Id)).ToArray();
-            ImGui.SameLine();ImGui.Text($"{visible.Count(item=>collection.Owns(kind,item.Id))} / {visible.Length} owned");
-            var filtered=CollectionFilters(collection,kind);
-            var equipped = collection.Equipped(kind);
-            if (CosmeticCollection.Multi(kind))
-            {
-                for (int i = 0; i < 6; i++)
-                {
-                    string? id = equipped!.AsArray().ElementAtOrDefault(i)?.GetValue<string>();
-                    if(i%2!=0)ImGui.SameLine();
-                    if (Button("collectionSlot/" + i, $"Slot {i + 1}: {CosmeticCollection.Item(kind, id)?.Name ?? "Empty"}", (ImGui.GetWindowSize().X-42)/2,active: collectionSlot == i)) collectionSlot = i;
-                }
-                if (Button("clearCollectionSlot", "Empty selected slot")) ChangeCollection(c => c.Equip(kind, null, collectionSlot), "Slot cleared.");
-            }
-            float listWidth=ImGui.GetContentRegionAvail().X*.53f;
-            ImGui.BeginChild("collectionItems"u8,new(listWidth,0),ImGuiChildFlags.Borders);
-            CollectionListBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
-            try
-            {
-            DateOnly day = DateOnly.FromDateTime(DateTime.Now);
-            if(filtered.Length==0)CollectionText("Nothing matches these filters.");
-            foreach (var item in filtered)
-            {
-                ImGui.Separator(); ImGui.Text(item.Name); ImGui.SameLine(); ImGui.Text(item.Rarity ?? "common");
-                if (Button("preview/"+kind+"/"+item.Id,"Preview",active:previewCosmetic==item.Id)) previewCosmetic=item.Id;
-                ImGui.SameLine();
-                bool owns = collection.Owns(kind, item.Id);
-                bool worn = CosmeticCollection.Multi(kind) ? equipped!.AsArray().ElementAtOrDefault(collectionSlot)?.GetValue<string>() == item.Id : equipped?.GetValue<string>() == item.Id;
-                if (owns)
-                {
-                    if (kind == "legend" && Button("evolution/" + item.Id, "Evolution and care")) { evolutionLegend = item.Id; collectionMessage=null; }
-                    if (worn) ImGui.Text("Equipped"u8);
-                    else if (Button("equip/" + kind + "/" + item.Id, CosmeticCollection.Multi(kind) ? $"Put in slot {collectionSlot + 1}" : "Equip"))
-                        { if(ChangeCollection(c => c.Equip(kind, item.Id, collectionSlot), "Equipped " + item.Name + "."))audio.PlayClient("equip",false); previewCosmetic=item.Id; }
-                }
-                else if (item.Linked is { Length: 2 } link) CollectionText("Unlocked by owning " + (CosmeticCollection.Item(link[0], link[1])?.Name ?? link[1]));
-                else if (item.EggOnly) ImGui.Text("Digi-Egg exclusive"u8);
-                else
-                {
-                    int price = CosmeticCollection.Price(kind, item, day);
-                    ImGui.BeginDisabled(price > collection.Bits);
-                    if (Button("buyCosmetic/" + kind + "/" + item.Id, $"Buy for {price} Bits")) { purchase = (kind, item.Id, day); previewCosmetic=item.Id; }
-                    ImGui.EndDisabled();
-                }
-            }
-            } finally { ImGui.EndChild(); } ImGui.SameLine();
-            ImGui.BeginChild("collectionPreview"u8,new(0,0),ImGuiChildFlags.Borders); try { SelectedCosmetic(collection,kind); } finally {ImGui.EndChild();}
+            CollectionBrowser(collection);
         }
         catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException or IOException or KeyNotFoundException)
         { CollectionText("Collection unavailable: " + error.Message); }

@@ -104,10 +104,12 @@ internal sealed partial class MatchScreen
             item=CosmeticCollection.Item(kind,equipped)??CosmeticCollection.Items(kind).FirstOrDefault(x=>!x.Secret||collection.Owns(kind,x.Id));
         }
         if(item is null)return;previewCosmetic=item.Id;
-        ImGui.Text(item.Name);ImGui.PushStyleColor(ImGuiCol.Text,RarityColor(item.Rarity));ImGui.Text(item.Rarity??"common");ImGui.PopStyleColor();
         CosmeticPreview(kind,item,collection,ImGui.GetContentRegionAvail().X);
+        ImGui.PushFont(default,23);ImGui.PushStyleColor(ImGuiCol.Text,HomeInk);CollectionText(item.Name);ImGui.PopStyleColor();ImGui.PopFont();
+        ImGui.PushStyleColor(ImGuiCol.Text,RarityColor(item.Rarity));ImGui.Text(char.ToUpperInvariant((item.Rarity??"common")[0])+(item.Rarity??"common")[1..]);ImGui.PopStyleColor();
         if(item.Desc is not null)CollectionText(item.Desc);
         if(kind=="dance")CollectionText("Shown on your equipped Little Legend.");
+        ImGui.Separator();CollectionActions(collection,kind,item);
     }
     private void EggArt(string id,float height=110,double age=-1,ImColor8? glow=null)
     {
@@ -175,5 +177,5 @@ internal sealed partial class MatchScreen
         ImGui.SameLine();if(Button("closePurchase","Keep shopping"))boughtCosmetic=null;
     }
     private static int FirstEmptyCollectionSlot(CosmeticCollection collection,string kind)=>Math.Max(0,collection.Equipped(kind)!.AsArray().ToList().FindIndex(x=>x is null));
-    private void DisposeCollectionPreview(){collectionPreview?.Dispose();collectionPreview=null;collectionKillPreview?.Dispose();collectionKillPreview=null;collectionKillSignature=null;eggArtwork.Dispose();}
+    private void DisposeCollectionPreview(){collectionPreview?.Dispose();collectionPreview=null;collectionKillPreview?.Dispose();collectionKillPreview=null;collectionKillSignature=null;eggArtwork.Dispose();collectionArtwork.Dispose();}
 }

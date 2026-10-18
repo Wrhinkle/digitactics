@@ -71,6 +71,9 @@ internal sealed class CollectionFilterSmoke
         string kind=step is >=21 and <=23?"emote":"legend";
         var collection=new CosmeticCollection(profile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
         if(!screen.CollectionVisible)throw new InvalidOperationException("Collection search Escape closed the panel.");
+        foreach(string control in new[]{"collectionSearch","clearCollectionSearch","collectionOwnership/all","collectionOwnership/owned","collectionOwnership/locked","collectionRarity","collectionSort"})
+            if(!screen.Buttons.TryGetValue(control,out var point)||point.X<screen.CollectionListBounds.Min.X||point.X>=screen.CollectionListBounds.Max.X)
+                throw new InvalidOperationException("Collection filter is clipped by its browser column: "+control);
         if(screen.CollectionFilterKind!=kind)throw new InvalidOperationException($"Collection filter step {step}: expected category {kind}, actual {screen.CollectionFilterKind}.");
         var expected=CosmeticBrowser.Items(collection,kind,screen.CollectionFilterQuery,screen.CollectionFilterOwnership,screen.CollectionFilterRarity,screen.CollectionFilterSort).Select(item=>item.Id);
         if(!expected.SequenceEqual(screen.CollectionFilterIds))throw new InvalidOperationException($"Collection filter step {step}: category {screen.CollectionFilterKind}, query '{screen.CollectionFilterQuery}', ownership {screen.CollectionFilterOwnership}, rarity {screen.CollectionFilterRarity}, sort {screen.CollectionFilterSort} did not bind the expected item list.");
