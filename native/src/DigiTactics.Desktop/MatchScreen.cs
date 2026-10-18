@@ -264,7 +264,7 @@ internal sealed partial class MatchScreen : IDisposable
         Choices(); Soundboard(); EmotePanel(); PlayersPanel();
         if (showAudio)
         {
-            Window("Sound settings", size.X / 2 - 210, Top + 20, 420, 250);
+            Window("Sound settings", size.X / 2 - 210, Top + 20, 420, audio.MusicController is null ? 250 : 390);
             AudioControls();
             if (Button("closeAudio", "Close")) showAudio = false;
             ImGui.End();
@@ -369,6 +369,19 @@ internal sealed partial class MatchScreen : IDisposable
         ImGui.SameLine(); if (ImGui.Checkbox("Mute all"u8, ref muted)) audio.Muted = muted;
         if (audio.Error is { } error) UiText.Wrapped(error);
         if (Button("reconnectAudio", "Reconnect audio")) audio.Reconnect();
+        if (audio.MusicController is { } controller)
+        {
+            bool own=audio.MusicSource=="own";
+            if (ImGui.Checkbox("Use my music"u8, ref own)) audio.MusicSource=own?"own":"builtin";
+            if(controller.Library is { } library)
+            {
+                UiText.Wrapped($"{library.Tracks.Count} saved music tracks");
+                if(controller.CurrentTrackId is { } id && library.Tracks.FirstOrDefault(t=>t.Id==id) is { } track) UiText.Wrapped(track.Name);
+                if(own && library.Tracks.Count>0 && Button("nextMusic", "Next track")) controller.Next();
+            }
+            if(controller.Loading) ImGui.Text("Loading music..."u8);
+            if(controller.Error is { } musicError) UiText.Wrapped(musicError);
+        }
         if (audio.SettingsError is { } settingsError) UiText.Wrapped(settingsError);
     }
     private void ProfileControls()
@@ -388,7 +401,7 @@ internal sealed partial class MatchScreen : IDisposable
                 UiText.Wrapped("Identity and saved totals are available now. Cosmetics, music-library playback and other migrated features are still being completed."u8);
                 if (Button("importProfile", "Import profile"))
                 {
-                    try { profile.Import(candidate); profileCandidate = null; profileMessage = "Profile imported. Your original backup is preserved."; }
+                    try { profile.Import(candidate); audio.MusicController?.Reload(); profileCandidate = null; profileMessage = "Profile imported. Your original backup is preserved."; }
                     catch (Exception failure) { profileMessage = "Profile was not imported: " + failure.Message; }
                 }
                 ImGui.SameLine(); if (Button("cancelProfile", "Cancel")) profileCandidate = null;

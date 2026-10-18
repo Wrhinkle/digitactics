@@ -14,7 +14,7 @@ internal static class AudioSettingsChecks
             string path = Path.Combine(directory, "audio.json");
             var first = new AudioSettingsStore(path);
             Check(first.Settings == new AudioSettings() && !File.Exists(path), "defaults do not write files");
-            var edit = new AudioSettings(.2f, .4f, true, true, .3f, true);
+            var edit = new AudioSettings(.2f, .4f, true, true, .3f, true, "own");
             Check(first.Save(edit), "first save");
             string saved = File.ReadAllText(path);
             Check(new AudioSettingsStore(path).Settings == edit, "restart retains all values");
@@ -25,6 +25,7 @@ internal static class AudioSettingsChecks
             string latest = File.ReadAllText(path);
             Check(!slow.Save(edit) && slow.ReadOnly && File.ReadAllText(path) == latest, "concurrent instance cannot overwrite newer data");
             Check(!fast.Save(edit with { Music = float.NaN }) && File.ReadAllText(path) == latest, "non-finite volume rejected");
+            Check(!fast.Save(edit with { Source = "invalid" }) && File.ReadAllText(path) == latest, "invalid source rejected without overwriting preferences");
             Check(!fast.Save(edit with { Effects = 2 }) && File.ReadAllText(path) == latest, "out of range volume rejected");
             Check(!fast.Save(edit with { Board = float.NaN }) && File.ReadAllText(path) == latest, "non-finite soundboard volume rejected");
             foreach (string malformed in new[] { "{", "null", "[]", "{\"version\":2}", "{\"version\":1,\"audio\":{\"muted\":\"yes\"}}", "{\"version\":1,\"audio\":{\"music\":-1}}" })
@@ -44,12 +45,12 @@ internal static class AudioSettingsChecks
             var migrated = new AudioSettingsStore(importedPath);
             var legacy = new Dictionary<string, string> { ["dt.audio.v1"] = "{\"music\":0.1,\"sfx\":0.2,\"board\":0.3,\"muted\":true,\"musicOff\":true,\"muteOthers\":true,\"source\":\"own\",\"future\":{\"keep\":7}}" };
             string original = legacy["dt.audio.v1"];
-            Check(migrated.ImportLegacy(legacy) && migrated.Settings == new AudioSettings(.1f, .2f, true, true, .3f, true), "all six legacy controls imported");
+            Check(migrated.ImportLegacy(legacy) && migrated.Settings == new AudioSettings(.1f, .2f, true, true, .3f, true, "own"), "all legacy audio controls imported");
             Check(legacy["dt.audio.v1"] == original && new AudioSettingsStore(importedPath).Settings == migrated.Settings, "source unchanged and imported values survive restart");
             Check(migrated.Save(migrated.Settings with { Music = .7f }), "native edits after import");
             string edited = File.ReadAllText(importedPath);
             var importedDoc = JsonNode.Parse(edited)!;
-            Check(importedDoc["audio"]!["source"]!.GetValue<string>() == "own" && importedDoc["audio"]!["future"]!["keep"]!.GetValue<int>() == 7, "unsupported music source and future fields preserved");
+            Check(importedDoc["audio"]!["source"]!.GetValue<string>() == "own" && importedDoc["audio"]!["future"]!["keep"]!.GetValue<int>() == 7, "music source and future fields preserved");
             Check(!migrated.ImportLegacy(legacy) && !new AudioSettingsStore(importedPath).ImportLegacy(legacy) && File.ReadAllText(importedPath) == edited, "migration does not overwrite native preferences");
             foreach (string mode in new[] { "off", "effects", "all" })
             {

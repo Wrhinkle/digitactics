@@ -180,10 +180,16 @@ internal sealed unsafe partial class GameAudio : IDisposable
         if (voices.Count(v => !v.Music) >= 40) return;
         last[family] = frame; voices.Add(new(Load(id), 1)); Played++;
     }
+    public string MusicSource { get; set; } = "builtin";
+    internal CustomMusicController? MusicController { get; set; }
     public void Music(string? id)
     {
-        if (music == id && customVoices.Count == 0) return;
+        if (MusicController is { } controller) controller.RequestPhase(id); else BuiltinMusic(id);
+    }
+    internal void BuiltinMusic(string? id)
+    {
         StopCustomMusic(1);
+        if (music == id) return;
         music = id;
         if (!Available) voices.RemoveAll(v => v.Music);
         foreach (var voice in voices.Where(v => v.Music)) voice.Target = 0;
@@ -208,6 +214,7 @@ internal sealed unsafe partial class GameAudio : IDisposable
     }
     public void Update()
     {
+        MusicController?.Update();
         if (!Available && deviceClock() >= retryAt) Reconnect();
         if (!Available || Suspended) return;
         int queued = Sdl.PInvoke.GetAudioStreamQueued(stream);

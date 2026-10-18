@@ -12,7 +12,7 @@ internal sealed class AudioSettingsBinding : IDisposable
     private bool dirty;
     private double quiet;
     private double importRetry;
-    private AudioSettings Snapshot => new(audio.MusicVolume, audio.EffectsVolume, audio.Muted, audio.MusicOff, audio.BoardVolume, audio.MuteOthers);
+    private AudioSettings Snapshot => new(audio.MusicVolume, audio.EffectsVolume, audio.Muted, audio.MusicOff, audio.BoardVolume, audio.MuteOthers, audio.MusicSource);
     public AudioSettingsBinding(GameAudio audio, NativeProfileStore profile, string directory)
     {
         this.audio = audio; this.profile = profile;
@@ -25,6 +25,7 @@ internal sealed class AudioSettingsBinding : IDisposable
         observed = store.Settings;
         audio.MusicVolume = observed.Music; audio.EffectsVolume = observed.Effects;
         audio.Muted = observed.Muted; audio.MusicOff = observed.MusicOff; audio.SettingsError = store.Error;
+        audio.MusicSource = observed.Source;
         audio.BoardVolume = observed.Board; audio.MuteOthers = observed.MuteOthers;
     }
     public void Update(double delta)

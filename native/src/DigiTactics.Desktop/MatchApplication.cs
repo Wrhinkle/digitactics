@@ -10,7 +10,7 @@ namespace DigiTactics.Desktop;
 
 internal static class MatchApplication
 {
-    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false, bool evolutionSmoke = false, bool trainingSmoke = false, bool farmPointerSmoke = false, bool networkMatchSmoke = false, string? steamLibrary = null, bool steamLobbyUiSmoke = false, bool spectatorSmoke = false, bool modeBonusSmoke = false, bool audioVisibilitySmoke = false)
+    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false, bool evolutionSmoke = false, bool trainingSmoke = false, bool farmPointerSmoke = false, bool networkMatchSmoke = false, string? steamLibrary = null, bool steamLobbyUiSmoke = false, bool spectatorSmoke = false, bool modeBonusSmoke = false, bool audioVisibilitySmoke = false, string? musicDecoder = null)
     {
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
@@ -41,6 +41,7 @@ internal static class MatchApplication
                 string saveDirectory = profileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native");
                 var profile = smoke && profileDirectory is null ? null : new NativeProfileStore(saveDirectory);
                 using var preferences = smoke ? null : new AudioSettingsBinding(audio, profile!, saveDirectory);
+                using var customMusic = smoke ? null : new CustomMusicController(audio, profile!, musicDecoder ?? Path.Combine(AppContext.BaseDirectory,"media","ffmpeg.exe"));
                 using var farmPointer = farmPointerSmoke ? new FarmPointerSmoke(profile!, profileDirectory!) : null;
                 using var renderer = new OpenGlBackend(); using var screen = new MatchScreen(catalog, audio, smoke ? 143u : null, duos, profile);
                 screen.SteamLibraryPath = steamLibrary;

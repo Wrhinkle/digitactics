@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace DigiTactics.Storage;
 
-public sealed record AudioSettings(float Music = .6f, float Effects = .8f, bool Muted = false, bool MusicOff = false, float Board = .8f, bool MuteOthers = false);
+public sealed record AudioSettings(float Music = .6f, float Effects = .8f, bool Muted = false, bool MusicOff = false, float Board = .8f, bool MuteOthers = false, string Source = "builtin");
 
 /// <summary>Versioned native preferences. Atomic replacement retains the previous file;
 /// unreadable/newer documents and changes from another running instance are never overwritten.</summary>
@@ -35,7 +35,7 @@ public sealed class AudioSettingsStore
     }
     private static AudioSettings ReadAudio(JsonObject? audio) => new(audio?["music"]?.GetValue<float>() ?? .6f, audio?["sfx"]?.GetValue<float>() ?? .8f,
         audio?["muted"]?.GetValue<bool>() ?? false, audio?["musicOff"]?.GetValue<bool>() ?? false,
-        audio?["board"]?.GetValue<float>() ?? .8f, audio?["muteOthers"]?.GetValue<bool>() ?? false);
+        audio?["board"]?.GetValue<float>() ?? .8f, audio?["muteOthers"]?.GetValue<bool>() ?? false, audio?["source"]?.GetValue<string>() ?? "builtin");
     /// <summary>Imports only before native preferences exist. The archived source and unrecognized fields are preserved.</summary>
     public bool ImportLegacy(IReadOnlyDictionary<string, string> storage)
     {
@@ -59,6 +59,7 @@ public sealed class AudioSettingsStore
     }
     private static void Validate(AudioSettings settings)
     {
+        if (settings.Source is not ("builtin" or "own")) throw new JsonException("Unsupported music source.");
         if (!float.IsFinite(settings.Music) || !float.IsFinite(settings.Effects) || !float.IsFinite(settings.Board) || settings.Music is < 0 or > 1 || settings.Effects is < 0 or > 1 || settings.Board is < 0 or > 1)
             throw new JsonException("Audio volume must be between 0 and 1.");
     }
@@ -80,6 +81,7 @@ public sealed class AudioSettingsStore
             if (next["audio"] is null) next["audio"] = audio;
             audio["music"] = settings.Music; audio["sfx"] = settings.Effects;
             audio["muted"] = settings.Muted; audio["musicOff"] = settings.MusicOff;
+            audio["source"] = settings.Source;
             audio["board"] = settings.Board; audio["muteOthers"] = settings.MuteOthers;
             string json = next.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n";
             temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
