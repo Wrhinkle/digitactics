@@ -13,7 +13,8 @@ internal sealed class TrainingSmoke(NativeProfileStore profile, string directory
     private int index, stage, delay = 3, memoryIndex, previousPad = -1, routeStage;
     private readonly List<int> sequence = [];
     private ImGuiKey? held;
-    private bool mouseDown, captured, verified, blocked;
+    private bool mouseDown, captured, verified, blocked, socialGuardPending, socialGuardExercised;
+    private TrainingGame? socialGuardTraining;
     private string before = "";
     private JsonNode? initialPet;
     private long initialBits;
@@ -46,6 +47,7 @@ internal sealed class TrainingSmoke(NativeProfileStore profile, string directory
         if (stage == 0) { if (Click(screen, "farm")) stage = 1; return; }
         if (stage == 1)
         {
+            if (!screen.Buttons.ContainsKey("farmTrain/" + games[index])) { Click(screen, "farmAction/train"); return; }
             if (Click(screen, "farmTrain/" + games[index])) { stage = 2; captured = verified = blocked = false; sequence.Clear(); memoryIndex = 0; previousPad = -1; }
             return;
         }
@@ -56,9 +58,21 @@ internal sealed class TrainingSmoke(NativeProfileStore profile, string directory
             before = File.ReadAllText(Path.Combine(directory, "profile.json"));
             initialPet = JsonNode.Parse(profile.Storage["dt.farm.v1"])!["pets"]!["tokomon"]!.DeepClone(); initialBits = profile.Progress.Bits ?? 0;
             stage = 3;
+            if (index == 0 && screen.Buttons.ContainsKey("socialLobby"))
+            {
+                socialGuardTraining = game;
+                socialGuardPending = Click(screen, "socialLobby");
+                return;
+            }
         }
         if (stage == 3)
         {
+            if (socialGuardPending)
+            {
+                if (!ReferenceEquals(screen.ActiveTraining, socialGuardTraining) || !screen.Buttons.ContainsKey("trainingQuit") || screen.Buttons.ContainsKey("steamBack"))
+                    throw new InvalidOperationException("Social Lobbies navigation replaced or hid active training.");
+                socialGuardPending = false; socialGuardExercised = true;
+            }
             if (screen.Buttons.ContainsKey("retryTraining"))
             {
                 if (File.ReadAllText(Path.Combine(directory, "profile.json")) != before) throw new InvalidOperationException("Training partially wrote a locked profile.");
@@ -93,7 +107,12 @@ internal sealed class TrainingSmoke(NativeProfileStore profile, string directory
                         if (memory.LitPad >= 0 && memory.LitPad != previousPad) sequence.Add(memory.LitPad);
                         previousPad = memory.LitPad;
                     }
-                    else if (memory.Phase == "input" && memoryIndex < sequence.Count) { Key((ImGuiKey)((int)ImGuiKey._1 + sequence[memoryIndex++])); }
+                    else if (memory.Phase == "input" && memoryIndex < sequence.Count)
+                    {
+                        int pad = sequence[memoryIndex];
+                        if (memoryIndex % 2 == 0) { if (Click(screen, "trainingPad/" + pad)) memoryIndex++; }
+                        else { Key((ImGuiKey)((int)ImGuiKey._1 + pad)); memoryIndex++; }
+                    }
                     else if (memory.Phase == "wait") { sequence.Clear(); memoryIndex = 0; previousPad = -1; }
                     break;
                 case EnduranceTraining endurance:
@@ -112,7 +131,9 @@ internal sealed class TrainingSmoke(NativeProfileStore profile, string directory
             if(routeStage==2){if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"farm-card.bmp"),size.X,size.Y);routeStage=3;return false;}
             if(routeStage<4 || delay>0)return false;
             if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"farm-care-details.bmp"),size.X,size.Y);
-            Console.WriteLine("Training UI smoke passed: four playable games, keyboard/mouse input, locked-save retry, rewards/restart, completed zero-score rewards, unchanged saves on Quit/Escape and Farm/Digivolve return.");return true;
+            if (size.X >= 1200 && screen.SocialVisible && !socialGuardExercised)
+                throw new InvalidOperationException("Docked social Lobbies click was not exercised during training.");
+            Console.WriteLine("Training UI smoke passed: four playable games, keyboard/mouse input, locked-save retry, rewards/restart, completed zero-score rewards, unchanged saves on Quit/Escape, active-training social navigation guard and Farm/Digivolve return.");return true;
         }
         if (stage != 3) return false;
         if (index >= 5 && screen.ActiveTraining is null)

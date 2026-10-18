@@ -12,25 +12,33 @@ internal sealed class FarmPointerSmoke : IDisposable
     private int stage, cooldown = 4;
     private bool down;
     private FileStream? saveLock;
+    private readonly string[] residents;
     public string Pending => $"farm pointer stage {stage}";
 
     public FarmPointerSmoke(NativeProfileStore profile, string directory)
     {
         this.directory = directory;
         if (profile.Exists) throw new InvalidOperationException("Farm pointer smoke requires a fresh isolated profile directory.");
-        var farm = JsonNode.Parse(FarmSimulation.Advance(null, null, null, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()).Save)!;
+        residents = new[] { "tokomon", "tsunomon" }.Concat(CosmeticCollection.Items("legend").Select(item => item.Id).Where(id => id is not ("tokomon" or "tsunomon")).Take(10)).ToArray();
+        var wallet = new CosmeticCollection(null);
+        foreach (string resident in residents) wallet.Grant("legend", resident);
+        long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        var farm = JsonNode.Parse(FarmSimulation.Advance(null, wallet.Json, null, now).Save)!;
+        farm["cap"] = 12;
+        farm["residents"] = new JsonArray(residents.Select(id => (JsonNode?)JsonValue.Create(id)).ToArray());
+        farm = JsonNode.Parse(FarmSimulation.Advance(farm.ToJsonString(), wallet.Json, null, now).Save)!;
         farm["pets"]!["tokomon"]!["hunger"] = 10;
         farm["pets"]!["tsunomon"]!["happy"] = 85;
         // Equal keys on different owners catch dispatch that accidentally uses the selected resident.
         farm["pets"]!["tokomon"]!["poop"] = new JsonArray(new JsonObject { ["k"] = 901, ["x"] = -2, ["z"] = 2, ["n"] = false });
         farm["pets"]!["tsunomon"]!["poop"] = new JsonArray(new JsonObject { ["k"] = 901, ["x"] = 2, ["z"] = 2, ["n"] = true });
-        if (!profile.UpdateStorage(new Dictionary<string, string> { ["dt.farm.v1"] = farm.ToJsonString() }))
+        if (!profile.UpdateStorage(new Dictionary<string, string> { ["dt.farm.v1"] = farm.ToJsonString(), ["dt.cosmetics.v1"] = wallet.Json }))
             throw new IOException(profile.Error);
     }
 
     public void Input(MatchScreen screen)
     {
-        if (cooldown-- > 0 || stage >= 4) return;
+        if (cooldown-- > 0 || stage >= 6) return;
         var io = ImGui.GetIO();
         if (down) { io.AddMouseButtonEvent(0, false); down = false; stage++; cooldown = 30; return; }
         if (stage == 2)
@@ -48,6 +56,24 @@ internal sealed class FarmPointerSmoke : IDisposable
             if (!screen.Buttons.TryGetValue("farm", out var button)) return;
             io.AddMousePosEvent(button.X, button.Y);
         }
+        else if (stage >= 4)
+        {
+            if (stage == 4)
+            {
+                if (screen.FarmSelectedResident != "tokomon" || residents.Any(id => !screen.Buttons.ContainsKey("farmResident/" + id)))
+                    throw new InvalidOperationException("The twelve-resident farm did not render every portrait control.");
+                var first = screen.Buttons["farmResident/" + residents[0]];
+                var last = screen.Buttons["farmResident/" + residents[^1]];
+                if (Math.Abs(ImGui.GetIO().DisplaySize.X - 1200) < 1 && last.Y <= first.Y + 24) throw new InvalidOperationException("Twelve farm portraits did not wrap at the dock threshold.");
+                io.AddMousePosEvent(last.X, last.Y);
+            }
+            else
+            {
+                if (screen.FarmSelectedResident != residents[^1]) throw new InvalidOperationException("The wrapped final resident could not be selected by pointer.");
+                var first = screen.Buttons["farmResident/" + residents[0]];
+                io.AddMousePosEvent(first.X, first.Y);
+            }
+        }
         else
         {
             if (screen.FarmSelectedResident != "tokomon") throw new InvalidOperationException("Pointer smoke needs a different selected resident.");
@@ -60,7 +86,7 @@ internal sealed class FarmPointerSmoke : IDisposable
 
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
-        if (stage != 4 || cooldown > 0) return false;
+        if (stage != 6 || cooldown > 0) return false;
         var reloaded = new NativeProfileStore(directory);
         var farm = JsonNode.Parse(reloaded.Storage["dt.farm.v1"])!;
         if (reloaded.Error is not null || farm["pets"]!["tsunomon"]!["poop"]!.AsArray().Count != 0
@@ -69,7 +95,7 @@ internal sealed class FarmPointerSmoke : IDisposable
             || screen.FarmPilePoint("tsunomon", 901) is not null || screen.FarmPilePoint("tokomon", 901) is null)
             throw new InvalidOperationException("Farm scene click did not persist only the clicked owner's pile and reward.");
         if (capture is not null) FrameCapture.SaveBitmap(capture, size.X, size.Y);
-        Console.WriteLine("Farm pointer smoke passed: geometry click, nonselected owner, duplicate key isolation, locked-save retry, saved reward and profile reload.");
+        Console.WriteLine("Farm pointer smoke passed: twelve-resident wrap and pointer selection, geometry click, nonselected owner, duplicate key isolation, locked-save retry, saved reward and profile reload.");
         return true;
     }
     public void Dispose() => saveLock?.Dispose();

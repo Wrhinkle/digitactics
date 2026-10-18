@@ -31,7 +31,7 @@ internal sealed partial class MatchScreen
         var known=LegendEvolution.Discovery(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"),id).Dex.ToHashSet();
         foreach(var branch in evolution.Odds)
         {
-            var at=ImGui.GetCursorScreenPos();ImGui.Dummy(new(32,32));portraits.DrawEvolution(branch.Form,at,32,known.Contains(branch.Form));
+            var at=ImGui.GetCursorScreenPos();ImGui.Dummy(new(46,46));portraits.DrawEvolution(branch.Form,at,46,known.Contains(branch.Form));
             ImGui.SameLine();ImGui.BeginGroup();
             ImGui.Text(known.Contains(branch.Form)?LegendEvolution.Form(branch.Form).Name:"???");
             ImGui.Text($"{branch.Care} / {branch.Pct}%");ImGui.EndGroup();FarmEvolutionBranches++;
