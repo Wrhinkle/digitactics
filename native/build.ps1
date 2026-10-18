@@ -24,6 +24,7 @@ try {
     Invoke-Checked 'node' @('tools/export-emotes.cjs')
     Invoke-Checked 'node' @('tools/export-emote-motion.cjs')
     Invoke-Checked 'node' @('tools/export-emote-layout.cjs')
+    Invoke-Checked 'node' @('tools/export-dance-skeleton.cjs')
     Invoke-Checked 'node' @('tools/export-companion-travel.cjs')
     Invoke-Checked 'node' @('tools/export-content.cjs')
     Invoke-Checked 'node' @('tools/export-display.cjs')
