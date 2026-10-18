@@ -246,6 +246,7 @@ internal sealed partial class MatchScreen : IDisposable
             battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height);
         }
         CompanionClickMark();
+        ArenaEmotes();
         Choices(); Soundboard(); EmotePanel(); PlayersPanel();
         if (showAudio)
         {

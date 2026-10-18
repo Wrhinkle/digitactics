@@ -12,6 +12,27 @@ internal sealed partial class MatchScreen
     private MatchPlanningSession? emoteSession;
     private MatchEmotes emotes = new();
     private readonly EmoteArtwork emoteArtwork = new();
+    internal int ArenaEmoteDraws { get; private set; }
+    private void ArenaEmotes()
+    {
+        ArenaEmoteDraws = 0;
+        if (showEmotes || showSoundboard || showAudio || showPlayers) return;
+        EnsureEmotes(); long now = Environment.TickCount64;
+        Window("Arena emote overlay", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoInputs);
+        void Draw(int seat, ArenaCompanionView? view)
+        {
+            if (view is null || emotes.At(seat, now) is not { } emote) return;
+            var p = System.Numerics.Vector4.Transform(new System.Numerics.Vector4(view.Anchor, 1), BattleView.Camera(Width, Height, battle?.Combat.Columns ?? 7));
+            if (p.W <= 0) return;
+            var anchor = EmoteLayout.Anchor((p.X / p.W + 1) * Width / 2, (1 - p.Y / p.W) * Height / 2, false, Width, Height);
+            if (!anchor.Visible) return;
+            emoteArtwork.Draw(emote.Id, now - emote.Started, new(Left + (float)anchor.X - 56, Top + (float)anchor.Y - 112), 112, true, true);
+            ArenaEmoteDraws++;
+        }
+        if (!IsSpectating) Draw(localSeat, arenaCompanion);
+        Draw(opponentCompanionSeat, opponentCompanion);
+        ImGui.End();
+    }
     private void EnsureEmotes()
     {
         if (ReferenceEquals(emoteSession, Session)) return;

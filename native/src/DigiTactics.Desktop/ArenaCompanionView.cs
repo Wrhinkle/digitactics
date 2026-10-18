@@ -15,6 +15,7 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
     private string? key, move;
     private ActiveEmote? previous;
     private double duration;
+    private double height;
     private CompanionTransform? overlay;
     public int DrawCalls { get; private set; }
     public CompanionTravel Travel { get; } = new();
@@ -23,6 +24,7 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
         if (key != nextKey)
         {
             var visual = companions.Resolve(nextKey);
+            height = 1.2 * visual.Height;
             var nextModel = new GpuModel(models, models.Sources[visual.Source]);
             CompanionAnimator nextAnimator;
             try { nextAnimator = nextModel.CreateCompanionAnimator(visual, companions.Fallbacks, yaw: Math.PI); }
@@ -46,6 +48,8 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
         animator!.Yaw = opponent ? 0 : Travel.Yaw; animator.SetMoving(!opponent && Travel.Moving); animator.Update(delta);
         overlay = previous is not null && move is not null ? CompanionEmoteMotion.Evaluate(move, now - previous.Started, duration) : null;
     }
+    public System.Numerics.Vector3 Anchor => new((float)(opponent ? 7.6 : Travel.X),
+        (float)(height + .3 + (opponent ? 0 : Travel.Hop(animator?.HasRun ?? false))), (float)(opponent ? -6.6 : Travel.Z));
     public void Draw(int left, int bottom, int width, int height, int columns)
     {
         DrawCalls = 0; if (model is null || animator is null) return;

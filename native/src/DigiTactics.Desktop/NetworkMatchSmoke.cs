@@ -19,6 +19,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private int stage, cooldown = 3;
     private bool down, combatRendered, planningRendered;
     private bool companionRendered;
+    private bool arenaEmoteRendered;
     private int travelStep;
     private double travelX, travelZ;
     private readonly bool spectator;
@@ -100,10 +101,15 @@ internal sealed class NetworkMatchSmoke : IDisposable
             if (screen.ReceivedSoundboardEffects != (socialCheck == 2 ? 0 : 1)) throw new InvalidOperationException("Per-player mute/unmute did not filter incoming soundboard.");
             socialCheck = 0;
         }
+        if (screen.ArenaEmoteDraws > 0)
+        {
+            if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "arena-emote.bmp"), size.X, size.Y);
+            arenaEmoteRendered = true;
+        }
         if (!spectator && socialStep == 2 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "players.bmp"), size.X, size.Y);
         if (!spectator && socialStep == 5 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "emotes.bmp"), size.X, size.Y);
         if (!spectator && stage == -3 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "soundboard.bmp"), size.X, size.Y);
-        if (!spectator && stage == -2) { if (soundEffects != 1 || emoteEffects != 1) throw new InvalidOperationException("Equipped social effects did not reach host exactly once."); stage = 0; }
+        if (!spectator && stage == -2) { if (soundEffects != 1 || emoteEffects != 1 || !arenaEmoteRendered) throw new InvalidOperationException("Equipped social effects did not reach host exactly once or render in the arena."); stage = 0; }
         if (stage == -2 && screen.IsSpectating)
         {
             if (screen.Buttons.ContainsKey("lock") || screen.Buttons.ContainsKey("fight") || screen.Buttons.ContainsKey("buy/0")) throw new InvalidOperationException("Spectator sees player controls.");
