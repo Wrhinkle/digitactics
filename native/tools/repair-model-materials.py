@@ -57,14 +57,14 @@ def repair(entry, apply):
         raise ValueError("Expected exactly one reviewed material")
     material_index = matches[0]
     material = document["materials"][material_index]
-    texture = material["pbrMetallicRoughness"]["baseColorTexture"]
+    texture = material["pbrMetallicRoughness"].get("baseColorTexture")
     targets = [i for i in range(len(document["textures"])) if image_name(document, i) == entry["albedoImage"]]
     if len(targets) != 1:
         raise ValueError("Expected one exact embedded albedo texture")
     primitives = [p for mesh in document["meshes"] for p in mesh["primitives"] if p.get("material") == material_index]
     if not primitives or any("TEXCOORD_0" not in p["attributes"] for p in primitives):
         raise ValueError("Reviewed surfaces must retain their original UVs")
-    current = image_name(document, texture["index"])
+    current = image_name(document, texture["index"]) if texture else None
     if current == entry["albedoImage"]:
         if hashlib.sha256(original).hexdigest() != entry["repairedSha256"]:
             raise ValueError("Corrected asset differs from the verified repair")
@@ -74,10 +74,18 @@ def repair(entry, apply):
     if not apply:
         raise ValueError("Reviewed correction is not applied; use --apply")
     before = copy.deepcopy(document)
-    texture["index"] = targets[0]
-    # Independently verify that the only JSON difference is this one material binding.
+    if texture is None:
+        material["pbrMetallicRoughness"]["baseColorTexture"] = {"index": targets[0]}
+    else:
+        texture["index"] = targets[0]
+    if entry.get("resetBaseColorFactor"):
+        material["pbrMetallicRoughness"]["baseColorFactor"] = [1, 1, 1, 1]
+    # Independently verify only the reviewed binding and optional tint changed.
     expected = copy.deepcopy(before)
-    expected["materials"][material_index]["pbrMetallicRoughness"]["baseColorTexture"]["index"] = targets[0]
+    expected_pbr = expected["materials"][material_index]["pbrMetallicRoughness"]
+    expected_pbr.setdefault("baseColorTexture", {})["index"] = targets[0]
+    if entry.get("resetBaseColorFactor"):
+        expected_pbr["baseColorFactor"] = [1, 1, 1, 1]
     assert document == expected
     result = write_glb(document, chunks)
     actual, actual_chunks = read_glb(result)

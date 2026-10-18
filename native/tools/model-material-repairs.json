@@ -27,6 +27,30 @@
       "incorrectImage": "chr677a01s.png",
       "albedoImage": "chr677a01.png",
       "reason": "The textured armor surfaces retain atlas UVs and their red/gold albedo is embedded. Separate cube material meshes have no UVs and are not changed by this repair."
+    },
+    {
+      "asset": "models/files/rip_cat_ts_tentomon_chr303.glb",
+      "material": "chr303_b02.001",
+      "incorrectImage": null,
+      "albedoImage": "chr303a01.png",
+      "resetBaseColorFactor": true,
+      "originalSha256": "a7e597b383451dd7490e9d9499a89f752cc5e34c13cd8a380df3a6a3a941213f",
+      "repairedSha256": "30965487077b7a692e166aae7ddc030b925fa93a205255bed4d85360613f0662",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603374/",
+      "sourceArchiveSha256": "87953f49afc40d0b18927368a4327f6fcfffa8258988a5a23aabe82aed237e41",
+      "sourceDaeSha256": "c5794cddd0f31f2f946cdfb2a37a7af77627527efa381fd4cd72f2829f729fa4",
+      "sourceAlbedoSha256": "e4f76767d74de15f81f4801fb2f6e2de9d288a6301be455197706066256a3218",
+      "matchedTriangles": 104,
+      "maximumNormalizedPositionError": 8.7870839871496e-05,
+      "maximumUvError": 0.00012694575417714765,
+      "preservedBinaryChunks": true,
+      "finding": "Original wing diffuse atlas binding was absent and replaced by a saturated yellow material factor. Original DAE explicitly binds chr303a01, containing beige membrane veins. All104 current wing triangles/UVs match source.",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Source material restoration only"
+      }
     }
   ],
   "sourceRecoveries": [
@@ -106,6 +130,328 @@
           "existingUvMaximumError": 0.00012970168612191912
         }
       ]
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cs_goldramon.glb",
+      "originalSha256": "6495c846af57f93e1b744291a595eb1da388edbe575750c4d949ceb3d43b62c7",
+      "repairedSha256": "b44b4d518080d3583d645c3bb4b72ca65ad0e9c1575ef4549d27463077c45557",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324339/",
+      "archiveSha256": "6a3fcd45470b94457e1f45a539c0201346291495d7e7e623e5f2e80d57c8acf4",
+      "daeSha256": "6a18adc1adc0f78040256eb3762a60b379fb22dfd06f13e33cac392779c6ef07",
+      "preservedOriginalTriangleAttributes": true,
+      "preservedRigAndAnimation": true,
+      "meshes": [
+        {
+          "mesh": "chr048_0",
+          "matchedTriangles": 834,
+          "maximumNormalizedPositionError": 0.00010456779778034109,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr048a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr048_0-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.00011448736748143062
+        },
+        {
+          "mesh": "chr048_1",
+          "matchedTriangles": 1658,
+          "maximumNormalizedPositionError": 0.00011895449286147686,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr048a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr048_1-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "restoredUvVertices": 4974
+        },
+        {
+          "mesh": "chr048_2",
+          "matchedTriangles": 2354,
+          "maximumNormalizedPositionError": 0.00010707952697637632,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr048a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr048_2-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 2,
+          "existingUvMaximumError": 0.00012970168612191912
+        },
+        {
+          "mesh": "chr048_3",
+          "matchedTriangles": 3618,
+          "maximumNormalizedPositionError": 0.0001231105809685063,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr048a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr048_3-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 1,
+          "existingUvMaximumError": 0.00012192874930857557
+        },
+        {
+          "mesh": "chr048_4",
+          "matchedTriangles": 820,
+          "maximumNormalizedPositionError": 0.00010427201727507257,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr048a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr048_4-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.00012173689401599047
+        }
+      ],
+      "albedoSha256": "821fbec7376b7bbb57d09f0b3abda39254c54f2b85b740672345703747b59d3e",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Source material restoration only"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cs_grademon.glb",
+      "originalSha256": "e26a01e0192116da3a7f1459e751ed5eca696a91feeab4ba2ed3fa681e8e2906",
+      "repairedSha256": "f976193691868f0e4e68111ed926c71052d4e17b9f7ea58b5d1669509abc3d83",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324410/",
+      "archiveSha256": "f1b6043a9b007705a3e261b33207d7b8c92c05a60f4822861423c44f1551b8fa",
+      "daeSha256": "528a25ffaae4fe4e55e3db6650d5cb7f9d30b474f30ed8ba74c02a948f019c72",
+      "preservedOriginalTriangleAttributes": true,
+      "preservedRigAndAnimation": true,
+      "meshes": [
+        {
+          "mesh": "chr026_0",
+          "matchedTriangles": 8954,
+          "maximumNormalizedPositionError": 0.00011316114398320455,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr026a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr026_0-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "restoredUvVertices": 26862
+        },
+        {
+          "mesh": "chr026_1",
+          "matchedTriangles": 1654,
+          "maximumNormalizedPositionError": 0.00011247784021642068,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr026a02.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr026_1-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 1.6391277313232422e-07
+        },
+        {
+          "mesh": "chr026_2",
+          "matchedTriangles": 2208,
+          "maximumNormalizedPositionError": 0.00011267103704386841,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr026a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr026_2-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.00012123210939288254
+        },
+        {
+          "mesh": "chr026_3",
+          "matchedTriangles": 210,
+          "maximumNormalizedPositionError": 9.637243438779985e-05,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr026a02.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr026_3-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "restoredUvVertices": 630
+        },
+        {
+          "mesh": "chr026_4",
+          "matchedTriangles": 8,
+          "maximumNormalizedPositionError": 8.653762024228874e-05,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr026a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr026_4-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 8.932078576809332e-05
+        }
+      ],
+      "albedos": [
+        {
+          "name": "chr026a01.png",
+          "sha256": "8153f95061aadfe06df0240bf144e9f8bf7e1140326ba2adff66177257e86126"
+        },
+        {
+          "name": "chr026a02.png",
+          "sha256": "9899ce1189e309f315a55673ad030855b2bebf2659649cbbc378efe3d154f9e2"
+        }
+      ],
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Source material restoration only"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cs_megidramon.glb",
+      "originalSha256": "7e1d0c7744cb40972d8416afe11ce150b32b3f4d97e8f3e9d5f5955314211770",
+      "repairedSha256": "848fd8f3ccb50a7f302fb87ef254b7dbfbd137300b555d40ef67f0de5eecbf23",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324340/",
+      "archiveSha256": "dfff441ade1ef3a16310f2f44d05a5d098cba039bbbfa4d7c4f26c779d63dc68",
+      "daeSha256": "50c3c0388dc4be22f2c16b957f98565b15a86c25746b147976ef0cdec0824ac2",
+      "preservedOriginalTriangleAttributes": true,
+      "preservedRigAndAnimation": true,
+      "meshes": [
+        {
+          "mesh": "chr047_0",
+          "matchedTriangles": 324,
+          "maximumNormalizedPositionError": 0.00010302065590296309,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr047a02.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr047_0-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.00011439796005952019
+        },
+        {
+          "mesh": "chr047_1",
+          "matchedTriangles": 124,
+          "maximumNormalizedPositionError": 9.164984294748173e-05,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr047a02.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr047_1-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "restoredUvVertices": 372
+        },
+        {
+          "mesh": "chr047_2",
+          "matchedTriangles": 640,
+          "maximumNormalizedPositionError": 0.00010642106009048129,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr047a02.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr047_2-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.0001214854340217883
+        },
+        {
+          "mesh": "chr047_3",
+          "matchedTriangles": 2184,
+          "maximumNormalizedPositionError": 0.00011574022091770903,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr047a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr047_3-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.00012196600368951163
+        },
+        {
+          "mesh": "chr047_4",
+          "matchedTriangles": 4582,
+          "maximumNormalizedPositionError": 0.00010513228668931322,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr047a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr047_4-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.00012970168612191912
+        },
+        {
+          "mesh": "chr047_5",
+          "matchedTriangles": 1910,
+          "maximumNormalizedPositionError": 9.946155578753689e-05,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr047b01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr047_5-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "restoredUvVertices": 5730
+        }
+      ],
+      "albedos": [
+        {
+          "name": "chr047a02.png",
+          "sha256": "5792973db5c489e193b3adaba486bf3d48235388760ea8bf249b723b4ff4f040"
+        },
+        {
+          "name": "chr047a01.png",
+          "sha256": "78d122f809fb1d465fac7e5d993c920095baa9c821d1044ab11d5742aad3bda8"
+        },
+        {
+          "name": "chr047b01.png",
+          "sha256": "af90f32891449c420d6e19d9631baee9029c1f17e717f9b0b1a53b170c70bc38"
+        }
+      ],
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Source material restoration only"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cs_neptunemon.glb",
+      "originalSha256": "9899ea80811bd6994dff2473fdbf10a01eeaae2d1047bcd9e736d8d113827a99",
+      "repairedSha256": "2a11348ec65ded3dc7459204a3cc6b4256e75c7ce3ccf124b18dcc26e847f1bf",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324351/",
+      "archiveSha256": "4669ace9bb52a309a4c5185a0ba867cdda8a711948332b255de074d7e7f73f6b",
+      "daeSha256": "1df4f8a7ecaf6ef42e2b124f2d54dbb32a31ebfd071fa00f2bc6c40433f87b2c",
+      "preservedOriginalTriangleAttributes": true,
+      "preservedRigAndAnimation": true,
+      "meshes": [
+        {
+          "mesh": "chr075_0",
+          "matchedTriangles": 3842,
+          "maximumNormalizedPositionError": 0.00011382014226703212,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr075a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr075_0-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "restoredUvVertices": 11526
+        },
+        {
+          "mesh": "chr075_1",
+          "matchedTriangles": 2967,
+          "maximumNormalizedPositionError": 0.00012483804525875846,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr075a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr075_1-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.00012970168612191912
+        },
+        {
+          "mesh": "chr075_2",
+          "matchedTriangles": 3024,
+          "maximumNormalizedPositionError": 0.00012422488128617978,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr075a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr075_2-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.00012181326360399466
+        },
+        {
+          "mesh": "chr075_3",
+          "matchedTriangles": 4949,
+          "maximumNormalizedPositionError": 0.00012318632042898256,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr075a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr075_3-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "restoredUvVertices": 14847
+        }
+      ],
+      "albedoSha256": "10af4343de6451e2b2fdf5c4c7936cdf51c0d9c80a52e8d1f9f728e10265b462",
+      "materialRestorationReview": {
+        "status": "VERIFIED",
+        "fittedViews": 2,
+        "animationFrames": 0,
+        "scope": "Source material restoration only"
+      }
     }
   ],
   "geometryRecoveries": [

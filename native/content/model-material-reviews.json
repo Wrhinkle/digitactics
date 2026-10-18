@@ -14,7 +14,7 @@
         "native/content/model-material-findings.json"
       ],
       "evidenceSha256": {
-        "native/content/model-material-findings.json": "fda625b14f9fdb05e8db7a6c082a026e312ee80308c988019ef95785a4adbccb"
+        "native/content/model-material-findings.json": "7d78a5b4035238d159854d74cbe0b1a742378f902f49ba91a0dd9d31643731cf"
       },
       "codeHashes": {
         "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
@@ -44,7 +44,7 @@
         "native/content/model-material-findings.json"
       ],
       "evidenceSha256": {
-        "native/content/model-material-findings.json": "fda625b14f9fdb05e8db7a6c082a026e312ee80308c988019ef95785a4adbccb"
+        "native/content/model-material-findings.json": "7d78a5b4035238d159854d74cbe0b1a742378f902f49ba91a0dd9d31643731cf"
       },
       "codeHashes": {
         "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
@@ -74,7 +74,7 @@
         "native/content/model-material-findings.json"
       ],
       "evidenceSha256": {
-        "native/content/model-material-findings.json": "fda625b14f9fdb05e8db7a6c082a026e312ee80308c988019ef95785a4adbccb"
+        "native/content/model-material-findings.json": "7d78a5b4035238d159854d74cbe0b1a742378f902f49ba91a0dd9d31643731cf"
       },
       "codeHashes": {
         "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
@@ -104,7 +104,7 @@
         "native/content/model-material-findings.json"
       ],
       "evidenceSha256": {
-        "native/content/model-material-findings.json": "fda625b14f9fdb05e8db7a6c082a026e312ee80308c988019ef95785a4adbccb"
+        "native/content/model-material-findings.json": "7d78a5b4035238d159854d74cbe0b1a742378f902f49ba91a0dd9d31643731cf"
       },
       "codeHashes": {
         "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
@@ -134,7 +134,7 @@
         "native/content/model-material-findings.json"
       ],
       "evidenceSha256": {
-        "native/content/model-material-findings.json": "fda625b14f9fdb05e8db7a6c082a026e312ee80308c988019ef95785a4adbccb"
+        "native/content/model-material-findings.json": "7d78a5b4035238d159854d74cbe0b1a742378f902f49ba91a0dd9d31643731cf"
       },
       "codeHashes": {
         "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
@@ -150,6 +150,156 @@
       },
       "references": [
         "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324353/"
+      ]
+    },
+    {
+      "issueId": "source-atlas:drg:Goldramon",
+      "asset": "models/files/rip_cs_goldramon.glb",
+      "assetSha256": "6f77bdbd8c87251364f064b21d6a5373f6a3f774369943fe517a4d7c10e7b993",
+      "sourceSha256": "6495c846af57f93e1b744291a595eb1da388edbe575750c4d949ceb3d43b62c7",
+      "reportedSource": "drg:Goldramon",
+      "status": "FAIL",
+      "review": "The original diffuse atlas is absent; visible surfaces use specular gradients or an untextured gray material, and one mesh lost its UVs. Exact original source diffuse assignments and triangle/UV comparisons confirm the defect; this is not a material-name or expected-palette heuristic.",
+      "evidence": [
+        "native/content/model-material-findings.json"
+      ],
+      "evidenceSha256": {
+        "native/content/model-material-findings.json": "7d78a5b4035238d159854d74cbe0b1a742378f902f49ba91a0dd9d31643731cf"
+      },
+      "codeHashes": {
+        "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
+        "native/src/DigiTactics.Assets/GltfMaterial.cs": "669b63032d4efbd1994532905c20ac1b16e6390ad0e41bdca5a391752db19f38",
+        "native/src/DigiTactics.Assets/GltfMesh.cs": "eaf3a57940efbc8efb168a1957aaaa6beeec79844c7d386c86fccfa80c396cfa",
+        "native/src/DigiTactics.Assets/PngImage.cs": "c0d06659c59f639d503d9b06951554b6640ff556f46cbf7d9c6bde41d40bbd22",
+        "native/src/DigiTactics.Assets/ModelCatalog.cs": "904d810752fa2b6d06fb5e9b9110ec5ee46b5d72e6bffc0378c37bce7ba16698",
+        "native/src/DigiTactics.Desktop/GpuModel.cs": "e63b8718e8a95d570cd451bc7ed7a3ad00d15da625dceba10d2fb3db7415d813",
+        "native/src/DigiTactics.Desktop/GpuTexture.cs": "c64abc356afd70747781fe89c3fc8df593b28faf83bc1bfcc4ca5c9a76afafcb",
+        "native/src/DigiTactics.Desktop/GpuPrimitive.cs": "34c8e39bc10f66bc4ebd9436519a1aff931bff41a782663eeaeb5af41e15bea0",
+        "native/src/DigiTactics.Desktop/ModelRenderer.cs": "cecbc114386c5b5eb6ebdcd5ca84461f8cdbb8f07fe3437cb02b3f5fb71ee0c6",
+        "native/src/DigiTactics.Desktop/ModelRenderer.Transparency.cs": "ca7e76048a53eabf2346ebb084e3fcbf9af317b4551fa5cfd64218f4bd650932"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324339/"
+      ]
+    },
+    {
+      "issueId": "source-atlas:drg:Grademon",
+      "asset": "models/files/rip_cs_grademon.glb",
+      "assetSha256": "392222e952bd31e4f5552af91db192e45a0a254b2ca9777d4def527ab5c9553b",
+      "sourceSha256": "e26a01e0192116da3a7f1459e751ed5eca696a91feeab4ba2ed3fa681e8e2906",
+      "reportedSource": "drg:Grademon",
+      "status": "FAIL",
+      "review": "Two distinct original color atlases were incorrectly shared across body and cape surfaces; two meshes also lost their UVs. Exact original source diffuse assignments and triangle/UV comparisons confirm the defect; this is not a material-name or expected-palette heuristic.",
+      "evidence": [
+        "native/content/model-material-findings.json"
+      ],
+      "evidenceSha256": {
+        "native/content/model-material-findings.json": "7d78a5b4035238d159854d74cbe0b1a742378f902f49ba91a0dd9d31643731cf"
+      },
+      "codeHashes": {
+        "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
+        "native/src/DigiTactics.Assets/GltfMaterial.cs": "669b63032d4efbd1994532905c20ac1b16e6390ad0e41bdca5a391752db19f38",
+        "native/src/DigiTactics.Assets/GltfMesh.cs": "eaf3a57940efbc8efb168a1957aaaa6beeec79844c7d386c86fccfa80c396cfa",
+        "native/src/DigiTactics.Assets/PngImage.cs": "c0d06659c59f639d503d9b06951554b6640ff556f46cbf7d9c6bde41d40bbd22",
+        "native/src/DigiTactics.Assets/ModelCatalog.cs": "904d810752fa2b6d06fb5e9b9110ec5ee46b5d72e6bffc0378c37bce7ba16698",
+        "native/src/DigiTactics.Desktop/GpuModel.cs": "e63b8718e8a95d570cd451bc7ed7a3ad00d15da625dceba10d2fb3db7415d813",
+        "native/src/DigiTactics.Desktop/GpuTexture.cs": "c64abc356afd70747781fe89c3fc8df593b28faf83bc1bfcc4ca5c9a76afafcb",
+        "native/src/DigiTactics.Desktop/GpuPrimitive.cs": "34c8e39bc10f66bc4ebd9436519a1aff931bff41a782663eeaeb5af41e15bea0",
+        "native/src/DigiTactics.Desktop/ModelRenderer.cs": "cecbc114386c5b5eb6ebdcd5ca84461f8cdbb8f07fe3437cb02b3f5fb71ee0c6",
+        "native/src/DigiTactics.Desktop/ModelRenderer.Transparency.cs": "ca7e76048a53eabf2346ebb084e3fcbf9af317b4551fa5cfd64218f4bd650932"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324410/"
+      ]
+    },
+    {
+      "issueId": "source-atlas:drg:Megidramon",
+      "asset": "models/files/rip_cs_megidramon.glb",
+      "assetSha256": "43b21f26d52106f71472c678f2bb395402eef4b77bf3382b6cd7d10a97ab3780",
+      "sourceSha256": "7e1d0c7744cb40972d8416afe11ce150b32b3f4d97e8f3e9d5f5955314211770",
+      "reportedSource": "drg:Megidramon",
+      "status": "FAIL",
+      "review": "The body atlas is incorrectly shared across wings that require a separate atlas, producing the visible atlas collage; body surfaces use a specular gradient and two meshes lost UVs. Exact original source diffuse assignments and triangle/UV comparisons confirm the defect; this is not a material-name or expected-palette heuristic.",
+      "evidence": [
+        "native/content/model-material-findings.json"
+      ],
+      "evidenceSha256": {
+        "native/content/model-material-findings.json": "7d78a5b4035238d159854d74cbe0b1a742378f902f49ba91a0dd9d31643731cf"
+      },
+      "codeHashes": {
+        "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
+        "native/src/DigiTactics.Assets/GltfMaterial.cs": "669b63032d4efbd1994532905c20ac1b16e6390ad0e41bdca5a391752db19f38",
+        "native/src/DigiTactics.Assets/GltfMesh.cs": "eaf3a57940efbc8efb168a1957aaaa6beeec79844c7d386c86fccfa80c396cfa",
+        "native/src/DigiTactics.Assets/PngImage.cs": "c0d06659c59f639d503d9b06951554b6640ff556f46cbf7d9c6bde41d40bbd22",
+        "native/src/DigiTactics.Assets/ModelCatalog.cs": "904d810752fa2b6d06fb5e9b9110ec5ee46b5d72e6bffc0378c37bce7ba16698",
+        "native/src/DigiTactics.Desktop/GpuModel.cs": "e63b8718e8a95d570cd451bc7ed7a3ad00d15da625dceba10d2fb3db7415d813",
+        "native/src/DigiTactics.Desktop/GpuTexture.cs": "c64abc356afd70747781fe89c3fc8df593b28faf83bc1bfcc4ca5c9a76afafcb",
+        "native/src/DigiTactics.Desktop/GpuPrimitive.cs": "34c8e39bc10f66bc4ebd9436519a1aff931bff41a782663eeaeb5af41e15bea0",
+        "native/src/DigiTactics.Desktop/ModelRenderer.cs": "cecbc114386c5b5eb6ebdcd5ca84461f8cdbb8f07fe3437cb02b3f5fb71ee0c6",
+        "native/src/DigiTactics.Desktop/ModelRenderer.Transparency.cs": "ca7e76048a53eabf2346ebb084e3fcbf9af317b4551fa5cfd64218f4bd650932"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324340/"
+      ]
+    },
+    {
+      "issueId": "source-atlas:drg:Neptunemon",
+      "asset": "models/files/rip_cs_neptunemon.glb",
+      "assetSha256": "aa6a5cdbbbd66fa1174c83ac44da5e447bb246eb1b2036d1af2c3303859d4330",
+      "sourceSha256": "9899ea80811bd6994dff2473fdbf10a01eeaae2d1047bcd9e736d8d113827a99",
+      "reportedSource": "drg:Neptunemon",
+      "status": "FAIL",
+      "review": "The original diffuse atlas is absent; surfaces use a specular gradient or an untextured gray material, and two meshes lost UVs. Exact original source diffuse assignments and triangle/UV comparisons confirm the defect; this is not a material-name or expected-palette heuristic.",
+      "evidence": [
+        "native/content/model-material-findings.json"
+      ],
+      "evidenceSha256": {
+        "native/content/model-material-findings.json": "7d78a5b4035238d159854d74cbe0b1a742378f902f49ba91a0dd9d31643731cf"
+      },
+      "codeHashes": {
+        "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
+        "native/src/DigiTactics.Assets/GltfMaterial.cs": "669b63032d4efbd1994532905c20ac1b16e6390ad0e41bdca5a391752db19f38",
+        "native/src/DigiTactics.Assets/GltfMesh.cs": "eaf3a57940efbc8efb168a1957aaaa6beeec79844c7d386c86fccfa80c396cfa",
+        "native/src/DigiTactics.Assets/PngImage.cs": "c0d06659c59f639d503d9b06951554b6640ff556f46cbf7d9c6bde41d40bbd22",
+        "native/src/DigiTactics.Assets/ModelCatalog.cs": "904d810752fa2b6d06fb5e9b9110ec5ee46b5d72e6bffc0378c37bce7ba16698",
+        "native/src/DigiTactics.Desktop/GpuModel.cs": "e63b8718e8a95d570cd451bc7ed7a3ad00d15da625dceba10d2fb3db7415d813",
+        "native/src/DigiTactics.Desktop/GpuTexture.cs": "c64abc356afd70747781fe89c3fc8df593b28faf83bc1bfcc4ca5c9a76afafcb",
+        "native/src/DigiTactics.Desktop/GpuPrimitive.cs": "34c8e39bc10f66bc4ebd9436519a1aff931bff41a782663eeaeb5af41e15bea0",
+        "native/src/DigiTactics.Desktop/ModelRenderer.cs": "cecbc114386c5b5eb6ebdcd5ca84461f8cdbb8f07fe3437cb02b3f5fb71ee0c6",
+        "native/src/DigiTactics.Desktop/ModelRenderer.Transparency.cs": "ca7e76048a53eabf2346ebb084e3fcbf9af317b4551fa5cfd64218f4bd650932"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324351/"
+      ]
+    },
+    {
+      "issueId": "source-atlas:catalog:TS_Tentomon:chr303",
+      "asset": "models/files/rip_cat_ts_tentomon_chr303.glb",
+      "assetSha256": "5abb640786f457d595897de3c6268081e44c4b8b448e3041082e447fe6660c9d",
+      "sourceSha256": "a7e597b383451dd7490e9d9499a89f752cc5e34c13cd8a380df3a6a3a941213f",
+      "reportedSource": "catalog:TS_Tentomon:chr303",
+      "status": "FAIL",
+      "review": "The source DAE explicitly binds the membrane atlas to the wing; the imported material has no texture binding and a saturated yellow tint despite intact source-matching UVs. Exact original source diffuse assignments and triangle/UV comparisons confirm the defect; this is not a material-name or expected-palette heuristic.",
+      "evidence": [
+        "native/content/model-material-findings.json"
+      ],
+      "evidenceSha256": {
+        "native/content/model-material-findings.json": "7d78a5b4035238d159854d74cbe0b1a742378f902f49ba91a0dd9d31643731cf"
+      },
+      "codeHashes": {
+        "native/src/DigiTactics.Assets/GltfAsset.cs": "c0a341a8538421da111296e62eb638efceb2b143aa2b77149922da2040c7e787",
+        "native/src/DigiTactics.Assets/GltfMaterial.cs": "669b63032d4efbd1994532905c20ac1b16e6390ad0e41bdca5a391752db19f38",
+        "native/src/DigiTactics.Assets/GltfMesh.cs": "eaf3a57940efbc8efb168a1957aaaa6beeec79844c7d386c86fccfa80c396cfa",
+        "native/src/DigiTactics.Assets/PngImage.cs": "c0d06659c59f639d503d9b06951554b6640ff556f46cbf7d9c6bde41d40bbd22",
+        "native/src/DigiTactics.Assets/ModelCatalog.cs": "904d810752fa2b6d06fb5e9b9110ec5ee46b5d72e6bffc0378c37bce7ba16698",
+        "native/src/DigiTactics.Desktop/GpuModel.cs": "e63b8718e8a95d570cd451bc7ed7a3ad00d15da625dceba10d2fb3db7415d813",
+        "native/src/DigiTactics.Desktop/GpuTexture.cs": "c64abc356afd70747781fe89c3fc8df593b28faf83bc1bfcc4ca5c9a76afafcb",
+        "native/src/DigiTactics.Desktop/GpuPrimitive.cs": "34c8e39bc10f66bc4ebd9436519a1aff931bff41a782663eeaeb5af41e15bea0",
+        "native/src/DigiTactics.Desktop/ModelRenderer.cs": "cecbc114386c5b5eb6ebdcd5ca84461f8cdbb8f07fe3437cb02b3f5fb71ee0c6",
+        "native/src/DigiTactics.Desktop/ModelRenderer.Transparency.cs": "ca7e76048a53eabf2346ebb084e3fcbf9af317b4551fa5cfd64218f4bd650932"
+      },
+      "references": [
+        "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603374/"
       ]
     }
   ]

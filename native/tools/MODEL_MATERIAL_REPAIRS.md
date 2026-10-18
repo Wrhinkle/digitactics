@@ -16,6 +16,12 @@ changes from the pinned originals. Their binary chunks are unchanged. Separate
 EmperorGreymon cube/reflection surfaces are untouched: their lack of UVs alone
 does not establish a visual defect.
 
+Time Stranger Tentomon also retains its correct embedded atlas and all 104 wing
+triangles/UVs. Its wing material had no texture binding and a saturated yellow
+tint. The same tool restores the source DAE's explicit diffuse binding and a
+neutral texture multiplier; the complete binary chunk stays unchanged. The
+untextured eye material is preserved because its source DAE is also untextured.
+
 PileVolcamon and Triceramon lacked their color atlas. Their exact public source
 archives are identified in `recover-model-materials.py` and in the recovery
 records in the manifest. This optional tool requires Node, NumPy and SciPy;
@@ -35,12 +41,29 @@ with different bytes are rejected.
 
 The recovery tool verifies each surviving mesh's original DAE diffuse assignment
 and matches every triangle uniquely against the quantized GLB. It verifies the
-UV orientation against surviving source UVs. Only PileVolcamon's two meshes that
-lost their UVs need vertex duplication at original texture seams. After GLB
+UV orientation against surviving source UVs. Meshes that lost their UVs need
+vertex duplication at original texture seams. After GLB
 serialization, every original per-triangle position, normal, skin joint, skin
 weight and surviving UV remains bit-identical. Node, skin and animation metadata
 remain unchanged. It rejects changed archives, changed originals, ambiguous
 triangle matches and changed geometry. The source PNG is embedded unchanged.
+
+Goldramon, Grademon, Megidramon and Neptunemon use the same source recovery path.
+Each surviving mesh's original DAE material determines its atlas; material names
+are not used to guess colors. Grademon needs two atlases and Megidramon needs
+three, so wrongly shared materials are split. Goldramon's three coincident-position
+triangles are distinguished by their surviving UVs. The DAE diffuse semantic
+is resolved through `bind_vertex_input` to its exact UV set; an additional UV
+set never silently replaces it. Missing UVs are restored only where every
+source triangle matches uniquely. All recipes pin the output hash and reject
+changed inputs, source bindings, or output drift.
+
+```powershell
+python native/tools/recover-model-materials.py --model goldramon --archive C:/path/324339.zip --apply
+python native/tools/recover-model-materials.py --model grademon --archive C:/path/324410.zip --apply
+python native/tools/recover-model-materials.py --model megidramon --archive C:/path/324340.zip --apply
+python native/tools/recover-model-materials.py --model neptunemon --archive C:/path/324351.zip --apply
+```
 
 After any source edit, coordinate with other artifact consumers before running
 `export-models.cjs`, then `export-motions.cjs`. The model exporter replaces the
@@ -93,3 +116,8 @@ Source archive pages:
 - [Triceramon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324322/)
 - [Palmon](https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606444/)
 - [ToyAgumon](https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603392/)
+- [Tentomon](https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603374/)
+- [Goldramon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324339/)
+- [Grademon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324410/)
+- [Megidramon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324340/)
+- [Neptunemon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324351/)
