@@ -12,6 +12,23 @@ try
         return Path.GetFullPath(args[index + 1]);
     }
     string? profileDirectory = Option("--profile-directory");
+    if (args.Contains("--steam-room-smoke"))
+    {
+        string library = Option("--steam-api") ?? throw new ArgumentException("Steam smoke requires --steam-api with the Steam API DLL path.");
+        using var session = new DigiTactics.Networking.SteamRoomSession(library, 480);
+        var created = session.Create(new System.Text.Json.Nodes.JsonObject { ["name"] = "Native private room smoke", ["hostName"] = "Host", ["status"] = "lobby", ["slots"] = new System.Text.Json.Nodes.JsonObject() }, DigiTactics.Networking.SteamLobbyVisibility.Private);
+        var timer = System.Diagnostics.Stopwatch.StartNew();
+        while (!created.IsCompleted && timer.Elapsed.TotalSeconds < 35) { session.Pump(Environment.TickCount64); Thread.Sleep(10); }
+        if (!created.IsCompleted) throw new TimeoutException("Private room smoke timed out.");
+        var room = created.GetAwaiter().GetResult();
+        room.ClaimSeat(0, session.Name, Environment.TickCount64); session.Pump(Environment.TickCount64);
+        ulong id = ulong.Parse(room.Authority.RoomId);
+        if (!room.Authority.IsHost || room.Authority.Lobby!["slots"]!["0"] is null || session.Matchmaking.Read(id).Data["name"] != "Native private room smoke") throw new InvalidDataException("Native room membership, seat or metadata did not match.");
+        room.Close(); session.Pump(Environment.TickCount64);
+        if (session.Room is not null) throw new InvalidOperationException("Closed room is still attached.");
+        Console.WriteLine("Steam room smoke passed: private room created, native host/seat and metadata verified, room closed and left.");
+        return 0;
+    }
     if (args.Contains("--steam-client-smoke") || args.Contains("--steam-lobby-smoke"))
     {
         string library = Option("--steam-api") ?? throw new ArgumentException("Steam smoke requires --steam-api with the Steam API DLL path.");

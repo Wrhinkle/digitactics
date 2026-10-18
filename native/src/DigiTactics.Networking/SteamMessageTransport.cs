@@ -75,6 +75,17 @@ public sealed class SteamMessageTransport : IDisposable
         ObjectDisposedException.ThrowIf(disposed, this);
         blocked.Add(id); traffic.Remove(id); sessions.Remove(id); var peer = Peer(id); close(messages, ref peer);
     }
+    public void ClosePeer(ulong id)
+    {
+        ObjectDisposedException.ThrowIf(disposed, this);
+        traffic.Remove(id); sessions.Remove(id); var peer = Peer(id); close(messages, ref peer);
+    }
+    public void ResetRoom()
+    {
+        ObjectDisposedException.ThrowIf(disposed, this);
+        foreach (ulong id in sessions.ToArray()) ClosePeer(id);
+        blocked.Clear(); traffic.Clear();
+    }
     public bool Send(ulong recipient, string text, bool reliable)
     {
         ObjectDisposedException.ThrowIf(disposed, this);

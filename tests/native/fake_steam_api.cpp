@@ -49,6 +49,11 @@ static struct { int64_t allocated, released, badRelease, badIdentity, badBuffer,
 static char ifaces[5][64];
 static std::string lastSent;
 static int lastFlags, lastChannel;
+static bool captureSent;
+static std::deque<std::string> sentPackets;
+static std::string poppedPacket;
+EXPORT void FakeSteam_CaptureSent(int enabled) { captureSent=enabled!=0; sentPackets.clear(); }
+EXPORT const char *FakeSteam_PopSent() { if(sentPackets.empty()) return ""; poppedPacket=sentPackets.front(); sentPackets.pop_front(); return poppedPacket.c_str(); }
 EXPORT int FakeSteam_LastFlags() { return lastFlags; }
 EXPORT int FakeSteam_LastChannel() { return lastChannel; }
 
@@ -176,6 +181,7 @@ EXPORT int SteamAPI_ISteamNetworkingMessages_SendMessageToUser(void *self_, cons
   st.sentBytes += size;
   st.lastTo = id->m_steamID64;
   lastSent.assign((const char *)data, size);
+  if(captureSent) sentPackets.push_back(lastSent);
   acceptedSessions.insert(id->m_steamID64);
   pendingSessions.erase(id->m_steamID64);
   if (id->m_steamID64 == self) push(self, data, (int)size); // a message to yourself comes back
@@ -213,6 +219,8 @@ EXPORT void SteamAPI_ISteamMatchmaking_AddRequestLobbyListResultCountFilter(void
 static std::map<uint64_t,std::map<std::string,std::string>> lobbyData;
 static uint64_t lobbyOwner, activeLobby=109775240000000001ull;
 static int lobbyCapacity=8, leaves;
+static int memberMask=3;
+EXPORT void FakeSteam_Members(int mask) { memberMask=mask; }
 EXPORT int FakeSteam_Leaves() { return leaves; }
 EXPORT uint64_t SteamAPI_ISteamMatchmaking_CreateLobby(void *, int type, int maximum) {
   lobbyOwner=self; lobbyCapacity=maximum; lobbyData[activeLobby].clear();
@@ -225,7 +233,10 @@ EXPORT uint64_t SteamAPI_ISteamMatchmaking_JoinLobby(void *, uint64_t lobby) {
 }
 EXPORT uint64_t SteamAPI_ISteamMatchmaking_RequestLobbyList(void *) { uint32_t count=1; return result(510,&count,4); }
 EXPORT uint64_t SteamAPI_ISteamMatchmaking_GetLobbyByIndex(void *, int index) { return index==0?activeLobby:0; }
-EXPORT uint64_t SteamAPI_ISteamMatchmaking_GetLobbyMemberByIndex(void *, uint64_t, int index) { return index==0?self:index==1?76561190000000002ull:0; }
+EXPORT uint64_t SteamAPI_ISteamMatchmaking_GetLobbyMemberByIndex(void *, uint64_t, int index) {
+  if(memberMask&1) { if(index==0) return self; index--; }
+  return (memberMask&2) && index==0?76561190000000002ull:0;
+}
 EXPORT int SteamAPI_ISteamMatchmaking_GetLobbyMemberLimit(void *, uint64_t) { return lobbyCapacity; }
 EXPORT uint64_t SteamAPI_ISteamMatchmaking_GetLobbyOwner(void *, uint64_t) { return lobbyOwner; }
 EXPORT void SteamAPI_ISteamMatchmaking_LeaveLobby(void *, uint64_t) { leaves++; }
@@ -235,7 +246,7 @@ EXPORT const char *SteamAPI_ISteamMatchmaking_GetLobbyData(void *, uint64_t lobb
   return found!=fields.end()?found->second.c_str():strcmp(key,"dt_game")==0?"digitactics":"";
 }
 EXPORT bool SteamAPI_ISteamMatchmaking_RequestLobbyData(void *, uint64_t) { return false; }
-EXPORT int SteamAPI_ISteamMatchmaking_GetNumLobbyMembers(void *, uint64_t) { return 2; }
+EXPORT int SteamAPI_ISteamMatchmaking_GetNumLobbyMembers(void *, uint64_t) { return ((memberMask&1)?1:0)+((memberMask&2)?1:0); }
 EXPORT bool SteamAPI_ISteamMatchmaking_SetLobbyOwner(void *, uint64_t, uint64_t target) { lobbyOwner=target; return true; }
 
 // ---- ISteamFriends ----
