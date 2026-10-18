@@ -29,6 +29,7 @@ internal static class BoardMeshSmoke
             CheckPropMotion(renderer);
             CheckLightning(renderer);
             CheckWindowEmission(renderer);
+            CheckTransparentOrder(renderer);
             using(var arena=new ArenaEnvironment())
             {
                 var rules=DigiTactics.Rules.ContentCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/catalog.json")).Variants[0];
@@ -270,6 +271,23 @@ internal static class BoardMeshSmoke
             if(Math.Abs(pixels[i]-expected[i])>1) throw new InvalidOperationException($"Board sky color/orientation mismatch: {scene.Id}, byte {i}: {pixels[i]} vs {expected[i]}.");
     }
 
+    private static unsafe void CheckTransparentOrder(ModelRenderer renderer)
+    {
+        var source=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/file-island.json.gz"));
+        var material=source.Materials[0] with {Map=null,EmissiveMap=null,Unlit=true,Transparent=true,DepthWrite=false,Side=2,Blending=1};
+        var geometry=new BoardGeometry([-.8f,-.8f,0,.8f,-.8f,0,0,.8f,0],null,null,null,[0,1,2],[]);
+        BoardObject Triangle(int id,double z,int mat,int order)=>new("mesh",0,[mat],new double[] {1,0,0,0,0,1,0,0,0,0,1,0,0,0,z,1},true,false,false,null,SortCenter:[0,0,0],SortId:id,RenderOrder:order);
+        byte[] Render(int nearOrder,Matrix4x4 camera)
+        {
+            var scene=source with {Geometries=[geometry],Materials=[material with {Color=[0,0,1,.5f]},material with {Color=[1,0,0,.5f]}],Objects=[Triangle(1,.3,0,nearOrder),Triangle(2,.7,1,0)]};
+            using var layer=new BoardMeshLayer(scene);ModelRenderer.Begin(32,32);OpenGl.ClearColor(new(0,0,0,1));OpenGl.Clear(GlClearBit.Color);
+            layer.Draw(renderer,camera,true,32);var pixel=new byte[4];fixed(byte* p=pixel)OpenGl.ReadPixels(16,16,1,1,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);ModelRenderer.End();return pixel;
+        }
+        var depth=Render(0,Matrix4x4.Identity);var explicitOrder=Render(-1,Matrix4x4.Identity);var reversed=Render(0,Matrix4x4.CreateScale(1,1,-1)*Matrix4x4.CreateTranslation(0,0,1));
+        if(depth[2]<depth[0]+40 || explicitOrder[0]<explicitOrder[2]+40 || reversed[0]<reversed[2]+40)
+            throw new InvalidOperationException($"Transparent depth/render-order did not control alpha blending: {string.Join(",",depth)} / {string.Join(",",explicitOrder)} / {string.Join(",",reversed)}.");
+        Console.WriteLine("Transparent GPU ordering: depth, explicit render order and reversed camera verified.");
+    }
     private static unsafe void CheckWindowEmission(ModelRenderer renderer)
     {
         var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/kowloon.json.gz"));

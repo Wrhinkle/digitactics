@@ -8,10 +8,11 @@ namespace DigiTactics.Desktop;
 internal sealed class BoardMeshLayer : IDisposable
 {
     private sealed record Part(GpuPrimitive Geometry, BoardMaterial Material, bool HasNormals, BoardTexture? Texture);
-    private sealed record ObjectParts(BoardObject Object, Part[] Parts);
+    private sealed record ObjectParts(BoardObject Object, Part[] Parts) {public double SortDepth;}
     private readonly List<GpuPrimitive> geometry = [];
     private readonly List<GpuTexture> textures = [];
     private readonly List<ObjectParts> objects = [];
+    private readonly List<ObjectParts> transparentObjects=[];
     private readonly List<(GpuPrimitive Geometry,float[] Vertices,BoardMotion Motion)> animatedGeometry=[];
     private readonly List<(GpuPrimitive Geometry,float[] Vertices,float[] Initial,string Kind)> animatedUv=[];
     private double time;
@@ -64,7 +65,8 @@ internal sealed class BoardMeshLayer : IDisposable
                     }).ToArray();
                     cache.Add(key, parts);
                 }
-                objects.Add(new(obj, parts));
+                var item=new ObjectParts(obj,parts);objects.Add(item);
+                if(parts.Any(p=>p.Material.Transparent))transparentObjects.Add(item);
             }
         }
         catch { Dispose(); throw; }
@@ -100,15 +102,20 @@ internal sealed class BoardMeshLayer : IDisposable
     public void Draw(ModelRenderer renderer, Matrix4x4 camera, bool transparent, int viewportHeight)
     {
         DrawCalls = 0;
-        foreach (var item in objects)
+        var drawObjects=objects;
+        if(transparent && !renderer.ShadowPass)
+        {
+            var view=new Matrix4D(camera.M11,camera.M12,camera.M13,camera.M14,camera.M21,camera.M22,camera.M23,camera.M24,camera.M31,camera.M32,camera.M33,camera.M34,camera.M41,camera.M42,camera.M43,camera.M44);
+            foreach(var item in transparentObjects)item.SortDepth=BoardDrawOrder.Depth(item.Object,World(item.Object),view);
+            transparentObjects.Sort((a,b)=>BoardDrawOrder.Compare(a.Object,a.SortDepth,b.Object,b.SortDepth));drawObjects=transparentObjects;
+        }
+        foreach (var item in drawObjects)
         {
             var bolt=item.Object.Motion?.Lightning;
             if(bolt is not null) { if(lightning is not { Visible:true } || lightning.Active!=bolt.Index) continue; }
             else if (!item.Object.Visible) continue;
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
-            var world = Matrix4D.From(item.Object.Matrix) * Root;
-            if(bolt is not null) world=new CompanionTransform(new(lightning!.X,lightning.Y,lightning.Z),new(0,lightning.Yaw,0),new(1,1,1)).Matrix*Root;
-            if(item.Object.Motion is { Kind:"rotating-parent" } rotating) world=BoardSceneMotion.RotatingParent(rotating,time)*Root;
+            var world = World(item.Object);
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
             if(item.Object.Motion is {Kind:"circuit-screen" or "circuit-floor"} code)opacity=circuit!.Opacity(code.Kind);
             if(item.Object.Motion is {Kind:"kowloon-band" or "kowloon-lattice"} scan)
@@ -169,8 +176,17 @@ internal sealed class BoardMeshLayer : IDisposable
         foreach (var primitive in geometry) primitive.Dispose(); geometry.Clear();
         foreach (var texture in textures) texture.Dispose(); textures.Clear();
         objects.Clear();
+        transparentObjects.Clear();
         spirals.Clear();
         animatedGeometry.Clear();
         animatedUv.Clear();
+    }
+    private Matrix4D World(BoardObject obj)
+    {
+        if(obj.Motion?.Lightning is not null)return new CompanionTransform(new(lightning!.X,lightning.Y,lightning.Z),new(0,lightning.Yaw,0),new(1,1,1)).Matrix*Root;
+        if(obj.Motion is {Kind:"rotating-parent"} rotating)return BoardSceneMotion.RotatingParent(rotating,time)*Root;
+        if(obj.Motion is {Kind:"beach-surf"} surf)return BoardSceneMotion.Surf(surf,time).Matrix*Root;
+        if(obj.Motion is {Kind:"kowloon-band" or "kowloon-lattice"} scan)return (Matrix4D.From(obj.Matrix) with {M42=BoardKowloonMotion.Scan(scan.Kind,time).Y})*Root;
+        return Matrix4D.From(obj.Matrix)*Root;
     }
 }

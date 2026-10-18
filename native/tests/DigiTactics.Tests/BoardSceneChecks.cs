@@ -36,6 +36,7 @@ internal static class BoardSceneChecks
             }
         }
         Check(ids.Count == 37, "all original themes");
+        checks+=BoardOrderChecks.Run(root);
         var kowloon=BoardScene.Load(Path.Combine(folder,"kowloon.json.gz"));
         var windows=kowloon.Materials.Single(m=>m.EmissiveMap is not null);
         Check(windows.EmissiveMap==windows.Map && windows.EmissiveIntensity==1.1f,"original city windows use the same color/emissive texture and transform");

@@ -6,6 +6,8 @@ async function main(){
  const source=fs.readFileSync(path.join(root,'js/boards.js'),'utf8'),render=fs.readFileSync(path.join(root,'js/render3d.js'),'utf8');
  const engine=require('../../tools/headless.cjs').load({strict:true}),rng=engine.makeRng.toString(),distance=engine.hexDist.toString();
  const layout=render.slice(render.indexOf('const SQ3'),render.indexOf('// placeholder color:')).replace('export const LAYOUT','const LAYOUT');
+ const threeSource=fs.readFileSync(path.join(root,'vendor/three/build/three.module.js'),'utf8');
+ const transparentSort=threeSource.slice(threeSource.indexOf('function reversePainterSortStable('),threeSource.indexOf('function WebGLRenderList()'));
  const module="import * as THREE from '/vendor/three/build/three.module.js';import {mergeGeometries} from '/vendor/three/addons/utils/BufferGeometryUtils.js';import {extraThemes} from '/js/boards-extra.js';import {mysteryBoards} from '/js/mystery-boards.js';"
   +`const DT={BENCH:9,CELLS:Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})),makeRng:seed=>{const next=(${rng})(seed);const r=()=>{r.calls++;return next();};r.calls=0;return r;},hexDist:${distance}},COLS=7,ROWS=8,BENCH=9;const LAYOUT=(()=>{`+layout+';return LAYOUT;})();'
   +source.slice(source.indexOf('const { cellWorld'),source.indexOf('// ---------- renderer integration ----------'))
@@ -28,7 +30,7 @@ async function main(){
    .replace('const floor = plain(ctx, new THREE.MeshBasicMaterial({ map: grid }));','const floor = plain(ctx, new THREE.MeshBasicMaterial({ map: grid })); floor.userData.nativeMotion={kind:"grid-floor"};')
    .replace(/const bm = inst\(ctx, bGeo,[^\n]+;/,line=>line+' bm.userData.nativeMotion={kind:"coliseum-banners",props:banners.map(p=>({...p}))};')
    .replace(/const fm = inst\(ctx, new THREE.ConeGeometry\(0.16, 0.45, 8\)[^\n]+;/,line=>line+' fm.userData.nativeMotion={kind:"coliseum-flames",props:flames.map(p=>({...p}))};')
-  +'\nexport {THREE,DT,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
+  +'\nexport '+transparentSort+'\nexport {THREE,DT,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
   +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}'
   +'\nexport const originalHighlight='+render.slice(render.indexOf('  highlight(ui, planning) {'),render.indexOf('  benchPos(i, partner')).trim().replace('highlight(','function(')+';'
   +'\nexport const originalDrawItems='+render.slice(render.indexOf('  drawItems(p, ui) {'),render.indexOf('  // which item token')).trim().replace('drawItems(','function(')+';'
@@ -77,6 +79,21 @@ async function main(){
   });
   await page.goto('http://boards.local/');
   const ids=await page.evaluate(async()=> (await import('/boards.js')).THEMES.map(t=>t.id));
+  const orderFixture=await page.evaluate(async()=>{
+   const {THREE,reversePainterSortStable}=await import('/boards.js'),rows=[];
+   for(let frame=0;frame<80;frame++){
+    const camera=new THREE.PerspectiveCamera(50,1.3,.1,100);camera.position.set(Math.sin(frame*.3)*18,12,Math.cos(frame*.3)*18);camera.lookAt(0,0,0);camera.updateMatrixWorld();
+    const view=new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse),items=[];
+    for(let id=0;id<9;id++){
+     const center=[id%3-1,(id%2)*.2,id%4-2],world=new THREE.Matrix4().compose(new THREE.Vector3((id%3-1)*4,0,(Math.floor(id/3)-1)*4),new THREE.Quaternion().setFromEuler(new THREE.Euler(.1,id*.4,.2)),new THREE.Vector3(1.8,1,1));
+     const z=new THREE.Vector4(...center,1).applyMatrix4(world).applyMatrix4(view).z;
+     items.push({id,groupOrder:0,renderOrder:frame%2===0?id%3:0,z,center,world:world.toArray()});
+    }
+    rows.push({camera:view.toArray(),items,expected:[...items].reverse().sort(reversePainterSortStable).map(i=>i.id)});
+   }
+   return rows;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-order.json'),JSON.stringify(orderFixture));
   const surfaces=await page.evaluate(async()=>{
    const {surfaceGeometry}=await import('/boards.js'),result={version:1};
    for(const [key,g] of Object.entries(surfaceGeometry())){
@@ -111,10 +128,11 @@ async function main(){
     env.group.traverse(o=>{
      if(!o.isMesh&&!o.isPoints&&!o.isSprite&&!o.isLine)return;
      const g=o.isSprite?new THREE.PlaneGeometry(1,1):o.geometry;
+     let sphere;if(o.boundingSphere!==undefined){if(o.boundingSphere===null)o.computeBoundingSphere();sphere=o.boundingSphere;}else{if(g.boundingSphere===null)g.computeBoundingSphere();sphere=g.boundingSphere;}
      let visible=true;for(let parent=o;parent;parent=parent.parent)visible=visible&&parent.visible;
      const base={kind:o.isPoints?'points':o.isSprite?'sprite':o.isLineSegments?'lines':o.isLine?'lineStrip':'mesh',geometry:geometry(g),materials:[].concat(o.material).map(material),matrix:o.matrixWorld.toArray(),visible,castShadow:o.castShadow,receiveShadow:o.receiveShadow,motion:o.userData.nativeMotion||null};
      if(o.isInstancedMesh){base.instances=[];const m=new THREE.Matrix4(),color=new THREE.Color();for(let i=0;i<o.count;i++){o.getMatrixAt(i,m);if(o.instanceColor)o.getColorAt(i,color);base.instances.push({matrix:m.toArray(),color:color.toArray()});}}
-     objects.push(base);
+     Object.assign(base,{sortCenter:sphere.center.toArray(),sortId:o.id-env.group.id,renderOrder:o.renderOrder});objects.push(base);
     });
     const result={version:1,id,background:env.background.isTexture?texture(env.background):null,sky:Array.isArray(spec.sky)?spec.sky:[spec.sky],fog:spec.fog,hemi:spec.hemi,sun:spec.sun,tiles:spec.tiles,slot:spec.slot,ped:spec.ped,look:spec.look||{},surface:Object.fromEntries(Object.entries(env.surface).map(([k,v])=>[k,texture(v)])),tickCount:env.ticks.length,textures,materials,geometries,objects};
     disposeEnv(env);return result;
