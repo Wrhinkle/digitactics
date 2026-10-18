@@ -139,26 +139,32 @@ function statueClips(scene){
 
 // These imported attacks contain whole-body enlargement (14x, 13.5x, 4.79x)
 // or shrinkage (1/15x), rather than an independently animated attack effect.
-// Keep its idle body scale while retaining every authored joint, attachment and
-// root-position track. Match by asset UID so roster aliases share the correction.
+// Links Syakomon also compounds spine/antenna scales into 11x height and 91x
+// ordinary mesh edges. Keep those body scales at idle while retaining its shell
+// hinge, mouth, teeth, joint rotations and root trajectory. Match exact asset UID.
 function boardBodyScale(gltf,src) {
-  const body = {
-    db64891d559b4d0cbcb5633d90779ee3: 'GRP_joint_02',
-    'rip-cat_cs_renamon_chr391': 'J_root',
-    '889b1324568743f3be36b32ac49c95da': 'GRP_joint_02',
-    bbeb1da28aca459da86b46cba6d57ca8: 'GRP_joint_03',
+  const bodies = {
+    db64891d559b4d0cbcb5633d90779ee3: ['GRP_joint_02'],
+    'rip-cat_cs_renamon_chr391': ['J_root'],
+    '889b1324568743f3be36b32ac49c95da': ['GRP_joint_02'],
+    bbeb1da28aca459da86b46cba6d57ca8: ['GRP_joint_03'],
+    'rip-cat_l_syakomon_chr709': ['J_spine01','J_ear01_l','J_ear02_l','J_ear01_r','J_ear02_r'],
   }[src?.uid];
   const clips=gltf.animations||[];
-  if(!body)return clips;
-  const idle=clips.find(c=>c.name==='idle'),name=body+'.scale';
-  const idleTrack=idle?.tracks.find(track=>track.name===name);
-  const neutral=idleTrack?Array.from(idleTrack.createInterpolant().evaluate(0)):gltf.scene.getObjectByName(body)?.scale.toArray();
-  if(!neutral)return clips;
+  if(!bodies)return clips;
+  const idle=clips.find(c=>c.name==='idle'),neutral=new Map();
+  for(const body of bodies){
+    const name=body+'.scale',track=idle?.tracks.find(track=>track.name===name);
+    const scale=track?Array.from(track.createInterpolant().evaluate(0)):gltf.scene.getObjectByName(body)?.scale.toArray();
+    if(scale)neutral.set(name,scale);
+  }
   return clips.map(clip=>{
-    if(clip.name!=='attack'||!clip.tracks.some(track=>track.name===name))return clip;
+    if(clip.name!=='attack'||!clip.tracks.some(track=>neutral.has(track.name)))return clip;
     const corrected=clip.clone();
-    for(const track of corrected.tracks)if(track.name===name)
-      for(let i=0;i<track.values.length;i++)track.values[i]=neutral[i%3];
+    for(const track of corrected.tracks){
+      const scale=neutral.get(track.name);if(!scale)continue;
+      for(let i=0;i<track.values.length;i++)track.values[i]=scale[i%3];
+    }
     return corrected;
   });
 }
