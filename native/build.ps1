@@ -126,6 +126,7 @@ try {
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-portraits.cjs')
     Invoke-Checked 'node' @('tools/export-evolution-portraits.cjs')
+    Invoke-Checked 'node' @('tools/export-evolution-stage.cjs')
     Invoke-Checked 'node' @('tools/export-companion-models.cjs')
     Invoke-Checked 'node' @('tools/export-dance-bindings.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')

@@ -292,6 +292,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         {
             if(evolutionSmoke && screen.EvolutionTransitionTime>1 && screen.EvolutionTransitionTime<2.5 && !transformWhite)
             {
+                if(screen.EvolutionRaysOpacity!=1)throw new InvalidOperationException("Transformation rays did not fade in.");
                 if(screen.EvolutionFloorDrawn)throw new InvalidOperationException("Evolution floor remained visible during white stage.");
                 var savedForm=LegendEvolution.Discovery(collectionProfile.Storage.GetValueOrDefault("dt.legendevo.v1"),"bukamon").Current;
                 if(screen.DisplayedEvolutionForm!="bukamon" || savedForm=="bukamon" || screen.EvolutionAnnouncementVisible)throw new InvalidOperationException("Evolution revealed the saved result before the transformation finished.");
@@ -313,6 +314,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if(evolutionSmoke && collectionIndex==11 && screen.EvolutionTransitionTime==0 && !screen.EvolutionBusy && !settledPreview)
             {
                 if(screen.DisplayedEvolutionForm!=LegendEvolution.Discovery(collectionProfile.Storage.GetValueOrDefault("dt.legendevo.v1"),"bukamon").Current || !screen.EvolutionAnnouncementVisible)throw new InvalidOperationException("Evolution completion did not reveal the saved form and announcement.");
+                if(screen.EvolutionRaysOpacity!=0)throw new InvalidOperationException("Transformation rays did not fade out.");
                 settledPreview=true;
                 if(!screen.EvolutionFloorDrawn)throw new InvalidOperationException("Evolution floor did not return after transformation.");
                 if(screen.EvolutionPreviewDrawCalls==0 || screen.EvolutionPreviewTime<=0) throw new InvalidOperationException("Evolution preview did not render and animate.");

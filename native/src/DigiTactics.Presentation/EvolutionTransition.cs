@@ -23,6 +23,17 @@ public sealed class EvolutionTransition
         if(Complete) { ShowNew=true;Scale=1;Yaw=0; }
         return false;
     }
+    public double RayOpacity=>Complete
+        ? 1-CssEase(Math.Clamp((Time-FlashStarted!.Value-.26)/.4,0,1),.25,.1,.25,1)
+        : CssEase(Math.Min(1,Time/.4),.25,.1,.25,1);
+    public double RayAngle=>Complete?0:Time/2.4*Math.PI*2;
+    private static double CssEase(double x,double x1,double y1,double x2,double y2)
+    {
+        if(x<=0)return 0;if(x>=1)return 1;
+        double low=0,high=1;
+        for(int i=0;i<24;i++) { double t=(low+high)/2;double curve=3*(1-t)*(1-t)*t*x1+3*(1-t)*t*t*x2+t*t*t;if(curve<x)low=t;else high=t; }
+        double u=(low+high)/2;return 3*(1-u)*(1-u)*u*y1+3*(1-u)*u*u*y2+u*u*u;
+    }
     public double FlashOpacity
     {
         get
@@ -37,9 +48,6 @@ public sealed class EvolutionTransition
     private static double Ease(double x)
     {
         // CSS ease-out: cubic-bezier(0,0,.58,1), applied between each keyframe.
-        if(x<=0)return 0;if(x>=1)return 1;
-        double low=0,high=1;
-        for(int i=0;i<24;i++) { double t=(low+high)/2;double curve=3*(1-t)*t*t*.58+t*t*t;if(curve<x)low=t;else high=t; }
-        double u=(low+high)/2;return 3*(1-u)*u*u+u*u*u;
+        return CssEase(x,0,0,.58,1);
     }
 }

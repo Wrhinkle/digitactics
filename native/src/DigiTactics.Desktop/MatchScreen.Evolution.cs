@@ -49,6 +49,7 @@ internal sealed partial class MatchScreen
     }
     private CompanionPreview? evolutionPreview;
     private bool showEvolutionTree;
+    internal double EvolutionRaysOpacity=>evolutionPreview?.RaysOpacity??0;
     internal bool EvolutionFloorDrawn=>evolutionPreview?.FloorDrawn==true;
     internal double EvolutionTransitionTime=>evolutionPreview?.TransitionTime??0;
     internal bool EvolutionBusy=>evolutionPreview?.Evolving==true;

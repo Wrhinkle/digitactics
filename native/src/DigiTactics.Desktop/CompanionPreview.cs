@@ -13,6 +13,8 @@ internal sealed class CompanionPreview : IDisposable
     private readonly CompanionCatalog companions=CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/companion-models.json"));
     private readonly ModelRenderer renderer=new() {EvolutionStage=true,FarmEye=new(0,1,3.6f)};
     private GpuPrimitive? floor;
+    private EvolutionBackdrop? backdrop;
+    public double RaysOpacity=>transition?.RayOpacity??0;
     private GlFramebuffer frame;
     private GlTexture color,depth;
     private GpuModel? model;
@@ -46,6 +48,7 @@ internal sealed class CompanionPreview : IDisposable
     {
         try
         {
+            backdrop=new();
             var vertices=new float[42*GltfPrimitive.Stride];var indices=new uint[40*3];
             for(int i=0;i<=40;i++)
             {
@@ -99,6 +102,7 @@ internal sealed class CompanionPreview : IDisposable
         {
             OpenGl.BindFramebuffer(OpenGl.GL_FRAMEBUFFER,frame);ModelRenderer.Begin(Size,Size);
             OpenGl.ClearColor(new(.035f,.05f,.075f,1));OpenGl.Clear(GlClearBit.Color|GlClearBit.Depth);
+            backdrop!.Draw(renderer,transition);
             var camera=Matrix4x4.CreateLookAt(new(0,1,3.6f),new(0,.6f,0),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI/6,1,.01f,50);
             renderer.WhiteOverride=transition?.White??false;
             var active=transition is {ShowNew:false} && outgoing is not null?outgoing:model;
@@ -122,5 +126,5 @@ internal sealed class CompanionPreview : IDisposable
             OpenGl.Viewport(viewport[0],viewport[1],viewport[2],viewport[3]);
         }
     }
-    public void Dispose() { floor?.Dispose();outgoing?.Dispose();model?.Dispose();renderer.Dispose();OpenGl.DeleteTextures(new[]{color,depth});OpenGl.DeleteFramebuffers(new[]{frame}); }
+    public void Dispose() { backdrop?.Dispose();floor?.Dispose();outgoing?.Dispose();model?.Dispose();renderer.Dispose();OpenGl.DeleteTextures(new[]{color,depth});OpenGl.DeleteFramebuffers(new[]{frame}); }
 }

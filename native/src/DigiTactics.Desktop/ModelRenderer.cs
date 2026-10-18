@@ -127,6 +127,7 @@ internal sealed partial class ModelRenderer : IDisposable
                 SetSides(material.DoubleSided ? 2 : 0);
                 if (transparent) { OpenGl.Native.glEnable((GlCapability)OpenGl.GL_BLEND); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
                 else OpenGl.Native.glDisable((GlCapability)OpenGl.GL_BLEND);
+                if(EvolutionStage && transparent) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA,OpenGl.GL_ONE_MINUS_SRC_ALPHA,OpenGl.GL_ONE,OpenGl.GL_ONE_MINUS_SRC_ALPHA);
                 OpenGl.Native.glDepthMask(ShadowPass || material.DepthWrite);
                 primitives[offset + i].Draw(); DrawCalls++;
             }
@@ -171,6 +172,7 @@ internal sealed partial class ModelRenderer : IDisposable
         OpenGl.Native.glFrontFace(determinant < 0 ? GlFrontFace.Clockwise : GlFrontFace.CounterClockwise);
         if (transparent) { OpenGl.Native.glEnable(GlCapability.Blend); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, additive ? OpenGl.GL_ONE : OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
         else OpenGl.Native.glDisable(GlCapability.Blend);
+        if(EvolutionStage && transparent) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA,OpenGl.GL_ONE_MINUS_SRC_ALPHA,OpenGl.GL_ONE,OpenGl.GL_ONE_MINUS_SRC_ALPHA);
         if (points is not null)
         {
             program.Uniform(30, new Brutal.Numerics.float4(points.Size, points.ViewportHeight * .5f, points.Attenuate ? 1 : 0, 1));
