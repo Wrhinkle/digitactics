@@ -38,7 +38,7 @@ internal static class CompanionModelSmoke
                 int left = index % columns * cell, bottom = (rows - 1 - index / columns) * cell;
                 ModelRenderer.Begin(cell, cell); OpenGl.Viewport(left, bottom, cell, cell);
                 int draws = 0;
-                var placement = model.PlaceCompanion(animator);
+                var placement = model.PlaceCompanion(animator, overlay: CompanionEmoteMotion.Evaluate("wiggle", 900, 2600));
                 foreach (bool transparent in new[] { false, true }) { renderer.Draw(model, pose, placement, camera, transparent); draws += renderer.DrawCalls; }
                 ModelRenderer.End();
                 var pixels = new byte[cell * cell * 4];

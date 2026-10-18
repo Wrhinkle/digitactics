@@ -61,7 +61,7 @@ internal sealed partial class MatchScreen : IDisposable
     private void Tooltip(string id)
     {
         if (!ImGui.IsItemHovered()) return;
-        var entry = text.Get(Rules.Id, id); ImGui.BeginTooltip(); ImGui.Text(entry.Name); ImGui.TextWrapped(entry.Description); ImGui.EndTooltip();
+        var entry = text.Get(Rules.Id, id); ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); ImGui.Text(entry.Name); ImGui.TextWrapped(entry.Description); ImGui.EndTooltip();
     }
     private string UnitName(PlanningUnit unit) => Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == unit.Line).Forms[unit.Stage];
     private void UnitDetails(string lineId, int stage)
@@ -78,7 +78,7 @@ internal sealed partial class MatchScreen : IDisposable
     private void UnitTooltip(string line, int stage)
     {
         if (!ImGui.IsItemHovered()) return;
-        ImGui.BeginTooltip(); UnitDetails(line, stage); ImGui.EndTooltip();
+        ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); UnitDetails(line, stage); ImGui.EndTooltip();
     }
     private MatchActionResult? Act(string action, object? args = null)
     {
@@ -169,6 +169,7 @@ internal sealed partial class MatchScreen : IDisposable
         }
         else if (Session.Rounds.Phase == MatchPhase.Result) battle?.Advance(delta);
         planning.Update(Rules, Session.State.Players[viewed], delta);
+        UpdateArenaCompanion(delta);
     }
     private void Watch(int player)
     {
@@ -501,6 +502,7 @@ internal sealed partial class MatchScreen : IDisposable
         float sx = (float)framebuffer.X / size.X, sy = (float)framebuffer.Y / size.Y;
         int x = (int)(Left * sx), y = (int)((size.Y - Top - Height) * sy), w = (int)(Width * sx), h = (int)(Height * sy);
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
+        if (!IsSpectating) arenaCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7);
     }
-    public void Dispose() { DetachNetworkMatch(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); }
+    public void Dispose() { DetachNetworkMatch(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); }
 }

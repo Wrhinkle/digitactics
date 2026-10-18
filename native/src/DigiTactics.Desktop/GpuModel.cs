@@ -19,8 +19,14 @@ internal sealed class GpuModel : IDisposable
     private double Rotation => Number("rotY"u8, 0);
     public CompanionAnimator CreateCompanionAnimator(CompanionVisual visual, System.Text.Json.JsonElement fallbacks, double height = 1.2, double yaw = 0)
         => new(Rig, visual, fallbacks, Math.Min(height * visual.Height, 1.5 / Math.Max(Footprint, .01)), Rotation, yaw);
-    public Matrix4D PlaceCompanion(CompanionAnimator animator, double x = 0, double y = 0, double z = 0)
-        => Normalization * animator.Transform.Matrix * Transform(x, y, z, animator.BodyYaw, 1);
+    public Matrix4D PlaceCompanion(CompanionAnimator animator, double x = 0, double y = 0, double z = 0, CompanionTransform? overlay = null)
+    {
+        var body = animator.Transform;
+        if (overlay is not null) body = new(new(body.Position.X + overlay.Position.X, body.Position.Y + overlay.Position.Y, body.Position.Z + overlay.Position.Z),
+            new(body.Rotation.X + overlay.Rotation.X, body.Rotation.Y + overlay.Rotation.Y, body.Rotation.Z + overlay.Rotation.Z),
+            new(body.Scale.X * overlay.Scale.X, body.Scale.Y * overlay.Scale.Y, body.Scale.Z * overlay.Scale.Z));
+        return Normalization * body.Matrix * Transform(x, y, z, animator.BodyYaw, 1);
+    }
 
     public GpuModel(ModelCatalog catalog, ModelSource source)
     {

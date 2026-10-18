@@ -42,13 +42,13 @@ internal sealed class ModelRenderer : IDisposable
     }
 
 
-    public static unsafe void Begin(int width, int height)
+    public static unsafe void Begin(int width, int height, bool clearDepth = true)
     {
         OpenGl.Viewport(0, 0, width, height);
         OpenGl.Native.glEnable(GlCapability.DepthTest);
         OpenGl.Native.glDisable(GlCapability.ScissorTest);
         OpenGl.Native.glDisable((GlCapability)OpenGl.GL_FRAMEBUFFER_SRGB);
-        OpenGl.Native.glDepthMask(true); OpenGl.Clear(GlClearBit.Depth);
+        OpenGl.Native.glDepthMask(true); if (clearDepth) OpenGl.Clear(GlClearBit.Depth);
     }
     public unsafe void Draw(GpuModel model, RigPose pose, Matrix4D placement, Matrix4x4 camera, bool transparent, double emission = 0)
     {

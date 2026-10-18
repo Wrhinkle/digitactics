@@ -66,7 +66,7 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     }
     internal static Matrix4x4 Camera(int width, int height, int columns)
     {
-        float distance = (float)Math.Max(20, (columns * Math.Sqrt(3) + 4) / (2 * Math.Tan(.36) * width / height));
+        float distance = (float)Math.Max(24, (columns * Math.Sqrt(3) + 4) / (2 * Math.Tan(.36) * width / height));
         return Matrix4x4.CreateLookAt(new(0, distance * .6644f, distance * .7474f), new(0, 0, 0), Vector3.UnitY)
             * Matrix4x4.CreatePerspectiveFieldOfView(.72f, (float)width / height, .1f, 100);
     }

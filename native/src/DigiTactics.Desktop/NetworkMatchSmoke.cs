@@ -18,6 +18,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private long now = 10000;
     private int stage, cooldown = 3;
     private bool down, combatRendered, planningRendered;
+    private bool companionRendered;
     private readonly bool spectator;
     private bool spectatorVerified;
     private int soundEffects;
@@ -71,6 +72,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
         planningRendered |= screen.PlanningDrawCalls > 0;
+        companionRendered |= screen.CompanionDrawCalls > 0;
         if (socialCheck != 0)
         {
             if (!host.SendEffect(JsonSerializer.SerializeToElement(new { s = 0, kind = "sound", id = "digivice" }))) throw new InvalidOperationException("Host effect was not sent.");
@@ -103,7 +105,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
         if (spectator && stage == 3) { stage = 4; return false; }
         if (spectator && (stage < 5 || !screen.IsSpectating)) return false;
         if (spectator && (!spectatorVerified || screen.Buttons.ContainsKey("lock") || screen.Buttons.ContainsKey("fight"))) throw new InvalidOperationException("Returning to spectating did not remove player controls.");
-        if (!planningRendered || !combatRendered || screen.Session.State.Seed != replica.Match!.Session.State.Seed) throw new InvalidOperationException("Online match did not render planning and combat.");
+        if (!planningRendered || !combatRendered || !companionRendered || screen.Session.State.Seed != replica.Match!.Session.State.Seed) throw new InvalidOperationException("Online match did not render planning, combat and companion.");
         if (screen.NetworkStateHash != replica.Match.Check()) throw new InvalidOperationException("Rendered guest state differs from host after settlement.");
         if (!spectator && stage == 3) { screen.AttachNetworkMatch(host, () => now); stage = 20; return false; }
         if (!spectator && stage < 23)
