@@ -58,7 +58,7 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             Require(obj.Matrix.Length == 16 && obj.Matrix.All(double.IsFinite), "world matrix");
             if(obj.Motion is { Spirals:{ } spirals } spiralMotion)
             {
-                Require(spiralMotion.Kind is "spiral-rocks" or "spiral-islets","spiral kind");
+                Require(spiralMotion.Kind is "spiral-rocks" or "spiral-islets" or "spiral-crystals" or "spiral-halos","spiral kind");
                 Require(obj.Instances is not null && spirals.Length==obj.Instances.Length,"spiral instance count");
                 Require(spirals.All(p=>new[] {p.X,p.Y,p.Z,p.K,p.A0,p.Rad,p.S,p.Sp,p.Ph,p.Phase}.All(double.IsFinite)),"spiral values");
             }

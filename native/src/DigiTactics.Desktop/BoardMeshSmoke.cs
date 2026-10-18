@@ -237,7 +237,8 @@ internal static class BoardMeshSmoke
             ("server-desert","desert-haze"),("ancient-coliseum","coliseum-banners"),("ancient-coliseum","coliseum-flames"),
             ("gear-savanna","savanna-gears"),("infinity-mountain","mountain-stars"),
             ("digital-grid","grid-polys"),("digital-grid","grid-rings"),("digital-grid","grid-floor"),("dark-ocean","rotating-parent"),
-            ("spiral-mountain","spiral-rocks"),("spiral-mountain","spiral-islets")})
+            ("spiral-mountain","spiral-rocks"),("spiral-mountain","spiral-islets"),
+            ("spiral-mountain","spiral-crystals"),("spiral-mountain","spiral-halos")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();

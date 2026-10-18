@@ -9,7 +9,7 @@ public sealed class BoardSpiralMotion
     public Matrix4D[] Matrices { get; }
     public BoardSpiralMotion(BoardMotion motion)
     {
-        if(motion.Kind is not ("spiral-rocks" or "spiral-islets") || motion.Spirals is null)
+        if(motion.Kind is not ("spiral-rocks" or "spiral-islets" or "spiral-crystals" or "spiral-halos") || motion.Spirals is null)
             throw new ArgumentException("Expected spiral board motion.",nameof(motion));
         this.motion=motion; phases=motion.Spirals.Select(p=>p.Phase).ToArray(); heights=motion.Spirals.Select(p=>p.Y).ToArray();
         Matrices=new Matrix4D[motion.Spirals.Length];
@@ -19,17 +19,23 @@ public sealed class BoardSpiralMotion
     {
         for(int i=0;i<Matrices.Length;i++)
         {
-            var p=motion.Spirals![i]; double x=p.X,y=p.Y,z=p.Z,rx=0,ry;
+            var p=motion.Spirals![i]; double x=p.X,y=p.Y,z=p.Z,rx=0,ry=0,sx=p.S,sy=p.S,sz=p.S;
             if(motion.Kind=="spiral-rocks")
             {
                 double angle=p.A0+phases[i]; x=Math.Cos(angle)*p.Rad; z=Math.Sin(angle)*p.Rad; y=-3+p.K*8;
                 rx=time*.4+p.Sp; ry=time*.3+p.Sp;
             }
-            else
+            else if(motion.Kind=="spiral-islets")
             {
                 heights[i]+=Math.Sin(time*.5+p.Ph)*.004; y=heights[i]; ry=time*.05+p.Ph;
             }
-            Matrices[i]=new CompanionTransform(new(x,y,z),new(rx,ry,0),new(p.S,p.S,p.S)).Matrix;
+            else
+            {
+                y=1.6+Math.Sin(time*1.4+p.Ph)*.25;
+                if(motion.Kind=="spiral-crystals") { ry=time*1.2; sy=1.6; }
+                else sx=sy=sz=1.1+.25*Math.Sin(time*3+p.Ph);
+            }
+            Matrices[i]=new CompanionTransform(new(x,y,z),new(rx,ry,0),new(sx,sy,sz)).Matrix;
         }
         // Source advances phase after writing instance matrices, so it affects the next frame.
         if(motion.Kind=="spiral-rocks")

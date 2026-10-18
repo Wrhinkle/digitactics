@@ -35,6 +35,8 @@ async function main(){
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8')
   .replace('const sp = { v: 1 };','const sp = { v: 1 }; rocks.nativeKind="spiral-rocks";')
+  .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
+  .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
   .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))};');
  try{
