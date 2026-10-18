@@ -106,6 +106,6 @@ internal static class BoardMotionChecks
             }
         }
         }
-        Console.WriteLine($"Board motion: {checks:N0} original wave, crystal, palm, surf, prop, spiral and lightning comparisons passed."); return checks+BoardCastleChecks.Run(root)+BoardKowloonChecks.Run(root)+BoardCircuitChecks.Run(root)+BoardTempleChecks.Run(root);
+        Console.WriteLine($"Board motion: {checks:N0} original wave, crystal, palm, surf, prop, spiral and lightning comparisons passed."); return checks+BoardCastleChecks.Run(root)+BoardKowloonChecks.Run(root)+BoardCircuitChecks.Run(root)+BoardTempleChecks.Run(root)+BoardUnderwaterChecks.Run(root);
     }
 }

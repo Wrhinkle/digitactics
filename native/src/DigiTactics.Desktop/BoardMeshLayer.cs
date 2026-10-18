@@ -20,6 +20,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly BoardKowloonMotion? kowloon;
     private readonly BoardCircuitMotion? circuit;
     private readonly BoardTempleMotion? temple;
+    private readonly BoardUnderwaterMotion? underwater;
     private static readonly Vector3 templeSunTint=BoardLighting.Linear("#fff6e0");
     public (float Multiplier,float Weight,Vector3 Tint)? SunFlare=>temple is null?null:(temple.SunMultiplier,temple.TintWeight,templeSunTint);
     public (float Near,float Far)? AnimatedFog=>kowloon is null?null:(kowloon.FogNear,kowloon.FogFar);
@@ -32,6 +33,7 @@ internal sealed class BoardMeshLayer : IDisposable
     {
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
         if(scene.Id=="kowloon")kowloon=new();
+        if(scene.Id=="gekomon-castle")underwater=new(initialCombat);
         if(scene.Id=="circuit-core") {circuit=new(initialWon);FlashColor=BoardLighting.Linear("#a8ffc8");}
         if(scene.Id=="flame-temple") {temple=new(scene.Objects.Select(o=>o.Motion).FirstOrDefault(m=>m?.Kind=="temple-geysers")?.Temple??[],initialEvolution);FlashColor=BoardLighting.Linear("#fff0c0");}
         try
@@ -56,7 +58,7 @@ internal sealed class BoardMeshLayer : IDisposable
                     {
                         var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
                         if(obj.Motion is { Kind:"sea" or "particles" or "circuit-pulses" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
-                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" or "temple-lava" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
+                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" or "temple-lava" or "underwater-caustics" or "underwater-caustics2" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
                         var material = scene.Materials[part.Material];
                         return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
                     }).ToArray();
@@ -76,11 +78,13 @@ internal sealed class BoardMeshLayer : IDisposable
         kowloon?.Advance(delta,combat);
         circuit?.Advance(delta,combat,won);
         temple?.Advance(delta,time,combat,stage,evolution);
+        underwater?.Advance(delta,time,combat);
         foreach(var spiral in spirals.Values) spiral.Advance(delta,time,combat);
         foreach(var uv in animatedUv)
         {
             if(uv.Kind is "circuit-screen" or "circuit-floor") circuit!.Scroll(uv.Vertices,uv.Initial,uv.Kind,time);
             else if(uv.Kind=="temple-lava") BoardTempleMotion.Scroll(uv.Vertices,uv.Initial,time);
+            else if(uv.Kind is "underwater-caustics" or "underwater-caustics2") BoardUnderwaterMotion.Scroll(uv.Vertices,uv.Initial,uv.Kind,time);
             else BoardSceneMotion.ScrollingUv(uv.Vertices,uv.Initial,time,uv.Kind);
             uv.Geometry.UpdateVertices(uv.Vertices);
         }
@@ -149,6 +153,7 @@ internal sealed class BoardMeshLayer : IDisposable
                             { Castle:{ } items } motion=>castle!.Instance(motion.Kind,items[i],i,time),
                             { Kind:"temple-geysers" }=>temple!.Geysers[i],
                             { Temple:{ } flames } motion=>temple!.Flame(flames[i],motion.Kind=="temple-inner",time),
+                            { Underwater:{ } swimmers } motion=>underwater!.Instance(motion.Kind,swimmers[i],time),
                             _=>Matrix4D.From(instance.Matrix)
                         };
                         var tint=item.Object.Motion?.Signs is {} signs?BoardKowloonMotion.Sign(signs[i],time):new Vector3(instance.Color[0],instance.Color[1],instance.Color[2]);

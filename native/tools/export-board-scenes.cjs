@@ -35,6 +35,12 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8')
+  .replace(/mesh\(ctx, new THREE.CircleGeometry\(40, 40\)[^\n]+cm\(caus\)[^\n]+;/,line=>'const nativeCaustics='+line+' nativeCaustics.userData.nativeMotion={kind:"underwater-caustics"};')
+  .replace(/mesh\(ctx, new THREE.CircleGeometry\(12.6, 40\)[^\n]+cm\(caus2\)[^\n]+;/,line=>'const nativeCaustics2='+line+' nativeCaustics2.userData.nativeMotion={kind:"underwater-caustics2"};')
+  .replace('const shm = anim(ctx,','shafts.nativeUnderwater="underwater-shafts"; const shm = anim(ctx,')
+  .replace('anim(ctx, kelpGeo,','kelp.nativeUnderwater="underwater-kelp"; anim(ctx, kelpGeo,')
+  .replace('clamsLo.map((c, i) => ({ ...c, y: 0.3, ph: i * 2 })),','Object.assign(clamsLo.map((c, i) => ({ ...c, y: 0.3, ph: i * 2 })),{nativeUnderwater:"underwater-clams"}),')
+  .replace('anim(ctx, fishGeo,','fish.nativeUnderwater="underwater-fish"; anim(ctx, fishGeo,')
   .replace('plain(ctx, lavaMat, -1.3);','const nativeLava=plain(ctx, lavaMat, -1.3); nativeLava.userData.nativeMotion={kind:"temple-lava"};')
   .replace('const fire = { k: 0 };','const fire = { k: 0 }; fl.nativeTemple="temple-outer";')
   .replace('fl.filter((_, i) => i % 3 === 0),','Object.assign(fl.filter((_, i) => i % 3 === 0),{nativeTemple:"temple-inner"}),')
@@ -58,7 +64,7 @@ async function main(){
   .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
-  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))};');
+  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
@@ -321,6 +327,25 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-temple.json.gz'),zlib.gzipSync(JSON.stringify(templeFixture)));
+  const underwaterFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
+   for(const initialCombat of [false,true]){
+    const env=buildEnv(THEMES.find(s=>s.id==='gekomon-castle')),objects=[],frames=[];
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('underwater-'))objects.push(o);});
+    env.signal({phase:initialCombat?'combat':'planning',stage:1,won:false,evo:0});env.tick(0,0);let time=0;
+    for(let frame=0;frame<500;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],combat=Math.floor(frame/125)%2===0;time+=delta;
+     env.signal({phase:combat?'combat':'planning',stage:1,won:false,evo:0});env.tick(delta,time);
+     frames.push({time,delta,combat,objects:objects.map(o=>{
+      const matrix=new THREE.Matrix4(),matrices=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+      return {kind:o.userData.nativeMotion.kind,matrices,offset:o.material.map?.offset.toArray()};
+     })});
+    }
+    scenarios.push({initialCombat,motions:objects.map(o=>o.userData.nativeMotion),frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
   const particleFixture=await page.evaluate(async()=>{
    const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
    for(const spec of THEMES){

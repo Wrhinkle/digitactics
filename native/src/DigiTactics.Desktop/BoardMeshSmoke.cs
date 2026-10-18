@@ -339,7 +339,10 @@ internal static class BoardMeshSmoke
             ("kowloon","kowloon-band"),("kowloon","kowloon-lattice"),("kowloon","kowloon-signs"),("kowloon","particles"),
             ("circuit-core","circuit-pulses"),("circuit-core","circuit-screen"),("circuit-core","circuit-floor"),
             ("flame-temple","temple-outer"),("flame-temple","temple-inner"),("flame-temple","temple-geysers"),
-            ("flame-temple","temple-lava"),("flame-temple","particles")})
+            ("flame-temple","temple-lava"),("flame-temple","particles"),
+            ("gekomon-castle","underwater-caustics"),("gekomon-castle","underwater-caustics2"),
+            ("gekomon-castle","underwater-shafts"),("gekomon-castle","underwater-kelp"),
+            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
