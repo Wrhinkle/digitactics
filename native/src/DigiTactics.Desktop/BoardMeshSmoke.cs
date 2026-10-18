@@ -25,16 +25,23 @@ internal static class BoardMeshSmoke
             CheckPoints(renderer);
             CheckLines(renderer);
             CheckFog(renderer);
+            var scenes=Directory.GetFiles(Path.Combine(AppContext.BaseDirectory,"content/boards"),"*.json.gz").Order().Select(BoardScene.Load).ToArray();
+            foreach(var scene in scenes)
+            {
+                using var background=new BoardBackground(scene);
+                CheckBackground(renderer,background,scene);
+            }
             OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
             var camera = Matrix4x4.CreateLookAt(new(0, 25, 28), Vector3.Zero, Vector3.UnitY) * Matrix4x4.CreatePerspectiveFieldOfView(.9f, 1, .1f, 150);
             using var board = new ArenaBoard(7);
             int index = 0, draws = 0;
-            foreach (string file in Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "content/boards"), "*.json.gz").Order())
+            foreach (var scene in scenes)
             {
-                var scene = BoardScene.Load(file);
                 renderer.BoardLight = new(scene); renderer.FarmEye = new(0,25,28);
                 using var layer = new BoardMeshLayer(scene);
+                using var background = new BoardBackground(scene);
                 ModelRenderer.Begin(cell, cell); OpenGl.Viewport(index % columns * cell, (rows - 1 - index / columns) * cell, cell, cell);
+                background.Draw(renderer);
                 int expected = scene.Objects.Where(o => o.Visible).Sum(o => (o.Instances?.Length ?? 1) * (o.Materials.Length == 1 ? 1 : scene.Geometries[o.Geometry].Groups.Length));
                 layer.Draw(renderer, camera, false, cell); int actual = layer.DrawCalls;
                 board.Draw(renderer, camera);
@@ -44,7 +51,7 @@ internal static class BoardMeshSmoke
             }
             if (index != 37) throw new InvalidOperationException("Board mesh smoke must cover every theme.");
             if (capture is not null) FrameCapture.SaveBitmap(capture, cell * columns, cell * rows);
-            Console.WriteLine($"Board geometry GPU smoke: {index} themes, {draws:N0} material/instance draws; vertex colors, wireframe, lines, point sizing/orientation and shader state reset verified.");
+            Console.WriteLine($"Board geometry GPU smoke: {index} themes, {draws:N0} material/instance draws; original sky pixels, fog, vertex colors, wireframe, lines, point sizing/orientation and shader state reset verified.");
         }
         finally { Glfw.Terminate(); }
     }
@@ -132,5 +139,27 @@ internal static class BoardMeshSmoke
             if(Math.Abs(pixel[0]-sample.Item3)>1 || pixel[1]>1 || Math.Abs(pixel[2]-sample.Item4)>1) throw new InvalidOperationException("Board fog depth or material opt-out changed.");
         }
         renderer.BoardLight=null;
+    }
+
+    private static unsafe void CheckBackground(ModelRenderer renderer,BoardBackground background,BoardScene scene)
+    {
+        ModelRenderer.Begin(2,256); background.Draw(renderer);
+        var pixels=new byte[2*256*4];
+        fixed(byte* p=pixels) OpenGl.ReadPixels(0,0,2,256,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
+        ModelRenderer.End();
+        byte[] expected;
+        if(scene.Background is { } index)
+        {
+            var image=BoardMesh.Image(scene.Textures[index]);
+            if(image.Width!=2 || image.Height!=256) throw new InvalidOperationException("Source board gradient dimensions changed.");
+            expected=image.Rgba;
+        }
+        else
+        {
+            var color=scene.Sky[0]; byte[] rgba=[Convert.ToByte(color[1..3],16),Convert.ToByte(color[3..5],16),Convert.ToByte(color[5..7],16),255];
+            expected=Enumerable.Range(0,pixels.Length).Select(i=>rgba[i%4]).ToArray();
+        }
+        for(int i=0;i<pixels.Length;i++)
+            if(Math.Abs(pixels[i]-expected[i])>1) throw new InvalidOperationException($"Board sky color/orientation mismatch: {scene.Id}, byte {i}: {pixels[i]} vs {expected[i]}.");
     }
 }

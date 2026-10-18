@@ -7,7 +7,7 @@ namespace DigiTactics.Assets;
 public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElement Fog, JsonElement Hemi,
     JsonElement Sun, JsonElement Tiles, string Slot, string Ped, JsonElement Look,
     Dictionary<string, int> Surface, int TickCount, BoardTexture[] Textures, BoardMaterial[] Materials,
-    BoardGeometry[] Geometries, BoardObject[] Objects)
+    BoardGeometry[] Geometries, BoardObject[] Objects, int? Background = null)
 {
     public static BoardScene Load(string path)
     {
@@ -25,6 +25,8 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
         static bool Finite(float[] values) => values.All(float.IsFinite);
         Require(Version == 1 && !string.IsNullOrWhiteSpace(Id), "schema");
         Require(Sky.Length > 0 && TickCount >= 0, "environment");
+        Require(Background is null || Background >= 0 && Background < Textures.Length, "background reference");
+        Require(Sky.Length == 1 || Background is not null, "gradient background");
         foreach (var texture in Textures)
         {
             Require(texture.Width > 0 && texture.Height > 0, "texture dimensions");
