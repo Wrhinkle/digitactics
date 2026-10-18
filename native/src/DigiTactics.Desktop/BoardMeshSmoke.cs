@@ -369,7 +369,7 @@ internal static class BoardMeshSmoke
             ("flame-temple","temple-lava"),("flame-temple","particles"),
             ("gekomon-castle","underwater-caustics"),("gekomon-castle","underwater-caustics2"),
             ("gekomon-castle","underwater-shafts"),("gekomon-castle","underwater-kelp"),
-            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour"),("witchelny-library","library-pages"),("witchelny-library","library-candles"),("witchelny-library","library-flames"),("witchelny-library","library-halos"),("witchelny-library","library-circle"),("witchelny-library","library-outer")})
+            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour"),("witchelny-library","library-pages"),("witchelny-library","library-candles"),("witchelny-library","library-flames"),("witchelny-library","library-halos"),("witchelny-library","library-circle"),("witchelny-library","library-outer"),("knights-coliseum","knights-crowd"),("knights-coliseum","knights-banners"),("knights-coliseum","knights-flashes"),("knights-coliseum","knights-confetti")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
@@ -396,7 +396,7 @@ internal static class BoardMeshSmoke
                 ModelRenderer.End(); return pixels;
             }
             var initial=Render();
-            for(int frame=1;frame<=162;frame++) layer.Update(frame/60d,1/60d,true,7,won:theme=="numemon-sewer" && frame>=60,evolution:frame>=60?1:0);
+            for(int frame=1;frame<=162;frame++) layer.Update(frame/60d,1/60d,true,7,won:(theme=="numemon-sewer" || theme=="knights-coliseum") && frame>=60,evolution:frame>=60?1:0);
             var moved=Render();
             int changed=Enumerable.Range(0,256*256).Count(i=>Math.Abs(initial[i*4]-moved[i*4])+Math.Abs(initial[i*4+1]-moved[i*4+1])+Math.Abs(initial[i*4+2]-moved[i*4+2])>3);
             if(changed<5) throw new InvalidOperationException("Board prop animation did not reach the framebuffer: "+kind);

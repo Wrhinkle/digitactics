@@ -37,6 +37,11 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+  .replace('fire(from = null) {','nativeMesh:m, fire(from = null) {')
+  .replace('const conf = confetti(ctx, { n: 260 });','const conf = confetti(ctx, { n: 260 }); conf.nativeMesh.userData.nativeMotion={kind:"knights-confetti"};')
+  .replace("anim(ctx, crowdGeo(), std({ color: '#ffffff', roughness: 0.8 }), crowd,", "crowd.nativeCrowd='knights-crowd'; anim(ctx, crowdGeo(), std({ color: '#ffffff', roughness: 0.8 }), crowd,")
+  .replace('anim(ctx, bannerGeo(0.8, 1.5),','ban.nativeCrowd="knights-banners"; anim(ctx, bannerGeo(0.8, 1.5),')
+  .replace('const fpts = new THREE.Points(fg, fmat);','const fpts = new THREE.Points(fg, fmat); fpts.userData.nativeMotion={kind:"knights-flashes",crowd:fl.map(p=>({...p}))};')
   .replace('const flapFn = (p, i, t) => {','pagesL.nativeLibrary=pagesR.nativeLibrary="library-pages"; const flapFn = (p, i, t) => {')
   .replace('anim(ctx, new THREE.CylinderGeometry(0.09, 0.09, 0.5, 8),','candles.nativeLibrary="library-candles"; anim(ctx, new THREE.CylinderGeometry(0.09, 0.09, 0.5, 8),')
   .replace("basic({ color: '#ffd070' }), candles.map((c) => ({ ...c })),", "basic({ color: '#ffd070' }), Object.assign(candles.map((c) => ({ ...c })),{nativeLibrary:'library-flames'}),")
@@ -78,7 +83,7 @@ async function main(){
   .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
-  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
+  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeCrowd)m.userData.nativeMotion={kind:items.nativeCrowd,crowd:items.map(p=>({...p}))}; if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
@@ -376,6 +381,25 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const knightsFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
+   for(const initial of [false,true]){
+    const env=buildEnv(THEMES.find(s=>s.id==='knights-coliseum')),objects=[],frames=[];
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('knights-'))objects.push(o);});
+    env.signal({phase:initial?'combat':'planning',stage:1,won:initial,evo:0});env.tick(0,0);let time=0;
+    for(let frame=0;frame<800;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],combat=frame%300<150,won=frame<200?initial:frame<430||frame>=620;time+=delta;
+     env.signal({phase:combat?'combat':'planning',stage:1,won,evo:0});env.tick(delta,time);
+     frames.push({time,delta,combat,won,objects:objects.map(o=>{
+      const matrix=new THREE.Matrix4(),matrices=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i+=Math.max(1,Math.floor(o.count/24))){o.getMatrixAt(i,matrix);matrices.push({index:i,matrix:matrix.toArray()});}
+      return {kind:o.userData.nativeMotion.kind,visible:o.visible,matrices,positions:o.isPoints?Array.from(o.geometry.attributes.position.array):null};
+     })});
+    }
+    scenarios.push({initial,motions:objects.map(o=>o.userData.nativeMotion),frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-knights.json.gz'),zlib.gzipSync(JSON.stringify(knightsFixture)));
   const libraryFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),spec=THEMES.find(s=>s.id==='witchelny-library'),scenarios=[];
    for(const initialEvolution of [0,3]){
