@@ -33,6 +33,7 @@ internal sealed record MatchRunOptions
     public bool LegendNavigationSmoke { get; init; }
     public bool GalaxyIntroUiSmoke { get; init; }
     public bool ChoicePresentationUiSmoke { get; init; }
+    public bool CarouselUiSmoke { get; init; }
     public bool CastFeedUiSmoke { get; init; }
     public bool LootNoticeUiSmoke { get; init; }
     public bool EliminationCinematicSmoke { get; init; }

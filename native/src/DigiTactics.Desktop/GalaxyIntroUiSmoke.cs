@@ -34,8 +34,9 @@ internal sealed class GalaxyIntroUiSmoke(ContentCatalog catalog)
         if(key.StartsWith("carousel/",StringComparison.Ordinal))
         {
             var b=screen.CarouselChoicesBounds;
-            if(at.Y-107<b.Min.Y||at.Y+107>b.Max.Y)
-            {ImGui.GetIO().AddMousePosEvent(b.Max.X-3,(b.Min.Y+b.Max.Y)/2);ImGui.GetIO().AddMouseWheelEvent(0,at.Y<b.Min.Y+107?1:-1);return false;}
+            var card=screen.CarouselCardBounds[int.Parse(key.AsSpan("carousel/".Length))];
+            if(card.Min.Y<b.Min.Y||card.Max.Y>b.Max.Y)
+            {ImGui.GetIO().AddMousePosEvent(b.Max.X-3,(b.Min.Y+b.Max.Y)/2);ImGui.GetIO().AddMouseWheelEvent(0,card.Min.Y<b.Min.Y?1:-1);return false;}
         }
         ImGui.GetIO().AddMousePosEvent(at.X,at.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=true;return false;
     }

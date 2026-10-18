@@ -79,6 +79,7 @@ internal static class MatchApplication
                 var legendNavigationDriver=options.LegendNavigationSmoke?new LegendNavigationSmoke(profile!):null;
                 var galaxyIntroDriver=options.GalaxyIntroUiSmoke?new GalaxyIntroUiSmoke(catalog):null;
                 var choicePresentationDriver=options.ChoicePresentationUiSmoke?new ChoicePresentationUiSmoke(catalog):null;
+                var carouselDriver=options.CarouselUiSmoke?new CarouselUiSmoke(catalog):null;
                 var castFeedDriver=options.CastFeedUiSmoke?new CastFeedUiSmoke(catalog):null;
                 var lootNoticeDriver=options.LootNoticeUiSmoke?new LootNoticeUiSmoke(catalog,profile!):null;
                 using var profileDriver=options.ProfileUiSmoke?new ProfileUiSmoke(screen,profile!):null;
@@ -90,7 +91,7 @@ internal static class MatchApplication
                 screen.SteamLibraryPath = options.SteamLibrary;if(!options.UpdateUiSmoke)screen.UpdateClient=updateClient;
                 if(earlySteam is not null)screen.AdoptSteam(earlySteam,borrowed:true);
                 screen.SteamStartupError(steamStartupError);
-                var driver = options.Smoke && !options.ChoicePresentationUiSmoke && !options.GalaxyIntroUiSmoke && !options.LegendNavigationSmoke && !options.LootNoticeUiSmoke && !options.MatchCosmeticsSmoke && !options.CastFeedUiSmoke && !options.UnitNoteUiSmoke && !options.MysteryLootUiSmoke && !options.SetSelectionSmoke && !options.MatchKeyboardSmoke && !options.ClientPreferencesSmoke && !options.SocialUiSmoke && !options.SaveDataUiSmoke && !options.EliminationCinematicSmoke && !options.PostgameSmoke && !options.ProfileUiSmoke && !options.UpdateUiSmoke && !options.MusicLibrarySmoke && !options.AudioVisibilitySmoke && !options.ModeBonusSmoke && !options.TrainingSmoke && !options.FarmPointerSmoke && !options.FarmCaretakerSmoke && !options.NetworkMatchSmoke && !options.SteamLobbyUiSmoke ? new MatchScreenSmoke(options.CollectionSmoke ? profile : null, options.EvolutionSmoke, options.CollectionLayoutSmoke) : null;
+                var driver = options.Smoke && !options.CarouselUiSmoke && !options.ChoicePresentationUiSmoke && !options.GalaxyIntroUiSmoke && !options.LegendNavigationSmoke && !options.LootNoticeUiSmoke && !options.MatchCosmeticsSmoke && !options.CastFeedUiSmoke && !options.UnitNoteUiSmoke && !options.MysteryLootUiSmoke && !options.SetSelectionSmoke && !options.MatchKeyboardSmoke && !options.ClientPreferencesSmoke && !options.SocialUiSmoke && !options.SaveDataUiSmoke && !options.EliminationCinematicSmoke && !options.PostgameSmoke && !options.ProfileUiSmoke && !options.UpdateUiSmoke && !options.MusicLibrarySmoke && !options.AudioVisibilitySmoke && !options.ModeBonusSmoke && !options.TrainingSmoke && !options.FarmPointerSmoke && !options.FarmCaretakerSmoke && !options.NetworkMatchSmoke && !options.SteamLobbyUiSmoke ? new MatchScreenSmoke(options.CollectionSmoke ? profile : null, options.EvolutionSmoke, options.CollectionLayoutSmoke) : null;
                 var visibilityDriver = options.AudioVisibilitySmoke ? new AudioVisibilitySmoke() : null;
                 var modeDriver = options.ModeBonusSmoke ? new ModeBonusSmoke(catalog) : null;
                 using var lobbyDriver = options.SteamLobbyUiSmoke ? new SteamLobbyUiSmoke(options.SteamLibrary,profile) : null;
@@ -106,6 +107,7 @@ internal static class MatchApplication
                     legendNavigationDriver?.Input(screen);
                     galaxyIntroDriver?.Input(screen);
                     choicePresentationDriver?.Input(screen);
+                    carouselDriver?.Input(screen);
                     saveDataDriver?.Input(screen); keyboardDriver?.Input(screen);socialDriver?.Input(screen);
                     clientPreferencesDriver?.Input(screen); selectionDriver?.Input(screen); mysteryDriver?.Input(screen);
                     ImGui.NewFrame(); double now = clock.Elapsed.TotalSeconds;
@@ -129,6 +131,7 @@ internal static class MatchApplication
                     if(legendNavigationDriver is not null && legendNavigationDriver.Verify(screen,size,options.Capture))break;
                     if(galaxyIntroDriver is not null && galaxyIntroDriver.Verify(screen,size,options.Capture))break;
                     if(choicePresentationDriver is not null && choicePresentationDriver.Verify(screen,size,options.Capture))break;
+                    if(carouselDriver is not null && carouselDriver.Verify(screen,size,options.Capture))break;
                     if(castFeedDriver is not null && castFeedDriver.Verify(screen,size,options.Capture))break;
                     if(lootNoticeDriver is not null && lootNoticeDriver.Verify(screen,size,options.Capture))break;
                     if(profileDriver is not null && profileDriver.Verify(screen,size,options.Capture))break;
@@ -152,10 +155,10 @@ internal static class MatchApplication
                     window.SwapBuffers();
                     if(frame==0 && startupSignal is not null)_=startupSignal.ReportReady();
                     string? phaseTimeout=driver?.Timeout(frame);
-                    if (options.Smoke && (phaseTimeout is not null || driver is null && frame > (options.TrainingSmoke ? 6000 : options.PostgameSmoke ? 1800 : 1400)))
+                    if (options.Smoke && (phaseTimeout is not null || driver is null && frame > (options.TrainingSmoke || options.CarouselUiSmoke ? 6000 : options.PostgameSmoke ? 1800 : 1400)))
                     {
                         if (options.Capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(options.Capture, "failure.bmp"), size.X, size.Y);
-                        throw new InvalidOperationException("Match UI smoke did not complete: " + (choicePresentationDriver?.Pending ?? galaxyIntroDriver?.Pending ?? lootNoticeDriver?.Pending ?? mysteryDriver?.Step.ToString() ?? legendNavigationDriver?.Pending ?? matchCosmeticsDriver?.Pending ?? unitNoteDriver?.Pending ?? castFeedDriver?.Pending ?? postgameDriver?.Pending ?? selectionDriver?.Pending ?? keyboardDriver?.Pending ?? socialDriver?.Pending ?? lobbyDriver?.Pending ?? networkDriver?.Pending ?? farmPointer?.Pending ?? caretakerDriver?.Pending ?? trainer?.Pending ?? driver?.Pending)+(phaseTimeout is null?"":"; "+phaseTimeout));
+                        throw new InvalidOperationException("Match UI smoke did not complete: " + (carouselDriver?.Pending ?? choicePresentationDriver?.Pending ?? galaxyIntroDriver?.Pending ?? lootNoticeDriver?.Pending ?? mysteryDriver?.Step.ToString() ?? legendNavigationDriver?.Pending ?? matchCosmeticsDriver?.Pending ?? unitNoteDriver?.Pending ?? castFeedDriver?.Pending ?? postgameDriver?.Pending ?? selectionDriver?.Pending ?? keyboardDriver?.Pending ?? socialDriver?.Pending ?? lobbyDriver?.Pending ?? networkDriver?.Pending ?? farmPointer?.Pending ?? caretakerDriver?.Pending ?? trainer?.Pending ?? driver?.Pending)+(phaseTimeout is null?"":"; "+phaseTimeout));
                     }
                 }
             }

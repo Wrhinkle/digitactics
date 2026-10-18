@@ -21,8 +21,9 @@ internal sealed class CarouselFlowSmoke
             if(choice)
             {
                 var bounds=screen.CarouselChoicesBounds;
-                if(point.Y<bounds.Min.Y+10||point.Y>bounds.Max.Y-10)
-                {io.AddMousePosEvent((bounds.Min.X+bounds.Max.X)/2,(bounds.Min.Y+bounds.Max.Y)/2);io.AddMouseWheelEvent(0,point.Y<bounds.Min.Y?1:-1);return false;}
+                var card=screen.CarouselCardBounds[int.Parse(key.AsSpan("carousel/".Length))];
+                if(card.Min.Y<bounds.Min.Y||card.Max.Y>bounds.Max.Y)
+                {io.AddMousePosEvent((bounds.Min.X+bounds.Max.X)/2,(bounds.Min.Y+bounds.Max.Y)/2);io.AddMouseWheelEvent(0,card.Min.Y<bounds.Min.Y?1:-1);return false;}
             }
             io.AddMousePosEvent(point.X,point.Y);io.AddMouseButtonEvent(0,true);return true;
         }
