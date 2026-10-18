@@ -14,7 +14,7 @@ function load(wallet, legend) {
 }
 const base = load({});
 const legends = base.ctx.DT.Cosmetics.list('legend').map(x => ({ id: x.id, free: !!x.free, reach: base.ctx.DT.LegendEvo.reach(x.id) }));
-const data = { legends, dataFor: base.ctx.DT.LegendEvo.DATA_FOR, gameData: base.ctx.DT.LegendEvo.GAME_DATA, top4Data: base.ctx.DT.LegendEvo.TOP4_DATA };
+const data = { legends, dataFor: base.ctx.DT.LegendEvo.DATA_FOR, gameData: base.ctx.DT.LegendEvo.GAME_DATA, top4Data: base.ctx.DT.LegendEvo.TOP4_DATA, dupData: base.ctx.DT.LegendEvo.DUP_DATA };
 fs.writeFileSync(path.join(root, 'native/src/DigiTactics.Storage/legend-rewards.json'), JSON.stringify(data));
 const cases = [];
 for (const item of legends) for (const mode of ['new', 'capped', 'invalid-form', 'unowned', 'unknown']) {

@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace DigiTactics.Storage;
 
-public sealed record CosmeticItem(string Id, string Name, string? Desc, string? Rarity, int Price, bool Free, bool EggOnly, bool Secret, string[]? Linked);
+public sealed record CosmeticItem(string Id, string Name, string? Desc, string? Rarity, int Price, bool Free, bool EggOnly, bool Secret, string[]? Linked, bool? Egg);
 
 /// <summary>A private editable snapshot. Persist Json only after an operation succeeds.</summary>
 public sealed class CosmeticCollection

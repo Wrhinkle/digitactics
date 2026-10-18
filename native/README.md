@@ -1916,3 +1916,35 @@ This is the functional collection foundation. Cosmetic previews and in-match
 visual/audio application, Digi-Egg purchasing, legend evolution controls and the
 Digi-Farm remain to be ported. The current text list still needs the production
 collection layout and interaction polish before release.
+
+
+### Native Digi-Egg purchases
+
+Collection and store now offers the Mixed Digi-Egg and all seven category eggs,
+with the original 350/250-Bit prices, eligible item pools and rarity odds.
+Confirmation rolls a rarity and then an item within that rarity. New cosmetics
+are granted immediately; duplicates refund 40% of item price, except Little
+Legends below max level, which receive the original rarity-based Digi-Data.
+Near-cap legends consume only the remaining XP space; max-level duplicates use
+the Bits refund. Refund history retains the original reason and timestamp.
+
+Wallet debit, ownership, refund and legend progression are calculated before a
+single atomic profile update. The pending rolls and timestamp remain fixed if a
+save needs retrying. Failure leaves the purchase pending and the profile intact.
+A successful save dismisses confirmation and displays the result. Collection
+wrapped text uses BRUTAL's raw Text API so percent signs in odds/descriptions
+are rendered literally rather than interpreted as printf formatting.
+
+`export-eggs.cjs` executes the original roll and hatch accounting with controlled
+random draws. `--eggs-only` passed 7,694 checks: original odds plus 2,560 complete
+transactions across all eight eggs, new/duplicate/near-cap/max/poor wallets,
+locked-file rejection, retry, restart and backup preservation. Regression checks
+also passed: 24,991 collection checks, 4,660 match reward/tracker comparisons and
+24,050 legend match reward comparisons.
+
+The self-contained Windows package passed the extended collection UI smoke:
+buy/equip Bukamon, confirm a Little Legend egg, verify its grant or duplicate
+Digi-Data and the final balance (91 from the fixture's 491 Bits), then continue
+through the five-round Solo match smoke. Duos passed too. The egg screenshot was
+inspected, including the corrected percentage labels. Hatch animations, cosmetic
+previews/effects, evolution management and Digi-Farm remain unfinished.

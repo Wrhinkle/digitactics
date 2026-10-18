@@ -26,6 +26,7 @@ try {
     Invoke-Checked 'node' @('tools/export-match-history.cjs')
     Invoke-Checked 'node' @('tools/export-match-rewards.cjs')
     Invoke-Checked 'node' @('tools/export-legend-rewards.cjs')
+    Invoke-Checked 'node' @('tools/export-eggs.cjs')
     Invoke-Checked 'node' @('tools/export-reward-tracker.cjs')
     Invoke-Checked 'node' @('tools/export-ability-elements.cjs')
     Invoke-Checked 'node' @('tools/export-economy.cjs')

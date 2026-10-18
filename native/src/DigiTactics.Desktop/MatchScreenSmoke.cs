@@ -8,7 +8,7 @@ namespace DigiTactics.Desktop;
 /// <summary>Exercises visible controls through ImGui mouse events, not direct gameplay mutations.</summary>
 internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = null)
 {
-    private readonly string[] collectionCommands = ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "closeCollection"];
+    private readonly string[] collectionCommands = ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
     private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
     private int collectionIndex;
     private bool collectionVerified;
@@ -49,13 +49,18 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (collectionProfile is not null && !collectionVerified)
         {
             if (collectionIndex == 4 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "collection.bmp"), size.X, size.Y);
+            if (collectionIndex == 7 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "egg.bmp"), size.X, size.Y);
             if (collectionIndex < collectionCommands.Length) return false;
             var collection = new CosmeticCollection(collectionProfile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
             int price = CosmeticCollection.Price("legend", CosmeticCollection.Item("legend", "bukamon")!, DateOnly.FromDateTime(DateTime.Now));
-            if (!collection.Owns("legend", "bukamon") || collection.Equipped("legend")?.GetValue<string>() != "bukamon" || collection.Bits != initialBits - price)
+            if (!collection.Owns("legend", "bukamon") || collection.Equipped("legend")?.GetValue<string>() != "bukamon" || collection.Bits != initialBits - price - 250)
                 throw new InvalidOperationException("Collection purchase/equipment smoke failed.");
+            var wallet = System.Text.Json.Nodes.JsonNode.Parse(collection.Json)!;
+            var legends = System.Text.Json.Nodes.JsonNode.Parse(collectionProfile.Storage.GetValueOrDefault("dt.legendevo.v1", "{\"legends\":{}}"))!;
+            if (wallet["owned"]!["legend"]!.AsArray().Count < 3 && !legends["legends"]!.AsObject().Any(x => x.Value?["xp"]?.GetValue<int>() > 0))
+                throw new InvalidOperationException("Egg granted neither an item nor duplicate Digi-Data.");
             collectionVerified = true;
-            Console.WriteLine("Collection UI smoke passed: purchase confirmation, wallet debit, ownership and equipment persistence.");
+            Console.WriteLine("Collection UI smoke passed: purchase, equipment, egg confirmation, wallet debit and hatch reward persistence.");
         }
         if (index == 0 && cooldown == 1 && capture is not null)
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "menu.bmp"), size.X, size.Y);
