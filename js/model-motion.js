@@ -14,7 +14,7 @@ const valid = b => !/end|nub|twist|helper/i.test(b.name);
 
 export function modelClips(gltf, src) {
   if(src?.uid==='rip-l_garurumon_greymon_statue')return statueClips(gltf.scene);
-  const authored = heldWeaponOrigin(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src))).filter(c=>!src?.fallbackRoles?.includes(c.name));
+  const authored = blobBodyClips(gltf,src,heldWeaponOrigin(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src)))).filter(c=>!src?.fallbackRoles?.includes(c.name));
   if (authored.length && src?.anim !== false) {
     // This Seadramon export labels a single unchanging pose "idle". Build a
     // gentle skeletal loop from that assembled pose, retaining other actions.
@@ -38,6 +38,42 @@ export function modelClips(gltf, src) {
     pose.update(0);
   }
   return fallbackClips(gltf.scene);
+}
+
+// Pabumon's disconnected body roots are animated independently in two imported
+// clips, tearing ordinary body triangles into 14-24x spikes. Rock those roots
+// together from the assembled idle shape. Mouth and floating-bubble tracks keep
+// their original timing and values, and no mesh, skin weight or scale is changed.
+function blobBodyClips(gltf,src,clips){
+  if(src?.uid!=='rip-cat_cs_pabumon_chr387')return clips;
+  const bodyName=/^J_(?:center|body[1-4]|leg[FLR][12]|tail[1-3])$/;
+  const idle=clips.find(c=>c.name==='idle'),root=gltf.scene.getObjectByName('J_root');
+  if(!idle||!root)return clips;
+  const mixer=new THREE.AnimationMixer(gltf.scene);mixer.clipAction(idle).play();mixer.update(0);gltf.scene.updateMatrixWorld(true);
+  const body=[];gltf.scene.traverse(bone=>{if(bone.isBone&&bodyName.test(bone.name))body.push({bone,p:bone.position.clone(),q:bone.quaternion.clone()});});
+  const center=body.find(b=>b.bone.name==='J_center');if(!center){mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);return clips;}
+  const box=new THREE.Box3().setFromObject(gltf.scene),height=box.max.y-box.min.y;
+  const rotation=root.getWorldQuaternion(Q()),inverse=root.matrixWorld.clone().invert();
+  const bob=new THREE.Vector3(0,height*.04,0).applyMatrix4(inverse).sub(V().applyMatrix4(inverse));
+  const result=clips.map(clip=>{
+    if(clip.name!=='attack'&&clip.name!=='win')return clip;
+    const times=Array.from({length:65},(_,i)=>clip.duration*i/64);
+    const tracks=clip.tracks.filter(track=>{const dot=track.name.lastIndexOf('.');return !bodyName.test(track.name.slice(0,dot))||!['position','quaternion'].includes(track.name.slice(dot+1));}).map(track=>track.clone());
+    for(const {bone,p,q} of body){
+      const positions=[],rotations=[];
+      for(const time of times){
+        const u=time/clip.duration,pulse=Math.sin(Math.PI*u)**2;
+        const angle=clip.name==='attack'?.15*pulse:.12*Math.sin(2*Math.PI*u);
+        const rock=rotation.clone().invert().multiply(Q().setFromAxisAngle(clip.name==='attack'?X:Z,angle)).multiply(rotation);
+        const position=p.clone(),quaternion=q.clone();
+        if(bone.parent===root){position.sub(center.p).applyQuaternion(rock).add(center.p).addScaledVector(bob,pulse);quaternion.premultiply(rock);}
+        position.toArray(positions,positions.length);quaternion.toArray(rotations,rotations.length);
+      }
+      tracks.push(new THREE.VectorKeyframeTrack(bone.name+'.position',times,positions),new THREE.QuaternionKeyframeTrack(bone.name+'.quaternion',times,rotations));
+    }
+    return new THREE.AnimationClip(clip.name,clip.duration,tracks);
+  });
+  mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);return result;
 }
 
 // The imported right gun is parented to the hand but retains an idle origin
@@ -140,6 +176,8 @@ function boardRootTravel(gltf,src,clips){
     'rip-l_millenniummon':['J_center','special'], 'rip-l_omnimon_x':['J_center','special'],
     'rip-nc_jupitermon':['Bip001','special'],
     'rip-cs_skullsatamon':['J_center','win'], 'rip-cs_merukimon':['J_center','win'],
+    bbeb1da28aca459da86b46cba6d57ca8:['J_root_04','attack'],
+    'rip-cat_cs_betamon_chr389':['J_root','attack'], 'rip-cat_cs_alphamon_chr416':['J_center','special'],
   }[src?.uid];
   if(!policy)return clips;
   const [body,role]=policy,idle=clips.find(c=>c.name==='idle'),action=clips.find(c=>c.name===role),name=body+'.position';
@@ -148,9 +186,10 @@ function boardRootTravel(gltf,src,clips){
   const mixer=new THREE.AnimationMixer(gltf.scene);mixer.clipAction(idle).play();mixer.update(0);gltf.scene.updateMatrixWorld(true);
   const origin=node.getWorldPosition(V()),parent=node.parent.matrixWorld.clone(),inverse=parent.clone().invert();
   const box=new THREE.Box3().setFromObject(gltf.scene),height=Math.max(1e-9,box.max.y-box.min.y);
-  // Some entrances contain only two root keys. Sample the settling envelope
-  // between them so a looping victory retains its small authored vertical sway.
-  const times=role==='win'?[...new Set([...track.times,...Array.from({length:65},(_,i)=>action.duration*i/64)])].sort((a,b)=>a-b):Array.from(track.times);
+  // Some entrances contain only two root keys; some attack roots stop keying
+  // before the other joints. Sample the complete settling envelope in both cases.
+  const resample=role==='win'||track.times[track.times.length-1]<action.duration;
+  const times=resample?[...new Set([...track.times,...Array.from({length:65},(_,i)=>action.duration*i/64)])].sort((a,b)=>a-b):Array.from(track.times);
   const interpolant=track.createInterpolant(),displacements=times.map(time=>new THREE.Vector3().fromArray(interpolant.evaluate(time)).applyMatrix4(parent).y-origin.y);
   const up=Math.min(1,height*.35/Math.max(...displacements,1e-9)),down=Math.min(1,height*.08/Math.max(...displacements.map(y=>-y),1e-9));
   const corrected=action.clone(),out=corrected.tracks.find(t=>t.name===name);

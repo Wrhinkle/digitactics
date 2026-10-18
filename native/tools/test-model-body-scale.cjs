@@ -18,10 +18,10 @@ async function main(){
     const mixer=new THREE.AnimationMixer(gltf.scene);mixer.clipAction(idle).play();mixer.update(0);const neutral=body.scale.clone();mixer.stopAllAction();
     const action=mixer.clipAction(attack);action.setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
     for(let i=0;i<=32;i++){mixer.setTime(attack.duration*i/32);for(const axis of ['x','y','z'])assert.ok(Math.abs(body.scale[axis]/neutral[axis]-1)<1e-5,`${alias}: attack whole-body ${axis} scale is ${body.scale[axis]/neutral[axis]}x idle at ${attack.duration*i/32}s`);count++;}
-    // The fix may only replace the offending body-scale channel. Preserve
-    // authored attack duration, every rotation/position and attachment scale.
+    // Preserve every other channel, except Wizardmon's separately tested
+    // board-root travel repair. Neither correction changes attack duration.
     assert.equal(attack.duration,raw.duration);assert.equal(attack.tracks.length,raw.tracks.length);
-    for(const track of raw.tracks){if(track.name===bodyName+'.scale')continue;const retained=attack.tracks.find(t=>t.name===track.name);assert.deepEqual(Array.from(retained.times),Array.from(track.times));assert.deepEqual(Array.from(retained.values),Array.from(track.values));}
+    for(const track of raw.tracks){if(track.name===bodyName+'.scale'||key==='candlemon:1'&&track.name==='J_root_04.position')continue;const retained=attack.tracks.find(t=>t.name===track.name);assert.deepEqual(Array.from(retained.times),Array.from(track.times));assert.deepEqual(Array.from(retained.values),Array.from(track.values));}
     assert.ok(attack.tracks.some(track=>track.name.endsWith('.quaternion')&&Array.from(track.values).some((value,i)=>i>=4&&Math.abs(value-track.values[i%4])>.01)),alias+' attack lost articulation');
     mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);
   }
