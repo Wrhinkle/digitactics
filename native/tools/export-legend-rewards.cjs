@@ -1,14 +1,15 @@
 const fs = require('fs'), path = require('path'), vm = require('vm'), zlib = require('zlib');
 const root = path.resolve(__dirname, '../..');
 const read = name => fs.readFileSync(path.join(root, 'js', name), 'utf8');
+// Includes discovered companions registered by mystery-register.js after the base legends.
+const catalog = JSON.parse(fs.readFileSync(path.join(root, 'native/src/DigiTactics.Storage/cosmetics.json'), 'utf8')).legend;
 function load(wallet, legend) {
   const storage = { 'dt.cosmetics.v1': JSON.stringify(wallet) };
   if (legend) storage['dt.legendevo.v1'] = JSON.stringify(legend);
   const ctx = { DT: {}, console, localStorage: { getItem: k => storage[k] || null, setItem: (k, v) => storage[k] = v } };
   ctx.window = ctx; vm.createContext(ctx);
   vm.runInContext(read('cosmetics.js'), ctx);
-  const source = read('legends.js');
-  vm.runInContext('(function(){' + source.slice(source.indexOf('const DT ='), source.indexOf('// Fallbacks')) + '})();', ctx);
+  ctx.DT.Cosmetics.register('legend', catalog);
   vm.runInContext('(function(){' + read('legendevo.js') + '})();', ctx);
   return { ctx, storage };
 }

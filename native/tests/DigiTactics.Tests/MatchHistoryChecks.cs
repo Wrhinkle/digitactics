@@ -64,6 +64,14 @@ internal static class MatchHistoryChecks
             }
             var finished = new MatchPlanningSession(catalog.Variants[0], 143, Enumerable.Range(0, 8).Select(i => new MatchSeat("Tamer " + i, false)).ToArray(), false);
             while (finished.State.Players[0].Placement == 0) { finished.StartCombat(); finished.FinishCombat(); if (finished.State.Players[0].Placement == 0) finished.Advance(); }
+            string companionTarget = Path.Combine(directory, "companion");
+            var companionProfile = new NativeProfileStore(companionTarget);
+            const string companion = "mystery_daily_legend_4";
+            Check(companionProfile.UpdateStorage(new Dictionary<string, string> { ["dt.cosmetics.v1"] = "{\"bits\":0,\"owned\":{\"legend\":[\"" + companion + "\"]},\"equipped\":{\"legend\":\"" + companion + "\"}}" }), "seed discovered companion loadout");
+            var companionRecorder = new MatchHistoryRecorder(finished, companionProfile);
+            Check(companionRecorder.Complete(2000) && companionRecorder.LegendAward?.Legend == companion, "match award targets equipped discovered companion");
+            using var companionSaved = JsonDocument.Parse(new NativeProfileStore(companionTarget).Storage["dt.legendevo.v1"]);
+            Check(companionSaved.RootElement.GetProperty("legends").EnumerateObject().Single().Name == companion, "companion progression persists without default legend fallback");
             foreach (string domain in new[] { "dt.client.v1", "dt.shop.v1", "dt.cosmetics.v1", "dt.legendevo.v1" })
             {
                 string target = Path.Combine(directory, "invalid-" + domain);

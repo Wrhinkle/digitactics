@@ -1948,3 +1948,24 @@ Digi-Data and the final balance (91 from the fixture's 491 Bits), then continue
 through the five-round Solo match smoke. Duos passed too. The egg screenshot was
 inspected, including the corrected percentage labels. Hatch animations, cosmetic
 previews/effects, evolution management and Digi-Farm remain unfinished.
+
+
+### Discovered companion progression coverage
+
+The full cosmetic registry contains 77 legends: the 37 base legends plus 40
+companions registered by mystery-register.js. The original reward exporter only
+loaded the base legend module. It now uses the complete exported registry, so an
+owned, equipped discovered companion receives its own match care and Digi-Data
+rather than falling back to the first free legend. Species-specific evolution
+reachability uses each companion's evoRoot while keeping its independent record.
+
+The reward fixture now contains 25,025 original sequential updates across all
+77 legends. A catalog-order/coverage assertion prevents future omissions. The
+native history tests also finish a match with an equipped discovered companion
+and verify after restart that only that companion's legend record was created.
+This corrects progression coverage; the native evolution UI and farm systems
+remain unfinished.
+
+Validation: 50,051 legend checks, 4,660 match reward/tracker checks, 810 history
+and persistence checks, and 7,694 egg checks passed. The Windows package rebuilt
+and its match UI smoke passed.

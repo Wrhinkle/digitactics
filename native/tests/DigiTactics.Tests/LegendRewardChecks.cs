@@ -12,6 +12,12 @@ internal static class LegendRewardChecks
         using var gzip = new GZipStream(file, CompressionMode.Decompress);
         using var fixture = JsonDocument.Parse(gzip);
         var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        using var catalogStream = typeof(LegendRewards).Assembly.GetManifestResourceStream("DigiTactics.Storage.legend-rewards.json")!;
+        using var catalog = JsonDocument.Parse(catalogStream);
+        if (!catalog.RootElement.GetProperty("legends").EnumerateArray().Select(x => x.GetProperty("id").GetString())
+            .SequenceEqual(CosmeticCollection.Items("legend").Select(x => x.Id)))
+            throw new InvalidOperationException("Legend progression must cover the complete cosmetic catalog in registry order.");
+        checks++;
         foreach (var test in fixture.RootElement.EnumerateArray())
         {
             var previous = test.GetProperty("previous");
