@@ -22,6 +22,7 @@ public static class BoardSceneMotion
         {
             "desert-haze"=>(Haze(time).U,Haze(time).V),
             "sewer-pour"=>(0d,(time*1.5)%1),
+            "studio-led"=>(Math.Sin(time*.6)*.08,0d),
             "grid-floor"=>(0d,(time*.05)%1),
             _=>throw new ArgumentException("Unknown scrolling board texture: "+kind,nameof(kind))
         };

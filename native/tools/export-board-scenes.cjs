@@ -37,6 +37,13 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+  .replace('strip2.rotation.z = Math.PI / 12;','strip2.rotation.z = Math.PI / 12; strip.userData.nativeMotion={kind:"studio-strip",speed:0}; strip2.userData.nativeMotion={kind:"studio-strip",speed:1};')
+  .replace(/inst\(ctx, new THREE.PlaneGeometry\(7, 3.5\)[^\n]+;/,line=>'const nativeLed='+line+' nativeLed.userData.nativeMotion={kind:"studio-led"};')
+  .replace("anim(ctx, crowdGeo(), std({ color: '#ffffff', roughness: 0.9 }), aud,", "aud.nativeCrowd='studio-audience'; anim(ctx, crowdGeo(), std({ color: '#ffffff', roughness: 0.9 }), aud,")
+  .replace('const sp = new THREE.Points(sg, smat);','const sp = new THREE.Points(sg, smat); sp.userData.nativeMotion={kind:"studio-sticks",crowd:aud.map(p=>({...p}))};')
+  .replace('beams.push(b); pools.push(p);','b.userData.nativeMotion={kind:"studio-beam",speed:i}; p.userData.nativeMotion={kind:"studio-pool",speed:i}; beams.push(b); pools.push(p);')
+  .replace('const conf = confetti(ctx);','const conf = confetti(ctx); conf.nativeMesh.userData.nativeMotion={kind:"studio-confetti"};')
+  .replace('ctx.g.add(crane);','ctx.g.add(crane); crane.children.forEach(o=>{o.updateMatrix();o.userData.nativeMotion={kind:"studio-crane",speed:o===armM?1:0,matrix:o.matrix.toArray()};});')
   .replace('fire(from = null) {','nativeMesh:m, fire(from = null) {')
   .replace('const conf = confetti(ctx, { n: 260 });','const conf = confetti(ctx, { n: 260 }); conf.nativeMesh.userData.nativeMotion={kind:"knights-confetti"};')
   .replace("anim(ctx, crowdGeo(), std({ color: '#ffffff', roughness: 0.8 }), crowd,", "crowd.nativeCrowd='knights-crowd'; anim(ctx, crowdGeo(), std({ color: '#ffffff', roughness: 0.8 }), crowd,")
@@ -381,6 +388,26 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const studioFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
+   for(const initial of [false,true]){
+    const env=buildEnv(THEMES.find(s=>s.id==='battle-studio')),objects=[],frames=[];
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('studio-'))objects.push(o);});
+    env.signal({phase:initial?'combat':'planning',stage:1,won:initial,evo:0});env.tick(0,0);let time=0;
+    const motions=objects.map(o=>({motion:o.userData.nativeMotion,matrix:o.matrixWorld.toArray()}));
+    for(let frame=0;frame<600;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],combat=frame%200<100,won=frame<100?initial:frame<300||frame>=450;time+=delta;
+     env.signal({phase:combat?'combat':'planning',stage:1,won,evo:0});env.tick(delta,time);env.group.updateMatrixWorld(true);
+     frames.push({time,delta,combat,won,objects:objects.map(o=>{
+      const matrix=new THREE.Matrix4(),matrices=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i+=Math.max(1,Math.floor(o.count/24))){o.getMatrixAt(i,matrix);matrices.push({index:i,matrix:matrix.toArray()});}
+      return {matrix:o.matrixWorld.toArray(),visible:o.visible,matrices,color:o.material.color.toArray(),offset:o.material.map?.offset.toArray(),positions:o.isPoints?Array.from(o.geometry.attributes.position.array):null};
+     })});
+    }
+    scenarios.push({initial,motions,frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-studio.json.gz'),zlib.gzipSync(JSON.stringify(studioFixture)));
   const knightsFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
    for(const initial of [false,true]){

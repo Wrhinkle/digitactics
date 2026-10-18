@@ -60,7 +60,7 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             Require(obj.SortCenter is null || obj.SortCenter.Length==3 && obj.SortCenter.All(double.IsFinite),"sort center");
             if(obj.Motion?.Crowd is {} crowd)
             {
-                Require(Id=="knights-coliseum" && obj.Motion.Kind is "knights-crowd" or "knights-banners" or "knights-flashes","crowd kind");
+                Require((Id=="knights-coliseum" && obj.Motion.Kind is "knights-crowd" or "knights-banners" or "knights-flashes") || (Id=="battle-studio" && obj.Motion.Kind is "studio-audience" or "studio-sticks"),"crowd kind");
                 Require(crowd.Length==(obj.Kind=="points"?Geometries[obj.Geometry].Position.Length/3:obj.Instances?.Length),"crowd count");
                 Require(crowd.All(p=>new[] {p.X,p.Y,p.Z,p.By,p.A,p.Ry,p.Ph,p.S}.All(double.IsFinite)),"crowd values");
             }

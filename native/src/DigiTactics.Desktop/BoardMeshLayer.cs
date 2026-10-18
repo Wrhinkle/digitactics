@@ -26,6 +26,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly BoardSewerMotion? sewer;
     private readonly BoardLibraryMotion? library;
     private readonly BoardCrowdMotion? crowd;
+    private readonly BoardStudioMotion? studio;
     private readonly BoardConfetti? confetti;
     private static readonly Vector3 libraryTint=BoardLighting.Linear("#ffd090");
     private static readonly Vector3 freezeCalmFog=BoardLighting.Linear("#24405e"),freezeStormFog=BoardLighting.Linear("#8aa6c0");
@@ -41,6 +42,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false,int initialEvolution=0)
     {
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
+        if(scene.Id=="battle-studio"){studio=new();confetti=new(scene.Objects.FirstOrDefault(o=>o.Motion?.Kind=="studio-confetti")?.Instances?.Length??0,initialWon);}
         if(scene.Id=="knights-coliseum"){crowd=new(initialCombat,initialWon);confetti=new(scene.Objects.FirstOrDefault(o=>o.Motion?.Kind=="knights-confetti")?.Instances?.Length??0,initialWon);}
         if(scene.Id=="witchelny-library"){library=new(initialEvolution);FlashColor=BoardLighting.Linear("#ffe8a0");}
         if(scene.Id=="numemon-sewer")sewer=new(initialWon);
@@ -70,8 +72,8 @@ internal sealed class BoardMeshLayer : IDisposable
                     parts = BoardMesh.Create(scene, obj).Select(part =>
                     {
                         var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
-                        if(obj.Motion is { Kind:"sea" or "particles" or "circuit-pulses" or "freeze-aurora" or "knights-flashes" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
-                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" or "temple-lava" or "underwater-caustics" or "underwater-caustics2" or "sewer-pour" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
+                        if(obj.Motion is { Kind:"sea" or "particles" or "circuit-pulses" or "freeze-aurora" or "knights-flashes" or "studio-sticks" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
+                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" or "temple-lava" or "underwater-caustics" or "underwater-caustics2" or "sewer-pour" or "studio-led" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
                         var material = scene.Materials[part.Material];
                         return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
                     }).ToArray();
@@ -91,6 +93,7 @@ internal sealed class BoardMeshLayer : IDisposable
         sewer?.Advance(time,won);
         library?.Advance(delta,evolution);
         crowd?.Advance(time,combat,won);
+        studio?.Advance(delta,combat);
         confetti?.Advance(delta,won);
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
@@ -111,6 +114,7 @@ internal sealed class BoardMeshLayer : IDisposable
         {
             if(wave.Motion.Kind=="sea") BoardSceneMotion.Sea(wave.Vertices,time,wave.Motion);
             else if(wave.Motion.Kind=="circuit-pulses")circuit!.Pulses(wave.Vertices,wave.Motion.Pulses!);
+            else if(wave.Motion.Kind=="studio-sticks")BoardStudioMotion.Sticks(wave.Vertices,wave.Motion.Crowd!,time);
             else if(wave.Motion.Kind=="knights-flashes")crowd!.Flashes(wave.Vertices,wave.Motion.Crowd!,time);
             else if(wave.Motion.Aurora is {} aurora)BoardFreezeMotion.Aurora(wave.Vertices,aurora,time);
             else {BoardSceneMotion.Particles(wave.Vertices,delta,time,wave.Motion);if(wave.Motion.FreezeSnow)freeze!.Snow(wave.Vertices,delta); }
@@ -132,7 +136,7 @@ internal sealed class BoardMeshLayer : IDisposable
         {
             var bolt=item.Object.Motion?.Lightning;
             if(bolt is not null) { if(lightning is not { Visible:true } || lightning.Active!=bolt.Index) continue; }
-            else if(item.Object.Motion?.Kind=="knights-confetti"){if(confetti?.Visible!=true)continue;}
+            else if(item.Object.Motion?.Kind is "knights-confetti" or "studio-confetti"){if(confetti?.Visible!=true)continue;}
             else if (!item.Object.Visible) continue;
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = World(item.Object);
@@ -155,6 +159,9 @@ internal sealed class BoardMeshLayer : IDisposable
             {
                 var material = part.Material;
                 var color=item.Object.Motion?.Kind=="castle-moon"?castle!.MoonColor:new Vector3(material.Color[0],material.Color[1],material.Color[2]);
+                if(item.Object.Motion?.Kind is "studio-beam" or "studio-pool")color=studio!.LightColor((int)item.Object.Motion.Speed);
+                if(item.Object.Motion?.Kind=="studio-strip")color=BoardStudioMotion.Strip((int)item.Object.Motion.Speed,time);
+                if(item.Object.Motion?.Kind=="studio-sticks")color=studio!.StickColor;
                 if(item.Object.Motion?.Kind=="library-circle")color=library!.CircleColor;
                 if(item.Object.Motion?.LibrarySparks==true)color=library!.SparkColor;
                 if(item.Object.Motion?.Kind=="temple-lava")color=new(temple!.LavaColor);
@@ -180,7 +187,8 @@ internal sealed class BoardMeshLayer : IDisposable
                         {
                             { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
                             { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
-                            {Kind:"knights-confetti"}=>ConfettiMatrix(confetti!.Poses[i]),
+                            {Kind:"knights-confetti" or "studio-confetti"}=>ConfettiMatrix(confetti!.Poses[i]),
+                            {Kind:"studio-audience",Crowd:{} audience}=>BoardStudioMotion.Audience(audience[i],time),
                             {Crowd:{} people} motion=>crowd!.Instance(motion.Kind,people[i],time),
                             {Library:{} books} motion=>BoardLibraryMotion.Instance(motion.Kind,books[i],time),
                             {Kind:"sewer-numemon" or "sewer-duck",Props:{} sewerItems} motion=>sewer!.Instance(motion.Kind,sewerItems[i],time),
@@ -212,6 +220,8 @@ internal sealed class BoardMeshLayer : IDisposable
     internal static Matrix4D ConfettiMatrix(BoardConfettiPose p)=>new CompanionTransform(new(p.X,p.Y,p.Z),new(p.Rx,0,p.Rz),new(1,1,1)).Matrix;
     private Matrix4D World(BoardObject obj)
     {
+        if(obj.Motion?.Kind is "studio-beam" or "studio-pool")return studio!.Light((int)obj.Motion.Speed,obj.Motion.Kind=="studio-beam",time)*Root;
+        if(obj.Motion?.Kind=="studio-crane")return BoardStudioMotion.Crane(obj.Motion,time)*Root;
         if(obj.Motion?.Kind is "library-circle" or "library-outer")return library!.Circle(obj.Motion.Kind,obj.Matrix)*Root;
         if(obj.Motion?.Lightning is not null)return new CompanionTransform(new(lightning!.X,lightning.Y,lightning.Z),new(0,lightning.Yaw,0),new(1,1,1)).Matrix*Root;
         if(obj.Motion is {Kind:"rotating-parent"} rotating)return BoardSceneMotion.RotatingParent(rotating,time)*Root;
