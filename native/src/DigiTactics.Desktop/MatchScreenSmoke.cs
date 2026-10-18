@@ -196,6 +196,11 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             var expectedTraits = session.State.Duos ? session.CombatProjection.Team(session.State.Teams[player.Team!.Value]).Effects.Counts! : soloTraits;
             if (screen.CombinedTraits != session.State.Duos || screen.DisplayedTraits.Count != expectedTraits.Count || expectedTraits.Any(pair => screen.DisplayedTraits.GetValueOrDefault(pair.Key) != pair.Value))
                 throw new InvalidOperationException("Sidebar trait counts do not match the watched Solo/Duos team.");
+            var traitBoard = session.State.Duos ? session.CombatProjection.Team(session.State.Teams[player.Team!.Value]).Units : session.CombatProjection.Board(player);
+            int activeTraits = expectedTraits.Count(pair => TraitRules.Level(session.State.Rules.Traits.Single(trait => trait.Id == pair.Key), pair.Value) > 0);
+            int contributors = expectedTraits.Sum(pair => TraitContributors.Select(session.State.Rules, traitBoard, pair.Key, session.State.Duos).Length);
+            if (screen.InlineTraitEffects != activeTraits || screen.InlineTraitPortraits != contributors)
+                throw new InvalidOperationException("Inline trait cards omitted active effects or contributor portraits.");
             combinedTraitsVerified |= session.State.Duos && expectedTraits.Any(pair => soloTraits.GetValueOrDefault(pair.Key) != pair.Value);
             var expected = chartCombat.Units.Where(unit => unit.Team == (screen.WatchingMirrored ? 1 : 0))
                 .OrderByDescending(unit => screen.ChartMetric switch { 1 => unit.Taken, 2 => unit.Healed, _ => unit.Dealt })
