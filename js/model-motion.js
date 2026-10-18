@@ -191,6 +191,8 @@ function boardRootTravel(gltf,src,clips){
     'rip-cat_magnagarurumon_chr678':['J_center','special','win'],
     'rip-cs_valkyrimon':['J_center','special'],
     'rip-durandamon':['J_center','special'], 'rip-kimeramon':['J_center','win'],
+    'rip-cs_grademon':['J_center','special'], 'rip-cs_gryphonmon':['J_center','win'],
+    'rip-l_gumdramon':['J_center','special'],
   }[src?.uid];
   if(!policy)return clips;
   const [body,...roles]=policy,idle=clips.find(c=>c.name==='idle'),name=body+'.position',node=gltf.scene.getObjectByName(body);
