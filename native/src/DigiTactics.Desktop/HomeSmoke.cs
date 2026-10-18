@@ -42,6 +42,9 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
     {
         initialized=true;clock=DateTimeOffset.Now;screen.HomeClock=()=>clock;initialSet=screen.SelectedSet;
         var heroClock=screen.HomeHeroClock;screen.HomeHeroClock=()=>heroClock()+heroTimeOffset;
+        string arrowOrigin="";
+        steps.Add(new("hero-next-arrow",s=>{arrowOrigin=s.HomeHeroId;return Click(s,"homeHeroNext");},s=>Check(s.HomeHeroId!=arrowOrigin,"Next carousel arrow did not change the slide.")));
+        AddClick("homeHeroPrevious",s=>Check(s.HomeHeroId==arrowOrigin,"Previous carousel arrow did not return to the same slide."));
         steps.Add(new("hero-initial",s=>HeroThumb(s,"set-faction-wars"),s=>Check(s.HomeHeroId=="set-faction-wars"&&s.HomeHeroCount==14&&s.SelectedSet==initialSet,"Carousel thumbnails changed the selected ruleset or omitted source slides.")));
         steps.Add(new("hero-hover-timeout",s=>{var b=s.HomeHeroBounds;ImGui.GetIO().AddMousePosEvent((b.Min.X+b.Max.X)/2,b.Min.Y+18);heroTimeOffset+=8.01;return true;},s=>Check(s.HomeHeroId=="set-faction-wars","Carousel advanced while hovered.")));
         steps.Add(new("hero-deferred-refresh",s=>{ImGui.GetIO().AddMousePosEvent(5,5);heroTimeOffset+=8.01;return true;},s=>Check(s.HomeHeroId=="set-faction-wars","Blocked timeout must first refresh the same slide after eight seconds.")));
@@ -51,6 +54,18 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         {
             AddClick("homeHeroAction",s=>Check(s.CollectionVisible,"Featured hero CTA failed to open its Store category."));
             steps.Add(new("hero-store-return",_=>Escape(),s=>Check(!s.CollectionVisible,"Store hero did not return Home.")));
+            // Leaving the Store via persistent navigation preserves the pending
+            // confirmation until the next route explicitly clears it. Use the
+            // visible Loot tab: the full source catalog omits its fallback hero.
+            AddClick("clientStore");
+            AddClick("collectionTab/0");
+            steps.Add(new("loot-route-select-purchase",s=>Click(s,"preview/legend/bukamon",s.CollectionListBounds)));
+            steps.Add(new("loot-route-pending-purchase",s=>Click(s,"buyCosmetic/legend/bukamon",s.CollectionDetailBounds),
+                s=>Check(s.Buttons.ContainsKey("confirmPurchase"),"Store purchase confirmation did not open for the Loot route regression.")));
+            AddClick("homeOverview",s=>Check(!s.CollectionVisible,"Persistent Home navigation did not leave the pending purchase."));
+            AddClick("clientLoot",s=>Check(s.CollectionLootVisible&&!s.CollectionStoreVisible&&s.DisplayedIncubator is not null
+                &&s.Buttons.ContainsKey("toggleEggs")&&!s.Buttons.ContainsKey("confirmPurchase"),"Loot navigation reopened a stale Store confirmation instead of the incubator."));
+            steps.Add(new("loot-route-return",_=>Escape(),s=>Check(!s.CollectionVisible,"Loot did not return Home.")));
         }
         steps.Add(new("hero-multiplayer",s=>HeroThumb(s,"mp"),s=>Check(s.HomeHeroId=="mp"&&s.SelectedSet==initialSet,"Multiplayer thumbnail did not select its source slide independently of the ruleset.")));
         steps.Add(new("hero-multiplayer-settled",_=>{heroTimeOffset+=1;return true;}));
@@ -58,6 +73,10 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         steps.Add(new("hero-chaos",s=>HeroThumb(s,"set-chaos"),s=>Check(s.HomeHeroId=="set-chaos"&&s.SelectedSet==initialSet,"Chaos thumbnail must preview without selecting the game.")));
         AddClick("homeHeroAction",s=>Check(s.HomePlayVisible&&s.SelectedSet=="chaos"&&s.Buttons.ContainsKey("homePlayStart"),"Set hero CTA must select its set and open launch configuration."));
         steps.Add(new("hero-play-return",_=>Escape(),s=>Check(!s.HomePlayVisible,"Launch selection Escape did not return Home.")));
+        AddClick("clientModes",s=>Check(s.HomePlayVisible&&!s.HomePlayPartyVisible&&s.Buttons.ContainsKey("homeMode/faction-wars"),"Modes navigation did not show selectable ruleset cards."));
+        AddClick("homeMode/faction-wars",s=>Check(s.SelectedSet=="faction-wars","Ruleset card did not select Faction Wars."));
+        AddClick("homePlayConfirm",s=>Check(s.HomePlayPartyVisible&&s.Buttons.ContainsKey("homePlayStart"),"Mode confirmation did not reach the party/start screen."));
+        AddClick("homePlayBack");
         AddClick("homeRuleset");AddClick("homeRuleset/"+initialSet,s=>Check(s.SelectedSet==initialSet&&s.HomeHeroId=="set-"+initialSet,"Ruleset picker did not preserve its selection and reveal the matching hero."));
         AddClick("about",s=>Check(s.AboutVisible,"About did not open."));AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.Buttons.ContainsKey("start"),"About did not return Home."));
         AddClick("homeTab/patch",s=>Check(s.HomeTab=="patch"&&s.HomeHighlights==7&&s.HomeRotationSets==11,"Patch notes omitted source highlights or rotation sets."));
@@ -88,8 +107,8 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
             {var parts=s.HomeFeaturedKeys[offer].Split('/');Check(s.CollectionVisible&&s.CollectionPreviewKind==parts[0]&&s.CollectionSelectedId==parts[1]&&s.CollectionFilterQuery==""&&s.CollectionFilterOwnership=="all"&&s.CollectionFilterRarity=="all","Featured link did not select its item/category with visible Store filters.");}));
             steps.Add(new("featured-return-"+i,_=>Escape(),s=>Check(!s.CollectionVisible,"Featured Store Escape did not return Home.")));
         }
-        steps.Add(new("overview-patch-link",s=>Click(s,"homeReadPatch",s.HomeProgressBounds),s=>Check(s.HomeTab=="patch","Overview patch link failed.")));
-        AddClick("homeTab/overview");steps.Add(new("set-news-codex",s=>Click(s,"homeSetCodex",s.HomeStoreBounds),s=>Check(s.CodexFullVisible,"Set mechanic news did not open Codex.")));
+        steps.Add(new("overview-patch-link",s=>Click(s,"homeReadPatch",s.HomePatchBounds),s=>Check(s.HomeTab=="patch","Overview patch link failed.")));
+        AddClick("homeTab/overview");steps.Add(new("set-news-codex",s=>Click(s,"codex"),s=>Check(s.CodexFullVisible,"Set mechanic news did not open Codex.")));
         steps.Add(new("return-overview",_=>Escape(),s=>Check(!s.CodexVisible&&s.HomeTab=="overview","Set news Codex did not return Home.")));
         // The subsequent planning/shop driver is the Normal-pace fixture. Select
         // it through the visible control without changing the source Hyper default.
@@ -106,7 +125,7 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         if(step>=steps.Count)
         {
             screen.HomeClock=()=>DateTimeOffset.Now;Done=true;
-            Console.WriteLine("Home UI passed: source artwork/pedestal, selectable hero thumbnails, eight-second hover/retry rotation, Store/Multiplayer/set-launch CTAs, Overview/Patch notes/Events, all highlights/rotation sets, daily midnight refresh, four featured prices/ownership/category links, set-news Codex, Store/Farm and About navigation.");return;
+            Console.WriteLine("Home UI passed: source artwork/pedestal, selectable hero thumbnails, eight-second hover/retry rotation, Store/Multiplayer/set-launch CTAs, stale-purchase-to-Loot routing, Overview/Patch notes/Events, all highlights/rotation sets, daily midnight refresh, four featured prices/ownership/category links, set-news Codex, Store/Farm and About navigation.");return;
         }
         if(steps[step].Input(screen)){step++;cooldown=3;}
     }
@@ -116,10 +135,10 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         if(step==0)
         {
             Check(screen.HomeLayoutFits&&screen.HomeHeroArt is not null&&screen.HomeLegendDrawCalls>0,"Selected set artwork, live Little Legend or responsive layout is missing.");
-            foreach(string key in new[]{"start","multiplayer","homeRuleset","reconnectAudio","about","homeTab/patch","homeTab/events"})
+            foreach(string key in new[]{"start","multiplayer","homeRuleset","settings","about","homeTab/patch","homeTab/events"})
                 Check(screen.Buttons.TryGetValue(key,out var point)&&point.X>=0&&point.X<size.X&&point.Y>=0&&point.Y<size.Y,"Control outside supported window: "+key);
         }
-        string scene=screen.AboutVisible?"about":screen.HomePlayVisible?"hero-play":screen.CodexVisible?"set-news-codex":screen.CollectionVisible?"featured-store":screen.HomeTab=="overview"&&screen.HomeHeroId is "store" or "mp"?"hero-"+screen.HomeHeroId:screen.HomeTab+(screen.HomeArticleScroll>0&&screen.HomeTab=="patch"?"-scrolled":"");
+        string scene=screen.AboutVisible?"about":screen.HomePlayVisible?(screen.HomePlayPartyVisible?"hero-play":"mode-select"):screen.CodexVisible?"set-news-codex":screen.CollectionVisible?"featured-store":screen.HomeTab=="overview"&&screen.HomeHeroId is "store" or "mp"?"hero-"+screen.HomeHeroId:screen.HomeTab+(screen.HomeArticleScroll>0&&screen.HomeTab=="patch"?"-scrolled":"");
         bool enteringHero=(scene is "overview" or "hero-store" or "hero-mp")&&screen.HomeHeroAge<.8;
         if(capture is not null&&!enteringHero&&captures.Add(scene))FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"home-"+scene+".bmp"),size.X,size.Y);
     }

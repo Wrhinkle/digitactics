@@ -21,6 +21,7 @@ internal sealed partial class MatchScreen
     internal (float2 Min,float2 Max) HomeArticleBounds {get;private set;}
     internal (float2 Min,float2 Max) HomeStoreBounds {get;private set;}
     internal (float2 Min,float2 Max) HomeProgressBounds {get;private set;}
+    internal (float2 Min,float2 Max) HomePatchBounds {get;private set;}
     internal float HomeArticleScroll {get;private set;}
     private DateOnly HomeDay=>DateOnly.FromDateTime(HomeClock().LocalDateTime);
     private DailyRewardProgress HomeDaily=>MatchRewards.Progress(profile?.Storage.GetValueOrDefault("dt.shop.v1"),profile?.Storage.GetValueOrDefault("dt.client.v1"),HomeDay);
@@ -33,16 +34,16 @@ internal sealed partial class MatchScreen
     }
     private void HomeTabs(float x,float y,float width)
     {
-        HomeCard("Home tabs",new(x,y),new(width,34),false);
+        HomeCard("Home tabs",new(x,y),new(width,40),false);
         ImGui.SetCursorPos(new(6,2));
         foreach(var tab in new[]{("overview","Overview"),("patch","Patch notes"),("events","Events")})
         {
             if(tab.Item1!="overview")ImGui.SameLine();
-            if(HomeButton("homeTab/"+tab.Item1,tab.Item2,110,28,homeTab==tab.Item1))homeTab=tab.Item1;
+            if(HomeButton("homeTab/"+tab.Item1,tab.Item2,120,36,homeTab==tab.Item1))homeTab=tab.Item1;
         }
         HomeCountdown=HomeRotation.Label(HomeRotation.UntilMidnight(HomeClock(),TimeZoneInfo.Local));
         string reset="Daily reset in "+HomeCountdown;float resetWidth=ImGui.CalcTextSize(reset).X;
-        ImGui.SetCursorPos(new(Math.Max(354,width-resetWidth-16),8));HomeLabel(reset,13,HomeMute);ImGui.End();
+        ImGui.SetCursorPos(new(Math.Max(384,width-resetWidth-16),12));HomeLabel(reset,13,HomeMute);ImGui.End();
     }
     private void HomeHighlightsList(int count)
     {
@@ -120,9 +121,8 @@ internal sealed partial class MatchScreen
     private void OpenHomeStore(string? kind=null,string? id=null)
     {
         if(profile is null)return;
-        if(kind is not null)CollectionCategoryChanged(Array.IndexOf(CosmeticCollection.Kinds,kind));
         collectionOwnedOnly=false;collectionRarity="all";collectionSearch.SetValue("");
-        showCollection=true;showEggs=false;if(id is not null)previewCosmetic=id;
+        OpenCollectionPage(store:true,kind:kind,item:id);
     }
     private void HomeOfferArt(string kind,CosmeticItem item,CosmeticCollection collection,float2 at,float2 extent)
     {
@@ -152,7 +152,7 @@ internal sealed partial class MatchScreen
         ImGui.SetCursorScreenPos(at+new float2(75,6));ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+width-88);HomeLabel(item.Name,14,HomeInk);ImGui.PopTextWrapPos();
         ImGui.SetCursorScreenPos(at+new float2(75,39));HomeLabel(CollectionNames[Array.IndexOf(CosmeticCollection.Kinds,kind)],11,HomeMute);
         ImGui.SetCursorScreenPos(at+new float2(75,54));HomeLabel(owned?"Owned":$"-{Math.Round(100-100d*price/Math.Max(1,item.Price),MidpointRounding.AwayFromZero)}% / {price} Bits",12,owned?new ImColor8(95,211,106):HomeGold);
-        draw.PopClipRect();ImGui.SetCursorScreenPos(at+new float2(0,height+7));
+        draw.PopClipRect();ImGui.SetCursorScreenPos(at+new float2(0,height+7));ImGui.Dummy(new(width,1));
         if(clicked)OpenHomeStore(kind,item.Id);
     }
     private void ClearHomeOfferPreviews(){foreach(var scene in homeOfferPreviews.Values)scene.Dispose();homeOfferPreviews.Clear();}

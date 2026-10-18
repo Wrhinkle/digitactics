@@ -11,13 +11,14 @@ internal sealed partial class MatchScreen
     private HomeHeroSlide[]? homeHeroSlides;
     private readonly Dictionary<int,(double Opacity,double Scale,double At,bool Active)> homeHeroArtStates=[];
     private int homeHeroVisualIndex=-1;
-    private bool homeHeroScrollSelected,showHomePlay,homeHeroWasVisible,homeHeroDrawnThisFrame;
+    private bool homeHeroScrollSelected,showHomePlay,homeHeroWasVisible,homeHeroDrawnThisFrame,homePlayParty,homePlayOnline;
     internal Func<double> HomeHeroClock {get;set;}=()=>Environment.TickCount64/1000d;
     internal string HomeHeroId=>homeHeroSlides is {} slides&&homeCarousel is {} carousel?slides[carousel.Index].Id:"";
     internal int HomeHeroCount=>homeHeroSlides?.Length??0;
     internal double HomeHeroDeadline=>homeCarousel?.Due??double.NaN;
     internal double HomeHeroAge=>homeCarousel is null?0:HomeHeroClock()-homeCarousel.RenderedAt;
     internal bool HomePlayVisible=>showHomePlay;
+    internal bool HomePlayPartyVisible=>showHomePlay&&homePlayParty;
     internal (float2 Min,float2 Max) HomeHeroBounds {get;private set;}
     internal (float2 Min,float2 Max) HomeHeroThumbBounds {get;private set;}
     private bool HomeHeroPage=>ClientHomeVisible&&!showMultiplayer&&!showFarm&&!showProfile&&!showSettings&&!showSaveData&&!showAbout&&!showHomePlay;
@@ -71,7 +72,7 @@ internal sealed partial class MatchScreen
         position+=new float2(0,14*(1-progress));
         var draw=ImGui.GetWindowDrawList();draw.PushClipRect(position,position+new float2(width,height),true);
         ImGui.SetCursorScreenPos(position);ImGui.PushStyleVar(ImGuiStyleVar.Alpha,progress);
-        ImGui.PushFont(default,font);ImGui.PushStyleColor(ImGuiCol.Text,color);ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+width);
+        ImGui.PushFont(font>=22?NativeUiTheme.DisplayBoldFont:NativeUiTheme.BodyFont,font);ImGui.PushStyleColor(ImGuiCol.Text,color);ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+width);
         ImGui.Text(text);ImGui.PopTextWrapPos();ImGui.PopStyleColor();ImGui.PopFont();ImGui.PopStyleVar();draw.PopClipRect();
     }
     private void HomeHero(float2 at,float2 extent)
@@ -87,7 +88,7 @@ internal sealed partial class MatchScreen
         draw.AddRectFilledMultiColor(at+new float2(0,extent.Y-135),at+extent,new ImColor8(1,10,19,0),new ImColor8(1,10,19,0),new ImColor8(1,10,19,245),new ImColor8(1,10,19,245));
         draw.AddRect(at,at+extent,HomeGold,2);
         string title=slide.Title,description=slide.Desc,meta=slide.Meta??"";string? offerKind=null,offerId=null;
-        float contentBottom=extent.Y-132,textWidth=extent.X*(slide.Feat ? .59f : .75f)-24;
+        float contentBottom=extent.Y-82,textWidth=extent.X*(slide.Feat ? .60f : .83f)-32;
         if(slide.Feat)
         {
             int pick=(int)((HomeClock().ToUnixTimeMilliseconds()/86400000)%homeOffers.Length);var offer=homeOffers[pick];
@@ -97,30 +98,31 @@ internal sealed partial class MatchScreen
             float previewWidth=extent.X*.35f,previewHeight=Math.Min(contentBottom-16,previewWidth*.75f);
             HomeOfferArt(offer.Kind,offer.Item,collection,at+new float2(extent.X-previewWidth-20,12),new(previewWidth,previewHeight));
         }
-        HomeHeroText(at+new float2(20,12),textWidth,16,slide.Eyebrow.ToUpperInvariant(),12,HomeGold,0,now);
-        float titleFont=size.X<1200?28:36;
-        ImGui.PushFont(default,titleFont);float titleWidth=ImGui.CalcTextSize(title.ToUpperInvariant()).X;ImGui.PopFont();
-        if(titleWidth>textWidth)titleFont=Math.Max(21,titleFont*textWidth/titleWidth);
-        HomeHeroText(at+new float2(20,31),textWidth,40,title.ToUpperInvariant(),titleFont,HomeInk,1,now);
-        float metaTop=size.X<1200?64:73,descriptionTop=meta.Length>0?metaTop+19:metaTop;
-        if(meta.Length>0)HomeHeroText(at+new float2(20,metaTop),textWidth,16,meta,12,HomeInk,2,now);
-        HomeHeroText(at+new float2(20,descriptionTop),textWidth,Math.Min(39,Math.Max(14,contentBottom-36-descriptionTop)),description,13,HomeMute,meta.Length>0?3:2,now);
+        HomeHeroText(at+new float2(24,18),textWidth,20,slide.Eyebrow.ToUpperInvariant(),15,HomeGold,0,now);
+        float titleFont=36;
+        HomeHeroText(at+new float2(24,48),textWidth,extent.Y<350?64:86,title.ToUpperInvariant(),titleFont,HomeInk,1,now);
+        float metaTop=extent.Y<350?116:142,descriptionTop=meta.Length>0?metaTop+26:metaTop;
+        if(meta.Length>0)HomeHeroText(at+new float2(24,metaTop),textWidth,22,meta,16,HomeInk,2,now);
+        float descriptionHeight=Math.Max(44,contentBottom-descriptionTop-60);
+        draw.AddRectFilledMultiColor(at+new float2(16,descriptionTop-6),at+new float2(textWidth+40,descriptionTop+descriptionHeight+6),new ImColor8(1,10,19,190),new ImColor8(1,10,19,160),new ImColor8(1,10,19,160),new ImColor8(1,10,19,190));
+        HomeHeroText(at+new float2(24,descriptionTop),textWidth,descriptionHeight,description,17,HomeInk,meta.Length>0?3:2,now);
         float ctaAlpha=(float)HomeCarousel.TextProgress(now-homeCarousel.RenderedAt,meta.Length>0?4:3,ClientMotion);
-        ImGui.SetCursorScreenPos(at+new float2(20,contentBottom-28+14*(1-ctaAlpha)));ImGui.PushStyleVar(ImGuiStyleVar.Alpha,ctaAlpha);
-        if(HomeButton("homeHeroAction",slide.Cta,Math.Min(textWidth,230),27,true))HomeHeroAction(slide,offerKind,offerId);
+        ImGui.SetCursorScreenPos(at+new float2(24,contentBottom-44+14*(1-ctaAlpha)));ImGui.PushStyleVar(ImGuiStyleVar.Alpha,ctaAlpha);
+        if(HomeButton("homeHeroAction",slide.Cta,Math.Min(textWidth,280),40,true))HomeHeroAction(slide,offerKind,offerId);
         ImGui.PopStyleVar();
-        DrawHomeHeroThumbnails(at+new float2(16,extent.Y-126),new(extent.X-32,59));
-        var controls=at+new float2(20,extent.Y-58);ImGui.SetCursorScreenPos(controls);HomeLabel("RULESET",11);
-        ImGui.SetCursorScreenPos(controls+new float2(0,18));ImGui.SetNextItemWidth(extent.X*.43f);DrawSetChoice("homeRuleset",selectedSet,SelectHomeHeroSet);
-        ImGui.SetCursorScreenPos(controls+new float2(extent.X*.46f,0));HomeLabel("PACE",11);ImGui.SetCursorScreenPos(controls+new float2(extent.X*.46f,18));ImGui.SetNextItemWidth(extent.X*.20f);DrawPaceChoice("homePace",selectedPace,false,pace=>SelectPace(pace));
-        ImGui.SetCursorScreenPos(controls+new float2(extent.X*.70f,0));HomeLabel("FORMAT",11);ImGui.SetCursorScreenPos(controls+new float2(extent.X*.70f,18));ImGui.SetNextItemWidth(extent.X*.23f);DrawFormatChoice("homeFormat",duos,SelectFormat);
+        DrawHomeHeroThumbnails(at+new float2(16,extent.Y-70),new(extent.X-32,60));
         ImGui.End();
     }
     private void DrawHomeHeroThumbnails(float2 at,float2 extent)
     {
+        ImGui.SetCursorScreenPos(at);
+        if(HomeButton("homeHeroPrevious","<",36,42))SelectHomeHero((homeCarousel!.Index+homeHeroSlides!.Length-1)%homeHeroSlides.Length);
+        ImGui.SetCursorScreenPos(at+new float2(extent.X-36,0));
+        if(HomeButton("homeHeroNext",">",36,42))SelectHomeHero((homeCarousel!.Index+1)%homeHeroSlides!.Length);
+        at+=new float2(44,0);extent-=new float2(88,0);
         HomeHeroThumbBounds=(at,at+extent);ImGui.SetCursorScreenPos(at);
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));ImGui.BeginChild("Home hero thumbnails"u8,extent,ImGuiChildFlags.None,ImGuiWindowFlags.HorizontalScrollbar);ImGui.PopStyleVar();
-        var draw=ImGui.GetWindowDrawList();float width=size.X<1200?80:96;
+        var draw=ImGui.GetWindowDrawList();float width=120;
         for(int i=0;i<homeHeroSlides!.Length;i++)
         {
             if(i>0)ImGui.SameLine(0,6);var position=ImGui.GetCursorScreenPos();var slide=homeHeroSlides[i];
@@ -128,7 +130,7 @@ internal sealed partial class MatchScreen
             homeArtwork.Draw(slide.Art,position,new(width,42),homeCarousel.Index==i?(byte)255:(byte)170,true);
             draw.AddRectFilledMultiColor(position,position+new float2(width,42),new ImColor8(1,10,19,35),new ImColor8(1,10,19,35),new ImColor8(1,10,19,230),new ImColor8(1,10,19,230));
             draw.AddRect(position,position+new float2(width,42),homeCarousel.Index==i?HomeGold:HomeLine);
-            draw.PushClipRect(position+new float2(4,2),position+new float2(width-4,40),true);ImGui.PushFont(default,10);draw.AddText(position+new float2(5,26),HomeInk,slide.Thumb.ToUpperInvariant());ImGui.PopFont();draw.PopClipRect();
+            draw.PushClipRect(position+new float2(4,2),position+new float2(width-4,40),true);ImGui.PushFont(default,14);draw.AddText(position+new float2(5,23),HomeInk,slide.Thumb.ToUpperInvariant());ImGui.PopFont();draw.PopClipRect();
             if(homeCarousel.Index==i)
             {draw.AddRectFilled(position+new float2(0,40),position+new float2(width*(float)homeCarousel.Progress(ClientMotion),42),new ImColor8(63,214,255));if(homeHeroScrollSelected)ImGui.SetScrollHereX(.5f);}
             if(ImGui.IsItemHovered())ResultTooltip(slide.Thumb);
@@ -138,26 +140,76 @@ internal sealed partial class MatchScreen
     }
     private void HomeHeroAction(HomeHeroSlide slide,string? kind,string? id)
     {
-        if(slide.Act.StartsWith("set:",StringComparison.Ordinal)){SelectSet(slide.Act[4..]);showHomePlay=true;}
+        if(slide.Act.StartsWith("set:",StringComparison.Ordinal)){SelectSet(slide.Act[4..]);homePlayParty=true;homePlayOnline=false;showHomePlay=true;}
         else if(slide.Feat)OpenHomeStore(kind,id);
         else if(slide.Act=="mp")OpenMultiplayerView();
         else if(slide.Act=="farm"&&farm is not null){farm.Refresh(HomeClock().ToUnixTimeMilliseconds());showFarm=true;}
-        else if(slide.Act=="loot"&&profile is not null){showCollection=true;showEggs=true;}
+        else if(slide.Act=="loot"&&profile is not null)OpenCollectionPage(loot:true);
     }
     private void HomePlayPanel()
     {
-        float width=Math.Min(700,size.X-48),height=430;var at=new float2((size.X-width)/2,(size.Y-height)/2);
-        HomeCard("Choose your match",at,new(width,height),false,true);var set=HomeSets.Value[selectedSet];
-        homeArtwork.Draw(set.Hero,at,new(width,150),255,true,.4f);ImGui.GetWindowDrawList().AddRectFilled(at,at+new float2(width,150),new ImColor8(1,10,19,145));
-        ImGui.SetCursorScreenPos(at+new float2(22,25));HomeLabel("PLAY",13);HomeLabel(set.Name,32,HomeInk);UiText.Wrapped(set.Description);
-        ImGui.SetCursorScreenPos(at+new float2(22,172));HomeLabel("RULESET");ImGui.SetNextItemWidth(width-44);DrawSetChoice("homePlayRuleset",selectedSet,SelectHomeHeroSet);
-        ImGui.SetCursorScreenPos(at+new float2(22,240));HomeLabel("PACE");ImGui.SetNextItemWidth((width-58)/2);DrawPaceChoice("homePlayPace",selectedPace,false,pace=>SelectPace(pace));
-        ImGui.SetCursorScreenPos(at+new float2(width/2+7,240));HomeLabel("FORMAT");ImGui.SetNextItemWidth((width-58)/2);DrawFormatChoice("homePlayFormat",duos,SelectFormat);
-        ImGui.SetCursorScreenPos(at+new float2(22,315));UiText.Wrapped(duos?"Team up with an AI partner. Share health, units and items.":"Face seven AI Tamers. Build your team and be the last one standing.");
-        ImGui.SetCursorScreenPos(at+new float2(22,height-60));
-        if(HomeButton("homePlayBack","Back to Home",160,38))showHomePlay=false;
+        var at=new float2(16,ClientPageTop);float width=size.X-32,height=size.Y-ClientPageTop-16;
+        HomeCard("Choose your match",at,new(width,height),false,true);
+        if(homePlayParty){HomeSoloParty(at,new(width,height));ImGui.End();return;}
+        HomeLabel("CHOOSE A MODE",15);HomeLabel("PLAY",32,HomeInk);
+        float footer=height-158;
+        ImGui.BeginChild("Mode cards"u8,new(width-32,footer-92),ImGuiChildFlags.None);
+        int columns=3,index=0;float cardWidth=(ImGui.GetContentRegionAvail().X-16)/columns;
+        foreach(string id in SetChoices.Options.Select(s=>s.Id).Concat(SetChoices.HasChaos?["chaos"]:Array.Empty<string>()))
+        {
+            if(index++%columns!=0)ImGui.SameLine(0,8);
+            var cardAt=ImGui.GetCursorScreenPos();var set=HomeSets.Value[id];
+            bool chosen=HomeButton("homeMode/"+id,"",cardWidth,148,selectedSet==id);
+            homeArtwork.Draw(set.Hero,cardAt,new(cardWidth,106),255,true);
+            var draw=ImGui.GetWindowDrawList();draw.AddRect(cardAt,cardAt+new float2(cardWidth,148),selectedSet==id?HomeInk:HomeLine,1);
+            draw.PushClipRect(cardAt+new float2(8,108),cardAt+new float2(cardWidth-8,146),true);
+            ImGui.PushFont(NativeUiTheme.DisplayFont,19);draw.AddText(cardAt+new float2(12,118),HomeInk,set.Name);ImGui.PopFont();draw.PopClipRect();
+            if(ImGui.IsItemHovered())ResultTooltip(set.Description);
+            if(chosen)SelectHomeHeroSet(id);
+        }
+        ImGui.EndChild();
+        ImGui.SetCursorScreenPos(at+new float2(16,footer));
+        if(HomeButton("homeModeSolo","SOLO VS AI",(width-40)/2,42,!homePlayOnline))homePlayOnline=false;
+        ImGui.SameLine(0,8);if(HomeButton("homeModeOnline","MULTIPLAYER",(width-40)/2,42,homePlayOnline))homePlayOnline=true;
+        ImGui.SetCursorScreenPos(at+new float2(16,footer+52));
+        ImGui.SetNextItemWidth(width*.40f);DrawSetChoice("homePlayRuleset",selectedSet,SelectHomeHeroSet);
+        ImGui.SameLine();ImGui.SetNextItemWidth(width*.25f);DrawPaceChoice("homePlayPace",selectedPace,false,pace=>SelectPace(pace));
+        ImGui.SameLine();ImGui.SetNextItemWidth(width*.25f);DrawFormatChoice("homePlayFormat",duos,SelectFormat);
+        ImGui.SetCursorScreenPos(at+new float2(16,height-52));
+        if(HomeButton("homePlayBack","Back to Home",160,40))showHomePlay=false;
+        ImGui.SameLine();if(HomeButton("homePlayConfirm","CONFIRM",width-200,40,true)){if(homePlayOnline)OpenMultiplayerView();else homePlayParty=true;}
+        ImGui.End();
+    }
+    private void HomeSoloParty(float2 at,float2 extent)
+    {
+        var set=HomeSets.Value[selectedSet];float width=extent.X,height=extent.Y;
+        homeArtwork.Draw(set.Hero,at,new(width,160),255,true,.4f);
+        ImGui.GetWindowDrawList().AddRectFilled(at,at+new float2(width,160),new ImColor8(1,10,19,180));
+        ImGui.SetCursorScreenPos(at+new float2(24,18));
+        if(HomeButton("homePlayModes","< Modes",120,36))homePlayParty=false;
+        HomeLabel("SOLO VS AI / PARTY",15);HomeLabel(set.Name,36,HomeInk);
+        ImGui.SetCursorScreenPos(at+new float2(24,180));
+        ImGui.SetNextItemWidth(width*.40f);DrawSetChoice("homePlayRuleset",selectedSet,SelectHomeHeroSet);
+        ImGui.SameLine();ImGui.SetNextItemWidth(width*.25f);DrawPaceChoice("homePlayPace",selectedPace,false,pace=>SelectPace(pace));
+        ImGui.SameLine();ImGui.SetNextItemWidth(width*.25f);DrawFormatChoice("homePlayFormat",duos,SelectFormat);
+        ImGui.SetCursorScreenPos(at+new float2(24,230));
+        ImGui.BeginChild("Solo party instructions"u8,new(width-48,height-312),ImGuiChildFlags.None);
+        HomeLabel(duos?"YOU + YOUR AI PARTNER":"YOU + SEVEN AI TAMERS",22,HomeInk);
+        for(int seat=0;seat<8;seat++)
+        {
+            if(seat%4!=0)ImGui.SameLine(0,8);
+            HomeButton("homePartySeat/"+seat,seat==0?"YOU":duos&&seat==1?"AI PARTNER":"AI TAMER",(width-72)/4,48,seat==0);
+        }
+        ImGui.Spacing();HomeLabel("HOW TO PLAY",18);
+        UiText.Wrapped("Buy Digimon and place them on your half of the board. Your level sets your team size."u8);
+        UiText.Wrapped("Three copies digivolve. Three 1-star copies make a 2-star, and three 2-stars make a 3-star."u8);
+        UiText.Wrapped("Drag items onto your Digimon. Two components combine into a completed item."u8);
+        UiText.Wrapped("Right-click to move your Little Legend. Walk into loot orbs to collect them."u8);
+        ImGui.EndChild();
+        ImGui.SetCursorScreenPos(at+new float2(24,height-60));
+        if(HomeButton("homePlayBack","Back to Home",160,44))showHomePlay=false;
         ImGui.SameLine();bool inRoom=networkRoom is not null||steam?.Room is not null;ImGui.BeginDisabled(inRoom);
-        if(HomeButton("homePlayStart",duos?"PLAY DUOS":"PLAY SOLO",width-222,38,true)){showHomePlay=false;StartLocalMatch(duos);}
-        ImGui.EndDisabled();ImGui.End();
+        if(HomeButton("homePlayStart",duos?"PLAY DUOS":"PLAY SOLO",width-216,44,true)){showHomePlay=false;StartLocalMatch(duos);}
+        ImGui.EndDisabled();
     }
 }

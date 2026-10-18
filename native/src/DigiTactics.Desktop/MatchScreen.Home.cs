@@ -25,15 +25,32 @@ internal sealed partial class MatchScreen
     internal bool HomeLayoutFits {get;private set;}
     private static void HomeLabel(string value,float font=14,ImColor8? color=null)
     {
-        ImGui.PushFont(default,font);ImGui.PushStyleColor(ImGuiCol.Text,color??HomeGold);ImGui.Text(value);ImGui.PopStyleColor();ImGui.PopFont();
+        ImGui.PushFont(font>=20?NativeUiTheme.DisplayBoldFont:NativeUiTheme.BodyFont,Math.Max(15,font));ImGui.PushStyleColor(ImGuiCol.Text,color??HomeGold);ImGui.Text(value);ImGui.PopStyleColor();ImGui.PopFont();
     }
-    private bool HomeButton(string key,string label,float width=0,float height=30,bool primary=false)
+    private bool HomeButton(string key,string label,float width=0,float height=36,bool primary=false)
     {
         ImGui.PushStyleColor(ImGuiCol.Button,primary?new ImColor8(17,92,113):new ImColor8(17,29,42));
         ImGui.PushStyleColor(ImGuiCol.ButtonHovered,primary?new ImColor8(28,123,145):new ImColor8(35,52,68));
         ImGui.PushStyleColor(ImGuiCol.ButtonActive,new ImColor8(29,108,124));ImGui.PushStyleColor(ImGuiCol.Border,HomeGold);ImGui.PushStyleColor(ImGuiCol.Text,HomeInk);
         ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,1);ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding,2);
-        bool result=Button(key,label,width,height);ImGui.PopStyleVar(2);ImGui.PopStyleColor(5);return result;
+        bool result=Button(key,label,width,Math.Max(36,height));
+        if(primary && key is "start" or "clientPlay" or "homePlayStart" or "steamStart")
+        {
+            var lo=ImGui.GetItemRectMin();var hi=ImGui.GetItemRectMax();var draw=ImGui.GetWindowDrawList();
+            var top=NativeUiTheme.PlayTop;var bottom=NativeUiTheme.Play;
+            if(ImGui.IsItemHovered()){top=new(255,226,159);bottom=NativeUiTheme.PlayMiddle;}
+            ImColor8 Styled(ImColor8 color)
+            {
+                var rgba=color.AsByte4();
+                return new(rgba.X,rgba.Y,rgba.Z,(byte)Math.Clamp(Math.Round(rgba.W*ImGui.GetStyle().Alpha),0,255));
+            }
+            draw.AddRectFilledMultiColor(lo,hi,Styled(top),Styled(top),Styled(bottom),Styled(bottom));
+            draw.AddRect(lo,hi,Styled(NativeUiTheme.PlayBorder),2);
+            ImGui.PushFont(NativeUiTheme.DisplayBoldFont,20);
+            var textSize=ImGui.CalcTextSize(label);draw.AddText(lo+(hi-lo-textSize)*.5f,Styled(NativeUiTheme.PlayText),label);ImGui.PopFont();
+            if(ImGui.IsItemFocused())draw.AddRect(lo+new float2(3,3),hi-new float2(3,3),Styled(HomeInk),1);
+        }
+        ImGui.PopStyleVar(2);ImGui.PopStyleColor(5);return result;
     }
     private void HomeCard(string id,float2 at,float2 extent,bool scroll=true,bool bringToFront=false)
     {
@@ -46,54 +63,37 @@ internal sealed partial class MatchScreen
     {
         RefreshSetSelection();
         UpdateClient?.Refresh();bool update=UpdateClient?.Status?.Phase is "checking" or "downloading" or "verifying" or "ready" or "manual";
-        float margin=24,gap=12,width=size.X-margin*2,right=Math.Clamp(size.X*.25f,300,340),heroWidth=width-right-gap;
-        float tabsTop=width<1150?124:88,top=tabsTop+40,heroHeight=Math.Clamp((size.Y-top-margin-gap-(update?96:0))*.52f,220,380),bottom=top+heroHeight+gap,lowerHeight=size.Y-bottom-margin-(update?96:0);
-        HomeLayoutFits=lowerHeight>=220 && margin+width<=size.X && bottom+lowerHeight<=size.Y;
+        float margin=16,gap=12,width=size.X-margin*2,right=280,heroWidth=width-right-gap;
+        float tabsTop=ClientPageTop,top=tabsTop+48,available=size.Y-top-margin-(update?100:0);
+        float heroHeight=Math.Min(Math.Max(350,available*.62f),available-92),bottom=top+heroHeight+gap,lowerHeight=available-heroHeight-gap;
+        HomeLayoutFits=lowerHeight>=80 && margin+width<=size.X && bottom+lowerHeight<=size.Y;
         var background=ImGui.GetBackgroundDrawList();
         homeArtwork.Draw("hero-datastream-sky",new(0,0),new(size.X,size.Y),70,true,drawList:background);
         background.AddRectFilled(new(0,0),new(size.X,size.Y),new ImColor8(1,10,19,205));
         if(showAbout){HomeAbout();UpdatePanel();return;}
         HomeHighlights=HomeRotationSets=HomeFeaturedCount=HomeFeaturedOwned=0;
-        HomeNavigation(margin,width);
         HomeTabs(margin,tabsTop,width);
         if(homeTab=="patch")HomePatchNotes(new(margin,top),new(heroWidth,heroHeight+gap+lowerHeight));
         else if(homeTab=="events")HomeEventsPanel(new(margin,top),new(heroWidth,heroHeight+gap+lowerHeight));
         else
         {
             HomeHero(new(margin,top),new(heroWidth,heroHeight));
-            float tileWidth=(heroWidth-gap)/2;
+            float tileWidth=(width-gap*3)/4;
             HomeProgress(new(margin,bottom),new(tileWidth,lowerHeight));
-            HomeFeatured(new(margin+tileWidth+gap,bottom),new(tileWidth,lowerHeight));
+            HomePatchBounds=(new(margin+tileWidth+gap,bottom),new(margin+tileWidth*2+gap,bottom+lowerHeight));
+            HomeCard("Home patch preview",HomePatchBounds.Min,new(tileWidth,lowerHeight));
+            HomePatchPreview();ImGui.End();
+            HomeFeatured(new(margin+(tileWidth+gap)*2,bottom),new(tileWidth,lowerHeight));
+            HomeCard("Home farm preview",new(margin+(tileWidth+gap)*3,bottom),new(tileWidth,lowerHeight));
+            var artAt=ImGui.GetCursorScreenPos();float artWidth=ImGui.GetContentRegionAvail().X;
+            homeArtwork.Draw("hero-file-island",artAt,new(artWidth,62),255,true);ImGui.Dummy(new(artWidth,70));
+            HomeLabel("DIGI-FARM",22,HomeInk);UiText.Wrapped("Care for your Little Legends. Feed, train, and help them grow."u8);
+            if(farm is not null && HomeButton("homeFarm","Visit your farm",artWidth,36)){farm.Refresh(HomeClock().ToUnixTimeMilliseconds());showFarm=true;}
+            ImGui.End();
         }
         HomePartner(new(margin+heroWidth+gap,top),new(right,heroHeight));
-        HomeCard("Home sound",new(margin+heroWidth+gap,bottom),new(right,lowerHeight));
-        HomeLabel("SOUND & MUSIC");ImGui.Separator();ImGui.PushItemWidth(130);AudioControls();ImGui.PopItemWidth();ImGui.End();
+
         UpdatePanel();
-    }
-    private void HomeNavigation(float margin,float width)
-    {
-        bool wrap=width<1150;
-        HomeCard("Home navigation",new(margin,16),new(width,wrap?92:56),false);
-        HomeLabel("DIGI-TACTICS",23,HomeInk);
-        if(wrap)ImGui.SetCursorScreenPos(new(margin+8,61));else ImGui.SameLine(205);
-        if(HomeButton("homeOverview","Home",70,32))homeTab="overview";ImGui.SameLine();
-        if(profile is not null)
-        {
-            if(HomeButton("collection","Collection",105,32))showCollection=true;ImGui.SameLine();
-            if(farm is not null){if(HomeButton("farm","Digi-Farm",100,32)){farm.Refresh(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());showFarm=true;}ImGui.SameLine();}
-            if(HomeButton("profile","Profile",80,32))OpenProfile();ImGui.SameLine();
-        }
-        if(HomeButton("multiplayer","Steam multiplayer",162,32))OpenMultiplayerView();
-        ImGui.SameLine();if(HomeButton("about","About",70,32))showAbout=true;
-        ImGui.SameLine();if(HomeButton("codex","Codex",70,32))OpenCodexFull();
-        ImGui.SameLine();if(HomeButton("settings","Settings",80,32))showSettings=true;
-        SocialNavigation();
-        if(profile is not null)
-        {
-            string balance=$"{profile.Progress.Bits??0:N0} Bits";float textWidth=ImGui.CalcTextSize(balance).X;
-            ImGui.SetCursorScreenPos(new(margin+width-textWidth-18,35));HomeLabel(balance,15,HomeGold);
-        }
-        ImGui.End();
     }
     private void HomePartner(float2 at,float2 extent)
     {
@@ -105,19 +105,24 @@ internal sealed partial class MatchScreen
             var view=LegendEvolution.Inspect(legends,wallet,profile?.Storage.GetValueOrDefault("dt.farm.v1"),id);
             HomeLabel(LegendEvolution.Form(view.Form).Name,21,HomeInk);
             homeLegend??=new(legendPedestal);
-            float imageHeight=Math.Min(178,extent.Y-153),imageWidth=imageHeight*CosmeticScenePreview.Width/CosmeticScenePreview.Height;
+            float imageHeight=Math.Min(190,extent.Y-234),imageWidth=imageHeight*CosmeticScenePreview.Width/CosmeticScenePreview.Height;
             var imageAt=at+new float2((extent.X-imageWidth)/2,54);
             Buttons["homeLegend"]=imageAt+new float2(imageWidth/2,imageHeight/2);
             Buttons["homeLegend/outside"]=imageAt+new float2(-12,imageHeight/2);
             if(homeLegend.PointerItem("homeLegend",imageAt,new(imageWidth,imageHeight)) is not null)audio.PlayClient("emote",true);
             homeLegend.Draw("legend",id,LegendEvolution.VisualKey(id,view.Form),boardSceneTime,ClientMotion);
             ImGui.GetWindowDrawList().AddImage(new ImTextureRef{_TexID=new((nint)homeLegend.Texture)},imageAt,imageAt+new float2(imageWidth,imageHeight),new(0,1),new(1,0));
-            ImGui.SetCursorScreenPos(at+new float2(14,extent.Y-94));HomeLabel($"Level {view.Level}  /  "+(view.Need>0?$"{view.Data}/{view.Need} Digi-Data":"Maximum level"),13,HomeMute);
+            ImGui.SetCursorScreenPos(at+new float2(14,extent.Y-184));HomeLabel($"Level {view.Level}  /  "+(view.Need>0?$"{view.Data}/{view.Need} Digi-Data":"Maximum level"),13,HomeMute);
             ImGui.PushStyleColor(ImGuiCol.PlotHistogram,new ImColor8(49,185,202));ImGui.ProgressBar(view.Need>0?(float)view.Data/view.Need:1,new(extent.X-28,5),""u8);ImGui.PopStyleColor();
         }
         catch(Exception error) when(error is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
         {UiText.Wrapped("Your Little Legend could not be displayed: "+error.Message);}
-        ImGui.SetCursorScreenPos(at+new float2(14,extent.Y-56));
+        ImGui.SetCursorScreenPos(at+new float2(14,extent.Y-60));
+        ImGui.SetCursorScreenPos(at+new float2(14,extent.Y-152));
+        ImGui.SetNextItemWidth(extent.X-28);DrawSetChoice("homeRuleset",selectedSet,SelectHomeHeroSet);
+        ImGui.SetNextItemWidth((extent.X-34)*.56f);DrawPaceChoice("homePace",selectedPace,false,pace=>SelectPace(pace));
+        ImGui.SameLine(0,6);ImGui.SetNextItemWidth((extent.X-34)*.44f);DrawFormatChoice("homeFormat",duos,SelectFormat);
+        ImGui.SetCursorScreenPos(at+new float2(14,extent.Y-60));
         bool inRoom=networkRoom is not null || steam?.Room is not null;
         ImGui.BeginDisabled(inRoom);
         if(HomeButton("start",duos?"PLAY DUOS":"PLAY SOLO",extent.X-28,42,true))StartLocalMatch(duos);
@@ -132,7 +137,7 @@ internal sealed partial class MatchScreen
         if(profile is not null){ImGui.PushTextWrapPos(0);ProfileControls();ImGui.PopTextWrapPos();}else {HomeLabel("Build your team. Digivolve.",17,HomeInk);ImGui.Separator();}
         try
         {
-            HomeMissions(HomeDaily);HomePatchPreview();
+            HomeMissions(HomeDaily);
             if(farm?.Error is {} farmError)UiText.Wrapped(farmError);
         }
         catch(Exception error) when(error is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
@@ -153,7 +158,6 @@ internal sealed partial class MatchScreen
         catch(Exception error) when(error is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
         {UiText.Wrapped("Featured items unavailable: "+error.Message);}
         if(profile is not null && HomeButton("homeStore","Open Store",imageWidth,28))OpenHomeStore();
-        HomeSetNews();
         ImGui.End();
     }
     private void DisposeHome(){ClearHomeOfferPreviews();homeLegend?.Dispose();homeLegend=null;homeArtwork.Dispose();}
