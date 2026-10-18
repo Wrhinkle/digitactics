@@ -1,18 +1,33 @@
-Digi-Tactics native development media runtime
+Digi-Tactics native audio runtime
 
-FFmpeg, copyright (c) 2000-2026 the FFmpeg developers.
-Project: https://ffmpeg.org/
-Binary provider: https://github.com/BtbN/FFmpeg-Builds
+This software uses libraries from the FFmpeg project under the GNU Lesser
+General Public License version 2.1 or later (LGPLv2.1+).
+FFmpeg: https://ffmpeg.org/
+Copyright (c) the FFmpeg developers and other copyright holders identified in
+the corresponding source files. FFmpeg is a trademark of Fabrice Bellard.
 
-This directory contains the unmodified FFmpeg executable and shared libraries
-selected by provenance.json. LICENSE.txt contains the supplied LGPL v3 license.
-build-configuration.txt records the executable's version and build configuration.
-The application launches this executable as a separate process; it can be replaced
-with a compatible FFmpeg executable and shared libraries. Development launches
-also accept --ffmpeg <executable> to select another installation.
+Build: 8.1.3-digitactics-audio-29e619e767
+Exact source commit: 29e619e767cde9045a75c29bc9a8278ae7b3a98b
+Source: https://github.com/FFmpeg/FFmpeg/tree/29e619e767cde9045a75c29bc9a8278ae7b3a98b
+Corresponding source release attachment:
+digitactics-media-audio-sources-8.1.3-digitactics-audio-29e619e767.zip
+Obtain this attachment from the same Digi-Tactics release as the game download:
+https://github.com/Wrhinkle/digitactics/releases
 
-Distribution status: development verification only. Before a public release,
-prepare the corresponding source and build materials for this exact binary and
-its included dependencies, retain their required notices, and verify the final
-release archive. The upstream binary download and these provenance files alone
-do not constitute that completed source distribution.
+The attachment includes the exact source, unmodified upstream license texts,
+build scripts and configuration, and GNU Make/NASM source materials. No FFmpeg
+source files were patched. Native audio codecs are enabled without external
+codec libraries, GPL, nonfree or version3-only components. The executable loads
+the accompanying replaceable FFmpeg DLLs and communicates with the game through
+a PCM pipe. You may replace these FFmpeg components with compatible builds;
+the game does not enforce the packaging hashes at runtime.
+
+License texts and the upstream licensing overview are in media/licenses.
+FFmpeg is provided without warranty, including merchantability or fitness for
+a particular purpose, to the extent permitted by the applicable license.
+The original source contains work by the Independent JPEG Group; those source
+files are unchanged and the optional JPEG decoder is not enabled in this build.
+
+The Windows build uses the standard Microsoft C runtime and Windows system
+libraries. Build prerequisites and exact compiler versions are recorded in the
+source archive. They are not separate bundled codec dependencies.

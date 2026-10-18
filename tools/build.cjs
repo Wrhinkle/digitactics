@@ -5,6 +5,7 @@ const given = process.argv[2];
 const esbuild = require(given && (given.startsWith('.') || path.isAbsolute(given)) ? path.resolve(given) : given || 'esbuild');
 const root = path.join(__dirname, '..');
 esbuild.buildSync({
+  absWorkingDir: root,
   entryPoints: [path.join(root, 'js/main.js')],
   bundle: true,
   format: 'iife',

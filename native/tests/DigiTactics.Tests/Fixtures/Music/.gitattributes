@@ -1,0 +1,9 @@
+*.aac -text
+*.flac -text
+*.m4a -text
+*.mp3 -text
+*.oga -text
+*.ogg -text
+*.opus -text
+*.wav -text
+*.webm -text

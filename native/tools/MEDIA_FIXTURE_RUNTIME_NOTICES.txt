@@ -1,0 +1,28 @@
+Digi-Tactics native development media runtime
+
+FFmpeg, copyright (c) 2000-2026 the FFmpeg developers.
+Project: https://ffmpeg.org/
+Binary provider: https://github.com/BtbN/FFmpeg-Builds
+
+This directory contains the unmodified FFmpeg executable and shared libraries
+selected by provenance.json. LICENSE.txt contains the supplied LGPL v3 license.
+licenses/COPYING.LGPLv3 and licenses/COPYING.GPLv3 together contain the LGPL v3
+terms and incorporated GPL v3 terms. licenses/LICENSE.md is FFmpeg's upstream
+licensing overview; its referenced version 2 license texts are also retained.
+build-configuration.txt records the executable's version and build configuration.
+Only optional synthetic-fixture regeneration uses this encoder. Normal builds,
+tests and game releases use the separate, locally built native audio decoder.
+
+This software is based in part on the work of the Independent JPEG Group.
+Digi-Tactics makes no changes to FFmpeg's libavcodec/jfdctfst.c,
+libavcodec/jfdctint_template.c or libavcodec/jrevdct.c. Their upstream copyright
+and no-warranty notices are preserved in the pinned FFmpeg source archive.
+
+Exact FFmpeg source: commit 29e619e767cde9045a75c29bc9a8278ae7b3a98b
+https://github.com/FFmpeg/FFmpeg/tree/29e619e767cde9045a75c29bc9a8278ae7b3a98b
+Build recipes: commit 6c9aec5fc9a72ec3abedd1fa84db141fa18cf52b
+https://github.com/BtbN/FFmpeg-Builds/tree/6c9aec5fc9a72ec3abedd1fa84db141fa18cf52b
+This BtbN encoder is a development input and is excluded from game releases.
+Historical source recovery evidence is retained locally under ignored
+native/artifacts/media-investigation. It does not establish complete source
+closure for the BtbN binary, which included unused video-codec dependencies.

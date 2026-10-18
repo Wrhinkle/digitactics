@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "29e619e767cde9045a75c29bc9a8278ae7b3a98b",
+  "sourceUrl": "https://codeload.github.com/FFmpeg/FFmpeg/zip/29e619e767cde9045a75c29bc9a8278ae7b3a98b",
+  "sourceSize": 23134216,
+  "sourceSha256": "69ea98adb1b80aabdbecefdb0b545ff19ebcd7c6fc0cea9dd550b02f5b642a21",
+  "msvcToolsVersion": "14.38.33130",
+  "windowsSdkVersion": "10.0.22621.0",
+  "compilerFiles": [
+    { "name": "cl.exe", "sha256": "8fc874ca510db74ec01b54769b0b4513097d03a68ec6be0b86f0879cf0b8f4c1" },
+    { "name": "link.exe", "sha256": "50fec27d775d651667cf78ada6d68a480af69bec9a4206004c5f032ddafa9918" }
+  ]
+}

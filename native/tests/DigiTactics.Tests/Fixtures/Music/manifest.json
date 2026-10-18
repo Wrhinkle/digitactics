@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "description": "Original synthetic 441 Hz sine wave; 32 kHz mono; no sampled recordings.",
+  "encoderArchiveSha256": "3e47bda1607740550141e37c0e49d1e5182b34699f15adfd137ee266d346811a",
+  "encoderBuild": "n8.1.3-9-g29e619e767-20260930",
+  "files": [
+    {
+      "path": "short.wav",
+      "size": 19278,
+      "sha256": "01641db66feed674a7318173b0d3af65988d1e5e2e19a172da8a699fc0b30323",
+      "arguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "sine=frequency=441:sample_rate=32000:duration=0.3",
+        "-ac",
+        "1",
+        "-c:a",
+        "pcm_s16le"
+      ]
+    },
+    {
+      "path": "short.mp3",
+      "size": 2385,
+      "sha256": "eed254717be744161826ac80c0a6f57601124c91ffbb1e7cdc99a44d02f7174d",
+      "arguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "sine=frequency=441:sample_rate=32000:duration=0.3",
+        "-ac",
+        "1",
+        "-c:a",
+        "libmp3lame"
+      ]
+    },
+    {
+      "path": "short.ogg",
+      "size": 3976,
+      "sha256": "204739966bdda3c4027d64f242d3cc447d2246d114360e0d8da6b1091bf134fc",
+      "arguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "sine=frequency=441:sample_rate=32000:duration=0.3",
+        "-ac",
+        "1",
+        "-c:a",
+        "libvorbis"
+      ]
+    },
+    {
+      "path": "short.oga",
+      "size": 3976,
+      "sha256": "793101bc6b5588f39cafb15427c5894cf2a7335529a1c0c454b96c3e638870cb",
+      "arguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "sine=frequency=441:sample_rate=32000:duration=0.3",
+        "-ac",
+        "1",
+        "-c:a",
+        "libvorbis"
+      ]
+    },
+    {
+      "path": "short.m4a",
+      "size": 3884,
+      "sha256": "7c5565244129882e577469e7e4937dfbd88267391aba672f69474befea819f06",
+      "arguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "sine=frequency=441:sample_rate=32000:duration=0.3",
+        "-ac",
+        "1",
+        "-c:a",
+        "aac"
+      ]
+    },
+    {
+      "path": "short.aac",
+      "size": 3110,
+      "sha256": "1ab7235ab62aed04eb16d9699f5758020e35d590012a875da0feb8db7c2753f4",
+      "arguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "sine=frequency=441:sample_rate=32000:duration=0.3",
+        "-ac",
+        "1",
+        "-c:a",
+        "aac"
+      ]
+    },
+    {
+      "path": "short.flac",
+      "size": 11274,
+      "sha256": "abb44a9374c72fa9834c20171c5a818c10d586df85796cac972f1bde791cef57",
+      "arguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "sine=frequency=441:sample_rate=32000:duration=0.3",
+        "-ac",
+        "1",
+        "-c:a",
+        "flac"
+      ]
+    },
+    {
+      "path": "short.opus",
+      "size": 3057,
+      "sha256": "b6f4b22628b2d6c8f29c99d5a9aab91f5fb2ea2c10d6f43e89d284e309a206e4",
+      "arguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "sine=frequency=441:sample_rate=32000:duration=0.3",
+        "-ac",
+        "1",
+        "-c:a",
+        "libopus"
+      ]
+    },
+    {
+      "path": "short.webm",
+      "size": 3531,
+      "sha256": "43dd58203a1911f800b4ac728e7c5225cfc1b9843f81630ac63128f12f516874",
+      "arguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "sine=frequency=441:sample_rate=32000:duration=0.3",
+        "-ac",
+        "1",
+        "-c:a",
+        "libopus"
+      ]
+    },
+    {
+      "path": "long.flac",
+      "size": 588670,
+      "sha256": "b65bf6cb82bcb589d8257b87cf55192ded485569dc710c20536eb89c9b8a2837",
+      "arguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "sine=frequency=441:sample_rate=32000:duration=60",
+        "-ac",
+        "1",
+        "-c:a",
+        "flac"
+      ]
+    }
+  ]
+}

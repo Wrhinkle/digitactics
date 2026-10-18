@@ -19,10 +19,20 @@ function Checked([string]$Program,[string[]]$Arguments) {
 }
 $app=Join-Path $Destination 'app'
 $steamRuntime = & (Join-Path $PSScriptRoot 'setup-steam.ps1')
+$mediaRuntime = & (Join-Path $PSScriptRoot 'setup-media.ps1')
 Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Launcher'),'-c','Release','-r','win-x64','--self-contained','true','-o',$Destination)
 Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Desktop'),'-c','Release','-r','win-x64','--self-contained','true','-o',$app)
 $steamPin=Get-Content -LiteralPath (Join-Path $steamRuntime 'steam-runtime-provenance.json') -Raw | ConvertFrom-Json
 if ((Get-FileHash -LiteralPath (Join-Path $app 'steam_api64.dll') -Algorithm SHA256).Hash.ToLowerInvariant() -cne $steamPin.dllSha256) {throw 'Published Steam DLL is missing or does not match its pin.'}
+$expectedMedia=@(Get-ChildItem -LiteralPath $mediaRuntime -File -Recurse)
+$publishedMedia=Join-Path $app 'media'
+$actualMedia=@(Get-ChildItem -LiteralPath $publishedMedia -File -Recurse)
+if($actualMedia.Count -ne $expectedMedia.Count) {throw 'Published audio runtime contains unexpected or missing files.'}
+foreach($sourceFile in $expectedMedia) {
+    $relative=$sourceFile.FullName.Substring($mediaRuntime.TrimEnd('\','/').Length+1)
+    $publishedFile=Join-Path $publishedMedia $relative
+    if(-not(Test-Path -LiteralPath $publishedFile -PathType Leaf) -or (Get-FileHash -LiteralPath $sourceFile.FullName -Algorithm SHA256).Hash -cne (Get-FileHash -LiteralPath $publishedFile -Algorithm SHA256).Hash) {throw "Published audio runtime differs from verified runtime: $relative"}
+}
 foreach($file in @('CREDITS.md','THIRD_PARTY_NOTICES.txt')) {Copy-Item -LiteralPath (Join-Path $repoRoot $file) -Destination $app}
 Copy-Item -LiteralPath (Join-Path $nativeRoot 'README.md') -Destination $app
 $assets=Get-Content (Join-Path $nativeRoot 'src/DigiTactics.Desktop/obj/project.assets.json') -Raw | ConvertFrom-Json

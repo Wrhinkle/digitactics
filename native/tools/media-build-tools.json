@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "make": {
+    "version": "4.4.1-3",
+    "license": "GPL-3.0-or-later",
+    "packagePage": "https://packages.msys2.org/packages/make",
+    "binary": {
+      "file": "make-4.4.1-3-x86_64.pkg.tar.zst",
+      "url": "https://repo.msys2.org/msys/x86_64/make-4.4.1-3-x86_64.pkg.tar.zst",
+      "size": 514683,
+      "sha256": "af0bdba17f06fe037f0194069adaa31a8fe45f1a11381501896aea1fae37bd5d"
+    },
+    "source": {
+      "file": "make-4.4.1-3.src.tar.zst",
+      "url": "https://repo.msys2.org/msys/sources/make-4.4.1-3.src.tar.zst",
+      "size": 2348028,
+      "sha256": "b4ca441780273aba4ac44437ea1606dc058a6c0924e16296783c2b3107d32de1"
+    }
+  },
+  "nasm": {
+    "version": "2.16.03",
+    "license": "BSD-2-Clause",
+    "packagePage": "https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/",
+    "binary": {
+      "file": "nasm-2.16.03-win64.zip",
+      "url": "https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/win64/nasm-2.16.03-win64.zip",
+      "size": 513543,
+      "sha256": "3ee4782247bcb874378d02f7eab4e294a84d3d15f3f6ee2de2f47a46aa7226e6"
+    },
+    "source": {
+      "file": "nasm-2.16.03.tar.xz",
+      "url": "https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/nasm-2.16.03.tar.xz",
+      "size": 1032388,
+      "sha256": "1412a1c760bbd05db026b6c0d1657affd6631cd0a63cddb6f73cc6d4aa616148"
+    }
+  },
+  "hostPrerequisites": {
+    "gitForWindows": "2.53.0.windows.1",
+    "gitRelease": "https://github.com/git-for-windows/git/releases/tag/v2.53.0.windows.1",
+    "bash": "5.2.37(1)-release",
+    "msysRuntimePackage": "3.6.6-1",
+    "msvcTools": "14.38.33130",
+    "supportFiles": [
+      { "path": "usr/bin/bash.exe", "sha256": "fc362aae1f217d34d02237d99527839dd6cf85b37c7a0277109400bfa0faa594" },
+      { "path": "usr/bin/sh.exe", "sha256": "fc362aae1f217d34d02237d99527839dd6cf85b37c7a0277109400bfa0faa594" },
+      { "path": "usr/bin/msys-2.0.dll", "sha256": "10b69b6df16643a9a65b634b58f64c82d274a9fbff2db7aca738fc0088ed4494" },
+      { "path": "usr/bin/msys-intl-8.dll", "sha256": "50f7de0c712d867ddca2c9eb8562ca6ee2d69e120e798ec6126ad29dd1ed5402" },
+      { "path": "etc/package-versions.txt", "sha256": "f4f7e4fb52ca8513ff50d4feeddd6547946b7e05f054f638c44ea933dff352ca" }
+    ],
+    "note": "Existing host tools; not installed, copied, or redistributed by setup-media-build-tools.ps1. Other versions must be independently qualified."
+  }
+}

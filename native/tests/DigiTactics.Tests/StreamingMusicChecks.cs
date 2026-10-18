@@ -1,17 +1,29 @@
 using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text.Json;
 using DigiTactics.Presentation;
 using DigiTactics.Storage;
 
 internal static class StreamingMusicChecks
 {
-    public static async Task Run(string executable)
+    public static async Task Run(string executable,string? fixtureEncoder=null)
     {
         int checks=0;
         void Check(bool value,string why) { checks++; if(!value) throw new InvalidOperationException("Music streaming: "+why); }
         string directory=Path.Combine(Path.GetTempPath(),"digitactics-decoder-test-"+Guid.NewGuid().ToString("N")); Directory.CreateDirectory(directory);
-        async Task Encode(string file,string codec,string duration="0.3")
+        async Task Prepare(string file,string codec,string fixture,string duration="0.3")
         {
-            using var process=new Process { StartInfo=new ProcessStartInfo(executable) {UseShellExecute=false,CreateNoWindow=true,RedirectStandardError=true} };
+            if(fixtureEncoder is null)
+            {
+                string fixtures=Path.Combine(AppContext.BaseDirectory,"Fixtures","Music");
+                using var manifest=JsonDocument.Parse(File.ReadAllText(Path.Combine(fixtures,"manifest.json")));
+                var entry=manifest.RootElement.GetProperty("files").EnumerateArray().Single(x=>x.GetProperty("path").GetString()==fixture);
+                byte[] bytes=File.ReadAllBytes(Path.Combine(fixtures,fixture));
+                Check(bytes.LongLength==entry.GetProperty("size").GetInt64() && Convert.ToHexStringLower(SHA256.HashData(bytes))==entry.GetProperty("sha256").GetString(),"fixture integrity: "+fixture);
+                File.WriteAllBytes(file,bytes);
+                return;
+            }
+            using var process=new Process { StartInfo=new ProcessStartInfo(fixtureEncoder) {UseShellExecute=false,CreateNoWindow=true,RedirectStandardError=true} };
             foreach(var arg in new[] {"-hide_banner","-loglevel","error","-nostdin","-f","lavfi","-i","sine=frequency=441:sample_rate=32000:duration="+duration,"-ac","1","-c:a",codec,file}) process.StartInfo.ArgumentList.Add(arg);
             process.Start(); var errors=process.StandardError.ReadToEndAsync(); await process.WaitForExitAsync();
             if(process.ExitCode!=0) throw new InvalidOperationException(await errors);
@@ -21,7 +33,7 @@ internal static class StreamingMusicChecks
             var library=new MusicLibrary(Path.Combine(directory,"library"));
             foreach(var (extension,codec) in new[] {("wav","pcm_s16le"),("mp3","libmp3lame"),("ogg","libvorbis"),("oga","libvorbis"),("m4a","aac"),("aac","aac"),("flac","flac"),("opus","libopus"),("webm","libopus")})
             {
-                string file=Path.Combine(directory,"test '+$ Unicode \u03a9."+extension); await Encode(file,codec);
+                string file=Path.Combine(directory,"test '+$ Unicode \u03a9."+extension); await Prepare(file,codec,"short."+extension);
                 Check(library.AddFile(file),library.Error??"library import"); var track=library.Tracks.Last();
                 using var decoder=new StreamingMusicDecoder(executable,library.OpenAudio(track.Id));
                 Check(await decoder.Ready.WaitAsync(TimeSpan.FromSeconds(10)),decoder.Error??"initial PCM");
@@ -39,7 +51,7 @@ internal static class StreamingMusicChecks
                 Check(decoder.Error is null,decoder.Error??"successful decode");
                 Check(decoder.Ended && samples>22000 && samples<40000 && energy>1 && stereoError<.01,"resampled stereo signal and duration for "+extension);
             }
-            string longFile=Path.Combine(directory,"long.flac"); await Encode(longFile,"flac","60");
+            string longFile=Path.Combine(directory,"long.flac"); await Prepare(longFile,"flac","long.flac","60");
             Check(library.AddFile(longFile),"long track import"); var longTrack=library.Tracks.Last();
             var lease=library.OpenAudio(longTrack.Id); using var cancelled=new StreamingMusicDecoder(executable,lease);
             Check(await cancelled.Ready.WaitAsync(TimeSpan.FromSeconds(10)),"long track starts"); await Task.Delay(100);

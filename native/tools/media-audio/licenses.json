@@ -1,0 +1,35 @@
+{
+  "sourceCommit": "29e619e767cde9045a75c29bc9a8278ae7b3a98b",
+  "licenses": [
+    {
+      "name": "COPYING.GPLv3",
+      "archive": "ffmpeg",
+      "path": "COPYING.GPLv3",
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    {
+      "name": "COPYING.LGPLv3",
+      "archive": "ffmpeg",
+      "path": "COPYING.LGPLv3",
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "name": "COPYING.GPLv2",
+      "archive": "ffmpeg",
+      "path": "COPYING.GPLv2",
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    {
+      "name": "COPYING.LGPLv2.1",
+      "archive": "ffmpeg",
+      "path": "COPYING.LGPLv2.1",
+      "sha256": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30"
+    },
+    {
+      "name": "LICENSE.md",
+      "archive": "ffmpeg",
+      "path": "LICENSE.md",
+      "sha256": "2e1d16c72fd74e12063776371da757322f8b77589386532f4fd8634bde7de1af"
+    }
+  ]
+}

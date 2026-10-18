@@ -9,4 +9,7 @@
     <ProjectReference Include="../../src/DigiTactics.Rules/DigiTactics.Rules.csproj" />
     <ProjectReference Include="../../src/DigiTactics.Storage/DigiTactics.Storage.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Fixtures/Music/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
