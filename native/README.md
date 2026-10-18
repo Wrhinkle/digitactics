@@ -2143,3 +2143,34 @@ were inspected. To run the training UI check, supply a new, empty
 `--profile-directory` and optionally `--capture`; existing trained pets are not
 suitable test fixtures. This checkpoint does not constitute the completed port
 or a production release.
+
+### Companion model assets and visual selection
+
+The model package now includes the 32 dedicated Little Legend GLBs that were
+missing from the battle-model export. The expanded catalog contains 750 assets
+and 937 prepared sources. Dedicated companions retain every authored animation;
+they do not pass through the battle-model fallback-clip generator. Texture
+conversion, integrity hashes, meshopt decoding and prepared rig checks apply to
+the added files through the existing asset pipeline.
+
+`CompanionCatalog` resolves all 77 base companions and the original accepted
+`id@form` keys, including retro and discovered companions. Its generated metadata
+retains model source, height, clip-role mappings and procedural reaction mappings.
+The browser's reachable-form/parser checks determine the 188 accepted explicit
+form IDs; an invalid or unreachable suffix falls back to the base companion.
+There are 14,898 original selection cases, including unknown IDs and invalid
+suffixes. Dedicated static Upamon remains static in the authored rig; its exported
+procedural policy is available for the forthcoming companion animator.
+
+Validation passed 1,383,730 model/accessor checks, 1,175 texture pixel checks,
+1,364,128 prepared-motion checks, 59,701 companion checks, 2,477,248 action/mixer
+checks, 26,778 material checks, 76,359 mesh checks and 2,748,100 skeletal checks.
+The existing corrupt-clip repair path remains covered. The self-contained Windows
+package passed `--companion-model-smoke`, rendering all 77 base companions through
+the native GPU renderer with visible-pixel checks for every model. The combined
+preview was inspected. Solo and Duos match UI smoke tests also passed.
+
+This supplies the original assets and selection policy for farm, evolution and
+match companions. It does not yet implement the companion reaction animator,
+animated farm room, themed decorations or in-match companion presentation. Those
+remain part of the full port, along with the other production acceptance work.

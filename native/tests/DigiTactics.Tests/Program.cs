@@ -6,6 +6,8 @@ if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--profile-only")) { LegacyProfileChecks.Run(root); return; }
 if (args.Contains("--actions-only")) { ActionParity.Run(root); return; }
 if (args.Contains("--meshes-only")) { MeshParity.Run(root); return; }
+if (args.Contains("--assets-only")) { ModelAssetParity.Run(root); TextureParity.Run(root); MotionParity.Run(root); CompanionModelChecks.Run(root); return; }
+if (args.Contains("--geometry-only")) { MaterialParity.Run(root); MeshParity.Run(root); RigParity.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
 if (args.Contains("--history-only")) { MatchHistoryChecks.Run(root, catalog); return; }
 if (args.Contains("--rewards-only")) { MatchRewardChecks.Run(root, catalog); LegendRewardChecks.Run(root); return; }
@@ -187,6 +189,7 @@ foreach (var trace in damageFixtures.RootElement.EnumerateArray())
     Check(actual.ManaAfter == expected.GetProperty("manaAfter").GetDouble(), "Damage mana gain mismatch.");
 }
 assertions += ModelAssetParity.Run(root);
+assertions += CompanionModelChecks.Run(root);
 assertions += TextureParity.Run(root);
 assertions += MaterialParity.Run(root);
 assertions += ActionParity.Run(root);

@@ -26,7 +26,7 @@ async function main(){
     const nodes=await Promise.all(json.nodes.map((_,i)=>parser.getDependency('node',i)));
     const ids=new Map(nodes.map((n,i)=>[n,i]));
     const before=nodes.map(n=>n.parent);
-    const clips=modelClips(gltf,source.metadata);
+    const clips=source.metadata.companion?gltf.animations:modelClips(gltf,source.metadata);
     const transforms=nodes.map((n,i)=>{
       let parent=n.parent;while(parent&&!ids.has(parent))parent=parent.parent;
       if(n.parent!==before[i])reparented++;

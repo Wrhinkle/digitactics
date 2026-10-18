@@ -38,6 +38,8 @@ async function main() {
   const dimensions = {SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4, MAT4: 16};
   const DT = load({strict: true}); vm.runInNewContext(fs.readFileSync(path.join(root, 'js/models.js'), 'utf8'), {DT});
   const index = JSON.parse(fs.readFileSync(path.join(root, 'models/index.json')));
+  const legends = JSON.parse(fs.readFileSync(path.join(root, 'native/src/DigiTactics.Storage/cosmetics.json'))).legend;
+  for (const item of legends) if (item.data?.file) index['legend:' + item.id] = item.data.file;
   fs.mkdirSync(output, {recursive: true});
   const assets = {}, sources = {}, variants = {};
   for (const file of [...new Set(Object.values(index))].sort()) {
@@ -90,6 +92,10 @@ async function main() {
       animations: (json.animations || []).map(a => a.name || ''), accessors: (json.accessors || []).length};
   }
   for (const [key, file] of Object.entries(index)) sources[key] = {asset: file, metadata: DT.MODEL_SOURCES[key] || {}};
+  for (const item of legends) {
+    if (item.data?.file) sources['legend:' + item.id].metadata = {...item.data, companion: true};
+    else if (!sources[item.data?.model]) throw new Error('Missing companion model: ' + item.id);
+  }
   for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
     DT.Sets.activate(set.id, pace);
     variants[`${set.id}/${pace}`] = Object.fromEntries(Object.values(DT.LINE).map(l => [l.id, [0,1,2].map(stage => DT.modelKey(l, stage))]));
