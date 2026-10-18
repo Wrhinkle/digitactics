@@ -20,6 +20,18 @@ internal sealed partial class MatchScreen
     }
     private void DisposeSteamConnection(){if(!borrowedSteam)steam?.Dispose();}
     internal void SteamStartupError(string? error) {if(error is not null)lobbyMessage=error;}
+    private void OpenMultiplayerView()
+    {
+        // Every entry route leaves the current client module, like the original
+        // client's play-page navigation. Async save/file work keeps completing
+        // in Update even when its panel is no longer visible.
+        showMultiplayer=true;
+        showProfile=showFarm=showCollection=showAbout=showSettings=showSaveData=showHomePlay=false;
+        codexFull=codexSide=false;codexUnit=codexModalLine=null;
+        socialDrawer=showMusicLibrary=showAudio=showPlayers=showEmotes=showSoundboard=false;
+        confirmResetSave=false;resetSaveText.SetValue("".AsSpan());
+        CancelArenaDrag();cameraDrag=null;
+    }
     internal void ReceiveSteamJoin(ulong lobby)
     {
         if(lobby==0 || steam?.Room?.Authority.RoomId==lobby.ToString(System.Globalization.CultureInfo.InvariantCulture))return;
@@ -28,7 +40,7 @@ internal sealed partial class MatchScreen
         {status=lobbyMessage=profileMessage="Leave your current game first, then accept the invite again.";return;}
         if(PostgameHomeVisible)LeaveMatch();
         invitedLobby=lobby;
-        showMultiplayer=true;showProfile=showFarm=showCollection=showAbout=false;
+        OpenMultiplayerView();
         if(steam is null)ConnectSteam();
     }
     private void ApplySteamJoinRequest()

@@ -12,12 +12,13 @@ internal sealed partial class MatchScreen
     private string? backupDestination, saveDataMessage;
     internal bool SaveDataVisible => showSaveData;
     internal Func<string, Task<string?>> BackupPicker { private get; set; } = ProfileFilePicker.Save;
+    internal Func<string, AudioSettings, Task<LegacyProfileSummary?>>? BackupWriter { private get; set; }
     internal bool SaveDataOperationPending => SaveDataBusy;
     internal string? SaveDataStatus => saveDataMessage;
     internal bool ResetSaveConfirmation => confirmResetSave;
     internal bool ResetSaveEnabled => NativeProfileStore.ConfirmsReset(resetSaveText.ToString()) && CanResetSave;
     private bool SaveDataBusy => backupSelection is not null || backupExport is not null;
-    private bool CanResetSave => profile is not null && ClientHomeVisible && networkRoom is null && steam?.Room is null && training is null && !SaveDataBusy && profilePreview is null && audio.MusicController?.LibraryBusy != true;
+    private bool CanResetSave => profile is not null && ClientHomeVisible && networkRoom is null && steam?.Room is null && training is null && !FileOperationsPending && !closeAfterFileOperations;
     private AudioSettings CurrentAudioSettings => new(audio.MusicVolume, audio.EffectsVolume, audio.Muted, audio.MusicOff, audio.BoardVolume, audio.MuteOthers, audio.MusicSource);
 
     private void OpenSaveData() { showSaveData = true; confirmResetSave = false; resetSaveText.SetValue("".AsSpan()); }
@@ -33,10 +34,10 @@ internal sealed partial class MatchScreen
                 else
                 {
                     var current = CurrentAudioSettings; string destination = backupDestination;
-                    backupExport = Task.Run(() => profile!.ExportBackup(destination, current));
+                    backupExport = BackupWriter?.Invoke(destination,current)??Task.Run(() => profile!.ExportBackup(destination, current));
                 }
             }
-            catch (Exception error) { saveDataMessage = "Backup could not be created: " + error.Message; }
+            catch (Exception error) { saveDataMessage = "Backup could not be created: " + error.Message;FileOperationCloseFailed(saveDataMessage); }
         }
         if (backupExport is { IsCompleted: true } exporting)
         {
@@ -46,7 +47,7 @@ internal sealed partial class MatchScreen
                 var result = exporting.GetAwaiter().GetResult();
                 saveDataMessage = result is null ? "Backup canceled." : $"Backup saved: {backupDestination}\n{result.StorageEntries} saved entries and {result.MusicTracks} music files.";
             }
-            catch (Exception error) { saveDataMessage = "Backup could not be created: " + error.Message; }
+            catch (Exception error) { saveDataMessage = "Backup could not be created: " + error.Message;FileOperationCloseFailed(saveDataMessage); }
         }
     }
     private void SaveDataPanel()
@@ -60,7 +61,7 @@ internal sealed partial class MatchScreen
         if (profile is null) return;
         ImGui.SeparatorText("Save data"u8);
         UiText.Wrapped("Your Bits, cosmetics, Little Legend levels, Digi-Farm, match history and settings are saved on this computer."u8);
-        ImGui.BeginDisabled(SaveDataBusy || profilePreview is not null || audio.MusicController?.LibraryBusy == true);
+        ImGui.BeginDisabled(FileOperationsPending || closeAfterFileOperations);
         if (Button("exportSave", "Export save backup", 220, 34))
         {
             try { backupSelection = BackupPicker($"digi-tactics-profile-{DateTime.UtcNow:yyyy-MM-dd}.json"); saveDataMessage = null; }

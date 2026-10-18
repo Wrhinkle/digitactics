@@ -23,3 +23,4 @@ qa/
 native/**/bin/
 native/**/obj/
 native/artifacts/
+native/**/__pycache__/

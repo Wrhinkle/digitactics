@@ -21,6 +21,7 @@ internal sealed partial class MatchScreen
     internal double EggHatchAge=>hatching is {} egg?boardSceneTime-egg.Started:-1;
     internal int CollectionPreviewDrawCalls {get;private set;}
     internal double CollectionLegendYaw=>collectionPreview?.PointerYaw??0;
+    internal int CollectionPedestalDrawCalls=>collectionPreview?.PedestalDrawCalls??0;
     internal int CollectionLegendReactions=>collectionPreview?.PointerReactionCount??0;
     internal int CollectionPreviewMembers=>collectionKillPreview?.Members??0;
     internal double CollectionPreviewAge=>boardSceneTime-collectionPreviewStarted;

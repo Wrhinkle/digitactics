@@ -13,6 +13,7 @@ Push-Location $nativeRoot
 try {
     $steamRuntime = & (Join-Path $nativeRoot 'tools/setup-steam.ps1')
     $mediaRuntime = & (Join-Path $nativeRoot 'tools/setup-media.ps1')
+    $crtRuntime = & (Join-Path $nativeRoot 'tools/setup-crt.ps1')
     $audioTools = Join-Path $nativeRoot 'artifacts/audio-tools'
     if (-not (Test-Path (Join-Path $audioTools 'node_modules/playwright/package.json'))) {
         Invoke-Checked 'npm.cmd' @('install', '--prefix', $audioTools, 'playwright@1.56.1', '--no-audit', '--no-fund')
@@ -151,6 +152,7 @@ try {
     Invoke-Checked 'node' @('tools/export-home-art.cjs')
     Invoke-Checked 'node' @('tools/export-home-content.cjs')
     Invoke-Checked 'node' @('tools/export-pedestal-interaction.cjs')
+    Invoke-Checked 'node' @('tools/export-pedestal-stage.cjs')
     Invoke-Checked 'node' @('tools/export-companion-models.cjs')
     Invoke-Checked 'node' @('tools/export-dance-bindings.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
@@ -179,8 +181,11 @@ try {
     Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
     Invoke-Checked $dotnet @('build', 'src/DigiTactics.Launcher', '-c', 'Release', '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
     & (Join-Path $nativeRoot 'tools/test-launcher.ps1') -Launcher (Join-Path $nativeRoot 'src/DigiTactics.Launcher/bin/Release/net10.0/win-x64/DigiTactics.Launcher.exe') -TestsDirectory (Join-Path $nativeRoot 'tests/DigiTactics.Tests/bin/Release/net10.0/win-x64')
+    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--native-diagnostic-launch-only', '--launcher', (Join-Path $nativeRoot 'src/DigiTactics.Launcher/bin/Release/net10.0/win-x64/DigiTactics.Launcher.exe'))
+    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--desktop-profile-cli-only', '--desktop', (Join-Path $nativeRoot 'src/DigiTactics.Desktop/bin/Release/net10.0/win-x64/DigiTactics.Desktop.exe'))
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--startup-desktop-only', '--desktop', (Join-Path $nativeRoot 'src/DigiTactics.Desktop/bin/Release/net10.0/win-x64/DigiTactics.Desktop.exe'))
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--music-decoder-only', '--ffmpeg', (Join-Path $mediaRuntime 'ffmpeg.exe'))
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--ui-frame-lifetime-smoke')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--custom-music-smoke')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-routing-smoke')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--elimination-audio-smoke')
@@ -198,6 +203,9 @@ try {
     foreach($screen in @('postgame','profile-ui','collection','evolution','elimination-cinematic','training','farm-pointer','network-match','spectator','save-data-ui','client-preferences','social-ui','match-keyboard','set-selection','mystery-loot-ui')) {
         foreach($minimum in @($false,$true)) {
             $profile=Join-Path $env:TEMP ('digitactics-'+$screen+'-'+[Guid]::NewGuid().ToString('N'))
+            if($screen -in @('collection','evolution')) {
+                Invoke-Checked $dotnet @('run','--project','src/DigiTactics.Desktop','-c','Release','--no-build','--','--import-profile','tests/fixtures/collection-profile.json','--profile-directory',$profile)
+            }
             $screenArguments=@('run','--project','src/DigiTactics.Desktop','-c','Release','--no-build','--',('--'+$screen+'-smoke'),'--profile-directory',$profile,'--capture',('artifacts/'+$screen+'-'+$minimum+'.bmp'))
             if($screen -in @('social-ui','set-selection')) {$screenArguments+=@('--steam-api',(Join-Path $nativeRoot 'artifacts/steam-native/fake_steam_api.dll'))}
             if($minimum) {$screenArguments+='--minimum-window'}

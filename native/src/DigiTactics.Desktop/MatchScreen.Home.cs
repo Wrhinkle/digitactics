@@ -18,6 +18,7 @@ internal sealed partial class MatchScreen
     internal bool AboutVisible=>showAbout;
     private static readonly ImColor8 HomeGold=new(200,170,110),HomeInk=new(240,230,210),HomeMute=new(165,174,184),HomeLine=new(92,78,53);
     internal int HomeLegendDrawCalls=>homeLegend?.DrawCalls??0;
+    internal int HomePedestalDrawCalls=>homeLegend?.PedestalDrawCalls??0;
     internal double HomeLegendYaw=>homeLegend?.PointerYaw??0;
     internal int HomeLegendReactions=>homeLegend?.PointerReactionCount??0;
     internal string? HomeHeroArt {get;private set;}
@@ -82,7 +83,7 @@ internal sealed partial class MatchScreen
             if(farm is not null){if(HomeButton("farm","Digi-Farm",100,32)){farm.Refresh(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());showFarm=true;}ImGui.SameLine();}
             if(HomeButton("profile","Profile",80,32))OpenProfile();ImGui.SameLine();
         }
-        if(HomeButton("multiplayer","Steam multiplayer",162,32))showMultiplayer=true;
+        if(HomeButton("multiplayer","Steam multiplayer",162,32))OpenMultiplayerView();
         ImGui.SameLine();if(HomeButton("about","About",70,32))showAbout=true;
         ImGui.SameLine();if(HomeButton("codex","Codex",70,32))OpenCodexFull();
         ImGui.SameLine();if(HomeButton("settings","Settings",80,32))showSettings=true;
@@ -92,26 +93,6 @@ internal sealed partial class MatchScreen
             string balance=$"{profile.Progress.Bits??0:N0} Bits";float textWidth=ImGui.CalcTextSize(balance).X;
             ImGui.SetCursorScreenPos(new(margin+width-textWidth-18,35));HomeLabel(balance,15,HomeGold);
         }
-        ImGui.End();
-    }
-    private void HomeHero(float2 at,float2 extent)
-    {
-        string id=selectedSet;var set=HomeSets.Value[id];HomeHeroArt=set.Hero;
-        HomeCard("Home featured set",at,extent,false);var draw=ImGui.GetWindowDrawList();
-        homeArtwork.Draw(set.Hero,at,extent,255,true,.4f);
-        draw.AddRectFilledMultiColor(at,at+extent,new ImColor8(1,10,19,235),new ImColor8(1,10,19,0),new ImColor8(1,10,19,45),new ImColor8(1,10,19,245));
-        draw.AddRectFilledMultiColor(at+new float2(0,extent.Y-115),at+extent,new ImColor8(1,10,19,0),new ImColor8(1,10,19,0),new ImColor8(1,10,19,235),new ImColor8(1,10,19,235));
-        draw.AddRect(at,at+extent,HomeGold,2);
-        ImGui.SetCursorScreenPos(at+new float2(24,22));HomeLabel(set.Tag.ToUpperInvariant()+"  /  "+(selectedPace=="hyper"?"HYPER ROLL":"NORMAL PACE"));
-        ImGui.PushFont(default,size.X<1200?34:42);ImGui.PushStyleColor(ImGuiCol.Text,HomeInk);ImGui.Text(set.Name.ToUpperInvariant());ImGui.PopStyleColor();ImGui.PopFont();
-        HomeLabel(selectedSet=="chaos"?$"{SetChoices.ChaosPool.Count} eligible sets":$"{Rules.Lines.Length} Digimon  /  {Rules.Traits.Length} traits",14,HomeInk);
-        ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+extent.X*.57f);ImGui.Text(set.Description);ImGui.PopTextWrapPos();
-        var controls=at+new float2(24,extent.Y-78);ImGui.SetCursorScreenPos(controls);HomeLabel("RULESET",12);
-        ImGui.SetCursorScreenPos(controls+new float2(0,20));
-        ImGui.SetNextItemWidth(extent.X*.43f);DrawSetChoice("homeRuleset",selectedSet,SelectSet);
-        ImGui.SetCursorScreenPos(controls+new float2(extent.X*.46f,0));HomeLabel("PACE",12);ImGui.SetCursorScreenPos(controls+new float2(extent.X*.46f,20));ImGui.SetNextItemWidth(extent.X*.20f);DrawPaceChoice("homePace",selectedPace,false,pace=>SelectPace(pace));
-        ImGui.SetCursorScreenPos(controls+new float2(extent.X*.70f,0));HomeLabel("FORMAT",12);ImGui.SetCursorScreenPos(controls+new float2(extent.X*.70f,20));ImGui.SetNextItemWidth(extent.X*.23f);DrawFormatChoice("homeFormat",duos,SelectFormat);
-        ImGui.SetCursorScreenPos(at+new float2(24,extent.Y-25));HomeLabel(duos?"Team up with an AI partner. Share health, units and items.":"Face seven AI Tamers. Build your team and be the last one standing.",12,HomeMute);
         ImGui.End();
     }
     private void HomePartner(float2 at,float2 extent)
@@ -163,14 +144,7 @@ internal sealed partial class MatchScreen
         HomeStoreBounds=(at,at+extent);
         HomeCard("Home store",at,extent);var artAt=ImGui.GetCursorScreenPos();float imageWidth=ImGui.GetContentRegionAvail().X;
         homeArtwork.Draw("store-hero",artAt,new(imageWidth,56),255,true);ImGui.Dummy(new(imageWidth,62));HomeLabel("FEATURED TODAY");HomeLabel("25% off / new in "+HomeCountdown,12,HomeMute);
-        var day=HomeDay;
-        if(homeOfferDay!=day)
-        {
-            ClearHomeOfferPreviews();
-            homeOffers=CosmeticCollection.Featured(day).Select(offer=>(offer.Kind,offer.Item,Price:CosmeticCollection.Price(offer.Kind,offer.Item,day))).ToArray();
-            HomeFeaturedKeys=homeOffers.Select(offer=>offer.Kind+"/"+offer.Item.Id).ToArray();
-            homeOfferDay=day;
-        }
+        RefreshHomeOffers();
         try
         {
             var collection=new CosmeticCollection(profile?.Storage.GetValueOrDefault("dt.cosmetics.v1"));

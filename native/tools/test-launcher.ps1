@@ -18,14 +18,14 @@ $metadata=Run-Launcher @('package',$bundle,$archive,'1.1.0')
 [IO.File]::WriteAllText($descriptor,($metadata -join "`n"))
 $common=@('--bundle',$bundle,'--version','1.0.0','--state',$stateRoot)
 Run-Launcher (@('stage',$archive,$descriptor)+$common)
-Run-Launcher (@('run')+$common+@('--','--native-supervisor-child','ready'))
+Run-Launcher (@('run','--verify-update-startup')+$common+@('--','--match-smoke'))
 $statePath=Join-Path $stateRoot 'launcher-state.json'
 $saved=Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
 if($saved.active.version -ne '1.1.0' -or $null -ne $saved.trial) {throw 'Candidate did not confirm'}
-Run-Launcher (@('run')+$common+@('--','--native-supervisor-child','ready'))
+Run-Launcher (@('run','--verify-update-startup')+$common+@('--','--match-smoke'))
 $candidateExe=Join-Path (Join-Path (Join-Path $stateRoot 'candidates') $saved.active.candidate) 'DigiTactics.Desktop.exe'
 [IO.File]::AppendAllText($candidateExe,'corruption')
-Run-Launcher (@('run')+$common+@('--','--native-supervisor-child','ready'))
+Run-Launcher (@('run','--verify-update-startup')+$common+@('--','--match-smoke'))
 $saved=Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
 if($null -ne $saved.active -or $saved.badVersions -notcontains '1.1.0') {throw 'Corrupted active candidate did not fall back'}
 Write-Host "Launcher executable smoke passed: package, stage, confirm, restart, corruption rejection and bundled fallback. Fixture: $testRoot"

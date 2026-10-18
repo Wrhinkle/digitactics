@@ -56,7 +56,7 @@ internal static class MatchApplication
                 var eliminationDriver=options.EliminationCinematicSmoke?new EliminationCinematicSmoke():null;
                 var postgameDriver=options.PostgameSmoke?new PostgameSmoke(catalog,profile!):null;
                 using var profileDriver=options.ProfileUiSmoke?new ProfileUiSmoke(screen,profile!):null;
-                using var saveDataDriver=options.SaveDataUiSmoke?new SaveDataUiSmoke(screen,profile!):null;
+                using var saveDataDriver=options.SaveDataUiSmoke?new SaveDataUiSmoke(screen,profile!,audio):null;
                 using var socialDriver=options.SocialUiSmoke?new SocialUiSmoke(profile!,options.SteamLibrary,options.MinimumWindow):null;
                 var clientPreferencesDriver=options.ClientPreferencesSmoke?new ClientPreferencesSmoke(profile!,audio):null;
                 using var updateDriver=options.UpdateUiSmoke?new UpdateUiSmoke(screen):null;
@@ -71,9 +71,9 @@ internal static class MatchApplication
                 using var networkDriver = options.NetworkMatchSmoke ? new NetworkMatchSmoke(catalog, screen, options.Duos, options.SpectatorSmoke) : null;
                 using var trainer = options.TrainingSmoke ? new TrainingSmoke(profile!, options.ProfileDirectory!) : null;
                 var clock = System.Diagnostics.Stopwatch.StartNew(); double last = 0;
-                for (int frame = 0; !window.ShouldClose; frame++)
+                for (int frame = 0; ; frame++)
                 {
-                    Glfw.PollEvents(); if(options.Instance is not null)while(options.Instance.TryTake(out var requestedLobby)){if(window.IsIconified)window.Restore();window.Focus();if(requestedLobby is {} lobby)screen.ReceiveSteamJoin(lobby);} audio.SetHidden(window.IsIconified); renderer.NewFrame(); platform.NewFrame(); driver?.Input(screen); trainer?.Input(screen); farmPointer?.Input(screen); networkDriver?.Input(screen);
+                    UiFrameLifetime.Begin(); Glfw.PollEvents(); if(window.ShouldClose){window.ShouldClose=false;screen.RequestWindowClose();} if(options.Instance is not null)while(options.Instance.TryTake(out var requestedLobby)){if(window.IsIconified)window.Restore();window.Focus();if(requestedLobby is {} lobby)screen.ReceiveSteamJoin(lobby);} audio.SetHidden(window.IsIconified); renderer.NewFrame(); platform.NewFrame(); driver?.Input(screen); trainer?.Input(screen); farmPointer?.Input(screen); networkDriver?.Input(screen);
                     lobbyDriver?.Input(screen); modeDriver?.Input(screen); musicDriver?.Input(screen);updateDriver?.Input(screen); profileDriver?.Input(screen); postgameDriver?.Input(screen); eliminationDriver?.Input(screen);
                     saveDataDriver?.Input(screen); keyboardDriver?.Input(screen);socialDriver?.Input(screen);
                     clientPreferencesDriver?.Input(screen); selectionDriver?.Input(screen); mysteryDriver?.Input(screen);
@@ -84,6 +84,7 @@ internal static class MatchApplication
                     screen.Draw(window.Size); ImGui.Render();
                     if(screen.RestartForUpdateRequested) {updateDriver?.VerifyRestart(screen);break;}
                     audio.Update();
+                    screen.UpdateFileOperationClose();
                     preferences?.Update(delta);
                     var size = window.FramebufferSize;
                     OpenGl.Viewport(0, 0, size.X, size.Y); OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
@@ -107,6 +108,7 @@ internal static class MatchApplication
                     if (farmPointer is not null && farmPointer.Verify(screen, size, options.Capture)) break;
                     if (networkDriver is not null && networkDriver.Verify(screen, size, options.Capture)) break;
                     if (lobbyDriver is not null && lobbyDriver.Verify(screen, size, options.Capture)) break;
+                    if(screen.ExitAfterFileOperationsReady)break;
                     window.SwapBuffers();
                     if(frame==0 && startupSignal is not null)_=startupSignal.ReportReady();
                     if (options.Smoke && frame > (options.TrainingSmoke ? 6000 : options.CollectionSmoke || options.EvolutionSmoke ? 2400 : options.PostgameSmoke ? 1800 : 1400))

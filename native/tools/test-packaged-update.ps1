@@ -18,7 +18,7 @@ function Run-Launcher([string[]]$Arguments) {
 $metadata=Run-Launcher @('package',(Join-Path $PackageDirectory 'app'),$archive,$testVersion)
 [IO.File]::WriteAllText($descriptor,($metadata -join "`n"))
 Run-Launcher @('stage',$archive,$descriptor,'--state',$stateRoot)
-Run-Launcher @('run','--no-updates','--state',$stateRoot,'--','--match-smoke','--minimum-window')
+Run-Launcher @('run','--no-updates','--verify-update-startup','--state',$stateRoot,'--','--match-smoke','--minimum-window')
 $saved=Get-Content (Join-Path $stateRoot 'launcher-state.json') -Raw | ConvertFrom-Json
 if($saved.active.version -ne $testVersion -or $null -ne $saved.trial -or $null -ne $saved.pending) {throw 'Packaged desktop did not confirm the staged update.'}
 if($saved.active.manifestSha256.Length -ne 64) {throw 'Confirmed candidate lost manifest pin.'}

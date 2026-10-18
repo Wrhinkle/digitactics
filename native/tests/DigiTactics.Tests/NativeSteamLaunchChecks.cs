@@ -31,7 +31,7 @@ internal static class NativeSteamLaunchChecks
         string bundle=Path.Combine(root,"bundle"),profile=Path.Combine(root,"profile"),state=Path.Combine(root,"state"),events=Path.Combine(root,"events.txt");
         Directory.CreateDirectory(bundle);
         foreach(string file in Directory.GetFiles(AppContext.BaseDirectory))File.Copy(file,Path.Combine(bundle,Path.GetFileName(file)));
-        File.Copy(Path.Combine(bundle,"DigiTactics.Tests.exe"),Path.Combine(bundle,"DigiTactics.Desktop.exe"));
+        File.Copy(NativeTestProcess.AppHost,Path.Combine(bundle,"DigiTactics.Desktop.exe"));
         var processes=new List<Process>();
         Process Start(string executable,IEnumerable<string> arguments)
         {

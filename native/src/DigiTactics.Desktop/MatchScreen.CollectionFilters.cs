@@ -17,6 +17,7 @@ internal sealed partial class MatchScreen
     internal string CollectionFilterOwnership=>collectionOwnership;
     internal string CollectionFilterRarity=>collectionRarity;
     internal string CollectionFilterSort=>collectionSort;
+    internal string CollectionFilterKind=>CosmeticCollection.Kinds[collectionKind];
     internal string? CollectionSelectedId=>previewCosmetic;
     internal bool CollectionVisible=>showCollection;
     internal (Brutal.Numerics.float2 Min,Brutal.Numerics.float2 Max) CollectionListBounds {get;private set;}

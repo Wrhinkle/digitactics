@@ -6,9 +6,7 @@ internal static class NativeJobChecks
 {
     private static ProcessStartInfo Start(params string[] args)
     {
-        var start=new ProcessStartInfo(Environment.ProcessPath!) {UseShellExecute=false,CreateNoWindow=true};
-        start.Environment["DOTNET_ROOT"]=Path.GetFullPath(Path.Combine(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(),"../../.."));
-        foreach(string argument in args)start.ArgumentList.Add(argument);return start;
+        return NativeTestProcess.Start(args);
     }
     public static async Task Child(string[] args)
     {

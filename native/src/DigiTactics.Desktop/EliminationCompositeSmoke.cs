@@ -31,7 +31,7 @@ internal static class EliminationCompositeSmoke
                 {
                     for(int frame=0;frame<3;frame++)
                     {
-                        Glfw.PollEvents();backend.NewFrame();platform.NewFrame();ImGui.NewFrame();
+                        UiFrameLifetime.Begin(); Glfw.PollEvents();backend.NewFrame();platform.NewFrame();ImGui.NewFrame();
                         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize,0);ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding,0);
                         Begin("Composite checkerboard",new(0,0),new(width,height));
                         var board=ImGui.GetWindowDrawList();

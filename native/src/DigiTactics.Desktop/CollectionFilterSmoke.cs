@@ -8,7 +8,7 @@ namespace DigiTactics.Desktop;
 /// <summary>Exercises real collection controls; source fixtures independently validate the resulting query model.</summary>
 internal sealed class CollectionFilterSmoke
 {
-    private int step,cooldown=2;
+    private int step=-2,cooldown=2;
     private bool down;
     private ImGuiKey key;
     private string? originalSave,selection;
@@ -18,10 +18,15 @@ internal sealed class CollectionFilterSmoke
         if(Done||cooldown-->0)return;
         var io=ImGui.GetIO();
         if(down){if(key==ImGuiKey.None)io.AddMouseButtonEvent(0,false);else io.AddKeyEvent(key,false);down=false;key=ImGuiKey.None;cooldown=3;return;}
-        originalSave??=profile.Storage.GetValueOrDefault("dt.cosmetics.v1");selection??=screen.CollectionSelectedId;
+        originalSave??=profile.Storage.GetValueOrDefault("dt.cosmetics.v1");
+        if(step>=0)selection??=screen.CollectionSelectedId;
         bool advance=true;
         switch(step)
         {
+            // Home's featured links intentionally remember their selected category.
+            // Establish this fixture through player input before asserting Legend filters.
+            case -2:advance=Click("collectionCategory");break;
+            case -1:advance=Click("collectionCategory/0");break;
             case 0:advance=Click("collectionOwnership/owned");break;
             case 1:advance=Click("collectionOwnership/locked");break;
             case 2:advance=Click("collectionOwnership/all");break;
@@ -62,12 +67,13 @@ internal sealed class CollectionFilterSmoke
     }
     public void Verify(MatchScreen screen,NativeProfileStore profile,int2 size,string? capture)
     {
-        if(Done||cooldown!=1)return;
+        if(Done||step<0||cooldown!=1)return;
         string kind=step is >=21 and <=23?"emote":"legend";
         var collection=new CosmeticCollection(profile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
         if(!screen.CollectionVisible)throw new InvalidOperationException("Collection search Escape closed the panel.");
+        if(screen.CollectionFilterKind!=kind)throw new InvalidOperationException($"Collection filter step {step}: expected category {kind}, actual {screen.CollectionFilterKind}.");
         var expected=CosmeticBrowser.Items(collection,kind,screen.CollectionFilterQuery,screen.CollectionFilterOwnership,screen.CollectionFilterRarity,screen.CollectionFilterSort).Select(item=>item.Id);
-        if(!expected.SequenceEqual(screen.CollectionFilterIds))throw new InvalidOperationException("Collection controls did not bind the filtered item list.");
+        if(!expected.SequenceEqual(screen.CollectionFilterIds))throw new InvalidOperationException($"Collection filter step {step}: category {screen.CollectionFilterKind}, query '{screen.CollectionFilterQuery}', ownership {screen.CollectionFilterOwnership}, rarity {screen.CollectionFilterRarity}, sort {screen.CollectionFilterSort} did not bind the expected item list.");
         string? ownership=step switch{1=>"owned",2=>"locked",3=>"all",_=>null};
         if(ownership is not null&&screen.CollectionFilterOwnership!=ownership)throw new InvalidOperationException("Collection ownership control failed.");
         if(step==5&&screen.CollectionFilterRarity!="epic")throw new InvalidOperationException("Collection rarity control failed.");

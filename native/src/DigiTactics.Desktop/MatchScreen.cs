@@ -52,6 +52,9 @@ internal sealed partial class MatchScreen : IDisposable
     public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { planning=new(arenaEnvironment); this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; farm = profile is null ? null : new(profile); InitializeSetSelection(duos); }
     private void Window(string name, float x, float y, float width, float height, ImGuiWindowFlags flags = 0)
     {
+        // The narrow-layout friends drawer floats above client modules while
+        // those modules can still accept keyboard focus and input beside it.
+        if(ClientHomeVisible && socialDrawer && name!="Friends")flags|=ImGuiWindowFlags.NoBringToFrontOnFocus;
         ImGui.SetNextWindowPos(new(x, y)); ImGui.SetNextWindowSize(new(width, height)); ImGui.Begin(name, Fixed | flags);
     }
     private bool Button(string key, string label, float width = 0, float height = 0, bool active = false)
@@ -144,6 +147,7 @@ internal sealed partial class MatchScreen : IDisposable
         UpdateNetworkCountdown();
         UpdatePostgameAward();
         UpdateSaveData();
+        UpdateMusicSelection();
         UpdateMysteryLoot();
         UpdateEliminationCinematic(wallDelta ?? delta);
         if (farm is not null) farm.ResidentPosition = id => showFarm && training is null ? farmView?.Position(id) : null;
@@ -265,9 +269,11 @@ internal sealed partial class MatchScreen : IDisposable
         CodexShortcuts();
         OverlayShortcuts();
         ReserveMatchSpace();
+        TickHomeHero();
         if(codexFull){DrawCodexFull();return;}
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
         if(showSettings && ClientHomeVisible) {ClientSettingsPanel();return;}
+        if(showHomePlay && ClientHomeVisible) {HomePlayPanel();return;}
         if(showSaveData) {SaveDataPanel();return;}
         if(showProfile) {ProfilePanel();DrawEliminationCinematic();return;}
         if (ClientHomeVisible)
@@ -305,7 +311,7 @@ internal sealed partial class MatchScreen : IDisposable
         if(!showMusicLibrary && !EliminationCinematicActive && !CodexVisible && !codexConsumedShortcut) MatchShortcuts();
         DrawEliminationCinematic();
         }
-        finally { DrawClientSocial(); DrawMysteryLootNotice(); keyboardPopupLastFrame=KeyboardPopup; }
+        finally { DrawClientSocial(); DrawMysteryLootNotice(); DrawFileOperationClose(); keyboardPopupLastFrame=KeyboardPopup; }
     }
     private void Menu()=>HomePanel();
     private void Header()

@@ -4,7 +4,7 @@ The native port is undergoing integrated acceptance testing and is not yet a
 production replacement for v1.0.14. Gameplay, rendering, audio, Steam networking,
 profile migration and launcher updates are implemented; the final source audit
 and complete packaged-app checks must pass before release.
-The integrated CPU suite passes 219,330,297 checks, including 5,699 reference
+The integrated CPU suite passes 219,414,972 checks, including 5,699 reference
 battles across all 22 variants. Codex, save export/reset, Steam invites, social
 display, keyboard/preferences, collection filters and seeded Chaos are implemented
 and covered by source comparisons and focused UI tests. Result dismissal keeps
@@ -14,6 +14,28 @@ verification. A fresh self-contained package and release acceptance remain
 outstanding; simulation counts alone do not establish release readiness.
 It is a native C# application using BRUTAL GLFW, OpenGL and ImGui. No Electron,
 WebView, JavaScript interpreter or browser runs inside it.
+
+## Moving an existing save to the native app
+
+In the old Windows game, open Settings and choose **Export save backup**. Keep
+that JSON file and close the old game. On the native app's first Home screen,
+choose **Import save backup...** before starting a match or changing settings.
+Review the displayed profile summary and choose **Import profile**. The native
+app preserves the original archive and imports progress, cosmetics, history,
+settings and included music files; it does not modify the old Electron profile.
+
+Native progress lives under `%LOCALAPPDATA%/DigiTactics/native`, separately from
+`%APPDATA%/Digi-Tactics`. Existing native progress is never silently merged or
+replaced. To intentionally replace it, export a native backup first, use the
+Settings reset with typed confirmation, then import from Home. Steam supplies
+online identity; it does not synchronize these local saves between PCs.
+
+Start through `DigiTactics.Launcher.exe` to receive native updates. The old
+Electron updater cannot convert its runtime to the native app; the first native
+installation requires the full native ZIP. Keep the launcher and `app` folder
+together after extraction. Fatal startup details are recorded separately in
+`%LOCALAPPDATA%/DigiTactics/logs/game-error.log` or `launcher-error.log`; redact
+personal paths or identifiers before sharing a log.
 
 ## Build and run
 
@@ -36,6 +58,8 @@ release. Release assembly and source-attachment instructions are in
 [tools/NATIVE_RELEASE_ARTIFACTS.md](tools/NATIVE_RELEASE_ARTIFACTS.md).
 The bundled minimal audio runtime and rebuilding prerequisites are described in
 [tools/MEDIA_AUDIO_RUNTIME.md](tools/MEDIA_AUDIO_RUNTIME.md).
+The application-local Microsoft CRT and dependency audit are documented in
+[tools/CRT_RUNTIME.md](tools/CRT_RUNTIME.md).
 `build.ps1` checks the SDK installed at `%LOCALAPPDATA%\DigiTacticsBuild\dotnet`
 before using `dotnet` from PATH. Package versions and transitive dependencies are locked.
 For manual development, run dotnet commands from `native/` so `global.json` applies.

@@ -59,7 +59,7 @@ public static class NativeApplication
                 {
                     while (!window.ShouldClose)
                     {
-                        Glfw.PollEvents();
+                        UiFrameLifetime.Begin(); Glfw.PollEvents();
                         renderer.NewFrame();
                         platform.NewFrame();
                         if (smoke && frames is 3 or 4)

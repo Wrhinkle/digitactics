@@ -30,10 +30,8 @@ internal static class NativeGameInstanceChecks
         var children = new List<Process>();
         Process Start(string directory, string lobby)
         {
-            string executable = Environment.ProcessPath ?? throw new IOException("Test host executable missing.");
-            var start = new ProcessStartInfo(executable) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
-            if (Path.GetFileNameWithoutExtension(executable).Equals("dotnet", StringComparison.OrdinalIgnoreCase)) start.ArgumentList.Add(Assembly.GetEntryAssembly()!.Location);
-            start.ArgumentList.Add("--native-game-instance-child"); start.ArgumentList.Add(directory); start.ArgumentList.Add(lobby);
+            var start = NativeTestProcess.Start("--native-game-instance-child",directory,lobby);
+            start.RedirectStandardInput = start.RedirectStandardOutput = start.RedirectStandardError = true;
             var process = Process.Start(start) ?? throw new IOException("Instance child did not start."); children.Add(process); return process;
         }
         async Task<string?> Line(Process process)

@@ -21,11 +21,14 @@ internal sealed partial class MatchScreen
             case "verifying": ImGui.Text($"Preparing update {update.Version??""}...");break;
             case "ready":
                 ImGui.Text($"Update {update.Version??""} is ready. Restart when you're ready to play the new version.");
+                ImGui.BeginDisabled(FileOperationsPending||closeAfterFileOperations);
                 if(Button("restartUpdate","Restart to update"))
                 {
                     try {RestartForUpdateRequested=UpdateClient.RequestRestart();if(RestartForUpdateRequested && PostgameHomeVisible)LeaveMatch();}
                     catch(Exception error) when(error is IOException or UnauthorizedAccessException) {updateError="Could not request restart. Please close and reopen the game.";}
                 }
+                ImGui.EndDisabled();
+                if(ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)&&FileOperationsPending)ResultTooltip("Finish the current file operation before restarting.");
                 break;
             case "manual":
                 ImGui.Text($"Update {update.Version??""} requires a new full download.");

@@ -150,7 +150,7 @@ internal sealed partial class MatchScreen
         ImGui.SameLine(width-390);
         if(Button("menu",outNow?"Leave":"Home",160,36))
         {
-            if(outNow){bool online=networkRoom is not null;LeaveMatch();showMultiplayer=online;}
+            if(outNow){bool online=networkRoom is not null;LeaveMatch();if(online)OpenMultiplayerView();}
             else DismissResults();
         }
         ImGui.SameLine();
@@ -164,7 +164,7 @@ internal sealed partial class MatchScreen
             {
                 bool online=networkRoom is not null; bool nextDuos=Session.State.Duos;
                 LeaveMatch();
-                if(online) showMultiplayer=true;
+                if(online) OpenMultiplayerView();
                 else StartLocalMatch(nextDuos);
             }
         }

@@ -45,6 +45,14 @@ public sealed class NativeLaunchState : IDisposable
 
     public string CurrentVersion {get {ObjectDisposedException.ThrowIf(disposed,this);return EffectiveActive()?.Version??bundledVersion;}}
 
+    /// <summary>Read-only selection for one-shot diagnostics and import commands. Pending and
+    /// interrupted trials are left for the next actual game startup.</summary>
+    public NativeLaunchSelection SelectActive()
+    {
+        ObjectDisposedException.ThrowIf(disposed,this);
+        return new(EffectiveActive(),null);
+    }
+
     public bool CanDownload(string version)
     {
         ObjectDisposedException.ThrowIf(disposed,this);

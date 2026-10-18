@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "version": "14.44.35211.0",
+  "architecture": "x64",
+  "url": "https://download.visualstudio.microsoft.com/download/pr/990c720a-46ce-4dc7-87b9-c2eb615d34b9/CC0FF0EB1DC3F5188AE6300FAEF32BF5BEEBA4BDD6E8E445A9184072096B713B/VC_redist.x64.exe",
+  "sha256": "cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b",
+  "size": 25635768,
+  "cabinets": [
+    { "name": "ux.cab", "offset": 479744, "size": 195988, "sha256": "2f57cf2cd504bd100c9222bb123b9c3a40802cca73e89ca05c97885d91be3a78" },
+    { "name": "payload.cab", "offset": 686152, "size": 24939223, "sha256": "468f1264d50b9e3b9d309ab9e13c02ff379fd95a2837383bf65c9616583013d6" }
+  ],
+  "crtCabinet": { "entry": "a12", "size": 987836, "sha256": "640aa6c516c72444523b8fbe034db46ff4e118ed02705340e3ccb62d426ff040" },
+  "license": { "entry": "u4", "path": "LICENSES/Microsoft.VisualCpp.VCRuntime/LICENSE.rtf", "size": 9235, "sha256": "8099dc3cf9502c335da829e5c755948a12e3e6de490eb492a99deb673d883d8b" },
+  "files": [
+    { "name": "vcruntime140.dll", "entry": "vcruntime140.dll_amd64", "size": 124544, "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066" },
+    { "name": "vcruntime140_1.dll", "entry": "vcruntime140_1.dll_amd64", "size": 49792, "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f" }
+  ],
+  "redistributionList": "https://learn.microsoft.com/en-us/visualstudio/releases/2022/redistribution#visual-c-runtime-files",
+  "deploymentDocumentation": "https://learn.microsoft.com/en-us/cpp/windows/redistributing-visual-cpp-files?view=msvc-170#install-individual-redistributable-files"
+}

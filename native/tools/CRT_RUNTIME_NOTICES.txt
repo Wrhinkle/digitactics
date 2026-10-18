@@ -1,0 +1,29 @@
+Microsoft Visual C++ Runtime 14.44.35211.0 (x64)
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Digi-Tactics includes the unmodified vcruntime140.dll and vcruntime140_1.dll
+from the official Microsoft Visual C++ 2015-2022 Redistributable. These exact
+names are imported by BRUTAL's SDL3, GLFW, GLAD and ImGui native libraries.
+The Microsoft runtime license is included at
+LICENSES/Microsoft.VisualCpp.VCRuntime/LICENSE.rtf.
+
+The Visual Studio 2022 REDIST list permits licensed Visual Studio users to
+redistribute unchanged release files from VC/redist with their programs,
+subject to the applicable Visual Studio license terms:
+https://learn.microsoft.com/en-us/visualstudio/releases/2022/redistribution#visual-c-runtime-files
+
+Microsoft documents application-local deployment here:
+https://learn.microsoft.com/en-us/cpp/windows/redistributing-visual-cpp-files?view=msvc-170#install-individual-redistributable-files
+
+This package uses application-local files; it does not install or change a
+system-wide Visual C++ runtime. Windows 10/11 supply the Universal CRT/API-set
+dependencies. App-local CRT servicing is the application's responsibility;
+update the pinned runtime when Microsoft publishes applicable fixes.
+
+crt-runtime-provenance.json records the immutable Microsoft download URL,
+archive hash, signed release version, extracted file hashes and license hash.
+native/tools/setup-crt.ps1 verifies these before copying release files. It
+extracts cabinets only and never executes the redistributable installer.
+
+The published game uses OpenGL. VulkanEx.dll is an unused transitive BRUTAL
+backend and is excluded from this package; no Vulkan loader is required.

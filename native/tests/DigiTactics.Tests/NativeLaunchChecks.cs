@@ -76,6 +76,16 @@ internal static class NativeLaunchChecks
                 Check(retried.Release==next && retried.TrialToken is not null && retried.TrialToken!=selected.TrialToken,"deferred candidate retries with a fresh readiness token");
                 launcher.DeferTrial(retried.TrialToken!);
             }
+            string diagnosticRoot=Path.Combine(root,"diagnostics");
+            using(var launcher=new NativeLaunchState(diagnosticRoot,"1.0.0"))
+            {
+                Check(launcher.SelectActive()==new NativeLaunchSelection(null,null) && !File.Exists(Path.Combine(diagnosticRoot,"launcher-state.json")),"fresh diagnostic selection does not write launch state");
+                launcher.Queue(first);launcher.Confirm(launcher.BeginLaunch().TrialToken!);launcher.Queue(next);
+                string stateFile=Path.Combine(diagnosticRoot,"launcher-state.json"),before=File.ReadAllText(stateFile);
+                Check(launcher.SelectActive()==new NativeLaunchSelection(first,null) && File.ReadAllText(stateFile)==before,"diagnostic selects active release without consuming pending update");
+                launcher.BeginLaunch();before=File.ReadAllText(stateFile);
+                Check(launcher.SelectActive()==new NativeLaunchSelection(first,null) && File.ReadAllText(stateFile)==before,"diagnostic does not quarantine an interrupted trial");
+            }
             string failureRoot=Path.Combine(root,"write-failure");
             using(var launcher=new NativeLaunchState(failureRoot,"1.0.0"))
             {

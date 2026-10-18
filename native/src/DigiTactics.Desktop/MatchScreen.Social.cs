@@ -13,6 +13,7 @@ internal sealed partial class MatchScreen
     private const float SocialWidth = 280;
     private int2 socialWindowSize;
     private bool socialDrawer;
+    private int socialDrawnModule,socialDisplayedModule;
     private long socialPollAt;
     private long socialProjectionAt;
     private SteamRoomSession? socialConnection;
@@ -28,6 +29,9 @@ internal sealed partial class MatchScreen
     private int2 ClientContentSize(int2 windowSize)
     {
         socialWindowSize = windowSize;
+        // Capture the module being drawn, before a click can navigate to the
+        // next one. Its newly created window must stay below the open drawer.
+        socialDrawnModule=codexFull?1:showSettings?2:showSaveData?3:showProfile?4:showMultiplayer?5:showFarm?6:showCollection?7:showAbout?8:0;
         return ClientHomeVisible && SocialDocked ? new(windowSize.X - (int)SocialWidth - 12, windowSize.Y) : windowSize;
     }
     private void DrawClientSocial()
@@ -101,7 +105,8 @@ internal sealed partial class MatchScreen
         { socialError = "The friends list could not be displayed: " + error.Message; }
         SocialVisible = true;
         float top = docked ? 16 : 124;
-        if (!docked && !wasVisible) ImGui.SetNextWindowFocus();
+        if (!docked && (!wasVisible || socialDisplayedModule!=socialDrawnModule)) ImGui.SetNextWindowFocus();
+        socialDisplayedModule=socialDrawnModule;
         HomeCard("Friends", new(size.X - SocialWidth - 12, top), new(SocialWidth, size.Y - top - 24), false, bringToFront: !docked);
         HomeLabel("FRIENDS", 18, HomeInk);
         if (!docked)
@@ -131,7 +136,7 @@ internal sealed partial class MatchScreen
         ImGui.EndChild(); ImGui.Separator();
         if (socialError is not null) UiText.Wrapped(socialError);
         if (HomeButton("socialLobby", steam?.Room is null ? "Open multiplayer" : "Open party", 170, 28))
-        { showMultiplayer = true; showCollection = showFarm = showProfile = false; socialDrawer = false; }
+        { OpenMultiplayerView(); }
         ImGui.End();
     }
 
@@ -154,7 +159,7 @@ internal sealed partial class MatchScreen
         if (row.JoinLobby is { } lobby)
         {
             ImGui.BeginDisabled(!row.CanJoin || enteringRoom is not null);
-            if (HomeButton("socialJoin/" + row.Id, "Join", 70, 24)) { JoinSteamRoom(lobby); showMultiplayer = true; socialDrawer = false; }
+            if (HomeButton("socialJoin/" + row.Id, "Join", 70, 24)) { JoinSteamRoom(lobby); OpenMultiplayerView(); }
             ImGui.EndDisabled();
             if (!row.CanJoin && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ResultTooltip("Leave your current party before joining another.");
         }

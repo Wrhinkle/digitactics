@@ -24,6 +24,13 @@ internal sealed partial class MatchScreen
     internal float HomeArticleScroll {get;private set;}
     private DateOnly HomeDay=>DateOnly.FromDateTime(HomeClock().LocalDateTime);
     private DailyRewardProgress HomeDaily=>MatchRewards.Progress(profile?.Storage.GetValueOrDefault("dt.shop.v1"),profile?.Storage.GetValueOrDefault("dt.client.v1"),HomeDay);
+    private void RefreshHomeOffers()
+    {
+        var day=HomeDay;if(homeOfferDay==day)return;
+        ClearHomeOfferPreviews();
+        homeOffers=CosmeticCollection.Featured(day).Select(offer=>(offer.Kind,offer.Item,Price:CosmeticCollection.Price(offer.Kind,offer.Item,day))).ToArray();
+        HomeFeaturedKeys=homeOffers.Select(offer=>offer.Kind+"/"+offer.Item.Id).ToArray();homeOfferDay=day;
+    }
     private void HomeTabs(float x,float y,float width)
     {
         HomeCard("Home tabs",new(x,y),new(width,34),false);

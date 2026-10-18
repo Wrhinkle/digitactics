@@ -15,6 +15,8 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
     private int step,checkedStep=-1,cooldown=5;
     private bool down,keyDown,initialized;
     private DateTimeOffset clock;
+    private double heroTimeOffset;
+    private string initialSet="";
     private string[] originalOffers=[];
     public bool Done {get;private set;}
     private static void Check(bool okay,string message){if(!okay)throw new InvalidOperationException("Home UI: "+message);}
@@ -26,10 +28,36 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         ImGui.GetIO().AddMousePosEvent(point.X,point.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=true;return true;
     }
     private bool Escape(){ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,true);down=keyDown=true;return true;}
+    private bool HeroThumb(MatchScreen screen,string id)
+    {
+        if(!screen.Buttons.TryGetValue("homeHeroThumb/"+id,out var point))return false;
+        var bounds=screen.HomeHeroThumbBounds;
+        if(point.X<bounds.Min.X+30||point.X>bounds.Max.X-30)
+        {var center=(bounds.Min+bounds.Max)*.5f;ImGui.GetIO().AddMousePosEvent(center.X,center.Y);ImGui.GetIO().AddMouseWheelEvent(point.X<bounds.Min.X+30?5:-5,0);cooldown=4;return false;}
+        return Click(screen,"homeHeroThumb/"+id);
+    }
     private void AddClick(string key,Action<MatchScreen>? check=null)=>steps.Add(new(key,s=>Click(s,key),check));
     private void Setup(MatchScreen screen)
     {
-        initialized=true;clock=DateTimeOffset.Now;screen.HomeClock=()=>clock;
+        initialized=true;clock=DateTimeOffset.Now;screen.HomeClock=()=>clock;initialSet=screen.SelectedSet;
+        var heroClock=screen.HomeHeroClock;screen.HomeHeroClock=()=>heroClock()+heroTimeOffset;
+        steps.Add(new("hero-initial",s=>HeroThumb(s,"set-faction-wars"),s=>Check(s.HomeHeroId=="set-faction-wars"&&s.HomeHeroCount==14&&s.SelectedSet==initialSet,"Carousel thumbnails changed the selected ruleset or omitted source slides.")));
+        steps.Add(new("hero-hover-timeout",s=>{var b=s.HomeHeroBounds;ImGui.GetIO().AddMousePosEvent((b.Min.X+b.Max.X)/2,b.Min.Y+18);heroTimeOffset+=8.01;return true;},s=>Check(s.HomeHeroId=="set-faction-wars","Carousel advanced while hovered.")));
+        steps.Add(new("hero-deferred-refresh",s=>{ImGui.GetIO().AddMousePosEvent(5,5);heroTimeOffset+=8.01;return true;},s=>Check(s.HomeHeroId=="set-faction-wars","Blocked timeout must first refresh the same slide after eight seconds.")));
+        steps.Add(new("hero-auto-advance",s=>{ImGui.GetIO().AddMousePosEvent(5,5);heroTimeOffset+=8.01;return true;},s=>Check(s.HomeHeroId=="store"&&s.SelectedSet==initialSet,"The next eight-second timeout must advance to Store without changing the ruleset.")));
+        steps.Add(new("hero-store-settled",_=>{heroTimeOffset+=1;return true;}));
+        if(profile is not null)
+        {
+            AddClick("homeHeroAction",s=>Check(s.CollectionVisible,"Featured hero CTA failed to open its Store category."));
+            steps.Add(new("hero-store-return",_=>Escape(),s=>Check(!s.CollectionVisible,"Store hero did not return Home.")));
+        }
+        steps.Add(new("hero-multiplayer",s=>HeroThumb(s,"mp"),s=>Check(s.HomeHeroId=="mp"&&s.SelectedSet==initialSet,"Multiplayer thumbnail did not select its source slide independently of the ruleset.")));
+        steps.Add(new("hero-multiplayer-settled",_=>{heroTimeOffset+=1;return true;}));
+        AddClick("homeHeroAction",s=>Check(s.Buttons.ContainsKey("steamBack"),"Multiplayer hero CTA did not open lobby discovery."));AddClick("steamBack");
+        steps.Add(new("hero-chaos",s=>HeroThumb(s,"set-chaos"),s=>Check(s.HomeHeroId=="set-chaos"&&s.SelectedSet==initialSet,"Chaos thumbnail must preview without selecting the game.")));
+        AddClick("homeHeroAction",s=>Check(s.HomePlayVisible&&s.SelectedSet=="chaos"&&s.Buttons.ContainsKey("homePlayStart"),"Set hero CTA must select its set and open launch configuration."));
+        steps.Add(new("hero-play-return",_=>Escape(),s=>Check(!s.HomePlayVisible,"Launch selection Escape did not return Home.")));
+        AddClick("homeRuleset");AddClick("homeRuleset/"+initialSet,s=>Check(s.SelectedSet==initialSet&&s.HomeHeroId=="set-"+initialSet,"Ruleset picker did not preserve its selection and reveal the matching hero."));
         AddClick("about",s=>Check(s.AboutVisible,"About did not open."));AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.Buttons.ContainsKey("start"),"About did not return Home."));
         AddClick("homeTab/patch",s=>Check(s.HomeTab=="patch"&&s.HomeHighlights==7&&s.HomeRotationSets==11,"Patch notes omitted source highlights or rotation sets."));
         steps.Add(new("patch-scroll",s=>{var b=s.HomeArticleBounds;ImGui.GetIO().AddMousePosEvent((b.Min.X+b.Max.X)/2,(b.Min.Y+b.Max.Y)/2);ImGui.GetIO().AddMouseWheelEvent(0,-24);return true;},s=>Check(s.HomeArticleScroll>0,"Full patch notes cannot scroll through the set rotation.")));
@@ -62,6 +90,9 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         steps.Add(new("overview-patch-link",s=>Click(s,"homeReadPatch",s.HomeProgressBounds),s=>Check(s.HomeTab=="patch","Overview patch link failed.")));
         AddClick("homeTab/overview");steps.Add(new("set-news-codex",s=>Click(s,"homeSetCodex",s.HomeStoreBounds),s=>Check(s.CodexFullVisible,"Set mechanic news did not open Codex.")));
         steps.Add(new("return-overview",_=>Escape(),s=>Check(!s.CodexVisible&&s.HomeTab=="overview","Set news Codex did not return Home.")));
+        // The subsequent planning/shop driver is the Normal-pace fixture. Select
+        // it through the visible control without changing the source Hyper default.
+        AddClick("homePace");AddClick("homePace/normal",s=>Check(s.SelectedPace=="normal","Could not select Normal pace for the downstream shop fixture."));
     }
     public void Input(MatchScreen screen)
     {
@@ -74,7 +105,7 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         if(step>=steps.Count)
         {
             screen.HomeClock=()=>DateTimeOffset.Now;Done=true;
-            Console.WriteLine("Home UI passed: source artwork/pedestal, Overview/Patch notes/Events, all highlights/rotation sets, daily midnight refresh, four featured prices/ownership/category links, set-news Codex, Store/Farm and About navigation.");return;
+            Console.WriteLine("Home UI passed: source artwork/pedestal, selectable hero thumbnails, eight-second hover/retry rotation, Store/Multiplayer/set-launch CTAs, Overview/Patch notes/Events, all highlights/rotation sets, daily midnight refresh, four featured prices/ownership/category links, set-news Codex, Store/Farm and About navigation.");return;
         }
         if(steps[step].Input(screen)){step++;cooldown=3;}
     }
@@ -87,7 +118,8 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
             foreach(string key in new[]{"start","multiplayer","homeRuleset","reconnectAudio","about","homeTab/patch","homeTab/events"})
                 Check(screen.Buttons.TryGetValue(key,out var point)&&point.X>=0&&point.X<size.X&&point.Y>=0&&point.Y<size.Y,"Control outside supported window: "+key);
         }
-        string scene=screen.AboutVisible?"about":screen.CodexVisible?"set-news-codex":screen.CollectionVisible?"featured-store":screen.HomeTab+(screen.HomeArticleScroll>0&&screen.HomeTab=="patch"?"-scrolled":"");
-        if(capture is not null&&captures.Add(scene))FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"home-"+scene+".bmp"),size.X,size.Y);
+        string scene=screen.AboutVisible?"about":screen.HomePlayVisible?"hero-play":screen.CodexVisible?"set-news-codex":screen.CollectionVisible?"featured-store":screen.HomeTab=="overview"&&screen.HomeHeroId is "store" or "mp"?"hero-"+screen.HomeHeroId:screen.HomeTab+(screen.HomeArticleScroll>0&&screen.HomeTab=="patch"?"-scrolled":"");
+        bool enteringHero=(scene is "overview" or "hero-store" or "hero-mp")&&screen.HomeHeroAge<.8;
+        if(capture is not null&&!enteringHero&&captures.Add(scene))FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"home-"+scene+".bmp"),size.X,size.Y);
     }
 }

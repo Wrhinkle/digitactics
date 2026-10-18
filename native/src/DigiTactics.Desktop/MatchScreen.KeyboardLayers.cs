@@ -6,7 +6,7 @@ internal sealed partial class MatchScreen
 {
     private bool overlayShortcutConsumed,keyboardPopupLastFrame;
     private static bool SlotKeyPressed(int slot)=>ImGui.IsKeyPressed((ImGuiKey)((int)ImGuiKey._1+slot),false)||ImGui.IsKeyPressed((ImGuiKey)((int)ImGuiKey.Keypad1+slot),false);
-    private bool SocialKeyboardAllowed=>!ImGui.GetIO().WantTextInput&&!ShortcutModifiers&&!KeyboardPopup&&!overlayShortcutConsumed&&!CodexVisible&&!codexConsumedShortcut&&!showAudio&&!showPlayers&&!showMusicLibrary&&!showGameMenu&&!showProfile&&!showCollection&&!showFarm&&!showSettings&&!showSaveData&&!EliminationCinematicActive;
+    private bool SocialKeyboardAllowed=>!ImGui.GetIO().WantTextInput&&!ShortcutModifiers&&!KeyboardPopup&&!overlayShortcutConsumed&&!CodexVisible&&!codexConsumedShortcut&&!showAudio&&!showPlayers&&!showMusicLibrary&&!showGameMenu&&!showProfile&&!showCollection&&!showFarm&&!showSettings&&!showSaveData&&!showHomePlay&&!EliminationCinematicActive;
     private void OverlayShortcuts()
     {
         overlayShortcutConsumed=false;
@@ -25,6 +25,7 @@ internal sealed partial class MatchScreen
         else if(showPlayers)showPlayers=false;
         else if(showEmotes)showEmotes=false;
         else if(showSoundboard)showSoundboard=false;
+        else if(showHomePlay)showHomePlay=false;
         else if(evolutionLegend is not null)CloseEvolution();
         else if(showCollection)
         {

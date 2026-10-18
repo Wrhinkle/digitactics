@@ -67,7 +67,7 @@ try
     if (profileIndex >= 0)
     {
         if (profileIndex + 1 >= args.Length) throw new ArgumentException("Provide the exported profile backup file.");
-        var staged = LegacyProfileArchive.Stage(args[profileIndex + 1], Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native", "imports"));
+        var staged = LegacyProfileArchive.Stage(args[profileIndex + 1], Path.Combine(profileDirectory ?? NativeGameInstance.DefaultProfileDirectory, "imports"));
         Console.WriteLine($"Preserved backup: {staged.Path}\n{staged.Summary.StorageEntries} saved entries, {staged.Summary.MusicTracks} music files. Player data has not been applied.");
         return 0;
     }
@@ -79,6 +79,8 @@ try
     string? capture = captureIndex >= 0 && captureIndex + 1 < args.Length ? args[captureIndex + 1] : null;
     if (args.Contains("--elimination-theme-smoke")) { EliminationThemeSmoke.Run(capture); return 0; }
     if (args.Contains("--elimination-composite-smoke")) { EliminationCompositeSmoke.Run(capture); return 0; }
+    if (args.Contains("--pedestal-stage-smoke")) { PedestalStageSmoke.Run(capture); return 0; }
+    if (args.Contains("--ui-frame-lifetime-smoke")) { UiFrameLifetime.Verify(); return 0; }
     if (args.Contains("--move-effect-smoke")) { MoveEffectSmoke.Run(catalog,capture); return 0; }
     if (args.Contains("--board-mesh-smoke")) { BoardMeshSmoke.Run(capture); return 0; }
     if (args.Contains("--companion-model-smoke")) { CompanionModelSmoke.Run(capture); return 0; }
@@ -160,6 +162,6 @@ try
 }
 catch (Exception error)
 {
-    Console.Error.WriteLine(error);
+    NativeApplicationError.Report("game", error, NativeGameInstance.IsInteractiveLaunch(args));
     return 1;
 }

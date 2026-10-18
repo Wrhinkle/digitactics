@@ -1,5 +1,55 @@
 # Run and build from source
 
+This branch prepares the native 2.0.0 release candidate. The C# application under
+`native/` uses BRUTAL GLFW, OpenGL and ImGui; browser/Electron source is retained
+as the original implementation and as input to reference comparisons and asset
+exporters. A successful local build does not publish or approve a release.
+
+## Native Windows candidate
+
+See [the native guide](../native/README.md) for prerequisites and current
+acceptance status. Build on Windows x64 with the pinned .NET SDK, MSVC x64 tools,
+Node.js, Python and an OpenGL 4.5 capable graphics driver. From the repository root:
+
+```powershell
+python -m pip install -r native/tools/requirements.txt
+./native/build.ps1 -Publish -NativeVersion 2.0.0
+```
+
+The script exports content/reference fixtures, runs checks and creates a fresh
+self-contained package under `%LOCALAPPDATA%/DigiTacticsBuild/releases/`.
+`-Publish` means a local .NET package; it does not upload to GitHub. Start
+`DigiTactics.Launcher.exe` from the printed package directory and keep its `app`
+folder beside it. Players need no installed .NET SDK/runtime.
+
+Native profile data is separate from Electron. Use an isolated
+`--profile-directory` for development and diagnostics; do not use a real player
+profile for smoke tests. Follow [explicit migration and backup steps](ONLINE_AND_UPDATES.md)
+when moving a player's save. The normal launcher supervises startup and handles
+native updates; running the game executable directly bypasses that work.
+
+For individual .NET commands, work from `native/` so `global.json` applies, and
+use `-m:1 -nr:false -p:UseSharedCompilation=false` for serial builds. Source
+comparison fixtures are generated from the JavaScript implementation by
+`native/tools/export-*.cjs`, then read by `native/tests/DigiTactics.Tests`.
+Run GPU/UI checks serially against fresh test profiles. Live Steam checks need
+separate acceptance; fake-library tests do not prove service availability.
+
+[Native artifact assembly](../native/tools/NATIVE_RELEASE_ARTIFACTS.md) documents
+the full ZIP, update ZIP, `native-latest.json`, checksums and matching audio
+source materials. [Audio runtime instructions](../native/tools/MEDIA_AUDIO_RUNTIME.md)
+describe the pinned minimal FFmpeg build. Final package, live Steam and source
+redistribution checks must be reviewed before publication.
+
+Native forks must change the update repository written to `native-launcher.json`
+by `native/tools/publish-native.ps1`; otherwise they check the original public
+repository. Protocol compatibility is defined by
+`native/src/DigiTactics.Networking/NetworkProtocol.cs`. Keep its source reference
+and tests aligned when changing the wire contract. Native manifests and Electron
+manifests are deliberately separate.
+
+## Browser reference implementation
+
 Use Node.js 22 or newer. The checked-in bundle runs without installing development packages:
 
 ```sh
@@ -17,7 +67,9 @@ npm install --no-save --package-lock=false esbuild
 node tools/build.cjs ./node_modules/esbuild
 ```
 
-To build Windows desktop packages on Windows:
+## Historical Electron packages
+
+To build the retained Electron desktop implementation on Windows:
 
 ```sh
 cd desktop-steam
@@ -30,15 +82,16 @@ Outputs are `dist/DigiTactics-Steam/` and `dist/DigiTactics-Steam.exe` at the re
 ## Project layout
 
 - `js/`: game, combat, UI, renderer and networking modules; `js/sets/` contains rulesets.
+- `native/`: BRUTAL desktop game, deterministic rules, presentation, storage, Steam networking, launcher and source comparison/UI tests.
 - `assets/`, `models/`, `icons/`: illustrations, model/portrait data and app icons.
-- `desktop-steam/`: Electron shell, native bridge, packaging and updater.
+- `desktop-steam/`: retained Electron shell, native bridge, packaging and updater for 1.x.
 - `tests/`: gameplay, browser, native bridge and update checks.
 - `docs/credits/`, `CREDITS.md`, `THIRD_PARTY_NOTICES.txt`: provenance and attribution.
 - `docs/inspo/`, `docs/sets/`: research and ruleset mappings.
 - `media/`, `tools/capture-trailer-cinematic.cjs`, `tools/render-trailer-cinematic.py`: trailer, cover and production recipes.
-- `desktop/`: older offline WebView2 wrapper; the public Windows release uses Electron.
+- `desktop/`: older offline WebView2 wrapper, separate from both the Electron and native editions.
 
-## Useful checks
+## Browser and Electron checks
 
 ```sh
 node tests/security.cjs
@@ -48,7 +101,7 @@ node tests/update.cjs desktop-steam/out/win-unpacked/Digi-Tactics.exe
 node desktop-steam/smoke.cjs
 ```
 
-The native smoke check loads the packaged game without a visible window and, when Steam is running, creates/leaves a friends-only test lobby. Browser checks need Playwright and its browser installed; for example:
+The Electron smoke check loads its packaged game without a visible window and, when Steam is running, creates/leaves a friends-only test lobby. Browser checks need Playwright and its browser installed; for example:
 
 ```sh
 npm install --no-save --package-lock=false playwright esbuild
@@ -58,7 +111,10 @@ node tests/launch-copy.cjs playwright ./qa/launch-copy
 
 Other test scripts document their arguments at the top. Keep generated screenshots and test profiles out of commits. No test result establishes production-scale concurrency or immunity to cheating.
 
-## Publishing a fork or update
+## Historical Electron publishing
+
+These commands produce the Electron `latest.json`/payload channel, not a native
+release. Use the native artifact guide above for 2.0.0 candidates.
 
 Change `desktop-steam/update-config.example.json` to your own repository before distributing a fork. An ignored `update-config.json` can override it locally; only `owner` and `repo` are staged. A fork pointed at the original repository will receive the original maintainer's updates.
 

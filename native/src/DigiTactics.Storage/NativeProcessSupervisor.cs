@@ -4,31 +4,33 @@ using System.Diagnostics;
 namespace DigiTactics.Storage;
 
 public sealed record NativeProcessResult(int ExitCode,bool RolledBack,string? Failure);
+public enum NativeProcessMode { Interactive, Diagnostic, StartupVerification }
 
 /// <summary>Runs one game lifetime under the caller's launcher-state lease. The start-info factory
 /// must verify the selected release and return its executable before any child is started.</summary>
 public static class NativeProcessSupervisor
 {
     public static async Task<NativeProcessResult> Run(NativeLaunchState state,Func<NativeLaunchSelection,ProcessStartInfo> prepare,
-        TimeSpan? startupTimeout=null,CancellationToken cancellation=default,Action? started=null)
+        TimeSpan? startupTimeout=null,CancellationToken cancellation=default,Action? started=null,NativeProcessMode mode=NativeProcessMode.Interactive)
     {
+        if(!Enum.IsDefined(mode))throw new ArgumentOutOfRangeException(nameof(mode));
         TimeSpan timeout=startupTimeout??TimeSpan.FromSeconds(90);
         if(timeout<=TimeSpan.Zero || timeout>TimeSpan.FromMinutes(10))throw new ArgumentOutOfRangeException(nameof(startupTimeout));
         bool rolledBack=false;string? failure=null;
         for(int attempt=0;attempt<3;attempt++)
         {
             cancellation.ThrowIfCancellationRequested();
-            var selection=state.BeginLaunch();
+            var selection=mode==NativeProcessMode.Diagnostic?state.SelectActive():state.BeginLaunch();
             ProcessStartInfo start;
             try {start=prepare(selection);}
-            catch(Exception error) when(selection.Release is not null && StartupError(error))
+            catch(Exception error) when(mode!=NativeProcessMode.Diagnostic && selection.Release is not null && StartupError(error))
             {
                 Reject(state,selection);rolledBack=true;failure=error.Message;continue;
             }
             if(start.UseShellExecute)throw new ArgumentException("Native child launch must not use a shell.");
             // A normal launch must not inherit a stale startup capability.
             start.Environment.Remove(NativeStartupSignal.PipeVariable);start.Environment.Remove(NativeStartupSignal.TokenVariable);
-            bool renderedStartup=selection.TrialToken is not null || NativeGameInstance.IsInteractiveLaunch(start.ArgumentList.ToArray());
+            bool renderedStartup=mode!=NativeProcessMode.Diagnostic && (mode==NativeProcessMode.StartupVerification || selection.TrialToken is not null || NativeGameInstance.IsInteractiveLaunch(start.ArgumentList.ToArray()));
             using var listener=renderedStartup?new NativeStartupListener():null;
             using var deadline=CancellationTokenSource.CreateLinkedTokenSource(cancellation);
             Task? ready=null;
@@ -44,7 +46,7 @@ public static class NativeProcessSupervisor
             try
             {
                 try {lifetime=NativeChildProcess.Start(start);child=lifetime.Process;}
-                catch(Exception error) when(selection.Release is not null && StartupError(error))
+                catch(Exception error) when(mode!=NativeProcessMode.Diagnostic && selection.Release is not null && StartupError(error))
                 {Reject(state,selection);rolledBack=true;failure=error.Message;continue;}
                 Task exited=child.WaitForExitAsync(cancellation);
                 if(ready is not null)
@@ -69,7 +71,7 @@ public static class NativeProcessSupervisor
                         state.Rollback(selection.TrialToken!);rolledBack=true;continue;
                     }
                 }
-                started?.Invoke();
+                if(mode!=NativeProcessMode.Diagnostic)started?.Invoke();
                 await exited.ConfigureAwait(false);
                 return new(child.ExitCode,rolledBack,failure);
             }

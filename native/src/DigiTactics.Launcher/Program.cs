@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using DigiTactics.Storage;
 
 const int launcherVersion=1;
+bool fatalDialog=NativeGameInstance.IsInteractiveLaunch(args) && (args.Length==0 || args[0] is not ("package" or "stage" or "fetch" or "check"));
 var json=new JsonSerializerOptions {PropertyNamingPolicy=JsonNamingPolicy.CamelCase,UnmappedMemberHandling=JsonUnmappedMemberHandling.Disallow};
 try
 {
@@ -38,11 +39,12 @@ try
         if(options.Length-index<2 || gameArgs.Length!=0)throw new ArgumentException("Usage: stage <archive.zip> <descriptor.json>, or fetch <https-url> <descriptor.json> [--bundle directory --version version] [--state directory]");
         archive=options[index++];descriptorPath=options[index++];
     }
-    string? bundle=null,version=null,updateOwner=null,updateRepository=null;bool noUpdates=false;
+    string? bundle=null,version=null,updateOwner=null,updateRepository=null;bool noUpdates=false,verifyUpdateStartup=false;
     string stateDirectory=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"DigiTactics","native-updates");
     while(index<options.Length)
     {
         string option=options[index++];if(option=="--no-updates") {noUpdates=true;continue;}
+        if(option=="--verify-update-startup") {verifyUpdateStartup=true;continue;}
         if(index==options.Length)throw new ArgumentException("Missing value after "+option);
         string value=options[index++];
         switch(option)
@@ -53,6 +55,8 @@ try
             default:throw new ArgumentException("Unknown launcher option: "+option);
         }
     }
+    if(verifyUpdateStartup && (command!="run" || !gameArgs.Where(argument=>!NativeGameInstance.IsInteractiveLaunch([argument])).SequenceEqual(new[]{"--match-smoke"})))
+        throw new ArgumentException("--verify-update-startup requires -- --match-smoke and no other diagnostic command.");
     if((bundle is null)!=(version is null))throw new ArgumentException("Provide both --bundle and --version for a development launch.");
     if(bundle is null)
     {
@@ -65,6 +69,7 @@ try
     if(!NativeUpdatePackage.ValidVersion(version))throw new InvalidDataException("Invalid bundled application version.");
     if(!File.Exists(Path.Combine(bundle,"DigiTactics.Desktop.exe")))throw new FileNotFoundException("Bundled native application is missing.");
     bool interactive=command=="run" && NativeGameInstance.IsInteractiveLaunch(gameArgs);
+    NativeProcessMode processMode=verifyUpdateStartup?NativeProcessMode.StartupVerification:interactive?NativeProcessMode.Interactive:NativeProcessMode.Diagnostic;
     string launchProfile=NativeGameInstance.ProfileDirectory(gameArgs);
     ulong? launchLobby=NativeGameInstance.ParseLobbyArguments(gameArgs);
     if(interactive && NativeGameInstance.TryForward(launchProfile,launchLobby,TimeSpan.FromMilliseconds(200)))return 0;
@@ -111,7 +116,7 @@ try
     while(true)
     {
         NativeCandidateLease? candidate=null;
-        var updates=!noUpdates && updateOwner is not null && updateRepository is not null?new NativeUpdateSession(stateDirectory):null;
+        var updates=interactive && !noUpdates && updateOwner is not null && updateRepository is not null?new NativeUpdateSession(stateDirectory):null;
         using var updateCancellation=CancellationTokenSource.CreateLinkedTokenSource(cancellation.Token);
         using var discovery=new NativeReleaseDiscovery();using var downloader=new NativeUpdateDownloader();
         Task? updateTask=null;
@@ -136,7 +141,7 @@ try
                 }
                 foreach(string argument in gameArgs)start.ArgumentList.Add(argument);
                 return start;
-            },cancellation:cancellation.Token,started:()=>
+            },cancellation:cancellation.Token,mode:processMode,started:()=>
             {
                 if(updates is not null && updateTask is null)
                     updateTask=Task.Run(()=>updates.Run(state,updateOwner!,updateRepository!,stateDirectory,launcherVersion,discovery,downloader,updateCancellation.Token));
@@ -149,12 +154,12 @@ try
             candidate?.Dispose();
         }
         if(result.RolledBack)Console.Error.WriteLine("Update rolled back: "+result.Failure);
-        else if(result.Failure is not null)Console.Error.WriteLine("Game startup failed: "+result.Failure);
+        if(result.ExitCode!=0 && result.Failure is not null)NativeApplicationError.Report("launcher",new IOException("Game startup failed: "+result.Failure),fatalDialog);
         if(result.ExitCode==0 && updates?.RestartRequested()==true)continue;
         return result.ExitCode;
     }
 }
 catch(OperationCanceledException) {return 130;}
-catch(Exception error) {Console.Error.WriteLine("Digi-Tactics launcher: "+error.Message);return 1;}
+catch(Exception error) {NativeApplicationError.Report("launcher",error,fatalDialog);return 1;}
 
 internal sealed record LauncherConfiguration(int SchemaVersion,string BundledVersion,string? UpdateOwner=null,string? UpdateRepository=null);

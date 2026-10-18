@@ -27,8 +27,19 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private readonly string[] collectionCommands = evolutionSmoke
         ? ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "evolution/bukamon", "levelLegend", "levelLegend", "feedLegend", "digivolve", "revertLegend", "digivolve", "openEvolutionTree", "closeEvolutionTree", "closeEvolution", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"]
         : ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
-    private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
+    private readonly long initialBits = CollectionFixtureBits(collectionProfile,evolutionSmoke);
+    private static long CollectionFixtureBits(NativeProfileStore? profile,bool evolution)
+    {
+        if(profile is null)return 0;
+        var collection=new CosmeticCollection(profile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
+        int required=CosmeticCollection.Price("legend",CosmeticCollection.Item("legend","bukamon")!,DateOnly.FromDateTime(DateTime.Now))
+            +DigiEggs.Definitions.Single(egg=>egg.Id=="legend").Price+(evolution?200:0);
+        if(collection.Owns("legend","bukamon")||collection.Bits<required)
+            throw new InvalidOperationException($"Collection smoke requires a fresh isolated fixture with unowned Bukamon and at least {required} Bits; found {collection.Bits} Bits, Bukamon owned={collection.Owns("legend","bukamon")}. Import native/tests/fixtures/collection-profile.json into the same --profile-directory before running this smoke.");
+        return collection.Bits;
+    }
     private int collectionIndex;
+    private string? hatchWalletBefore,hatchLegendsBefore;
     private bool collectionVerified,treeScrolled,transformWhite,transformFlash,settledPreview,announcementExpired,announcementFadedIn,announcementFadedOut;
     private readonly string[] farmCommands = evolutionSmoke
         ? ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "farmRoom", "farmOut/tsunomon", "farmIn/tsunomon", "farmOut/motimon", "farmSelect/tsunomon", "farmSwap/motimon", "farmIn/tsunomon", "farmExpand", "farmTheme/sewer", "closeFarm"]
@@ -93,6 +104,11 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             }
             if (down) { input.AddMouseButtonEvent(0, false); down = false; collectionIndex++; cooldown = 3; return; }
             if (!screen.Buttons.TryGetValue(collectionCommands[collectionIndex], out var target)) return;
+            if(collectionCommands[collectionIndex]=="confirmEgg")
+            {
+                hatchWalletBefore=collectionProfile.Storage.GetValueOrDefault("dt.cosmetics.v1");
+                hatchLegendsBefore=collectionProfile.Storage.GetValueOrDefault("dt.legendevo.v1", "{\"legends\":{}}");
+            }
             if(collectionCommands[collectionIndex].StartsWith("egg/",StringComparison.Ordinal) && screen.IncubatorInventoryBounds is { } inventory)
             {
                 if(target.Y<inventory.Min.Y+12||target.Y>inventory.Max.Y-12)
@@ -391,7 +407,6 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             int price = CosmeticCollection.Price("legend", CosmeticCollection.Item("legend", "bukamon")!, DateOnly.FromDateTime(DateTime.Now));
             if (!collection.Owns("legend", "bukamon") || collection.Equipped("legend")?.GetValue<string>() != "bukamon" || collection.Bits != initialBits - price - 250 - (evolutionSmoke ? 200 : 0))
                 throw new InvalidOperationException("Collection purchase/equipment smoke failed.");
-            var wallet = System.Text.Json.Nodes.JsonNode.Parse(collection.Json)!;
             var legends = System.Text.Json.Nodes.JsonNode.Parse(collectionProfile.Storage.GetValueOrDefault("dt.legendevo.v1", "{\"legends\":{}}"))!;
             if (evolutionSmoke)
             {
@@ -401,7 +416,12 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 if(!transformWhite || !transformFlash || !announcementExpired || !announcementFadedIn || !announcementFadedOut)throw new InvalidOperationException("Evolution transition did not traverse white/flash and announcement fade stages.");
                 Console.WriteLine("Evolution UI smoke passed: buy levels, feed, digivolve, revert and digivolve again.");
             }
-            if (wallet["owned"]!["legend"]!.AsArray().Count < 3 && !legends["legends"]!.AsObject().Any(x => x.Value?["xp"]?.GetValue<int>() > 0))
+            if(hatchWalletBefore is null||hatchLegendsBefore is null)throw new InvalidOperationException("Egg confirmation did not capture the collection before hatching.");
+            var beforeHatch=new CosmeticCollection(hatchWalletBefore);
+            var beforeLegends=System.Text.Json.Nodes.JsonNode.Parse(hatchLegendsBefore)!;
+            int newLegends=CosmeticCollection.Items("legend").Count(item=>collection.Owns("legend",item.Id)&&!beforeHatch.Owns("legend",item.Id));
+            bool duplicateData=legends["legends"]!.AsObject().Any(entry=>(entry.Value?["xp"]?.GetValue<double>()??0)>(beforeLegends["legends"]?[entry.Key]?["xp"]?.GetValue<double>()??0));
+            if (!(newLegends==1 || newLegends==0&&duplicateData))
                 throw new InvalidOperationException("Egg granted neither an item nor duplicate Digi-Data.");
             if(!eggWobble||!eggCrack||!eggBurst||!eggReveal)throw new InvalidOperationException("Egg opening skipped its original wobble/crack/burst/reveal stages.");
             collectionVerified = true;

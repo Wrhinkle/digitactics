@@ -59,7 +59,7 @@ internal sealed partial class MatchScreen
             codexConsumedShortcut=ImGui.IsKeyPressed(ImGuiKey.Escape,false);
             return;
         }
-        bool blocked=showCollection||showFarm||showProfile||showMultiplayer||showMusicLibrary||showAudio||showGameMenu||showAbout||showSaveData||showSettings||EliminationCinematicActive||Session is not null&&Human.Offer is not null;
+        bool blocked=showCollection||showFarm||showProfile||showMultiplayer||showMusicLibrary||showAudio||showGameMenu||showAbout||showSaveData||showSettings||showHomePlay||EliminationCinematicActive||Session is not null&&Human.Offer is not null;
         if(blocked)return;
         var io=ImGui.GetIO();
         if(CodexVisible&&ImGui.IsKeyPressed(ImGuiKey.Escape,false))

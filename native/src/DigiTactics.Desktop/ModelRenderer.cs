@@ -21,11 +21,14 @@ internal sealed partial class ModelRenderer : IDisposable
     public bool ReceiveShadow { get; set; }
     public bool EvolutionStage { get; set; }
     public bool CosmeticStage { get; set; }
+    public bool PedestalStage { get; set; }
     public bool EliminationStage { get; set; }
     public Vector3 EliminationRim { get; set; } = Vector3.One;
     public float EliminationRimIntensity { get; set; } = 3;
     public bool SilhouetteOverride { get; set; }
     private static readonly Vector3 stageGround=BoardLighting.Linear("#3a4660"),stageKey=BoardLighting.Linear("#fff6e8"),stageRim=BoardLighting.Linear("#9fd0ff");
+    private static readonly Vector3 pedestalSky=BoardLighting.Linear("#dfe9ff"),pedestalGround=BoardLighting.Linear("#26304a"),pedestalKey=BoardLighting.Linear("#fff3e0"),pedestalRim=BoardLighting.Linear("#3fd6ff");
+    private static readonly Vector3 pedestalKeyDirection=Vector3.Normalize(new(1.8f,3.2f,3.5f)),pedestalRimDirection=Vector3.Normalize(new(-2.5f,1.8f,-2.5f));
     public bool WhiteOverride { get; set; }
     private void SetFarmLight(Vector3 emissive = default, float roughness = -1, float metalness = 0, bool fog = true)
     {
@@ -42,6 +45,12 @@ internal sealed partial class ModelRenderer : IDisposable
         {
             V(33,Vector3.One,2.2f);V(34,stageGround);V(35,stageKey,2.4f);V(36,Vector3.Normalize(new(1.5f,3,4)));
             V(41,Vector3.Zero);V(42,Vector3.UnitY);V(38,Vector3.Zero);
+            if(PedestalStage)
+            {
+                V(33,pedestalSky,2);V(34,pedestalGround);
+                V(35,pedestalKey,2.4f);V(36,pedestalKeyDirection);
+                V(41,pedestalRim,1.6f);V(42,pedestalRimDirection);
+            }
         }
         if(EvolutionStage)
         {

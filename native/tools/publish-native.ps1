@@ -17,6 +17,7 @@ if(-not(Test-Path -LiteralPath $sdk)) {$sdk=(Get-Command dotnet).Source}
 $app=Join-Path $Destination 'app'
 $steamRuntime = & (Join-Path $PSScriptRoot 'setup-steam.ps1')
 $mediaRuntime = & (Join-Path $PSScriptRoot 'setup-media.ps1')
+$crtRuntime = & (Join-Path $PSScriptRoot 'setup-crt.ps1')
 Invoke-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Launcher'),'-c','Release','-r','win-x64','--self-contained','true','-m:1','-nr:false','-p:UseSharedCompilation=false',('-p:Version='+$Version),'-o',$Destination)
 Invoke-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Desktop'),'-c','Release','-r','win-x64','--self-contained','true','-m:1','-nr:false','-p:UseSharedCompilation=false',('-p:Version='+$Version),'-o',$app)
 foreach($assembly in @((Join-Path $Destination 'DigiTactics.Launcher.dll'),(Join-Path $app 'DigiTactics.Desktop.dll'))) {
@@ -49,6 +50,8 @@ foreach($library in $assets.libraries.PSObject.Properties) {
     }
     if($library.Name -like 'Ahwoo.Brutal.Core/*') {Copy-Item -LiteralPath (Join-Path $source 'NOTICE.txt') -Destination $app}
 }
+Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'verify-native-dependencies.py'),$app,'--require-brutal')
+Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'verify-native-dependencies.py'),$Destination)
 [IO.File]::WriteAllText((Join-Path $Destination 'native-launcher.json'),(@{schemaVersion=1;bundledVersion=$Version;updateOwner="Wrhinkle";updateRepository="digitactics"}|ConvertTo-Json -Compress))
 [IO.File]::WriteAllText((Join-Path $Destination 'START-HERE.txt'),"Start DigiTactics.Launcher.exe to play.`r`nKeep the app folder beside the launcher. Saves and staged updates are stored under your Windows user account.`r`n")
 $savedRoot=$env:DOTNET_ROOT;$savedX64=$env:DOTNET_ROOT_X64;$savedLookup=$env:DOTNET_MULTILEVEL_LOOKUP
@@ -57,6 +60,7 @@ try {
     $env:DOTNET_ROOT=Join-Path $Destination 'no-installed-dotnet'
     $env:DOTNET_ROOT_X64=$env:DOTNET_ROOT;$env:DOTNET_MULTILEVEL_LOOKUP='0'
     $state=Join-Path $env:TEMP ('digitactics-package-smoke-'+[Guid]::NewGuid().ToString('N'))
+    Invoke-Checked (Join-Path $app 'DigiTactics.Desktop.exe') @('--ui-frame-lifetime-smoke')
     Invoke-Checked (Join-Path $app 'DigiTactics.Desktop.exe') @('--smoke')
     Invoke-Checked (Join-Path $Destination 'DigiTactics.Launcher.exe') @('run','--no-updates','--state',$state,'--','--match-smoke','--minimum-window')
     Invoke-Checked (Join-Path $app 'DigiTactics.Desktop.exe') @('--custom-music-smoke')

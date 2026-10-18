@@ -10,6 +10,7 @@ internal sealed class PedestalPointerSmoke(bool home)
     private float2 center,outside;
     private double initialYaw,draggedYaw;
     private int initialReactions;
+    private int backgroundReactions;
     public bool Done {get;private set;}
     public bool Input(MatchScreen screen)
     {
@@ -26,8 +27,9 @@ internal sealed class PedestalPointerSmoke(bool home)
         {
             case 0:
                 if(!screen.Buttons.TryGetValue(key,out center)||!screen.Buttons.TryGetValue(key+"/outside",out outside))return false;
+                Check((home?screen.HomePedestalDrawCalls:screen.CollectionPedestalDrawCalls)==6,"original six-piece pedestal did not render");
                 center=new(MathF.Floor(center.X),MathF.Floor(center.Y));outside=new(MathF.Floor(outside.X),MathF.Floor(outside.Y));
-                initialYaw=yaw;initialReactions=reactions;Position(center);io.AddMouseButtonEvent(0,true);break;
+                initialYaw=yaw;initialReactions=reactions;backgroundReactions=screen.HomeLegendReactions;Position(center);io.AddMouseButtonEvent(0,true);break;
             case 1:Position(center+new float2(35,0));break;
             case 2:
                 Near(initialYaw+35*.012,"drag does not use source pixel-to-yaw scale");Position(outside);break;
@@ -56,6 +58,7 @@ internal sealed class PedestalPointerSmoke(bool home)
             case 15:io.AddMouseButtonEvent(2,false);break;
             case 16:
                 Near(initialYaw,"middle-button drag did not restore the original orientation");Check(reactions==initialReactions+2,"middle-button drag triggered a click reaction");
+                if(!home)Check(screen.HomeLegendReactions==backgroundReactions,"the Home widget behind Collection stole its click reaction");
                 Done=true;Console.WriteLine($"{key} pointer passed: rotation, outside capture/release, click reaction, sticky drag threshold, three-pixel click and middle-button drag.");return true;
         }
         step++;wait=2;return false;

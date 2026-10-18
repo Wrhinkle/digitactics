@@ -7,24 +7,33 @@ internal sealed partial class MatchScreen
     private bool showMusicLibrary,clearMusic;
     private string? removeMusicId,musicPickerError;
     private Task<string[]>? musicPicker;
+    private string? musicPickerGeneration;
     internal Func<Task<string[]>> PickMusicFiles { get; set; }=MusicFilePicker.Open;
+    internal bool MusicSelectionPending=>musicPicker is not null;
+    private void UpdateMusicSelection()
+    {
+        if(musicPicker is not { IsCompleted:true } picked)return;
+        musicPicker=null;
+        try
+        {
+            var paths=picked.GetAwaiter().GetResult();
+            if(musicPickerGeneration!=profile?.DataDirectory)musicPickerError="Music selection canceled because the active save changed. Choose the files again.";
+            else if(paths.Length>0 && audio.MusicController?.AddFiles(paths)!=true)musicPickerError="Music library is busy. Try adding the files again.";
+        }
+        catch(Exception e){musicPickerError="Could not choose music: "+e.Message;}
+        finally{musicPickerGeneration=null;}
+    }
     private void MusicLibraryPanel()
     {
         if(!showMusicLibrary || audio.MusicController is not { } controller) return;
         float width=Math.Min(640,size.X-24),height=Math.Min(560,size.Y-40);
         Window("Music library",(size.X-width)/2,(size.Y-height)/2,width,height);
         UiText.Wrapped("Your audio files stay on this computer. Choose where each track plays."u8);
-        if(musicPicker is { IsCompleted:true } picked)
-        {
-            musicPicker=null;
-            try { var paths=picked.GetAwaiter().GetResult(); if(paths.Length>0 && !controller.AddFiles(paths)) musicPickerError="Music library is busy. Try adding the files again."; }
-            catch(Exception e) { musicPickerError="Could not choose music: "+e.Message; }
-        }
-        ImGui.BeginDisabled(controller.LibraryBusy || musicPicker is not null || controller.Library is null);
+        ImGui.BeginDisabled(controller.LibraryBusy || musicPicker is not null || controller.Library is null || closeAfterFileOperations);
         if(Button("addMusic","Add audio files..."))
         {
             musicPickerError=null;
-            try { musicPicker=PickMusicFiles(); } catch(Exception e) { musicPickerError=e.Message; }
+            try { musicPickerGeneration=profile?.DataDirectory;musicPicker=PickMusicFiles(); } catch(Exception e) { musicPickerError=e.Message; }
         }
         ImGui.SameLine();
         ImGui.BeginDisabled(controller.Library?.Tracks.Count is not >0);

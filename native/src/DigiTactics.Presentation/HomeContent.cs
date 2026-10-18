@@ -4,7 +4,7 @@ namespace DigiTactics.Presentation;
 
 public sealed record HomeHighlight(string Title,string Description);
 public sealed record HomeEvents(string Title,string Countdown,string Missions,string Store,string StoreDescription,string Farm,string FarmDescription);
-public sealed record HomeContent(HomeHighlight[] Patch,HomeEvents Events)
+public sealed record HomeContent(HomeHighlight[] Patch,HomeEvents Events,HomeHeroCatalog Hero)
 {
     public static HomeContent Load(string path)=>JsonSerializer.Deserialize<HomeContent>(File.ReadAllText(path),new JsonSerializerOptions{PropertyNameCaseInsensitive=true})??throw new InvalidDataException("Home content is missing.");
 }

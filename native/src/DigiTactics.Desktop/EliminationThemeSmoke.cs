@@ -26,7 +26,7 @@ internal static class EliminationThemeSmoke
                 var themes=new EliminationThemeRenderer();
                 for(int frame=0;frame<6;frame++)
                 {
-                    Glfw.PollEvents();backend.NewFrame();platform.NewFrame();ImGui.NewFrame();
+                    UiFrameLifetime.Begin(); Glfw.PollEvents();backend.NewFrame();platform.NewFrame();ImGui.NewFrame();
                     ImGui.SetNextWindowPos(new(0,0));ImGui.SetNextWindowSize(new(width,height));ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));
                     ImGui.Begin("Theme raster checks"u8,ImGuiWindowFlags.NoDecoration|ImGuiWindowFlags.NoMove|ImGuiWindowFlags.NoSavedSettings|ImGuiWindowFlags.NoBackground|ImGuiWindowFlags.NoScrollbar);
                     int page=Math.Max(0,frame-2);

@@ -38,10 +38,10 @@ internal sealed class CollectionPreviewSmoke
             if(kind=="killscreen")
             {
                 if(screen.CollectionPreviewMembers!=10)throw new InvalidOperationException("Kill-screen store preview omitted the nine sample Digimon or equipped companion.");
-                Click("previewKill/"+CosmeticCollection.Items(kind).First(x=>!x.Secret).Id);return false;
+                Click("previewKill/"+(screen.CollectionSelectedId??throw new InvalidOperationException("Kill-screen preview has no selected cosmetic.")));return false;
             }
             if(kind is not("sound" or "elimsound")){step=3;return false;}
-            string id=CosmeticCollection.Items(kind).First(x=>!x.Secret).Id;
+            string id=screen.CollectionSelectedId??throw new InvalidOperationException("Audio preview has no selected cosmetic.");
             Click("previewSound/"+kind+"/"+id);return false;
         }
         if(step==3)

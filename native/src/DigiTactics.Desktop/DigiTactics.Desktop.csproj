@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
@@ -14,10 +14,19 @@
     <PackageReference Include="Ahwoo.Brutal.ImGui.Backends" Version="2026.10.2" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="../../artifacts/crt-runtime/cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b/**" Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../../artifacts/steam-runtime/*" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../artifacts/model-content/**" Link="assets/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../artifacts/media-runtime/340077b7e78e6f86dffc766f6392be674bb119aa03e161212cac3f50ab1aff63/**" Link="media/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../content/**" Link="content/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../artifacts/audio-content/**" Link="audio/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <Target Name="VerifyNativeCrtPresent" BeforeTargets="PrepareForBuild">
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)/../../artifacts/crt-runtime/cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b/vcruntime140.dll') Or !Exists('$(MSBuildProjectDirectory)/../../artifacts/crt-runtime/cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b/vcruntime140_1.dll')" Text="Run native/tools/setup-crt.ps1 before building or publishing the desktop application." />
+  </Target>
+  <!-- The game exclusively constructs the OpenGL renderer. Keep the optional managed
+       Vulkan types used by BRUTAL signatures, but do not ship its unused native backend. -->
+  <Target Name="ExcludeUnusedNativeVulkan" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup><ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Filename)%(Extension)' == 'VulkanEx.dll'" /></ItemGroup>
+  </Target>
 </Project>

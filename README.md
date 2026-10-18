@@ -1,66 +1,74 @@
 # Digi-Tactics
 
-![Digi-Tactics — Build. Digivolve. Battle. Solo + Duos.](media/github-social-preview.jpg)
+![Digi-Tactics - Build. Digivolve. Battle. Solo + Duos.](media/github-social-preview.jpg)
 
 **Build your team. Digivolve your favorites. Battle solo or bring a partner.**
 
-A free, unofficial Digimon autobattler made for fun. Buy Digimon, combine copies to evolve them, build trait synergies, equip items and position your team before automatic battles. Explore twelve ruleset choices, including Undermons and Auto Chess, with Normal, Hyper Roll and cooperative Double Up options.
+A free, unofficial Digimon autobattler made for fun. Buy Digimon, combine copies to evolve them, build trait synergies, equip items and position your team before automatic battles.
 
-**[Download for Windows](https://github.com/Wrhinkle/digitactics/releases/latest)** · [Watch the trailer](media/digi-tactics-trailer.mp4) · [Full credits](CREDITS.md) · [Report a bug](https://github.com/Wrhinkle/digitactics/issues)
+**This branch prepares the native 2.0.0 release candidate. It is still undergoing final acceptance and has not been declared published.** The native edition uses [BRUTAL](https://github.com/ahwootech/BRUTAL) for its Windows desktop foundation, with C# gameplay and native graphics, audio and UI. No Electron or browser runs inside the native game. Existing Electron 1.x releases and their download instructions remain separate below.
 
-## Start playing
+**[Release downloads](https://github.com/Wrhinkle/digitactics/releases)** | [Watch the trailer](media/digi-tactics-trailer.mp4) | [Full credits](CREDITS.md) | [Report a bug](https://github.com/Wrhinkle/digitactics/issues)
 
-1. Open **[the latest release](https://github.com/Wrhinkle/digitactics/releases/latest)**. Under **Assets**, download `DigiTactics-Steam-1.0.14.zip` (or the newer version's full zip). The automatic **Source code** downloads are for developers, not the ready-to-play game.
-2. Extract the entire zip to a writable folder. Keep all its files together and launch **`Digi-Tactics.exe`** inside the extracted folder. Do not run it from inside the zip.
-3. For online play, have the Steam desktop client running and signed in before launching. Solo works without an online lobby.
-4. Open **Play**, browse the mode carousel, choose your ruleset and pace, then start solo or open Multiplayer to create/join a lobby.
+## Start the native edition
 
-The release is for **64-bit Windows** and includes its desktop runtime. No development tools, GitHub account, GitHub token or payment are needed. A standalone `DigiTactics-Steam.exe` is also provided; it extracts its runtime at launch. The zip is the recommended download. Builds are currently unsigned, so Windows may display a publisher warning; verify your download came from this repository. Release checksums are in `SHA256SUMS.txt`.
+When the native release is published, use the full **[DigiTactics-native-2.0.0-win-x64.zip](https://github.com/Wrhinkle/digitactics/releases/download/native-v2.0.0/DigiTactics-native-2.0.0-win-x64.zip)** (or the matching newer version on the release page). This is the intended asset link; it becomes available after publication. A local candidate built from source has the same launcher layout. GitHub's automatic **Source code** archives and the `native-update` ZIP are not full installations.
 
-## Your first match
+1. Extract the entire ZIP to a local folder. Keep **`DigiTactics.Launcher.exe`**, its accompanying files and the **`app`** folder together. Start **`DigiTactics.Launcher.exe`** after extraction.
+2. To bring over an existing save, follow the import steps below **before starting a match or changing settings**.
+3. For online play, start the Steam desktop client and sign in before opening the game. Solo works without Steam.
+4. On Home, choose your **set**, **pace** and **Solo / Duos** format, then Play. Multiplayer opens the Steam lobby controls.
 
-- **Buy and build:** buy from the shop, move units from your bench onto the board and position your team. Matching copies automatically combine; most rulesets use three copies, with exceptions explained in the in-game Codex.
-- **Make a team:** combine matching traits, equip items and choose upgrades. The Codex describes the selected ruleset's units and mechanics.
-- **Fight:** your team battles automatically. Normal uses the longer economy-focused format; Hyper Roll offers a faster pace.
-- **Double Up / Duos:** four teams of two share health. Send units through the partner portal and fight together on a combined board. Empty seats are controlled by AI.
-- **Take a break:** press **Esc** or click **Menu** to leave a match. Solo has an explicit **Pause** option; opening the menu alone does not pause, and online matches cannot be paused.
+The native package targets **64-bit Windows with an OpenGL 4.5 capable graphics driver**. It includes its .NET runtime; players do not need development tools, a GitHub account or a GitHub token. Use `SHA256SUMS.txt` to check downloaded assets. The trailer was captured from the earlier edition and is not a native performance benchmark.
 
-Winning finishes with the actual final attack and a ground-level team victory dance. Cosmetic collections and progression are earned locally; this project is not a real-money storefront.
+## What's in the native candidate
 
-Your first completed combat round each day earns a **Daybreak Box**. From stage 2 onward, rounds can also drop **Cipher Boxes** and **Cipher Keys**; one key opens one Cipher Box. Open them in **Loot**. The two exclusive pools each contain 20 companions, emotes, dances, victory screens, soundboard clips and elimination sounds, plus five boards. Rewards stay hidden in Collection until discovered, and boxes avoid duplicate rewards. **Digi-Data** is individual companion XP earned through matches, duplicate legend hatches and Digi-Farm care; **Bits** are spending currency. Find the nine retro 3D emotes using **Collection → Emotes → Digimon World 1**.
+- **Eleven sets and Chaos:** 22 concrete Normal / Hyper Roll variants, including Undermons, Knockout and Auto Chess. Chaos chooses from the eligible sets using the match seed; Steam hosts can also choose Chaos pace. All peers receive the same resolved choices.
+- **Solo and Duos:** AI fills empty seats. Duos has four teams of two, shared health, partner transfers and combined battlefields. Steam rooms include public/friends-only discovery, invites, chat, spectator controls and host recovery.
+- **The complete match loop:** shop and economy, positioning, items, traits, augments and set-specific choices, carousels, loot, combat, standings and results. Once you own a three-star unit, that line disappears from your own shop offers while the maxed unit remains on your roster; other players' shops are unaffected.
+- **Native presentation:** animated models, boards, attack effects, evolution announcements, elimination cinematics and victory dances, with the Codex and collection previews available in the client.
+- **Local progression:** Tamer profile, match history, missions, Bits, cosmetic collections, Daybreak/Cipher rewards, eggs and incubator, companion evolution, Digi-Farm care and training. Digi-Data is companion XP; Bits are spending currency. There are no real-money purchases.
+- **Client controls:** saved set/pace/format choices, keyboard help, interface and audio preferences, custom music, save export/reset and explicit import. Home includes set information, patch notes, events and rotating offers drawn from the bundled content.
 
-## Play online
+During a match, press **Esc** or use **Menu** for controls. Solo has an explicit **Pause** option; opening a menu alone does not pause. Online matches cannot be paused. Closing the results panel or returning Home keeps the finished match and any connected room available; use **Leave** to disconnect.
 
-The Windows build uses Steam identity, lobbies, friend invites and relayed peer networking. Open the game on both computers first, then create a **public** or **friends-only** lobby. Public rooms appear in the lobby browser; the host can invite friends through the overlay. Everyone should use the latest release. Lobby discovery is a room browser, not a ranked matchmaking queue.
+## Bring your save from Electron 1.x
 
-**The current integration uses the Spacewar development App ID, 480.** Steam may show you as playing Spacewar. This is an experimental fan-project setup, not an official store release or a promise of permanent service. If an invite opens Spacewar, open Digi-Tactics and accept the invite again. A player hosts each match, with host handover and AI filling empty seats.
+1. In the old game, open **Settings → Export save backup**. Keep the exported JSON and close the old game.
+2. On the native app's first Home screen, choose **Import save backup...**, select that JSON and review the displayed profile summary.
+3. Choose **Import profile** to apply it. Progress, collection, history, settings and included music files are imported, and the original archive is preserved.
 
-The build includes peer/message validation, host-side action checks, rate limits, mute and host removal controls. A modified host/client can still cheat. There is no authoritative ranked service, VAC integration or claim that thousands of simultaneous players have been tested.
+The native app does not automatically read or modify the old Electron profile. Its save folder is **`%LOCALAPPDATA%\DigiTactics\native`**, separate from **`%APPDATA%\Digi-Tactics`**. Existing native saves are never silently merged or replaced. To intentionally replace one, export a native backup in **Settings**, use **Reset save...** with its typed confirmation, then import from Home before making further changes. Keep backups private. Steam identity does not provide Steam Cloud progress sync.
+
+**The first move to native requires the full native ZIP.** Electron's updater cannot install the new native runtime. Later native updates are handled by `DigiTactics.Launcher.exe`: compatible downloads are verified and staged, then applied on restart. A new launcher requirement prompts a full download. GitHub outages do not prevent playing the installed game.
+
+## Online play and limits
+
+Start the game on both PCs with Steam signed in, then create or join a lobby. Everyone should use the same native release. The native candidate uses multiplayer protocol **9**; do not assume compatibility with an older Electron build just because both use Steam.
+
+**The integration uses the Spacewar development App ID, 480.** Steam may show Spacewar, and an invite accepted while Digi-Tactics is closed may open the sample application. Keep Digi-Tactics running before accepting an invite. This is an experimental fan-project setup, not an official Steam store release.
+
+Matches are hosted by a player, with validated actions and relayed peer transport. A modified host/client can still cheat. There is no central ranked service, VAC integration or claim of tested large-scale concurrency. Final packaged-app and live Steam acceptance are separate from source comparison and local UI tests; the candidate status above does not promise they have all passed.
 
 **[Online, privacy, saves and updates explained](docs/ONLINE_AND_UPDATES.md)**
 
-## Updates and saves
+## Existing Electron downloads
 
-**Updating from 1.0.12 or earlier:** download and extract the full 1.0.13 build once. This release repairs a missing native networking dependency in the desktop runtime, which a game-only update cannot replace. Keep your existing profile folder; later compatible game updates continue automatically.
-
-The game checks this public repository's latest release at launch, downloads and verifies a newer game payload, and applies it on restart. **No token is included or required.** If GitHub is offline or rate-limited, the installed game remains usable; you can always download a full release manually. A desktop-runtime change may require a new full download. Private testers should download this public full build once to switch update channels.
-
-Progress, cosmetics, settings and match history are **stored locally on this computer**. Steam supplies your online identity and display name, but progress does **not** sync through Steam Cloud, another account server or a blockchain. Back up `%APPDATA%\Digi-Tactics` with the game closed before moving computers or clearing app data. Keep your profile folder when updating.
+The historical Windows 1.x package is **`DigiTactics-Steam-<version>.zip`**; extract it and run **`Digi-Tactics.exe`**. `DigiTactics-Steam.exe` is its alternate self-extracting package. Those instructions, `%APPDATA%\Digi-Tactics` saves and the `latest.json` updater apply to Electron only. Keep an old installation available long enough to export your save. The two editions do not share live progress or update payloads.
 
 ## Help and development
 
-- **No lobbies / cannot connect:** confirm Steam is signed in, restart the game, check both players have the latest release, and confirm room visibility. Solo remains available if online services are unavailable.
-- **Invites:** have Digi-Tactics running before accepting; the shared development App ID can otherwise launch the sample application.
-- **Update trouble:** close the game and download/extract the newest full zip. The version is visible under **Settings → About**.
-- **Slow rendering:** reduce the window size and close other GPU-heavy applications. The trailer uses fixed-step capture and cinematic cameras; it is not a performance benchmark.
-- **Bug reports:** include the version, ruleset, solo/online mode, reproduction steps and a screenshot in an [issue](https://github.com/Wrhinkle/digitactics/issues). The local log is `%APPDATA%\Digi-Tactics\main.log`; redact account identifiers and personal paths before sharing excerpts.
-- **Build or run the source:** see [the development guide](docs/DEVELOPMENT.md). Browser source runs support solo by default; the Windows download is the supported online route.
+- **Cannot start native:** check the OpenGL requirement and extract the whole package. Startup errors are recorded in `%LOCALAPPDATA%\DigiTactics\logs\game-error.log` or `launcher-error.log`.
+- **No lobbies / cannot connect:** confirm Steam is signed in, restart Digi-Tactics, check both players' versions and room visibility. Solo remains available when online services are unavailable.
+- **Update trouble:** close the game, extract the newest full native package and launch it through `DigiTactics.Launcher.exe`. Keep the separate save folder. The installed version is shown in **Settings → About**.
+- **Bug reports:** include the version, set, pace, Solo/Duos and online/offline status, reproduction steps and a screenshot in an [issue](https://github.com/Wrhinkle/digitactics/issues). Redact personal paths and account identifiers from logs. Historical Electron logs are in `%APPDATA%\Digi-Tactics\main.log`.
+- **Build or run source:** see [the development guide](docs/DEVELOPMENT.md), [native build instructions](native/README.md) and [native artifact assembly](native/tools/NATIVE_RELEASE_ARTIFACTS.md). Browser/Electron source is retained as the original implementation and reference.
 - **Security reports:** see [SECURITY.md](SECURITY.md).
 
 ## Made for fun, with thanks
 
 **This is a free, non-commercial fan project. No profit is intended or sought.** It is made for people to enjoy, with no official affiliation or endorsement. The original characters, games, models, textures, animations, trademarks and other third-party work belong to their respective creators and rights holders. Free distribution and attribution do not grant rights in those works.
 
-Read **[CREDITS.md](CREDITS.md)** for the original games, companies, mechanics, art, music, tools and contributors; **[the complete model credits](docs/credits/MODELS.md)** for every bundled model and its source; and **[third-party notices](THIRD_PARTY_NOTICES.txt)** for software acknowledgements and licenses. Original artists and community extractors/uploaders are credited separately where known. Missing names are marked explicitly. Attribution corrections or removal requests are welcome through [the issue tracker](https://github.com/Wrhinkle/digitactics/issues).
+Read **[CREDITS.md](CREDITS.md)** for the original games, companies, mechanics, art, music, tools and contributors; **[the complete model credits](docs/credits/MODELS.md)** for every bundled model and its source; and **[third-party notices](THIRD_PARTY_NOTICES.txt)** for software acknowledgements and licenses. The native package also includes BRUTAL notices and `app/media/MEDIA_RUNTIME_NOTICES.txt`; its matching FFmpeg source/build archive accompanies native release artifacts. Original artists and community extractors/uploaders are credited separately where known. Missing names are marked explicitly. Attribution corrections or removal requests are welcome through [the issue tracker](https://github.com/Wrhinkle/digitactics/issues).
 
 This repository is shared as source-available. It does not claim a blanket open-source license over the game or its third-party assets. Keep the attribution and applicable notices with downstream work.
