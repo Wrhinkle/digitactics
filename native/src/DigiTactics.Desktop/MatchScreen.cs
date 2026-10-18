@@ -143,6 +143,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     public void Update(double delta, double? wallDelta = null)
     {
+        UpdateSteamLobby();
         UpdateNetworkMatch();
         if (farm is not null) farm.ResidentPosition = id => showFarm && training is null ? farmView?.Position(id) : null;
         if (training is null) farm?.Update(delta, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
@@ -233,7 +234,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear();
-        if (Session is null) { if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
+        if (Session is null) { if (showMultiplayer) MultiplayerMenu(); else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
         Header(); if (Session is null) return;
         Roster(); Sidebar();
         if (battle is null) Board();
@@ -252,6 +253,7 @@ internal sealed partial class MatchScreen : IDisposable
         Window("DIGI-TACTICS", size.X * .25f, size.Y * .12f, size.X * .5f, 560);
         ImGui.Text("Build your team. Digivolve. Be the last Tamer standing."u8); ImGui.Separator();
         ProfileControls();
+        if (Button("multiplayer", "Steam multiplayer")) showMultiplayer = true;
         if (profile is not null && Button("collection", "Collection and store")) showCollection = true;
         if (farm is not null && Button("farm", "Digi-Farm")) { farm.Refresh(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()); showFarm = true; }
         if (farm?.Error is { } farmError) CollectionText(farmError);
@@ -290,11 +292,12 @@ internal sealed partial class MatchScreen : IDisposable
         if (session.State.Over)
         {
             ImGui.Text($"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
-            if (Button("menu", "Main menu")) { DetachNetworkMatch(); Session = null; audio.Music(null); battle?.Dispose(); battle = null; watching = null; planning.Dispose(); planning = new(); }
+            if (Button("menu", "Main menu")) { if (networkRoom is not null) LeaveSteamRoom(); Session = null; audio.Music(null); battle?.Dispose(); battle = null; watching = null; planning.Dispose(); planning = new(); }
         }
         else if (session.Rounds.Phase == MatchPhase.Planning) { if (networkRoom is not null && session.Rounds.RoundType == "carousel") ImGui.Text("Waiting for carousel picks..."u8); else if (Button("fight", session.Rounds.RoundType == "carousel" ? "Finish carousel" : "Ready for battle")) Fight(); }
         else if (session.Rounds.Phase == MatchPhase.Result) { if (networkRoom is not null) ImGui.Text("Next round starts shortly..."u8); else if (Button("next", "Next round")) Next(); }
         else { if (Button("finish", networkRoom is null ? "Skip to results" : "Finish my replay")) Finish(); ImGui.SameLine(); ImGui.Text($"{battle?.Combat.Time ?? 0:F1}s"); }
+        if (networkRoom is not null) { ImGui.SameLine(); if (Button("leaveOnline", "Leave match")) LeaveSteamRoom(); }
         ImGui.End();
     }
     private void Board()
@@ -483,5 +486,5 @@ internal sealed partial class MatchScreen : IDisposable
         int x = (int)(Left * sx), y = (int)((size.Y - Top - Height) * sy), w = (int)(Width * sx), h = (int)(Height * sy);
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
     }
-    public void Dispose() { DetachNetworkMatch(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); }
+    public void Dispose() { DetachNetworkMatch(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); }
 }
