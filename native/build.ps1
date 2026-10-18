@@ -33,6 +33,7 @@ try {
     Invoke-Checked 'node' @('tools/export-network-protocol.cjs')
     Invoke-Checked 'node' @('tools/export-replicated-log.cjs')
     Invoke-Checked 'node' @('tools/export-lobby-authority.cjs')
+    Invoke-Checked 'node' @('tools/export-lockstep.cjs')
     Invoke-Checked 'node' @('tools/export-training-games.cjs')
     Invoke-Checked 'node' @('tools/export-reward-tracker.cjs')
     Invoke-Checked 'node' @('tools/export-ability-elements.cjs')
