@@ -60,7 +60,7 @@ internal static class BoardMeshSmoke
                     ModelRenderer.Begin(cell,cell); OpenGl.Viewport(left,bottom,cell,cell); background.Draw(renderer);
                     layer.Draw(renderer,camera,false,cell); int actual=layer.DrawCalls;
                     board.Draw(renderer,camera,columns,planning);
-                    if(board.DrawCalls!=(columns==7?75:140)) throw new InvalidOperationException("Board gameplay surface count mismatch.");
+                    if(board.DrawCalls!=(columns==7?75:130)) throw new InvalidOperationException("Board gameplay surface count mismatch.");
                     layer.Draw(renderer,camera,true,cell); actual+=layer.DrawCalls;
                     if(actual!=expected || actual==0) throw new InvalidOperationException("Board mesh draw inventory mismatch: "+scene.Id);
                     ModelRenderer.End();
@@ -74,6 +74,14 @@ internal static class BoardMeshSmoke
                     int darkened=Enumerable.Range(0,cell*cell).Count(i=>lit[i*4]+lit[i*4+1]+lit[i*4+2]-shaded[i*4]-shaded[i*4+1]-shaded[i*4+2]>8);
                     if(darkened<10) throw new InvalidOperationException("Board shadows did not darken receiving surfaces.");
                     Console.WriteLine($"Board shadow pixels verified: {darkened} receiving pixels darkened.");
+                    board.Feedback.Time=1; board.Feedback.Flash(3,4,1.45,BoardLighting.Linear("#ff7a6a"));
+                    board.Feedback.UnitDragMoved=true; board.Feedback.HoverCell=(4,5); board.Feedback.HoverBench=4; board.Feedback.HoverItem=3;
+                    Render(true); var highlighted=Pixels();
+                    int brighter=Enumerable.Range(0,cell*cell).Count(i=>highlighted[i*4]+highlighted[i*4+1]+highlighted[i*4+2]-shaded[i*4]-shaded[i*4+1]-shaded[i*4+2]>8);
+                    if(brighter<10) throw new InvalidOperationException("Board surface feedback did not reach the framebuffer.");
+                    Console.WriteLine($"Board feedback pixels verified: {brighter} pixels brightened.");
+                    board.Feedback.ClearFlashes(); board.Feedback.UnitDragMoved=false; board.Feedback.HoverItem=-1;
+                    Render(true);
                 }
                 else Render(true);
                 draws+=expected; index++;

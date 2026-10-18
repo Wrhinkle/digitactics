@@ -10,6 +10,7 @@ internal sealed class BoardSurfaceView : IDisposable
     private readonly Dictionary<int,GpuTexture> textures=[];
     private readonly BoardSurfaces materials;
     public int DrawCalls { get; private set; }
+    public BoardSurfaceFeedback Feedback { get; } = new();
 
     public BoardSurfaceView(BoardScene scene,BoardSurfaceGeometry source)
     {
@@ -36,23 +37,27 @@ internal sealed class BoardSurfaceView : IDisposable
     {
         if(columns is not (7 or 14)) throw new ArgumentOutOfRangeException(nameof(columns));
         DrawCalls=0; renderer.ReceiveShadow=true;
-        void Draw(int primitive,BoardMaterial material,double x,double y,double z,double scaleX=1)
+        void Draw(int primitive,BoardMaterial material,Vector3 emission,double x,double y,double z,double scaleX=1)
         {
             var matrix=Matrix4D.Compose(new(x,y,z),new(0,0,0,1),new(scaleX,1,1));
             renderer.DrawRoom(geometry[primitive],matrix,camera,new(material.Color[0],material.Color[1],material.Color[2],1),
-                material.Map is { } map?textures[map]:null,false,false,true,new(material.Emissive[0],material.Emissive[1],material.Emissive[2]),material.Roughness,material.Metalness,side:0);
+                material.Map is { } map?textures[map]:null,false,false,true,emission,material.Roughness,material.Metalness,side:0);
             DrawCalls++;
         }
         for(int row=0;row<8;row++) for(int column=0;column<columns;column++)
-            Draw(0,row>=4?materials.Mine:planning?materials.EnemyPlanning:materials.Enemy,(column+.5*(row&1)-(columns-.5)/2)*Math.Sqrt(3),.07,(row-3.5)*1.5);
+        {
+            var material=row>=4?materials.Mine:planning?materials.EnemyPlanning:materials.Enemy;
+            Draw(0,material,Feedback.Tile(column,row,planning,material),(column+.5*(row&1)-(columns-.5)/2)*Math.Sqrt(3),.07,(row-3.5)*1.5);
+        }
         bool wide=columns>7;
         for(int side=0;side<(wide?2:1);side++) for(int i=0;i<9;i++)
         {
             double x=(i-4)*1.45;
             if(wide) x=x*.72+(side==0?-6.1:6.1);
-            Draw(1,materials.Slot,x,.05,7.55,wide?.72:1);
+            Draw(1,materials.Slot,Feedback.Bench(i,side!=0),x,.05,7.55,wide?.72:1);
         }
-        for(int i=0;i<10;i++) Draw(2,materials.Ped,-7.5-i%2*.95,.08,1.2+i/2*1.5);
+        // The original item shelf is hidden while the combined battlefield is active.
+        if(!wide) for(int i=0;i<10;i++) Draw(2,materials.Ped,Feedback.Item(i),-7.5-i%2*.95,.08,1.2+i/2*1.5);
     }
 
     public void Dispose()

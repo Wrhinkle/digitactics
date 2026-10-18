@@ -10,7 +10,9 @@ async function main(){
   +`const DT={BENCH:9,CELLS:Array.from({length:56},(_,i)=>({c:i%7,r:Math.floor(i/7)})),makeRng:${rng}},COLS=7,ROWS=8,BENCH=9;const LAYOUT=(()=>{`+layout+';return LAYOUT;})();'
   +source.slice(source.indexOf('const { cellWorld'),source.indexOf('// ---------- renderer integration ----------'))
   +'\nexport {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
-  +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}';
+  +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}'
+  +'\nexport const originalHighlight='+render.slice(render.indexOf('  highlight(ui, planning) {'),render.indexOf('  benchPos(i, partner')).trim().replace('highlight(','function(')+';'
+  +'\nexport const originalDrawItems='+render.slice(render.indexOf('  drawItems(p, ui) {'),render.indexOf('  // which item token')).trim().replace('drawItems(','function(')+';';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  try{
   const page=await browser.newPage();
@@ -110,6 +112,22 @@ async function main(){
    });
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-surface-materials.json'),JSON.stringify(surfaceFixture));
+  const feedbackFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,tileLook,originalHighlight,originalDrawItems}=await import('/boards.js'),rows=[];
+   for(const spec of THEMES)for(let test=0;test<12;test++){
+    const planning=test%2===0,wide=test>=10,time=7.3;
+    const ui={drag:{moved:test%3!==0},hoverCell:{c:test%7,r:test%8},hoverBench:test%9,hoverItem:test%10,itemDrag:test%4===0?{over:(test+1)%10}:null};
+    const tiles=Array.from({length:56},(_,i)=>({userData:{c:i%7,r:Math.floor(i/7),flash:7+(i%7)*.15,flashColor:new THREE.Color(i%2?'#6fd3ff':'#ff7a6a')},material:new THREE.MeshStandardMaterial()}));
+    const slots=Array.from({length:9},()=>({material:new THREE.MeshStandardMaterial()}));
+    const peds=Array.from({length:10},()=>({material:new THREE.MeshStandardMaterial(),visible:true}));
+    const renderer={tiles,slots,tileLook:tileLook(spec),fxNow:time,wide,itemPeds:peds,itemTokens:Array.from({length:10},()=>({visible:false}))};
+    originalHighlight.call(renderer,ui,planning);originalDrawItems.call(renderer,{items:[]},ui);
+    rows.push({id:spec.id,test,planning,wide,time,ui,tiles:tiles.map(t=>t.material.emissive.toArray()),slots:slots.map(s=>s.material.emissive.toArray()),peds:peds.map(p=>({visible:p.visible,emissive:p.material.emissive.toArray()}))});
+    for(const obj of [...tiles,...slots,...peds])obj.material.dispose();
+   }
+   return rows;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-feedback.json.gz'),zlib.gzipSync(JSON.stringify(feedbackFixture)));
   console.log(`Exported ${manifest.length} board themes, ${manifest.reduce((n,t)=>n+t.instances,0)} scene instances; animation tick counts retained for native port.`);
  }finally{await browser.close();}
 }
