@@ -14,6 +14,16 @@ internal sealed partial class MatchScreen
     {
         arenaEnvironment.CombatActive=Session?.Rounds.Phase==DigiTactics.Rules.MatchPhase.Combat;
         arenaEnvironment.Stage=Session?.Rounds.Position.Stage??1;
+        arenaEnvironment.Won=false;
+        if(Session is {} session && session.Rounds.Phase!=DigiTactics.Rules.MatchPhase.Planning)
+        {
+            int seat=Human.Id;
+            var own=session.Battles.FirstOrDefault(m=>m.A==seat || !m.Ghost && m.B==seat ||
+                m.TeamA is {} a && session.State.Teams[a].Members.Any(p=>p.Id==seat) ||
+                !m.Ghost && m.TeamB is {} b && session.State.Teams[b].Members.Any(p=>p.Id==seat));
+            bool sideB=own?.B==seat || own?.TeamB is {} team && session.State.Teams[team].Members.Any(p=>p.Id==seat);
+            arenaEnvironment.Won=own?.Combat.Done==true && own.Combat.Winner==(sideB?1:0);
+        }
         string? wallet=profile?.Storage.GetValueOrDefault("dt.cosmetics.v1");
         if(!boardLoaded || wallet!=boardWallet)
         {

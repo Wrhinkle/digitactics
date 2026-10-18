@@ -35,6 +35,9 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8')
+  .replace('const speed = { v: 1, ph: 0 };','const speed = { v: 1, ph: 0 }; pts.userData.nativeMotion={kind:"circuit-pulses",pulses:pulses.map(p=>({...p}))};')
+  .replace(/mesh\(ctx, new THREE.CylinderGeometry\(13.6, 13.6, 7[^\n]+;/,line=>'const nativeScreen='+line+' nativeScreen.userData.nativeMotion={kind:"circuit-screen"};')
+  .replace(/const fl = mesh\(ctx, new THREE.RingGeometry\(16, 40, 48\)[^\n]+;/,line=>line+' fl.userData.nativeMotion={kind:"circuit-floor"};')
   .replace(/const sm = inst\(ctx, new THREE.PlaneGeometry\(0.9, 1\)[^\n]+;/,line=>line+' sm.userData.nativeMotion={kind:"kowloon-signs",signs:signs.map(s=>({phase:s.ph,color:C(s.color).toArray()}))};')
   .replace(/const band = mesh\(ctx, new THREE.CylinderGeometry\(14.4, 14.4[^\n]+;/,line=>line+' band.userData.nativeMotion={kind:"kowloon-band"};')
   .replace(/const lattice = mesh\(ctx, new THREE.CylinderGeometry\(14.5, 14.5[^\n]+;/,line=>line+' lattice.userData.nativeMotion={kind:"kowloon-lattice"};')
@@ -277,6 +280,22 @@ async function main(){
    const result={motions:objects.map(o=>o.userData.nativeMotion),frames};disposeEnv(env);return result;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-kowloon.json.gz'),zlib.gzipSync(JSON.stringify(kowloonFixture)));
+  const circuitFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),spec=THEMES.find(s=>s.id==='circuit-core'),scenarios=[];
+   for(const initialWon of [false,true]){
+    const L={hemi:new THREE.HemisphereLight(...spec.hemi),sun:new THREE.DirectionalLight(...spec.sun)},env=buildEnv(spec,{L}),objects=[],frames=[];
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('circuit-'))objects.push(o);});
+    env.signal({phase:'planning',stage:1,won:initialWon,evo:0});env.tick(0,0);let time=0;
+    for(let frame=0;frame<800;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],combat=frame%200<100,won=frame<90?initialWon:frame%200>=90;time+=delta;
+     env.signal({phase:combat?'combat':'result',stage:1,won,evo:0});env.tick(delta,time);
+     frames.push({time,delta,combat,won,flash:L.hemi.intensity-spec.hemi[2],objects:objects.map(o=>({kind:o.userData.nativeMotion.kind,positions:o.isPoints?Array.from(o.geometry.attributes.position.array):null,offset:o.material.map?.offset.toArray(),opacity:o.material.opacity}))});
+    }
+    scenarios.push({initialWon,motions:objects.map(o=>o.userData.nativeMotion),frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-circuit.json.gz'),zlib.gzipSync(JSON.stringify(circuitFixture)));
   const particleFixture=await page.evaluate(async()=>{
    const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
    for(const spec of THEMES){

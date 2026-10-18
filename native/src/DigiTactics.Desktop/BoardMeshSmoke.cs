@@ -62,6 +62,15 @@ internal static class BoardMeshSmoke
                 arena.CombatActive=false;arena.Time+=.1;
                 arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,256,256,(_,_)=>{});
                 if(Math.Abs(renderer.BoardLight!.FogNear-23.0496f)>.001)throw new InvalidOperationException("Kowloon result weather did not ease out.");
+                arena.Won=false;arena.SetTheme("circuit-core");arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
+                float circuitBase=renderer.BoardLight!.HemisphereIntensity;
+                arena.Won=true;arena.Time+=.016;arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
+                if(Math.Abs(renderer.BoardLight!.HemisphereIntensity-circuitBase-1.12f)>.001)throw new InvalidOperationException("Circuit win did not flash scene lighting.");
+                arena.Time+=.1;arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
+                if(Math.Abs(renderer.BoardLight!.HemisphereIntensity-circuitBase-.62f)>.001)throw new InvalidOperationException("Held win signal retriggered the flash.");
+                arena.SetTheme("file-island");arena.SetTheme("circuit-core");arena.Time+=.016;
+                arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
+                if(Math.Abs(renderer.BoardLight!.HemisphereIntensity-circuitBase)>.001)throw new InvalidOperationException("Initial won state triggered a false win reaction.");
             }
             renderer.BoardLight=null; renderer.ShadowTexture=0;
             var scenes=Directory.GetFiles(Path.Combine(AppContext.BaseDirectory,"content/boards"),"*.json.gz").Order().Select(BoardScene.Load).ToArray();
@@ -319,7 +328,8 @@ internal static class BoardMeshSmoke
             ("spiral-mountain","spiral-crystals"),("spiral-mountain","spiral-halos"),
             ("vampire-castle","castle-flames"),("vampire-castle","castle-bats"),
             ("vampire-castle","castle-moon"),("vampire-castle","castle-halo"),
-            ("kowloon","kowloon-band"),("kowloon","kowloon-lattice"),("kowloon","kowloon-signs"),("kowloon","particles")})
+            ("kowloon","kowloon-band"),("kowloon","kowloon-lattice"),("kowloon","kowloon-signs"),("kowloon","particles"),
+            ("circuit-core","circuit-pulses"),("circuit-core","circuit-screen"),("circuit-core","circuit-floor")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();

@@ -18,16 +18,18 @@ internal sealed class BoardMeshLayer : IDisposable
     private BoardLightning? lightning;
     private readonly BoardCastleMotion? castle;
     private readonly BoardKowloonMotion? kowloon;
+    private readonly BoardCircuitMotion? circuit;
     public (float Near,float Far)? AnimatedFog=>kowloon is null?null:(kowloon.FogNear,kowloon.FogFar);
-    public float LightningFlash=>(float)(lightning?.Flash??0);
-    public Vector3? LightningColor { get; private set; }
+    public float LightFlash=>(float)(lightning?.Flash??circuit?.LightFlash??0);
+    public Vector3? FlashColor { get; private set; }
     private readonly Dictionary<BoardObject,BoardSpiralMotion> spirals=[];
     public int DrawCalls { get; private set; }
     public Matrix4D Root { get; set; } = Matrix4D.Identity;
-    public BoardMeshLayer(BoardScene scene,bool initialCombat=false)
+    public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false)
     {
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
         if(scene.Id=="kowloon")kowloon=new();
+        if(scene.Id=="circuit-core") {circuit=new(initialWon);FlashColor=BoardLighting.Linear("#a8ffc8");}
         try
         {
             foreach (var texture in scene.Textures)
@@ -39,7 +41,7 @@ internal sealed class BoardMeshLayer : IDisposable
                 {
                     lightning=new(data.Spots,data.Flash,data.DelaySeed,data.DelayCalls,data.BoltCalls);
                     lightning.Advance(0,0,initialCombat);
-                    LightningColor=BoardLighting.Linear(data.FlashColor);
+                    FlashColor=BoardLighting.Linear(data.FlashColor);
                 }
                 if(obj.Motion is { Spirals:not null } spiral) spirals.Add(obj,new(spiral));
                 uint topology = obj.Kind switch { "mesh" => Brutal.OpenGlApi.OpenGl.GL_TRIANGLES, "lines" => Brutal.OpenGlApi.OpenGl.GL_LINES, "lineStrip" => Brutal.OpenGlApi.OpenGl.GL_LINE_STRIP, "points" => Brutal.OpenGlApi.OpenGl.GL_POINTS, _ => throw new NotSupportedException("Board object: " + obj.Kind) };
@@ -49,8 +51,8 @@ internal sealed class BoardMeshLayer : IDisposable
                     parts = BoardMesh.Create(scene, obj).Select(part =>
                     {
                         var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
-                        if(obj.Motion is { Kind:"sea" or "particles" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
-                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
+                        if(obj.Motion is { Kind:"sea" or "particles" or "circuit-pulses" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
+                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
                         var material = scene.Materials[part.Material];
                         return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
                     }).ToArray();
@@ -62,21 +64,24 @@ internal sealed class BoardMeshLayer : IDisposable
         catch { Dispose(); throw; }
     }
 
-    public void Update(double seconds,double delta=0,bool combat=false,int stage=1)
+    public void Update(double seconds,double delta=0,bool combat=false,int stage=1,bool won=false)
     {
         time=seconds;
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
         kowloon?.Advance(delta,combat);
+        circuit?.Advance(delta,combat,won);
         foreach(var spiral in spirals.Values) spiral.Advance(delta,time,combat);
         foreach(var uv in animatedUv)
         {
-            BoardSceneMotion.ScrollingUv(uv.Vertices,uv.Initial,time,uv.Kind);
+            if(uv.Kind is "circuit-screen" or "circuit-floor") circuit!.Scroll(uv.Vertices,uv.Initial,uv.Kind,time);
+            else BoardSceneMotion.ScrollingUv(uv.Vertices,uv.Initial,time,uv.Kind);
             uv.Geometry.UpdateVertices(uv.Vertices);
         }
         foreach(var wave in animatedGeometry)
         {
             if(wave.Motion.Kind=="sea") BoardSceneMotion.Sea(wave.Vertices,time,wave.Motion);
+            else if(wave.Motion.Kind=="circuit-pulses")circuit!.Pulses(wave.Vertices,wave.Motion.Pulses!);
             else BoardSceneMotion.Particles(wave.Vertices,delta,time,wave.Motion);
             wave.Geometry.UpdateVertices(wave.Vertices);
         }
@@ -95,6 +100,7 @@ internal sealed class BoardMeshLayer : IDisposable
             if(bolt is not null) world=new CompanionTransform(new(lightning!.X,lightning.Y,lightning.Z),new(0,lightning.Yaw,0),new(1,1,1)).Matrix*Root;
             if(item.Object.Motion is { Kind:"rotating-parent" } rotating) world=BoardSceneMotion.RotatingParent(rotating,time)*Root;
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
+            if(item.Object.Motion is {Kind:"circuit-screen" or "circuit-floor"} code)opacity=circuit!.Opacity(code.Kind);
             if(item.Object.Motion is {Kind:"kowloon-band" or "kowloon-lattice"} scan)
             {
                 var animated=BoardKowloonMotion.Scan(scan.Kind,time);
