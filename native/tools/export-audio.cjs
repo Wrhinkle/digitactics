@@ -5,7 +5,7 @@ const { chromium } = require(process.argv[2] || '../artifacts/audio-tools/node_m
 const root = path.resolve(__dirname, '../..');
 const out = path.resolve(process.argv[3] || path.join(__dirname, '../artifacts/audio-content'));
 const rate = 44100;
-const source = Object.fromEntries(['audio', 'music', 'soundboard'].map(id => [id, fs.readFileSync(path.join(root, `js/${id}.js`), 'utf8')]));
+const source = Object.fromEntries(['audio', 'music', 'soundboard', 'elimsounds', 'mystery-content'].map(id => [id, fs.readFileSync(path.join(root, `js/${id}.js`), 'utf8')]));
 const sourceHash = crypto.createHash('sha256').update(JSON.stringify(source)).update(fs.readFileSync(__filename)).digest('hex');
 function wave(samples) {
   const bytes = Buffer.from(samples, 'base64');
@@ -41,6 +41,9 @@ function wave(samples) {
         window.AudioContext = function () { return ctx; };
         new Function(source.audio + '\nDT.NativeAudio = { SOUNDS, KILL, CLIPS, GAP, start() { ensure(); master.gain.value = 0.4; sfxBus.gain.value = 1; musicBus.gain.value = 1; boardBus.gain.value = 1; } };')();
         new Function(source.soundboard.slice(0, source.soundboard.indexOf('DT.Cosmetics.register')))();
+        new Function(source.elimsounds.slice(0, source.elimsounds.indexOf('const stats =')))();
+        new Function(source['mystery-content'].replace(/export /g, '') +
+          '\nfor (const kind of ["sound", "elimsound"]) for (const s of sounds(kind)) DT.Sfx.defineClip(s.id, (t, out) => s.synth(t, out, DT.Sfx.engine), s.data.dur);')();
         new Function(source.music.replace('own.load();', '') + '\nDT.NativeMusic = { TRACKS, schedule(id) { ac = E().ac; attach(); const tr = TRACKS[id]; const p = new Player(tr, 0, 0, 0); const end = tr.bars.length * 240 / tr.bpm; p.schedule(end - 1e-6); return { end, loop: tr.loopBar * 240 / tr.bpm }; } };')();
         if (request === null) return {
           sounds: Object.keys(DT.NativeAudio.SOUNDS), clips: Object.keys(DT.NativeAudio.CLIPS),

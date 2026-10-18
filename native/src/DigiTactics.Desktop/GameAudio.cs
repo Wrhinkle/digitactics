@@ -17,6 +17,7 @@ internal sealed unsafe partial class GameAudio : IDisposable
         public readonly bool Board = board;
         public readonly int Loop = loop, End = end;
         public int Position;
+        public long StartFrame;
         public int TailPosition = -1;
         public float Gain = gain, Target = gain;
         public float FadeDown = 1f / 66150;
@@ -36,9 +37,11 @@ internal sealed unsafe partial class GameAudio : IDisposable
     private float duckFrom = 1;
     private float MusicDuck(long at)
     {
-        if (at < duckStart + 2205) return duckFrom + (.45f - duckFrom) * Math.Clamp((at - duckStart) / 2205f, 0, 1);
-        if (at <= duckEnd) return .45f;
-        return .45f + .55f * Math.Clamp((at - duckEnd) / 17640f, 0, 1);
+        return ScheduledMusicDuck(at);
+    }
+    private float MusicDuckCurrent(long at)
+    {
+        return EvaluateDuck(at,duckStart,duckEnd,duckFrom);
     }
     private string? music;
     public bool Available => !stream.IsNull();
@@ -199,10 +202,7 @@ internal sealed unsafe partial class GameAudio : IDisposable
     }
     public void PlayBoard(string id)
     {
-        string key = "clip_" + id;
-        if (!Available || Muted || !manifest.Clips.ContainsKey(key) || voices.Count(v => !v.Music) >= 40) return;
-        duckFrom = MusicDuck(frame); duckStart = frame; duckEnd = frame + (long)((manifest.Clips[key].Duration ?? 1) * manifest.SampleRate);
-        voices.Add(new(Load(key), 1, board: true)); Played++;
+        _=ScheduleBoard(id,0);
     }
     public void SetHidden(bool hidden)
     {
@@ -226,6 +226,7 @@ internal sealed unsafe partial class GameAudio : IDisposable
             {
                 for (int i = 0; i < buffer.Length; i += 2)
                 {
+                    if (frame+i/2<voice.StartFrame)continue;
                     if (voice.Music && voice.Position >= voice.End) { voice.TailPosition = voice.End; voice.Position = voice.Loop; }
                     if (voice.Position >= voice.Samples.Length) break;
                     voice.Gain += Math.Clamp(voice.Target - voice.Gain, -voice.FadeDown, 1f / 52920);
@@ -247,7 +248,7 @@ internal sealed unsafe partial class GameAudio : IDisposable
             for (int i = 0; i < buffer.Length; i++) buffer[i] = Math.Clamp(buffer[i], -1, 1);
             fixed (float* ptr = buffer)
                 if (Sdl.PInvoke.PutAudioStreamData(stream, ptr, buffer.Length * sizeof(float)) == 0) { DeviceFailed("Audio queue failed."); return; }
-            frame += buffer.Length / 2; queued += buffer.Length * sizeof(float);
+            frame += buffer.Length / 2; ApplyScheduledBoardDucks(frame); queued += buffer.Length * sizeof(float);
         }
     }
     public void Dispose() { DisposeCustomMusic(); stream.Dispose(); stream = default; if (audioInitialized) { Sdl.PInvoke.QuitSubSystem(SdlInitFlags.Audio); audioInitialized = false; } }

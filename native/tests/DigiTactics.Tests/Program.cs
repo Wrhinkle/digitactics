@@ -55,6 +55,7 @@ if (args.Contains("--network-history-only")) { NetworkHistoryChecks.Run(catalog)
 if (args.Contains("--rewards-only")) { MatchRewardChecks.Run(root, catalog); LegendRewardChecks.Run(root); return; }
 if (args.Contains("--cosmetics-only")) { CosmeticChecks.Run(root); return; }
 if (args.Contains("--eggs-only")) { EggChecks.Run(root); return; }
+if (args.Contains("--elimination-themes-only")) { EliminationThemeChecks.Run(root); return; }
 if (args.Contains("--evolution-only")) { EvolutionChecks.Run(root); EvolutionTransitionChecks.Run(root); return; }
 if (args.Contains("--farm-only")) { FarmSimulationChecks.Run(root); FarmCareChecks.Run(root); return; }
 if (args.Contains("--training-only")) { TrainingGameChecks.Run(root); return; }
@@ -261,6 +262,7 @@ assertions += CosmeticChecks.Run(root);
 assertions += EggChecks.Run(root);
 assertions += EvolutionChecks.Run(root);
 assertions += EvolutionTransitionChecks.Run(root);
+assertions += EliminationThemeChecks.Run(root);
 assertions += FarmSimulationChecks.Run(root);
 assertions += FarmCareChecks.Run(root);
 assertions += NetworkProtocolChecks.Run(root);
