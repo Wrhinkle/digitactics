@@ -17,6 +17,9 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
     private long danceStarted;
     public bool Dancing => danceRoot is not null;
     private GpuModel? model;
+    private RetroEmoteView? retro;
+    private long frameNow;
+    public int RetroDrawCalls { get; private set; }
     private CompanionAnimator? animator;
     private string? key, move;
     private ActiveEmote? previous;
@@ -27,6 +30,8 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
     public CompanionTravel Travel { get; } = new();
     public void Update(string nextKey, ActiveEmote? emote, long now, double delta, string? equippedDance = null)
     {
+        frameNow = now;
+        if (retro?.Expired(now) == true) { retro.Dispose(); retro = null; }
         if (key != nextKey)
         {
             var visual = companions.Resolve(nextKey);
@@ -43,6 +48,11 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
         {
             previous = emote; move = null;
             var data = emoteData.RootElement.GetProperty("clips"u8).GetProperty(emote.Id).GetProperty("data"u8);
+            if (data.TryGetProperty("retro"u8, out var retroData))
+            {
+                var nextRetro = new RetroEmoteView(models, retroData, now);
+                retro?.Dispose(); retro = nextRetro;
+            }
             string? role = data.TryGetProperty("role"u8, out var r) ? r.GetString() : null;
             if (role is not null)
             {
@@ -68,12 +78,14 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
         (float)(height + .3 + (opponent ? 0 : Travel.Hop(animator?.HasRun ?? false))), (float)(opponent ? -6.6 : Travel.Z));
     public void Draw(int left, int bottom, int width, int height, int columns)
     {
-        DrawCalls = 0; if (model is null || animator is null) return;
+        DrawCalls = 0; RetroDrawCalls = 0; if (model is null || animator is null) return;
         ModelRenderer.Begin(width, height, false); Brutal.OpenGlApi.OpenGl.Viewport(left, bottom, width, height);
         var camera = BattleView.Camera(width, height, columns);
         var placement = model.PlaceCompanion(animator, opponent ? 7.6 : Travel.X, opponent ? 0 : Travel.Hop(animator.HasRun), opponent ? -6.6 : Travel.Z, overlay, danceRoot);
         foreach (bool transparent in new[] { false, true }) { renderer.Draw(model, animator.Pose, placement, camera, transparent); DrawCalls += renderer.DrawCalls; }
+        RetroDrawCalls = retro?.Draw(renderer, camera, BattleView.CameraEye(width,height,columns),
+            new(opponent?7.6:Travel.X,opponent?0:Travel.Hop(animator.HasRun),opponent?-6.6:Travel.Z),frameNow) ?? 0;
         ModelRenderer.End();
     }
-    public void Dispose() { model?.Dispose(); emoteData.Dispose(); renderer.Dispose(); }
+    public void Dispose() { retro?.Dispose(); model?.Dispose(); emoteData.Dispose(); renderer.Dispose(); }
 }

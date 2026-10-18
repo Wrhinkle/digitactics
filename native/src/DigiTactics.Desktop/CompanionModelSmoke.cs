@@ -63,6 +63,30 @@ internal static class CompanionModelSmoke
                 arena.Travel.Move(0,5);arena.Update("tokomon",null,7100,.1,"floss");
                 if (arena.Dancing) throw new InvalidOperationException("Walking did not stop the equipped dance.");
             }
+            using (var manifest = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"content/emotes/manifest.json"))))
+            {
+                OpenGl.Viewport(0,0,960,960);OpenGl.Clear(GlClearBit.Color);
+                int retroIndex=0;
+                foreach (var item in manifest.RootElement.GetProperty("clips"u8).EnumerateObject())
+                {
+                    if (!item.Value.GetProperty("data"u8).TryGetProperty("retro"u8,out var data)) continue;
+                    using var retro = new RetroEmoteView(catalog,data,0);
+                    ModelRenderer.Begin(320,320);OpenGl.Viewport(retroIndex%3*320,(2-retroIndex/3)*320,320,320);
+                    int draws=retro.Draw(renderer,camera,new(0,1.8f,5),new(0,0,0),900);
+                    ModelRenderer.End();
+                    if(draws==0 || retro.Expired(2999) || !retro.Expired(3000))throw new InvalidOperationException("Retro model/lifetime smoke failed: "+item.Name);
+                    retroIndex++;
+                }
+                if(retroIndex!=9)throw new InvalidOperationException("Retro catalog smoke did not cover nine models.");
+                if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"retro.bmp"),960,960);
+                using var arena=new ArenaCompanionView();
+                arena.Update("tokomon",new(0,"retro_hug",1000),1000,0);
+                arena.Update("tokomon",null,1900,.1);arena.Draw(0,0,960,960,7);
+                if(arena.RetroDrawCalls==0)throw new InvalidOperationException("Retro emote did not reach arena rendering.");
+                arena.Update("tokomon",null,4000,.1);arena.Draw(0,0,960,960,7);
+                if(arena.RetroDrawCalls!=0)throw new InvalidOperationException("Expired retro model remained in arena.");
+                Console.WriteLine("Retro GPU smoke passed: nine original models, arena trigger and expiry.");
+            }
             Console.WriteLine($"Companion GPU smoke passed: {index} models (77 companions plus normal-mapped Vulcanusmon) rendered with farm lighting, surface textures, walking/reaction playback and procedural overlays.");
         }
         finally { Glfw.Terminate(); }

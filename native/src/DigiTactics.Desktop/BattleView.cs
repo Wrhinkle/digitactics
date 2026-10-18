@@ -64,10 +64,14 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
         ImGui.SameLine(); if (ImGui.Button("Back to shop"u8)) BackRequested = true;
         ImGui.End();
     }
-    internal static Matrix4x4 Camera(int width, int height, int columns)
+    internal static Vector3 CameraEye(int width, int height, int columns)
     {
         float distance = (float)Math.Max(24, (columns * Math.Sqrt(3) + 4) / (2 * Math.Tan(.36) * width / height));
-        return Matrix4x4.CreateLookAt(new(0, distance * .6644f, distance * .7474f), new(0, 0, 0), Vector3.UnitY)
+        return new(0, distance * .6644f, distance * .7474f);
+    }
+    internal static Matrix4x4 Camera(int width, int height, int columns)
+    {
+        return Matrix4x4.CreateLookAt(CameraEye(width,height,columns), new(0, 0, 0), Vector3.UnitY)
             * Matrix4x4.CreatePerspectiveFieldOfView(.72f, (float)width / height, .1f, 100);
     }
     public void Labels(int width, int height, int windowHeight, int left = 0, int bottom = 0)
