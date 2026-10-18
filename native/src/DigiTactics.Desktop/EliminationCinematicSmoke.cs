@@ -26,6 +26,19 @@ internal sealed class EliminationCinematicSmoke
         }
         if(step==1&&screen.Session is { } session)
         {
+            // The source default now starts with an opening carousel. Finish it
+            // through the real controls before exercising the header pause button.
+            var carousel=session.Units.Carousel;
+            if(carousel.Active)
+            {
+                if(carousel.Done&&screen.Buttons.TryGetValue("carouselGo",out var next))Click(next);
+                else if(carousel.Turn?.Id==0)
+                {
+                    int choice=carousel.Options.Select((option,index)=>(option,index)).First(pair=>pair.option.PickedBy is null).index;
+                    if(screen.Buttons.TryGetValue("carousel/"+choice,out var pick))Click(pick);
+                }
+                return;
+            }
             var rules=session.State.Rules;var models=ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/models.json"));
             var lines=rules.Lines.Take(16).ToArray();
             EliminationMember[] team=lines.Select((l,i)=>new EliminationMember(l.Id,i%3,i+1,0,i==0)).ToArray();
@@ -65,7 +78,7 @@ internal sealed class EliminationCinematicSmoke
     }
     public bool Verify(MatchScreen screen,int2 size,string? capture)
     {
-        if(++frames>1000)throw new InvalidOperationException("Elimination cinematic smoke stalled.");
+        if(++frames>1000)throw new InvalidOperationException($"Elimination cinematic smoke stalled: step={step}, pauseStep={pauseStep}, paused={screen.IsPaused}, victim={screen.EliminationPlayback?.Event.Victim.Id}.");
         if(screen.EliminationPlayback is { } p)
         {
             int victim=p.Event.Victim.Id;
@@ -86,13 +99,14 @@ internal sealed class EliminationCinematicSmoke
                 if(victim!=5||p.DanceTime>1.8)Capture(victim==5?"duos-lineup":"lineup");
             }
             if(victim==2&&p.Time>.5){if(p.Big||p.Cinematic)throw new InvalidOperationException("Other-player elimination took over the arena.");seenSmall=true;Capture("small");}
+            if(victim==2&&screen.IsPaused)Capture("paused");
             if(victim==4&&p.Time>.4){if(p.Event.Killer is not null||screen.EliminationMembers!=0)throw new InvalidOperationException("PvE elimination displayed a killer.");seenPve=true;Capture("pve");}
             if(victim==5&&!p.Attack&&p.DanceTime>.7){if(!p.Big||screen.EliminationMembers!=17)throw new InvalidOperationException("Duos final hit omitted partner or board actors.");seenDuos=true;}
             void Capture(string key){if(capture is not null&&captured.Add(key))FrameCapture.SaveBitmap(Path.ChangeExtension(capture,key+".bmp"),size.X,size.Y);}
         }
         else if(step==2)
         {
-            if(!seenAttack||!seenEffects||!seenDance||!seenSmall||!seenPve||!seenDuos||!animated||pauseStep!=2)throw new InvalidOperationException("Elimination smoke missed a required scene.");
+            if(!seenAttack||!seenEffects||!seenDance||!seenSmall||!seenPve||!seenDuos||!animated||pauseStep!=2)throw new InvalidOperationException($"Elimination smoke missed a required scene: attack={seenAttack}, effects={seenEffects}, dance={seenDance}, small={seenSmall}, pve={seenPve}, duos={seenDuos}, animated={animated}, pauseStep={pauseStep}.");
             if(screen.Session is null||screen.Session.Rounds.Phase!=MatchPhase.Planning)throw new InvalidOperationException("Client-only cinematics changed the match state.");
             PlaceholderCreatureSmoke.Run(size,capture);
             Console.WriteLine("Elimination cinematic UI: final attack with native move effects, complete 17-actor Duos dance, animated poses, small/PvE cards, real pause/resume, click/Escape skips and queue expiry passed.");return true;

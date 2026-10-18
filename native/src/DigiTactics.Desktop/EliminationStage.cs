@@ -42,6 +42,7 @@ internal sealed class EliminationStage : IDisposable
     private GlTexture color, depth;
     private int width, height;
     private double lastTime, lastLegendMeasure = -1, legendTop = 1.05;
+    private readonly List<Vector3> lineupBounds = [];
     private Member? hero;
     private NativeMoveEffects? moves;
     public int EffectDrawCalls { get; private set; }
@@ -97,7 +98,10 @@ internal sealed class EliminationStage : IDisposable
     private void Pose(Member m, double delta, double time)
     {
         m.Companion?.Update(delta);m.Animator?.Update(delta);
-        var root = m.Dancer.Apply(DanceChoreography.Evaluate(dance,time),m.Pose);
+        // Source objRig eases units from their current idle pose over the first
+        // quarter second. Legend attachView owns its full-weight dance separately.
+        var root = m.Dancer.Apply(DanceChoreography.Evaluate(dance,time),m.Pose,
+            m.Companion is null ? Math.Min(1,(float)(time/.25)) : 1);
         if (m.Companion is { } companion) m.Placement = m.Model!.PlaceCompanion(companion,dance:root);
         else
         {
@@ -144,16 +148,23 @@ internal sealed class EliminationStage : IDisposable
             {
                 moves?.Clear();
                 foreach(var member in members)Pose(member,delta,playback.DanceTime);
-                var legend=members.FirstOrDefault(m=>m.Companion is not null);
-                if(legend is not null && time-lastLegendMeasure>.15)
-                {
-                    lastLegendMeasure=time;var (min,max)=legend.Model!.Mesh.Bounds(legend.Model.Rig,legend.Pose!);legendTop=1;
-                    foreach(double x in new[]{min.X,max.X})foreach(double y in new[]{min.Y,max.Y})foreach(double z in new[]{min.Z,max.Z})
-                        legendTop=Math.Max(legendTop,x*legend.Placement.M12+y*legend.Placement.M22+z*legend.Placement.M32+legend.Placement.M42-.05);
-                }
-                view=camera.Lineup(layout,aspect,legendTop,playback.Big,delta);renderer.FarmEye=camera.Eye;
-                renderer.EliminationRimIntensity=(float)(3+2.5*Math.Exp(-((time*DanceChoreography.Bpm(dance)/60)%1)*5));
                 var group=GpuModel.Transform(0,-.05,0,Math.Sin(time*.7)*.08,1);
+                if(time-lastLegendMeasure>.15)
+                {
+                    lastLegendMeasure=time;lineupBounds.Clear();legendTop=1.05;
+                    foreach(var member in members.Where(m=>m.Model is not null))
+                    {
+                        var (min,max)=member.Model!.Mesh.Bounds(member.Model.Rig,member.Pose!);var placed=member.Placement*group;
+                        foreach(double x in new[]{min.X,max.X})foreach(double y in new[]{min.Y,max.Y})foreach(double z in new[]{min.Z,max.Z})
+                        {
+                            var point=new Vector3((float)(x*placed.M11+y*placed.M21+z*placed.M31+placed.M41),(float)(x*placed.M12+y*placed.M22+z*placed.M32+placed.M42),(float)(x*placed.M13+y*placed.M23+z*placed.M33+placed.M43));
+                            lineupBounds.Add(point);
+                            if(member.Companion is not null)legendTop=Math.Max(legendTop,point.Y);
+                        }
+                    }
+                }
+                camera.Lineup(layout,aspect,legendTop,playback.Big,delta);view=camera.Contain(lineupBounds,aspect,delta);renderer.FarmEye=camera.Eye;
+                renderer.EliminationRimIntensity=(float)(3+2.5*Math.Exp(-((time*DanceChoreography.Bpm(dance)/60)%1)*5));
                 if(silhouette && !playback.Cinematic && members.FirstOrDefault() is { } giant)
                 {
                     renderer.SilhouetteOverride=true;

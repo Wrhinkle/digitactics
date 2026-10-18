@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Numerics;
 using DigiTactics.Presentation;
 using DigiTactics.Rules;
 
@@ -28,6 +29,24 @@ internal static class EliminationCinematicChecks
         {
             double size=EliminationLayout.PopScale(row.GetProperty("time").GetDouble(),row.GetProperty("born").GetDouble(),new(0,0,0,row.GetProperty("slotScale").GetDouble()));
             Check(Math.Abs(size-row.GetProperty("scale").GetDouble())<1e-12,"Source lineup pop-in differs.");
+        }
+        foreach(double aspect in new[]{.8,16d/9})
+        {
+            var camera=new EliminationCamera();var layout=EliminationLayout.Create(2,aspect);
+            var original=camera.Lineup(layout,aspect,1.05,true,1d/60);
+            Vector3[] ordinary=[new(-.3f,0,0),new(.3f,1,0)];
+            Check(original==camera.Contain(ordinary,aspect,1d/60),"Ordinary dance bodies changed the source camera framing.");
+            // The original upright estimate misses spinning tails and downward weapons.
+            Vector3[] expanded=[new(-2.4f,-1.6f,.5f),new(2.4f,2.7f,.5f),new(-2.4f,2.7f,-1),new(2.4f,-1.6f,-1)];
+            var safe=camera.Contain(expanded,aspect,1d/60);
+            foreach(var point in expanded)
+            {
+                var projected=Vector4.Transform(new Vector4(point,1),safe);
+                Check(projected.W>0&&Math.Abs(projected.X/projected.W)<=.841&&Math.Abs(projected.Y/projected.W)<=.841,"Animated body or weapon leaves the fitted dance viewport.");
+            }
+            double before=Vector3.Distance(camera.Eye,camera.Target);
+            camera.Lineup(layout,aspect,1.05,true,1d/60);camera.Contain(ordinary,aspect,1d/60);
+            Check(Vector3.Distance(camera.Eye,camera.Target)>before*.9,"Dance camera snaps inward after a large pose.");
         }
         var ev=sample!;var big=new EliminationPlayback(ev,ev.Victim.Id);var small=new EliminationPlayback(ev,-1);
         Check(big.Big&&big.Cinematic&&big.Duration==7.5&&small.Duration==2.8&&!small.Cinematic,"Local final-hit cinematic durations differ.");

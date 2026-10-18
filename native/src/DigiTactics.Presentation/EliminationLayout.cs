@@ -26,6 +26,7 @@ public sealed record EliminationLayout(EliminationSlot[] Slots, double HalfWidth
 public sealed class EliminationCamera
 {
     private double? distance, y;
+    private double framingScale = 1;
     public Vector3 Eye { get; private set; }
     public Vector3 Target { get; private set; }
     public Matrix4x4 Lineup(EliminationLayout layout, double aspect, double legendTop, bool big, double delta)
@@ -46,5 +47,29 @@ public sealed class EliminationCamera
         if (time > 1.15 && time < 1.6) { x += Math.Sin(time * 90) * .05; y += Math.Cos(time * 71) * .04; }
         Eye = new((float)x, (float)y, (float)(4 - Math.Min(time, 2) * .15)); Target = new(0, .85f, 0);
         return Matrix4x4.CreateLookAt(Eye, Target, Vector3.UnitY) * Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI / 6, (float)aspect, .1f, 60);
+    }
+    /// <summary>Keep the source lineup composition, widening only when animated
+    /// bodies or carried weapons exceed its assumed upright body dimensions.</summary>
+    public Matrix4x4 Contain(IReadOnlyList<Vector3> bounds, double aspect, double delta)
+    {
+        if(bounds.Count==0)return Matrix4x4.CreateLookAt(Eye,Target,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI/6,(float)aspect,.1f,60);
+        var sourceEye=Eye;
+        var forward=Vector3.Normalize(Target-sourceEye);
+        var right=Vector3.Normalize(Vector3.Cross(forward,Vector3.UnitY));
+        var up=Vector3.Cross(right,forward);
+        double tangent=Math.Tan(Math.PI/12),originalDistance=Vector3.Distance(sourceEye,Target),required=originalDistance;
+        // A small inset absorbs interpolation between the source's 150ms bound
+        // samples and leaves the full body inside the seven-percent letterbox bars.
+        foreach(var point in bounds)
+        {
+            var offset=point-Target;double depth=Vector3.Dot(offset,forward);
+            required=Math.Max(required,Math.Abs(Vector3.Dot(offset,right))/(tangent*aspect*.84)-depth);
+            required=Math.Max(required,Math.Abs(Vector3.Dot(offset,up))/(tangent*.84)-depth);
+        }
+        double wanted=Math.Max(1,required/originalDistance);
+        // Expand immediately for safety; returning to the source framing is gentle.
+        framingScale=wanted>framingScale?wanted:framingScale+(wanted-framingScale)*Math.Min(1,delta*2);
+        Eye=Target+(sourceEye-Target)*(float)framingScale;
+        return Matrix4x4.CreateLookAt(Eye,Target,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI/6,(float)aspect,.1f,60);
     }
 }
