@@ -139,6 +139,24 @@ Latest verified integration additions:
   for Impmon, Monodramon and Arresterdramon: CPU skin samples show articulation.
   Final readability still requires focused visual review.
 
+Further reviewed work:
+
+- 855b198 restores live-match own-music selection, active-playback Next guards
+  and Effects/Soundboard slider previews. Full normal/minimum/short input runs
+  and decoder routing pass. Root inspected all twelve live Sound captures;
+  hash-linked evidence is artifacts/root-music-live-review.json. Actual OS
+  chooser and listening quality were not tested. Built-in title/phase display
+  remains a separate parity follow-up.
+- 6cfb633 removes Syakomon's cascading attack body/antenna scaling. Eleven
+  source checks cover 329 poses; exact-peak fitted review passes. 72cdbc2 adds
+  this regression to the build. Whole-model functional acceptance is separate.
+- Root reviewed another 1,764 historical pose samples and 54 fitted texture
+  views in v3 reports 0587-0601 and 0698-0712. These preserve rigid DW1 Vademon,
+  Gammamon surface and production-board follow-ups rather than granting broad
+  approval. Three explicit aliases were recorded without new image counts.
+- First-three DW1 rigid-part animation implementation is in review. CPU joint
+  and rigid-edge checks pass; textured native acceptance is still outstanding.
+
 Outstanding release gates:
 
 - Finish remaining Profile/Home navigation, live-match Sound, clean postgame,
