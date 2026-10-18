@@ -98,6 +98,18 @@ public sealed class NativeProfileStore
             if (temporary is not null) try { File.Delete(temporary); } catch (IOException) { } catch (UnauthorizedAccessException) { }
         }
     }
+    public MusicLibrary OpenMusicLibrary()
+    {
+        var library = new MusicLibrary(Path.Combine(directory, "music"));
+        if (loadedText is null || readOnly) return library;
+        using var document = JsonDocument.Parse(loadedText);
+        if (!document.RootElement.TryGetProperty("sourceSha256", out var source)) return library;
+        string? digest = source.GetString();
+        if (digest is not { Length: 64 } || !digest.All(Uri.IsHexDigit)) throw new InvalidDataException("Invalid imported profile archive reference.");
+        digest = digest.ToLowerInvariant();
+        library.ImportLegacy(Path.Combine(directory, "imports", digest + ".json"), digest);
+        return library;
+    }
     public static PlayerProgress ReadProgress(IReadOnlyDictionary<string, string> storage)
     {
         long? Number(string key, string? parent, string field)

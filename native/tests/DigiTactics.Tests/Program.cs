@@ -13,6 +13,7 @@ if (args.Contains("--loadouts-only")) { LoadoutChecks.Run(root); return; }
 if (args.Contains("--emote-layout-only")) { EmoteLayoutChecks.Run(root); return; }
 if (args.Contains("--steam-native-only")) { SteamMessageChecks.Run(root); SteamClientChecks.Run(root); SteamMatchmakingChecks.Run(root); SteamRoomSessionChecks.Run(root); SteamFriendsChecks.Run(root); return; }
 if (args.Contains("--network-only")) { NetworkProtocolChecks.Run(root); ReplicatedLogChecks.Run(root); LobbyAuthorityChecks.Run(root); NetworkRoomChecks.Run(); return; }
+if (args.Contains("--music-library-only")) { MusicLibraryChecks.Run(root); return; }
 if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--soundboard-only")) { SoundboardChecks.Run(); return; }
 if (args.Contains("--player-mutes-only")) { PlayerMuteChecks.Run(); return; }
@@ -227,6 +228,7 @@ assertions += AudioCueParity.Run(root, catalog);
 assertions += AudioSettingsChecks.Run();
 assertions += MatchHistoryChecks.Run(root, catalog);
 assertions += PlayOnChecks.Run(catalog);
+assertions += MusicLibraryChecks.Run(root);
 assertions += MatchRewardChecks.Run(root, catalog);
 assertions += LegendRewardChecks.Run(root);
 assertions += CosmeticChecks.Run(root);
