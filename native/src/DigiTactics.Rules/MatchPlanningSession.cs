@@ -14,6 +14,7 @@ public sealed class MatchPlanningSession
         Ai = new(State, Offers, Units);
         var effects = new MatchRoundEffects(State, Offers, Units, Ai, Phase);
         Rounds = rounds = new(State, Offers, effects);
+        Actions = new(this);
         Rounds.Start();
     }
     public MatchState State { get; }
@@ -22,6 +23,7 @@ public sealed class MatchPlanningSession
     public MatchOffers Offers { get; }
     public MatchAi Ai { get; }
     public MatchRounds Rounds { get; }
+    public MatchActions Actions { get; }
     public IReadOnlyList<MatchBattle> Battles { get; private set; } = [];
     public IReadOnlyList<MatchBattle> StartCombat()
     {

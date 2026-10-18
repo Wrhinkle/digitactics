@@ -16,8 +16,8 @@ public sealed class MatchPlayer
     private readonly int itemCap;
     public void GiveItem(string id) { if (!string.IsNullOrEmpty(id) && Items.Count < itemCap) Items.Add(id); }
     public int Id { get; }
-    public string Name { get; }
-    public bool IsHuman { get; }
+    public string Name { get; internal set; }
+    public bool IsHuman { get; internal set; }
     public int Health { get; set; }
     public bool Alive { get; internal set; } = true;
     public int Placement { get; internal set; }

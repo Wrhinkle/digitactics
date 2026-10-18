@@ -1621,3 +1621,34 @@ parity is stronger engine evidence, not full product acceptance.
 Validation: **174,393,682 full-suite native checks passed**, including 88 complete
 matches and all 5,699 isolated reference battles. Self-contained Windows publish
 and packaged BRUTAL smoke checks passed.
+
+### Shared player action boundary
+
+`MatchPlanningSession.Actions` routes player commands through the composed match
+services. It supports purchases/sales, movement, rerolls/locks, equipment and item
+swaps, XP, offers/rerolls, carousel picks, loot collection, Duos portals and Faction
+Wars Wisps. Seat claim/release updates human control and advances a released
+carousel turn. Commands for eliminated players or completed matches are ignored,
+except seat changes as in the original game.
+
+Results use typed variants for flags, status/item IDs, evolved units, loot and
+transfers. Purchases now expose their evolved units without changing the existing
+boolean convenience API. Numeric arguments reject missing, fractional, negative,
+string and out-of-range indices; native seat-name arguments are text, capped at
+16 UTF-16 code units. Transport callers must authorize the sending player before
+passing a command to this boundary.
+
+88 original-engine action traces exercise 41,005 commands across every variant
+and Solo/Duos. 15,277,814 checks (`--match-actions-only`) compare result payloads,
+seat/control changes, phase restrictions, shops, economy, inventory, loot,
+rosters/modifiers, offers, transfers, carousels, pool counts, IDs and RNG. The
+traces include actual combat and settlement between command sequences, invalid
+arguments, combat board locks, successful transfers and Wisp purchases, plus
+commands sent after elimination/match completion.
+
+Production match screens still need to use this boundary. This does not complete
+UI, multiplayer transport, audio, save migration or release acceptance.
+
+Validation: **189,671,496 full-suite native checks passed**, including all action
+traces, 88 complete matches and 5,699 isolated reference battles. Self-contained
+Windows publish and packaged BRUTAL smoke checks passed.

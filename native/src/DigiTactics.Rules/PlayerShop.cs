@@ -100,8 +100,12 @@ public sealed class PlayerShop
     }
     public bool Buy(int slot, bool boardLocked, Func<PlanningUnit, PlanningUnit>? onBuy = null,
         Action<PlanningUnit, IReadOnlyList<PlanningUnit>>? onCombine = null)
+        => BuyWithEvolutions(slot, boardLocked, onBuy, onCombine) is not null;
+
+    public IReadOnlyList<PlanningUnit>? BuyWithEvolutions(int slot, bool boardLocked, Func<PlanningUnit, PlanningUnit>? onBuy = null,
+        Action<PlanningUnit, IReadOnlyList<PlanningUnit>>? onCombine = null)
     {
-        if (CanBuy(slot, boardLocked) != PurchaseStatus.Ready) return false;
+        if (CanBuy(slot, boardLocked) != PurchaseStatus.Ready) return null;
         string line = slots[slot]!;
         economy.Spend(Cost(slot));
         var special = metadata[slot]?.Unit;
@@ -113,9 +117,9 @@ public sealed class PlayerShop
             Mods = special.Mods?.Clone() ?? unit.Mods };
         if (onBuy is not null) unit = onBuy(unit);
         var extra = roster.AddToBench(unit) ? null : unit;
-        roster.Combine(boardLocked, giveItem, extra, onCombine: onCombine, discardOverflow: true);
+        var evolved = roster.Combine(boardLocked, giveItem, extra, onCombine: onCombine, discardOverflow: true);
         ClearMaxed();
-        return true;
+        return evolved;
     }
     public bool Sell(int uid, bool boardLocked, Action<PlanningUnit>? onSell = null)
     {
