@@ -42,6 +42,11 @@ internal static class BoardMotionChecks
             }
             else if(motion.Kind is "mountain-stars" or "grid-rings")
                 Near(BoardSceneMotion.Opacity(motion.Kind,time)!.Value,row.GetProperty("opacity").GetDouble(),1e-7);
+            else if(motion.Kind=="rotating-parent")
+            {
+                double[] values=new double[16]; BoardSceneMotion.RotatingParent(motion,time).CopyTo(values);
+                for(int j=0;j<16;j++) Near(values[j],row.GetProperty("matrix")[j].GetDouble(),1e-10);
+            }
             else if(motion.Kind=="beach-surf")
             {
                 var surf=BoardSceneMotion.Surf(motion,time); double[] values=new double[16]; surf.Matrix.CopyTo(values);

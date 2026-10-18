@@ -2,6 +2,12 @@ namespace DigiTactics.Assets;
 
 public static class BoardSceneMotion
 {
+    public static Matrix4D RotatingParent(BoardMotion motion,double time)
+    {
+        double halfAngle=time*motion.Speed/2;
+        var rotation=Matrix4D.Compose(new(0,0,0),new(0,Math.Sin(halfAngle),0,Math.Cos(halfAngle)),new(1,1,1));
+        return Matrix4D.From(motion.Matrix!)*rotation*Matrix4D.From(motion.Parent!);
+    }
     public static float? Opacity(string? kind,double time)=>kind switch
     {
         "mountain-stars"=>(float)(.75+.25*Math.Sin(time*1.7)),

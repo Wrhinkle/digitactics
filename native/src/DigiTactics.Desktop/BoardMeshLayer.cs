@@ -69,6 +69,7 @@ internal sealed class BoardMeshLayer : IDisposable
             if (!item.Object.Visible) continue;
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = Matrix4D.From(item.Object.Matrix) * Root;
+            if(item.Object.Motion is { Kind:"rotating-parent" } rotating) world=BoardSceneMotion.RotatingParent(rotating,time)*Root;
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
             if(item.Object.Motion is { Kind:"beach-surf" } surf)
             {

@@ -20,6 +20,7 @@ async function main(){
    .replace(/const trm = inst\(ctx, car,[^\n]+;/,line=>line+' trm.userData.nativeMotion={kind:"toy-train",props:cars.map(p=>({...p}))};')
    .replace(/const band = mesh\(ctx, new THREE.CylinderGeometry\(26, 26[^\n]+;/,line=>line+' band.userData.nativeMotion={kind:"desert-haze"};')
    .replace('ctx.g.add(stars);','ctx.g.add(stars); stars.userData.nativeMotion={kind:"mountain-stars"};')
+   .replace('beam.add(b1, b2);','beam.add(b1, b2); beam.updateMatrix(); for(const child of [b1,b2]) { child.updateMatrix(); child.userData.nativeMotion={kind:"rotating-parent",speed:.7,matrix:child.matrix.toArray(),parent:beam.matrix.toArray()}; }')
    .replace('gears.push({ g, list });','gears.push({ g, list }); g.userData.nativeMotion={kind:"savanna-gears",props:list.map(p=>({...p}))};')
    .replace(/const pm = inst\(ctx, new THREE.IcosahedronGeometry\(1, 0\)[^\n]+;/,line=>line+' pm.userData.nativeMotion={kind:"grid-polys",props:polys.map(p=>({...p}))};')
    .replace(/const rm = inst\(ctx, ring,[^\n]+;/,line=>line+' rm.userData.nativeMotion={kind:"grid-rings"};')
@@ -173,7 +174,7 @@ async function main(){
       }else if(motion.kind==='island-crystals'||motion.kind==='beach-palms'||motion.props){
        const matrix=new THREE.Matrix4(),matrices=[];for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
        rows.push({id:spec.id,time,motion,matrices});
-      }else if(motion.kind==='beach-surf'){
+      }else if(motion.kind==='beach-surf'||motion.kind==='rotating-parent'){
        rows.push({id:spec.id,time,motion,matrix:o.matrixWorld.toArray(),opacity:o.material.opacity});
       }else if(motion.kind==='desert-haze'||motion.kind==='grid-floor'){
        const texture=o.material.map;texture.updateMatrix();const uv=o.geometry.attributes.uv,samples=[];

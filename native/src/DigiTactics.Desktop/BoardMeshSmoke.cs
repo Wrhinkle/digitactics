@@ -236,11 +236,11 @@ internal static class BoardMeshSmoke
             ("primary-village","village-eggs"),("primary-village","village-blocks"),("toy-town","toy-tops"),("toy-town","toy-train"),
             ("server-desert","desert-haze"),("ancient-coliseum","coliseum-banners"),("ancient-coliseum","coliseum-flames"),
             ("gear-savanna","savanna-gears"),("infinity-mountain","mountain-stars"),
-            ("digital-grid","grid-polys"),("digital-grid","grid-rings"),("digital-grid","grid-floor")})
+            ("digital-grid","grid-polys"),("digital-grid","grid-rings"),("digital-grid","grid-floor"),("dark-ocean","rotating-parent")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
-            if(objects.Length!=(kind=="savanna-gears"?4:1)) throw new InvalidOperationException("Missing original animated prop: "+kind);
+            if(objects.Length!=(kind=="savanna-gears"?4:kind=="rotating-parent"?2:1)) throw new InvalidOperationException("Missing original animated prop: "+kind);
             using var layer=new BoardMeshLayer(scene with { Objects=objects });
             byte[] Render()
             {
