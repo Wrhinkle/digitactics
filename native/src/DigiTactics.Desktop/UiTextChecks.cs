@@ -8,6 +8,7 @@ internal static class UiTextChecks
     private sealed record ConsumableCase(string Variant, string Id, int Held, int Bench, string Text);
     public static void Run(ContentCatalog catalog)
     {
+        IncomePreviewChecks.Run(catalog);
         var display = new DisplayText(); int abilities = 0;
         foreach (var rules in catalog.Variants)
         {

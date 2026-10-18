@@ -32,6 +32,9 @@ public sealed class MatchRounds
     public string RoundType => state.Rules.Schedule!.TypeOf(Position);
     public IReadOnlyList<MatchPair> Pairs { get; private set; } = [];
     public IReadOnlyList<MatchRoundResult> Results { get; private set; } = [];
+    /// <summary>Current-round income estimate, matching the original planning UI without crediting gold.</summary>
+    public IncomeBreakdown PreviewIncome(MatchPlayer player) =>
+        hooks.Income(player, Position, player.Economy.Income(Position.Stage, Position.Round));
 
     public bool Start()
     {

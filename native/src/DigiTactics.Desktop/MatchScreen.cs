@@ -303,6 +303,7 @@ internal sealed partial class MatchScreen : IDisposable
         Window("Match", 12, 12, size.X - 24, 96, ImGuiWindowFlags.NoTitleBar);
         ImGui.Text($"{Rules.Name}  /  {Rules.Pace}  /  {(session.State.Duos ? "Duos" : "Solo")}     Round {session.Rounds.Position.Label}  -  {session.Rounds.RoundType.ToUpperInvariant()}");
         ImGui.Text(IsSpectating ? $"Spectating {Human.Name}" : $"{Human.Health} HP     {Human.Economy.Gold} gold     Level {Human.Economy.Level}     Streak {Human.Economy.Streak}");
+        IncomeDisplay();
         ImGui.SameLine(); if (Button("mute", audio.Muted ? "Unmute" : "Mute")) audio.Muted = !audio.Muted;
         ImGui.SameLine(); if (Button("audioSettings", "Sound settings")) showAudio = !showAudio;
         ImGui.SameLine(); if (Button("soundboard", "Soundboard")) { showSoundboard = !showSoundboard; if (showSoundboard) showEmotes = false; }
