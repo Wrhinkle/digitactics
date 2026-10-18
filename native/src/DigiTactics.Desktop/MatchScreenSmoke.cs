@@ -110,7 +110,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "menu.bmp"), size.X, size.Y);
         if (index == 9 && cooldown == 1 && !planningCaptured)
         {
-            if (screen.Session!.State.Players[0].Roster.Board.Count != 2 || screen.PlanningDrawCalls == 0)
+            if (screen.Session!.State.Players[0].Roster.Board.Count != 2 || screen.PlanningDrawCalls == 0 || screen.BoardDrawCalls <= 75)
                 throw new InvalidOperationException("Match UI buy/place/model smoke failed.");
             if (capture is not null) FrameCapture.SaveBitmap(capture, size.X, size.Y);
             planningCaptured = true;
@@ -120,7 +120,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             battleFrames++;
             if (battleFrames == 45)
             {
-                if (screen.BattleDrawCalls == 0) throw new InvalidOperationException("Match UI battle rendered no models.");
+                if (screen.BattleDrawCalls == 0 || screen.BoardDrawCalls <= (screen.BattleColumns==14?130:75)) throw new InvalidOperationException("Match UI battle did not render units and board scenery.");
                 if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "battle.bmp"), size.X, size.Y);
                 battleCaptured = true;
             }

@@ -12,6 +12,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly List<GpuTexture> textures = [];
     private readonly List<ObjectParts> objects = [];
     public int DrawCalls { get; private set; }
+    public Matrix4D Root { get; set; } = Matrix4D.Identity;
     public BoardMeshLayer(BoardScene scene)
     {
         try
@@ -46,7 +47,7 @@ internal sealed class BoardMeshLayer : IDisposable
         {
             if (!item.Object.Visible) continue;
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
-            var world = Matrix4D.From(item.Object.Matrix);
+            var world = Matrix4D.From(item.Object.Matrix) * Root;
             foreach (var part in item.Parts)
             {
                 var material = part.Material;

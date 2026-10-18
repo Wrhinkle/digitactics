@@ -14,7 +14,9 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     private readonly ModelRenderer renderer = new();
     private readonly Dictionary<ModelSource, GpuModel> models = [];
     private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
-    private readonly ArenaBoard board;
+    private readonly ArenaEnvironment board = new();
+    public string BoardTheme { get; set; } = "file-island";
+    public int BoardDrawCalls => board.DrawCalls;
     private readonly CombatChoreography choreography;
     private double accumulator;
     private bool paused;
@@ -27,7 +29,7 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
 
     public BattleView(Ruleset rules, CombatEntry[]? roster = null, int columns = 7)
     {
-        this.rules = rules; board = new(columns);
+        this.rules = rules;
         var side = roster is { Length: > 0 } ? roster : rules.Lines.Take(6).Select((line, i) => new CombatEntry(line.Id, i % 3, i % columns, 4 + i / columns, Items: [])).ToArray();
         var enemy = rules.Lines.Skip(3).Take(side.Length).Select((line, i) => new CombatEntry(line.Id, i % 3, i % columns, 4 + i / columns, Items: [])).ToArray();
         Combat = new(rules, side, enemy, 84219, columns, setup: new(new(), new()));
@@ -35,7 +37,7 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     }
     public BattleView(Ruleset rules, CombatSimulation combat, bool mirror)
     {
-        this.rules = rules; Combat = combat; this.mirror = mirror; board = new(combat.Columns);
+        this.rules = rules; Combat = combat; this.mirror = mirror;
         choreography = new(combat, this); choreography.Update(0, mirror);
     }
     public void Create(CombatUnit unit)
@@ -95,16 +97,18 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     public void Draw(int width, int height, int left = 0, int bottom = 0)
     {
         if (width <= 0 || height <= 0) return;
-        var camera = Camera(width, height, Combat.Columns); ModelRenderer.Begin(width, height);
-        Brutal.OpenGlApi.OpenGl.Viewport(left, bottom, width, height); board.Draw(renderer, camera); DrawCalls = 0;
-        foreach (bool transparent in new[] { false, true }) foreach (var view in choreography.Views)
+        var camera=Camera(width,height,Combat.Columns); board.SetTheme(BoardTheme); DrawCalls=0;
+        void Units(Matrix4x4 viewCamera,bool transparent)
         {
-            if (!actors.TryGetValue(view.UnitId, out var actor)) continue;
-            var unit = Combat.Units[view.UnitId];
-            renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.Place(view, unit.Stage, unit.Line.Tier), camera, transparent, view.Flash > 0 ? view.Flash : view.Glow);
-            DrawCalls += renderer.DrawCalls;
+            foreach(var view in choreography.Views)
+            {
+                if(!actors.TryGetValue(view.UnitId,out var actor)) continue;
+                var unit=Combat.Units[view.UnitId];
+                renderer.Draw(actor.Model,actor.Animator.Pose,actor.Model.Place(view,unit.Stage,unit.Line.Tier),viewCamera,transparent,view.Flash>0?view.Flash:view.Glow);
+                if(!renderer.ShadowPass) DrawCalls+=renderer.DrawCalls;
+            }
         }
-        ModelRenderer.End();
+        board.Draw(renderer,camera,CameraEye(width,height,Combat.Columns),Combat.Columns,false,left,bottom,width,height,Units);
     }
     public void Dispose() { foreach (var model in models.Values) model.Dispose(); models.Clear(); board.Dispose(); renderer.Dispose(); }
 }

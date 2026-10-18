@@ -25,6 +25,20 @@ internal static class BoardMeshSmoke
             CheckPoints(renderer);
             CheckLines(renderer);
             CheckFog(renderer);
+            using(var arena=new ArenaEnvironment())
+            {
+                var view=BattleView.Camera(256,256,14);
+                foreach(string theme in new[] {"file-island","digital-grid","../invalid"})
+                {
+                    arena.SetTheme(theme); arena.SetTheme(theme);
+                    arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,256,256,(_,_)=>{});
+                    if(arena.DrawCalls<=130 || arena.Theme!=(theme=="../invalid"?"file-island":theme) || renderer.BoardLight?.FogNear!=65 || renderer.BoardLight?.FogFar!=120)
+                        throw new InvalidOperationException("Live board theme replacement, fallback or Duos fog failed.");
+                }
+                arena.Draw(renderer,BattleView.Camera(256,256,7),BattleView.CameraEye(256,256,7),7,true,0,0,256,256,(_,_)=>{});
+                if(renderer.BoardLight?.FogNear!=30 || renderer.BoardLight?.FogFar!=60) throw new InvalidOperationException("Planning did not restore theme fog.");
+            }
+            renderer.BoardLight=null; renderer.ShadowTexture=0;
             var scenes=Directory.GetFiles(Path.Combine(AppContext.BaseDirectory,"content/boards"),"*.json.gz").Order().Select(BoardScene.Load).ToArray();
             foreach(var scene in scenes)
             {

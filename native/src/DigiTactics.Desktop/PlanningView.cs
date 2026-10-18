@@ -9,7 +9,9 @@ internal sealed class PlanningView : IDisposable
 {
     private readonly ModelCatalog catalog = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
     private readonly ModelRenderer renderer = new();
-    private readonly ArenaBoard board = new(7);
+    private readonly ArenaEnvironment board = new();
+    public string BoardTheme { get; set; } = "file-island";
+    public int BoardDrawCalls => board.DrawCalls;
     private readonly Dictionary<ModelSource, GpuModel> models = [];
     private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
     public int DrawCalls { get; private set; }
@@ -39,18 +41,20 @@ internal sealed class PlanningView : IDisposable
     }
     public void Draw(Ruleset rules, MatchPlayer player, int left, int bottom, int width, int height)
     {
-        var camera = BattleView.Camera(width, height, 7); ModelRenderer.Begin(width, height);
-        Brutal.OpenGlApi.OpenGl.Viewport(left, bottom, width, height); board.Draw(renderer, camera); DrawCalls = 0;
-        foreach (bool transparent in new[] { false, true }) foreach (var entry in player.Roster.Board)
+        var camera = BattleView.Camera(width,height,7); board.SetTheme(BoardTheme); DrawCalls=0;
+        void Units(Matrix4x4 viewCamera,bool transparent)
         {
-            if (!actors.TryGetValue(entry.Unit.Id, out var actor)) continue;
-            var position = CombatLayout.Cell(new(entry.Spot.Column, entry.Spot.Row), 7, false);
-            var view = new CombatVisual(entry.Unit.Id, position, Math.PI, default, 1, 0, 0, 1, null, false);
-            var line = rules.Lines.Concat(rules.ExtraLines).Single(l => l.Id == entry.Unit.Line);
-            renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.Place(view, entry.Unit.Stage, line.Tier), camera, transparent);
-            DrawCalls += renderer.DrawCalls;
+            foreach(var entry in player.Roster.Board)
+            {
+                if(!actors.TryGetValue(entry.Unit.Id,out var actor)) continue;
+                var position=CombatLayout.Cell(new(entry.Spot.Column,entry.Spot.Row),7,false);
+                var view=new CombatVisual(entry.Unit.Id,position,Math.PI,default,1,0,0,1,null,false);
+                var line=rules.Lines.Concat(rules.ExtraLines).Single(l=>l.Id==entry.Unit.Line);
+                renderer.Draw(actor.Model,actor.Animator.Pose,actor.Model.Place(view,entry.Unit.Stage,line.Tier),viewCamera,transparent);
+                if(!renderer.ShadowPass) DrawCalls+=renderer.DrawCalls;
+            }
         }
-        ModelRenderer.End();
+        board.Draw(renderer,camera,BattleView.CameraEye(width,height,7),7,true,left,bottom,width,height,Units);
     }
     public void Dispose() { foreach (var model in models.Values) model.Dispose(); models.Clear(); board.Dispose(); renderer.Dispose(); }
 }
