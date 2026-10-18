@@ -78,6 +78,50 @@ internal static class NativeUpdateChecks
             expected=Build(rawManifest:"{\"schemaVersion\":1,\"schemaVersion\":1}");
             Reject(()=>NativeUpdatePackage.Inspect(archive,expected,1),"duplicate JSON fields");
             Check(Directory.GetFileSystemEntries(directory).Length==1,"all rejected packages leave installation untouched");
+            string stageRoot=Path.Combine(directory,"candidates");
+            expected=Build();
+            var staged=NativeUpdatePackage.Stage(archive,stageRoot,expected,1);
+            Check(File.ReadAllBytes(Path.Combine(staged.Directory,"content/nested/data.bin")).SequenceEqual(new byte[]{4,5,6}),"stage preserves nested bytes");
+            Check(File.ReadAllBytes(Path.Combine(staged.Directory,"DigiTactics.Desktop.exe")).SequenceEqual(new byte[]{1,2,3}),"stage preserves executable bytes");
+            Check(File.Exists(Path.Combine(staged.Directory,NativeUpdatePackage.ManifestName)) && !Path.GetFileName(staged.Directory).StartsWith(".partial"),"complete candidate has manifest");
+            var second=NativeUpdatePackage.Stage(archive,stageRoot,expected,1);
+            Check(second.Directory!=staged.Directory && Directory.GetDirectories(stageRoot).Length==2,"staging never overwrites an existing candidate");
+            string untouched=Path.Combine(directory,"invalid-stage");
+            Reject(()=>NativeUpdatePackage.Stage(archive,untouched,expected with {Sha256=new string('0',64)},1),"invalid download cannot stage");
+            Check(!Directory.Exists(untouched),"invalid download does not create staging root");
+            using(var cancel=new CancellationTokenSource())
+            {
+                cancel.Cancel();try {NativeUpdatePackage.Stage(archive,untouched,expected,1,cancel.Token);throw new Exception("Ignored stage cancellation");}
+                catch(OperationCanceledException) {checks++;}
+            }
+            Check(!Directory.Exists(untouched),"cancelled verification does not create staging root");
+            string occupied=Path.Combine(directory,"occupied");File.WriteAllText(occupied,"keep");
+            try {NativeUpdatePackage.Stage(archive,occupied,expected,1);throw new Exception("Accepted file as staging root");}
+            catch(IOException) {checks++;}
+            Check(File.ReadAllText(occupied)=="keep","staging root failure preserves existing file");
+            string published=Path.Combine(directory,"published");Directory.CreateDirectory(Path.Combine(published,"content"));
+            File.WriteAllBytes(Path.Combine(published,"DigiTactics.Desktop.exe"),[1,2,3,4]);
+            File.WriteAllBytes(Path.Combine(published,"content/empty.bin"),[]);
+            string generated=Path.Combine(directory,"generated.zip");
+            var generatedExpected=NativeUpdatePackage.Create(published,generated,"3.2.1",2);
+            var generatedStage=NativeUpdatePackage.Stage(generated,stageRoot,generatedExpected,2);
+            Check(generatedStage.Manifest.Files.Length==2 && new FileInfo(Path.Combine(generatedStage.Directory,"content/empty.bin")).Length==0,"published directory packages and stages including empty files");
+            Check(File.ReadAllBytes(Path.Combine(generatedStage.Directory,"DigiTactics.Desktop.exe")).SequenceEqual(new byte[]{1,2,3,4}),"package roundtrip preserves application");
+            Reject(()=>NativeUpdatePackage.Inspect(generated,generatedExpected,1),"generated package enforces minimum launcher");
+            string repeated=Path.Combine(directory,"repeated.zip");
+            var repeatedExpected=NativeUpdatePackage.Create(published,repeated,"3.2.1",2);
+            Check(repeatedExpected==generatedExpected,"identical source produces deterministic package");
+            try {NativeUpdatePackage.Create(published,generated,"3.2.1",2);throw new Exception("Overwrote release");}
+            catch(IOException) {checks++;}
+            Check(File.ReadAllBytes(generated).SequenceEqual(File.ReadAllBytes(repeated)),"existing archive preserved");
+            try {NativeUpdatePackage.Create(published,Path.Combine(published,"self.zip"),"3.2.1",2);throw new Exception("Packaged own output");}
+            catch(IOException) {checks++;}
+            File.WriteAllText(Path.Combine(published,NativeUpdatePackage.ManifestName),"stale");
+            string failed=Path.Combine(directory,"failed.zip");
+            Reject(()=>NativeUpdatePackage.Create(published,failed,"3.2.1",2),"stale source manifest");
+            Check(!File.Exists(failed) && Directory.GetFiles(directory,".package-*.tmp").Length==0,"failed packaging leaves no published or temporary archive");
+
+
         }
         finally {Directory.Delete(directory,true);}
         Console.WriteLine($"Native update package validation: {checks} checks passed.");return checks;

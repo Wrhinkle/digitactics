@@ -34,12 +34,16 @@ public static partial class NativeUpdatePackage
     }
     public static NativePackageManifest Inspect(string archivePath,NativePackageExpectation expected,int launcherVersion,CancellationToken cancellation=default)
     {
-        if(!ValidVersion(expected.Version) || !Digest(expected.Sha256) || expected.Size<=0 || expected.Size>MaximumArchiveBytes || launcherVersion<1)throw new InvalidDataException("Invalid native update descriptor.");
         using var input=new FileStream(archivePath,FileMode.Open,FileAccess.Read,FileShare.Read);
+        return Inspect(input,expected,launcherVersion,cancellation);
+    }
+    private static NativePackageManifest Inspect(FileStream input,NativePackageExpectation expected,int launcherVersion,CancellationToken cancellation)
+    {
+        if(!ValidVersion(expected.Version) || !Digest(expected.Sha256) || expected.Size<=0 || expected.Size>MaximumArchiveBytes || launcherVersion<1)throw new InvalidDataException("Invalid native update descriptor.");
         if(input.Length!=expected.Size)throw new InvalidDataException("Native update download length differs.");
         if(Hash(input,expected.Size,cancellation)!=expected.Sha256)throw new InvalidDataException("Native update download hash differs.");
         input.Position=0;
-        using var zip=new ZipArchive(input,ZipArchiveMode.Read);
+        using var zip=new ZipArchive(input,ZipArchiveMode.Read,leaveOpen:true);
         if(zip.Entries.Count is <2 or >MaximumFiles+1)throw new InvalidDataException("Invalid native package entry count.");
         var entries=new Dictionary<string,ZipArchiveEntry>(StringComparer.OrdinalIgnoreCase);
         long total=0;
