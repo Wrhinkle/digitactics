@@ -31,6 +31,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private bool reservePurchased, purchasingReserve;
     private int scoutSwitches;
     private bool switchingScout;
+    private int chartStep;
     private int dragStep, draggedId;
     private readonly ArenaDropSmoke dropSmoke = new();
     private bool dropsVerified;
@@ -62,6 +63,20 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (cooldown-- > 0 || index >= commands.Length) return;
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
+        if (index == 20 && chartStep < 7)
+        {
+            var chartIo = ImGui.GetIO();
+            if (chartStep % 2 == 0 && chartStep < 6)
+            {
+                int metric = (chartStep / 2 + 1) % 3;
+                var chartPoint = screen.Buttons["chart/" + metric];
+                chartIo.AddMousePosEvent(chartPoint.X, chartPoint.Y); chartIo.AddMouseButtonEvent(0, true);
+            }
+            else if (chartStep < 6) chartIo.AddMouseButtonEvent(0, false);
+            if (chartStep is 2 or 4 or 6 && screen.ChartMetric != chartStep / 2 % 3)
+                throw new InvalidOperationException("Damage chart tab did not select its metric.");
+            chartStep++; cooldown = 3; return;
+        }
         if (index == 9 && !cameraVerified) { cameraVerified = cameraSmoke.Input(screen); cooldown = 3; return; }
         if (index == 22 && !itemDragsVerified) { itemDragsVerified = itemDragSmoke.Input(screen); cooldown = 3; return; }
         if (index == 22 && !dropsVerified) { dropsVerified = dropSmoke.Input(screen); cooldown = 3; return; }
@@ -136,6 +151,15 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (index == 20 && cooldown == 1 && screen.ChartCombat is { } chartCombat)
+        {
+            var expected = chartCombat.Units.Where(unit => unit.Team == (screen.WatchingMirrored ? 1 : 0))
+                .OrderByDescending(unit => screen.ChartMetric switch { 1 => unit.Taken, 2 => unit.Healed, _ => unit.Dealt })
+                .Select(unit => unit.Id);
+            if (!screen.ChartUnits.SequenceEqual(expected)) throw new InvalidOperationException("Damage chart omitted units, used the wrong watched team, or sorted the wrong metric.");
+            if (capture is not null && chartStep is 3 or 5)
+                FrameCapture.SaveBitmap(Path.ChangeExtension(capture, screen.ChartMetric == 1 ? "taken.bmp" : "healed.bmp"), size.X, size.Y);
+        }
         if (index == 22 && cooldown == 1 && offerSmoke.Capture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "reward.bmp"), size.X, size.Y);
         if (index == 1 && cooldown == 1 && screen.Session!.Units.Carousel.Active)
         {

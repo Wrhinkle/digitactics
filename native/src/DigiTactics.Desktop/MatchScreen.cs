@@ -427,6 +427,7 @@ internal sealed partial class MatchScreen : IDisposable
         if (Human.Power is { } power) UiText.Wrapped($"{Name(power.Id)} - rank {power.Rank}");
         foreach (string id in Human.Augments) { UiText.Wrapped(Name(id)); Tooltip(id); }
         foreach (string id in Human.Globals) { UiText.Wrapped(Name(id)); Tooltip(id); }
+        DamageChart();
         ImGui.End();
         Window("Standings", size.X - 228, Top, 216, Height);
         EnsureSoundboard(); var soundLabels = soundboard.Labels(Environment.TickCount64);
