@@ -34,6 +34,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private int dragStep, draggedId;
     private readonly ArenaDropSmoke dropSmoke = new();
     private bool dropsVerified;
+    private readonly OfferChoiceSmoke offerSmoke = new();
+    private bool offersVerified;
     private readonly ItemDragSmoke itemDragSmoke = new();
     private bool itemDragsVerified;
     private readonly CameraSmoke cameraSmoke = new();
@@ -63,6 +65,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (index == 9 && !cameraVerified) { cameraVerified = cameraSmoke.Input(screen); cooldown = 3; return; }
         if (index == 22 && !itemDragsVerified) { itemDragsVerified = itemDragSmoke.Input(screen); cooldown = 3; return; }
         if (index == 22 && !dropsVerified) { dropsVerified = dropSmoke.Input(screen); cooldown = 3; return; }
+        if (index == 22 && !offersVerified) { offersVerified = offerSmoke.Input(screen); cooldown = 3; return; }
         if (index == 9 && dragStep < 10)
         {
             var dragIo = ImGui.GetIO();
@@ -133,6 +136,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (index == 22 && cooldown == 1 && offerSmoke.Capture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "reward.bmp"), size.X, size.Y);
         if (index == 1 && cooldown == 1 && screen.Session!.Units.Carousel.Active)
         {
             if (screen.CarouselCardsDrawn != screen.Session.Units.Carousel.Options.Count)

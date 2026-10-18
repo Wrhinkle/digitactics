@@ -488,30 +488,6 @@ internal sealed partial class MatchScreen : IDisposable
         if (selectedItem is { } item && Session.State.Duos && Button("sendItem", "Send selected item")) { Act("portal", new { item }); selectedItem = null; }
         ImGui.EndDisabled(); ImGui.End();
     }
-    private void Choices()
-    {
-        if (IsSpectating) return;
-        if (Session!.Units.Carousel.Active)
-        {
-            CarouselChoices();
-        }
-        else if (Human.Offer is { } offer)
-        {
-            var heading = text.Offer(Rules.Id, offer.Kind);
-            Window(heading.Name + "##reward", Left + 12, Top + 12, Width - 24, Math.Min(Height - 24, 440));
-            ImGui.TextWrapped(heading.Description);
-            ImGui.Separator();
-            for (int i = 0; i < offer.Options.Length; i++)
-            {
-                var choice = text.Choice(Rules, offer.Kind, offer.Options[i]);
-                if (Button("offer/" + i, choice.Name, Width - 65, 34)) { Act("offer", new { i }); break; }
-                ImGui.TextWrapped(choice.Description);
-                ImGui.Separator();
-            }
-            if (offer.Rerolls > 0 && Button("offerReroll", $"Reroll choices ({offer.Rerolls})")) Act("offerReroll");
-            ImGui.End();
-        }
-    }
     public void Render(int2 framebuffer)
     {
         if (Session is null && showFarm && training is null && farmViewError is null && size.X > 0 && size.Y > 0)
