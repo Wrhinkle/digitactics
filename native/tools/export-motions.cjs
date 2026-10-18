@@ -1,12 +1,10 @@
 // Compile the original fallback/rest-pose preparation into native data, never runtime JS.
 const fs=require('node:fs'),path=require('node:path'),zlib=require('node:zlib'),crypto=require('node:crypto');
-const {pathToFileURL}=require('node:url');
 const vm=require('node:vm');
 const root=path.resolve(__dirname,'../..'), content=path.join(root,'native/artifacts/model-content');
 async function main(){
   const {THREE,GLTFParser,GLTFMaterialsUnlitExtension}=await require('./three-loader.cjs')();
-  const motionSource=fs.readFileSync(path.join(root,'js/model-motion.js'),'utf8').replace("from 'three'",`from '${pathToFileURL(path.join(root,'vendor/three/build/three.module.js')).href}'`);
-  const {modelClips}=await import('data:text/javascript;base64,'+Buffer.from(motionSource).toString('base64'));
+  const {modelClips}=await require('./load-model-motion.cjs')();
   const manifest=path.join(root,'native/content/models.json'), catalog=JSON.parse(fs.readFileSync(manifest));
   fs.mkdirSync(path.join(content,'motions'),{recursive:true});
   const fixtures=[],actionFixtures=[]; let generated=0,reparented=0;

@@ -1,15 +1,14 @@
 const fs=require('node:fs'),path=require('node:path'),zlib=require('node:zlib'),assert=require('node:assert/strict');
-const {pathToFileURL}=require('node:url');
 async function main(){
   const root=path.resolve(__dirname,'../..'),catalog=JSON.parse(fs.readFileSync(path.join(root,'native/content/models.json')));
   const {THREE,GLTFParser,GLTFMaterialsUnlitExtension}=await require('./three-loader.cjs')();
-  const script=fs.readFileSync(path.join(root,'js/model-motion.js'),'utf8').replace("from 'three'",`from '${pathToFileURL(path.join(root,'vendor/three/build/three.module.js')).href}'`);
-  const {modelClips}=await import('data:text/javascript;base64,'+Buffer.from(script).toString('base64'));
+  const {modelClips}=await require('./load-model-motion.cjs')();
   for(const [key,bodyName,role='special'] of [['drg:Gallantmon Crimson Mode','J_root'],['ryudamon:2','J_center'],
     ['ac:Phantomon','J_center','win'],['drg:Icemon','J_center','win'],['catalog:CS_Dracomon:chr208','J_center','win'],['dracomon:0','J_center','win'],['drg:Raptordramon','J_center','win'],
     ['lunamon:2','J_center'],['drg:PileVolcamon','J_center'],['ac:Millenniummon','J_center'],['unique:L_Omnimon_X','J_center'],
     ['ac:Jupitermon','Bip001'],['ac:SkullSatamon','J_center','win'],['ac:Merukimon','J_center','win'],
-    ['candlemon:1','J_root_04','attack'],['catalog:CS_Betamon:chr389','J_root','attack'],['catalog:CS_Alphamon:chr416','J_center']]){
+    ['candlemon:1','J_root_04','attack'],['catalog:CS_Betamon:chr389','J_root','attack'],['catalog:CS_Alphamon:chr416','J_center'],
+    ['catalog:MagnaGarurumon:chr678','J_center','special'],['catalog:MagnaGarurumon:chr678','J_center','win']]){
     const source=catalog.sources[key],bytes=zlib.gunzipSync(fs.readFileSync(path.join(root,'native/artifacts/model-content',catalog.assets[source.asset].file))),length=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+length)),binary=bytes.subarray(28+length);
     const parser=new GLTFParser(json,{manager:THREE.DefaultLoadingManager});parser.extensions.KHR_materials_unlit=new GLTFMaterialsUnlitExtension();parser.loadImageSource=async()=>new THREE.Texture();parser.loadBuffer=async()=>binary.buffer.slice(binary.byteOffset,binary.byteOffset+binary.byteLength);
     const gltf=await new Promise((resolve,reject)=>parser.parse(resolve,reject)),clips=modelClips(gltf,source.metadata),idle=clips.find(c=>c.name==='idle'),clip=clips.find(c=>c.name===role),raw=gltf.animations.find(c=>c.name===role);

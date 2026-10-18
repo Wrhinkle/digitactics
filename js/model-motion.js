@@ -2,6 +2,7 @@
 // Authored clips take priority, with the documented source-specific repairs below.
 // These motions preserve the original mesh and skin.
 import * as THREE from 'three';
+import { anatomyFallbackClips, generatedBipedClips } from './model-anatomy.js';
 
 const V = () => new THREE.Vector3();
 const Q = () => new THREE.Quaternion();
@@ -14,7 +15,7 @@ const valid = b => !/end|nub|twist|helper/i.test(b.name);
 
 export function modelClips(gltf, src) {
   if(src?.uid==='rip-l_garurumon_greymon_statue')return statueClips(gltf.scene);
-  const authored = blobBodyClips(gltf,src,heldWeaponOrigin(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src)))).filter(c=>!src?.fallbackRoles?.includes(c.name));
+  const authored = generatedBipedClips(gltf,src,blobBodyClips(gltf,src,heldWeaponOrigin(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src))))).filter(c=>!src?.fallbackRoles?.includes(c.name));
   if (authored.length && src?.anim !== false) {
     // This Seadramon export labels a single unchanging pose "idle". Build a
     // gentle skeletal loop from that assembled pose, retaining other actions.
@@ -37,7 +38,7 @@ export function modelClips(gltf, src) {
     pose.clipAction(authored[0]).play();
     pose.update(0);
   }
-  return fallbackClips(gltf.scene);
+  return anatomyFallbackClips(gltf.scene,src,fallbackClips(gltf.scene));
 }
 
 // Pabumon's disconnected body roots are animated independently in two imported
@@ -178,30 +179,35 @@ function boardRootTravel(gltf,src,clips){
     'rip-cs_skullsatamon':['J_center','win'], 'rip-cs_merukimon':['J_center','win'],
     bbeb1da28aca459da86b46cba6d57ca8:['J_root_04','attack'],
     'rip-cat_cs_betamon_chr389':['J_root','attack'], 'rip-cat_cs_alphamon_chr416':['J_center','special'],
+    'rip-cat_magnagarurumon_chr678':['J_center','special','win'],
   }[src?.uid];
   if(!policy)return clips;
-  const [body,role]=policy,idle=clips.find(c=>c.name==='idle'),action=clips.find(c=>c.name===role),name=body+'.position';
-  const track=action?.tracks.find(t=>t.name===name),node=gltf.scene.getObjectByName(body);
-  if(!idle||!track||!node)return clips;
+  const [body,...roles]=policy,idle=clips.find(c=>c.name==='idle'),name=body+'.position',node=gltf.scene.getObjectByName(body);
+  if(!idle||!node||!clips.some(clip=>roles.includes(clip.name)&&clip.tracks.some(t=>t.name===name)))return clips;
   const mixer=new THREE.AnimationMixer(gltf.scene);mixer.clipAction(idle).play();mixer.update(0);gltf.scene.updateMatrixWorld(true);
   const origin=node.getWorldPosition(V()),parent=node.parent.matrixWorld.clone(),inverse=parent.clone().invert();
   const box=new THREE.Box3().setFromObject(gltf.scene),height=Math.max(1e-9,box.max.y-box.min.y);
-  // Some entrances contain only two root keys; some attack roots stop keying
-  // before the other joints. Sample the complete settling envelope in both cases.
-  const resample=role==='win'||track.times[track.times.length-1]<action.duration;
-  const times=resample?[...new Set([...track.times,...Array.from({length:65},(_,i)=>action.duration*i/64)])].sort((a,b)=>a-b):Array.from(track.times);
-  const interpolant=track.createInterpolant(),displacements=times.map(time=>new THREE.Vector3().fromArray(interpolant.evaluate(time)).applyMatrix4(parent).y-origin.y);
-  const up=Math.min(1,height*.35/Math.max(...displacements,1e-9)),down=Math.min(1,height*.08/Math.max(...displacements.map(y=>-y),1e-9));
-  const corrected=action.clone(),out=corrected.tracks.find(t=>t.name===name);
-  out.times=new Float32Array(times);out.values=new Float32Array(times.length*3);
-  for(let i=0;i<displacements.length;i++){
-    const u=times[i]/action.duration,end=Math.min(1,Math.max(0,(1-u)/.2)),start=role==='win'?Math.min(1,u/.15):1;
-    const settle=end*end*(3-2*end)*start*start*(3-2*start);
-    const y=displacements[i]*(displacements[i]<0?down:up)*settle;
-    origin.clone().add(new THREE.Vector3(0,y,0)).applyMatrix4(inverse).toArray(out.values,i*3);
-  }
+  const result=clips.map(action=>{
+    const role=action.name,track=action.tracks.find(t=>t.name===name);
+    if(!roles.includes(role)||!track)return action;
+    // Some entrances contain only two root keys; some attack roots stop keying
+    // before the other joints. Sample the complete settling envelope in both cases.
+    const resample=role==='win'||track.times[track.times.length-1]<action.duration;
+    const times=resample?[...new Set([...track.times,...Array.from({length:65},(_,i)=>action.duration*i/64)])].sort((a,b)=>a-b):Array.from(track.times);
+    const interpolant=track.createInterpolant(),displacements=times.map(time=>new THREE.Vector3().fromArray(interpolant.evaluate(time)).applyMatrix4(parent).y-origin.y);
+    const up=Math.min(1,height*.35/Math.max(...displacements,1e-9)),down=Math.min(1,height*.08/Math.max(...displacements.map(y=>-y),1e-9));
+    const corrected=action.clone(),out=corrected.tracks.find(t=>t.name===name);
+    out.times=new Float32Array(times);out.values=new Float32Array(times.length*3);
+    for(let i=0;i<displacements.length;i++){
+      const u=times[i]/action.duration,end=Math.min(1,Math.max(0,(1-u)/.2)),start=role==='win'?Math.min(1,u/.15):1;
+      const settle=end*end*(3-2*end)*start*start*(3-2*start);
+      const y=displacements[i]*(displacements[i]<0?down:up)*settle;
+      origin.clone().add(new THREE.Vector3(0,y,0)).applyMatrix4(inverse).toArray(out.values,i*3);
+    }
+    return corrected;
+  });
   mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);
-  return clips.map(clip=>clip===action?corrected:clip);
+  return result;
 }
 
 export function fallbackClips(scene, adjustRest = true) {

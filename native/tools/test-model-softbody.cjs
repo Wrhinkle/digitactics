@@ -1,7 +1,6 @@
 // Independent geometry regression: evaluates ACTUAL modelClips, never a copy of
 // the repair. Run before/after the exact-UID fix to retain the red/green evidence.
 const fs=require('node:fs'),path=require('node:path'),zlib=require('node:zlib'),crypto=require('node:crypto');
-const {pathToFileURL}=require('node:url');
 const root=path.resolve(__dirname,'../..'),key='catalog:CS_Pabumon:chr387',uid='rip-cat_cs_pabumon_chr387';
 const bodyNames=new Set(['J_center','J_body1','J_body2','J_body3','J_body4','J_legL1','J_legL2','J_legF1','J_legF2','J_legR1','J_legR2','J_tail1','J_tail2','J_tail3']);
 const nodeName=track=>track.name.slice(0,track.name.lastIndexOf('.'));
@@ -17,8 +16,7 @@ async function main(){
   const catalog=JSON.parse(fs.readFileSync(path.join(root,'native/content/models.json'))),entry=catalog.sources[key];
   if(entry?.metadata.uid!==uid)throw Error('Exact source UID missing.');
   const {THREE,GLTFParser,GLTFMaterialsUnlitExtension}=await require('./three-loader.cjs')();
-  const source=fs.readFileSync(path.join(root,'js/model-motion.js'),'utf8').replace("from 'three'",`from '${pathToFileURL(path.join(root,'vendor/three/build/three.module.js')).href}'`);
-  const {modelClips}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+  const {modelClips}=await require('./load-model-motion.cjs')();
   const packed=zlib.gunzipSync(fs.readFileSync(path.join(root,'native/artifacts/model-content',catalog.assets[entry.asset].file)));
   const length=packed.readUInt32LE(12),json=JSON.parse(packed.subarray(20,20+length)),binary=packed.subarray(28+length);
   const load=async()=>{

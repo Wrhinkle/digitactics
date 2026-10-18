@@ -5,8 +5,7 @@ async function main(){
  const source=fs.readFileSync(path.join(root,'js/legends.js'),'utf8');
  const catalog=JSON.parse(fs.readFileSync(path.join(root,'native/content/companion-models.json')));
  const models=JSON.parse(fs.readFileSync(path.join(root,'native/content/models.json')));
- const motionSource=fs.readFileSync(path.join(root,'js/model-motion.js'),'utf8').replace("from 'three'",`from '${require('url').pathToFileURL(path.join(root,'vendor/three/build/three.module.js')).href}'`);
- const {modelClips}=await import('data:text/javascript;base64,'+Buffer.from(motionSource).toString('base64'));
+ const {modelClips}=await require('./load-model-motion.cjs')();
  const locomotionSource=fs.readFileSync(path.join(root,'js/companion-locomotion.js'),'utf8').replace("from 'three'",`from '${require('url').pathToFileURL(path.join(root,'vendor/three/build/three.module.js')).href}'`);
  const {CompanionLocomotion}=await import('data:text/javascript;base64,'+Buffer.from(locomotionSource).toString('base64'));
  const policy=source.slice(source.indexOf('const clipOf ='),source.indexOf('// ---------- view ----------'));

@@ -14,7 +14,7 @@ internal static class ModelRuntimeAudit
     public static void Run(string root,string? filter=null)
     {
         string Hash(string path)=>Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant();
-        var codeFiles=new[]{"../js/model-motion.js","src/DigiTactics.Assets/GltfRig.cs","src/DigiTactics.Assets/ModelAnimator.cs","src/DigiTactics.Assets/CombatModelAnimator.cs","src/DigiTactics.Assets/CompanionLocomotion.cs","src/DigiTactics.Assets/GltfMesh.cs","src/DigiTactics.Desktop/CombatModelAnimations.cs","src/DigiTactics.Desktop/BattleView.cs","src/DigiTactics.Desktop/GpuModel.cs","src/DigiTactics.Presentation/CombatChoreography.cs","tests/DigiTactics.Tests/ModelRuntimeAudit.cs"};
+        var codeFiles=new[]{"../js/model-motion.js","../js/model-anatomy.js","src/DigiTactics.Assets/GltfRig.cs","src/DigiTactics.Assets/ModelAnimator.cs","src/DigiTactics.Assets/CombatModelAnimator.cs","src/DigiTactics.Assets/CompanionLocomotion.cs","src/DigiTactics.Assets/GltfMesh.cs","src/DigiTactics.Desktop/CombatModelAnimations.cs","src/DigiTactics.Desktop/BattleView.cs","src/DigiTactics.Desktop/GpuModel.cs","src/DigiTactics.Presentation/CombatChoreography.cs","tests/DigiTactics.Tests/ModelRuntimeAudit.cs"};
         string catalogHash=Hash(Path.Combine(root,"content/models.json"));
         var codeHashes=codeFiles.ToDictionary(path=>path,path=>Hash(Path.Combine(root,path)));
         var assemblyHashes=new[]{typeof(ModelRuntimeAudit).Assembly,typeof(ModelAnimator).Assembly}.ToDictionary(assembly=>Path.GetFileName(assembly.Location),assembly=>Hash(assembly.Location));
