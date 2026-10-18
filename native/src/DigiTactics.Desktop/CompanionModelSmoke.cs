@@ -71,14 +71,26 @@ internal static class CompanionModelSmoke
                 {
                     if (!item.Value.GetProperty("data"u8).TryGetProperty("retro"u8,out var data)) continue;
                     using var retro = new RetroEmoteView(catalog,data,0);
-                    ModelRenderer.Begin(320,320);OpenGl.Viewport(retroIndex%3*320,(2-retroIndex/3)*320,320,320);
-                    int draws=retro.Draw(renderer,camera,new(0,1.8f,5),new(0,0,0),900);
-                    ModelRenderer.End();
+                    int draws=0;
+                    for(int frame=0;frame<=54;frame++)
+                    {
+                        int left=retroIndex%3*320,bottom=(2-retroIndex/3)*320;
+                        OpenGl.Native.glEnable(GlCapability.ScissorTest);OpenGl.Native.glScissor(left,bottom,320,320);OpenGl.Clear(GlClearBit.Color);
+                        ModelRenderer.Begin(320,320);OpenGl.Viewport(left,bottom,320,320);
+                        draws=retro.Draw(renderer,camera,new(0,1.8f,5),new(0,0,0),frame*1000/60);
+                        ModelRenderer.End();
+                    }
+                    if(data.GetProperty("act"u8).GetString()!="swoop" && retro.EffectDrawCalls==0)throw new InvalidOperationException("Retro glyph/beam/stomp particles were not rendered: "+item.Name);
                     if(draws==0 || retro.Expired(2999) || !retro.Expired(3000))throw new InvalidOperationException("Retro model/lifetime smoke failed: "+item.Name);
                     retroIndex++;
                 }
                 if(retroIndex!=9)throw new InvalidOperationException("Retro catalog smoke did not cover nine models.");
                 if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"retro.bmp"),960,960);
+                using(var poof=new RetroEmoteView(catalog,manifest.RootElement.GetProperty("clips"u8).GetProperty("retro_swoop"u8).GetProperty("data"u8).GetProperty("retro"u8),0))
+                {
+                    ModelRenderer.Begin(960,960);poof.Draw(renderer,camera,new(0,1.8f,5),new(0,0,0),2400);ModelRenderer.End();
+                    if(poof.EffectDrawCalls!=9)throw new InvalidOperationException("Retro exit did not draw nine smoke puffs.");
+                }
                 using var arena=new ArenaCompanionView();
                 arena.Update("tokomon",new(0,"retro_hug",1000),1000,0);
                 arena.Update("tokomon",null,1900,.1);arena.Draw(0,0,960,960,7);
