@@ -20,6 +20,8 @@ $mediaRuntime = & (Join-Path $PSScriptRoot 'setup-media.ps1')
 $crtRuntime = & (Join-Path $PSScriptRoot 'setup-crt.ps1')
 Invoke-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Launcher'),'-c','Release','-r','win-x64','--self-contained','true','-m:1','-nr:false','-p:UseSharedCompilation=false',('-p:Version='+$Version),'-o',$Destination)
 Invoke-Checked $sdk @('publish',(Join-Path $nativeRoot 'src/DigiTactics.Desktop'),'-c','Release','-r','win-x64','--self-contained','true','-m:1','-nr:false','-p:UseSharedCompilation=false',('-p:Version='+$Version),'-o',$app)
+Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'copy-managed-notices.py'),'--assets',(Join-Path $nativeRoot 'src/DigiTactics.Launcher/obj/project.assets.json'),'--deps',(Join-Path $Destination 'DigiTactics.Launcher.deps.json'),'--destination',$Destination)
+Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'copy-managed-notices.py'),'--assets',(Join-Path $nativeRoot 'src/DigiTactics.Desktop/obj/project.assets.json'),'--deps',(Join-Path $app 'DigiTactics.Desktop.deps.json'),'--destination',$app)
 foreach($assembly in @((Join-Path $Destination 'DigiTactics.Launcher.dll'),(Join-Path $app 'DigiTactics.Desktop.dll'))) {
     $metadata=[Diagnostics.FileVersionInfo]::GetVersionInfo($assembly)
     if($metadata.ProductVersion.Split('+')[0] -cne $Version -or $metadata.FileVersion -cne ($Version+'.0')) {throw "Published assembly version does not match release $Version`: $assembly"}

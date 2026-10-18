@@ -8,6 +8,7 @@ internal sealed class LootOrbSmoke
 {
     private int step, gold, items, waits;
     public bool Done { get; private set; }
+    public string Pending=>$"Loot/{step}/wait {waits}";
     public bool Capture => step == 1;
     public void Input(MatchScreen screen)
     {

@@ -9,6 +9,7 @@ namespace DigiTactics.Desktop;
 internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = null, bool evolutionSmoke = false)
 {
     private readonly GameMenuSmoke gameMenu = new();
+    private readonly SmokeStageDeadline deadline=SmokeStageDeadline.Verified();
     private readonly HomeSmoke home = new(collectionProfile);
     private readonly CodexSmoke codex = new();
     private readonly PlaybackSpeedSmoke playbackSpeed = new();
@@ -47,8 +48,24 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private int farmIndex;
     private bool farmVerified;
     private long farmInitialBits;
-    public string Pending => !home.Done ? home.Pending : collectionProfile is not null && collectionIndex < collectionCommands.Length ? collectionCommands[collectionIndex] == "egg/legend" && !incubator.Done ? incubator.Pending : collectionCommands[collectionIndex]
-        : collectionProfile is not null && farmIndex < farmCommands.Length ? farmCommands[farmIndex] : commands.ElementAtOrDefault(index) ?? "verification";
+    public string Pending => !home.Done ? home.Pending : !codex.HomeDone ? codex.HomePending
+        : collectionProfile is not null && !collectionVerified ? "Collection/"+(collectionIndex<collectionCommands.Length ? collectionCommands[collectionIndex]=="egg/legend"&&!incubator.Done?incubator.Pending:collectionCommands[collectionIndex] : "reward verification")
+        : collectionProfile is not null && !farmVerified ? "Farm/"+(farmCommands.ElementAtOrDefault(farmIndex)??"save verification")
+        : !gameplayVerified ? $"Gameplay/{index}/"+(commands.ElementAtOrDefault(index)??"result verification")
+        : !loot.Done ? loot.Pending : !elimination.Done ? elimination.Pending : gameMenu.Pending;
+    public string? Timeout(int frame)
+    {
+        // Deliberate waits are bounded separately: loot permits two 90-input
+        // travel waits (one input per four frames); elimination runs five rounds;
+        // the final menu has sixteen inputs. Earlier Home/Codex work cannot
+        // consume those budgets, and a stuck phase cannot extend its own budget.
+        var phase=!home.Done?(0,"Home",900):!codex.HomeDone?(1,"Codex",600)
+            :collectionProfile is not null&&!collectionVerified?(2,"Collection",evolutionSmoke?1800:1200)
+            :collectionProfile is not null&&!farmVerified?(3,"Farm",evolutionSmoke?400:200)
+            :!gameplayVerified?(4,"Gameplay",1200):!loot.Done?(5,"Loot",800)
+            :!elimination.Done?(6,"Elimination",256):(7,"Game menu",128);
+        return deadline.Check(phase.Item1,phase.Item2,frame,phase.Item3);
+    }
     private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "arenaBench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
         "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "reconnectAudio", "closeAudio", "mute", "mute"];
     private int index, cooldown = 3, battleFrames, pvpFrames;

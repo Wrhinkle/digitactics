@@ -7,6 +7,7 @@ internal sealed class EliminationSmoke
 {
     private int step, placement, rounds;
     public bool Done { get; private set; }
+    public string Pending=>$"Elimination/{step}/round {rounds+1}";
     public void Input(MatchScreen screen)
     {
         var session = screen.Session!;

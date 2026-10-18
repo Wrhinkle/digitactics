@@ -103,7 +103,8 @@ internal static class MatchApplication
                     if (visibilityDriver is not null && visibilityDriver.Verify(window, audio)) break;
                     if (modeDriver is not null && modeDriver.Verify(screen, size, options.Capture)) break;
                     if (musicDriver is not null && musicDriver.Verify(size,options.Capture)) break;
-                    if (driver is not null && driver.Verify(screen, size, options.Capture)) break;
+                    if (driver is not null && driver.Verify(screen, size, options.Capture))
+                    {Console.WriteLine($"Match UI smoke completed in {frame+1} frames.");break;}
                     if (trainer is not null && trainer.Verify(screen, size, options.Capture)) break;
                     if (farmPointer is not null && farmPointer.Verify(screen, size, options.Capture)) break;
                     if (networkDriver is not null && networkDriver.Verify(screen, size, options.Capture)) break;
@@ -111,10 +112,11 @@ internal static class MatchApplication
                     if(screen.ExitAfterFileOperationsReady)break;
                     window.SwapBuffers();
                     if(frame==0 && startupSignal is not null)_=startupSignal.ReportReady();
-                    if (options.Smoke && frame > (options.TrainingSmoke ? 6000 : options.CollectionSmoke || options.EvolutionSmoke ? 2400 : options.PostgameSmoke ? 1800 : 1400))
+                    string? phaseTimeout=driver?.Timeout(frame);
+                    if (options.Smoke && (phaseTimeout is not null || driver is null && frame > (options.TrainingSmoke ? 6000 : options.PostgameSmoke ? 1800 : 1400)))
                     {
                         if (options.Capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(options.Capture, "failure.bmp"), size.X, size.Y);
-                        throw new InvalidOperationException("Match UI smoke did not complete: " + (mysteryDriver?.Step.ToString() ?? postgameDriver?.Pending ?? selectionDriver?.Pending ?? keyboardDriver?.Pending ?? socialDriver?.Pending ?? lobbyDriver?.Pending ?? networkDriver?.Pending ?? farmPointer?.Pending ?? trainer?.Pending ?? driver?.Pending));
+                        throw new InvalidOperationException("Match UI smoke did not complete: " + (mysteryDriver?.Step.ToString() ?? postgameDriver?.Pending ?? selectionDriver?.Pending ?? keyboardDriver?.Pending ?? socialDriver?.Pending ?? lobbyDriver?.Pending ?? networkDriver?.Pending ?? farmPointer?.Pending ?? trainer?.Pending ?? driver?.Pending)+(phaseTimeout is null?"":"; "+phaseTimeout));
                     }
                 }
             }

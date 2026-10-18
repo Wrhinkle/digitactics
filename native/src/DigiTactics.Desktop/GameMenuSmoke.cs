@@ -6,6 +6,7 @@ internal sealed class GameMenuSmoke
 {
     private int step;
     public bool Done { get; private set; }
+    public string Pending=>$"Game menu/{step}";
     public bool Confirming => step is 7 or 13;
     public void Input(MatchScreen screen)
     {

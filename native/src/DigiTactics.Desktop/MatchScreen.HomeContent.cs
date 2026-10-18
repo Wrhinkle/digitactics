@@ -77,7 +77,10 @@ internal sealed partial class MatchScreen
         ImGui.GetWindowDrawList().AddRectFilled(at,at+new float2(width,height),new ImColor8(3,12,22,160));
         ImGui.SetCursorScreenPos(at+new float2(18,16));HomeLabel(eyebrow.ToUpperInvariant(),13);
         HomeLabel(title,30,HomeInk);ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+width-36);ImGui.Text(description);ImGui.PopTextWrapPos();
-        ImGui.SetCursorScreenPos(at+new float2(0,height+12));
+        // The artwork is drawn directly, so it still needs a layout item when
+        // no optional Store/Farm button follows it (the profile-less client).
+        ImGui.SetCursorScreenPos(at+new float2(0,height));
+        ImGui.Dummy(new(width,Math.Max(0,12-ImGui.GetStyle().ItemSpacing.Y)));
     }
     private void HomePatchNotes(float2 at,float2 extent)
     {

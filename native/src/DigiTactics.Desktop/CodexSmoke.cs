@@ -16,6 +16,7 @@ internal sealed class CodexSmoke
     private string? recipeItem;
     public bool HomeDone {get;private set;}
     public bool LiveDone {get;private set;}
+    public string HomePending=>$"Codex home/{homeStep}";
     private bool Ready()
     {
         if(cooldown-->0)return false;
