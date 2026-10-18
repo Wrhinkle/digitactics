@@ -1817,3 +1817,24 @@ also passed. The imported-profile menu capture was visually checked. The native
 OS file chooser itself has not yet been exercised by automated UI control.
 Cosmetic/farm consumers, custom music playback, settings application and native
 match-progress updates still need completion; full migration is not yet done.
+
+### Native match history persistence
+
+Native Solo/Duos games now capture the last living board and append a result
+when the player receives a placement. History uses the original seed/seat key to
+prevent duplicate awards to the history counters, retains the latest 30 matches,
+and updates games, wins, top-four/top-two finishes, placement sum, trait use and
+unique unit-line use. The result keeps its original timestamp across retries.
+Profile writes are atomic, keep the prior file as `.bak`, preserve untouched raw
+save domains and root metadata, and reject stale instances. Save failures remain
+visible and can be retried. Invalid history is preserved instead of reset.
+
+`export-match-history.cjs` runs the original `recordMatch` implementation to
+produce 42 sequential reference updates. `--history-only` passed 568 checks:
+reference parity, duplicate prevention, and complete native placement-to-disk
+flows for all 22 variants in both Solo and Duos, including restart readback,
+last-board retention, untouched imported domains, backups and stale-writer
+protection. The 32 profile/import checks and packaged Solo/Duos flows also passed.
+The gameplay engine itself was unchanged. Detailed reward-tracker stats, Bits
+payouts, missions and other post-match progression remain to be integrated;
+history currently records `stats`/`bits` as null rather than inventing rewards.

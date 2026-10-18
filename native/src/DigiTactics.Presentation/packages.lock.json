@@ -4,6 +4,9 @@
     "net10.0": {
       "digitactics.rules": {
         "type": "Project"
+      },
+      "digitactics.storage": {
+        "type": "Project"
       }
     },
     "net10.0/win-x64": {}

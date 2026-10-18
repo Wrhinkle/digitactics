@@ -293,7 +293,8 @@
       "digitactics.presentation": {
         "type": "Project",
         "dependencies": {
-          "DigiTactics.Rules": "[1.0.0, )"
+          "DigiTactics.Rules": "[1.0.0, )",
+          "DigiTactics.Storage": "[1.0.0, )"
         }
       },
       "digitactics.rules": {

@@ -18,6 +18,7 @@ try {
     Invoke-Checked 'node' @('../tests/profile-backup.cjs')
     Invoke-Checked 'node' @('tools/export-content.cjs')
     Invoke-Checked 'node' @('tools/export-display.cjs')
+    Invoke-Checked 'node' @('tools/export-match-history.cjs')
     Invoke-Checked 'node' @('tools/export-ability-elements.cjs')
     Invoke-Checked 'node' @('tools/export-economy.cjs')
     Invoke-Checked 'node' @('tools/export-planning.cjs')

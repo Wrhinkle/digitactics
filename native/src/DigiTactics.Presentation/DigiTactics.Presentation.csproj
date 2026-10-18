@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="../DigiTactics.Rules/DigiTactics.Rules.csproj" />
+    <ProjectReference Include="../DigiTactics.Storage/DigiTactics.Storage.csproj" />
   </ItemGroup>
 </Project>

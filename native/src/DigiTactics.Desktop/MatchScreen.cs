@@ -16,6 +16,7 @@ internal sealed class MatchScreen : IDisposable
     private Task<ProfileImport?>? profilePreview;
     private ProfileImport? profileCandidate;
     private string? profileMessage;
+    private MatchHistoryRecorder? history;
     private readonly AbilityElements abilityElements = new(Path.Combine(AppContext.BaseDirectory, "content/ability-elements.json"));
     private CombatAudioCues? combatAudio;
     private readonly DisplayText text = new();
@@ -177,12 +178,16 @@ internal sealed class MatchScreen : IDisposable
         selectedUnit = null; selectedItem = null; backgroundTime = 0;
         status = "Battle in progress.";
         Session!.StartCombat(); Watch(0);
+        history?.Capture();
         if (Session.Battles.Count > 0) { audio.Play("fight"); audio.Music("combat"); }
         if (Session.Battles.Count == 0) Finish();
     }
     private void Finish()
     {
+        history?.Capture();
         Session!.FinishCombat(); CompletedRounds++; status = "Round complete.";
+        history?.Complete(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+        if (history?.Error is { } saveError) { status = saveError; profileMessage = saveError; }
         var own = Session.Battles.FirstOrDefault(m => m.A == 0 || m.B == 0 ||
             m.TeamA is { } a && Session.State.Teams[a].Members.Any(p => p.Id == 0) ||
             m.TeamB is { } b && Session.State.Teams[b].Members.Any(p => p.Id == 0));
@@ -236,6 +241,7 @@ internal sealed class MatchScreen : IDisposable
         if (Button("start", "Start match", 220, 48))
         {
             Session = new(Rules, seed ?? (uint)Random.Shared.Next(1, int.MaxValue), Enumerable.Range(0, 8).Select(i => new MatchSeat(i == 0 ? profile?.Progress.Name ?? "You" : $"Tamer {i}", i == 0)).ToArray(), duos);
+            history = profile is null ? null : new(Session, profile);
             viewed = 0; CompletedRounds = 0;
             selectedUnit = null; selectedItem = null; backgroundTime = 0;
             audio.Music("planning");
@@ -353,6 +359,12 @@ internal sealed class MatchScreen : IDisposable
             if (Button("view/" + p.Id, $"{p.Name}  {(p.Alive ? p.Health + " HP" : "#" + p.Placement)}", 192, 28)) Watch(p.Id);
         if (Session.State.Duos) ImGui.TextWrapped("Your partner: " + Session.Units.Portal.Partner(Human)?.Name);
         foreach (var orb in Human.Orbs.ToArray()) if (Button("orb/" + orb.Id, $"Collect {orb.Kind} loot")) Act("orb", new { id = orb.Id });
+        if (history?.Error is not null && Button("retryHistory", "Retry saving history"))
+        {
+            bool saved = history.Complete(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+            status = saved ? "Match history saved." : history.Error!;
+            profileMessage = saved ? null : history.Error;
+        }
         ImGui.Separator(); ImGui.TextWrapped(status); ImGui.End();
     }
     private void Roster()

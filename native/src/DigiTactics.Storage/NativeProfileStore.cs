@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace DigiTactics.Storage;
 
@@ -26,6 +27,8 @@ public sealed class ProfileImport
 public sealed class NativeProfileStore
 {
     private readonly string directory, path;
+    private string? loadedText;
+    private bool readOnly;
     public bool Exists => File.Exists(path);
     public string? Error { get; private set; }
     public IReadOnlyDictionary<string, string> Storage { get; private set; } = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
@@ -36,13 +39,14 @@ public sealed class NativeProfileStore
         try
         {
             if (!Exists) return;
-            using var doc = JsonDocument.Parse(File.ReadAllBytes(path));
+            loadedText = File.ReadAllText(path);
+            using var doc = JsonDocument.Parse(loadedText);
             if (doc.RootElement.GetProperty("version").GetInt32() != 1) throw new InvalidDataException("Unsupported native profile version.");
             Storage = new ReadOnlyDictionary<string, string>(doc.RootElement.GetProperty("storage").EnumerateObject()
                 .ToDictionary(p => p.Name, p => p.Value.GetString() ?? throw new JsonException("Saved values must be strings."), StringComparer.Ordinal));
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException or KeyNotFoundException or ArgumentException or FormatException)
-        { Error = "Your profile could not be loaded and has been preserved: " + error.Message; }
+        { readOnly = true; Error = "Your profile could not be loaded and has been preserved: " + error.Message; }
     }
     public void Import(ProfileImport candidate)
     {
@@ -57,9 +61,42 @@ public sealed class NativeProfileStore
         {
             using (var file = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None)) { file.Write(data); file.Flush(true); }
             File.Move(temporary, path);
-            Storage = candidate.Storage; Error = null;
+            Storage = candidate.Storage; loadedText = System.Text.Encoding.UTF8.GetString(data); Error = null;
         }
         finally { if (File.Exists(temporary)) File.Delete(temporary); }
+    }
+    public bool UpdateStorage(IReadOnlyDictionary<string, string> changes)
+    {
+        if (readOnly) return false;
+        string? temporary = null;
+        try
+        {
+            Directory.CreateDirectory(directory);
+            using var guard = new FileStream(path + ".lock", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+            string? current = Exists ? File.ReadAllText(path) : null;
+            if (current != loadedText) { readOnly = true; Error = "Your profile changed in another app instance. Restart before saving more progress."; return false; }
+            var next = current is null ? new JsonObject { ["version"] = 1, ["storage"] = new JsonObject() } : JsonNode.Parse(current)!.AsObject();
+            var values = next["storage"]!.AsObject();
+            var updated = new Dictionary<string, string>(Storage, StringComparer.Ordinal);
+            foreach (var (key, value) in changes)
+            {
+                if (!(key.StartsWith("dt.", StringComparison.Ordinal) || key.StartsWith("dt-", StringComparison.Ordinal)) || value is null)
+                    throw new InvalidDataException("Invalid profile storage entry.");
+                values[key] = value; updated[key] = value;
+            }
+            string json = next.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+            temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
+            using (var file = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+            { file.Write(System.Text.Encoding.UTF8.GetBytes(json)); file.Flush(true); }
+            if (current is null) File.Move(temporary, path); else File.Replace(temporary, path, path + ".bak");
+            temporary = null; loadedText = json; Storage = new ReadOnlyDictionary<string, string>(updated); Error = null; return true;
+        }
+        catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException)
+        { Error = "Progress could not be saved: " + error.Message; return false; }
+        finally
+        {
+            if (temporary is not null) try { File.Delete(temporary); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+        }
     }
     public static PlayerProgress ReadProgress(IReadOnlyDictionary<string, string> storage)
     {
