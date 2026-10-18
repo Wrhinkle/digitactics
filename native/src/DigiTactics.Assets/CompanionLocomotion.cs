@@ -18,7 +18,7 @@ public sealed class CompanionLocomotion
     public bool UsesTravelHop => Kind == CompanionLocomotionKind.Hop;
     public int LegCount => legs.Length;
     public void Reset() => weight = 0;
-    public static string SourcePolicy(string source) => Gliders.Contains(source) ? "glide" : ForelegSources.Contains(source) ? "forelegs" : "default";
+    public static string SourcePolicy(string source) => Gliders.Contains(source) ? "glide" : ForelegSources.Contains(source) ? "forelegs" : ShortLegSources.Contains(source) ? "shortlegs" : "default";
 
     // These reviewed forms move through the air in their standing presentation. A leg rig
     // is not by itself permission to give an airborne dragon, fairy or insect a walking gait.
@@ -42,15 +42,19 @@ public sealed class CompanionLocomotion
         "catalog:L_MagnaAngemon:chr101", "catalog:TS_Funbeemon:chr042", "catalog:TS_Lalamon:chr056",
         "catalog:TS_Lucemon:chr390", "catalog:TS_PicoDevimon:chr097", "catalog:TS_Solarmon_Hagurumon:chr009",
         "catalog:TS_Tentomon:chr303", "ac:Dianamon", "ac:Flymon",
-        "catalog:CS_Seadramon:chr347", "ac:Phantomon", "drg:Phantomon"
+        "catalog:CS_Seadramon:chr347", "ac:Phantomon", "drg:Phantomon", "ac:Solarmon", "ac:Soulmon"
     };
     // These visually reviewed quadrupeds name their weight-bearing forelegs as arms.
     // Do not apply this rule to humanoids merely because they share the bone naming scheme.
     private static readonly HashSet<string> ForelegSources = new(StringComparer.Ordinal)
     { "ac:Dobermon", "bearmon:1", "ac:Grizzlymon" };
-    private static readonly Regex HipName = new(@"(?:^|[_ ])(?:momo|thigh|upleg|leg)(?:0?1)?[_ ]?([lr])(?:[_ ]|$)|(?:^|[_ ])([lr])[_ ](?:momo|thigh|leg)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-    private static readonly Regex KneeName = new(@"(?:^|[_ ])(?:hiza|knee\d*|shin|calf)(?:[_ ]?[lr])?(?:[_ ]|$)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-    private static readonly Regex FootName = new(@"(?:^|[_ ])(?:kakato|foot\d*|ankle|ancle|unkle|asi)(?:[_ ]?[lr])?(?:[_ ]|$)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    // Short legs have only a proximal joint and a foot: rotate those actual joints without inventing a knee.
+    private static readonly HashSet<string> ShortLegSources = new(StringComparer.Ordinal)
+    { "lopmon:0", "terriermon:0", "ac:Hyokomon", "drg:Hyokomon" };
+    private static readonly Regex HipName = new(@"(?:^|[_ ])(?:momo|thigh|upleg|groin|leg)(?:0?1)?[_ ]?([lr])(?:[_ ]|$)|(?:^|[_ ])([lr])[_ ](?:momo|thigh|leg)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    private static readonly Regex KneeName = new(@"(?:^|[_ ])(?:hiza|knee\d*|shin|calf|leg02)(?:[_ ]?[lr])?(?:[_ ]|$)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    private static readonly Regex FootName = new(@"(?:^|[_ ])(?:kakato|foot\d*|ankle|ancle|unkle|asi|ashikubi|tuma|toe|leg03)(?:[_ ]?[lr])?(?:[_ ]|$)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    private static readonly Regex ShortHipName = new(@"(?:^|[_ ])foot[_ ]?([lr])(?:[_ ]|$)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex ShoulderName = new(@"(?:^|[_ ])(?:upperarm|arm)[_ ]?([lr])(?:[_ ]|$)|(?:^|[_ ])([lr])[_ ](?:upperarm|arm)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex ElbowName = new(@"(?:^|[_ ])(?:elbow|forearm)(?:[_ ]?[lr])?(?:[_ ]|$)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex HandName = new(@"(?:^|[_ ])hand(?:[_ ]?[lr])?(?:[_ ]|$)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -64,20 +68,26 @@ public sealed class CompanionLocomotion
         if (policy == "glide") { Kind = CompanionLocomotionKind.Glide; return; }
         var joints = rig.Skins.SelectMany(s => s.Joints).ToHashSet();
         var candidates = new List<(int Hip, int Knee, int Foot, int Side, string Pair)>();
-        bool Below(int node, int ancestor)
+        int Depth(int node, int ancestor)
         {
-            for (int parent = rig.Nodes[node].Parent; parent >= 0; parent = rig.Nodes[parent].Parent) if (parent == ancestor) return true;
-            return false;
+            int distance = 1;
+            for (int parent = rig.Nodes[node].Parent; parent >= 0; parent = rig.Nodes[parent].Parent, distance++) if (parent == ancestor) return distance;
+            return -1;
         }
+        bool Below(int node, int ancestor) => Depth(node, ancestor) > 0;
+        int Child(Regex names, int ancestor) => joints.Where(i => names.IsMatch(BoneName(rig.Nodes[i].Name)) && Below(i, ancestor))
+            .OrderBy(i => Depth(i, ancestor)).ThenBy(i => rig.Nodes[i].Name, StringComparer.Ordinal).FirstOrDefault(-1);
         foreach (int hip in joints.Order())
         {
             string name = BoneName(rig.Nodes[hip].Name); var match = HipName.Match(name);
             bool foreleg = false;
             if (!match.Success && policy == "forelegs") { match = ShoulderName.Match(name); foreleg = match.Success; }
+            if (!match.Success && policy == "shortlegs") match = ShortHipName.Match(name);
             if (!match.Success) continue;
             var side = match.Groups[1].Success ? match.Groups[1] : match.Groups[2];
-            int knee = joints.Order().FirstOrDefault(i => (foreleg ? ElbowName : KneeName).IsMatch(BoneName(rig.Nodes[i].Name)) && Below(i, hip), -1);
-            int foot = knee < 0 ? -1 : joints.Order().FirstOrDefault(i => (foreleg ? HandName : FootName).IsMatch(BoneName(rig.Nodes[i].Name)) && Below(i, knee), -1);
+            int knee = Child(foreleg ? ElbowName : KneeName, hip);
+            int footParent = knee >= 0 ? knee : policy == "shortlegs" ? hip : -1;
+            int foot = footParent < 0 ? -1 : Child(foreleg ? HandName : FootName, footParent);
             if (foot < 0) continue;
             string pair = name[..side.Index].ToLowerInvariant() + "?" + name[(side.Index + side.Length)..].ToLowerInvariant();
             candidates.Add((hip, knee, foot, side.Value.Equals("l", StringComparison.OrdinalIgnoreCase) ? 1 : -1, pair));
@@ -92,9 +102,10 @@ public sealed class CompanionLocomotion
         var prepared = new List<Leg>();
         for (int pair = 0; pair < pairs.Length; pair++) foreach (var c in pairs[pair])
         {
-            Vector3 thigh = Point(c.Knee) - Point(c.Hip), shin = Point(c.Foot) - Point(c.Knee);
+            Vector3 thigh = Point(c.Knee >= 0 ? c.Knee : c.Foot) - Point(c.Hip);
+            Vector3 shin = c.Knee >= 0 ? Point(c.Foot) - Point(c.Knee) : thigh;
             if (thigh.LengthSquared() < 1e-18f || shin.LengthSquared() < 1e-18f) { Kind = CompanionLocomotionKind.Hop; return; }
-            double bend = Vector3.Dot(Vector3.Cross(thigh, shin), lateral) >= 0 ? 1 : -1;
+            double bend = c.Knee < 0 ? 0 : Vector3.Dot(Vector3.Cross(thigh, shin), lateral) >= 0 ? 1 : -1;
             prepared.Add(new(c.Hip, c.Knee, c.Foot, c.Side, pair, bend));
         }
         legs = prepared.ToArray(); root = legs[0].Hip;
@@ -117,7 +128,7 @@ public sealed class CompanionLocomotion
             double phase = time * 8.5 + (leg.Side < 0 ? Math.PI : 0) + leg.Pair * Math.PI;
             double stride = Math.Sin(phase), hip = stride * .3 * weight;
             double knee = Math.Max(0, stride) * .28 * leg.Bend * weight;
-            Turn(leg.Hip, hip); Turn(leg.Knee, knee); Turn(leg.Foot, -hip - knee);
+            Turn(leg.Hip, hip); if (leg.Knee >= 0) Turn(leg.Knee, knee); Turn(leg.Foot, -hip - knee);
         }
         // Keep the stance foot on its current idle floor without changing limb lengths or root X/Z.
         double lift = floor - legs.Min(leg => pose.World[leg.Foot].M42);

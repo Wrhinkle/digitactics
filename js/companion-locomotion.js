@@ -20,19 +20,22 @@ const GLIDERS = new Set([
   'catalog:L_MagnaAngemon:chr101', 'catalog:TS_Funbeemon:chr042', 'catalog:TS_Lalamon:chr056',
   'catalog:TS_Lucemon:chr390', 'catalog:TS_PicoDevimon:chr097', 'catalog:TS_Solarmon_Hagurumon:chr009',
   'catalog:TS_Tentomon:chr303', 'ac:Dianamon', 'ac:Flymon',
-  'catalog:CS_Seadramon:chr347', 'ac:Phantomon', 'drg:Phantomon',
+  'catalog:CS_Seadramon:chr347', 'ac:Phantomon', 'drg:Phantomon', 'ac:Solarmon', 'ac:Soulmon',
 ]);
 // Only reviewed weight-bearing forelimbs; never infer this from humanoid arm names alone.
 const FORELEG_SOURCES = new Set(['ac:Dobermon', 'bearmon:1', 'ac:Grizzlymon']);
-const HIP = /(?:^|[_ ])(?:momo|thigh|upleg|leg)(?:0?1)?[_ ]?([lr])(?:[_ ]|$)|(?:^|[_ ])([lr])[_ ](?:momo|thigh|leg)$/di;
-const KNEE = /(?:^|[_ ])(?:hiza|knee\d*|shin|calf)(?:[_ ]?[lr])?(?:[_ ]|$)/i;
-const FOOT = /(?:^|[_ ])(?:kakato|foot\d*|ankle|ancle|unkle|asi)(?:[_ ]?[lr])?(?:[_ ]|$)/i;
+const SHORT_LEG_SOURCES = new Set(['lopmon:0', 'terriermon:0', 'ac:Hyokomon', 'drg:Hyokomon']);
+const HIP = /(?:^|[_ ])(?:momo|thigh|upleg|groin|leg)(?:0?1)?[_ ]?([lr])(?:[_ ]|$)|(?:^|[_ ])([lr])[_ ](?:momo|thigh|leg)$/di;
+const KNEE = /(?:^|[_ ])(?:hiza|knee\d*|shin|calf|leg02)(?:[_ ]?[lr])?(?:[_ ]|$)/i;
+const FOOT = /(?:^|[_ ])(?:kakato|foot\d*|ankle|ancle|unkle|asi|ashikubi|tuma|toe|leg03)(?:[_ ]?[lr])?(?:[_ ]|$)/i;
+const SHORT_HIP = /(?:^|[_ ])foot[_ ]?([lr])(?:[_ ]|$)/di;
 const SHOULDER = /(?:^|[_ ])(?:upperarm|arm)[_ ]?([lr])(?:[_ ]|$)|(?:^|[_ ])([lr])[_ ](?:upperarm|arm)$/di;
 const ELBOW = /(?:^|[_ ])(?:elbow|forearm)(?:[_ ]?[lr])?(?:[_ ]|$)/i;
 const HAND = /(?:^|[_ ])hand(?:[_ ]?[lr])?(?:[_ ]|$)/i;
 const boneName = value => value.replace(/_0\d+$/, '');
 const point = b => new THREE.Vector3().setFromMatrixPosition(b.matrixWorld);
-const below = (b, ancestor) => { for (let p = b.parent; p; p = p.parent) if (p === ancestor) return true; return false; };
+const depth = (b, ancestor) => { let distance = 1; for (let p = b.parent; p; p = p.parent, distance++) if (p === ancestor) return distance; return -1; };
+const below = (b, ancestor) => depth(b, ancestor) > 0;
 
 export class CompanionLocomotion {
   constructor(scene, source, authored) {
@@ -41,14 +44,18 @@ export class CompanionLocomotion {
     if (this.kind !== 'hop') return;
     const bones = new Set(); scene.traverse(o => { if (o.isSkinnedMesh) for (const bone of o.skeleton.bones) bones.add(bone); });
     const candidates = new Map();
+    const child = (names, ancestor) => [...bones].filter(b => names.test(boneName(b.name)) && below(b, ancestor))
+      .sort((a, b) => depth(a, ancestor) - depth(b, ancestor) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))[0];
     scene.updateMatrixWorld(true);
     for (const hip of bones) {
       const name = boneName(hip.name); let match = HIP.exec(name), foreleg = false;
       if (!match && FORELEG_SOURCES.has(source)) { match = SHOULDER.exec(name); foreleg = !!match; }
+      if (!match && SHORT_LEG_SOURCES.has(source)) match = SHORT_HIP.exec(name);
       if (!match) continue;
       const [start, end] = match.indices[1] || match.indices[2], side = name[start].toLowerCase() === 'l' ? 1 : -1;
-      const knee = [...bones].find(b => (foreleg ? ELBOW : KNEE).test(boneName(b.name)) && below(b, hip));
-      const foot = knee && [...bones].find(b => (foreleg ? HAND : FOOT).test(boneName(b.name)) && below(b, knee));
+      const knee = child(foreleg ? ELBOW : KNEE, hip);
+      const footParent = knee || (SHORT_LEG_SOURCES.has(source) ? hip : null);
+      const foot = footParent && child(foreleg ? HAND : FOOT, footParent);
       if (!foot) continue;
       const key = (name.slice(0, start) + '?' + name.slice(end)).toLowerCase();
       if (!candidates.has(key)) candidates.set(key, []);
@@ -60,9 +67,9 @@ export class CompanionLocomotion {
     if (lateral.lengthSq() < 1e-16) return;
     lateral.normalize(); this.lateral = lateral;
     for (let pair = 0; pair < pairs.length; pair++) for (const c of pairs[pair]) {
-      const thigh = point(c.knee).sub(point(c.hip)), shin = point(c.foot).sub(point(c.knee));
+      const thigh = point(c.knee || c.foot).sub(point(c.hip)), shin = c.knee ? point(c.foot).sub(point(c.knee)) : thigh.clone();
       if (thigh.lengthSq() < 1e-18 || shin.lengthSq() < 1e-18) { this.legs = []; return; }
-      this.legs.push({ ...c, pair, bend: thigh.cross(shin).dot(lateral) >= 0 ? 1 : -1 });
+      this.legs.push({ ...c, pair, bend: !c.knee ? 0 : thigh.cross(shin).dot(lateral) >= 0 ? 1 : -1 });
     }
     this.root = this.legs[0].hip;
     while (this.root.parent && this.root !== scene) this.root = this.root.parent;
@@ -92,7 +99,7 @@ export class CompanionLocomotion {
     for (const leg of this.legs) {
       const phase = time * 8.5 + (leg.side < 0 ? Math.PI : 0) + leg.pair * Math.PI;
       const stride = Math.sin(phase), hip = stride * .3 * this.weight, knee = Math.max(0, stride) * .28 * leg.bend * this.weight;
-      turn(leg.hip, hip); turn(leg.knee, knee); turn(leg.foot, -hip - knee);
+      turn(leg.hip, hip); if (leg.knee) turn(leg.knee, knee); turn(leg.foot, -hip - knee);
     }
     this.saved.push([this.root, this.root.quaternion.clone(), this.root.position.clone()]);
     const lift = floor - Math.min(...this.legs.map(l => point(l.foot).y));

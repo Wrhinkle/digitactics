@@ -12,7 +12,12 @@ internal static class CompanionLocomotionChecks
         foreach (var (id, leftName, rightName) in new[] {
             ("agumon:2", "J_kakato_L", "J_kakato_R"), ("palmon:0", "J_kakato_L", "J_kakato_R"),
             ("agumon:0", "J_foot_l_012", "J_foot_r_016"), ("coronamon:0", "Bip001 L Foot", "Bip001 R Foot"),
-            ("renamon:0", "J_unkleL", "J_unkleR"), ("hagurumon:1", "J_asi_L_07", "J_asi_R_011") })
+            ("renamon:0", "J_unkleL", "J_unkleR"), ("hagurumon:1", "J_asi_L_07", "J_asi_R_011"),
+            ("dorumon:0", "J_ashikubi_L_028", "J_ashikubi_R_033"), ("elecmon:0", "J_tuma_L", "J_tuma_R"),
+            ("elecmon:1", "J_leg03_l", "J_leg03_r"), ("elecmon:2", "J_leg03_l", "J_leg03_r"),
+            ("gaomon:2", "J_toe_l", "J_foot_r"), ("goblimon:0", "J_ankle_L", "J_ankle_R"),
+            ("lopmon:0", "J_foot_l", "J_foot_r"), ("terriermon:0", "J_foot_l", "J_foot_r"),
+            ("ac:Hyokomon", "J_ankle_l", "J_ankle_r") })
         {
             var visual = companions.Forms.Values.Concat(companions.Bases.Values).First(v => v.Source == id); var source = models.Sources[visual.Source];
             using var asset = models.Open(Path.Combine(root, "artifacts/model-content"), source.Asset);
