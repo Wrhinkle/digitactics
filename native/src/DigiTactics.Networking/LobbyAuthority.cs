@@ -97,6 +97,14 @@ public sealed class LobbyAuthority
         presence[uid] = next; return true;
     }
     public bool DeletePresence(string uid) => IsHost && Member(uid) && presence.Remove(uid);
+    public bool AcceptPresence(string sender, JsonObject records)
+    {
+        var message = new JsonObject { ["t"] = "presence", ["l"] = RoomId, ["presence"] = records.DeepClone() };
+        if (sender != Host || !Member(sender) || !NetworkProtocol.Wire(JsonSerializer.SerializeToElement(message))) return false;
+        presence.Clear();
+        foreach (var record in records) if (Member(record.Key)) presence[record.Key] = record.Value?.DeepClone();
+        return true;
+    }
     public bool AcceptIntent(string sender, JsonElement message)
     {
         if (!IsHost || !Member(sender) || !NetworkProtocol.Wire(message) || message.GetProperty("l").GetString() != RoomId || message.GetProperty("t").GetString() != "intent") return false;
