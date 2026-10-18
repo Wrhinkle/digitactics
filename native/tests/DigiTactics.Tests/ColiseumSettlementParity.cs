@@ -45,7 +45,7 @@ internal static class ColiseumSettlementParity
                     { Winner = sample.GetProperty("winner").GetInt32(), Combat = sample.GetProperty("missing").GetBoolean() ? null : combat };
                 bool view = sample.GetProperty("view").GetBoolean(), first = sample.GetProperty("first").GetBoolean();
                 var scoped = match.Units.Where(u => !view || u.Survivor.Team != team || u.Owner == p.Id || u.Owner is null && first).ToArray();
-                planning.RoundEnd(new(match, p, team, view ? p.Id : null, scoped, counts), sample.GetProperty("stage").GetInt32());
+                new MatchSettlementEffects(state, new MatchUnitLifecycle(state, () => RoundPosition.First), new(sample.GetProperty("stage").GetInt32(), 1)).RoundEnd(new(match, p, team, view ? p.Id : null, scoped, counts));
                 string context = $"{battle}/{step++}"; var after = sample.GetProperty("after"); var m = after.GetProperty("mech");
                 Check(p.Economy.Gold == after.GetProperty("gold").GetInt32() && p.Health == after.GetProperty("hp").GetInt32(), context + " gold/health");
                 Check(p.Items.SequenceEqual(Strings(after.GetProperty("items"))), context + " inventory");

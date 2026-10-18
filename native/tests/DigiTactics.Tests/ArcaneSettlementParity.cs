@@ -20,7 +20,7 @@ internal static class ArcaneSettlementParity
             string battle = $"{rules.Id}/{trace.GetProperty("seed")}";
             Check(combat.Done && ticks == Int(trace, "ticks") && combat.Winner == Int(trace, "winner"), battle + " result");
             for (int team = 0; team < 2; team++) Check(combat.ArcaneRewards(team) == trace.GetProperty("rewards")[team].Deserialize<ArcaneCombatRewards>(json), battle + " counters");
-            var state = new MatchState(rules, 143, [new("A", true), new("B", true)]); var mode = new ArcanePlanning(state); int index = 0;
+            var state = new MatchState(rules, 143, [new("A", true), new("B", true)]); var mode = new MatchSettlementEffects(state, new MatchUnitLifecycle(state, () => RoundPosition.First), RoundPosition.First); int index = 0;
             foreach (var sample in trace.GetProperty("cases").EnumerateArray())
             {
                 int team = Int(sample, "team"); string c = $"{battle}/{index++}"; bool Flag(string key) => sample.GetProperty(key).GetBoolean();

@@ -21,7 +21,7 @@ internal static class GalaxiesSettlementParity
                 var counts=sample.GetProperty("counts").EnumerateObject().ToDictionary(e=>e.Name,e=>e.Value.GetInt32());
                 var match=ResolvedMatch.FromCombat(0,1,sample.GetProperty("pve").GetBoolean(),false,combat,counts,counts) with {Combat=sample.GetProperty("missing").GetBoolean()?null:combat};
                 bool view=sample.GetProperty("view").GetBoolean(),first=sample.GetProperty("first").GetBoolean();var scoped=match.Units.Where(u=>!view||u.Survivor.Team!=team||u.Owner==p.Id||u.Owner is null&&first).ToArray();
-                int gold=mode.RoundEnd(new(match,p,team,view?p.Id:null,scoped,counts),sample.GetProperty("stage").GetInt32());string c=$"{battle}/{n++}";
+                int gold=new MatchSettlementEffects(state, new MatchUnitLifecycle(state, () => RoundPosition.First), new(sample.GetProperty("stage").GetInt32(), 1)).RoundEnd(new(match,p,team,view?p.Id:null,scoped,counts));string c=$"{battle}/{n++}";
                 Check(gold==sample.GetProperty("gold").GetInt32(),c+" gold");Check(p.Items.SequenceEqual(sample.GetProperty("items").EnumerateArray().Select(x=>x.GetString()!)),c+" rewards");Check(state.Random.Next()==sample.GetProperty("nextRandom").GetDouble(),c+" RNG");
             }
         }

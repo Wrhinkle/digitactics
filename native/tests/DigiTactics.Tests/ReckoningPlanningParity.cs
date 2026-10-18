@@ -41,7 +41,7 @@ internal static class ReckoningPlanningParity
             {
                 var counts=step.GetProperty("counts").Deserialize<Dictionary<string,int>>()!;var round=new RoundPosition(Int(step,"stage"),Int(step,"round"));
                 var match=new ResolvedMatch(0,null,step.GetProperty("pve").GetBoolean(),false,step.GetProperty("won").GetBoolean()?0:1,[],counts,counts);
-                mode.RoundEnd(new(match,p,0,null,[],counts),round.Stage);offers.Make(p,round);mode.RoundStart(p,step.GetProperty("type").GetString()!);Snapshot(step.GetProperty("after"));
+                new MatchSettlementEffects(state, new MatchUnitLifecycle(state, () => round), round).RoundEnd(new(match,p,0,null,[],counts));offers.Make(p,round);mode.RoundStart(p,step.GetProperty("type").GetString()!);Snapshot(step.GetProperty("after"));
             }
             Check(state.CreateUnit(rules.Lines[0].Id,0).Id==Int(trace,"nextId"),c+" IDs");Check(state.Random.Next()==trace.GetProperty("nextRandom").GetDouble(),c+" RNG");
         }

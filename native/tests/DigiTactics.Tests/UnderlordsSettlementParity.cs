@@ -48,7 +48,7 @@ internal static class UnderlordsSettlementParity
                 { Combat = Flag("missing") ? null : combat, Winner = Flag("won") ? team : 1 - team };
                 bool view = Flag("view"), first = Flag("first");
                 var scoped = match.Units.Where(u => !view || u.Survivor.Team != team || u.Owner == p.Id || u.Owner is null && first).ToArray();
-                int gold = mode.RoundEnd(new(match, p, team, view ? p.Id : null, scoped, counts), sample.GetProperty("stage").GetInt32());
+                int gold = new MatchSettlementEffects(state, new MatchUnitLifecycle(state, () => RoundPosition.First), new(sample.GetProperty("stage").GetInt32(), 1)).RoundEnd(new(match, p, team, view ? p.Id : null, scoped, counts));
                 var expected = sample.GetProperty("after"); var mech = expected.GetProperty("mech");
                 Check(gold == sample.GetProperty("gold").GetInt32(), c + " gold");
                 Check(p.Mechanics.UnderlordsBeastKills == mech.GetProperty("ulBeastKills").GetDouble() && p.Mechanics.UnderlordsDuel == mech.GetProperty("ulDuel").GetDouble(), c + " persistent kills/duel");

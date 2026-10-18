@@ -176,7 +176,7 @@ public sealed class MatchState
         }
         player.Shop.ReleaseOffers();
         foreach (var orb in player.Orbs) if (orb.Unit is { } line) Pool.Return(line);
-        player.Orbs.Clear(); player.Items.Clear(); player.Offer = null;
+        player.Orbs.Clear(); player.Items.Clear(); player.Offer = null; player.Wisp = null;
         onEliminate?.Invoke(player);
     }
     private static int[][] ValidTeams(int[][]? teams)

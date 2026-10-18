@@ -17,7 +17,7 @@ internal static class AutoChessPriestParity
             var counts = trace.GetProperty("counts").Deserialize<Dictionary<string, int>>()!;
             var combat = trace.GetProperty("missing").GetBoolean() ? null : new CombatSimulation(rules, [], [], 1, setup: new(new(), new()));
             var match = new ResolvedMatch(0, null, trace.GetProperty("pve").GetBoolean(), false, trace.GetProperty("won").GetBoolean() ? team : 1 - team, units, counts, counts, Combat: combat);
-            new AutoChessPlanning(state).RoundEnd(new(match, player, team, null, units, counts), trace.GetProperty("stage").GetInt32());
+            new MatchSettlementEffects(state, new MatchUnitLifecycle(state, () => RoundPosition.First), new(trace.GetProperty("stage").GetInt32(), 1)).RoundEnd(new(match, player, team, null, units, counts));
             checks++; if (player.Health != trace.GetProperty("after").GetInt32()) throw new InvalidOperationException($"Auto Chess Priest parity: {rules.Id}, case {checks}.");
         }
         Console.WriteLine($"Auto Chess Priest parity: {checks:N0} checks."); return checks;

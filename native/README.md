@@ -1562,3 +1562,25 @@ remain to be composed before production match UI integration.
 Validation: **171,463,274 full-suite native checks passed**, including all 5,699
 reference battles. Self-contained Windows publish and packaged BRUTAL smoke checks
 passed.
+
+### Composed settlement effects
+
+`MatchPlanningSession.Resolve` now routes resolved fights through
+`MatchSettlementEffects`, applying PvE rewards and each mode's post-battle state
+changes through the shared unit lifecycle. Buffs clear before final merges and
+elimination. Faction Wars now pays Fungus trait gold after combat; core elimination
+also clears pending Wisps.
+
+Seven existing battle-result suites now exercise the composed dispatcher, along
+with Reckoning's sequential planning/reward traces. An additional 136 original
+Faction Wars cases cover Fungus thresholds, wins/losses and PvE/PvP. Cleanup checks
+cover all 22 variants. Gizmos retains its standalone mode tests; its composed
+reward-triggered merges still need full match coverage.
+
+Battle creation, PvE wave selection and complete match-loop acceptance remain
+outstanding, followed by production UI, audio, multiplayer, migration and release
+acceptance. This is an integration milestone, not a production release.
+
+Validation: **171,463,590 full-suite native checks passed**, including all 5,699
+reference battles. Self-contained Windows publish and packaged BRUTAL smoke checks
+passed.

@@ -13,7 +13,7 @@ internal static class FatesSettlementParity
             var combat=new CombatSimulation(rules,a,b,trace.GetProperty("seed").GetUInt32(),setup:new(new(),new()));int ticks=0;while(!combat.Done&&ticks<2000){combat.Step();ticks++;}
             string battle=$"{rules.Id}/{trace.GetProperty("seed")}";Check(combat.Done&&ticks==trace.GetProperty("ticks").GetInt32()&&combat.Winner==trace.GetProperty("winner").GetInt32(),battle+" result");
             Check(combat.Units.Count==trace.GetProperty("units").GetArrayLength(),battle+" units");for(int i=0;i<combat.Units.Count;i++){var u=combat.Units[i];var e=trace.GetProperty("units")[i];Check(u.Line.Id==e.GetProperty("line").GetString()&&u.Team==e.GetProperty("team").GetInt32()&&u.Alive==e.GetProperty("alive").GetBoolean()&&u.Summoned==e.GetProperty("summoned").GetBoolean()&&u.BlossomKills==e.GetProperty("blossom").GetInt32()&&u.CombatGold==e.GetProperty("gold").GetInt32(),battle+" terminal state");}
-            var state=new MatchState(rules,143,[new("A",true),new("B",true)]);var mode=new FatesPlanning(state);int n=0;
+            var state=new MatchState(rules,143,[new("A",true),new("B",true)]);var mode = new MatchSettlementEffects(state, new MatchUnitLifecycle(state, () => RoundPosition.First), RoundPosition.First);int n=0;
             foreach(var sample in trace.GetProperty("cases").EnumerateArray())
             {
                 int team=sample.GetProperty("team").GetInt32();var p=state.Players[team];p.Mechanics.FatesBlossom=sample.GetProperty("initial").GetInt32();

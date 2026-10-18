@@ -7,6 +7,12 @@ public sealed record WispOffer(string Id, int Cost);
 public sealed class FactionWarsPlanning(MatchState state)
 {
     private readonly MatchLoot loot = new(state);
+    public int RoundEnd(RoundEndContext context)
+    {
+        var fungus = state.Rules.Traits.Single(t => t.Id == "FUN");
+        int level = TraitRules.Level(fungus, context.Traits.GetValueOrDefault("FUN"));
+        return level == 0 ? 0 : (int)fungus.Parameters["gold"][level - 1];
+    }
     public void AugmentPicked(MatchPlayer player, string id)
     {
         switch (id)

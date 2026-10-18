@@ -1,6 +1,6 @@
 namespace DigiTactics.Rules;
 
-/// <summary>Owns the composed planning loop. Combat resolution remains the caller's responsibility.</summary>
+/// <summary>Owns planning and settlement services. The caller supplies resolved combat results.</summary>
 public sealed class MatchPlanningSession
 {
     public MatchPlanningSession(Ruleset rules, uint seed, IReadOnlyList<MatchSeat> seats, bool duos = false, int[][]? teams = null)
@@ -22,6 +22,8 @@ public sealed class MatchPlanningSession
     public MatchOffers Offers { get; }
     public MatchAi Ai { get; }
     public MatchRounds Rounds { get; }
+    public IReadOnlyList<MatchRoundResult> Resolve(IReadOnlyList<ResolvedMatch> matches) =>
+        Rounds.Resolve(matches, new MatchSettlementEffects(State, Units, Rounds.Position));
     public bool PickCarousel(MatchPlayer player, int index)
     {
         if (!Units.Carousel.Pick(player, index, Rounds.Phase)) return false;

@@ -24,7 +24,7 @@ internal static class DragonSettlementParity
             string battle = $"{rules.Id}/{trace.GetProperty("seed")}";
             Check(combat.Done && ticks == Int(trace, "ticks") && combat.Winner == Int(trace, "winner"), battle + " result");
             for (int team = 0; team < 2; team++) Check(combat.DragonlandsRewards(team) == trace.GetProperty("rewards")[team].Deserialize<DragonlandsCombatRewards>(json), battle + $" combat counters team {team}: {combat.DragonlandsRewards(team)} / {trace.GetProperty("rewards")[team]}");
-            var state = new MatchState(rules, 143, [new("A", true), new("B", true)]); var mode = new DragonlandsPlanning(state); int index = 0;
+            var state = new MatchState(rules, 143, [new("A", true), new("B", true)]); var mode = new MatchSettlementEffects(state, new MatchUnitLifecycle(state, () => RoundPosition.First), RoundPosition.First); int index = 0;
             foreach (var sample in trace.GetProperty("cases").EnumerateArray())
             {
                 int team = Int(sample, "team"); string c = $"{battle}/{index++}";
