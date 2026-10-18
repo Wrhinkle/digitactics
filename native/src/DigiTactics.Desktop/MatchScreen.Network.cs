@@ -22,6 +22,7 @@ internal sealed partial class MatchScreen
         localSeat = FindNetworkSeat();
         history = null;
         networkReplica = new(room, catalog); networkReplica.Rebuilt += NetworkRebuilt; networkReplica.Applied += NetworkApplied;
+        networkReplica.Building += MatchHudBuilding; networkReplica.Advanced += MatchHudAdvanced;
         networkHistory = profile is null || localSeat < 0 ? null : new(networkReplica, profile, localSeat);
         networkReplica.Desync += _ => status = "Match state differed from the host; rebuilding from shared history.";
         networkHost = new(room, networkReplica, networkClock);
@@ -78,13 +79,14 @@ internal sealed partial class MatchScreen
         {
             var slots = networkRoom.Authority.Lobby?["slots"];
             int available = Enumerable.Range(0, 8).FirstOrDefault(i => slots?[i.ToString()] is null && Session.State.Players[i].Alive, -1);
-            if (available >= 0 && HomeButton("joinSeat", $"Take seat {available + 1}",140,36)) networkRoom.ClaimSeat(available, SteamName, networkClock());
+            if (available >= 0 && HomeButton("joinSeat", $"Take seat {available + 1}",110,36)) networkRoom.ClaimSeat(available, SteamName, networkClock());
         }
         else if (HomeButton("spectate", "Spectate",110,36)) networkRoom.FreeSeat(localSeat);
     }
     public void DetachNetworkMatch()
     {
         if (networkRoom is not null) networkRoom.Effect -= NetworkEffect;
+        if(networkReplica is not null){networkReplica.Building-=MatchHudBuilding;networkReplica.Advanced-=MatchHudAdvanced;}
         networkHost?.Dispose(); networkHost = null; networkHistory?.Dispose(); networkHistory = null; networkReplica?.Dispose(); networkReplica = null;
         networkRoom = null; networkDone = false;
     }

@@ -34,8 +34,9 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private int emoteEffects;
     private int socialStep;
     private int socialCheck;
+    private bool carouselDown,hostCarouselSubmitted;
     private readonly string[] socialCommands = ["players", "playerMute/123", "playerMute/123", "closePlayers", "emotes", "emote/4"];
-    public string Pending => "network UI stage " + stage;
+    public string Pending => $"network UI stage {stage}, social {socialStep}, menu {networkMenuStep}, travel {travelStep}, loot {lootStep}";
     public NetworkMatchSmoke(ContentCatalog catalog, MatchScreen screen, bool duos = false, bool spectator = false)
     {
         this.spectator = spectator; stage = spectator ? -2 : -5;
@@ -63,7 +64,33 @@ internal sealed class NetworkMatchSmoke : IDisposable
     public void Input(MatchScreen screen)
     {
         now += !spectator && stage == 3 && screen.CompletedRounds > 0 ? 16 : 200; PumpPackets(); controller.Pump(now); PumpPackets();
+        if(carouselDown){ImGui.GetIO().AddMouseButtonEvent(0,false);carouselDown=false;cooldown=3;return;}
         if (cooldown-- > 0) return;
+        // Complete the real opening carousel before clicking controls behind it.
+        // The second peer uses its normal authorized intent; the rendered guest
+        // chooses through its actual card and waits for the shared next entry.
+        if(screen.Session is {} opening && opening.Units.Carousel.Active)
+        {
+            var carousel=opening.Units.Carousel;
+            if(carousel.Turn?.Id!=0)hostCarouselSubmitted=false;
+            if(carousel.Turn?.Id==0&&!hostCarouselSubmitted)
+            {
+                int choice=carousel.Options.Select((option,index)=>(option,index)).First(pair=>pair.option.PickedBy is null).index;
+                hostCarouselSubmitted=host.SubmitIntent(0,"carousel",JsonSerializer.SerializeToElement(new{i=choice}),opening.Rounds.Position.Stage*100+opening.Rounds.Position.Round);
+            }
+            else if(!screen.IsSpectating&&carousel.Turn?.Id==1)
+            {
+                int choice=carousel.Options.Select((option,index)=>(option,index)).First(pair=>pair.option.PickedBy is null).index;
+                if(screen.Buttons.TryGetValue("carousel/"+choice,out var carouselPoint))
+                {
+                    var bounds=screen.CarouselChoicesBounds;
+                    if(carouselPoint.Y<bounds.Min.Y+10||carouselPoint.Y>bounds.Max.Y-10)
+                    {ImGui.GetIO().AddMousePosEvent((bounds.Min.X+bounds.Max.X)*.5f,(bounds.Min.Y+bounds.Max.Y)*.5f);ImGui.GetIO().AddMouseWheelEvent(0,carouselPoint.Y<bounds.Min.Y?1:-1);}
+                    else{ImGui.GetIO().AddMousePosEvent(carouselPoint.X,carouselPoint.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);carouselDown=true;}
+                }
+            }
+            return;
+        }
         if (!spectator && socialStep < socialCommands.Length)
         {
             if (down)
@@ -126,12 +153,22 @@ internal sealed class NetworkMatchSmoke : IDisposable
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        foreach(string control in new[]{"fight","players","replaySpeed","joinSeat","spectate","leaveOnline"})
+            if(screen.Buttons.TryGetValue(control,out var target)&&(target.X<20||target.X>size.X-20||target.Y<20||target.Y>124))
+                throw new InvalidOperationException("Online header control is outside the visible header: "+control);
         if (screen.Session is { } clockSession && clockSession.Rounds.Phase == MatchPhase.Planning && clockSession.Rounds.RoundType != "carousel" && !clockSession.State.Over && clockSession.State.Players[screen.ViewedPlayer].Alive)
         {
             var match = replica.Match!;
             double expected = Math.Max(0,(match.PhaseAt + match.PlanMs - host.ServerTime(now)) / 1000);
             if (screen.NetworkPlanningRemaining is not { } displayed || Math.Abs(displayed - expected) > .001 || screen.Buttons.ContainsKey("planningTimer") || screen.Buttons.ContainsKey("pause"))
                 throw new InvalidOperationException("Network countdown differed from host time or exposed local clock controls.");
+            int ready=clockSession.State.Players.Count(p=>p.Alive&&p.IsHuman&&match.Votes.Contains(p.Id));
+            int humans=clockSession.State.Players.Count(p=>p.Alive&&p.IsHuman);
+            int local=spectator?screen.ViewedPlayer:stage>=20?0:1;
+            if(!screen.IsSpectating&&screen.MatchReadyLabel!=(match.Votes.Contains(local)?$"Ready {ready}/{humans}":$"Ready ({ready}/{humans})"))
+                throw new InvalidOperationException("Ready button lost the actual living-player vote count or local readiness.");
+            if(capture is not null&&!spectator&&stage<20&&(networkMenuStep==0&&stage==0||match.Votes.Contains(1)))
+                FrameCapture.SaveBitmap(Path.ChangeExtension(capture,match.Votes.Contains(1)?"ready.bmp":"planning.bmp"),size.X,size.Y);
         }
         planningRendered |= screen.PlanningDrawCalls > 0;
         companionRendered |= screen.CompanionDrawCalls > 0;
@@ -185,11 +222,14 @@ internal sealed class NetworkMatchSmoke : IDisposable
         if (!spectator && stage == 3) { screen.AttachNetworkMatch(host, () => now); stage = 20; return false; }
         if (!spectator && stage < 23)
         {
+            if(screen.StandingRecent(1).Count!=screen.CompletedRounds)
+                throw new InvalidOperationException("Reattached host lost or duplicated the completed rounds in standings history.");
             if (screen.Buttons.ContainsKey("playerRemove/123")) throw new InvalidOperationException("Host can remove itself.");
             if (stage == 21 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "host-players.bmp"), size.X, size.Y);
             return false;
         }
         if (!spectator && (!guest.Authority.Banned("234") || host.Authority.Lobby!["slots"]!["1"] is not null)) throw new InvalidOperationException("Host removal did not reach peer and clear its seat.");
+        if(!spectator&&stage==23&&cooldown>0)return false; // Capture after the closing Players window's last rendered frame.
         if (capture is not null) FrameCapture.SaveBitmap(capture, size.X, size.Y);
         Console.WriteLine(spectator ? "Spectator UI smoke passed: read-only view, take seat, replicated controls/combat, return to spectating and matching host state."
             : "Network match UI smoke passed: guest seat-one input, replicated shop lock, ready vote, rendered 3D planning/combat, host settlement and next round."); return true;
