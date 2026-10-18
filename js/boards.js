@@ -941,6 +941,10 @@ function previewSetup() {
 function renderPreview(id) {
   if (!pv) previewSetup();
   const spec = themeOf(id);
+  // Secret arena landmarks have taller authored silhouettes; fit them in their card artwork.
+  const previewDistance=Math.hypot(16.5,15.5)*(spec.secret?1.35:1.02),previewPitch=Math.atan2(16.5,15.5),previewTarget=spec.secret?0:1.8,previewX=spec.secret?1.3:0;
+  pv.cam.position.set(previewX,Math.sin(previewPitch)*previewDistance,previewTarget+Math.cos(previewPitch)*previewDistance);
+  pv.cam.lookAt(previewX,0,previewTarget);
   const env = buildEnv(spec, { L: pv.L, scene: pv.scene, preview: true });
   pv.scene.add(env.group);
   pv.scene.background = env.background;

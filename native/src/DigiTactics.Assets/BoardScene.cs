@@ -58,10 +58,16 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             Require(obj.Materials.Length > 0 && obj.Materials.All(i => i >= 0 && i < Materials.Length), "material references");
             Require(obj.Matrix.Length == 16 && obj.Matrix.All(double.IsFinite), "world matrix");
             Require(obj.SortCenter is null || obj.SortCenter.Length==3 && obj.SortCenter.All(double.IsFinite),"sort center");
-            if(obj.Motion is {Kind:"mystery-monument" or "mystery-center" or "mystery-blades" or "mystery-rings" or "mystery-meteor"} mystery)
+            if(obj.Motion is {Kind:"mystery-monument" or "mystery-center" or "mystery-blades" or "mystery-rings" or "mystery-meteor" or "mystery-kinetic"} mystery)
             {
                 Require(Id.StartsWith("mystery_",StringComparison.Ordinal) && mystery.Matrix is {Length:16} && mystery.Matrix.All(double.IsFinite) && double.IsFinite(mystery.Speed),"mystery transform");
                 if(mystery.Kind!="mystery-meteor")Require(mystery.Parent is {Length:16} && mystery.Parent.All(double.IsFinite),"mystery parent");
+            }
+            if(obj.Motion is {Kind:"mystery-kinetic"} kinetic)
+            {
+                Require(kinetic.Kinetic is {Rotation.Length:3},"kinetic parameters");
+                var k=kinetic.Kinetic!;
+                Require(k.Rotation.All(double.IsFinite) && new[] {k.Bob,k.BobSpeed,k.Phase,k.Swing,k.SwingSpeed}.All(double.IsFinite),"kinetic values");
             }
             if(obj.Motion?.Fireworks is {} firework)
             {
@@ -190,7 +196,8 @@ public sealed record BoardGeometryGroup(int Start, int Count, int MaterialIndex)
 public sealed record BoardObject(string Kind, int Geometry, int[] Materials, double[] Matrix, bool Visible,
     bool CastShadow, bool ReceiveShadow, BoardInstance[]? Instances, BoardMotion? Motion = null,double[]? SortCenter=null,int SortId=0,int RenderOrder=0);
 public sealed record BoardInstance(double[] Matrix, float[] Color);
-public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0,BoardPalm[]? Palms=null,double[]? Matrix=null,BoardProp[]? Props=null,double[]? Parent=null,BoardSpiralItem[]? Spirals=null,BoardLightningData? Lightning=null,BoardCastleItem[]? Castle=null,BoardNeonSign[]? Signs=null,bool KowloonRain=false,BoardCircuitPulse[]? Pulses=null,BoardTempleItem[]? Temple=null,bool TempleEmbers=false,BoardUnderwaterItem[]? Underwater=null,BoardAurora? Aurora=null,bool FreezeSnow=false,BoardLibraryItem[]? Library=null,bool LibrarySparks=false,BoardCrowdItem[]? Crowd=null,bool TrainSteam=false,BoardGhostItem[]? Ghosts=null,BoardCityBuildingData? Building=null,double[]? Phases=null,bool HolidaySnow=false,bool HolidaySparkle=false,BoardCarnivalItem[]? Carnival=null,BoardFireworkData? Fireworks=null);
+public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0,BoardPalm[]? Palms=null,double[]? Matrix=null,BoardProp[]? Props=null,double[]? Parent=null,BoardSpiralItem[]? Spirals=null,BoardLightningData? Lightning=null,BoardCastleItem[]? Castle=null,BoardNeonSign[]? Signs=null,bool KowloonRain=false,BoardCircuitPulse[]? Pulses=null,BoardTempleItem[]? Temple=null,bool TempleEmbers=false,BoardUnderwaterItem[]? Underwater=null,BoardAurora? Aurora=null,bool FreezeSnow=false,BoardLibraryItem[]? Library=null,bool LibrarySparks=false,BoardCrowdItem[]? Crowd=null,bool TrainSteam=false,BoardGhostItem[]? Ghosts=null,BoardCityBuildingData? Building=null,double[]? Phases=null,bool HolidaySnow=false,bool HolidaySparkle=false,BoardCarnivalItem[]? Carnival=null,BoardFireworkData? Fireworks=null,BoardKinetic? Kinetic=null);
+public sealed record BoardKinetic(double[] Rotation,double Bob=0,double BobSpeed=1,double Phase=0,double Swing=0,double SwingSpeed=1);
 public sealed record BoardUnderwaterItem(double X=0,double Y=0,double Z=0,double Ph=0,double S=1,double Ry=0,double Rz=0,double? Sx=null,double? Sy=null,double? Sz=null,double Rad=0,double H=0,double Off=0,double Dir=0);
 public sealed record BoardTempleItem(double X=0,double Y=0,double Z=0,double Bx=0,double Bz=0,double Ph=0,double H=0,double T0=-9);
 public sealed record BoardCircuitPulse(bool Along,double Lane,double Off,double Sp);

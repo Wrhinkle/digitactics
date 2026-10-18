@@ -2,7 +2,7 @@
 // The browser is used only at build time; the shipped client loads these PNGs.
 const fs=require('node:fs'),path=require('node:path');
 const {chromium}=require('../artifacts/audio-tools/node_modules/playwright');
-const root=path.resolve(__dirname,'../..'),out=path.join(root,'native/content/collection');
+const root=path.resolve(__dirname,'../..'),out=path.join(root,'native/content/collection'),mysteryOnly=process.argv.includes('--mystery-boards-only');
 async function main(){
  fs.mkdirSync(out,{recursive:true});
  const browser=await chromium.launch({channel:'msedge',headless:true,args:['--use-angle=swiftshader-webgl','--enable-unsafe-swiftshader']});
@@ -15,14 +15,16 @@ async function main(){
    const types={'.html':'text/html','.js':'text/javascript','.json':'application/json','.webp':'image/webp','.png':'image/png','.css':'text/css'};
    return route.fulfill({contentType:types[path.extname(file)]||'application/octet-stream',body:fs.readFileSync(file)});
   });
+  // HTTP routing exercises current source without rewriting the shipped browser bundle.
+  await require('../../tests/live-source-bundle.cjs')(page);
   await page.goto('http://collection.local/index.html');await page.waitForFunction(()=>window.DT?.Boards&&DT.Cosmetics.list('board').length>0);
   const png=async data=>page.evaluate(async data=>{const image=new Image();image.src=data;await image.decode();const c=document.createElement('canvas');c.width=image.width;c.height=image.height;c.getContext('2d').drawImage(image,0,0);return c.toDataURL('image/png').split(',')[1];},data);
-  for(const name of ['coll-legends','coll-boards','coll-emotes','store-fx','store-hero']){
+  for(const name of (mysteryOnly?[]:['coll-legends','coll-boards','coll-emotes','store-fx','store-hero'])){
    const data='data:image/webp;base64,'+fs.readFileSync(path.join(root,'assets/client',name+'.webp')).toString('base64');
    fs.writeFileSync(path.join(out,name+'.png'),Buffer.from(await png(data),'base64'));
   }
-  const manifest={};
-  const items=await page.evaluate(()=>['board','dance','sound','elimsound'].flatMap(kind=>DT.Cosmetics.list(kind).map(item=>({kind,id:item.id,name:item.name,icon:item.icon||''}))));
+  const manifest=mysteryOnly?JSON.parse(fs.readFileSync(path.join(out,'manifest.json'),'utf8')):{};
+  const items=(await page.evaluate(()=>['board','dance','sound','elimsound'].flatMap(kind=>DT.Cosmetics.list(kind).map(item=>({kind,id:item.id,name:item.name,icon:item.icon||''}))))).filter(item=>!mysteryOnly||(item.kind==='board'&&item.id.startsWith('mystery_')));
   for(const item of items){
    let data;
    if(item.kind==='board')data=await page.evaluate(id=>DT.Boards.previewUrl(id),item.id);
@@ -37,7 +39,7 @@ async function main(){
    const file=item.kind+'-'+item.id;fs.writeFileSync(path.join(out,file+'.png'),Buffer.from(await png(data),'base64'));manifest[item.kind+'/'+item.id]=file;
   }
   fs.writeFileSync(path.join(out,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
-  console.log(`Exported 5 original Collection/Store paintings and ${items.length} catalog card previews.`);
+  console.log(`Exported ${mysteryOnly?0:5} original Collection/Store paintings and ${items.length} catalog card previews.`);
  }finally{await browser.close();}
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

@@ -260,7 +260,7 @@ internal sealed class BoardMeshLayer : IDisposable
     internal static Matrix4D ConfettiMatrix(BoardConfettiPose p)=>new CompanionTransform(new(p.X,p.Y,p.Z),new(p.Rx,0,p.Rz),new(1,1,1)).Matrix;
     private Matrix4D World(BoardObject obj)
     {
-        if(obj.Motion is {Kind:"mystery-monument" or "mystery-center" or "mystery-blades" or "mystery-rings" or "mystery-meteor"} motion)return BoardMysteryMotion.World(motion,time)*Root;
+        if(obj.Motion is {Kind:"mystery-monument" or "mystery-center" or "mystery-blades" or "mystery-rings" or "mystery-meteor" or "mystery-kinetic"} motion)return BoardMysteryMotion.World(motion,time)*Root;
         if(obj.Motion?.Kind=="carnival-wheel")return BoardCarnivalMotion.Wheel(time)*Root;
         if(buildings.TryGetValue(obj,out var building))return building.Matrix*Root;
         if(obj.Motion?.Kind=="pyramid-beams")return pyramid!.Beam(obj.Matrix)*Root;

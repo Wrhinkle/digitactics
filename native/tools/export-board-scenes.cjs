@@ -1,7 +1,7 @@
 // Original board assets. Dynamic objects and tick counts remain explicit for native animation integration.
 const fs=require('fs'),path=require('path'),zlib=require('zlib');
 const {chromium}=require('../artifacts/audio-tools/node_modules/playwright');
-const root=path.resolve(__dirname,'../..');
+const root=path.resolve(__dirname,'../..'),mysteryOnly=process.argv.includes('--mystery-only');
 async function main(){
  const source=fs.readFileSync(path.join(root,'js/boards.js'),'utf8'),render=fs.readFileSync(path.join(root,'js/render3d.js'),'utf8');
  const engine=require('../../tools/headless.cjs').load({strict:true}),rng=engine.makeRng.toString(),distance=engine.hexDist.toString();
@@ -111,14 +111,7 @@ async function main(){
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
   .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeCarnival)m.userData.nativeMotion={kind:items.nativeCarnival,carnival:items.map(p=>({...p}))}; if(items.nativePyramid)m.userData.nativeMotion={kind:"pyramid-flames",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeGhosts)m.userData.nativeMotion={kind:"graveyard-ghosts",ghosts:items.map(p=>({...p}))}; if(items.nativeTrain)m.userData.nativeMotion={kind:items.nativeTrain}; if(items.nativeCrowd)m.userData.nativeMotion={kind:items.nativeCrowd,crowd:items.map(p=>({...p}))}; if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
- const mystery=fs.readFileSync(path.join(root,'js/mystery-boards.js'),'utf8')
-  .replace("  const titles=", "  const tag=(o,kind,parent,speed=0)=>{o.updateMatrix();if(parent)parent.updateMatrix();o.userData.nativeMotion={kind,speed,matrix:o.matrix.toArray(),parent:parent?.matrix.toArray()};}; const titles=")
-  .replace('center.add(monument);','center.add(monument);tag(monument,"mystery-monument",center,n);')
-  .replace('center.add(cross);','center.add(cross);tag(cross,"mystery-center",center,n);')
-  .replace('const satellites=inst(ctx,geometry,glow,props,{moving:true});','const satellites=inst(ctx,geometry,glow,props,{moving:true}); satellites.userData.nativeMotion={kind:"mystery-satellites",speed:n,props:props.map(p=>({...p}))};')
-  .replace('ctx.tick((dt,t)=>{blades.rotation.z=', 'blades.children.forEach(o=>tag(o,"mystery-blades",blades));ctx.tick((dt,t)=>{blades.rotation.z=')
-  .replace('ctx.tick((dt,t)=>{rings.rotation.y=', 'rings.children.forEach(o=>tag(o,"mystery-rings",rings));ctx.tick((dt,t)=>{rings.rotation.y=')
-  .replace('ctx.tick((dt,t)=>{meteor.position.y=', 'tag(meteor,"mystery-meteor",null,x);ctx.tick((dt,t)=>{meteor.position.y=');
+ const mystery=fs.readFileSync(path.join(root,'js/mystery-boards.js'),'utf8');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
@@ -131,7 +124,8 @@ async function main(){
    return route.fulfill({contentType:'text/javascript',body:fs.readFileSync(file)});
   });
   await page.goto('http://boards.local/');
-  const ids=await page.evaluate(async()=> (await import('/boards.js')).THEMES.map(t=>t.id));
+  const ids=(await page.evaluate(async()=> (await import('/boards.js')).THEMES.map(t=>t.id))).filter(id=>!mysteryOnly||id.startsWith('mystery_'));
+  if(!mysteryOnly){
   const orderFixture=await page.evaluate(async()=>{
    const {THREE,reversePainterSortStable}=await import('/boards.js'),rows=[];
    for(let frame=0;frame<80;frame++){
@@ -156,6 +150,7 @@ async function main(){
    return result;
   });
   fs.writeFileSync(path.join(root,'native/content/board-surfaces.json'),JSON.stringify(surfaces));
+  }
   const folder=path.join(root,'native/content/boards');fs.mkdirSync(folder,{recursive:true});const manifest=[];
   for(const id of ids){
    const scene=await page.evaluate(async id=>{
@@ -193,7 +188,8 @@ async function main(){
    const file=id+'.json.gz',bytes=zlib.gzipSync(JSON.stringify(scene));fs.writeFileSync(path.join(folder,file),bytes);
    manifest.push({id,file,objects:scene.objects.length,instances:scene.objects.reduce((n,o)=>n+(o.instances?.length||1),0),geometries:scene.geometries.length,textures:scene.textures.length,ticks:scene.tickCount});
   }
-  fs.writeFileSync(path.join(folder,'manifest.json'),JSON.stringify({version:1,themes:manifest}));
+  fs.writeFileSync(path.join(folder,'manifest.json'),JSON.stringify({version:1,themes:mysteryOnly?JSON.parse(fs.readFileSync(path.join(folder,'manifest.json'),'utf8')).themes.map(row=>manifest.find(m=>m.id===row.id)||row):manifest}));
+  if(!mysteryOnly){
   const uvFixture=await page.evaluate(async()=>{
    const {THREE}=await import('/boards.js');
    return Array.from({length:120},(_,i)=>{
@@ -203,6 +199,7 @@ async function main(){
    });
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-uv.json'),JSON.stringify(uvFixture));
+  }
   const lightingFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
    for(const spec of THEMES){
@@ -251,6 +248,7 @@ async function main(){
    return rows;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-feedback.json.gz'),zlib.gzipSync(JSON.stringify(feedbackFixture)));
+  if(!mysteryOnly){
   const bursts=await page.evaluate(async()=>{
    const {THREE,originalBurst}=await import('/boards.js'),rows=[];
    for(const columns of [7,14])for(const mirror of [false,true])for(let r=0;r<8;r++)for(let c=0;c<columns;c++)for(let radius=0;radius<4;radius++)for(let team=0;team<2;team++){
@@ -263,6 +261,7 @@ async function main(){
    return rows;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-bursts.json.gz'),zlib.gzipSync(JSON.stringify(bursts)));
+  }
   const motionFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
    for(const spec of THEMES){
@@ -294,6 +293,7 @@ async function main(){
    return rows;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-motion.json.gz'),zlib.gzipSync(JSON.stringify(motionFixture)));
+  if(!mysteryOnly){
   const spiralFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js');
    const env=buildEnv(THEMES.find(s=>s.id==='spiral-mountain')),objects=[],frames=[];
@@ -417,6 +417,7 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  }
   const mysteryFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
    for(const spec of THEMES.filter(s=>s.id.startsWith('mystery_'))){
@@ -429,11 +430,17 @@ async function main(){
       return {matrix:o.matrixWorld.toArray(),matrices};
      })});
     }
-    scenarios.push({id:spec.id,motions:objects.map(o=>o.userData.nativeMotion),frames});disposeEnv(env);
+    const clearance=[];
+    for(const time of [0,.4,1,3.7,10,31]){
+     env.tick(0,time);env.group.updateMatrixWorld(true);
+     env.group.traverse(o=>{if(o.userData.mysteryScenery){const box=new THREE.Box3().setFromObject(o);clearance.push({time,min:box.min.toArray(),max:box.max.toArray()});}});
+    }
+    scenarios.push({id:spec.id,motions:objects.map(o=>o.userData.nativeMotion),frames,clearance});disposeEnv(env);
    }
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-mystery.json.gz'),zlib.gzipSync(JSON.stringify(mysteryFixture)));
+  if(!mysteryOnly){
   const fireworkFixture=await page.evaluate(async()=>{
    const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
    for(const initialWon of [false,true]){
@@ -663,6 +670,7 @@ async function main(){
    return rows;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-particles.json.gz'),zlib.gzipSync(JSON.stringify(particleFixture)));
+  }
   console.log(`Exported ${manifest.length} board themes, ${manifest.reduce((n,t)=>n+t.instances,0)} scene instances; animation tick counts retained for native port.`);
  }finally{await browser.close();}
 }

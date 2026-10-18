@@ -14,6 +14,11 @@ public sealed class BoardMysteryMotion(BoardProp[] props)
         Matrix4D Rotation(double x,double y,double z)=>new CompanionTransform(new(0,0,0),new(x,y,z),new(1,1,1)).Matrix;
         switch(m.Kind)
         {
+            case "mystery-kinetic":
+                var k=m.Kinetic??throw new ArgumentException("Missing kinetic parameters.",nameof(m));
+                double angle=time+Math.Sin(time*k.SwingSpeed+k.Phase)*k.Swing;
+                parent=parent with {M42=parent.M42+Math.Sin(time*k.BobSpeed+k.Phase)*k.Bob};
+                return local*Rotation(k.Rotation[0]*angle,k.Rotation[1]*angle,k.Rotation[2]*angle)*parent;
             case "mystery-monument":
                 local=Rotation(0,time*(.15+m.Speed*.025),0)*local;
                 goto case "mystery-center";

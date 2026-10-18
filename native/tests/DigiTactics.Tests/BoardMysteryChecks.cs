@@ -13,7 +13,18 @@ internal static class BoardMysteryChecks
         foreach(var scenario in fixture.RootElement.EnumerateArray())
         {
             var motions=scenario.GetProperty("motions").EnumerateArray().Select(e=>e.Deserialize<BoardMotion>(options)!).ToArray();
-            if(motions.Count(m=>m.Kind=="mystery-monument")!=1 || motions.Count(m=>m.Kind=="mystery-satellites")!=1)throw new InvalidOperationException("Missing mystery landmarks.");
+            if(motions.Length<2 || motions.Any(m=>m.Kind!="mystery-kinetic" || m.Kinetic is null))throw new InvalidOperationException("Missing authored animated landmarks.");
+            var scene=BoardScene.Load(Path.Combine(root,"content/boards",scenario.GetProperty("id").GetString()+".json.gz"));
+            if(scene.Objects.Length>220 || scene.Geometries.Length>90 || scene.Materials.Length>24)throw new InvalidOperationException("Mystery scene exceeded its geometry/draw budget.");
+            checks+=4;
+            if(scenario.GetProperty("clearance").GetArrayLength()<motions.Length*6)throw new InvalidOperationException("Missing scene clearance samples.");
+            foreach(var bounds in scenario.GetProperty("clearance").EnumerateArray())
+            {
+                var min=bounds.GetProperty("min");var max=bounds.GetProperty("max");
+                // Ground footprint stays beyond the slab: a separate live-camera review checks projection/occlusion.
+                bool clear=max[0].GetDouble()<=-7.2 || min[0].GetDouble()>=7.2 || max[2].GetDouble()<=-6.4 || min[2].GetDouble()>=6.4;
+                checks++;if(!clear)throw new InvalidOperationException("Authored scenery enters the playable slab: "+scene.Id);
+            }
             var states=motions.Select(m=>m.Kind=="mystery-satellites"?new BoardMysteryMotion(m.Props!):null).ToArray();
             foreach(var frame in scenario.GetProperty("frames").EnumerateArray())
             {
@@ -26,6 +37,6 @@ internal static class BoardMysteryChecks
                 }
             }
         }
-        Console.WriteLine($"Mystery boards: {checks:N0} original landmark, satellite and hierarchy comparisons passed across all ten themes.");return checks;
+        Console.WriteLine($"Mystery boards: {checks:N0} authored landmark and browser/native hierarchy comparisons passed across all ten themes.");return checks;
     }
 }
