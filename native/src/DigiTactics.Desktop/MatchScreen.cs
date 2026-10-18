@@ -439,10 +439,7 @@ internal sealed partial class MatchScreen : IDisposable
         if (IsSpectating) { UiText.Wrapped("Spectating. Take an available seat to control a team."u8); ImGui.End(); return; }
         if (SellDropZone()) { ImGui.End(); return; }
         ImGui.BeginDisabled(Session!.State.Over || !Human.Alive);
-        if (Button("reroll", $"Refresh ({(Human.Shop.FreeRolls > 0 ? "free" : Rules.RerollCost + "g")})")) Act("reroll");
-        ImGui.SameLine(); if (Button("lock", Human.Shop.Locked ? "Unlock shop" : "Lock shop")) Act("lock");
-        ImGui.SameLine(); if (Rules.Economy!.Xp is { } xp && Button("xp", $"Buy XP ({xp.BuyCost}g)")) Act("buyXp");
-        ImGui.SameLine(); ImGui.Text($"XP {Human.Economy.Xp}     {Human.Items.Count} items");
+        ShopControls();
         float card = (size.X - 64f) / Human.Shop.Slots.Count;
         for (int i = 0; i < Human.Shop.Slots.Count; i++)
         {

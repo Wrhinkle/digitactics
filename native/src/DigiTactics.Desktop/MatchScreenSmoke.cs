@@ -40,6 +40,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private bool dropsVerified;
     private readonly OfferChoiceSmoke offerSmoke = new();
     private bool offersVerified;
+    private readonly ShopControlSmoke shopControlSmoke = new();
+    private bool shopControlsVerified;
     private readonly ItemDragSmoke itemDragSmoke = new();
     private bool itemDragsVerified;
     private readonly CameraSmoke cameraSmoke = new();
@@ -97,6 +99,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (index == 22 && !itemDragsVerified) { itemDragsVerified = itemDragSmoke.Input(screen); cooldown = 3; return; }
         if (index == 22 && !dropsVerified) { dropsVerified = dropSmoke.Input(screen); cooldown = 3; return; }
         if (index == 22 && !offersVerified) { offersVerified = offerSmoke.Input(screen); cooldown = 3; return; }
+        if (index == 22 && !shopControlsVerified) { shopControlsVerified = shopControlSmoke.Input(screen); cooldown = 3; return; }
         if (index == 9 && dragStep < 10)
         {
             var dragIo = ImGui.GetIO();
