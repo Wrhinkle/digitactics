@@ -22,7 +22,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         : ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
     private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
     private int collectionIndex;
-    private bool collectionVerified,treeScrolled,transformWhite,transformFlash;
+    private bool collectionVerified,treeScrolled,transformWhite,transformFlash,settledPreview;
     private readonly string[] farmCommands = evolutionSmoke
         ? ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "farmRoom", "farmOut/tsunomon", "farmIn/tsunomon", "farmOut/motimon", "farmSelect/tsunomon", "farmSwap/motimon", "farmIn/tsunomon", "farmExpand", "farmTheme/sewer", "closeFarm"]
         : ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "closeFarm"];
@@ -63,7 +63,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         {
             if (cooldown-- > 0) return;
             var input = ImGui.GetIO();
-            if(screen.EvolutionBusy && !down)return;
+            if(!down && (screen.EvolutionBusy || collectionIndex==11 && screen.EvolutionTransitionTime>0))return;
             if(evolutionSmoke && collectionIndex==12 && !down && !treeScrolled)
             {
                 var anchor=screen.Buttons["closeEvolutionTree"];
@@ -287,6 +287,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         {
             if(evolutionSmoke && screen.EvolutionTransitionTime>1 && screen.EvolutionTransitionTime<2.5 && !transformWhite)
             {
+                if(screen.EvolutionFloorDrawn)throw new InvalidOperationException("Evolution floor remained visible during white stage.");
                 transformWhite=true;if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"transform-white.bmp"),size.X,size.Y);
             }
             if(evolutionSmoke && screen.EvolutionTransitionTime>2.87 && screen.EvolutionTransitionTime<2.95 && !transformFlash)
@@ -302,8 +303,10 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 if(screen.EvolutionTreeNodes!=LegendEvolution.Tree("bukamon").Tiers.Sum(t=>t.Length)) throw new InvalidOperationException("Evolution tree omitted reachable forms.");
                 if(capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"evolution-tree.bmp"),size.X,size.Y);
             }
-            if(evolutionSmoke && collectionIndex==11 && cooldown==1)
+            if(evolutionSmoke && collectionIndex==11 && screen.EvolutionTransitionTime==0 && !screen.EvolutionBusy && !settledPreview)
             {
+                settledPreview=true;
+                if(!screen.EvolutionFloorDrawn)throw new InvalidOperationException("Evolution floor did not return after transformation.");
                 if(screen.EvolutionPreviewDrawCalls==0 || screen.EvolutionPreviewTime<=0) throw new InvalidOperationException("Evolution preview did not render and animate.");
                 if(capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"evolution.bmp"),size.X,size.Y);
             }

@@ -11,7 +11,8 @@ internal sealed class CompanionPreview : IDisposable
     private const int Size=384;
     private readonly ModelCatalog models=ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/models.json"));
     private readonly CompanionCatalog companions=CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/companion-models.json"));
-    private readonly ModelRenderer renderer=new();
+    private readonly ModelRenderer renderer=new() {EvolutionStage=true,FarmEye=new(0,1,3.6f)};
+    private GpuPrimitive? floor;
     private GlFramebuffer frame;
     private GlTexture color,depth;
     private GpuModel? model;
@@ -36,6 +37,7 @@ internal sealed class CompanionPreview : IDisposable
         transition=previous is null?null:new();
     }
     public uint Texture=>color.Id;
+    public bool FloorDrawn { get; private set; }
     public int DrawCalls { get; private set; }
     public double AnimationTime=>animator?.Time??0;
     public string? Key=>key;
@@ -43,6 +45,14 @@ internal sealed class CompanionPreview : IDisposable
     {
         try
         {
+            var vertices=new float[42*GltfPrimitive.Stride];var indices=new uint[40*3];
+            for(int i=0;i<=40;i++)
+            {
+                double angle=(double)i/40*Math.PI*2;int at=(i+1)*GltfPrimitive.Stride;
+                vertices[at]=(float)(Math.Cos(angle)*.75);vertices[at+2]=(float)(-Math.Sin(angle)*.75);vertices[at+4]=1;
+                if(i<40){indices[i*3]=0;indices[i*3+1]=(uint)i+1;indices[i*3+2]=(uint)i+2;}
+            }
+            vertices[4]=1;floor=new(new(vertices,indices,0,true,false));
             Span<GlFramebuffer> frames=stackalloc GlFramebuffer[1]; OpenGl.CreateFramebuffers(frames); frame=frames[0];
             Span<GlTexture> textures=stackalloc GlTexture[2]; OpenGl.CreateTextures(OpenGl.GL_TEXTURE_2D,textures); color=textures[0];depth=textures[1];
             OpenGl.TextureStorage2D(color.Id,1,OpenGl.GL_RGBA8,Size,Size);
@@ -71,7 +81,7 @@ internal sealed class CompanionPreview : IDisposable
     public void Play(string role)=>animator?.Play(role);
     public void Draw(double time)
     {
-        DrawCalls=0;if(model is null || animator is null)return;
+        FloorDrawn=false;DrawCalls=0;if(model is null || animator is null)return;
         double delta=lastTime is { } previous?Math.Clamp(time-previous,0,.05):0;lastTime=time;
         animator.Update(delta);outgoingAnimator?.Update(delta);
         if(transition is { } effect)
@@ -97,6 +107,10 @@ internal sealed class CompanionPreview : IDisposable
             foreach(bool transparent in new[]{false,true})
             {
                 renderer.Draw(active,pose.Pose,placement,camera,transparent);DrawCalls+=renderer.DrawCalls;
+                if(transparent && !renderer.WhiteOverride)
+                {
+                    renderer.DrawRoom(floor!,Matrix4D.Identity,camera,new(0,0,0,.3f),null,true,true,true,side:0,fog:false);FloorDrawn=true;
+                }
             }
             ModelRenderer.End();
         }
@@ -107,5 +121,5 @@ internal sealed class CompanionPreview : IDisposable
             OpenGl.Viewport(viewport[0],viewport[1],viewport[2],viewport[3]);
         }
     }
-    public void Dispose() { outgoing?.Dispose();model?.Dispose();renderer.Dispose();OpenGl.DeleteTextures(new[]{color,depth});OpenGl.DeleteFramebuffers(new[]{frame}); }
+    public void Dispose() { floor?.Dispose();outgoing?.Dispose();model?.Dispose();renderer.Dispose();OpenGl.DeleteTextures(new[]{color,depth});OpenGl.DeleteFramebuffers(new[]{frame}); }
 }

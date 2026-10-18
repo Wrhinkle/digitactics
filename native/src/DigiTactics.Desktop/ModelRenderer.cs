@@ -19,10 +19,12 @@ internal sealed partial class ModelRenderer : IDisposable
     public int ShadowMapSize { get; set; } = 1024;
     public float ShadowBias { get; set; } = -.0015f;
     public bool ReceiveShadow { get; set; }
+    public bool EvolutionStage { get; set; }
+    private static readonly Vector3 stageGround=BoardLighting.Linear("#3a4660"),stageKey=BoardLighting.Linear("#fff6e8"),stageRim=BoardLighting.Linear("#9fd0ff");
     public bool WhiteOverride { get; set; }
     private void SetFarmLight(Vector3 emissive = default, float roughness = -1, float metalness = 0, bool fog = true)
     {
-        program.Uniform(15, BoardLight is not null ? 2 : FarmLight is null ? 0 : 1);
+        program.Uniform(15, EvolutionStage ? 3 : BoardLight is not null ? 2 : FarmLight is null ? 0 : 1);
         program.Uniform(16, new Brutal.Numerics.float4((float)(FarmLight?.Hemisphere ?? 0), (float)(FarmLight?.Sun ?? 0), (float)(FarmLight?.Lamp ?? 0), 0));
         void V(int location, Vector3 value, float w = 0) => program.Uniform(location, new Brutal.Numerics.float4(value.X,value.Y,value.Z,w));
         if (BoardLight is { } board)
@@ -31,6 +33,11 @@ internal sealed partial class ModelRenderer : IDisposable
             V(37,BoardLighting.Srgb(board.FogColor)); V(38,new(board.FogNear,board.FogFar,fog ? 1 : 0));
         }
         else V(38,Vector3.Zero);
+        if(EvolutionStage)
+        {
+            V(33,Vector3.One,2.2f);V(34,stageGround);V(35,stageKey,2.4f);V(36,Vector3.Normalize(new(1.5f,3,4)));
+            V(41,stageRim,1.2f);V(42,Vector3.Normalize(new(-3,2,-2)));V(38,Vector3.Zero);
+        }
         program.Uniform(40, WhiteOverride ? 1 : 0);
         program.Uniform(17, new Brutal.Numerics.float4(emissive.X, emissive.Y, emissive.Z, 0));
         program.Uniform(18, new Brutal.Numerics.float4(FarmEye.X, FarmEye.Y, FarmEye.Z, 0));
@@ -261,6 +268,8 @@ internal sealed partial class ModelRenderer : IDisposable
         layout(location=38) uniform vec4 boardFog;
         layout(location=39) uniform vec4 shadowSettings;
         layout(location=40) uniform int whiteOverride;
+        layout(location=41) uniform vec4 stageRim;
+        layout(location=42) uniform vec4 stageRimDirection;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
@@ -325,17 +334,19 @@ internal sealed partial class ModelRenderer : IDisposable
             vec3 light=unlit!=0?vec3(1):vec3(.35)+vec3(.65)*max(dot(n,normalize(vec3(2,4,3))),0);
             vec3 specular=vec3(0);
             if(farmLighting!=0 && unlit==0) {
-                vec3 sunDirection=farmLighting==2 ? boardDirection.xyz : normalize(vec3(4,9,5));
+                vec3 sunDirection=farmLighting>=2 ? boardDirection.xyz : normalize(vec3(4,9,5));
                 vec3 hemi=mix(toLinear(vec3(74,90,58)/255.0),vec3(1),n.y*.5+.5)*farmIntensity.x;
-                if(farmLighting==2) hemi=mix(boardGround.rgb,boardSky.rgb,n.y*.5+.5)*boardSky.w;
-                vec3 sunColor=farmLighting==2 ? boardSun.rgb*boardSun.w : toLinear(vec3(255,243,220)/255.0)*farmIntensity.y;
+                if(farmLighting>=2) hemi=mix(boardGround.rgb,boardSky.rgb,n.y*.5+.5)*boardSky.w;
+                vec3 sunColor=farmLighting>=2 ? boardSun.rgb*boardSun.w : toLinear(vec3(255,243,220)/255.0)*farmIntensity.y;
                 vec3 sun=sunColor*max(dot(n,sunDirection),0)*sunVisibility();
                 vec3 offset=vec3(1.6,2.1,-3.7)-worldPosition;
                 float distance=length(offset);
                 float attenuation=1.0/max(pow(distance,1.5),.01);
                 attenuation*=pow(clamp(1.0-pow(distance/9.0,4.0),0.0,1.0),2.0);
                 vec3 lamp=toLinear(vec3(255,200,120)/255.0)*farmIntensity.z*attenuation*max(dot(n,normalize(offset)),0);
+                vec3 lampDirection=normalize(offset);
                 if(farmLighting==2) lamp=vec3(0);
+                if(farmLighting==3) {lampDirection=stageRimDirection.xyz;lamp=stageRim.rgb*stageRim.w*max(dot(n,lampDirection),0);}
                 light=(hemi+sun+lamp)/3.141592653589793;
                 if(surface.x>=0) {
                     vec3 derivatives=max(abs(dFdx(geometryNormal)),abs(dFdy(geometryNormal)));
@@ -346,7 +357,7 @@ internal sealed partial class ModelRenderer : IDisposable
                     vec3 f0=mix(vec3(.04*specularIntensity),c.rgb,surface.y);
                     float f90=mix(specularIntensity,1,surface.y);
                     specular=sun*specularGGX(sunDirection,v,n,f0,f90,roughness)
-                        +lamp*specularGGX(normalize(offset),v,n,f0,f90,roughness);
+                        +lamp*specularGGX(lampDirection,v,n,f0,f90,roughness);
                     light*=1-surface.y;
                 }
             }
