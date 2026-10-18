@@ -3,10 +3,19 @@ using System.Text.Json.Nodes;
 namespace DigiTactics.Storage;
 
 public sealed record FarmCareUpdate(string Farm, string? Wallet, string? Legends, JsonObject Result, JsonArray Events);
-public enum FarmCareAction { Feed, Clean, CleanPile, Cure, Lights, Praise, Scold, Play, Pet }
+public enum FarmCareAction { Feed, Clean, CleanPile, Cure, Lights, Praise, Scold, Play, Pet, MoveIn, MoveOut, Swap, Expand, BuyTheme, SetTheme }
+public sealed record FarmTheme(string Id, string Name, int Price, string? Board = null, bool Free = false);
 
 public static class FarmCare
 {
+    public static readonly FarmTheme[] Themes = [new("meadow", "File Island Meadow", 0, Free: true), new("tropical", "Tropical Isle", 300, "file-beach"),
+        new("snowy", "Freezeland", 300, "infinity-mountain"), new("sewer", "Numemon Sewer", 200, "dark-ocean"), new("toy", "Toy Town Yard", 400, "toy-town"), new("grid", "Digital Grid", 600, "digital-grid")];
+    public static bool OwnsTheme(JsonNode farm, CosmeticCollection collection, FarmTheme theme)
+    {
+        var themes = farm["themes"] as JsonArray ?? throw new InvalidDataException("Invalid farm themes.");
+        return theme.Free || themes.Any(x => x?.GetValue<string>() == theme.Id) || theme.Board is not null && collection.Owns("board", theme.Board);
+    }
+    public static int ExpansionPrice(int cap) => cap >= 12 ? 0 : cap == 6 ? 250 : cap == 8 ? 400 : 600;
     private sealed record Food(string Name, int Bits, int Hunger, int Weight, int Happy = 0, int Energy = 0, int Disc = 0, bool Healthy = false, bool Sweet = false);
     private static readonly Dictionary<string, Food> Foods = new() {
         ["meat"] = new("Meat", 0, 30, 1), ["carrot"] = new("Supercarrot", 8, 25, 0, Energy: 6, Healthy: true),
@@ -15,8 +24,10 @@ public static class FarmCare
     };
     public static FarmCareUpdate Apply(string? farmJson, string? walletJson, string? legendJson, long timestamp, FarmCareAction action, string? id = null, string? option = null, int pile = 0, bool? lights = null)
     {
-        var advanced = FarmSimulation.Advance(farmJson, walletJson, legendJson, timestamp);
+        var advanced = (action is FarmCareAction.BuyTheme or FarmCareAction.SetTheme) && farmJson is not null
+            ? new FarmUpdate(farmJson, new JsonArray()) : FarmSimulation.Advance(farmJson, walletJson, legendJson, timestamp);
         var farm = JsonNode.Parse(advanced.Save)!.AsObject();
+        if (farm["v"]?.GetValue<int>() != 1) throw new InvalidDataException("Unsupported farm save version.");
         var collection = new CosmeticCollection(walletJson);
         var wallet = JsonNode.Parse(collection.Json)!.AsObject(); bool walletChanged = false;
         var residents = farm["residents"]!.AsArray().Select(x => x!.GetValue<string>()).ToArray();
@@ -59,6 +70,51 @@ public static class FarmCare
             return new(farm.ToJsonString(), walletChanged ? wallet.ToJsonString() : walletJson, legendJson, result, advanced.Events);
         }
         bool Asleep(JsonNode pet) => B(pet["flags"]!, "asleep");
+        void Admit(string petId)
+        {
+            if (pets[petId] is null) pets[petId] = FarmSimulation.NewPet(petId, timestamp, legendJson);
+            else pets[petId]!["t"] = timestamp;
+        }
+        var room = farm["residents"]!.AsArray();
+        if (action == FarmCareAction.MoveIn)
+        {
+            if (!collection.Owns("legend", id) || residents.Contains(id)) return Done(false, "");
+            if (room.Count >= N(farm, "cap")) return Done(false, "The room is full. Send someone to the Digi-Bank first.");
+            room.Add(id); Admit(id!); return Done(true, Name(id!) + " moved in.");
+        }
+        if (action == FarmCareAction.MoveOut)
+        {
+            if (!residents.Contains(id)) return Done(false, "");
+            if (room.Count <= 1) return Done(false, "Keep at least one legend in the room.");
+            room.RemoveAt(Array.IndexOf(residents, id)); return Done(true, Name(id!) + " went to the Digi-Bank.");
+        }
+        if (action == FarmCareAction.Swap)
+        {
+            if (!residents.Contains(option) || residents.Contains(id) || !collection.Owns("legend", id)) return Done(false, "");
+            room[Array.IndexOf(residents, option)] = id; Admit(id!);
+            return Done(true, $"{Name(id!)} moved in. {Name(option!)} went to the Digi-Bank.");
+        }
+        if (action == FarmCareAction.Expand)
+        {
+            int cap = (int)N(farm, "cap");
+            if (cap >= 12) return Done(false, "The room is as big as it gets.");
+            int cost = ExpansionPrice(cap); if (!Spend(cost)) return Done(false, $"Needs {cost} Bits.");
+            farm["cap"] = cap + 2;
+            foreach (var legend in CosmeticCollection.Items("legend"))
+                if (room.Count < cap + 2 && collection.Owns("legend", legend.Id) && !room.Any(x => x?.GetValue<string>() == legend.Id)) { room.Add(legend.Id); Admit(legend.Id); }
+            return Done(true, $"The room now holds {cap + 2}.");
+        }
+        if (action is FarmCareAction.BuyTheme or FarmCareAction.SetTheme)
+        {
+            var theme = Themes.FirstOrDefault(x => x.Id == id); if (theme is null) return Done(false, "");
+            if (!OwnsTheme(farm, collection, theme))
+            {
+                if (action == FarmCareAction.SetTheme) return Done(false, "");
+                if (!Spend(theme.Price)) return Done(false, $"Needs {theme.Price} Bits.");
+                farm["themes"]!.AsArray().Add(theme.Id);
+            }
+            farm["theme"] = theme.Id; return Done(true, theme.Name + ".");
+        }
         if (action == FarmCareAction.Lights)
         {
             bool on = lights ?? !B(farm, "lights"); farm["lights"] = on;

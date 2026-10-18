@@ -47,6 +47,9 @@ internal static class FarmCareChecks
             Check(reopened.UpdateStorage(new Dictionary<string, string> { ["dt.farm.v1"] = "{\"v\":2,\"future\":true}" }), "future farm seeded");
             before = File.ReadAllText(path); var future = new FarmProgress(reopened);
             Check(!future.Refresh(time + 60000) && future.Error is not null && File.ReadAllText(path) == before, "future farm preserved");
+            Check(reopened.UpdateStorage(new Dictionary<string, string> { ["dt.farm.v1"] = "{\"v\":1,\"themes\":null}" }), "malformed themes seeded");
+            before = File.ReadAllText(path);
+            Check(!future.Refresh(time + 60000) && future.Error is not null && File.ReadAllText(path) == before, "malformed themes preserved without crashing");
         }
         finally
         {

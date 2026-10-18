@@ -8,6 +8,7 @@ internal sealed partial class MatchScreen
 {
     private bool showFarm;
     private string? farmPet;
+    private bool farmManagement;
     private void FarmAct(FarmCareAction action, string? option = null, int pile = 0) => farm!.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), action, farmPet, option, pile);
     private void FarmPanel()
     {
@@ -23,6 +24,9 @@ internal sealed partial class MatchScreen
             ImGui.SameLine(); ImGui.Text($"{profile!.Progress.Bits} Bits");
             ImGui.Text($"Residents: {residents.Length}/{state["cap"]}    Meat: {state["meat"]!["n"]}/3    Bandages: {state["bandage"]!["n"]}/2");
             ImGui.Text($"Daily rewards: {state["daily"]!["bits"]}/60 Bits, {state["daily"]!["data"]}/100 Digi-Data");
+            if (Button("farmRoom", farmManagement ? "Care" : "Room, bank and themes")) farmManagement = !farmManagement;
+            if (!residents.Contains(farmPet)) farmPet = residents.FirstOrDefault();
+            if (farmManagement) { FarmRoomControls(state, residents); ImGui.End(); return; }
             if (Button("farmLights", state["lights"]!.GetValue<bool>() ? "Turn lights off" : "Turn lights on")) FarmAct(FarmCareAction.Lights);
             ImGui.SameLine(); if (Button("farmClean", "Clean room")) FarmAct(FarmCareAction.Clean);
             if (!residents.Contains(farmPet)) farmPet = residents.FirstOrDefault();
@@ -52,5 +56,43 @@ internal sealed partial class MatchScreen
         catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or KeyNotFoundException)
         { CollectionText("Farm unavailable: " + error.Message); }
         ImGui.End();
+    }
+    private void FarmRoomControls(JsonNode state, string[] residents)
+    {
+        int cap = state["cap"]!.GetValue<int>(), price = FarmCare.ExpansionPrice(cap);
+        ImGui.BeginDisabled(cap >= 12 || profile!.Progress.Bits < price);
+        if (Button("farmExpand", cap >= 12 ? "Maximum room size" : $"Expand to {cap + 2} residents ({price} Bits)")) FarmAct(FarmCareAction.Expand);
+        ImGui.EndDisabled();
+        ImGui.Separator(); ImGui.Text("Residents"u8);
+        foreach (string id in residents)
+        {
+            if (Button("farmSelect/" + id, CosmeticCollection.Item("legend", id)!.Name, active: farmPet == id)) farmPet = id;
+            ImGui.SameLine(); ImGui.BeginDisabled(residents.Length <= 1);
+            if (Button("farmOut/" + id, "Send to bank")) farm!.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), FarmCareAction.MoveOut, id);
+            ImGui.EndDisabled();
+        }
+        var collection = new CosmeticCollection(profile!.Storage.GetValueOrDefault("dt.cosmetics.v1"));
+        ImGui.Separator(); ImGui.Text("Digi-Bank (care is paused)"u8);
+        foreach (var item in CosmeticCollection.Items("legend").Where(x => collection.Owns("legend", x.Id) && !residents.Contains(x.Id)))
+        {
+            ImGui.Text(item.Name); ImGui.SameLine(); ImGui.BeginDisabled(residents.Length >= cap);
+            if (Button("farmIn/" + item.Id, "Move in")) farm!.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), FarmCareAction.MoveIn, item.Id);
+            ImGui.EndDisabled();
+            if (farmPet is not null)
+            {
+                ImGui.SameLine(); if (Button("farmSwap/" + item.Id, "Swap with " + CosmeticCollection.Item("legend", farmPet)!.Name))
+                    farm!.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), FarmCareAction.Swap, item.Id, farmPet);
+            }
+        }
+        ImGui.Separator(); ImGui.Text("Room theme"u8);
+        foreach (var theme in FarmCare.Themes)
+        {
+            bool owned = FarmCare.OwnsTheme(state, collection, theme), selected = state["theme"]!.GetValue<string>() == theme.Id;
+            ImGui.BeginDisabled(selected || !owned && collection.Bits < theme.Price);
+            if (Button("farmTheme/" + theme.Id, theme.Name + (selected ? " (selected)" : owned ? " - use" : $" - {theme.Price} Bits")))
+                farm!.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), owned ? FarmCareAction.SetTheme : FarmCareAction.BuyTheme, theme.Id);
+            ImGui.EndDisabled();
+            if (theme.Board is not null && !owned) CollectionText("Also unlocked by owning " + (CosmeticCollection.Item("board", theme.Board)?.Name ?? theme.Board) + ".");
+        }
     }
 }

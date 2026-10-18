@@ -14,7 +14,9 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
     private int collectionIndex;
     private bool collectionVerified;
-    private readonly string[] farmCommands = ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "closeFarm"];
+    private readonly string[] farmCommands = evolutionSmoke
+        ? ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "farmRoom", "farmOut/tsunomon", "farmIn/tsunomon", "farmOut/motimon", "farmSelect/tsunomon", "farmSwap/motimon", "farmIn/tsunomon", "farmExpand", "farmTheme/sewer", "closeFarm"]
+        : ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "closeFarm"];
     private int farmIndex;
     private bool farmVerified;
     private long farmInitialBits;
@@ -93,8 +95,10 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (farmIndex < farmCommands.Length) return false;
             var save = System.Text.Json.Nodes.JsonNode.Parse(collectionProfile.Storage["dt.farm.v1"])!;
             var pet = save["pets"]!["tokomon"]!;
-            if (collectionProfile.Progress.Bits != farmInitialBits + 4 || Math.Abs(pet["goodBond"]!.GetValue<double>() - .73) > 1e-9 || save["meat"]!["n"]!.GetValue<int>() != 2 || save["lights"]!.GetValue<bool>() != true)
+            if (collectionProfile.Progress.Bits != farmInitialBits + 4 - (evolutionSmoke ? 450 : 0) || Math.Abs(pet["goodBond"]!.GetValue<double>() - .73) > 1e-9 || save["meat"]!["n"]!.GetValue<int>() != 2 || save["lights"]!.GetValue<bool>() != true)
                 throw new InvalidOperationException("Farm UI care/reward persistence failed.");
+            if (evolutionSmoke && (save["cap"]!.GetValue<int>() != 8 || save["theme"]!.GetValue<string>() != "sewer" || !save["residents"]!.AsArray().Any(x => x?.GetValue<string>() == "tsunomon") || !save["residents"]!.AsArray().Any(x => x?.GetValue<string>() == "motimon")))
+                throw new InvalidOperationException("Farm room management persistence failed.");
             farmVerified = true; Console.WriteLine("Farm UI smoke passed: feed, play, praise, pet, lights and saved rewards.");
         }
         if (index == 0 && cooldown == 1 && capture is not null)

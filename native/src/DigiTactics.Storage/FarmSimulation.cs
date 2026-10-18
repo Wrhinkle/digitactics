@@ -30,6 +30,7 @@ public static class FarmSimulation
         foreach (string key in new[] { "dirt", "sickMin", "mistakes", "poopNeglect", "overfeed", "refusals", "goodBond", "goodFood", "str", "spd", "wis", "sta", "trained", "tantrum", "starveMin", "sadMin", "sleepyMin", "lastPraise", "lastPet", "toilet", "pileN" }) result[key] = 0;
         return result;
     }
+    internal static JsonObject NewPet(string id, long time, string? legends) => Pet(id, time, Ideal(legends, id));
     public static FarmUpdate Advance(string? farmJson, string? walletJson, string? legendJson, long timestamp)
     {
         var save = new JsonObject { ["v"] = 1, ["cap"] = 6, ["theme"] = "meadow", ["themes"] = new JsonArray("meadow"),
@@ -42,7 +43,7 @@ public static class FarmSimulation
             foreach (var field in previous) save[field.Key] = field.Value?.DeepClone();
         }
         if (save["v"]?.GetValue<int>() != 1) throw new InvalidDataException("Unsupported farm save version.");
-        if (save["residents"] is not JsonArray || save["seen"] is not JsonArray || save["pets"] is not JsonObject || save["meat"] is not JsonObject || save["bandage"] is not JsonObject || save["daily"] is not JsonObject daily || daily["day"] is null)
+        if (save["themes"] is not JsonArray || save["residents"] is not JsonArray || save["seen"] is not JsonArray || save["pets"] is not JsonObject || save["meat"] is not JsonObject || save["bandage"] is not JsonObject || save["daily"] is not JsonObject daily || daily["day"] is null)
             throw new InvalidDataException("Invalid farm save fields.");
         var collection = new CosmeticCollection(walletJson);
         var owned = CosmeticCollection.Items("legend").Where(x => collection.Owns("legend", x.Id)).Select(x => x.Id).ToArray();

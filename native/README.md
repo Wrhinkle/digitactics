@@ -2062,3 +2062,33 @@ supplies before the Solo match flow. That test and the Duos match smoke passed.
 The farm screenshot was inspected. The current panel is functional text/buttons;
 training games, bank transfers, expansion/themes and the animated farm room still
 need completion, as do the broader production port requirements.
+
+
+### Farm bank, expansion and theme management
+
+The farm's Room, bank and themes view now supports moving residents out/in,
+swapping a selected resident with a banked legend, buying capacity upgrades and
+buying/selecting all six original themes. Banked time remains paused: returning
+pets keep their stats and start a fresh simulation timestamp. At least one
+resident stays in the room. Expansions retain the original 250/400/600-Bit prices,
+add two places up to the normal 12-resident cap and fill space in catalog order.
+Theme ownership includes the original board-linked unlocks, so owning a matching
+board avoids charging for its farm theme. Each transaction uses the existing
+atomic farm/profile controller.
+
+The source fixture now covers 11,396 care and room transactions, including full
+rooms, the last resident, poor wallets, maximum capacity, existing banked pets,
+new pets, swaps, free/owned/board-linked themes and invalid IDs. The final
+`--farm-only` run passed 424,718 simulation comparisons and 56,993 care/room/save
+checks. Invalid theme data is preserved and reported rather than crashing.
+
+The extended packaged evolution smoke also sends residents to the bank, brings
+them back, swaps them, expands the room and buys/selects Numemon Sewer. Disk
+readback verified capacity 8, restored Tsunomon/Motimon, sewer ownership/selection,
+954 remaining Bits and unknown imported ownership. The room controls screenshot
+was inspected; the integrated Solo flow and Duos UI smoke passed. The Windows
+package was rebuilt after the final validation guard.
+
+Theme selection is persisted but the animated/theme-specific room rendering is
+still pending. Training rules and mini-games also remain, along with the broader
+native port's multiplayer, presentation and release requirements.
