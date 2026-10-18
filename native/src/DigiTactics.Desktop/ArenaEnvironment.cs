@@ -73,12 +73,14 @@ internal sealed class ArenaEnvironment : IDisposable
             surfaces!.Draw(renderer,camera,columns,planning); DrawCalls+=surfaces.DrawCalls;
             renderer.ReceiveShadow=true; units(camera,false);
             Actors?.Invoke(renderer,camera,false);
+            renderer.BeginTransparency();
             meshes.Draw(renderer,camera,true,height); DrawCalls+=meshes.DrawCalls;
             renderer.ReceiveShadow=true; units(camera,true);
             Actors?.Invoke(renderer,camera,true);
             Items.Draw(renderer,camera,eye,columns,Time,Feedback,Camera.Target);
+            renderer.FlushTransparency();
         }
-        finally { ModelRenderer.End(); }
+        finally { renderer.ClearTransparency(); ModelRenderer.End(); }
     }
 
     public void Dispose() { Items.Dispose(); meshes?.Dispose(); background?.Dispose(); surfaces?.Dispose(); shadows.Dispose(); }

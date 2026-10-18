@@ -7,6 +7,7 @@ internal sealed class GpuPrimitive : IDisposable
     private GlVertexArray array;
     private readonly GlBuffer[] buffers = new GlBuffer[4];
     public bool HasColors { get; }
+    public System.Numerics.Vector3 SortCenter { get; }
     private readonly int count;
     private readonly uint topology;
     public unsafe GpuPrimitive(GltfPrimitive data, uint topology = OpenGl.GL_TRIANGLES)
@@ -14,6 +15,13 @@ internal sealed class GpuPrimitive : IDisposable
         this.topology = topology;
         count = data.Indices.Length;
         HasColors = data.Colors.Length > 0;
+        var min = new System.Numerics.Vector3(float.PositiveInfinity); var max = new System.Numerics.Vector3(float.NegativeInfinity);
+        for (int i = 0; i < data.Vertices.Length; i += GltfPrimitive.Stride)
+        {
+            var point = new System.Numerics.Vector3(data.Vertices[i], data.Vertices[i + 1], data.Vertices[i + 2]);
+            min = System.Numerics.Vector3.Min(min, point); max = System.Numerics.Vector3.Max(max, point);
+        }
+        SortCenter = data.VertexCount == 0 ? default : (min + max) / 2;
         if (HasColors && data.Colors.Length != data.VertexCount * 3) throw new InvalidDataException("Vertex color count mismatch.");
         Span<GlVertexArray> arrays = stackalloc GlVertexArray[1]; OpenGl.CreateVertexArrays(arrays); array = arrays[0];
         try

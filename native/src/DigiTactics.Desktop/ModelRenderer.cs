@@ -3,7 +3,7 @@ using Brutal.OpenGlApi;
 using DigiTactics.Assets;
 namespace DigiTactics.Desktop;
 
-internal sealed class ModelRenderer : IDisposable
+internal sealed partial class ModelRenderer : IDisposable
 {
     private readonly GlProgram program;
     private GlBuffer bones;
@@ -64,8 +64,9 @@ internal sealed class ModelRenderer : IDisposable
         OpenGl.Native.glDisable((GlCapability)OpenGl.GL_FRAMEBUFFER_SRGB);
         OpenGl.Native.glDepthMask(true); if (clearDepth) OpenGl.Clear(GlClearBit.Depth);
     }
-    public unsafe void Draw(GpuModel model, RigPose pose, Matrix4D placement, Matrix4x4 camera, bool transparent, double emission = 0)
+    public unsafe void Draw(GpuModel model, RigPose pose, Matrix4D placement, Matrix4x4 camera, bool transparent, double emission = 0, int onlyNode = -1, int onlyPrimitive = -1)
     {
+        if (collecting && transparent && !ShadowPass) { QueueModel(model, pose, placement, camera, emission); return; }
         var rig = model.Rig; var mesh = model.Mesh; var materials = model.Materials; var textures = model.Textures; var primitives = model.Primitives;
         int required = Math.Max(1, rig.Skins.Select(s => s.Joints.Length).DefaultIfEmpty(0).Max());
         if (palette.Length < required)
@@ -79,6 +80,7 @@ internal sealed class ModelRenderer : IDisposable
         // The caller controls opaque and transparent passes across all models.
         foreach (var instance in mesh.Instances)
         {
+            if (onlyNode >= 0 && instance.Node != onlyNode) continue;
             int offset = 0; for (int i = 0; i < instance.Mesh; i++) offset += mesh.Meshes[i].Length;
             if (instance.Skin >= 0)
             {
@@ -94,6 +96,7 @@ internal sealed class ModelRenderer : IDisposable
             Matrix(0, world);
             for (int i = 0; i < mesh.Meshes[instance.Mesh].Length; i++)
             {
+                if (onlyPrimitive >= 0 && i != onlyPrimitive) continue;
                 var geometry = mesh.Meshes[instance.Mesh][i];
                 var material = materials[geometry.Material];
                 if (material.Transparent != transparent) continue;
@@ -138,9 +141,15 @@ internal sealed class ModelRenderer : IDisposable
         OpenGl.Native.glDisable(GlCapability.CullFace); OpenGl.Native.glDisable(GlCapability.Blend); OpenGl.Native.glDepthMask(true);
         geometry.Draw();
     }
-    public void Dispose() { OpenGl.DeleteBuffers(new[] { bones }); program.Dispose(); }
-    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false, PointSprite? points = null, bool fog = true,GpuTexture? emissiveMap=null)
+    public void Dispose() { ClearTransparency(); OpenGl.DeleteBuffers(new[] { bones }); program.Dispose(); }
+    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null, bool additive = false, bool vertexColors = false, bool flatShading = false, float alphaTest = 0, bool wireframe = false, PointSprite? points = null, bool fog = true,GpuTexture? emissiveMap=null, int renderOrder=0, double? sortDepth=null)
     {
+        if (collecting && transparent && !ShadowPass)
+        {
+            Enqueue(renderOrder, sortDepth ?? Depth(new(geometry.SortCenter.X, geometry.SortCenter.Y, geometry.SortCenter.Z), world, camera),
+                () => DrawRoom(geometry, world, camera, color, texture, unlit, transparent, depthWrite, emissive, roughness, metalness, side, shadowSide, additive, vertexColors, flatShading, alphaTest, wireframe, points, fog, emissiveMap));
+            return;
+        }
         program.Use(); Matrix(0, world); Matrix(4, From(camera));
         SetFarmLight(emissive, roughness, metalness, fog);
         program.Uniform(21,emissiveMap is null?0:1);OpenGl.BindTextureUnit(3,emissiveMap?.Id??0);

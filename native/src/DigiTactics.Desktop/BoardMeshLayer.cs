@@ -211,7 +211,8 @@ internal sealed class BoardMeshLayer : IDisposable
                         material.Roughness, material.Metalness, material.Side, additive: material.Blending == 2,
                         vertexColors: material.VertexColors, flatShading: material.FlatShading || !part.HasNormals, alphaTest: material.AlphaTest, wireframe: material.Wireframe,
                         points: item.Object.Kind == "points" ? PointSprite.Board(material, part.Texture, viewportHeight,item.Object.Motion?.HolidaySnow==true?holiday!.SnowSize:item.Object.Motion?.FreezeSnow==true?freeze!.SnowSize:item.Object.Motion?.KowloonRain==true?kowloon!.RainSize:item.Object.Motion?.TempleEmbers==true?temple!.EmberSize:null) : null, fog: material.Fog,
-                        emissiveMap:material.EmissiveMap is {} emissionMap?textures[emissionMap]:null);
+                        emissiveMap:material.EmissiveMap is {} emissionMap?textures[emissionMap]:null,
+                        renderOrder:item.Object.RenderOrder,sortDepth:item.SortDepth);
                     DrawCalls++;
                 }
                 if (item.Object.Instances is { } instances)

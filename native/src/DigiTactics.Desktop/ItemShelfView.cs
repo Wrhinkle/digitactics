@@ -53,7 +53,7 @@ internal sealed class ItemShelfView : IDisposable
                 var position = dragging ? DragPosition!.Value with { Y = 1.1 } : Position(i) with { Y = .62 + Math.Sin(time * 2 + i) * .05 };
                 double scale = dragging ? .95 : feedback.HoverItem == i || feedback.ItemDragOver == i ? .92 : .78;
                 var world = Matrix4D.Compose(new(position.X, position.Y, position.Z), new(rotation.X, rotation.Y, rotation.Z, rotation.W), new(scale, scale, 1));
-                renderer.DrawRoom(quad, world, camera, new(1, 1, 1, 1), texture, true, true, false);
+                renderer.DrawRoom(quad, world, camera, new(1, 1, 1, 1), texture, true, true, false, renderOrder:5);
                 DrawCalls++;
             }
         }

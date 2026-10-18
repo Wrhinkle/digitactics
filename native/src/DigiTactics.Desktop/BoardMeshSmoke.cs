@@ -33,6 +33,7 @@ internal static class BoardMeshSmoke
         CheckCity(renderer);
             CheckWindowEmission(renderer);
             CheckTransparentOrder(renderer);
+            CheckMixedTransparency(renderer);
             using(var arena=new ArenaEnvironment())
             {
                 var rules=DigiTactics.Rules.ContentCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/catalog.json")).Variants[0];
@@ -299,6 +300,35 @@ internal static class BoardMeshSmoke
         if(depth[2]<depth[0]+40 || explicitOrder[0]<explicitOrder[2]+40 || reversed[0]<reversed[2]+40)
             throw new InvalidOperationException($"Transparent depth/render-order did not control alpha blending: {string.Join(",",depth)} / {string.Join(",",explicitOrder)} / {string.Join(",",reversed)}.");
         Console.WriteLine("Transparent GPU ordering: depth, explicit render order and reversed camera verified.");
+    }
+    private static unsafe void CheckMixedTransparency(ModelRenderer renderer)
+    {
+        var source = BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/file-island.json.gz"));
+        var material = source.Materials[0] with {Map=null,EmissiveMap=null,Unlit=true,Transparent=true,DepthWrite=false,Side=2,Blending=1};
+        var geometry = new BoardGeometry([-.8f,-.8f,0,.8f,-.8f,0,0,.8f,0],null,null,null,[0,1,2],[]);
+        BoardObject Triangle(int id,double z,int mat) => new("mesh",0,[mat],[1,0,0,0,0,1,0,0,0,0,1,0,0,0,z,1],true,false,false,null,SortCenter:[0,0,0],SortId:id);
+        var scene = source with {Geometries=[geometry],Materials=[material with {Color=[0,0,1,.5f]},material with {Color=[1,0,0,.5f]}],Objects=[Triangle(1,.3,0),Triangle(2,.7,1)]};
+        using var layer = new BoardMeshLayer(scene);
+        using var middle = new GpuPrimitive(BoardMesh.Create(scene,scene.Objects[0])[0].Primitive);
+        byte[] Render(int order, Matrix4x4 camera)
+        {
+            ModelRenderer.Begin(32,32);OpenGl.ClearColor(new(0,0,0,1));OpenGl.Clear(GlClearBit.Color);
+            renderer.BeginTransparency();
+            try
+            {
+                layer.Draw(renderer,camera,true,32);
+                renderer.DrawRoom(middle,Matrix4D.Identity with {M43=.5},camera,new(0,1,0,.5f),null,true,true,false,renderOrder:order);
+                renderer.FlushTransparency();
+                var pixel=new byte[4];fixed(byte* p=pixel)OpenGl.ReadPixels(16,16,1,1,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
+                return pixel;
+            }
+            finally {renderer.ClearTransparency();ModelRenderer.End();}
+        }
+        var depth=Render(0,Matrix4x4.Identity);var order=Render(5,Matrix4x4.Identity);
+        var reversed=Render(0,Matrix4x4.CreateScale(1,1,-1)*Matrix4x4.CreateTranslation(0,0,1));
+        if(depth[2]<depth[1]+40 || depth[1]<depth[0]+20 || order[1]<order[2]+40 || reversed[0]<reversed[1]+40 || reversed[1]<reversed[2]+20)
+            throw new InvalidOperationException("Global transparent queue failed to interleave board and external draws or preserve render order.");
+        Console.WriteLine("Global transparency GPU: board/external interleaving, sprite render order and reversed camera verified.");
     }
     private static unsafe void CheckWindowEmission(ModelRenderer renderer)
     {
