@@ -5,6 +5,9 @@
       "digitactics.assets": {
         "type": "Project"
       },
+      "digitactics.networking": {
+        "type": "Project"
+      },
       "digitactics.presentation": {
         "type": "Project",
         "dependencies": {

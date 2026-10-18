@@ -4,6 +4,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../DigiTactics.Networking/DigiTactics.Networking.csproj" />
     <PackageReference Include="Ahwoo.BRUTAL.Sdl" Version="2026.10.2" />
     <ProjectReference Include="../DigiTactics.Assets/DigiTactics.Assets.csproj" />
     <ProjectReference Include="../DigiTactics.Presentation/DigiTactics.Presentation.csproj" />

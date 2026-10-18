@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../src/DigiTactics.Networking/DigiTactics.Networking.csproj" />
     <ProjectReference Include="../../src/DigiTactics.Assets/DigiTactics.Assets.csproj" />
     <ProjectReference Include="../../src/DigiTactics.Presentation/DigiTactics.Presentation.csproj" />
     <ProjectReference Include="../../src/DigiTactics.Rules/DigiTactics.Rules.csproj" />
