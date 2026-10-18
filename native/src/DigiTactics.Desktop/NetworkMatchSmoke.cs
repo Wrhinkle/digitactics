@@ -20,6 +20,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private bool down, combatRendered, planningRendered;
     private bool companionRendered;
     private bool arenaEmoteRendered;
+    private bool danceRendered;
     private int travelStep;
     private double travelX, travelZ;
     private readonly bool spectator;
@@ -28,7 +29,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private int emoteEffects;
     private int socialStep;
     private int socialCheck;
-    private readonly string[] socialCommands = ["players", "playerMute/123", "playerMute/123", "closePlayers", "emotes", "emote/0"];
+    private readonly string[] socialCommands = ["players", "playerMute/123", "playerMute/123", "closePlayers", "emotes", "emote/4"];
     public string Pending => "network UI stage " + stage;
     public NetworkMatchSmoke(ContentCatalog catalog, MatchScreen screen, bool duos = false, bool spectator = false)
     {
@@ -94,6 +95,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
     {
         planningRendered |= screen.PlanningDrawCalls > 0;
         companionRendered |= screen.CompanionDrawCalls > 0;
+        danceRendered |= screen.CompanionDancing && screen.CompanionDrawCalls > 0;
         if (socialCheck != 0)
         {
             if (!host.SendEffect(JsonSerializer.SerializeToElement(new { s = 0, kind = "sound", id = "digivice" }))) throw new InvalidOperationException("Host effect was not sent.");
@@ -109,7 +111,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
         if (!spectator && socialStep == 2 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "players.bmp"), size.X, size.Y);
         if (!spectator && socialStep == 5 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "emotes.bmp"), size.X, size.Y);
         if (!spectator && stage == -3 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "soundboard.bmp"), size.X, size.Y);
-        if (!spectator && stage == -2) { if (soundEffects != 1 || emoteEffects != 1 || !arenaEmoteRendered) throw new InvalidOperationException("Equipped social effects did not reach host exactly once or render in the arena."); stage = 0; }
+        if (!spectator && stage == -2) { if (soundEffects != 1 || emoteEffects != 1 || !arenaEmoteRendered || !danceRendered) throw new InvalidOperationException("Equipped social effects did not reach host exactly once or render the sticker and dance in the arena."); stage = 0; }
         if (stage == -2 && screen.IsSpectating)
         {
             if (screen.Buttons.ContainsKey("lock") || screen.Buttons.ContainsKey("fight") || screen.Buttons.ContainsKey("buy/0")) throw new InvalidOperationException("Spectator sees player controls.");

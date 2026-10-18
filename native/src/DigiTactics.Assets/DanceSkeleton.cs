@@ -39,6 +39,20 @@ public sealed class DanceSkeleton(DanceBinding binding)
         float s = MathF.Sin(limit / 2) / MathF.Sin(angle / 2);
         return new(q.X * s, q.Y * s, q.Z * s, MathF.Cos(limit / 2));
     }
+    // Source rips contain slightly non-unit quaternions. Preserve Three.js's
+    // dot >= 1 early return instead of introducing movement while blending them.
+    private static Quaternion Blend(Quaternion from, Quaternion to, float weight)
+    {
+        if (weight == 0) return from;
+        if (weight == 1) return to;
+        double dot = (double)from.X * to.X + (double)from.Y * to.Y + (double)from.Z * to.Z + (double)from.W * to.W;
+        if (dot < 0) { to = new(-to.X, -to.Y, -to.Z, -to.W); dot = -dot; }
+        if (dot >= 1) return from;
+        double sinSquared = 1 - dot * dot;
+        if (sinSquared <= 2.220446049250313e-16) return Quaternion.Normalize(from * (1 - weight) + to * weight);
+        double sin = Math.Sqrt(sinSquared), angle = Math.Atan2(sin, dot);
+        return from * (float)(Math.Sin((1 - weight) * angle) / sin) + to * (float)(Math.Sin(weight * angle) / sin);
+    }
     public DanceRoot Apply(DancePose pose, RigPose target, float weight = 1)
     {
         float w = Math.Clamp(weight, 0, 1), body = binding.Limbless ? 1.5f : binding.Stubby ? 1.25f : 1;
@@ -72,7 +86,7 @@ public sealed class DanceSkeleton(DanceBinding binding)
                     {
                         var v = a.Value;
                         rotation = Aim(bone, Vector3.Normalize(new(v.X, Math.Max(Math.Abs(v.Y), .35f), v.Z - (v.Y > .5 ? .3f : 0))));
-                        rotation = Quaternion.Slerp(rotation, Quaternion.Identity, 1 - .6f * bone.Share);
+                        rotation = Blend(rotation, Quaternion.Identity, 1 - .6f * bone.Share);
                         if (Scalar("w") != 0) rotation = Quaternion.CreateFromAxisAngle(Vector3.Transform(Vector3.UnitZ, facing), Scalar("w") * .35f * bone.Side) * rotation;
                     }
                     else rotation = Euler(new(0, 0, V("hd").Z * .6f + Scalar("tl") * .3f), 1);
@@ -82,7 +96,7 @@ public sealed class DanceSkeleton(DanceBinding binding)
             accumulated[i] = (bone.ParentEntry >= 0 ? accumulated[bone.ParentEntry] : Quaternion.Identity) * rotation;
             var local = Quaternion.Conjugate(bone.ParentRotation) * rotation * bone.ParentRotation * bone.RestRotation;
             var current = target.Local[bone.Node]; var q = current.Rotation;
-            if (w < 1) local = Quaternion.Slerp(new((float)q.X, (float)q.Y, (float)q.Z, (float)q.W), local, w);
+            if (w < 1) local = Blend(new((float)q.X, (float)q.Y, (float)q.Z, (float)q.W), local, w);
             target.Local[bone.Node] = current with { Rotation = new(local.X, local.Y, local.Z, local.W) };
         }
         target.UpdateWorld();

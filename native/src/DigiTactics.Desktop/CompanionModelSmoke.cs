@@ -12,6 +12,7 @@ internal static class CompanionModelSmoke
     {
         var catalog = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
         var companions = CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/companion-models.json"));
+        var dances = DanceCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/dance-bindings.json"));
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
         {
@@ -35,10 +36,11 @@ internal static class CompanionModelSmoke
                 animator.Play("happy"); animator.Update(.2); animator.SetMoving(false); animator.Update(.12);
                 animator.Play("dance"); animator.Update(.31);
                 var pose = animator.Pose;
+                DanceRoot? danceRoot = id == "normal-map-vulcanusmon" ? null : new DanceSkeleton(dances.Binding(visual.Source)).Apply(DanceChoreography.Evaluate("floss", .7), pose);
                 int left = index % columns * cell, bottom = (rows - 1 - index / columns) * cell;
                 ModelRenderer.Begin(cell, cell); OpenGl.Viewport(left, bottom, cell, cell);
                 int draws = 0;
-                var placement = model.PlaceCompanion(animator, overlay: CompanionEmoteMotion.Evaluate("wiggle", 900, 2600));
+                var placement = model.PlaceCompanion(animator, overlay: CompanionEmoteMotion.Evaluate("wiggle", 900, 2600), dance: danceRoot);
                 foreach (bool transparent in new[] { false, true }) { renderer.Draw(model, pose, placement, camera, transparent); draws += renderer.DrawCalls; }
                 ModelRenderer.End();
                 var pixels = new byte[cell * cell * 4];
@@ -49,6 +51,18 @@ internal static class CompanionModelSmoke
                 index++;
             }
             if (capture is not null) FrameCapture.SaveBitmap(capture, cell * columns, cell * rows);
+            using (var arena = new ArenaCompanionView())
+            {
+                var emote = new DigiTactics.Presentation.ActiveEmote(0, "mydance", 1000);
+                arena.Update("tokomon", emote, 1000, 0, "butterfly");
+                arena.Update("tokomon", null, 4000, .1, "butterfly");
+                if (!arena.Dancing) throw new InvalidOperationException("Equipped dance ended with the sticker instead of its beat duration.");
+                arena.Update("tokomon", null, 6000, .1, "butterfly");
+                if (arena.Dancing) throw new InvalidOperationException("Equipped dance did not expire.");
+                arena.Update("tokomon", new(0,"mydance",7000),7000,.1,"floss");
+                arena.Travel.Move(0,5);arena.Update("tokomon",null,7100,.1,"floss");
+                if (arena.Dancing) throw new InvalidOperationException("Walking did not stop the equipped dance.");
+            }
             Console.WriteLine($"Companion GPU smoke passed: {index} models (77 companions plus normal-mapped Vulcanusmon) rendered with farm lighting, surface textures, walking/reaction playback and procedural overlays.");
         }
         finally { Glfw.Terminate(); }

@@ -33,11 +33,13 @@ internal sealed partial class MatchScreen
         if (key is null) { opponentCompanion?.Dispose(); opponentCompanion = null; opponentCompanionSeat = -1; return; }
         if (opponentCompanionSeat != seat) { opponentCompanion?.Dispose(); opponentCompanion = new(true); opponentCompanionSeat = seat; }
         EnsureEmotes(); long now = Environment.TickCount64;
-        opponentCompanion!.Update(key, emotes.At(seat, now), now, delta);
+        opponentCompanion!.Update(key, emotes.At(seat, now), now, delta, look["dance"]?.GetValue<string>());
     }
     private MatchPlanningSession? companionSession;
     private string? companionWallet, companionProgress;
     private string companionKey = "tokomon";
+    private string companionDance = "floss";
+    internal bool CompanionDancing => arenaCompanion?.Dancing == true;
     internal int CompanionDrawCalls => arenaCompanion?.DrawCalls ?? 0;
     internal DigiTactics.Presentation.CompanionTravel? CompanionTravel => arenaCompanion?.Travel;
     private (double X, double Z, long At)? companionClick;
@@ -84,6 +86,7 @@ internal sealed partial class MatchScreen
             try
             {
                 var collection = new CosmeticCollection(wallet);
+                companionDance = collection.Equipped("dance")?.GetValue<string>() ?? "floss";
                 string id = collection.Equipped("legend")?.GetValue<string>() ?? "tokomon";
                 string form = LegendEvolution.Inspect(progress, wallet, profile?.Storage.GetValueOrDefault("dt.farm.v1"), id).Form;
                 companionKey = id == form ? id : id + "@" + form;
@@ -93,6 +96,6 @@ internal sealed partial class MatchScreen
             companionWallet = wallet; companionProgress = progress;
         }
         EnsureEmotes(); long now = Environment.TickCount64;
-        arenaCompanion!.Update(companionKey, emotes.At(localSeat, now), now, delta);
+        arenaCompanion!.Update(companionKey, emotes.At(localSeat, now), now, delta, companionDance);
     }
 }

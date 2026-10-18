@@ -116,6 +116,7 @@ try {
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-companion-models.cjs')
+    Invoke-Checked 'node' @('tools/export-dance-bindings.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
     Invoke-Checked 'node' @('tools/export-companion-motion.cjs')
     Invoke-Checked 'node' @('tools/export-companion-playback.cjs')
