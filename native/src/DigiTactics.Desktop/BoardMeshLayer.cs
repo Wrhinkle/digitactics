@@ -14,6 +14,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly List<(GpuPrimitive Geometry,float[] Vertices,BoardMotion Motion)> animatedGeometry=[];
     private readonly List<(GpuPrimitive Geometry,float[] Vertices,float[] Initial,string Kind)> animatedUv=[];
     private double time;
+    private readonly Dictionary<BoardObject,BoardSpiralMotion> spirals=[];
     public int DrawCalls { get; private set; }
     public Matrix4D Root { get; set; } = Matrix4D.Identity;
     public BoardMeshLayer(BoardScene scene)
@@ -25,6 +26,7 @@ internal sealed class BoardMeshLayer : IDisposable
             var cache = new Dictionary<string, Part[]>();
             foreach (var obj in scene.Objects)
             {
+                if(obj.Motion is { Spirals:not null } spiral) spirals.Add(obj,new(spiral));
                 uint topology = obj.Kind switch { "mesh" => Brutal.OpenGlApi.OpenGl.GL_TRIANGLES, "lines" => Brutal.OpenGlApi.OpenGl.GL_LINES, "lineStrip" => Brutal.OpenGlApi.OpenGl.GL_LINE_STRIP, "points" => Brutal.OpenGlApi.OpenGl.GL_POINTS, _ => throw new NotSupportedException("Board object: " + obj.Kind) };
                 string key = obj.Kind + ":" + obj.Geometry + ":" + string.Join(',', obj.Materials);
                 if (!cache.TryGetValue(key, out var parts))
@@ -45,9 +47,10 @@ internal sealed class BoardMeshLayer : IDisposable
         catch { Dispose(); throw; }
     }
 
-    public void Update(double seconds,double delta=0)
+    public void Update(double seconds,double delta=0,bool combat=false)
     {
         time=seconds;
+        foreach(var spiral in spirals.Values) spiral.Advance(delta,time,combat);
         foreach(var uv in animatedUv)
         {
             BoardSceneMotion.ScrollingUv(uv.Vertices,uv.Initial,time,uv.Kind);
@@ -95,7 +98,7 @@ internal sealed class BoardMeshLayer : IDisposable
                     for(int i=0;i<instances.Length;i++)
                     {
                         var instance=instances[i];
-                        var matrix=item.Object.Motion switch
+                        var matrix=spirals.TryGetValue(item.Object,out var spiral)?spiral.Matrices[i]:item.Object.Motion switch
                         {
                             { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
                             { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
@@ -114,6 +117,7 @@ internal sealed class BoardMeshLayer : IDisposable
         foreach (var primitive in geometry) primitive.Dispose(); geometry.Clear();
         foreach (var texture in textures) texture.Dispose(); textures.Clear();
         objects.Clear();
+        spirals.Clear();
         animatedGeometry.Clear();
         animatedUv.Clear();
     }

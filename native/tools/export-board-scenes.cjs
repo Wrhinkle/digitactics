@@ -33,12 +33,17 @@ async function main(){
   +'\nexport const originalDrawItems='+render.slice(render.indexOf('  drawItems(p, ui) {'),render.indexOf('  // which item token')).trim().replace('drawItems(','function(')+';'
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
+ const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8')
+  .replace('const sp = { v: 1 };','const sp = { v: 1 }; rocks.nativeKind="spiral-rocks";')
+  .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
+  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))};');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
    const url=new URL(route.request().url());
    if(url.pathname==='/')return route.fulfill({contentType:'text/html',body:'<!doctype html><script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js"}}</script>'});
    if(url.pathname==='/boards.js')return route.fulfill({contentType:'text/javascript',body:module});
+   if(url.pathname==='/js/boards-extra.js')return route.fulfill({contentType:'text/javascript',body:extra});
    const file=path.resolve(root,'.'+decodeURIComponent(url.pathname));if(!file.startsWith(root+path.sep))return route.abort();
    return route.fulfill({contentType:'text/javascript',body:fs.readFileSync(file)});
   });
@@ -190,6 +195,23 @@ async function main(){
    return rows;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-motion.json.gz'),zlib.gzipSync(JSON.stringify(motionFixture)));
+  const spiralFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js');
+   const env=buildEnv(THEMES.find(s=>s.id==='spiral-mountain')),objects=[],frames=[];
+   env.group.traverse(o=>{if(o.userData.nativeMotion?.spirals)objects.push(o);});
+   env.signal({phase:'planning',stage:1,won:false,evo:0});env.tick(0,0);
+   let time=0;
+   for(let frame=0;frame<360;frame++){
+    const delta=[0,1/60,.033,.1][frame%4],combat=Math.floor(frame/90)%2===1;time+=delta;
+    env.signal({phase:combat?'combat':'planning',stage:1,won:false,evo:0});env.tick(delta,time);
+    frames.push({delta,time,combat,objects:objects.map(o=>{
+     const matrix=new THREE.Matrix4(),matrices=[];for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+     return {kind:o.userData.nativeMotion.kind,matrices};
+    })});
+   }
+   const result={motions:objects.map(o=>o.userData.nativeMotion),frames};disposeEnv(env);return result;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-spiral.json.gz'),zlib.gzipSync(JSON.stringify(spiralFixture)));
   const particleFixture=await page.evaluate(async()=>{
    const {THEMES,buildEnv,disposeEnv}=await import('/boards.js'),rows=[];
    for(const spec of THEMES){

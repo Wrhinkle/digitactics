@@ -56,6 +56,12 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             Require(obj.Geometry >= 0 && obj.Geometry < Geometries.Length, "geometry reference");
             Require(obj.Materials.Length > 0 && obj.Materials.All(i => i >= 0 && i < Materials.Length), "material references");
             Require(obj.Matrix.Length == 16 && obj.Matrix.All(double.IsFinite), "world matrix");
+            if(obj.Motion is { Spirals:{ } spirals } spiralMotion)
+            {
+                Require(spiralMotion.Kind is "spiral-rocks" or "spiral-islets","spiral kind");
+                Require(obj.Instances is not null && spirals.Length==obj.Instances.Length,"spiral instance count");
+                Require(spirals.All(p=>new[] {p.X,p.Y,p.Z,p.K,p.A0,p.Rad,p.S,p.Sp,p.Ph,p.Phase}.All(double.IsFinite)),"spiral values");
+            }
             if(obj.Motion is { Kind:"rotating-parent" } rotating)
             {
                 Require(rotating.Matrix?.Length==16 && rotating.Parent?.Length==16,"rotating parent matrices");
@@ -96,7 +102,8 @@ public sealed record BoardGeometryGroup(int Start, int Count, int MaterialIndex)
 public sealed record BoardObject(string Kind, int Geometry, int[] Materials, double[] Matrix, bool Visible,
     bool CastShadow, bool ReceiveShadow, BoardInstance[]? Instances, BoardMotion? Motion = null);
 public sealed record BoardInstance(double[] Matrix, float[] Color);
-public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0,BoardPalm[]? Palms=null,double[]? Matrix=null,BoardProp[]? Props=null,double[]? Parent=null);
+public sealed record BoardMotion(string Kind,double Amp=0,double Speed=0,BoardCrystal[]? Items=null,double[]? Box=null,double[]? Velocity=null,float[]? Speeds=null,double Wobble=0,BoardPalm[]? Palms=null,double[]? Matrix=null,BoardProp[]? Props=null,double[]? Parent=null,BoardSpiralItem[]? Spirals=null);
+public sealed record BoardSpiralItem(double X=0,double Y=0,double Z=0,double K=0,double A0=0,double Rad=0,double S=1,double Sp=0,double Ph=0,double Phase=0);
 public sealed record BoardProp(double X=0,double Y=0,double Z=0,double S=1,double Phase=0,double Base=0,double Cx=0,double Cz=0,double K=0,double Ry=0,double Rx=0,double Spin=0);
 public sealed record BoardCrystal(double X,double Z,double Sx,double Sy,double Sz,double Phase);
 public sealed record BoardPalm(double X,double Z,double Ry,double S,double Phase);

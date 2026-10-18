@@ -236,7 +236,8 @@ internal static class BoardMeshSmoke
             ("primary-village","village-eggs"),("primary-village","village-blocks"),("toy-town","toy-tops"),("toy-town","toy-train"),
             ("server-desert","desert-haze"),("ancient-coliseum","coliseum-banners"),("ancient-coliseum","coliseum-flames"),
             ("gear-savanna","savanna-gears"),("infinity-mountain","mountain-stars"),
-            ("digital-grid","grid-polys"),("digital-grid","grid-rings"),("digital-grid","grid-floor"),("dark-ocean","rotating-parent")})
+            ("digital-grid","grid-polys"),("digital-grid","grid-rings"),("digital-grid","grid-floor"),("dark-ocean","rotating-parent"),
+            ("spiral-mountain","spiral-rocks"),("spiral-mountain","spiral-islets")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
@@ -252,7 +253,9 @@ internal static class BoardMeshSmoke
                 var pixels=new byte[256*256*4]; fixed(byte* p=pixels) OpenGl.ReadPixels(0,0,256,256,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
                 ModelRenderer.End(); return pixels;
             }
-            var initial=Render(); layer.Update(2.7); var moved=Render();
+            var initial=Render();
+            for(int frame=1;frame<=162;frame++) layer.Update(frame/60d,1/60d,true);
+            var moved=Render();
             int changed=Enumerable.Range(0,256*256).Count(i=>Math.Abs(initial[i*4]-moved[i*4])+Math.Abs(initial[i*4+1]-moved[i*4+1])+Math.Abs(initial[i*4+2]-moved[i*4+2])>3);
             if(changed<5) throw new InvalidOperationException("Board prop animation did not reach the framebuffer: "+kind);
             Console.WriteLine($"Board prop {kind}: {changed} changed pixels verified.");

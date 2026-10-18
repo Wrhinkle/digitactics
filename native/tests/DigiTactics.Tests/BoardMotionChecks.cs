@@ -65,6 +65,24 @@ internal static class BoardMotionChecks
                 }
             }
         }
-        Console.WriteLine($"Board motion: {checks:N0} original wave, crystal, palm, surf and prop comparisons passed."); return checks;
+        using var spiralFile=File.OpenRead(Path.Combine(root,"tests/fixtures/board-spiral.json.gz"));
+        using var spiralGzip=new GZipStream(spiralFile,CompressionMode.Decompress);
+        using var spiralFixture=JsonDocument.Parse(spiralGzip);
+        var states=spiralFixture.RootElement.GetProperty("motions").EnumerateArray()
+            .Select(row=>row.Deserialize<BoardMotion>(options)!).ToDictionary(m=>m.Kind,m=>new BoardSpiralMotion(m));
+        foreach(var frame in spiralFixture.RootElement.GetProperty("frames").EnumerateArray())
+        {
+            foreach(var state in states.Values) state.Advance(frame.GetProperty("delta").GetDouble(),frame.GetProperty("time").GetDouble(),frame.GetProperty("combat").GetBoolean());
+            foreach(var obj in frame.GetProperty("objects").EnumerateArray())
+            {
+                var state=states[obj.GetProperty("kind").GetString()!]; var expected=obj.GetProperty("matrices");
+                for(int i=0;i<state.Matrices.Length;i++)
+                {
+                    double[] values=new double[16];state.Matrices[i].CopyTo(values);
+                    for(int j=0;j<16;j++) Near(values[j],expected[i][j].GetDouble(),1e-6);
+                }
+            }
+        }
+        Console.WriteLine($"Board motion: {checks:N0} original wave, crystal, palm, surf, prop and stateful spiral comparisons passed."); return checks;
     }
 }
