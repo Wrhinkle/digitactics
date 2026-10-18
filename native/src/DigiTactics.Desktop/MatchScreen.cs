@@ -245,9 +245,9 @@ internal sealed partial class MatchScreen : IDisposable
         itemDropSlot = -1;
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
         if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
-        if (IsPaused) { PausePanel(); return; }
+        if (showGameMenu) { PausePanel(); return; }
         Header(); if (Session is null) return;
-        if (IsPaused) { PausePanel(); return; }
+        if (showGameMenu) { PausePanel(); return; }
         Roster(); Sidebar();
         if (battle is null) Board();
         else
@@ -295,7 +295,7 @@ internal sealed partial class MatchScreen : IDisposable
         {
             Session = new(Rules, seed ?? (uint)Random.Shared.Next(1, int.MaxValue), Enumerable.Range(0, 8).Select(i => new MatchSeat(i == 0 ? profile?.Progress.Name ?? "You" : $"Tamer {i}", i == 0)).ToArray(), duos);
             history = profile is null ? null : new(Session, profile);
-            localPaused = false;
+            localPaused = showGameMenu = confirmLeave = false;
             viewed = localSeat = 0; CompletedRounds = 0;
             selectedUnit = null; selectedItem = null; backgroundTime = 0;
             audio.Music("planning");
@@ -318,15 +318,17 @@ internal sealed partial class MatchScreen : IDisposable
         if (session.State.Over)
         {
             ImGui.Text(IsSpectating ? "Match complete" : $"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
-            if (Button("menu", "Main menu")) { if (networkRoom is not null) LeaveSteamRoom(); Session = null; audio.Music(null); battle?.Dispose(); battle = null; watching = null; planning.Dispose(); planning = new(arenaEnvironment); }
+            if (Button("menu", "Main menu")) LeaveMatch();
         }
         else if (IsSpectating) ImGui.Text($"{session.Rounds.Phase} - watching the shared match");
         else if (session.Rounds.Phase == MatchPhase.Planning) { if (networkRoom is not null && session.Rounds.RoundType == "carousel") ImGui.Text("Waiting for carousel picks..."u8); else if (Button("fight", session.Rounds.RoundType == "carousel" ? "Finish carousel" : "Ready for battle")) Fight(); }
         else if (session.Rounds.Phase == MatchPhase.Result) { if (networkRoom is not null) ImGui.Text("Next round starts shortly..."u8); else if (Button("next", "Next round")) Next(); }
         else { if (Button("finish", networkRoom is null ? "Skip to results" : "Finish my replay")) Finish(); ImGui.SameLine(); ImGui.Text($"{battle?.Combat.Time ?? 0:F1}s"); }
+        if (Session is null) { ImGui.End(); return; }
+        ImGui.SameLine(); if (Button("gameMenu", "Menu")) OpenGameMenu();
         PlanningTimerControls();
         if (networkRoom is null && !session.State.Over) { ImGui.SameLine(); if (Button("pause", "Pause")) PauseLocal(); }
-        if (networkRoom is not null) { ImGui.SameLine(); NetworkSeatControls(); ImGui.SameLine(); if (Button("leaveOnline", "Leave match")) LeaveSteamRoom(); }
+        if (networkRoom is not null) { ImGui.SameLine(); NetworkSeatControls(); ImGui.SameLine(); if (Button("leaveOnline", "Leave match")) { OpenGameMenu(); confirmLeave = true; } }
         ImGui.End();
     }
     private void Board()

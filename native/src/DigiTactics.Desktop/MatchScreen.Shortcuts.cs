@@ -9,6 +9,7 @@ internal sealed partial class MatchScreen
     private void MatchShortcuts()
     {
         if (Session is null || ImGui.GetIO().WantTextInput || showAudio || showPlayers) return;
+        if (ImGui.IsKeyPressed(ImGuiKey.Escape,false) && !showSoundboard && !showEmotes && viewed == localSeat) { OpenGameMenu(); return; }
         CameraShortcuts();
         if (Session.State.Over || IsSpectating || !Human.Alive) return;
         if (ImGui.IsKeyPressed(ImGuiKey.D, false)) Act("reroll");

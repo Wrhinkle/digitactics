@@ -8,6 +8,8 @@ namespace DigiTactics.Desktop;
 /// <summary>Exercises visible controls through ImGui mouse events, not direct gameplay mutations.</summary>
 internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = null, bool evolutionSmoke = false)
 {
+    private readonly GameMenuSmoke gameMenu = new();
+    private bool gameplayVerified;
     private readonly Dictionary<int, PauseSmoke> pauseChecks = new() { [9] = new(true), [10] = new(), [11] = new() };
     private readonly PlanningTimerSmoke planningTimer = new();
     private double automaticAdvanceWait;
@@ -71,7 +73,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (!screen.Buttons.TryGetValue(farmCommands[farmIndex], out var target)) return;
             input.AddMousePosEvent(target.X, target.Y); input.AddMouseButtonEvent(0, true); down = true; return;
         }
-        if (cooldown-- > 0 || index >= commands.Length) return;
+        if (index >= commands.Length) { if (cooldown-- > 0) return; gameMenu.Input(screen); cooldown = 3; return; }
+        if (cooldown-- > 0) return;
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
         if (pauseChecks.TryGetValue(index, out var pauseCheck)) { if (pauseCheck.Input(screen)) pauseChecks.Remove(index); cooldown = 3; return; }
@@ -204,6 +207,11 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (gameplayVerified)
+        {
+            if (gameMenu.Confirming && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"leave-confirm.bmp"),size.X,size.Y);
+            return gameMenu.Done;
+        }
         if (cooldown == 1 && screen.Session is { } resultSession && resultSession.Rounds.Phase == MatchPhase.Result && resultSession.Rounds.Results.Count > 0)
         {
             var player = resultSession.State.Players[0];
@@ -366,6 +374,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (!planningCaptured || !battleCaptured || !pvpCaptured || !combatBenchVerified || screen.CompletedRounds != 5 || screen.Session!.Rounds.Phase != MatchPhase.Planning || screen.AiEmotesShown == 0)
             throw new InvalidOperationException($"Match UI round transition smoke failed: planning={planningCaptured}, battle={battleCaptured}, pvp={pvpCaptured}, bench={combatBenchVerified}, rounds={screen.CompletedRounds}, phase={screen.Session!.Rounds.Phase}, emotes={screen.AiEmotesShown}.");
         Console.WriteLine("Match UI smoke passed: menu, carousel, purchase, placement/drag/drop, sale/partner rules, 3D planning, combat reserve, scouting both sides, PvE, mirrored PvP, five settlements and round advances.");
-        return true;
+        gameplayVerified = true;
+        return false;
     }
 }
