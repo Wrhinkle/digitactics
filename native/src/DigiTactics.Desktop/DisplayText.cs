@@ -9,6 +9,7 @@ internal sealed class DisplayText
     private readonly Dictionary<string, Dictionary<string, DisplayEntry>> variants = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, DisplayEntry>>>(
         File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "content/display.json")), new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     public DisplayEntry Get(string variant, string id) => variants[variant].GetValueOrDefault(id) ?? new(id, "");
+    public DisplayEntry Ability(string variant, string line, int stage) => variants[variant][$"ability:{line}:{stage}"];
     public DisplayEntry Offer(string variant, string kind) => variants[variant].GetValueOrDefault("offer:" + kind) ??
         new(kind switch { "armory" => "Armory", "augment" => "Augment", "power" => "Tamer Power", "itemTier" => "Item Pick", _ => kind }, "Pick one.");
 

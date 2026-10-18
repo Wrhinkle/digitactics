@@ -56,7 +56,7 @@ internal static class MatchApplication
                     ImGui.NewFrame(); double now = clock.Elapsed.TotalSeconds;
                     double delta = smoke ? CombatSimulation.Tick : Math.Clamp(now - last, 0, .1);
                     screen.Update(delta, smoke ? delta : now - last); last = now;
-                    if (smoke && frame == 1) UiTextChecks.Run();
+                    if (smoke && frame == 1) UiTextChecks.Run(catalog);
                     screen.Draw(window.Size); ImGui.Render();
                     audio.Update();
                     preferences?.Update(delta);

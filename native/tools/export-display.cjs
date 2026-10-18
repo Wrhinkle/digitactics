@@ -9,6 +9,9 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   };
   for (const [id, v] of Object.entries(DT.ITEMS)) add(id, v);
   for (const [id, v] of Object.entries(DT.TRAITS)) add(id, v);
+  for (const line of Object.values(DT.LINE)) for (let stage = 0; stage < line.forms.length; stage++) {
+    add(`ability:${line.id}:${stage}`, { name: line.abil[stage], desc: DT.abilityText(line, stage) });
+  }
   for (const v of [...DT.Duos.AUGMENTS, ...DT.AUGMENTS, ...DT.POWERS, ...DT.WISPS]) add(v.id, v);
   const def = DT.Sets.def(set.id);
   const kinds = DT.SET.mechanic.offerKinds || {};

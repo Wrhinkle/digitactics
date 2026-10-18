@@ -74,11 +74,15 @@ internal sealed partial class MatchScreen : IDisposable
         var line = Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == lineId);
         var stats = UnitValues.Stats(line, stage);
         UiText.Wrapped($"{line.Forms[stage]}  {new string('*', stage + 1)}");
+        UiText.Wrapped($"{line.Tier}-cost / {line.Attribute}");
+        UiText.Wrapped(string.Join(" -> ", line.Forms));
         UiText.Wrapped(string.Join(" / ", line.Traits.Select(Name)));
         UiText.Wrapped($"Base stats: {stats.MaxHealth} HP, {stats.AttackDamage} attack, {stats.AttackSpeed:0.##} attacks/s");
         UiText.Wrapped($"{stats.Armor} armor / {stats.MagicResist} magic resist / {stats.Range} range");
         UiText.Wrapped($"Mana {stats.StartMana}/{stats.MaxMana}");
-        UiText.Wrapped(line.Ability.Names.ElementAtOrDefault(stage) ?? line.Ability.Kind);
+        var ability = text.Ability(Rules.Id, lineId, stage);
+        UiText.Wrapped(ability.Name);
+        UiText.Wrapped(ability.Description);
     }
     private void UnitTooltip(string line, int stage)
     {
