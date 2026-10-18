@@ -29,7 +29,7 @@ public sealed class NativeUpdateSession
         {
             Write(new(Id,"checking"));
             var release=await discovery.Check(owner,repository,state.CurrentVersion,launcherVersion,Path.Combine(updatesDirectory,"release-cache.json"),cancellation).ConfigureAwait(false);
-            if(release is null) {Write(new(Id,"current"));return;}
+            if(release is null || !state.CanDownload(release.Manifest.Version)) {Write(new(Id,"current"));return;}
             if(release.RequiresLauncherUpdate) {Write(new(Id,"manual",release.Manifest.Version,Page:release.Page.AbsoluteUri));return;}
             string version=release.Manifest.Version;
             Write(new(Id,"downloading",version,Total:release.Manifest.Size));

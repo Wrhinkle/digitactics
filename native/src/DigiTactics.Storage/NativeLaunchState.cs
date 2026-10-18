@@ -45,6 +45,14 @@ public sealed class NativeLaunchState : IDisposable
 
     public string CurrentVersion {get {ObjectDisposedException.ThrowIf(disposed,this);return EffectiveActive()?.Version??bundledVersion;}}
 
+    public bool CanDownload(string version)
+    {
+        ObjectDisposedException.ThrowIf(disposed,this);
+        return NativeUpdatePackage.ValidVersion(version) && state.Trial is null && Compare(version,CurrentVersion)>0
+            && !state.BadVersions.Contains(version,StringComparer.Ordinal)
+            && (state.Pending is null || Compare(version,state.Pending.Version)>0);
+    }
+
     public void Queue(NativeReleaseReference release)
     {
         ObjectDisposedException.ThrowIf(disposed,this);ValidateRelease(release);
