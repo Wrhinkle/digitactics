@@ -2501,3 +2501,19 @@ appearance, shrink-period lifetime and expiry. Carrot and cake captures were
 inspected. The integrated profile/evolution/farm/Solo smoke also passed. Care
 bubbles, reward feedback and simulation-event/pile presentation remain open,
 along with the broader full-port objective.
+
+### Farm pile presentation
+
+Saved resident waste piles now render at their saved positions using the original
+four visible meshes, material and shadow flags. They use the original grow-in
+overshoot, neglected-pile wobble, and rising/shrinking cleanup animation. Banked
+residents no longer contribute visible piles. Food and pile geometry share the
+prop cache and draw path. Scene cleanup targets call the existing saved CleanPile
+action for the pile owner without changing the selected resident.
+
+The Windows six-theme smoke verifies two saved piles, projected cleanup targets,
+removal animation and expiry in every theme. The meadow pile render was inspected.
+The integrated profile/evolution/farm/Solo flow passed. Scene targets currently
+use projected 28-pixel hit areas; exact mesh raycasting and an automated pointer
+cleanup check remain pending. New simulation-event placement near the resident,
+toilet routing, bubbles and reward feedback remain open farm fidelity work.

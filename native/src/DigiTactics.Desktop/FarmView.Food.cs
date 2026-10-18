@@ -7,7 +7,7 @@ namespace DigiTactics.Desktop;
 
 internal sealed partial class FarmView
 {
-    private sealed record FoodModel(Room Data, GpuPrimitive[] Geometry);
+    private sealed record PropModel(Room Data, GpuPrimitive[] Geometry);
     private sealed class FoodInstance(string kind, double x, double z)
     {
         public string Kind { get; } = kind;
@@ -16,26 +16,31 @@ internal sealed partial class FarmView
         public double Remaining { get; set; } = 1.6;
         public double Scale => Math.Max(.01,Math.Min(1,Remaining/.5)) * (Kind == "bigmeat" ? 1.6 : 1);
     }
-    private readonly Dictionary<string, FoodModel> foodModels = [];
+    private readonly Dictionary<string, PropModel> propModels = [];
     private readonly List<FoodInstance> food = [];
     public int FoodCount => food.Count;
     private void ShowFood(string id, string kind)
     {
         if (!actors.TryGetValue(id, out var actor)) return;
         if (kind is not ("meat" or "carrot" or "bigmeat" or "sirloin" or "cake")) throw new InvalidDataException("Unknown farm food prop.");
-        if (!foodModels.ContainsKey(kind))
+        LoadProp("food-"+kind);
+        var a = actor.Resident;
+        food.Add(new(kind,a.X+Math.Sin(actor.Animator.Yaw)*.45,a.Z+Math.Cos(actor.Animator.Yaw)*.45));
+    }
+    private PropModel LoadProp(string key)
+    {
+        if (!propModels.ContainsKey(key))
         {
-            using var file = File.OpenRead(Path.Combine(AppContext.BaseDirectory,"content/farm-rooms","food-"+kind+".json.gz"));
+            using var file = File.OpenRead(Path.Combine(AppContext.BaseDirectory,"content/farm-rooms",key+".json.gz"));
             using var gzip = new GZipStream(file,CompressionMode.Decompress);
-            var data = JsonSerializer.Deserialize<Room>(gzip,new JsonSerializerOptions { PropertyNameCaseInsensitive=true }) ?? throw new InvalidDataException("Missing food geometry.");
-            if (data.SchemaVersion != 2 || data.Theme != "food-"+kind || data.Textures.Length != 0) throw new InvalidDataException("Unsupported food geometry.");
+            var data = JsonSerializer.Deserialize<Room>(gzip,new JsonSerializerOptions { PropertyNameCaseInsensitive=true }) ?? throw new InvalidDataException("Missing prop geometry.");
+            if (data.SchemaVersion != 2 || data.Theme != key || data.Textures.Length != 0) throw new InvalidDataException("Unsupported prop geometry.");
             var geometry = new List<GpuPrimitive>();
             try { foreach(var mesh in data.Meshes) geometry.Add(new(new(mesh.Vertices,mesh.Indices,-1,true,false))); }
             catch { foreach(var primitive in geometry) primitive.Dispose(); throw; }
-            foodModels.Add(kind,new(data,geometry.ToArray()));
+            propModels.Add(key,new(data,geometry.ToArray()));
         }
-        var a = actor.Resident;
-        food.Add(new(kind,a.X+Math.Sin(actor.Animator.Yaw)*.45,a.Z+Math.Cos(actor.Animator.Yaw)*.45));
+        return propModels[key];
     }
     private void UpdateFood(double delta)
     {
@@ -46,8 +51,13 @@ internal sealed partial class FarmView
     {
         foreach(var item in food)
         {
-            var model = foodModels[item.Kind];
+            var model = propModels["food-"+item.Kind];
             var placement = GpuModel.Transform(item.X,.25,item.Z,0,item.Scale);
+            DrawProp(model,placement,camera,shadow);
+        }
+    }
+    private void DrawProp(PropModel model, Matrix4D placement, Matrix4x4 camera, bool shadow)
+    {
             foreach(bool transparent in new[] {false,true}) for(int i=0;i<model.Data.Meshes.Length;i++)
             {
                 var mesh=model.Data.Meshes[i]; var material=model.Data.Materials[mesh.Material];
@@ -58,6 +68,6 @@ internal sealed partial class FarmView
                     new(material.Emissive[0]*material.EmissiveIntensity,material.Emissive[1]*material.EmissiveIntensity,material.Emissive[2]*material.EmissiveIntensity),material.Roughness,material.Metalness,material.Side,material.ShadowSide);
                 if(shadow) ShadowDrawCalls++; else DrawCalls++;
             }
-        }
     }
 }
+

@@ -16,14 +16,15 @@ internal sealed partial class MatchScreen
     private int FarmSceneHeight => Math.Max(200, size.Y - 150);
     public int FarmDrawCalls => farmView?.DrawCalls ?? 0;
     public string? FarmTheme => farmView?.Theme;
-    private void FarmAct(FarmCareAction action, string? option = null, int pile = 0)
+    private void FarmAct(FarmCareAction action, string? option = null, int pile = 0, string? resident = null)
     {
         string? before = farm!.Save;
-        if (action == FarmCareAction.Play && option is null) option = farmView?.NearestPlaymate(farmPet);
-        farm.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), action, farmPet, option, pile);
+        string? target = resident ?? farmPet;
+        if (action == FarmCareAction.Play && option is null) option = farmView?.NearestPlaymate(target);
+        farm.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), action, target, option, pile);
         if (farm.Error is null && farm.LastResult is { } receipt)
         {
-            farmView?.Care(farmPet, action, option, receipt, before);
+            farmView?.Care(target, action, option, receipt, before);
             if (FarmFeedback.Sound(action, receipt) is { } sound) audio.Play(sound);
         }
     }
@@ -51,6 +52,11 @@ internal sealed partial class MatchScreen
                     ImGui.SetCursorScreenPos(new(12 + x - 25, 70 + y));
                     if (Button("farmResident/" + id, CosmeticCollection.Item("legend", id)!.Name, active: id == farmPet)) { farmPet = id; FarmAct(FarmCareAction.Pet); }
                 }
+            if (farmView is not null) foreach(var (id,key,x,y) in farmView.PileAnchors(FarmSceneWidth,FarmSceneHeight))
+            {
+                ImGui.SetCursorScreenPos(new(12+x-14,70+y-14));
+                if (ImGui.InvisibleButton("farmPileScene/"+id+"/"+key,new(28,28))) FarmAct(FarmCareAction.CleanPile,pile:key,resident:id);
+            }
             ImGui.End();
         }
         Window("Digi-Farm", training is null ? size.X * .55f : size.X * .12f, size.Y * .06f, training is null ? size.X * .44f : size.X * .76f, size.Y * .88f);

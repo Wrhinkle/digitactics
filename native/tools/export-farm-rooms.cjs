@@ -21,7 +21,8 @@ async function main(){
  const module="import * as THREE from '/vendor/three/build/three.module.js';const PI=Math.PI;const F={MEAT_MAX:3};const S={scene:new THREE.Scene(),world:null,ticks:[],meat:[]};function ensureScene(){}const $=()=>({style:{setProperty(){}}});"
   +source.slice(source.indexOf('const R ='),source.indexOf('// ---------- state ----------'))
   +source.slice(source.indexOf('function buildWorld('),source.indexOf('// ---------- legends in the room ----------'))
-  +'\nexport {THREE,S,LOOK,buildWorld,foodMesh};';
+  +source.slice(source.indexOf('function pileMesh()'),source.indexOf('function syncPiles()'))
+  +'\nexport {THREE,S,LOOK,buildWorld,foodMesh,pileMesh};';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  try{
   const page=await browser.newPage();
@@ -35,10 +36,11 @@ async function main(){
   });
   await page.goto('http://farm.local/');
   const output=path.join(root,'native/content/farm-rooms');fs.mkdirSync(output,{recursive:true});
-  for(const theme of ['meadow','tropical','snowy','sewer','toy','grid','food-meat','food-carrot','food-bigmeat','food-sirloin','food-cake']){
+  for(const theme of ['meadow','tropical','snowy','sewer','toy','grid','food-meat','food-carrot','food-bigmeat','food-sirloin','food-cake','pile']){
    const room=await page.evaluate(async theme=>{
-    const {THREE,S,LOOK,buildWorld,foodMesh}=await import('/room.js');buildWorld(theme.startsWith('food-')?'meadow':theme);
+    const {THREE,S,LOOK,buildWorld,foodMesh,pileMesh}=await import('/room.js');buildWorld(theme.startsWith('food-')||theme==='pile'?'meadow':theme);
     if(theme.startsWith('food-')){S.world=new THREE.Group();S.world.add(foodMesh(theme.slice(5)));S.meat=[];S.ticks=[];}
+    if(theme==='pile'){S.world=pileMesh();S.world.remove(S.world.userData.hit);S.meat=[];S.ticks=[];}
     S.world.updateMatrixWorld(true);
     const materials=[],textures=[],meshes=[],points=[],materialIds=new Map(),textureIds=new Map(),animated=[];
     function material(m){

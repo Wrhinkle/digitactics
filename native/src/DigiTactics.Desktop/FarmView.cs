@@ -75,6 +75,7 @@ internal sealed partial class FarmView : IDisposable
             actors[id] = new(model, animator, resident, visual);
         }
         foreach (string key in loaded.Keys.Where(key => !actors.Values.Any(a => a.Model == loaded[key])).ToArray()) { loaded[key].Dispose(); loaded.Remove(key); }
+        SyncPiles(farm);
         lastFarm = farmJson; lastLegends = legendJson;
     }
     private void LoadRoom(string theme)
@@ -104,6 +105,7 @@ internal sealed partial class FarmView : IDisposable
         atmosphere.Update(delta, lighting.Night);
         foreach (var particles in snow) particles.Update(delta, choreography.Time);
         UpdateFood(delta);
+        UpdatePiles(delta);
     }
     public void React(string? id, string role) { if (id is not null && actors.TryGetValue(id, out var actor)) actor.Animator.Play(role); }
     public void StartTraining(string id) => choreography.StartTraining(id);
@@ -182,6 +184,7 @@ internal sealed partial class FarmView : IDisposable
             }
         }
         DrawFood(camera, false);
+        DrawPiles(camera, false);
         renderer.ReceiveShadow = false;
         foreach (var particles in snow) { particles.Draw(renderer, camera, eye); DrawCalls++; }
         SelectionVisible = Selected is not null && actors.TryGetValue(Selected, out _);
@@ -217,12 +220,14 @@ internal sealed partial class FarmView : IDisposable
                 }
             }
             DrawFood(FarmShadowMap.Camera, true);
+            DrawPiles(FarmShadowMap.Camera, true);
         }
         finally { renderer.ShadowPass = false; shadows.End(); }
     }
     public void Dispose()
     {
-        foreach (var prop in foodModels.Values) foreach (var primitive in prop.Geometry) primitive.Dispose();
+        foreach (var prop in propModels.Values) foreach (var primitive in prop.Geometry) primitive.Dispose();
         foreach (var particles in snow) particles.Dispose(); foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); selectionRing.Dispose(); atmosphere.Dispose(); shadows.Dispose(); renderer.Dispose();
     }
 }
+
