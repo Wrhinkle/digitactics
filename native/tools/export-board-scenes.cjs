@@ -37,6 +37,9 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+  .replace(/const bm = inst\(ctx, new THREE.SphereGeometry\(0.11, 6, 4\)[^\n]+;/,line=>line+' bm.userData.nativeMotion={kind:"holiday-tree",phases:bulbs.map(p=>p.ph)};')
+  .replace(/const slm = inst\(ctx, new THREE.SphereGeometry\(0.09, 6, 4\)[^\n]+;/,line=>line+' slm.userData.nativeMotion={kind:"holiday-string",phases:sl.map(p=>p.ph)};')
+  .replace('ctx.tick((dt, t) => { sparkle.material.opacity','snow.userData.nativeMotion.holidaySnow=true; sparkle.userData.nativeMotion.holidaySparkle=true; ctx.tick((dt, t) => { sparkle.material.opacity')
   .replace('b.m = m; b.k = 0; b.vel = 0;','m.userData.nativeMotion={kind:"city-building",building:{x:b.x,z:b.z,ry:b.ry||0,stage:b.st}}; b.m = m; b.k = 0; b.vel = 0;')
   .replace(/const cm = inst\(ctx, new THREE.ConeGeometry\(0.25, 0.6, 5\)[^\n]+;/,line=>line+' cm.userData.nativeMotion={kind:"city-crops"};')
   .replace('const blaze = { k: 0, until: -1 };','beams.forEach((b,i)=>b.userData.nativeMotion={kind:"pyramid-beams",speed:i}); const blaze = { k: 0, until: -1 };')
@@ -398,6 +401,25 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const holidayFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
+   for(const initialWon of [false,true]){
+    const env=buildEnv(THEMES.find(s=>s.id==='holiday-world')),objects=[],frames=[];
+    env.group.traverse(o=>{const m=o.userData.nativeMotion;if(m?.phases||m?.holidaySnow||m?.holidaySparkle)objects.push(o);});
+    env.signal({phase:'combat',stage:1,won:initialWon,evo:0});env.tick(0,0);let time=0;
+    for(let frame=0;frame<800;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],won=frame<100?initialWon:frame<350||frame>=600;time+=delta;
+     env.signal({phase:'combat',stage:1,won,evo:0});env.tick(delta,time);
+     frames.push({time,won,objects:objects.map(o=>{
+      const color=new THREE.Color(),colors=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i++){o.getColorAt(i,color);colors.push(color.toArray());}
+      return {colors,opacity:o.material.opacity,size:o.material.size??0};
+     })});
+    }
+    scenarios.push({initialWon,motions:objects.map(o=>o.userData.nativeMotion),frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-holiday.json.gz'),zlib.gzipSync(JSON.stringify(holidayFixture)));
   const cityFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
    for(const initialStage of [1,4,7]){

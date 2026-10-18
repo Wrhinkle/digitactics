@@ -32,6 +32,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly BoardTrainMotion? train;
     private readonly BoardGraveyardMotion? graveyard;
     private readonly BoardPyramidMotion? pyramid;
+    private readonly BoardHolidayMotion? holiday;
     private readonly BoardConfetti? confetti;
     private static readonly Vector3 libraryTint=BoardLighting.Linear("#ffd090");
     private static readonly Vector3 freezeCalmFog=BoardLighting.Linear("#24405e"),freezeStormFog=BoardLighting.Linear("#8aa6c0");
@@ -49,6 +50,7 @@ internal sealed class BoardMeshLayer : IDisposable
         currentStage=initialStage;
         foreach(var obj in scene.Objects)if(obj.Motion?.Building is {} building)buildings.Add(obj,new(building,initialStage));
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
+        if(scene.Id=="holiday-world")holiday=new(initialWon);
         if(scene.Id=="server-pyramid")pyramid=new(initialCombat);
         if(scene.Id=="overdell-graveyard")graveyard=new();
         if(scene.Id=="trailmon-station")train=new(initialCombat);
@@ -108,6 +110,7 @@ internal sealed class BoardMeshLayer : IDisposable
         train?.Advance(time,combat);
         graveyard?.Advance(delta,combat);
         pyramid?.Advance(delta,time,combat,stage);
+        holiday?.Advance(time,won);
         confetti?.Advance(delta,won);
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
@@ -158,6 +161,7 @@ internal sealed class BoardMeshLayer : IDisposable
             var world = World(item.Object);
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
             if(item.Object.Motion?.Kind is "pyramid-beams" or "pyramid-bands")opacity=pyramid!.Opacity(item.Object.Motion.Kind,(int)item.Object.Motion.Speed,time);
+            if(item.Object.Motion?.HolidaySparkle==true)opacity=holiday!.SparkleOpacity;
             if(item.Object.Motion?.TrainSteam==true)opacity=train!.SteamOpacity;
             if(item.Object.Motion?.Kind=="library-circle")opacity=library!.Opacity(time);
             if(item.Object.Motion?.Aurora is {} aurora)opacity=freeze!.Opacity((int)(aurora.Ph/2));
@@ -193,7 +197,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         new Vector3(material.Emissive[0], material.Emissive[1], material.Emissive[2]) * material.EmissiveIntensity,
                         material.Roughness, material.Metalness, material.Side, additive: material.Blending == 2,
                         vertexColors: material.VertexColors, flatShading: material.FlatShading || !part.HasNormals, alphaTest: material.AlphaTest, wireframe: material.Wireframe,
-                        points: item.Object.Kind == "points" ? PointSprite.Board(material, part.Texture, viewportHeight,item.Object.Motion?.FreezeSnow==true?freeze!.SnowSize:item.Object.Motion?.KowloonRain==true?kowloon!.RainSize:item.Object.Motion?.TempleEmbers==true?temple!.EmberSize:null) : null, fog: material.Fog,
+                        points: item.Object.Kind == "points" ? PointSprite.Board(material, part.Texture, viewportHeight,item.Object.Motion?.HolidaySnow==true?holiday!.SnowSize:item.Object.Motion?.FreezeSnow==true?freeze!.SnowSize:item.Object.Motion?.KowloonRain==true?kowloon!.RainSize:item.Object.Motion?.TempleEmbers==true?temple!.EmberSize:null) : null, fog: material.Fog,
                         emissiveMap:material.EmissiveMap is {} emissionMap?textures[emissionMap]:null);
                     DrawCalls++;
                 }
@@ -219,7 +223,7 @@ internal sealed class BoardMeshLayer : IDisposable
                             { Underwater:{ } swimmers } motion=>underwater!.Instance(motion.Kind,swimmers[i],time),
                             _=>Matrix4D.From(instance.Matrix)
                         };
-                        var tint=item.Object.Motion?.Signs is {} signs?BoardKowloonMotion.Sign(signs[i],time):new Vector3(instance.Color[0],instance.Color[1],instance.Color[2]);
+                        var tint=item.Object.Motion?.Phases is {} phases?holiday!.Color(item.Object.Motion.Kind,i,phases[i],time):item.Object.Motion?.Signs is {} signs?BoardKowloonMotion.Sign(signs[i],time):new Vector3(instance.Color[0],instance.Color[1],instance.Color[2]);
                         Draw(matrix*world,tint.X,tint.Y,tint.Z);
                     }
                 else Draw(world, 1, 1, 1);
