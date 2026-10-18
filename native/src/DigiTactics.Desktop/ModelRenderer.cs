@@ -98,7 +98,7 @@ internal sealed class ModelRenderer : IDisposable
                 program.Uniform(12, new Brutal.Numerics.float4((float)material.Color.R, (float)material.Color.G, (float)material.Color.B, (float)material.Color.A));
                 program.Uniform(13, material.ColorMap is null ? 0 : 1);
                 OpenGl.BindTextureUnit(0, material.ColorMap is { } map ? textures[map.Texture].Id : 0);
-                if (material.DoubleSided) OpenGl.Native.glDisable((GlCapability)OpenGl.GL_CULL_FACE); else OpenGl.Native.glEnable((GlCapability)OpenGl.GL_CULL_FACE);
+                SetSides(material.DoubleSided ? 2 : 0);
                 if (transparent) { OpenGl.Native.glEnable((GlCapability)OpenGl.GL_BLEND); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
                 else OpenGl.Native.glDisable((GlCapability)OpenGl.GL_BLEND);
                 OpenGl.Native.glDepthMask(ShadowPass || material.DepthWrite);
@@ -110,6 +110,7 @@ internal sealed class ModelRenderer : IDisposable
     public static unsafe void End()
     {
         OpenGl.Native.glDepthMask(true); OpenGl.Native.glFrontFace(GlFrontFace.CounterClockwise);
+        OpenGl.CullFace(GlFace.Back);
         OpenGl.Native.glDisable(GlCapability.DepthTest); OpenGl.Native.glDisable(GlCapability.CullFace); OpenGl.Native.glDisable(GlCapability.Blend);
         OpenGl.Native.glBindVertexArray(default); OpenGl.Native.glUseProgram(default);
         if (OpenGl.GetError() != OpenGl.GL_NO_ERROR) throw new InvalidOperationException("Native model rendering failed.");
@@ -124,16 +125,29 @@ internal sealed class ModelRenderer : IDisposable
         geometry.Draw();
     }
     public void Dispose() { OpenGl.DeleteBuffers(new[] { bones }); program.Dispose(); }
-    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0)
+    public unsafe void DrawRoom(GpuPrimitive geometry, Matrix4D world, Matrix4x4 camera, Brutal.Numerics.float4 color, GpuTexture? texture, bool unlit, bool transparent, bool depthWrite, Vector3 emissive = default, float roughness = -1, float metalness = 0, int side = 2, int? shadowSide = null)
     {
         program.Use(); Matrix(0, world); Matrix(4, From(camera));
         SetFarmLight(emissive, roughness, metalness);
         program.Uniform(8, 0); program.Uniform(9, 1); program.Uniform(10, unlit ? 1 : 0); program.Uniform(11, 0f);
         program.Uniform(12, color); program.Uniform(13, texture is null ? 0 : 1); program.Uniform(14, 0f);
-        OpenGl.BindTextureUnit(0, texture?.Id ?? 0); OpenGl.Native.glDisable(GlCapability.CullFace);
+        OpenGl.BindTextureUnit(0, texture?.Id ?? 0); SetSides(side, shadowSide);
+        double determinant = world.M11 * (world.M22 * world.M33 - world.M23 * world.M32)
+            - world.M12 * (world.M21 * world.M33 - world.M23 * world.M31) + world.M13 * (world.M21 * world.M32 - world.M22 * world.M31);
+        OpenGl.Native.glFrontFace(determinant < 0 ? GlFrontFace.Clockwise : GlFrontFace.CounterClockwise);
         if (transparent) { OpenGl.Native.glEnable(GlCapability.Blend); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
         else OpenGl.Native.glDisable(GlCapability.Blend);
         OpenGl.Native.glDepthMask(ShadowPass || depthWrite); geometry.Draw();
+    }
+    private unsafe void SetSides(int side, int? shadowSide = null)
+    {
+        if (ShadowPass) side = shadowSide ?? (side == 2 ? 2 : 1 - side);
+        if (side == 2) OpenGl.Native.glDisable(GlCapability.CullFace);
+        else
+        {
+            OpenGl.Native.glEnable(GlCapability.CullFace);
+            OpenGl.CullFace(side == 0 ? GlFace.Back : GlFace.Front);
+        }
     }
     private unsafe void Matrix(int location, Matrix4D value)
     {

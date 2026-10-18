@@ -50,7 +50,7 @@ async function main(){
       }texture=textureIds.get(m.map);
      }
      const id=materials.length;materialIds.set(m,id);
-     materials.push({color:[m.color.r,m.color.g,m.color.b,m.opacity],texture,unlit:!!m.isMeshBasicMaterial||!!m.isSpriteMaterial,transparent:m.transparent,depthWrite:m.depthWrite,emissive:m.emissive?.toArray()||[0,0,0],emissiveIntensity:m.emissiveIntensity||0,bulb:m===S.lampBulb.material,roughness:m.roughness??1,metalness:m.metalness??0});return id;
+     materials.push({color:[m.color.r,m.color.g,m.color.b,m.opacity],texture,unlit:!!m.isMeshBasicMaterial||!!m.isSpriteMaterial,transparent:m.transparent,depthWrite:m.depthWrite,emissive:m.emissive?.toArray()||[0,0,0],emissiveIntensity:m.emissiveIntensity||0,bulb:m===S.lampBulb.material,roughness:m.roughness??1,metalness:m.metalness??0,side:m.side,shadowSide:m.shadowSide});return id;
     }
     S.world.traverse(o=>{
      if(o.isPoints){points.push({positions:Array.from(o.geometry.attributes.position.array),matrix:o.matrixWorld.toArray()});return;}

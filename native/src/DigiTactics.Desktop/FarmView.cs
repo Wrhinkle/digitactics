@@ -10,7 +10,7 @@ namespace DigiTactics.Desktop;
 
 internal sealed class FarmView : IDisposable
 {
-    private sealed record Material(float[] Color, int? Texture, bool Unlit, bool Transparent, bool DepthWrite, float[] Emissive, float EmissiveIntensity, bool Bulb, float Roughness, float Metalness);
+    private sealed record Material(float[] Color, int? Texture, bool Unlit, bool Transparent, bool DepthWrite, float[] Emissive, float EmissiveIntensity, bool Bulb, float Roughness, float Metalness, int Side, int? ShadowSide);
     private sealed record Texture(int Width, int Height, string Rgba, bool Clamp);
     private sealed record Mesh(float[] Vertices, uint[] Indices, double[] Matrix, int Material, bool Sprite, int Meat, FarmRoomMotion? Motion, bool CastShadow, bool ReceiveShadow);
     private sealed record Points(float[] Positions, double[] Matrix);
@@ -156,12 +156,13 @@ internal sealed class FarmView : IDisposable
                 if (mesh.Sprite)
                 {
                     var billboard = Matrix4x4.CreateBillboard(new((float)matrix.M41, (float)matrix.M42, (float)matrix.M43), eye, Vector3.UnitY, Vector3.UnitZ);
-                    var rotation = Quaternion.CreateFromRotationMatrix(billboard);
+                    // System.Numerics billboards face local -Z; Three sprites face +Z.
+                    var rotation = Quaternion.CreateFromRotationMatrix(Matrix4x4.CreateRotationY(MathF.PI) * billboard);
                     matrix = Matrix4D.Compose(new(matrix.M41, matrix.M42, matrix.M43), new(rotation.X, rotation.Y, rotation.Z, rotation.W), new(.42, .42, .42));
                 }
                 float intensity = material.Bulb ? (float)lighting.BulbEmission : material.EmissiveIntensity;
                 renderer.ReceiveShadow = mesh.ReceiveShadow;
-                renderer.DrawRoom(geometry[i], matrix, camera, new(material.Color[0], material.Color[1], material.Color[2], material.Color[3]), material.Texture is { } texture ? textures[texture] : null, material.Unlit, transparent, material.DepthWrite, new(material.Emissive[0] * intensity, material.Emissive[1] * intensity, material.Emissive[2] * intensity), material.Roughness, material.Metalness); DrawCalls++;
+                renderer.DrawRoom(geometry[i], matrix, camera, new(material.Color[0], material.Color[1], material.Color[2], material.Color[3]), material.Texture is { } texture ? textures[texture] : null, material.Unlit, transparent, material.DepthWrite, new(material.Emissive[0] * intensity, material.Emissive[1] * intensity, material.Emissive[2] * intensity), material.Roughness, material.Metalness, material.Side, material.ShadowSide); DrawCalls++;
             }
             foreach (var actor in actors.Values)
             {
@@ -184,7 +185,8 @@ internal sealed class FarmView : IDisposable
             {
                 var mesh = room.Meshes[i];
                 if (!mesh.CastShadow || mesh.Meat >= meat && mesh.Meat >= 0) continue;
-                renderer.DrawRoom(geometry[i], mesh.Motion?.Evaluate(choreography.Time) ?? Matrix4D.From(mesh.Matrix), FarmShadowMap.Camera, new(1,1,1,1), null, true, false, true);
+                var material = room.Materials[mesh.Material];
+                renderer.DrawRoom(geometry[i], mesh.Motion?.Evaluate(choreography.Time) ?? Matrix4D.From(mesh.Matrix), FarmShadowMap.Camera, new(1,1,1,1), null, true, false, true, side: material.Side, shadowSide: material.ShadowSide);
                 ShadowDrawCalls++;
             }
             foreach (var actor in actors.Values)

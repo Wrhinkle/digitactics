@@ -2419,3 +2419,21 @@ Shadow rendering is implemented, but exact original shadow-side/culling behavior
 and broader pixel-level visual acceptance remain to be audited. Sky/night
 overlays, care props and feedback, production UI, multiplayer and release gates
 remain part of the active full-port objective.
+
+### Material facing and shadow sides
+
+Room export now preserves material side and explicit shadow-side settings. Native
+rendering applies front/back/double-sided culling and the original shadow-pass
+side reversal, including imported companion meshes. Static room draw calls also
+set winding from their transform determinant, preventing prior actor state from
+changing room culling. The pass restores the conventional back-face setting.
+
+Visual review exposed a previously hidden billboard convention mismatch: native
+billboards faced local -Z while the original sprite planes face +Z. Their
+orientation is now corrected, retaining the care-station icons with culling on.
+
+All six farm room checks (including visible shadow differences), the 78-model
+GPU check and Duos match smoke passed. After the billboard correction the Windows
+package was rebuilt, the six-theme smoke rerun, and the tropical capture inspected.
+This addresses the shadow-side limitation above. Broader visual acceptance and
+the remaining full-port requirements are still open.
