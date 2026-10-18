@@ -70,6 +70,14 @@ public static class LegendRewards
         record["xp"] = xp + used;
         return new(save.ToJsonString(), new(used, level, level - before, data - used));
     }
+    internal static (string? Save, int Used) GrantData(string? saved, string id, int amount)
+    {
+        var (save, record) = Snapshot(saved, id);
+        int xp = Number(record, "xp"), used = Math.Max(0, Math.Min(Content.DataFor.Sum() - xp, amount));
+        if (used == 0) return (saved, 0);
+        record["xp"] = checked(xp + used);
+        return (save.ToJsonString(), used);
+    }
     public static LegendRewardUpdate Calculate(string? saved, string walletJson, string key, int place)
     {
         if (place is < 1 or > 8) throw new InvalidDataException("Invalid legend reward placement.");

@@ -15,7 +15,7 @@ public static class FarmSimulation
         if (value.TryGetValue<int>(out int integer)) return integer;
         return value.GetValue<long>();
     }
-    private static bool B(JsonNode node, string key) => node[key]!.GetValue<bool>();
+    private static bool B(JsonNode node, string key) => node[key]?.GetValue<bool>() ?? throw new InvalidDataException("Missing farm flag: " + key);
     private static void Add(JsonNode node, string key, double amount) => node[key] = N(node, key) + amount;
     private static double Ideal(string? legends, string id)
     {
@@ -42,6 +42,8 @@ public static class FarmSimulation
             foreach (var field in previous) save[field.Key] = field.Value?.DeepClone();
         }
         if (save["v"]?.GetValue<int>() != 1) throw new InvalidDataException("Unsupported farm save version.");
+        if (save["residents"] is not JsonArray || save["seen"] is not JsonArray || save["pets"] is not JsonObject || save["meat"] is not JsonObject || save["bandage"] is not JsonObject || save["daily"] is not JsonObject daily || daily["day"] is null)
+            throw new InvalidDataException("Invalid farm save fields.");
         var collection = new CosmeticCollection(walletJson);
         var owned = CosmeticCollection.Items("legend").Where(x => collection.Owns("legend", x.Id)).Select(x => x.Id).ToArray();
         int cap = (int)N(save, "cap"); cap = Math.Clamp(cap == 0 ? 6 : cap, 6, 12); save["cap"] = cap;
@@ -78,6 +80,7 @@ public static class FarmSimulation
         foreach (string id in residents)
         {
             var p = pets[id]!;
+            if (p["poop"] is not JsonArray || p["flags"] is not JsonObject) throw new InvalidDataException("Invalid farm pet fields.");
             if (N(p, "t") == 0) p["t"] = timestamp;
             double from = Math.Max(N(p, "t"), timestamp - 720 * Minute);
             int minutes = (int)Math.Floor((timestamp - from) / Minute);

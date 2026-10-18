@@ -13,6 +13,7 @@ internal sealed partial class MatchScreen : IDisposable
     private readonly uint? seed;
     private readonly GameAudio audio;
     private readonly NativeProfileStore? profile;
+    private readonly FarmProgress? farm;
     private Task<ProfileImport?>? profilePreview;
     private ProfileImport? profileCandidate;
     private string? profileMessage;
@@ -43,7 +44,7 @@ internal sealed partial class MatchScreen : IDisposable
     private int Width => Math.Max(300, size.X - 470);
     private int Height => Math.Max(240, size.Y - 335);
     private const ImGuiWindowFlags Fixed = ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
-    public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; }
+    public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; farm = profile is null ? null : new(profile); }
     private void Window(string name, float x, float y, float width, float height, ImGuiWindowFlags flags = 0)
     {
         ImGui.SetNextWindowPos(new(x, y)); ImGui.SetNextWindowSize(new(width, height)); ImGui.Begin(name, Fixed | flags);
@@ -137,6 +138,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     public void Update(double delta)
     {
+        farm?.Update(delta, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         if (profilePreview is { IsCompleted: true })
         {
             try { profileCandidate = profilePreview.GetAwaiter().GetResult(); profileMessage = null; }
@@ -207,7 +209,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear();
-        if (Session is null) { Menu(); if (showCollection) Collection(); return; }
+        if (Session is null) { Menu(); if (showCollection) Collection(); if (showFarm) FarmPanel(); return; }
         Header(); if (Session is null) return;
         Roster(); Sidebar();
         if (battle is null) Board();
@@ -227,6 +229,8 @@ internal sealed partial class MatchScreen : IDisposable
         ImGui.Text("Build your team. Digivolve. Be the last Tamer standing."u8); ImGui.Separator();
         ProfileControls();
         if (profile is not null && Button("collection", "Collection and store")) showCollection = true;
+        if (farm is not null && Button("farm", "Digi-Farm")) { farm.Refresh(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()); showFarm = true; }
+        if (farm?.Error is { } farmError) CollectionText(farmError);
         if (ImGui.BeginCombo("Ruleset / pace"u8, $"{Rules.Name} / {Rules.Pace}"))
         {
             for (int i = 0; i < catalog.Variants.Length; i++) if (ImGui.Selectable($"{catalog.Variants[i].Name} / {catalog.Variants[i].Pace}", variant == i)) variant = i;

@@ -14,7 +14,12 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
     private int collectionIndex;
     private bool collectionVerified;
-    public string Pending => collectionProfile is not null && collectionIndex < collectionCommands.Length ? collectionCommands[collectionIndex] : commands.ElementAtOrDefault(index) ?? "verification";
+    private readonly string[] farmCommands = ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "closeFarm"];
+    private int farmIndex;
+    private bool farmVerified;
+    private long farmInitialBits;
+    public string Pending => collectionProfile is not null && collectionIndex < collectionCommands.Length ? collectionCommands[collectionIndex]
+        : collectionProfile is not null && farmIndex < farmCommands.Length ? farmCommands[farmIndex] : commands.ElementAtOrDefault(index) ?? "verification";
     private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "bench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
         "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "closeAudio", "mute", "mute"];
     private int index, cooldown = 3, battleFrames, pvpFrames;
@@ -27,6 +32,14 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             var input = ImGui.GetIO();
             if (down) { input.AddMouseButtonEvent(0, false); down = false; collectionIndex++; cooldown = 3; return; }
             if (!screen.Buttons.TryGetValue(collectionCommands[collectionIndex], out var target)) return;
+            input.AddMousePosEvent(target.X, target.Y); input.AddMouseButtonEvent(0, true); down = true; return;
+        }
+        if (collectionProfile is not null && farmIndex < farmCommands.Length)
+        {
+            if (cooldown-- > 0) return;
+            var input = ImGui.GetIO();
+            if (down) { input.AddMouseButtonEvent(0, false); down = false; farmIndex++; cooldown = 3; return; }
+            if (!screen.Buttons.TryGetValue(farmCommands[farmIndex], out var target)) return;
             input.AddMousePosEvent(target.X, target.Y); input.AddMouseButtonEvent(0, true); down = true; return;
         }
         if (cooldown-- > 0 || index >= commands.Length) return;
@@ -71,7 +84,18 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (wallet["owned"]!["legend"]!.AsArray().Count < 3 && !legends["legends"]!.AsObject().Any(x => x.Value?["xp"]?.GetValue<int>() > 0))
                 throw new InvalidOperationException("Egg granted neither an item nor duplicate Digi-Data.");
             collectionVerified = true;
+            farmInitialBits = collection.Bits;
             Console.WriteLine("Collection UI smoke passed: purchase, equipment, egg confirmation, wallet debit and hatch reward persistence.");
+        }
+        if (collectionProfile is not null && !farmVerified)
+        {
+            if (farmIndex == farmCommands.Length - 1 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "farm.bmp"), size.X, size.Y);
+            if (farmIndex < farmCommands.Length) return false;
+            var save = System.Text.Json.Nodes.JsonNode.Parse(collectionProfile.Storage["dt.farm.v1"])!;
+            var pet = save["pets"]!["tokomon"]!;
+            if (collectionProfile.Progress.Bits != farmInitialBits + 4 || Math.Abs(pet["goodBond"]!.GetValue<double>() - .73) > 1e-9 || save["meat"]!["n"]!.GetValue<int>() != 2 || save["lights"]!.GetValue<bool>() != true)
+                throw new InvalidOperationException("Farm UI care/reward persistence failed.");
+            farmVerified = true; Console.WriteLine("Farm UI smoke passed: feed, play, praise, pet, lights and saved rewards.");
         }
         if (index == 0 && cooldown == 1 && capture is not null)
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "menu.bmp"), size.X, size.Y);

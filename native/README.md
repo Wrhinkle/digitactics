@@ -2032,3 +2032,33 @@ Farm simulation currently returns a pure snapshot and events. It is not yet
 scheduled or persisted by the desktop app. Live aging will be enabled with the
 native care actions, rewards and room UI; imported farm saves remain untouched
 in the meantime. This is a simulation component, not a completed Digi-Farm port.
+
+
+### Live farm care and atomic rewards
+
+The menu now opens a functional Digi-Farm panel with resident selection, five
+foods, room/pile cleaning, bandages/medicine, lights, praise, scolding, petting,
+ball play and paired play. It shows pet needs, supplies and daily reward use.
+The native care rules preserve refusals, overfeeding, costs, free supplies,
+cooldowns, care changes and the 60-Bit/100-Digi-Data daily reward caps. Data rewards
+respect the legend XP cap and leave unused daily Data capacity available.
+
+`FarmProgress` catches up existing native profiles at startup and every 30
+seconds, including while matches run. Opening the farm explicitly also catches
+up and can initialize a fresh profile. Automatic updates do not create a profile
+before first import. Care actions calculate farm, wallet and legend changes
+before one atomic profile replacement. Failed writes retain the existing state,
+report an error and can be retried. Future farm versions are preserved.
+
+`export-farm-care.cjs` executes 5,544 original care transactions across all 77
+legends and full/hungry/asleep/tantrum/sick/poor/near-cap states. `--farm-only`
+passed 424,718 simulation comparisons and 27,731 care/persistence checks,
+including complete result payloads, all saved domains, event lists, blocked-file
+rollback, retry, restart, backups and unknown/future data preservation.
+
+The packaged collection smoke now continues through feeding, ball play, praise,
+petting and both light states, checking the saved daily rewards, bond care and
+supplies before the Solo match flow. That test and the Duos match smoke passed.
+The farm screenshot was inspected. The current panel is functional text/buttons;
+training games, bank transfers, expansion/themes and the animated farm room still
+need completion, as do the broader production port requirements.

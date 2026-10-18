@@ -12,7 +12,7 @@ if (args.Contains("--rewards-only")) { MatchRewardChecks.Run(root, catalog); Leg
 if (args.Contains("--cosmetics-only")) { CosmeticChecks.Run(root); return; }
 if (args.Contains("--eggs-only")) { EggChecks.Run(root); return; }
 if (args.Contains("--evolution-only")) { EvolutionChecks.Run(root); return; }
-if (args.Contains("--farm-only")) { FarmSimulationChecks.Run(root); return; }
+if (args.Contains("--farm-only")) { FarmSimulationChecks.Run(root); FarmCareChecks.Run(root); return; }
 if (args.Contains("--audio-cues-only")) { AudioCueParity.Run(root, catalog); return; }
 if (args.Contains("--items-only")) { AiInventoryParity.Run(root, catalog); ColiseumCoreParity.Run(root, catalog); SpecialConsumableParity.Run(root, catalog); CopyConsumableParity.Run(root, catalog); ConsumableParity.Run(root, catalog); PlanningItemParity.Run(root, catalog); RadiantOfferParity.Run(root, catalog); return; }
 if (args.Contains("--custom-offers-only")) { ColiseumChoiceParity.Run(root, catalog); CustomOfferParity.Run(root, catalog); return; }
@@ -199,6 +199,7 @@ assertions += CosmeticChecks.Run(root);
 assertions += EggChecks.Run(root);
 assertions += EvolutionChecks.Run(root);
 assertions += FarmSimulationChecks.Run(root);
+assertions += FarmCareChecks.Run(root);
 assertions += LegacyProfileChecks.Run(root);
 assertions += MotionParity.Run(root);
 assertions += MeshParity.Run(root);
