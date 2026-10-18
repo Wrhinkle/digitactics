@@ -8,7 +8,7 @@ internal static class FarmEventChecks
     {
         int checks = 0;
         void Check(bool value, string message) { checks++; if (!value) throw new InvalidOperationException("Farm events: " + message); }
-        var pops = new FarmRewardPops();
+        var pops = new FarmPops();
         JsonObject Receipt(bool ok, int bits, int data) => new() { ["ok"] = ok, ["reward"] = new JsonObject { ["bits"] = bits, ["data"] = data } };
         pops.Add("tokomon", Receipt(false, 1, 2)); pops.Add("tokomon", Receipt(true, 0, 0));
         Check(pops.Items.Count == 0, "no popup for refused or capped reward");
@@ -19,6 +19,27 @@ internal static class FarmEventChecks
         pops.Update(.5, _ => (50, 60));
         Check(pops.Items[0].Position == (30, 40) && pops.Items[0].Opacity == 1 && pops.Items[0].Offset < 0, "rise stays at captured position");
         pops.Update(1, _ => (50, 60)); Check(pops.Items.Count == 0, "popup expiry");
+        pops.AddSymbol("tokomon", FarmSymbol.Heart, (10, 20));
+        Check(pops.Items[0].Age == 0 && pops.Items[0].Position == (10, 20), "symbol captures position immediately");
+        pops.Clear();
+        foreach (var (action, option, receipt, asleep, expected) in new (FarmCareAction, string?, string, bool, FarmSymbol?)[] {
+            (FarmCareAction.Feed, "meat", "{\"ok\":true}", false, FarmSymbol.Meat),
+            (FarmCareAction.Feed, "carrot", "{\"ok\":true}", false, FarmSymbol.Carrot),
+            (FarmCareAction.Feed, "bigmeat", "{\"ok\":true}", false, FarmSymbol.BigMeat),
+            (FarmCareAction.Feed, "sirloin", "{\"ok\":true}", false, FarmSymbol.Sirloin),
+            (FarmCareAction.Feed, "cake", "{\"ok\":true}", false, FarmSymbol.Cake),
+            (FarmCareAction.Feed, null, "{\"ok\":false,\"refused\":true}", false, FarmSymbol.Refused),
+            (FarmCareAction.Feed, null, "{\"ok\":false}", false, null),
+            (FarmCareAction.Cure, null, "{\"ok\":true}", false, FarmSymbol.Bandage),
+            (FarmCareAction.Cure, "medicine", "{\"ok\":true}", false, FarmSymbol.Medicine),
+            (FarmCareAction.Praise, null, "{\"ok\":true,\"spoiled\":true}", false, FarmSymbol.Spoiled),
+            (FarmCareAction.Praise, null, "{\"ok\":true}", false, FarmSymbol.Heart),
+            (FarmCareAction.Scold, null, "{\"ok\":true,\"unfair\":true}", false, FarmSymbol.Tear),
+            (FarmCareAction.Scold, null, "{\"ok\":true}", false, FarmSymbol.Exclaim),
+            (FarmCareAction.Pet, null, "{\"ok\":true,\"small\":true}", false, null),
+            (FarmCareAction.Pet, null, "{\"ok\":true,\"small\":true}", true, FarmSymbol.Sleep),
+            (FarmCareAction.Pet, null, "{\"ok\":true}", false, FarmSymbol.Heart)
+        }) Check(FarmFeedback.Symbol(action, option, JsonNode.Parse(receipt)!.AsObject(), asleep) == expected, "symbol " + action + option + receipt);
         string directory = Path.Combine(Path.GetTempPath(), "digitactics-farm-events-" + Guid.NewGuid().ToString("N"));
         try
         {

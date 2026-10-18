@@ -25,6 +25,12 @@ internal sealed partial class FarmView : IDisposable
         public void Update(double delta) => animator.Update(delta);
     }
     private readonly FarmChoreography choreography = new();
+    private readonly Queue<(string Id, FarmSymbol Symbol)> feedback = [];
+    public FarmView() => choreography.Feedback += (id, symbol) => feedback.Enqueue((id, symbol));
+    public (string Id, FarmSymbol Symbol)[] DrainFeedback()
+    {
+        var result = feedback.ToArray(); feedback.Clear(); return result;
+    }
     private readonly Dictionary<string, FarmMood> moods = [];
     public FarmMood? Mood(string id) => moods.GetValueOrDefault(id);
     private readonly FarmLighting lighting = new();

@@ -154,10 +154,13 @@ internal static class FarmChoreographyChecks
         Check(a.Mode == "idle" && a.View.Yaw == .6, "training arrival faces equipment");
         scene.FinishTraining("a", .6); Check(a.Busy == 1.5 && events.Last()[2] == "happy", "successful training reaction");
         scene.FinishTraining("a", .59); Check(events.Last()[2] == "sad", "low score training reaction");
+        var symbols = new List<(string, FarmSymbol)>(); scene.Feedback += (id, symbol) => symbols.Add((id, symbol));
         a.Busy = 0; scene.Toilet("a");
+        Check(symbols.Count == 0, "toilet symbol waits for arrival");
         Check(a.TargetX == 3.3 && a.TargetZ == -2.2 && a.Mode == "walk", "toilet destination from original room");
         for (int i = 0; i < 200 && a.Mode == "walk"; i++) scene.Update(.05);
         Check(a.Mode == "idle" && a.Busy == 1.2 && events.Last()[2] == "happy", "toilet arrival reaction and pause");
+        Check(symbols.SequenceEqual(new[] { ("a", FarmSymbol.Toilet) }), "toilet symbol at arrival once");
         var pairScene = new FarmChoreography(() => .5);
         pairScene.Add("center",new View("center",true,events),0,0);
         var left = pairScene.Add("left",new View("left",true,events),-1,0);

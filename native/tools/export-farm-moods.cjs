@@ -17,6 +17,14 @@ async function main(){
    return c.toDataURL('image/png').split(',')[1];
   },icons);
   fs.writeFileSync(path.join(root,'native/content/farm-moods.png'),Buffer.from(png,'base64'));
+  const symbols=['🍖','🥕','🍗','🥩','🍰','🙅','💊','🩹','😜','♥','💧','❗','💤','💩','✗','💢','🚽 ✓','♪'];
+  const actionPng=await page.evaluate(symbols=>{
+   const c=document.createElement('canvas');c.width=64*symbols.length;c.height=64;
+   const g=c.getContext('2d');g.textAlign='center';g.textBaseline='middle';g.fillStyle='#fff';
+   symbols.forEach((s,i)=>{g.font=(s==='🚽 ✓'?'26':'40')+'px "Segoe UI Emoji"';g.fillText(s,i*64+32,32);});
+   return c.toDataURL('image/png').split(',')[1];
+  },symbols);
+  fs.writeFileSync(path.join(root,'native/content/farm-symbols.png'),Buffer.from(actionPng,'base64'));
  }finally{await browser.close();}
  const evaluate=new Function('p','lights','ideal',`const save={lights},SLEEPY_AT=20,FAT=1.4;const asleepNow=p=>!!p.flags.asleep,idealOf=()=>ideal;${body};return moodOf(p,'test');`);
  let seed=1531;const random=()=>{seed=seed*16807%2147483647;return seed/2147483647;};const rows=[];

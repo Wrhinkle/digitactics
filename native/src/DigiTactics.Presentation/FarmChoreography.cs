@@ -37,6 +37,7 @@ public sealed class FarmChoreography(Func<double>? random = null)
     private static readonly (double X, double Z)[] Beds = [(0, .05), (-.62, .05), (.62, .05), (0, .75), (-.62, .75), (.62, .75)];
     public IReadOnlyDictionary<string, FarmResident> Residents => residents;
     public double Time { get; private set; }
+    public event Action<string, FarmSymbol>? Feedback;
     public FarmResident Add(string id, IFarmCompanionView view, double? x = null, double? z = null)
     {
         int k = residents.Count; double angle = k * 2.39996, radius = .7 * Math.Sqrt((k + 1) / 12.0);
@@ -82,7 +83,7 @@ public sealed class FarmChoreography(Func<double>? random = null)
     public void Toilet(string id)
     {
         if (!residents.TryGetValue(id, out var a)) return;
-        WalkTo(a, 3.3, -2.2, () => { a.View.Play("happy"); a.Busy = 1.2; });
+        WalkTo(a, 3.3, -2.2, () => { Feedback?.Invoke(id, FarmSymbol.Toilet); a.View.Play("happy"); a.Busy = 1.2; });
     }
     public void FinishTraining(string id, double score)
     {
@@ -119,11 +120,12 @@ public sealed class FarmChoreography(Func<double>? random = null)
     }
     public void PlayPair(FarmResident actor, FarmResident? other)
     {
-        if (other is null) { actor.View.Play("dance"); actor.Busy = 2.4; return; }
+        if (other is null) { actor.View.Play("dance"); actor.Busy = 2.4; Feedback?.Invoke(actor.Id, FarmSymbol.Music); return; }
         foreach (var (p, q) in new[] { (actor, other), (other, actor) })
         {
             p.View.Yaw = Math.Atan2(q.X - p.X, q.Z - p.Z); p.View.Play(random() < .5 ? "happy" : "dance"); p.Busy = 2.4; p.Mode = "idle";
         }
+        Feedback?.Invoke(actor.Id, FarmSymbol.Music);
     }
     public void Update(double delta)
     {
@@ -150,7 +152,7 @@ public sealed class FarmChoreography(Func<double>? random = null)
             if (a.Wait <= 0)
             {
                 double roll = random();
-                if (data.Tantrum) { view.Play("taunt"); a.Wait = 1.4; }
+                if (data.Tantrum) { view.Play("taunt"); Feedback?.Invoke(a.Id, FarmSymbol.Tantrum); a.Wait = 1.4; }
                 else if (data.Sick) { if (roll < .4) view.Play("sad"); else Wander(a); a.Wait = 2 + random() * 3; }
                 else if (roll < .55) Wander(a);
                 else if (roll < .7 && data.Happy >= 60) { view.Play("happy"); a.Wait = 2; }

@@ -14,8 +14,9 @@ internal sealed partial class MatchScreen
     private string? farmViewError;
     private bool farmWasVisible;
     private readonly List<(string Text, double Remaining)> farmNotices = [];
-    private readonly FarmRewardPops farmRewardPops = new();
+    private readonly FarmPops farmPops = new();
     private GpuTexture? farmMoodTexture;
+    private GpuTexture? farmSymbolTexture;
     private double farmMoodTime;
     private int FarmSceneWidth => Math.Max(250, (int)(size.X * .54f) - 24);
     private int FarmSceneHeight => Math.Max(200, size.Y - 150);
@@ -38,7 +39,9 @@ internal sealed partial class MatchScreen
         if (farm.Error is null && farm.LastResult is { } receipt)
         {
             farmView?.Care(target, action, option, receipt, before);
-            farmRewardPops.Add(target, receipt);
+            farmPops.Add(target, receipt);
+            bool asleep = target is not null && before is not null && JsonNode.Parse(before)?["pets"]?[target]?["flags"]?["asleep"]?.GetValue<bool>() == true;
+            if (target is not null && FarmFeedback.Symbol(action, option, receipt, asleep) is { } symbol) FarmSymbolPop(target, symbol);
             if (FarmFeedback.Sound(action, receipt) is { } sound) audio.Play(sound);
         }
     }
@@ -51,7 +54,7 @@ internal sealed partial class MatchScreen
             if (notice.Remaining <= delta) farmNotices.RemoveAt(i);
             else farmNotices[i] = (notice.Text, notice.Remaining - delta);
         }
-        if (!showFarm) { farmWasVisible = false; farmRewardPops.Clear(); }
+        if (!showFarm) { farmWasVisible = false; farmPops.Clear(); }
         if (!showFarm || farm?.Save is null || farm.Error is not null) return;
         try
         {
@@ -59,8 +62,9 @@ internal sealed partial class MatchScreen
             farmView.Sync(farm.Save, profile!.Storage.GetValueOrDefault("dt.legendevo.v1"), profile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
             FarmEvents(farm.DrainEvents(), !farmWasVisible); farmWasVisible = true;
             farmView.Update(delta); farmViewError = null;
+            foreach (var feedback in farmView.DrainFeedback()) FarmSymbolPop(feedback.Id, feedback.Symbol);
             var anchors = farmView.Anchors(FarmSceneWidth, FarmSceneHeight, .3).ToDictionary(a => a.Id);
-            farmRewardPops.Update(delta, id => anchors.TryGetValue(id, out var a) ? (a.X, a.Y) : null);
+            farmPops.Update(delta, id => anchors.TryGetValue(id, out var a) ? (a.X, a.Y) : null);
         }
         catch (Exception error) when (error is InvalidDataException or IOException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
         { farmViewError = "Room view unavailable: " + error.Message; }
@@ -86,13 +90,13 @@ internal sealed partial class MatchScreen
             string? why = e["why"]?.GetValue<string>();
             switch (e["type"]?.GetValue<string>())
             {
-                case "poop": audio.Play("place"); break;
+                case "poop": FarmSymbolPop(id, FarmSymbol.Poop); audio.Play("place"); break;
                 case "toilet": farmView?.Toilet(id); break;
                 case "sick": Notice($"{name} got sick{(why == "dirty" ? " from the dirty room" : "")}. Use a bandage or medicine."); break;
-                case "tantrum": Notice($"{name} is throwing a tantrum! Scold it."); farmView?.React(id, "taunt"); break;
+                case "tantrum": Notice($"{name} is throwing a tantrum! Scold it."); farmView?.React(id, "taunt"); FarmSymbolPop(id, FarmSymbol.Tantrum); break;
                 case "mistake":
                     string reason = why switch { "hungry" => "was hungry too long", "sad" => "was sad too long", "lights" => "was sleepy with the lights on", "tantrum" => "had a tantrum nobody handled", "sick" => "was sick too long", _ => "" };
-                    Notice($"Care mistake: {name} {reason}."); break;
+                    Notice($"Care mistake: {name} {reason}."); FarmSymbolPop(id, FarmSymbol.Mistake); break;
             }
         }
     }
@@ -127,7 +131,7 @@ internal sealed partial class MatchScreen
                     else { farmPet=hit.Id; FarmAct(FarmCareAction.Pet); }
                 }
             }
-            DrawFarmRewards();
+            DrawFarmPops();
             ImGui.End();
         }
         Window("Digi-Farm", training is null ? size.X * .55f : size.X * .12f, size.Y * .06f, training is null ? size.X * .44f : size.X * .76f, size.Y * .88f);
@@ -185,18 +189,31 @@ internal sealed partial class MatchScreen
         { CollectionText("Farm unavailable: " + error.Message); }
         ImGui.End();
     }
-    private void DrawFarmRewards()
+    private void DrawFarmPops()
     {
         var draw = ImGui.GetWindowDrawList();
-        foreach (var pop in farmRewardPops.Items)
+        foreach (var pop in farmPops.Items)
         {
             if (pop.Age < 0 || pop.Position is not { } p) continue;
+            if (pop.Symbol is { } symbol)
+            {
+                farmSymbolTexture ??= new(DigiTactics.Assets.PngImage.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "content/farm-symbols.png"))), new(MinFilter: 9729, WrapS: 33071, WrapT: 33071), false);
+                float x = 12 + p.X, y = 70 + p.Y + pop.Offset;
+                draw.AddImage(new ImTextureRef { _TexID = new((nint)farmSymbolTexture.Id) }, new(x - 14, y - 28), new(x + 14, y), new((int)symbol / 18f, 0), new(((int)symbol + 1) / 18f, 1), new ImColor8(255, 255, 255, (byte)Math.Clamp((int)(pop.Opacity * 255), 0, 255)));
+                continue;
+            }
             var textSize = ImGui.CalcTextSize(pop.Text);
             var position = new Brutal.Numerics.float2(12 + p.X - textSize.X / 2, 70 + p.Y + pop.Offset - textSize.Y);
             byte alpha = (byte)Math.Clamp((int)(pop.Opacity * 255), 0, 255);
             draw.AddText(ImGui.GetFont(), ImGui.GetFontSize(), position + new Brutal.Numerics.float2(1, 1), new ImColor8(0, 0, 0, alpha), pop.Text);
             draw.AddText(ImGui.GetFont(), ImGui.GetFontSize(), position, new ImColor8(255, 211, 106, alpha), pop.Text);
         }
+    }
+    private void FarmSymbolPop(string id, FarmSymbol symbol)
+    {
+        if (farmView is null) return;
+        foreach (var anchor in farmView.Anchors(FarmSceneWidth, FarmSceneHeight, .3))
+            if (anchor.Id == id) { farmPops.AddSymbol(id, symbol, (anchor.X, anchor.Y)); return; }
     }
     private void DrawFarmMood(FarmMood mood, float x, float y)
     {
