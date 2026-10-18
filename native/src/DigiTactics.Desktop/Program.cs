@@ -26,7 +26,8 @@ try
     if (Option("--model-fitted-audit") is { } modelFittedDirectory)
     {
         string AuditValue(string name) { int index = Array.IndexOf(args, name); return index >= 0 && index + 1 < args.Length ? args[index + 1] : throw new ArgumentException("Missing " + name); }
-        ModelVisualAudit.RunFitted(modelFittedDirectory, int.Parse(AuditValue("--audit-start"), System.Globalization.CultureInfo.InvariantCulture), AuditValue("--audit-role")); return 0;
+        double? peak = args.Contains("--audit-time") ? double.Parse(AuditValue("--audit-time"), System.Globalization.CultureInfo.InvariantCulture) : null;
+        ModelVisualAudit.RunFitted(modelFittedDirectory, int.Parse(AuditValue("--audit-start"), System.Globalization.CultureInfo.InvariantCulture), AuditValue("--audit-role"), peak); return 0;
     }
     string? profileDirectory = Option("--profile-directory");
     if(Option("--native-file-picker-smoke") is { } pickerDirectory) {NativeFilePickerSmoke.Run(pickerDirectory).GetAwaiter().GetResult();return 0;}

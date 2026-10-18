@@ -48,6 +48,17 @@ def sources():
     return {group: {name: sha(ROOT / name) for name in names} for group, names in source_paths().items()}
 
 
+def validate_payloads(runtime):
+    """Reject a build copied while an exporter was replacing its prepared inputs."""
+    catalog = json.loads((runtime / "content/models.json").read_text(encoding="utf-8"))
+    files = {asset["file"] for asset in catalog["assets"].values()}
+    files.update(source["motion"]["file"] for source in catalog["sources"].values() if source.get("motion"))
+    missing = [name for name in sorted(files) if not (runtime / "assets" / name).is_file()]
+    if missing:
+        raise ValueError("Incomplete prepared runtime; wait for exporters and rebuild before freezing: " + ", ".join(missing))
+    return len(files)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("mode", choices=("snapshot", "finish"))
@@ -69,6 +80,10 @@ def main():
     if before != current:
         changed = [key for group, values in current.items() for key, value in values.items() if before.get(group, {}).get(key) != value]
         raise SystemExit("Sources changed during build; repeat snapshot/build: " + ", ".join(changed))
+    try:
+        payload_count = validate_payloads(args.runtime)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
     assemblies = {name: sha(args.runtime / name) for name in ("DigiTactics.Desktop.dll", "DigiTactics.Assets.dll", "DigiTactics.Presentation.dll", "DigiTactics.Rules.dll")}
     catalogs = {}
     for name in ("models.json", "companion-models.json"):
@@ -80,7 +95,7 @@ def main():
                 "policy": "ModelAnimator+CombatModelAnimator+CombatChoreography+CompanionAnimator/v3",
                 "sourceGroups": current, "runtimeHashes": assemblies, "frozenCatalogs": catalogs}
     (args.directory / "capture-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
-    print("Frozen source, assembly and catalog provenance; no visual status changed.")
+    print(f"Frozen source, assembly and catalog provenance; {payload_count} prepared payloads present; no visual status changed.")
 
 
 if __name__ == "__main__":

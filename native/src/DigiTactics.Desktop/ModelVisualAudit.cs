@@ -225,9 +225,10 @@ internal static class ModelVisualAudit
         return (view * Matrix4x4.CreateOrthographic(span, span, .01f, 100), eye);
     }
 
-    public static unsafe void RunFitted(string directory, int index, string role)
+    public static unsafe void RunFitted(string directory, int index, string role, double? peakTime = null)
     {
         if (role is not ("idle" or "attack" or "special" or "win")) throw new ArgumentException("Choose idle, attack, special or win.");
+        if (peakTime is < 0 || peakTime is { } peak && !double.IsFinite(peak)) throw new ArgumentOutOfRangeException(nameof(peakTime));
         Directory.CreateDirectory(directory);
         var runtimeHashes = CaptureHashes(directory);
         var catalog = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
@@ -245,20 +246,27 @@ internal static class ModelVisualAudit
             var animator = new ModelAnimator(model.Rig); bool available = role == "idle" || animator.Play(role);
             var clip = role == "idle" ? ModelAnimator.FindIdle(model.Rig) : model.Rig.Animations.FirstOrDefault(value => value.Name == role);
             double span = role == "attack" ? Math.Min(clip?.Duration ?? .55, .55) + .24 : role == "special" ? Math.Min(clip?.Duration ?? 1.1, 1.1) + .24 : Math.Max(.5, clip?.Duration ?? 1) * 1.1;
-            double previous = 0; var times = new double[Frames];
+            if (peakTime is { } requested) span = Math.Max(span, requested + .24);
+            double previous = 0; var times = Enumerable.Range(0, Frames).Select(frame => span * frame / (Frames - 1)).ToArray();
+            if (peakTime is { } exact)
+            {
+                int closest = Enumerable.Range(0, Frames).MinBy(frame => Math.Abs(times[frame] - exact));
+                times[closest] = exact; Array.Sort(times);
+            }
             OpenGl.Native.glDisable(GlCapability.ScissorTest); OpenGl.ClearColor(new float4(.025f, .04f, .065f, 1)); OpenGl.Clear(GlClearBit.Color | GlClearBit.Depth);
             for (int frame = 0; frame < Frames; frame++)
             {
-                double time = times[frame] = span * frame / (Frames - 1);
+                double time = times[frame];
                 while (previous + 1e-10 < time) { double step = Math.Min(1d / 60, time - previous); animator.Update(step); previous += step; }
                 animator.Update(0);
                 ModelRenderer.Begin(512, 512); OpenGl.Viewport(frame % 3 * 512, (3 - frame / 3) * 512, 512, 512);
                 renderer.Draw(model, animator.Pose, model.PreviewPlacement, camera, false);
                 renderer.BeginTransparency(); renderer.Draw(model, animator.Pose, model.PreviewPlacement, camera, true); renderer.FlushTransparency(); ModelRenderer.End();
             }
-            string image = $"{index:D4}.fitted-{role}.png";
+            string stem = $"{index:D4}.fitted-{role}" + (peakTime is { } selected ? "-peak" + selected.ToString("F6", System.Globalization.CultureInfo.InvariantCulture) : "");
+            string image = stem + ".png";
             SavePng(Path.Combine(directory, image), 1536, 2048);
-            File.WriteAllText(Path.Combine(directory, $"{index:D4}.fitted-{role}.json"), JsonSerializer.Serialize(new { Source = key, Image = image, Role = role, Times = times, Clip = clip?.Name, Available = available,
+            File.WriteAllText(Path.Combine(directory, stem + ".json"), JsonSerializer.Serialize(new { Source = key, Image = image, Role = role, Times = times, PeakTime = peakTime, Clip = clip?.Name, Available = available,
                 Policy = "Production ModelAnimator; fixed camera fitted to idle bounds, no per-frame reframing", RuntimeHashes = runtimeHashes, Status = "unreviewed" }, new JsonSerializerOptions { WriteIndented = true }));
             Console.WriteLine($"Fitted temporal evidence: {key}/{role}, {Frames} samples at 512 pixels.");
         }
