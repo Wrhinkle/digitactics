@@ -18,7 +18,9 @@ public sealed class PlayerMechanics
     public int DragonAxe { get; set; }
     public int DragonInvestor { get; set; }
     public int DragonBank { get; set; }
-    public bool DragonHpFull { get; set; }
+    private bool dragonHpFull;
+    public bool HasDragonHpFull { get; private set; }
+    public bool DragonHpFull { get => dragonHpFull; set { dragonHpFull = value; HasDragonHpFull = true; } }
     public bool DragonCalculatedRoll { get; set; }
     public string[]? DragonAugmentOptions { get; set; }
     public bool DragonAugmentRolled { get; set; }

@@ -10,7 +10,9 @@ public sealed class ArcanePlanningState
     public int Chests { get; set; }
     public int FindKills { get; set; }
     public int Shimmer { get; set; }
-    public bool SyndicateAugment { get; set; }
+    private bool syndicateAugment;
+    public bool HasSyndicateAugment { get; private set; }
+    public bool SyndicateAugment { get => syndicateAugment; set { syndicateAugment = value; HasSyndicateAugment = true; } }
     public int MarketsQueued { get; set; }
     public int JunkRounds { get; set; }
     public int MarketsOpened { get; set; }

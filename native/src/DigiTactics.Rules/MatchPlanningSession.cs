@@ -9,6 +9,7 @@ public sealed class MatchPlanningSession
         MatchPhase Phase() => rounds?.Phase ?? MatchPhase.Planning;
         State = MatchStart.Create(rules, seed, seats, () => rounds?.Position ?? RoundPosition.First, duos, teams);
         Units = State.Units!;
+        CombatProjection = new(State);
         Offers = new(State, Units, Phase);
         Ai = new(State, Offers, Units);
         var effects = new MatchRoundEffects(State, Offers, Units, Ai, Phase);
@@ -17,6 +18,7 @@ public sealed class MatchPlanningSession
     }
     public MatchState State { get; }
     public MatchUnitLifecycle Units { get; }
+    public MatchCombatProjection CombatProjection { get; }
     public MatchOffers Offers { get; }
     public MatchAi Ai { get; }
     public MatchRounds Rounds { get; }

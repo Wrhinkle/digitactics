@@ -1546,3 +1546,19 @@ planning rounds; combat projection and settlement dispatch still need integratio
 followed by production UI, multiplayer, migration and release acceptance.
 
 Validation: **171,422,706 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+### Planning state projected into combat
+
+`MatchCombatProjection` builds isolated player and Duos combat inputs from the
+live planning session, including owner IDs, board offsets, unit modifiers,
+combined traits, buffs, powers and mode mechanic state. Duos preserves the
+original merge order, including unset versus explicitly false mechanic flags.
+
+1,408 original-engine scenarios pass 40,568 checks (`--combat-projection-only`).
+They cover every mode/pace and both formats, RNG continuity and snapshot isolation
+when planning inputs subsequently change. Battle creation and settlement dispatch
+remain to be composed before production match UI integration.
+
+Validation: **171,463,274 full-suite native checks passed**, including all 5,699
+reference battles. Self-contained Windows publish and packaged BRUTAL smoke checks
+passed.

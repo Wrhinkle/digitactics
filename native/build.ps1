@@ -75,6 +75,7 @@ try {
     Invoke-Checked 'node' @('tools/export-offer-effects.cjs')
     Invoke-Checked 'node' @('tools/export-composed-ai.cjs')
     Invoke-Checked 'node' @('tools/export-planning-session.cjs')
+    Invoke-Checked 'node' @('tools/export-combat-projection.cjs')
     Invoke-Checked 'node' @('tools/export-ai-inventory.cjs')
     Invoke-Checked 'node' @('tools/export-models.cjs')
     Invoke-Checked 'node' @('tools/export-motions.cjs')
