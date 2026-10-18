@@ -16,6 +16,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { prepareTemplate, makePlaceholder, loadTemplate, disposeSkeletons } from './render3d.js';
+import { CompanionLocomotion } from './companion-locomotion.js';
 
 const DT = window.DT;
 
@@ -146,7 +147,7 @@ function unitTemplate(item, model, form) {
     for (const [role, c] of Object.entries(base.actions || {})) clips[role] = c;
     const src = DT.MODEL_SOURCES && DT.MODEL_SOURCES[model];
     return {
-      root: base.root, clip: base.clip, footprint: base.footprint, clips, form, proc: UNIT_PROC,
+      root: base.root, clip: base.clip, footprint: base.footprint, clips, form, proc: UNIT_PROC, source: model,
       item: { ...item, data: { ...item.data, clips: UNIT_CLIPS } },
       clone: () => { const o = SkeletonUtils.clone(base.root); if (src && src.rotY) o.rotation.y = src.rotY; return o; },
     };
@@ -300,13 +301,15 @@ export class LegendView {
   attach(t) {
     this.setVisual(t.clone(), Math.min(this.height, 1.5 / Math.max(t.footprint, 0.01)));
     this.t = t;
+    this.locomotion = new CompanionLocomotion(this.visual, t.source || ('legend:' + t.item.id), !!clipOf(t, ROLE_FALLBACK.run));
+    this.hasRun = !this.locomotion.usesTravelHop;
     if (!t.clip) return;
     this.mixer = new THREE.AnimationMixer(this.visual);
     this.idle = this.mixer.clipAction(clipOf(t, ['idle']) || t.clip);
     this.idle.play();
     const run = clipOf(t, ROLE_FALLBACK.run);
     this.run = run ? this.mixer.clipAction(run) : null;
-    this.hasRun = !!this.run;
+    this.hasRun = !this.locomotion.usesTravelHop;
     this.cur = this.idle; // the action holding the pose
     if (this.moving) { this.moving = false; this.setMoving(true); }
   }
@@ -362,6 +365,7 @@ export class LegendView {
   }
 
   update(dt) {
+    this.locomotion?.restore();
     this.time += dt;
     if (this.seq && this.time - this.seq.t0 >= this.seq.dur) this.nextStep();
     if (this.mixer) this.mixer.update(dt);
@@ -376,6 +380,7 @@ export class LegendView {
     const st = s && s.steps[s.i];
     if (st && st.fx && FX[st.fx]) FX[st.fx](v, Math.min(1, (this.time - s.t0) / s.dur), s.n, s.dur);
     else if (!s && !this.mixer && this.t && !this.moving) FX.idle(v, this.time);
+    v.position.y += this.locomotion?.apply(this.moving, this.time, dt) || 0;
   }
 
   dispose() {

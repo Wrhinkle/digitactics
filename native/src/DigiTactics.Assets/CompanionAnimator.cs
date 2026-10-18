@@ -27,6 +27,7 @@ public sealed class CompanionAnimator
     private readonly double[,] weights;
     private readonly List<CompanionAction> actions = [];
     private readonly CompanionAction? idle, run;
+    private readonly CompanionLocomotion locomotion;
     private CompanionAction? current;
     private CompanionStep[]? sequence;
     private bool sequenceClips;
@@ -37,7 +38,8 @@ public sealed class CompanionAnimator
     public double Scale { get; }
     public double ModelYaw { get; }
     public bool Moving { get; private set; }
-    public bool HasRun => run is not null;
+    public bool HasRun => !locomotion.UsesTravelHop;
+    public CompanionLocomotionKind LocomotionKind => locomotion.Kind;
     public string? Role { get; private set; }
     public int StepIndex { get; private set; } = -1;
     public RigPose Pose { get; }
@@ -55,6 +57,7 @@ public sealed class CompanionAnimator
             var runClip = new[] { "run", "walk", "move" }.Select(name => rig.Animations.FirstOrDefault(x => x.Name == name)).FirstOrDefault(x => x is not null);
             if (runClip is not null) run = Action(runClip);
         }
+        locomotion = new(rig, visual.Source, Pose, run is not null);
         Transform = CompanionMotion.Evaluate(null, 0, scale: scale, yaw: modelYaw);
     }
     private CompanionAction Action(RigAnimation clip)
@@ -108,11 +111,13 @@ public sealed class CompanionAnimator
         Time += delta;
         if (sequence is not null && Time - started >= duration) NextStep();
         mixerTime += delta; Blend(delta);
+        double glide = locomotion.Apply(Pose, Moving, Time, delta);
         double angle = Yaw - BodyYaw; BodyYaw += Math.Atan2(Math.Sin(angle), Math.Cos(angle)) * Math.Min(1, delta * 10);
         var step = sequence?[StepIndex];
         string? effect = step?.Effect ?? (sequence is null && idle is null && !Moving ? "idle" : null);
         double progress = effect == "idle" && sequence is null ? Time : duration > 0 ? Math.Min(1, (Time - started) / duration) : 1;
         Transform = CompanionMotion.Evaluate(effect, progress, step?.Loops ?? 1, duration, Scale, ModelYaw);
+        if (glide != 0) Transform = Transform with { Position = Transform.Position with { Y = Transform.Position.Y + glide } };
     }
     private void Blend(double delta)
     {

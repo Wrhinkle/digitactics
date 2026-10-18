@@ -7,6 +7,8 @@ async function main(){
  const models=JSON.parse(fs.readFileSync(path.join(root,'native/content/models.json')));
  const motionSource=fs.readFileSync(path.join(root,'js/model-motion.js'),'utf8').replace("from 'three'",`from '${require('url').pathToFileURL(path.join(root,'vendor/three/build/three.module.js')).href}'`);
  const {modelClips}=await import('data:text/javascript;base64,'+Buffer.from(motionSource).toString('base64'));
+ const locomotionSource=fs.readFileSync(path.join(root,'js/companion-locomotion.js'),'utf8').replace("from 'three'",`from '${require('url').pathToFileURL(path.join(root,'vendor/three/build/three.module.js')).href}'`);
+ const {CompanionLocomotion}=await import('data:text/javascript;base64,'+Buffer.from(locomotionSource).toString('base64'));
  const policy=source.slice(source.indexOf('const clipOf ='),source.indexOf('// ---------- view ----------'));
  const methods=source.slice(source.indexOf('  base() {'),source.indexOf('  dispose() {'));
  const fixture=[];
@@ -26,6 +28,7 @@ async function main(){
   v.time=0;v.yaw=.3;v.body=new THREE.Object3D();v.body.rotation.y=.3;v.visual=new THREE.Object3D();v.visual.userData={rotY:.37,s:1.2};v.t={clips:Object.fromEntries(clips.map(c=>[c.name,c])),item:{data:{clips:visual.clips}},proc:visual.procedural};v.seq=null;v.moving=false;v.mixer=null;v.hasRun=false;
   v.visual.rotation.y=.37;v.visual.scale.setScalar(1.2);
   if(idle){v.mixer=new THREE.AnimationMixer(gltf.scene);v.idle=v.mixer.clipAction(idle);v.idle.play();const run=['run','walk','move'].map(n=>clips.find(c=>c.name===n)).find(Boolean);v.run=run?v.mixer.clipAction(run):null;v.hasRun=!!v.run;v.cur=v.idle;}
+  v.locomotion=new CompanionLocomotion(gltf.scene,visual.source,!!v.run);v.hasRun=!v.locomotion.usesTravelHop;
   const selected=new Set([0,nodes.length-1]);for(const skin of json.skins||[])for(const n of [skin.joints[0],skin.joints[Math.floor(skin.joints.length/2)],skin.joints.at(-1)])selected.add(n);
   const operations=[{delta:0},{delta:.03},{moving:true},{delta:.06},{play:'happy'},{delta:.3},{moving:false},{delta:.1}];
   for(const role of ['dance','sad','happy','taunt','eat','wave','hit','dance'])operations.push({play:role},...[0,.03,.09,.24,.8,1.7,2.4,3.5].map(delta=>({delta})));
