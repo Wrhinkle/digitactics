@@ -7,6 +7,7 @@ param(
 )
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
+. (Join-Path $PSScriptRoot 'NativeProcess.ps1')
 Add-Type -AssemblyName System.IO.Compression
 $utf8=New-Object System.Text.UTF8Encoding($false,$true)
 
@@ -104,8 +105,7 @@ $updatePath=Join-Path $temporary $updateName
 
 try {
     # This is the production package writer and verifier used by the launcher.
-    $packageOutput=@(& (Join-Path $PackageDirectory 'DigiTactics.Launcher.exe') 'package' (Join-Path $PackageDirectory 'app') $updatePath $version $MinimumLauncher)
-    if($LASTEXITCODE -ne 0) {throw "Native update packaging exited $LASTEXITCODE"}
+    $packageOutput=@(Invoke-Checked (Join-Path $PackageDirectory 'DigiTactics.Launcher.exe') @('package',(Join-Path $PackageDirectory 'app'),$updatePath,$version,[string]$MinimumLauncher))
     $expected=($packageOutput -join "`n") | ConvertFrom-Json
     if($expected.version -cne $version -or $expected.size -ne ([IO.FileInfo]$updatePath).Length -or $expected.sha256 -cne (Get-FileDigest $updatePath)) {throw 'Native package descriptor differs from the generated update archive.'}
 
