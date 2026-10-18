@@ -12,6 +12,15 @@ try
         return Path.GetFullPath(args[index + 1]);
     }
     string? profileDirectory = Option("--profile-directory");
+    if (args.Contains("--steam-client-smoke"))
+    {
+        string library = Option("--steam-api") ?? throw new ArgumentException("Steam smoke requires --steam-api with the Steam API DLL path.");
+        using var client = new DigiTactics.Networking.SteamClient(library, _ => false, 480);
+        var timer = System.Diagnostics.Stopwatch.StartNew(); int callbacks = 0;
+        while (timer.Elapsed.TotalSeconds < 2) { callbacks += client.PumpCallbacks(); Thread.Sleep(10); }
+        Console.WriteLine($"Steam client smoke passed: app {client.AppId}, player identity available, relay-only messages initialized, {callbacks} callbacks dispatched.");
+        return 0;
+    }
     if (Option("--import-profile") is { } importFile)
     {
         var profile = new NativeProfileStore(profileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native"));

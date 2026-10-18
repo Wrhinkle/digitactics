@@ -13,6 +13,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
 
 #define EXPORT extern "C" __declspec(dllexport)
 
@@ -50,6 +51,50 @@ static std::string lastSent;
 static int lastFlags, lastChannel;
 EXPORT int FakeSteam_LastFlags() { return lastFlags; }
 EXPORT int FakeSteam_LastChannel() { return lastChannel; }
+
+// Lifecycle and manual dispatch controls for the native C# client.
+static int initFailure, initCalls, shutdownCalls, callbackReleases, callbackErrors;
+static bool invalidIdentity;
+EXPORT void FakeSteam_InvalidIdentity(int value) { invalidIdentity = value != 0; }
+struct CallbackMsg { int user, id; void *data; int size; };
+static_assert(sizeof(CallbackMsg) == 24, "callback message");
+struct FakeCallback { int id, size; std::vector<uint8_t> bytes; };
+static std::deque<FakeCallback> callbacks;
+static bool callbackActive;
+EXPORT void FakeSteam_FailInit(int status) { initFailure = status; }
+EXPORT int FakeSteam_InitCount() { return initCalls; }
+EXPORT int FakeSteam_ShutdownCount() { return shutdownCalls; }
+EXPORT int FakeSteam_CallbackReleases() { return callbackReleases; }
+EXPORT int FakeSteam_CallbackErrors() { return callbackErrors; }
+EXPORT void FakeSteam_Callback(int id, const void *data, int size) {
+  FakeCallback cb; cb.id=id; cb.size=size;
+  if (size > 0) cb.bytes.assign((const uint8_t *)data, (const uint8_t *)data + size);
+  callbacks.push_back(cb);
+}
+EXPORT int SteamAPI_InitFlat(char *error) { initCalls++; if (initFailure && error) strcpy(error, "Fake Steam is unavailable"); return initFailure; }
+EXPORT void SteamAPI_Shutdown() { shutdownCalls++; }
+EXPORT void SteamAPI_ManualDispatch_Init() {}
+EXPORT int SteamAPI_GetHSteamPipe() { return 1; }
+EXPORT void SteamAPI_ManualDispatch_RunFrame(int pipe) { if (pipe != 1) callbackErrors++; }
+EXPORT bool SteamAPI_ManualDispatch_GetNextCallback(int pipe, CallbackMsg *out) {
+  if (pipe != 1 || !out || callbackActive) { callbackErrors++; return false; }
+  if (callbacks.empty()) return false;
+  auto &cb=callbacks.front(); out->user=1; out->id=cb.id; out->data=cb.bytes.empty()?nullptr:cb.bytes.data(); out->size=cb.size;
+  callbackActive=true; return true;
+}
+EXPORT void SteamAPI_ManualDispatch_FreeLastCallback(int pipe) {
+  if (pipe != 1 || !callbackActive) { callbackErrors++; return; }
+  callbacks.pop_front(); callbackActive=false; callbackReleases++;
+}
+EXPORT bool SteamAPI_ManualDispatch_GetAPICallResult(int pipe, uint64_t call, void *data, int size, int expected, bool *failed) {
+  if (failed) *failed = call != 77;
+  if (pipe != 1 || call != 77 || size != 4 || expected != 504 || !data) return false;
+  uint32_t value=0x12345678; memcpy(data,&value,4); return true;
+}
+EXPORT void *SteamAPI_SteamUser_v023() { return ifaces[1]; }
+EXPORT uint64_t SteamAPI_ISteamUser_GetSteamID(void *) { return invalidIdentity ? 0 : self; }
+EXPORT const char *SteamAPI_ISteamFriends_GetPersonaName(void *) { return "Native Test Tamer"; }
+EXPORT uint32_t SteamAPI_ISteamUtils_GetAppID(void *) { return 480; }
 EXPORT bool SteamAPI_ISteamNetworkingUtils_SetGlobalConfigValueInt32(void *, int key, int32_t value) { return key == 104 && value == 0; }
 EXPORT bool SteamAPI_ISteamNetworkingMessages_CloseSessionWithUser(void *, const SteamNetworkingIdentity *id) {
   if (!id) return false;
