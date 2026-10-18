@@ -13,7 +13,7 @@ internal sealed class MusicSoundControlsSmoke
     private readonly GameAudio audio;
     private readonly CustomMusicController controller;
     private readonly string[] paths;
-    private int step,cooldown=3,pickerCalls,frames,played,previews;
+    private int step,cooldown=3,pickerCalls,frames,played,previews,builtinStep;
     private bool down,removed,done;
     private string? previousTrack,captureState;
     public string PreviewEvidence=>previews==3?"both source slider previews dispatched":"slider preview dispatch skipped without an audio device";
@@ -29,6 +29,13 @@ internal sealed class MusicSoundControlsSmoke
         screen.PickMusicFiles=()=>{pickerCalls++;return Task.FromResult(Array.Empty<string>());};
     }
     private static void Require(bool condition,string message){if(!condition)throw new InvalidOperationException(message);}
+    private bool MusicStatusVisible()
+    {
+        var viewport=screen.MatchSoundScrollBounds;var status=screen.MusicStatusBounds;
+        if(status.Min.Y>=viewport.Min.Y+2&&status.Max.Y<=viewport.Max.Y-2)return true;
+        ImGui.GetIO().AddMousePosEvent(viewport.Max.X-3,(viewport.Min.Y+viewport.Max.Y)/2);
+        ImGui.GetIO().AddMouseWheelEvent(0,status.Min.Y<viewport.Min.Y+2?2:-2);cooldown=3;return false;
+    }
     private void Click(string id,bool slider=false)
     {
         if(!screen.Buttons.TryGetValue(id,out var at))return;
@@ -56,6 +63,12 @@ internal sealed class MusicSoundControlsSmoke
         {
             case 0:Click("audioSettings");break;
             case 1:
+                // Exercise both real built-in voices, then restore the planning
+                // fixture before the existing source/chooser interaction checks.
+                if(builtinStep==0){if(!MusicStatusVisible())return;Require(screen.MusicStatusText=="Now playing: Tamer's Morning (planning theme)","Planning track name/phase was not drawn from the source catalog.");captureState="sound-built-in-planning";builtinStep++;cooldown=2;return;}
+                if(builtinStep==1){audio.Music("combat");builtinStep++;cooldown=3;return;}
+                if(builtinStep==2){if(!MusicStatusVisible())return;Require(screen.MusicStatusText=="Now playing: Digital World Showdown (combat theme)","Combat track name/phase did not follow the active built-in voice.");captureState="sound-built-in-combat";builtinStep++;cooldown=2;return;}
+                if(builtinStep==3){audio.Music("planning");builtinStep++;cooldown=3;return;}
                 Require(!screen.MatchMusicNextEnabled,"Empty music library enables Next track.");captureState="sound-empty";Click("matchMusicOwn");break;
             case 2:
                 Require(pickerCalls==1&&audio.MusicSource=="builtin"&&controller.Library!.Tracks.Count==0,"Empty live own-source did not open chooser or cancel preserved the wrong source.");
@@ -63,15 +76,16 @@ internal sealed class MusicSoundControlsSmoke
             case 3:
                 if(controller.Library?.Tracks.Count!=2||!controller.Playing||!screen.MatchMusicNextEnabled)return;
                 Require(pickerCalls==2&&audio.MusicSource=="own","Live picker import did not select own source.");
+                Require(screen.MusicStatusText=="Now playing: "+controller.Library.Tracks.Single(t=>t.Id==controller.CurrentTrackId).Name,"Custom now-playing label lost the literal filename.");
                 previousTrack=controller.CurrentTrackId;captureState="sound-playing";Click("nextMusic");break;
             case 4:
                 if(!controller.Playing)return;
                 Require(controller.CurrentTrackId!=previousTrack,"Actual Next track button did not advance playback.");Click("mute");break;
             case 5:
-                Require(audio.Muted&&!screen.MatchMusicNextEnabled,"Muted music enables Next track.");Click("mute");break;
+                Require(audio.Muted&&!screen.MatchMusicNextEnabled,"Muted music enables Next track.");Require(screen.MusicStatusText=="Music is off.","Muted live Sound did not show the original status.");Click("mute");break;
             case 6:if(controller.Playing&&screen.MatchMusicNextEnabled)Click("matchMusicOwn");break;
             case 7:
-                Require(audio.MusicSource=="builtin"&&!screen.MatchMusicNextEnabled,"Built-in source enables custom Next track.");Click("matchMusicOwn");break;
+                Require(audio.MusicSource=="builtin"&&!screen.MatchMusicNextEnabled,"Built-in source enables custom Next track.");Require(screen.MusicStatusText=="Now playing: Tamer's Morning (planning theme)","Returning to built-in music did not restore its name/phase.");Click("matchMusicOwn");break;
             case 8:
                 if(!controller.Playing)return;
                 if(!removed){Require(controller.Remove(controller.Library!.Tracks.First(t=>t.Id!=controller.CurrentTrackId).Id),"Could not seed single-track UI fixture.");removed=true;return;}

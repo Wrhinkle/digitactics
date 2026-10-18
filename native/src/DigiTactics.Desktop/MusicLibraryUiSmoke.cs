@@ -40,6 +40,7 @@ internal sealed class MusicLibraryUiSmoke : IDisposable
         if(controller.LibraryBusy){cooldown=3;return;}
         if(cooldown-->0)return;
         if(down) { ImGui.GetIO().AddMouseButtonEvent(0,false); down=false;if(sourceClick)sourceStep++;else if(!navigationClick)step++;navigationClick=sourceClick=false;cooldown=3;return; }
+        if(step==1&&screen.MusicStatusText!="Built-in: Tamer's Morning for planning, Digital World Showdown for combat.")throw new InvalidOperationException("Idle music library did not name both original built-in themes.");
         if(step==2)
         {
             if(controller.Library?.Tracks.Count!=2) return;
@@ -52,6 +53,7 @@ internal sealed class MusicLibraryUiSmoke : IDisposable
             var saved=new MusicLibrary(Path.Combine(directory,"music"));
             if(saved.Tracks.Single(t=>t.Id==first).Use!="planning" || saved.Tracks.Single(t=>t.Id==second).Use!="combat") throw new InvalidOperationException("Phase buttons did not persist assignments.");
             if(sourceStep==1&&audio.MusicSource!="builtin"||sourceStep==2&&audio.MusicSource!="own")throw new InvalidOperationException("Music source choices did not switch the active source.");
+            if(screen.MusicStatusText!=(sourceStep==1?"Built-in: Tamer's Morning for planning, Digital World Showdown for combat.":"Your files play during a game."))throw new InvalidOperationException("Idle source selection did not update the original music status.");
             if(screen.MusicNextEnabled)throw new InvalidOperationException("Next track is enabled without active custom music playback.");
         }
         if(step==6 && controller.Library!.Tracks.Count!=2) throw new InvalidOperationException("Cancel removal deleted a track.");
@@ -89,10 +91,11 @@ internal sealed class MusicLibraryUiSmoke : IDisposable
     public bool Verify(int2 size,string? capture)
     {
         if(matchControls is not null)done=matchControls.Verify(size,capture);
+        if(step==1&&capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-built-in.bmp"),size.X,size.Y);
         if(step==14 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-clear.bmp"),size.X,size.Y);
         if(step==5 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-remove.bmp"),size.X,size.Y);
         if(step==4 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-library.bmp"),size.X,size.Y);
-        if(done) Console.WriteLine("Music library UI passed: Settings navigation, empty own-source chooser, source switching, multi-file import, literal names, phase assignment persistence, cancel/confirm removal, last-track fallback, cancelled/confirmed bulk clear and saved source; live-match empty/cancel chooser, playback/Next/mute/source/single-track guards and nested return; "+matchControls!.PreviewEvidence+".");
+        if(done) Console.WriteLine("Music library UI passed: Settings navigation, empty own-source chooser, source switching, multi-file import, literal names, phase assignment persistence, cancel/confirm removal, last-track fallback, cancelled/confirmed bulk clear and saved source; live-match empty/cancel chooser, playback/Next/mute/source/single-track guards and nested return; original built-in track names, planning/combat phase and idle/playing/muted statuses; "+matchControls!.PreviewEvidence+".");
         return done;
     }
     public void Dispose()

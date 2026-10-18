@@ -5,7 +5,8 @@ using Brutal.SdlApi;
 namespace DigiTactics.Desktop;
 
 internal sealed record AudioClipInfo(string File, int Frames, int? LoopFrame, int? EndFrame, double Gap, double? Duration);
-internal sealed record AudioManifest(int SampleRate, int Channels, Dictionary<string, AudioClipInfo> Clips);
+internal sealed record AudioTrackInfo(string Name);
+internal sealed record AudioManifest(int SampleRate, int Channels, Dictionary<string, AudioClipInfo> Clips, Dictionary<string, AudioTrackInfo>? Tracks = null);
 
 /// <summary>One bounded PCM mixer feeding BRUTAL SDL. Audio never reads or advances gameplay RNG.</summary>
 internal sealed unsafe partial class GameAudio : IDisposable
@@ -44,6 +45,8 @@ internal sealed unsafe partial class GameAudio : IDisposable
         return EvaluateDuck(at,duckStart,duckEnd,duckFrom);
     }
     private string? music;
+    internal string? BuiltinMusicPhase => music;
+    internal string BuiltinTrackName(string phase) => manifest.Tracks?.GetValueOrDefault(phase)?.Name ?? (phase == "combat" ? "Combat" : "Planning");
     public bool Available => !stream.IsNull();
     public string? Error { get; private set; }
     public float EffectsVolume { get; set; } = .8f;

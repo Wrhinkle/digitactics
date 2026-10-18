@@ -82,6 +82,7 @@ function wave(samples) {
       return result;
     }
     const inventory = await render(null);
+    if(!mysteryOnly)manifest.tracks=inventory.tracks;
     const requests = inventory.sounds.filter(id => !['cast', 'tick', 'hit', 'killscreen', 'egg_reveal', 'coins'].includes(id))
       .map(id => ({ key: id, kind: 'sound', id }));
     for (const last of [false, true]) requests.push({ key: `tick_${last ? 'last' : 'normal'}`, id: 'tick', options: { last } });

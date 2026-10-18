@@ -6,10 +6,24 @@ namespace DigiTactics.Desktop;
 internal sealed partial class MatchScreen
 {
     internal bool MatchMusicNextEnabled {get;private set;}
+    internal string MusicStatusText {get;private set;}="";
+    internal (float2 Min,float2 Max) MusicStatusBounds {get;private set;}
     internal (float2 Min,float2 Max) MatchSoundScrollBounds {get;private set;}
     // The source popover enables Next only while custom music is actually playing.
     // A selected track ID also exists while its decoder is still opening.
     private bool CanAdvanceMusic(CustomMusicController controller)=>audio.MusicSource=="own"&&controller.Playing&&!audio.Muted&&!audio.MusicOff&&audio.MusicVolume>.001f&&controller.Library?.Tracks.Count>1;
+    private void MusicStatus(CustomMusicController controller)
+    {
+        string? current=controller.Playing?controller.Library?.Tracks.FirstOrDefault(t=>t.Id==controller.CurrentTrackId)?.Name:null;
+        if(audio.Muted||audio.MusicOff)MusicStatusText="Music is off.";
+        else if(current is not null)MusicStatusText="Now playing: "+current;
+        else if(audio.BuiltinMusicPhase is {} phase)
+            MusicStatusText=$"Now playing: {audio.BuiltinTrackName(phase)} ({(phase=="combat"?"combat":"planning")} theme)";
+        else if(audio.MusicSource=="own"&&controller.Library?.Tracks.Count>0)MusicStatusText="Your files play during a game.";
+        else MusicStatusText=$"Built-in: {audio.BuiltinTrackName("planning")} for planning, {audio.BuiltinTrackName("combat")} for combat.";
+        UiText.Wrapped(MusicStatusText);
+        MusicStatusBounds=(ImGui.GetItemRectMin(),ImGui.GetItemRectMax());
+    }
     private void AudioControls()
     {
         MatchSoundScrollBounds=(ImGui.GetWindowDrawList().GetClipRectMin(),ImGui.GetWindowDrawList().GetClipRectMax());
@@ -41,7 +55,7 @@ internal sealed partial class MatchScreen
             if(controller.Library is {} library)
             {
                 UiText.Wrapped($"{library.Tracks.Count} saved music "+(library.Tracks.Count==1?"track":"tracks"));
-                if(controller.Playing&&controller.CurrentTrackId is {} id&&library.Tracks.FirstOrDefault(t=>t.Id==id) is {} track)UiText.Wrapped("Now playing: "+track.Name);
+                MusicStatus(controller);
                 MatchMusicNextEnabled=CanAdvanceMusic(controller);
                 ImGui.BeginDisabled(!MatchMusicNextEnabled);
                 if(Button("nextMusic","Next track"))controller.Next();

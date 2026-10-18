@@ -47,8 +47,7 @@ internal sealed partial class MatchScreen
             else BeginMusicSelection();
         }
         ImGui.EndDisabled();
-        string? current=controller.Library?.Tracks.FirstOrDefault(t=>t.Id==controller.CurrentTrackId)?.Name;
-        UiText.Wrapped(audio.Muted||audio.MusicOff?"Music is off.":own?current is null?"Your files play during a game.":"Now playing: "+current:"Built-in themes play during planning and combat.");
+        MusicStatus(controller);
         ImGui.PushStyleColor(ImGuiCol.Text,ClientMuted);
         UiText.Wrapped("Add audio files you own. They stay on this computer and are never uploaded. Your files replace the built-in soundtrack and play in shuffled order."u8);ImGui.PopStyleColor();ImGui.Spacing();
         ImGui.BeginDisabled(controller.LibraryBusy || musicPicker is not null || controller.Library is null || closeAfterFileOperations);
