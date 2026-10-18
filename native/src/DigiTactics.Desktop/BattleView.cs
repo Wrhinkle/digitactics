@@ -16,6 +16,8 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
     private readonly RosterModelView bench = new();
     internal IReadOnlySet<int> RenderedBenchUnits => bench.RenderedUnits;
+    public int? DraggedUnit { get => bench.DraggedUnit; set => bench.DraggedUnit = value; }
+    public WorldPosition? DragPosition { get => bench.DragPosition; set => bench.DragPosition = value; }
     private readonly ArenaEnvironment board;
     private readonly bool ownsBoard;
     public string BoardTheme { get; set; } = "file-island";

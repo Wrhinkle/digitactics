@@ -17,6 +17,8 @@ internal sealed class PlanningView : IDisposable
     public double SceneTime { get=>board.Time; set=>board.Time=value; }
     public int DrawCalls { get; private set; }
     public IReadOnlySet<int> RenderedUnits => roster.RenderedUnits;
+    public int? DraggedUnit { get => roster.DraggedUnit; set => roster.DraggedUnit = value; }
+    public WorldPosition? DragPosition { get => roster.DragPosition; set => roster.DragPosition = value; }
     public void Update(Ruleset rules, MatchPlayer player, double delta)
     {
         SceneTime+=Math.Clamp(delta,0,.1);

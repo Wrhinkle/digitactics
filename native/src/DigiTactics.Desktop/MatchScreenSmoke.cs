@@ -31,6 +31,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private bool reservePurchased, purchasingReserve;
     private int scoutSwitches;
     private bool switchingScout;
+    private int dragStep, draggedId;
     public void Input(MatchScreen screen)
     {
         emoteTime+=100;screen.AiEmoteClock=()=>emoteTime;screen.AiEmoteRandom=()=>.01;
@@ -53,6 +54,40 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (cooldown-- > 0 || index >= commands.Length) return;
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
+        if (index == 9 && dragStep < 10)
+        {
+            var dragIo = ImGui.GetIO();
+            var boardPoint = screen.Buttons["hex/3/4"];
+            var benchPoint = screen.Buttons["arenaBench/8"];
+            var roster = screen.Session!.State.Players[0].Roster;
+            switch (dragStep)
+            {
+                case 0:
+                    draggedId = roster.At(UnitSpot.Board(3, 4))!.Id;
+                    dragIo.AddMousePosEvent(boardPoint.X, boardPoint.Y); dragIo.AddMouseButtonEvent(0, true); break;
+                case 1: dragIo.AddMousePosEvent(benchPoint.X, benchPoint.Y); break;
+                case 2:
+                    if (!screen.ArenaDragging || screen.ArenaDropBench != 8) throw new InvalidOperationException("Arena drag did not start or highlight its bench destination.");
+                    dragIo.AddMouseButtonEvent(0, false); break;
+                case 3:
+                    if (roster.At(UnitSpot.Bench(8))?.Id != draggedId) throw new InvalidOperationException("Arena drag did not move the board unit to its bench destination.");
+                    dragIo.AddMouseButtonEvent(0, true); break;
+                case 4: dragIo.AddMousePosEvent(boardPoint.X, boardPoint.Y); break;
+                case 5: dragIo.AddMouseButtonEvent(0, false); break;
+                case 6:
+                    if (roster.At(UnitSpot.Board(3, 4))?.Id != draggedId || roster.At(UnitSpot.Bench(8)) is not null || screen.ArenaDragging)
+                        throw new InvalidOperationException("Arena drag did not return the unit or clear pointer capture.");
+                    dragIo.AddMouseButtonEvent(0, true);
+                    break;
+                case 7: dragIo.AddMousePosEvent(0, 0); break;
+                case 8: dragIo.AddMouseButtonEvent(0, false); break;
+                case 9:
+                    if (roster.At(UnitSpot.Board(3, 4))?.Id != draggedId || screen.ArenaDragging || screen.ArenaDropBench != -1)
+                        throw new InvalidOperationException("Dropping outside the arena moved the unit or retained drag feedback.");
+                    break;
+            }
+            dragStep++; cooldown = 3; return;
+        }
         var io = ImGui.GetIO();
         if (down)
         {
@@ -89,6 +124,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (index == 9 && dragStep == 2 && cooldown == 1 && capture is not null)
+            FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "drag.bmp"), size.X, size.Y);
         if (collectionProfile is not null && !collectionVerified)
         {
             if (collectionIndex == 4 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "collection.bmp"), size.X, size.Y);

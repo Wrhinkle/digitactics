@@ -14,6 +14,8 @@ internal sealed class RosterModelView : IDisposable
     private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
     private readonly List<(PlanningUnit Unit, WorldPosition Position, int Tier)> entries = [];
     public HashSet<int> RenderedUnits { get; } = [];
+    public int? DraggedUnit { get; set; }
+    public WorldPosition? DragPosition { get; set; }
 
     public void Update(Ruleset rules, IEnumerable<(PlanningUnit Unit, WorldPosition Position)> roster, double delta)
     {
@@ -43,7 +45,8 @@ internal sealed class RosterModelView : IDisposable
         foreach (var entry in entries)
         {
             var actor = actors[entry.Unit.Id];
-            var view = new CombatVisual(entry.Unit.Id, entry.Position, Math.PI, default, 1, 0, 0, 1, null, false);
+            var position = entry.Unit.Id == DraggedUnit && DragPosition is { } target ? target : entry.Position;
+            var view = new CombatVisual(entry.Unit.Id, position, Math.PI, default, 1, 0, 0, 1, null, false);
             renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.Place(view, entry.Unit.Stage, entry.Tier), camera, transparent);
             if (!renderer.ShadowPass)
             {

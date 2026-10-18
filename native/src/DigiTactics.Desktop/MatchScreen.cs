@@ -180,6 +180,7 @@ internal sealed partial class MatchScreen : IDisposable
     }
     private void Watch(int player)
     {
+        CancelArenaDrag();
         viewed = player;
         if (Session is null || Session.Rounds.Phase == MatchPhase.Planning) return;
         var next = Session.Battles.FirstOrDefault(m => m.A == player || !m.Ghost && m.B == player ||
@@ -251,6 +252,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
+        if (Session is null) CancelArenaDrag();
         if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
         Header(); if (Session is null) return;
         Roster(); Sidebar();
@@ -258,7 +260,7 @@ internal sealed partial class MatchScreen : IDisposable
         else
         {
             Window("Arena", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-            CompanionPointer(); ImGui.End();
+            CompanionPointer(); ArenaPointer(); ImGui.End();
             battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height);
         }
         CompanionClickMark();
@@ -331,29 +333,17 @@ internal sealed partial class MatchScreen : IDisposable
     private void Board()
     {
         Window("Arena", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-        CompanionPointer();
-        ImGui.Text(viewed == localSeat ? "Choose a unit or item, then a hex. Right-click to move your companion." : $"Scouting {Session!.State.Players[viewed].Name}");
+        CompanionPointer(); ArenaPointer();
+        ImGui.Text(viewed == localSeat ? "Drag units between the bench and board. Right-click to move your companion." : $"Scouting {Session!.State.Players[viewed].Name}");
         for (int row = 4; row < 8; row++) for (int column = 0; column < 7; column++)
         {
-            var point = PlanningView.Cell(column, row, Width, Height); var spot = UnitSpot.Board(column, row);
-            var unit = Session!.State.Players[viewed].Roster.At(spot);
-            if (IsSpectating && unit is null) continue;
-            ImGui.SetCursorScreenPos(new(Left + point.X - 30, Top + point.Y + 10));
-            ImGui.BeginDisabled(viewed != localSeat);
-            if (Button($"hex/{column}/{row}", unit is null ? "+" : new string('*', unit.Stage + 1), 60, 25, selectedUnit is not null && selectedUnit == unit?.Id)) Select(spot);
-            ImGui.EndDisabled();
-            if (unit is not null) UnitTooltip(unit.Line, unit.Stage);
+            var point = PlanningView.Cell(column, row, Width, Height);
+            Buttons[$"hex/{column}/{row}"] = new(Left + point.X, Top + point.Y);
         }
         for (int i = 0; i < 9; i++)
         {
             var point = PlanningView.Bench(i, Width, Height);
-            var unit = Session!.State.Players[viewed].Roster.At(UnitSpot.Bench(i));
-            if (IsSpectating && unit is null) continue;
-            ImGui.SetCursorScreenPos(new(Left + point.X - 25, Top + point.Y + 10));
-            ImGui.BeginDisabled(viewed != localSeat || Session.State.Over || !Human.Alive);
-            if (Button($"arenaBench/{i}", unit is null ? "+" : new string('*', unit.Stage + 1), 50, 25, selectedUnit is not null && selectedUnit == unit?.Id)) Select(UnitSpot.Bench(i));
-            ImGui.EndDisabled();
-            if (unit is not null) UnitTooltip(unit.Line, unit.Stage);
+            Buttons[$"arenaBench/{i}"] = new(Left + point.X, Top + point.Y);
         }
         ImGui.End();
     }
