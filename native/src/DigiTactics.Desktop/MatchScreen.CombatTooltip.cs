@@ -30,6 +30,7 @@ internal sealed partial class MatchScreen
         ImGui.Separator(); UiText.Wrapped(ability.Name);
         if (ability.ScaledDescription is null) UiText.Wrapped("Ability description at base ability power:"u8);
         UiText.Wrapped(ability.Description);
+        DrawUnitNotes(unit.Entry);
         foreach (string id in unit.Items)
         {
             ImGui.Separator();

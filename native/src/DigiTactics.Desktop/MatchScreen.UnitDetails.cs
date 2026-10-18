@@ -10,9 +10,10 @@ internal sealed partial class MatchScreen
     private void UnitDetails(PlanningUnit unit)
     {
         DetailedUnit = unit.Id; DetailedItems = unit.Items;
-        UnitDetails(unit.Line, unit.Stage, unit.Items, unit.BonusTraits);
+        UnitDetails(unit.Line, unit.Stage, unit.Items, unit.BonusTraits,unit.Mods);
     }
-    private void UnitDetails(string lineId, int stage, string[]? items = null, Dictionary<string,int>? bonusTraits = null)
+    private void UnitDetails(CombatEntry unit)=>UnitDetails(unit.Line,unit.Stage,unit.Items,unit.BonusTraits,notes:unitNotes.Describe(Rules.Id,unit));
+    private void UnitDetails(string lineId, int stage, string[]? items = null, Dictionary<string,int>? bonusTraits = null,System.Text.Json.JsonElement? mods=null,string[]? notes=null)
     {
         var line = Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == lineId);
         var stats = UnitValues.Stats(line, stage);
@@ -28,6 +29,7 @@ internal sealed partial class MatchScreen
         var ability = text.Ability(Rules.Id, lineId, stage);
         UiText.Wrapped(ability.Name);
         UiText.Wrapped(ability.Description);
+        DrawUnitNotes(notes??unitNotes.Describe(Rules.Id,lineId,mods));
         foreach (string id in items ?? [])
         {
             ImGui.Separator();
