@@ -21,6 +21,7 @@ internal sealed partial class MatchScreen
         if (farmPet is null || !farm!.CanTrain(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), farmPet)) return;
         training = TrainingGame.Create(name); trainingName = name; trainingPet = farmPet;
         trainingTime = -1.5; trainingScore = null; trainingSaved = false;
+        farmView?.StartTraining(trainingPet);
     }
     private void UpdateTraining(double delta, double wallDelta)
     {
@@ -40,6 +41,7 @@ internal sealed partial class MatchScreen
     {
         farm!.Act(trainingTimestamp, FarmCareAction.Train, trainingPet, trainingName, score: trainingScore!.Value);
         trainingSaved = farm.Error is null;
+        if (trainingSaved) farmView?.FinishTraining(trainingPet, trainingScore.Value);
     }
     private void TrainingInput(int value)
     {

@@ -17,8 +17,9 @@ internal sealed partial class MatchScreen
     public string? FarmTheme => farmView?.Theme;
     private void FarmAct(FarmCareAction action, string? option = null, int pile = 0)
     {
-        if (!farm!.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), action, farmPet, option, pile)) return;
-        farmView?.React(farmPet, action switch { FarmCareAction.Feed => "eat", FarmCareAction.Scold => "sad", FarmCareAction.Praise or FarmCareAction.Play or FarmCareAction.Pet => "happy", _ => "wave" });
+        string? before = farm!.Save;
+        farm.Act(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), action, farmPet, option, pile);
+        if (farm.Error is null && farm.LastResult is { } receipt) farmView?.Care(farmPet, action, option, receipt, before);
     }
     private void UpdateFarmView(double delta)
     {

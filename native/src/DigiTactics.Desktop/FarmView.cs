@@ -83,6 +83,28 @@ internal sealed class FarmView : IDisposable
     }
     public void Update(double delta) => choreography.Update(delta);
     public void React(string? id, string role) { if (id is not null && actors.TryGetValue(id, out var actor)) actor.Animator.Play(role); }
+    public void StartTraining(string id) => choreography.StartTraining(id);
+    public void FinishTraining(string id, double score) => choreography.FinishTraining(id, score);
+    public void Care(string? id, FarmCareAction action, string? option, JsonObject receipt, string? before)
+    {
+        bool Flag(string key) => receipt[key]?.GetValue<bool>() == true;
+        if (!Flag("ok")) { if (action == FarmCareAction.Feed && Flag("refused")) React(id, "taunt"); return; }
+        if (action == FarmCareAction.Clean)
+        {
+            var pets = before is null ? null : JsonNode.Parse(before)?["pets"];
+            foreach (string resident in actors.Keys) if (pets?[resident]?["poop"]?.AsArray().Count > 0) React(resident, "happy");
+        }
+        if (id is null) return;
+        switch (action)
+        {
+            case FarmCareAction.Feed: choreography.Feed(id); break;
+            case FarmCareAction.Pet: choreography.Pet(id); break;
+            case FarmCareAction.Play: choreography.Play(id, option); break;
+            case FarmCareAction.Cure: React(id, "happy"); break;
+            case FarmCareAction.Praise: React(id, Flag("spoiled") ? "taunt" : "happy"); break;
+            case FarmCareAction.Scold: React(id, Flag("unfair") ? "sad" : "hit"); break;
+        }
+    }
     private static (Matrix4x4 Camera, Vector3 Eye) Camera(int width, int height)
     {
         float aspect = (float)width / height;

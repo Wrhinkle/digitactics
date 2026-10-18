@@ -46,7 +46,39 @@ internal static class FarmChoreographyChecks
                 frame++;
             }
         }
-        Console.WriteLine($"Farm choreography: {checks} original movement, social, sleep and animation-command checks passed.");
+        checks += CareTransitions();
+        Console.WriteLine($"Farm choreography: {checks} movement, social, sleep, care and animation-command checks passed.");
+        return checks;
+    }
+    private static int CareTransitions()
+    {
+        int checks = 0;
+        void Check(bool condition, string name) { checks++; if (!condition) throw new InvalidOperationException("Farm care choreography: " + name); }
+        var events = new List<string[]>(); var scene = new FarmChoreography(() => .5);
+        var a = scene.Add("a", new View("a", true, events), -2, 0);
+        var b = scene.Add("b", new View("b", true, events), 2, 0);
+        FarmChoreography.WalkTo(a, 1, 1); scene.Update(.1); scene.Feed("a");
+        double x = a.X, z = a.Z; scene.Update(.5);
+        Check(a.X == x && a.Z == z && a.Mode == "idle" && a.Busy > 1, "feeding holds position during eating");
+        Check(events.Any(e => e.SequenceEqual(new[] { "a", "play", "eat" })), "eat animation");
+        a.Busy = 2; a.Needs = a.Needs with { Tantrum = true }; scene.Pet("a");
+        Check(a.Busy == 2 && events.Last()[2] == "taunt", "petting retains longer busy period and tantrum reaction");
+        Check(Math.Abs(a.View.Yaw - Math.Atan2(-a.X, 8 - a.Z)) < 1e-10, "pet faces camera");
+        a.Needs = a.Needs with { Asleep = true }; int count = events.Count; scene.Pet("a");
+        Check(events.Count == count, "sleeping pet remains undisturbed");
+        a.Needs = a.Needs with { Asleep = false, Tantrum = false }; a.Busy = 0;
+        scene.Play("a", "b");
+        double dx = b.TargetX - a.TargetX, dz = b.TargetZ - a.TargetZ;
+        Check(a.Mode == "walk" && b.Mode == "walk" && Math.Abs(Math.Sqrt(dx * dx + dz * dz) - .8) < 1e-10, "pair approaches opposite sides of midpoint");
+        for (int i = 0; i < 100 && a.Busy <= 0; i++) scene.Update(.05);
+        Check(a.Busy > 0 && b.Busy > 0 && a.Mode == "idle" && b.Mode == "idle", "arrival starts both play animations");
+        scene.Play("a", null); Check(a.Busy == 2.4 && events.Last()[2] == "dance", "solo play");
+        a.Busy = 0; scene.Remove("b"); scene.StartTraining("a");
+        Check(a.TargetX == 3 && a.TargetZ == 1.8 && a.Mode == "walk", "training station destination");
+        for (int i = 0; i < 200 && a.Mode == "walk"; i++) scene.Update(.05);
+        Check(a.Mode == "idle" && a.View.Yaw == .6, "training arrival faces equipment");
+        scene.FinishTraining("a", .6); Check(a.Busy == 1.5 && events.Last()[2] == "happy", "successful training reaction");
+        scene.FinishTraining("a", .59); Check(events.Last()[2] == "sad", "low score training reaction");
         return checks;
     }
 }

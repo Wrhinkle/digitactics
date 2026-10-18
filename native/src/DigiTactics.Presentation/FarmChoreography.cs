@@ -44,6 +44,33 @@ public sealed class FarmChoreography(Func<double>? random = null)
         residents.Add(id, actor); return actor;
     }
     public bool Remove(string id) => residents.Remove(id);
+    public void Feed(string id)
+    {
+        if (!residents.TryGetValue(id, out var a)) return;
+        a.Mode = "idle"; a.Busy = 1.6; a.View.Play("eat");
+    }
+    public void Pet(string id)
+    {
+        if (!residents.TryGetValue(id, out var a) || a.Needs.Asleep) return;
+        a.View.Play(a.Needs.Tantrum ? "taunt" : "happy");
+        a.View.Yaw = Math.Atan2(-a.X, 8 - a.Z); a.Busy = Math.Max(a.Busy, .8);
+    }
+    public void Play(string id, string? mate)
+    {
+        if (!residents.TryGetValue(id, out var a)) return;
+        if (mate is null || !residents.TryGetValue(mate, out var b)) { PlayPair(a, null); return; }
+        ApproachPair(a, b);
+    }
+    public void StartTraining(string id)
+    {
+        if (!residents.TryGetValue(id, out var a)) return;
+        a.GoingToBed = false; WalkTo(a, 3, 1.8, () => a.View.Yaw = .6);
+    }
+    public void FinishTraining(string id, double score)
+    {
+        if (!residents.TryGetValue(id, out var a)) return;
+        a.View.Play(score >= .6 ? "happy" : "sad"); a.Busy = 1.5;
+    }
     public static void WalkTo(FarmResident actor, double x, double z, Action? arrived = null)
     { actor.TargetX = x; actor.TargetZ = z; actor.Mode = "walk"; actor.Arrived = arrived; }
     private void Wander(FarmResident actor)
@@ -64,6 +91,10 @@ public sealed class FarmChoreography(Func<double>? random = null)
         var others = residents.Values.Where(x => x != actor && x.Mode == "idle" && !x.Needs.Asleep && !x.Needs.Sick && x.Busy <= 0).ToArray();
         if (others.Length == 0) { actor.Wait = 1; return; }
         var other = others[(int)(random() * others.Length)];
+        ApproachPair(actor, other);
+    }
+    private void ApproachPair(FarmResident actor, FarmResident other)
+    {
         double mx = (actor.X + other.X) / 2, mz = (actor.Z + other.Z) / 2, angle = Math.Atan2(other.Z - actor.Z, other.X - actor.X);
         WalkTo(actor, mx - Math.Cos(angle) * .4, mz - Math.Sin(angle) * .4, () => PlayPair(actor, other));
         WalkTo(other, mx + Math.Cos(angle) * .4, mz + Math.Sin(angle) * .4);

@@ -2272,3 +2272,21 @@ captures were inspected.
 This supersedes the stationary-resident limitation above. Care-event routing,
 pile visuals, moving room decorations, snow, night lighting, shadows, material
 polish and label improvements remain part of the active full-port goal.
+
+### Farm care movement and reactions
+
+Successful feeding now pauses resident movement for the original eating period.
+Petting faces the camera, respects sleep and tantrums, and preserves a longer
+existing animation hold. Pair play routes both residents to their shared midpoint
+before playing their reactions; solo play uses the dance animation. Training
+routes residents to the exercise station and displays the score-based reaction
+once its result has been saved. Praise, scolding, healing, feeding refusal and
+room cleaning use the original result-specific animations. Failed profile writes
+do not trigger these reactions.
+
+The 817,200 original movement comparisons still pass, together with 12 care
+transition assertions covering movement interruption, sleeping pets, pair arrival
+and training arrival/results. The rebuilt Windows app passed the integrated
+farm/evolution/Solo flow and all four training games, including save retry.
+Food props, care bubbles and audio, simulation-event toilet routing and pile
+visuals remain to be integrated along with the previously listed room effects.
