@@ -7,7 +7,7 @@ namespace DigiTactics.Presentation;
 public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativeProfileStore profile, int seat = 0, bool multiplayer = false)
 {
     private readonly MatchRewardTracker tracker = new(session, seat);
-    public void Observe() => tracker.Update();
+    public void Observe() { if (pending is null) tracker.Update(); }
     private HistoryTrait[] traits = [];
     private HistoryUnit[] units = [];
     private int level;
@@ -22,6 +22,7 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
     public string? Error { get; private set; }
     public void Capture()
     {
+        if (pending is not null) return;
         tracker.Update();
         var player = session.State.Players[seat];
         if (!player.Alive || player.Roster.BoardCount == 0) return;
@@ -34,38 +35,43 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
             .OrderByDescending(u => lines[u.Line].Tier + u.Stage * 2).Select(u => new HistoryUnit(u.Line, u.Stage, u.Items.ToArray())).ToArray();
         level = player.Economy.Level;
     }
-    public bool Complete(long timestamp)
+    /// <summary>Freezes the first placement without writing progress. Replays must verify before Complete.</summary>
+    public bool PrepareCompletion(long timestamp)
     {
+        if (pending is not null) return true;
         tracker.Update();
         var player = session.State.Players[seat];
-        if (saved) return true;
         if (player.Placement == 0) return false;
-        if (pending is null)
-        {
-            rewardDay = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime); rewardStats = tracker.Stats;
-            recordedName = player.Name;
-            if (multiplayer) encountered = session.State.Players.Where(p => p.IsHuman && p.Id != seat).Select(p => new EncounteredPlayer(p.Name)).ToArray();
-        }
+        rewardDay = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime); rewardStats = tracker.Stats;
+        recordedName = player.Name;
+        if (multiplayer) encountered = session.State.Players.Where(p => p.IsHuman && p.Id != seat).Select(p => new EncounteredPlayer(p.Name)).ToArray();
         string mode = multiplayer ? "mp" : "solo";
-        pending ??= new($"{mode}:{session.State.Seed}:{player.Id}", timestamp, mode, session.State.Duos ? "duos" : "solo",
+        pending = new($"{mode}:{session.State.Seed}:{player.Id}", timestamp, mode, session.State.Duos ? "duos" : "solo",
             session.State.Rules.Id.Split('/')[0], player.Placement, session.Rounds.Position.Label, Math.Max(level, player.Economy.Level), traits, units,
-            System.Text.Json.JsonSerializer.SerializeToNode(tracker.Stats, new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase }));
+            System.Text.Json.JsonSerializer.SerializeToNode(rewardStats, new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase }));
+        return true;
+    }
+    public bool Complete(long timestamp)
+    {
+        if (saved) return true;
+        if (!PrepareCompletion(timestamp)) return false;
+        var result = pending!;
         try
         {
             var rewards = MatchRewards.Calculate(profile.Storage.GetValueOrDefault("dt.shop.v1"), profile.Storage.GetValueOrDefault("dt.cosmetics.v1"),
-                pending.Key, session.State.Duos, rewardStats!, rewardDay, pending.At);
+                result.Key, session.State.Duos, rewardStats!, rewardDay, result.At);
             var changes = new Dictionary<string, string>();
             LegendRewardUpdate? legend = null;
             if (rewards.Fresh)
             {
                 changes["dt.shop.v1"] = rewards.Shop; changes["dt.cosmetics.v1"] = rewards.Wallet;
-                legend = LegendRewards.Calculate(profile.Storage.GetValueOrDefault("dt.legendevo.v1"), rewards.Wallet, pending.Key, rewards.RewardPlace);
+                legend = LegendRewards.Calculate(profile.Storage.GetValueOrDefault("dt.legendevo.v1"), rewards.Wallet, result.Key, rewards.RewardPlace);
                 if (legend.Save is not null) changes["dt.legendevo.v1"] = legend.Save;
             }
             string? previous = profile.Storage.GetValueOrDefault("dt.client.v1");
-            string updated = MatchHistory.Append(previous, pending with { Bits = rewards.Award?.Total });
-            if (multiplayer && !MatchAlreadyRecorded(previous, pending.Key))
-                updated = RecentPlayers.Remember(updated, recordedName, encountered, pending.At)!;
+            string updated = MatchHistory.Append(previous, result with { Bits = rewards.Award?.Total });
+            if (multiplayer && !MatchAlreadyRecorded(previous, result.Key))
+                updated = RecentPlayers.Remember(updated, recordedName, encountered, result.At)!;
             if (updated != previous) changes["dt.client.v1"] = updated;
             saved = changes.Count == 0 || profile.UpdateStorage(changes);
             if (saved) { Award = rewards.Award; LegendAward = legend?.Award; }

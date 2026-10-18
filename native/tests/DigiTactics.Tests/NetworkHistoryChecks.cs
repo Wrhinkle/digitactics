@@ -74,6 +74,7 @@ internal static class NetworkHistoryChecks
                 Check(RecentPlayers.Read(socialProfile.Storage["dt.client.v1"]).SequenceEqual(new[] { new RecentPlayer("Peer", 3000) }), "only human peers recorded with original timestamp");
                 string socialSaved = socialProfile.Storage["dt.client.v1"];
                 Check(new MatchHistoryRecorder(session, socialProfile, 1, true).Complete(90000000) && socialProfile.Storage["dt.client.v1"] == socialSaved, "duplicate match does not refresh recent players");
+                checks += LateReplay(catalog, target + "-late", duos);
             }
         }
         finally
@@ -83,5 +84,52 @@ internal static class NetworkHistoryChecks
             if(Directory.Exists(resolved))Directory.Delete(resolved,true);
         }
         Console.WriteLine($"Network history: {checks} seat, replay, payout, deduplication and retry checks passed.");return checks;
+    }
+
+    private static int LateReplay(ContentCatalog catalog, string target, bool duos)
+    {
+        int checks = 0;
+        void Check(bool ok, string why) { checks++; if (!ok) throw new InvalidOperationException("Late replay: " + why); }
+        var lobby = new JsonObject { ["host"] = "123", ["name"] = "Room", ["hostName"] = "Host", ["status"] = "playing", ["slots"] = new JsonObject() };
+        var room = new NetworkRoom("999", "123", lobby); room.Members(["123"], "123", 10000);
+        room.PublishInit(JsonSerializer.SerializeToElement(new { seed = 143, at = 10000, planTime = 30, setId = "faction-wars", pace = "hyper", format = duos ? "duos" : "solo",
+            slots = Enumerable.Range(0, 8).Select(i => new { name = "Tamer " + i, human = false }).ToArray() }));
+        using var live = new MatchReplica(room, catalog);
+        var profiles = Enumerable.Range(0, 8).Select(i => new NativeProfileStore(Path.Combine(target, "live", i.ToString()))).ToArray();
+        var histories = profiles.Select((p, i) => new NetworkMatchHistory(live, p, i, () => 2000)).ToArray();
+        try
+        {
+            live.Pump(10000);
+            long now = 10000; int limit = 0;
+            while (!live.Match!.Session.State.Over && limit++ < 1000)
+            {
+                now += 100000;
+                var entry = live.Match.Decide(now, new HashSet<int>(), new HashSet<int>())!;
+                Check(entry is not null, "full match continues after early eliminations"); entry!["at"] = now;
+                if (entry["k"]!.GetValue<string>() == "next") entry["d"] = live.Match.Check();
+                Check(room.Append(room.Log.Count, JsonSerializer.SerializeToElement(entry), now), "append full match phase");
+                live.Pump(now);
+            }
+            Check(live.Match.Session.State.Over && profiles.All(p => p.Exists), "all eight seats finish");
+            var rounds = profiles.Select(p => JsonNode.Parse(p.Storage["dt.client.v1"])!["matches"]![0]!["round"]!.GetValue<string>()).Distinct().ToArray();
+            Check(rounds.Length > 1, "fixture includes eliminations before the final round");
+            Check(room.Append(room.Log.Count, JsonSerializer.SerializeToElement(new { k = "a", s = 0, a = "claim", g = new { name = "Late peer" }, at = ++now }), now), "late seat change appended");
+            live.Pump(now);
+            for (int seat = 0; seat < 8; seat++)
+            {
+                var recovered = new NativeProfileStore(Path.Combine(target, "replay", seat.ToString()));
+                using var replay = new MatchReplica(room, catalog);
+                using var history = new NetworkMatchHistory(replay, recovered, seat, () => 2000);
+                bool savedDuringReplay = false;
+                replay.Advanced += (_, _, replaying) => savedDuringReplay |= replaying && (recovered.Exists || recovered.Storage.Count > 0);
+                replay.Pump(now);
+                Check(!savedDuringReplay, "no intermediate replay writes before verification");
+                Check(replay.LastDesync is null, "complete match replay verifies");
+                foreach (var pair in profiles[seat].Storage)
+                    Check(recovered.Storage.GetValueOrDefault(pair.Key) == pair.Value, $"seat {seat} preserves elimination-time {pair.Key}");
+            }
+        }
+        finally { foreach (var history in histories) history.Dispose(); }
+        return checks;
     }
 }

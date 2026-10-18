@@ -26,7 +26,11 @@ public sealed class NetworkMatchHistory : IDisposable
     {
         Recorder?.Observe();
         if (entry.GetProperty("k").GetString() == "start") Recorder?.Capture();
-        if (!replaying && entry.GetProperty("k").GetString() == "end" && replica.LastDesync is null) Recorder?.Complete(timestamp());
+        if (entry.GetProperty("k").GetString() == "end")
+        {
+            Recorder?.PrepareCompletion(timestamp());
+            if (!replaying && replica.LastDesync is null) Recorder?.Complete(timestamp());
+        }
     }
     private void Rebuilt(LockstepMatch _) { if (replica.LastDesync is null) Recorder?.Complete(timestamp()); }
     public void Dispose() { replica.Building -= Building; replica.Applying -= Applying; replica.Advanced -= Advanced; replica.Rebuilt -= Rebuilt; }
