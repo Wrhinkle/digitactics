@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace DigiTactics.Storage;
 
-public sealed record NativeReleaseReference(string Candidate,string Version);
+public sealed record NativeReleaseReference(string Candidate,string Version,string? ManifestSha256=null);
 public sealed record NativeLaunchTrial(NativeReleaseReference Release,string Token);
 public sealed record NativeLaunchSelection(NativeReleaseReference? Release,string? TrialToken);
 public sealed record NativeLauncherState(int SchemaVersion,NativeReleaseReference? Active,NativeReleaseReference? Pending,NativeLaunchTrial? Trial,string[] BadVersions);
@@ -87,7 +87,7 @@ public sealed class NativeLaunchState : IDisposable
 
     private NativeReleaseReference? EffectiveActive()=>state.Active is not null && Compare(state.Active.Version,bundledVersion)>0?state.Active:null;
     private static int Compare(string left,string right)=>Version.Parse(left).CompareTo(Version.Parse(right));
-    private static void ValidateRelease(NativeReleaseReference release)
+    internal static void ValidateRelease(NativeReleaseReference release)
     {
         if(release is null || !NativeUpdatePackage.ValidVersion(release.Version) || release.Candidate is null)throw new InvalidDataException("Invalid release reference.");
         string prefix=release.Version+"-";

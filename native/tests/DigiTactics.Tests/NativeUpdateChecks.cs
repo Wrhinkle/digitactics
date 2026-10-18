@@ -105,6 +105,24 @@ internal static class NativeUpdateChecks
             string generated=Path.Combine(directory,"generated.zip");
             var generatedExpected=NativeUpdatePackage.Create(published,generated,"3.2.1",2);
             var generatedStage=NativeUpdatePackage.Stage(generated,stageRoot,generatedExpected,2);
+            using(var lease=NativeUpdatePackage.OpenCandidate(stageRoot,generatedStage.Release,2))
+            {
+                Check(lease.Executable==Path.Combine(generatedStage.Directory,"DigiTactics.Desktop.exe"),"validated candidate selects its executable");
+                try {File.WriteAllBytes(lease.Executable,[9]);throw new Exception("Candidate writable during lease");}catch(IOException) {checks++;}
+                try {File.Move(lease.Executable,lease.Executable+".moved");throw new Exception("Candidate replaceable during lease");}catch(IOException) {checks++;}
+            }
+            Reject(()=>NativeUpdatePackage.OpenCandidate(stageRoot,generatedStage.Release with {ManifestSha256=null},2),"unpinned manifest");
+            Reject(()=>NativeUpdatePackage.OpenCandidate(stageRoot,generatedStage.Release,1),"candidate launcher compatibility");
+            string candidateExe=Path.Combine(generatedStage.Directory,"DigiTactics.Desktop.exe");
+            File.WriteAllBytes(candidateExe,[9,9,9,9]);
+            Reject(()=>NativeUpdatePackage.OpenCandidate(stageRoot,generatedStage.Release,2),"modified candidate file");
+            File.WriteAllBytes(candidateExe,[1,2,3,4]);
+            string extraCandidate=Path.Combine(generatedStage.Directory,"injected.dll");File.WriteAllBytes(extraCandidate,[1]);
+            Reject(()=>NativeUpdatePackage.OpenCandidate(stageRoot,generatedStage.Release,2),"unlisted candidate library");File.Delete(extraCandidate);
+            string candidateManifest=Path.Combine(generatedStage.Directory,NativeUpdatePackage.ManifestName);byte[] pinned=File.ReadAllBytes(candidateManifest);
+            File.AppendAllText(candidateManifest," ");
+            Reject(()=>NativeUpdatePackage.OpenCandidate(stageRoot,generatedStage.Release,2),"changed candidate manifest");File.WriteAllBytes(candidateManifest,pinned);
+            using(var lease=NativeUpdatePackage.OpenCandidate(stageRoot,generatedStage.Release,2))checks++;
             Check(generatedStage.Manifest.Files.Length==2 && new FileInfo(Path.Combine(generatedStage.Directory,"content/empty.bin")).Length==0,"published directory packages and stages including empty files");
             Check(File.ReadAllBytes(Path.Combine(generatedStage.Directory,"DigiTactics.Desktop.exe")).SequenceEqual(new byte[]{1,2,3,4}),"package roundtrip preserves application");
             Reject(()=>NativeUpdatePackage.Inspect(generated,generatedExpected,1),"generated package enforces minimum launcher");

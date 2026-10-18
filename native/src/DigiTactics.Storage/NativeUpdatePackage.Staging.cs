@@ -4,7 +4,10 @@ using System.Text.Json;
 
 namespace DigiTactics.Storage;
 
-public sealed record NativeStagedPackage(string Directory,NativePackageManifest Manifest);
+public sealed record NativeStagedPackage(string Directory,NativePackageManifest Manifest,string ManifestSha256)
+{
+    public NativeReleaseReference Release=>new(Path.GetFileName(Directory),Manifest.Version,ManifestSha256);
+}
 
 public static partial class NativeUpdatePackage
 {
@@ -52,16 +55,18 @@ public static partial class NativeUpdatePackage
             }
         }
         cancellation.ThrowIfCancellationRequested();
+        byte[] metadata=JsonSerializer.SerializeToUtf8Bytes(manifest,new JsonSerializerOptions {PropertyNamingPolicy=JsonNamingPolicy.CamelCase});
+        string manifestDigest=Convert.ToHexStringLower(SHA256.HashData(metadata));
         using(var marker=new FileStream(Path.Combine(partial,ManifestName),FileMode.CreateNew,FileAccess.Write,FileShare.None))
         {
-            JsonSerializer.Serialize(marker,manifest,new JsonSerializerOptions {PropertyNamingPolicy=JsonNamingPolicy.CamelCase});
+            marker.Write(metadata);
             marker.Flush(flushToDisk:true);
         }
         // Only complete candidates become visible to activation code. An interrupted extraction
         // remains .partial and cannot be mistaken for a runnable release.
         EnsureOrdinaryAncestors(partial);
         Directory.Move(partial,ready);
-        return new(ready,manifest);
+        return new(ready,manifest,manifestDigest);
     }
 
     private static void EnsureOrdinaryAncestors(string path)
