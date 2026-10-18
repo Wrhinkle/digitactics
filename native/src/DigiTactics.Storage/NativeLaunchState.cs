@@ -85,6 +85,13 @@ public sealed class NativeLaunchState : IDisposable
         Save(state with {Trial=null,BadVersions=state.BadVersions.Append(state.Trial.Release.Version).Distinct(StringComparer.Ordinal).ToArray()});return true;
     }
 
+    public bool RejectActive(NativeReleaseReference release)
+    {
+        ObjectDisposedException.ThrowIf(disposed,this);
+        if(state.Trial is not null || state.Active!=release)return false;
+        Save(state with {Active=null,BadVersions=state.BadVersions.Append(release.Version).Distinct(StringComparer.Ordinal).ToArray()});return true;
+    }
+
     private NativeReleaseReference? EffectiveActive()=>state.Active is not null && Compare(state.Active.Version,bundledVersion)>0?state.Active:null;
     private static int Compare(string left,string right)=>Version.Parse(left).CompareTo(Version.Parse(right));
     internal static void ValidateRelease(NativeReleaseReference release)

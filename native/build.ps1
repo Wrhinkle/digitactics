@@ -8,6 +8,8 @@ function Invoke-Checked([string]$Program, [string[]]$Arguments) {
     & $Program @Arguments
     if ($LASTEXITCODE -ne 0) { throw "$Program failed with exit code $LASTEXITCODE" }
 }
+$savedDotnetRoot=$env:DOTNET_ROOT
+$env:DOTNET_ROOT=Split-Path -Parent $dotnet
 Push-Location $nativeRoot
 try {
     $mediaRuntime = & (Join-Path $nativeRoot 'tools/setup-media.ps1')
@@ -147,8 +149,11 @@ try {
     Invoke-Checked 'node' @('tools/export-choreography.cjs')
     Invoke-Checked 'node' @('tools/export-audio-cues.cjs')
     Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Desktop', '--locked-mode')
+    Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Launcher', '--locked-mode')
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--', $nativeRoot)
     Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore')
+    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Launcher', '-c', 'Release', '--no-restore')
+    & (Join-Path $nativeRoot 'tools/test-launcher.ps1') -Launcher (Join-Path $nativeRoot 'src/DigiTactics.Launcher/bin/Release/net10.0/win-x64/DigiTactics.Launcher.exe') -TestsDirectory (Join-Path $nativeRoot 'tests/DigiTactics.Tests/bin/Release/net10.0/win-x64')
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--startup-desktop-only', '--desktop', (Join-Path $nativeRoot 'src/DigiTactics.Desktop/bin/Release/net10.0/win-x64/DigiTactics.Desktop.exe'))
     Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--music-decoder-only', '--ffmpeg', (Join-Path $mediaRuntime 'ffmpeg.exe'))
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--custom-music-smoke')
@@ -197,4 +202,4 @@ try {
         Invoke-Checked (Join-Path $destination 'DigiTactics.Desktop.exe') @('--music-routing-smoke')
         Write-Host "Native migration build: $destination"
     }
-} finally { Pop-Location }
+} finally { Pop-Location; $env:DOTNET_ROOT=$savedDotnetRoot }
