@@ -12,7 +12,7 @@ internal sealed class ItemDragSmoke
     private UnitSpot destination;
     private bool tooltipHovered, tooltipChecked;
     private string tooltipItem = "";
-    public string? CaptureName => tooltipHovered && !tooltipChecked ? "item-tooltip" : step == 8 ? "item-equip" : step == 12 ? "item-partner" : null;
+    public string? CaptureName => tooltipHovered && !tooltipChecked ? "item-tooltip" : step == 9 ? "unit-equipment" : step == 8 ? "item-equip" : step == 12 ? "item-partner" : null;
     public bool Input(MatchScreen screen)
     {
         var session = screen.Session!; var player = session.State.Players[0]; var io = ImGui.GetIO();
@@ -59,6 +59,9 @@ internal sealed class ItemDragSmoke
             case 9:
                 if (player.Items.Count != inventory.Length - 1 || !player.Roster.Entries.Single(e => e.Unit.Id == holder).Unit.Items.Contains(item) || screen.ItemDragging)
                     throw new InvalidOperationException("Item drop did not equip the target unit.");
+                var equipped = player.Roster.Entries.Single(e => e.Unit.Id == holder).Unit;
+                if (screen.DetailedUnit != holder || !screen.DetailedItems.SequenceEqual(equipped.Items))
+                    throw new InvalidOperationException("Unit hover did not show the equipped items.");
                 if (!session.State.Duos) return true;
                 inventory = player.Items.ToArray(); item = inventory[0]; sends = player.PortalSends;
                 partnerItems = session.Units.Portal.Partner(player)!.Items.Count; Start(0); break;

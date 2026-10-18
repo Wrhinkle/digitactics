@@ -94,7 +94,7 @@ internal sealed partial class MatchScreen
         }
         else if (!itemDragMoved && inside && spot is { } hover && Session!.State.Players[viewed].Roster.At(hover) is { } unit)
         {
-            ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); UnitDetails(unit.Line, unit.Stage); ImGui.EndTooltip();
+            ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); UnitDetails(unit); ImGui.EndTooltip();
         }
         planning.DraggedUnit = battle is null && arenaDragMoved ? arenaDrag?.Id : null;
         planning.DragPosition = arenaDragPosition;

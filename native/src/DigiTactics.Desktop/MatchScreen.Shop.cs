@@ -38,7 +38,7 @@ internal sealed partial class MatchScreen
         Text(width-55,73,$"{price} gold",affordable?new ImColor8(255,218,115):ink);
         if(progress.Length>0) Text(6,55,progress,new ImColor8(100,240,177));
         draw.PopClipRect();
-        if(hovered){ImGui.SetNextWindowSize(new(340,0));ImGui.BeginTooltip();UnitDetails(id,stage);ImGui.EndTooltip();}
+        if(hovered){ImGui.SetNextWindowSize(new(340,0));ImGui.BeginTooltip();UnitDetails(id,stage,null,meta?.Unit?.BonusTraits);ImGui.EndTooltip();}
         if(buy)Act("buy",new {slot});
     }
 }

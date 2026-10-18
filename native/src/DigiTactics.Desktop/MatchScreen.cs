@@ -70,26 +70,6 @@ internal sealed partial class MatchScreen : IDisposable
         var entry = text.Get(Rules.Id, id); ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); ImGui.Text(entry.Name); UiText.Wrapped(entry.Description); ImGui.EndTooltip();
     }
     private string UnitName(PlanningUnit unit) => Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == unit.Line).Forms[unit.Stage];
-    private void UnitDetails(string lineId, int stage)
-    {
-        var line = Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == lineId);
-        var stats = UnitValues.Stats(line, stage);
-        UiText.Wrapped($"{line.Forms[stage]}  {new string('*', stage + 1)}");
-        UiText.Wrapped($"{line.Tier}-cost / {line.Attribute}");
-        UiText.Wrapped(string.Join(" -> ", line.Forms));
-        UiText.Wrapped(string.Join(" / ", line.Traits.Select(Name)));
-        UiText.Wrapped($"Base stats: {stats.MaxHealth} HP, {stats.AttackDamage} attack, {stats.AttackSpeed:0.##} attacks/s");
-        UiText.Wrapped($"{stats.Armor} armor / {stats.MagicResist} magic resist / {stats.Range} range");
-        UiText.Wrapped($"Mana {stats.StartMana}/{stats.MaxMana}");
-        var ability = text.Ability(Rules.Id, lineId, stage);
-        UiText.Wrapped(ability.Name);
-        UiText.Wrapped(ability.Description);
-    }
-    private void UnitTooltip(string line, int stage)
-    {
-        if (!ImGui.IsItemHovered()) return;
-        ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); UnitDetails(line, stage); ImGui.EndTooltip();
-    }
     private MatchActionResult? Act(string action, object? args = null)
     {
         var arguments = JsonSerializer.SerializeToElement(args ?? new { });
@@ -259,7 +239,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
-        portraits.BeginFrame(); itemArtwork.BeginFrame(); CarouselCardsDrawn = 0; InventoryArtworkDrawCalls = 0; ItemTooltipRecipes = 0;
+        portraits.BeginFrame(); itemArtwork.BeginFrame(); CarouselCardsDrawn = 0; InventoryArtworkDrawCalls = 0; ItemTooltipRecipes = 0; DetailedUnit = null; DetailedItems = [];
         sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }
@@ -423,8 +403,8 @@ internal sealed partial class MatchScreen : IDisposable
         var selected = Human.Roster.Entries.FirstOrDefault(e => e.Unit.Id == selectedUnit);
         if (selected is not null)
         {
-            UnitDetails(selected.Unit.Line, selected.Unit.Stage);
-            foreach (string item in selected.Unit.Items) { ImGui.Text(Name(item)); Tooltip(item); }
+            UnitDetails(selected.Unit);
+
             if (Button("sell", "Sell unit")) { Act("sell", new { uid = selected.Unit.Id }); selectedUnit = null; }
             if (Session.State.Duos && Button("sendUnit", "Send to partner")) { Act("portal", new { uid = selected.Unit.Id }); selectedUnit = null; }
         }
@@ -478,7 +458,7 @@ internal sealed partial class MatchScreen : IDisposable
         {
             if (i > 0) ImGui.SameLine(); var unit = Human.Roster.Bench[i];
             if (Button("bench/" + i, unit is null ? "-" : UnitName(unit) + "\n" + new string('*', unit.Stage + 1), (size.X - 96f) / 9, 40, selectedUnit is not null && unit?.Id == selectedUnit)) Select(UnitSpot.Bench(i));
-            if (unit is not null) UnitTooltip(unit.Line, unit.Stage);
+            if (unit is not null) UnitTooltip(unit);
         }
         for (int i = 0; i < Human.Items.Count; i++)
         {
