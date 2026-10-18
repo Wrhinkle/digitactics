@@ -18,6 +18,9 @@ async function main(){
    .replace(/const bm = inst\(ctx, new THREE.BoxGeometry\(1, 1, 1\)[^\n]+;/,line=>line+' bm.userData.nativeMotion={kind:"village-blocks",props:blocks.map(p=>({...p}))};')
    .replace(/const tm = inst\(ctx, top,[^\n]+;/,line=>line+' tm.userData.nativeMotion={kind:"toy-tops",props:tops.map(p=>({...p}))};')
    .replace(/const trm = inst\(ctx, car,[^\n]+;/,line=>line+' trm.userData.nativeMotion={kind:"toy-train",props:cars.map(p=>({...p}))};')
+   .replace(/const band = mesh\(ctx, new THREE.CylinderGeometry\(26, 26[^\n]+;/,line=>line+' band.userData.nativeMotion={kind:"desert-haze"};')
+   .replace(/const bm = inst\(ctx, bGeo,[^\n]+;/,line=>line+' bm.userData.nativeMotion={kind:"coliseum-banners",props:banners.map(p=>({...p}))};')
+   .replace(/const fm = inst\(ctx, new THREE.ConeGeometry\(0.16, 0.45, 8\)[^\n]+;/,line=>line+' fm.userData.nativeMotion={kind:"coliseum-flames",props:flames.map(p=>({...p}))};')
   +'\nexport {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
   +'\nexport function surfaceGeometry(){'+['tileGeo','slotGeo','pedGeo'].map(name=>render.match(new RegExp('const '+name+' = [^;]+;'))[0]).join('\n')+'return {tile:tileGeo,slot:slotGeo,ped:pedGeo};}'
   +'\nexport const originalHighlight='+render.slice(render.indexOf('  highlight(ui, planning) {'),render.indexOf('  benchPos(i, partner')).trim().replace('highlight(','function(')+';'
@@ -167,6 +170,10 @@ async function main(){
        rows.push({id:spec.id,time,motion,matrices});
       }else if(motion.kind==='beach-surf'){
        rows.push({id:spec.id,time,motion,matrix:o.matrixWorld.toArray(),opacity:o.material.opacity});
+      }else if(motion.kind==='desert-haze'){
+       const texture=o.material.map;texture.updateMatrix();const uv=o.geometry.attributes.uv,samples=[];
+       for(let i=0;i<uv.count;i++) {const source=[uv.getX(i),uv.getY(i)];samples.push({source,expected:new THREE.Vector2(...source).applyMatrix3(texture.matrix).toArray()});}
+       rows.push({id:spec.id,time,motion,samples,opacity:o.material.opacity});
       }
      }
     }

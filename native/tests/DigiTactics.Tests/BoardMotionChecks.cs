@@ -21,6 +21,25 @@ internal static class BoardMotionChecks
                 BoardSceneMotion.Sea(vertices,time,motion); i=0;
                 foreach(var sample in samples.EnumerateArray()) { Near(vertices[i+1],sample[2].GetSingle(),1e-7); Near(vertices[i],sample[0].GetSingle(),0); Near(vertices[i+2],sample[1].GetSingle(),0); i+=GltfPrimitive.Stride; }
             }
+            else if(motion.Kind=="desert-haze")
+            {
+                var samples=row.GetProperty("samples"); var vertices=new float[samples.GetArrayLength()*GltfPrimitive.Stride]; int at=0;
+                foreach(var sample in samples.EnumerateArray())
+                {
+                    vertices[at+6]=sample.GetProperty("source")[0].GetSingle()*8;
+                    vertices[at+7]=sample.GetProperty("source")[1].GetSingle(); at+=GltfPrimitive.Stride;
+                }
+                var initial=(float[])vertices.Clone();
+                BoardSceneMotion.HazeUv(vertices,initial,time); at=0;
+                foreach(var sample in samples.EnumerateArray())
+                {
+                    Near(vertices[at+6],sample.GetProperty("expected")[0].GetDouble(),1e-6);
+                    Near(vertices[at+7],sample.GetProperty("expected")[1].GetDouble(),1e-7); at+=GltfPrimitive.Stride;
+                }
+                Near(BoardSceneMotion.Haze(time).Opacity,row.GetProperty("opacity").GetDouble(),1e-7);
+                BoardSceneMotion.HazeUv(vertices,initial,0);
+                for(int i=0;i<vertices.Length;i++) Near(vertices[i],initial[i],0);
+            }
             else if(motion.Kind=="beach-surf")
             {
                 var surf=BoardSceneMotion.Surf(motion,time); double[] values=new double[16]; surf.Matrix.CopyTo(values);

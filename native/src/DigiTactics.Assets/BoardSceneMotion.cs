@@ -2,9 +2,19 @@ namespace DigiTactics.Assets;
 
 public static class BoardSceneMotion
 {
+    public static (double U,double V,float Opacity) Haze(double time)=>(time*.01,Math.Sin(time*2.3)*.04,(float)(.28+.08*Math.Sin(time*3.1)));
+    public static void HazeUv(float[] vertices,float[] initial,double time)
+    {
+        var haze=Haze(time);
+        for(int at=0;at<vertices.Length;at+=GltfPrimitive.Stride)
+        {
+            vertices[at+6]=(float)(initial[at+6]+haze.U);
+            vertices[at+7]=(float)(initial[at+7]+haze.V);
+        }
+    }
     public static Matrix4D Prop(string kind,BoardProp p,double time)
     {
-        double x=p.X,y=p.Y,z=p.Z,rx=0,ry=0,rz=0;
+        double x=p.X,y=p.Y,z=p.Z,rx=0,ry=p.Ry,rz=0,sx=p.S,sy=p.S,sz=p.S;
         switch(kind)
         {
             case "village-eggs": rz=Math.Sin(time*2+p.Phase)*.18; break;
@@ -15,9 +25,12 @@ public static class BoardSceneMotion
                 x=p.Cx+Math.Sin(time*.6+p.Phase)*.25; z=p.Cz+Math.Cos(time*.6+p.Phase)*.25; break;
             case "toy-train":
                 double angle=time*.12-p.K*.085; x=Math.Cos(angle)*12.05; z=Math.Sin(angle)*12.05; ry=-angle-Math.PI/2; break;
+            case "coliseum-banners": y=.65; rx=-.08+Math.Sin(time*1.6+p.Phase)*.08; break;
+            case "coliseum-flames":
+                sy=1+.18*Math.Sin(time*13+p.Phase)+.1*Math.Sin(time*7.3+p.Phase*2); sx=sz=1/Math.Sqrt(sy); break;
             default: throw new ArgumentException("Unknown board prop motion: "+kind,nameof(kind));
         }
-        return new CompanionTransform(new(x,y,z),new(rx,ry,rz),new(p.S,p.S,p.S)).Matrix;
+        return new CompanionTransform(new(x,y,z),new(rx,ry,rz),new(sx,sy,sz)).Matrix;
     }
     public static float SeaHeight(double x,double z,double time,double amplitude,double speed)
     {

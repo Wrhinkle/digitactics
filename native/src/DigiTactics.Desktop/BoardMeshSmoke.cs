@@ -232,7 +232,7 @@ internal static class BoardMeshSmoke
 
     private static unsafe void CheckPropMotion(ModelRenderer renderer)
     {
-        foreach(var (theme,kind) in new[] {("primary-village","village-eggs"),("primary-village","village-blocks"),("toy-town","toy-tops"),("toy-town","toy-train")})
+        foreach(var (theme,kind) in new[] {("primary-village","village-eggs"),("primary-village","village-blocks"),("toy-town","toy-tops"),("toy-town","toy-train"),("server-desert","desert-haze"),("ancient-coliseum","coliseum-banners"),("ancient-coliseum","coliseum-flames")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
@@ -243,6 +243,7 @@ internal static class BoardMeshSmoke
                 ModelRenderer.Begin(256,256); OpenGl.ClearColor(new(0,0,0,1)); OpenGl.Clear(GlClearBit.Color);
                 var camera=Matrix4x4.CreateLookAt(new(0,25,28),Vector3.Zero,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
                 layer.Draw(renderer,camera,false,256);
+                layer.Draw(renderer,camera,true,256);
                 var pixels=new byte[256*256*4]; fixed(byte* p=pixels) OpenGl.ReadPixels(0,0,256,256,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);
                 ModelRenderer.End(); return pixels;
             }
