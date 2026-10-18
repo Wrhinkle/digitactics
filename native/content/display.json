@@ -262,11 +262,21 @@
     },
     "remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
+    },
+    "consumable:remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
     },
     "DR": {
       "name": "Dragon's Roar",
@@ -1884,11 +1894,21 @@
     },
     "remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
+    },
+    "consumable:remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
     },
     "DR": {
       "name": "Dragon's Roar",
@@ -3550,11 +3570,13 @@
     },
     "fat_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "fat_reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
     },
     "fat_dice": {
       "name": "Loaded Dice",
@@ -3569,6 +3591,30 @@
       "description": "Use on the Fallen Choice line (Lopmon) to take the holy path: its damage heals it for 40% of damage dealt. Removes the Dark Spirit."
     },
     "fat_dark": {
+      "name": "Dark Spirit",
+      "description": "Use on the Fallen Choice line (Lopmon) to take the dark path: it deals 40% more damage for the first 10 seconds. Removes the Holy Spirit."
+    },
+    "consumable:fat_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:fat_reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
+    },
+    "consumable:fat_dice": {
+      "name": "Loaded Dice",
+      "description": "Reroll your shop for free with only Digimon that share a trait with it."
+    },
+    "consumable:fat_copy": {
+      "name": "Copy Data",
+      "description": "Get a Rookie-form copy of it on your bench."
+    },
+    "consumable:fat_holy": {
+      "name": "Holy Spirit",
+      "description": "Use on the Fallen Choice line (Lopmon) to take the holy path: its damage heals it for 40% of damage dealt. Removes the Dark Spirit."
+    },
+    "consumable:fat_dark": {
       "name": "Dark Spirit",
       "description": "Use on the Fallen Choice line (Lopmon) to take the dark path: it deals 40% more damage for the first 10 seconds. Removes the Holy Spirit."
     },
@@ -5092,11 +5138,13 @@
     },
     "fat_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "fat_reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
     },
     "fat_dice": {
       "name": "Loaded Dice",
@@ -5111,6 +5159,30 @@
       "description": "Use on the Fallen Choice line (Lopmon) to take the holy path: its damage heals it for 40% of damage dealt. Removes the Dark Spirit."
     },
     "fat_dark": {
+      "name": "Dark Spirit",
+      "description": "Use on the Fallen Choice line (Lopmon) to take the dark path: it deals 40% more damage for the first 10 seconds. Removes the Holy Spirit."
+    },
+    "consumable:fat_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:fat_reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
+    },
+    "consumable:fat_dice": {
+      "name": "Loaded Dice",
+      "description": "Reroll your shop for free with only Digimon that share a trait with it."
+    },
+    "consumable:fat_copy": {
+      "name": "Copy Data",
+      "description": "Get a Rookie-form copy of it on your bench."
+    },
+    "consumable:fat_holy": {
+      "name": "Holy Spirit",
+      "description": "Use on the Fallen Choice line (Lopmon) to take the holy path: its damage heals it for 40% of damage dealt. Removes the Dark Spirit."
+    },
+    "consumable:fat_dark": {
       "name": "Dark Spirit",
       "description": "Use on the Fallen Choice line (Lopmon) to take the dark path: it deals 40% more damage for the first 10 seconds. Removes the Holy Spirit."
     },
@@ -6590,11 +6662,25 @@
     },
     "gal_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "gal_reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
+    },
+    "consumable:gal_copier": {
+      "name": "Data Copier",
+      "description": "Get a Rookie-form copy of it on your bench."
+    },
+    "consumable:gal_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:gal_reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
     },
     "DD": {
       "name": "DigiDestined",
@@ -7980,11 +8066,25 @@
     },
     "gal_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "gal_reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
+    },
+    "consumable:gal_copier": {
+      "name": "Data Copier",
+      "description": "Get a Rookie-form copy of it on your bench."
+    },
+    "consumable:gal_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:gal_reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
     },
     "DD": {
       "name": "DigiDestined",
@@ -9522,11 +9622,13 @@
     },
     "giz_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "giz_reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
     },
     "giz_copy": {
       "name": "Copy Chip",
@@ -9535,6 +9637,22 @@
     "giz_ockit": {
       "name": "Overclock Kit",
       "description": "Drag onto a Digimon to overclock one of its completed items (the first one that is not overclocked yet)."
+    },
+    "consumable:giz_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:giz_reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
+    },
+    "consumable:giz_copy": {
+      "name": "Copy Chip",
+      "description": "Drag onto a Digimon of cost 1 to 4 to put a Rookie-form copy of it on your bench."
+    },
+    "consumable:giz_ockit": {
+      "name": "Overclock Kit",
+      "description": "Overclock one of its completed items (the first one that is not overclocked yet)."
     },
     "MASQ": {
       "name": "Masquerade",
@@ -11388,11 +11506,13 @@
     },
     "giz_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "giz_reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
     },
     "giz_copy": {
       "name": "Copy Chip",
@@ -11401,6 +11521,22 @@
     "giz_ockit": {
       "name": "Overclock Kit",
       "description": "Drag onto a Digimon to overclock one of its completed items (the first one that is not overclocked yet)."
+    },
+    "consumable:giz_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:giz_reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
+    },
+    "consumable:giz_copy": {
+      "name": "Copy Chip",
+      "description": "Drag onto a Digimon of cost 1 to 4 to put a Rookie-form copy of it on your bench."
+    },
+    "consumable:giz_ockit": {
+      "name": "Overclock Kit",
+      "description": "Overclock one of its completed items (the first one that is not overclocked yet)."
     },
     "MASQ": {
       "name": "Masquerade",
@@ -13442,11 +13578,20 @@
     },
     "rec_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "rec_tome": {
       "name": "Tome of Traits",
       "description": "Drag onto any Digimon to open a pick of 4 Crests, including Crests no recipe makes."
+    },
+    "consumable:rec_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:rec_tome": {
+      "name": "Tome of Traits",
+      "description": "Open a pick of 4 Crests, including Crests no recipe makes."
     },
     "DSP": {
       "name": "Dark Spore",
@@ -17144,11 +17289,20 @@
     },
     "rec_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "rec_tome": {
       "name": "Tome of Traits",
       "description": "Drag onto any Digimon to open a pick of 4 Crests, including Crests no recipe makes."
+    },
+    "consumable:rec_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:rec_tome": {
+      "name": "Tome of Traits",
+      "description": "Open a pick of 4 Crests, including Crests no recipe makes."
     },
     "DSP": {
       "name": "Dark Spore",
@@ -20582,11 +20736,13 @@
     },
     "drg_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "drg_reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
     },
     "drg_dup_lesser": {
       "name": "Lesser Duplicator",
@@ -20595,6 +20751,22 @@
     "drg_dup": {
       "name": "Champion Duplicator",
       "description": "Drag onto any Digimon to put a Rookie-form copy of it on your bench."
+    },
+    "consumable:drg_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:drg_reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
+    },
+    "consumable:drg_dup_lesser": {
+      "name": "Lesser Duplicator",
+      "description": "Drag onto a Digimon of cost 3 or less to put a Rookie-form copy of it on your bench."
+    },
+    "consumable:drg_dup": {
+      "name": "Champion Duplicator",
+      "description": "Put a Rookie-form copy of it on your bench."
     },
     "STAR": {
       "name": "Stargazers",
@@ -22124,11 +22296,13 @@
     },
     "drg_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "drg_reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
     },
     "drg_dup_lesser": {
       "name": "Lesser Duplicator",
@@ -22137,6 +22311,22 @@
     "drg_dup": {
       "name": "Champion Duplicator",
       "description": "Drag onto any Digimon to put a Rookie-form copy of it on your bench."
+    },
+    "consumable:drg_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:drg_reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
+    },
+    "consumable:drg_dup_lesser": {
+      "name": "Lesser Duplicator",
+      "description": "Drag onto a Digimon of cost 3 or less to put a Rookie-form copy of it on your bench."
+    },
+    "consumable:drg_dup": {
+      "name": "Champion Duplicator",
+      "description": "Put a Rookie-form copy of it on your bench."
     },
     "STAR": {
       "name": "Stargazers",
@@ -23722,17 +23912,35 @@
     },
     "arc_remover": {
       "name": "Item Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "arc_reforger": {
       "name": "Item Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
     },
     "arc_copier": {
       "name": "Data Copier",
       "description": "Drag onto a Digimon to put a Rookie-form copy of it on your bench."
     },
     "arc_copier_small": {
+      "name": "Small Data Copier",
+      "description": "Drag onto a Digimon of cost 3 or less to put a Rookie-form copy of it on your bench."
+    },
+    "consumable:arc_remover": {
+      "name": "Item Remover",
+      "description": "No items to remove"
+    },
+    "consumable:arc_reforger": {
+      "name": "Item Reforger",
+      "description": "No items to remove"
+    },
+    "consumable:arc_copier": {
+      "name": "Data Copier",
+      "description": "Put a Rookie-form copy of it on your bench."
+    },
+    "consumable:arc_copier_small": {
       "name": "Small Data Copier",
       "description": "Drag onto a Digimon of cost 3 or less to put a Rookie-form copy of it on your bench."
     },
@@ -25840,17 +26048,35 @@
     },
     "arc_remover": {
       "name": "Item Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "arc_reforger": {
       "name": "Item Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
     },
     "arc_copier": {
       "name": "Data Copier",
       "description": "Drag onto a Digimon to put a Rookie-form copy of it on your bench."
     },
     "arc_copier_small": {
+      "name": "Small Data Copier",
+      "description": "Drag onto a Digimon of cost 3 or less to put a Rookie-form copy of it on your bench."
+    },
+    "consumable:arc_remover": {
+      "name": "Item Remover",
+      "description": "No items to remove"
+    },
+    "consumable:arc_reforger": {
+      "name": "Item Reforger",
+      "description": "No items to remove"
+    },
+    "consumable:arc_copier": {
+      "name": "Data Copier",
+      "description": "Put a Rookie-form copy of it on your bench."
+    },
+    "consumable:arc_copier_small": {
       "name": "Small Data Copier",
       "description": "Drag onto a Digimon of cost 3 or less to put a Rookie-form copy of it on your bench."
     },
@@ -27874,11 +28100,29 @@
     },
     "col_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "col_reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
+    },
+    "consumable:col_core": {
+      "name": "Digi-Core",
+      "description": "Pick 1 of 3 digivolution paths for it. A new path replaces the old one. Selling that Digimon gives the Digi-Core back."
+    },
+    "consumable:col_extractor": {
+      "name": "Data Extractor",
+      "description": "Remove its digivolution path and get its Digi-Core back."
+    },
+    "consumable:col_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:col_reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
     },
     "BA": {
       "name": "Digi Academy",
@@ -29576,11 +29820,29 @@
     },
     "col_remover": {
       "name": "Magnetic Remover",
-      "description": "Drag onto a Digimon to return all of its items to your item bench."
+      "description": "Drag onto a Digimon to return all of its items to your item bench.",
+      "preview": "remover"
     },
     "col_reforger": {
       "name": "Reforger",
-      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind."
+      "description": "Drag onto a Digimon to return its items to your bench as random new items of the same kind.",
+      "preview": "reforger"
+    },
+    "consumable:col_core": {
+      "name": "Digi-Core",
+      "description": "Pick 1 of 3 digivolution paths for it. A new path replaces the old one. Selling that Digimon gives the Digi-Core back."
+    },
+    "consumable:col_extractor": {
+      "name": "Data Extractor",
+      "description": "Remove its digivolution path and get its Digi-Core back."
+    },
+    "consumable:col_remover": {
+      "name": "Magnetic Remover",
+      "description": "No items to remove"
+    },
+    "consumable:col_reforger": {
+      "name": "Reforger",
+      "description": "No items to remove"
     },
     "BA": {
       "name": "Digi Academy",
@@ -36828,6 +37090,10 @@
       "name": "Bargain Tag",
       "description": "Selling a Digimon pays 1 extra gold."
     },
+    "consumable:ac_digiegg": {
+      "name": "Digi-Egg",
+      "description": "Wildcard. Drag onto a Rookie or Champion: it hatches into one more copy of that Digimon, which counts toward digivolving. Needs a copy left in the shared pool."
+    },
     "BEAST": {
       "name": "Beast",
       "description": "All allies gain attack damage."
@@ -38197,6 +38463,10 @@
     "ac_r_discount": {
       "name": "Bargain Tag",
       "description": "Selling a Digimon pays 1 extra gold."
+    },
+    "consumable:ac_digiegg": {
+      "name": "Digi-Egg",
+      "description": "Wildcard. Drag onto a Rookie or Champion: it hatches into one more copy of that Digimon, which counts toward digivolving. Needs a copy left in the shared pool."
     },
     "BEAST": {
       "name": "Beast",

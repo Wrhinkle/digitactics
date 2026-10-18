@@ -3,13 +3,22 @@ using DigiTactics.Rules;
 
 namespace DigiTactics.Desktop;
 
-internal sealed record DisplayEntry(string Name, string Description);
+internal sealed record DisplayEntry(string Name, string Description, string? Preview = null);
 internal sealed class DisplayText
 {
     private readonly Dictionary<string, Dictionary<string, DisplayEntry>> variants = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, DisplayEntry>>>(
         File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "content/display.json")), new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     public DisplayEntry Get(string variant, string id) => variants[variant].GetValueOrDefault(id) ?? new(id, "");
     public DisplayEntry Ability(string variant, string line, int stage) => variants[variant][$"ability:{line}:{stage}"];
+    public string ConsumablePreview(Ruleset rules, string id, int heldItems, int benchItems)
+    {
+        string? kind = Get(rules.Id, id).Preview;
+        if (kind is not ("remover" or "reforger")) return Get(rules.Id, "consumable:" + id).Description;
+        if (heldItems == 0) return "No items to remove";
+        if (benchItems - 1 + heldItems > rules.Loot!.ItemCap) return "Not enough room on the item bench";
+        string count = heldItems + (heldItems == 1 ? " item" : " items");
+        return kind == "remover" ? $"Returns {count} to your bench" : $"Rerolls {count} into new items of the same kind";
+    }
     public DisplayEntry Offer(string variant, string kind) => variants[variant].GetValueOrDefault("offer:" + kind) ??
         new(kind switch { "armory" => "Armory", "augment" => "Augment", "power" => "Tamer Power", "itemTier" => "Item Pick", _ => kind }, "Pick one.");
 

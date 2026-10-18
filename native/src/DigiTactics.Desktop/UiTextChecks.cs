@@ -5,6 +5,7 @@ namespace DigiTactics.Desktop;
 
 internal static class UiTextChecks
 {
+    private sealed record ConsumableCase(string Variant, string Id, int Held, int Bench, string Text);
     public static void Run(ContentCatalog catalog)
     {
         var display = new DisplayText(); int abilities = 0;
@@ -17,6 +18,14 @@ internal static class UiTextChecks
                     abilities++;
                 }
         Console.WriteLine($"Ability display coverage passed: {abilities} forms across {catalog.Variants.Length} rulesets.");
+        var cases = System.Text.Json.JsonSerializer.Deserialize<ConsumableCase[]>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "content/consumable-preview-cases.json")), new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        foreach (var sample in cases)
+        {
+            var rules = catalog.Variants.Single(rules => rules.Id == sample.Variant);
+            if (display.ConsumablePreview(rules, sample.Id, sample.Held, sample.Bench) != sample.Text)
+                throw new InvalidOperationException($"Consumable preview differs from source: {sample}");
+        }
+        Console.WriteLine($"Consumable preview source parity passed: {cases.Length} target/bench combinations.");
         ImGui.SetNextWindowPos(new(0, 0)); ImGui.SetNextWindowSize(new(380, 800));
         ImGui.Begin("Literal text check"u8, ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoScrollbar);
         string[] samples = ["+15% AD", "+12% AS", "Tamer %s %n %08x %%", "100% ready ## visible", "Digi-Data: 50% — café", string.Concat(Enumerable.Repeat("+20% power, ", 240))];

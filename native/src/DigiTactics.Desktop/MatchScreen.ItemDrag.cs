@@ -32,7 +32,7 @@ internal sealed partial class MatchScreen
     internal string ItemDropPreview(string id, PlanningUnit unit)
     {
         var item = Rules.Items.Single(item => item.Id == id);
-        if (item.Consumable) return Name(id) + ": " + text.Get(Rules.Id, id).Description;
+        if (item.Consumable) return Name(id) + ": " + text.ConsumablePreview(Rules, id, unit.Items.Length, Human.Items.Count);
         if (item.Emblem is { } emblem && TraitRules.UnitTraits(new(unit.Line, unit.Stage, 0, 0, Items: unit.Items), Rules).Contains(emblem))
             return "Already has this trait";
         if (item.Component)
@@ -83,12 +83,13 @@ internal sealed partial class MatchScreen
             label = UnitName(holder) + ": " + ItemDropFeedback;
         }
         var draw = ImGui.GetForegroundDrawList();
-        float width = Math.Min(size.X - 24, ImGui.CalcTextSize(label).X + 20);
+        float width = Math.Min(Math.Min(420, size.X - 24), ImGui.CalcTextSize(label).X + 12);
+        float height = ImGui.CalcTextSize(label, false, width - 12).Y + 12;
         float x = Math.Clamp(mouse.X + 10, 12, size.X - width - 12);
-        float y = Math.Min(mouse.Y + 14, size.Y - 42);
-        draw.AddRectFilled(new(x, y), new(x + width, y + 28), new ImColor8(15, 28, 40, 235));
-        draw.PushClipRect(new(x,y),new(x+width,y+28),true);
-        draw.AddText(ImGui.GetFont(), 14, new(x + 6, y + 6), new ImColor8(240, 220, 140), label);
+        float y = Math.Max(12, Math.Min(mouse.Y + 14, size.Y - height - 12));
+        draw.AddRectFilled(new(x, y), new(x + width, y + height), new ImColor8(15, 28, 40, 235));
+        draw.PushClipRect(new(x,y),new(x+width,y+height),true);
+        draw.AddText(ImGui.GetFont(), ImGui.GetFontSize(), new(x + 6, y + 6), new ImColor8(240, 220, 140), label, width - 12);
         draw.PopClipRect();
     }
 }

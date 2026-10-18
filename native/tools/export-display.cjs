@@ -1,13 +1,24 @@
 const fs = require('fs'), path = require('path');
 const DT = require('../../tools/headless.cjs').load({ strict: true });
 const variants = {};
+const consumableCases = [];
 for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   DT.Sets.activate(set.id, pace);
   const entries = {};
   const add = (id, v) => {
-    if (id) entries[id] = { name: v.name || id, description: v.desc || v.description || '' };
+    if (id) entries[id] = { name: v.name || id, description: v.desc || v.description || '', ...(typeof v.preview === 'string' ? { preview: v.preview } : {}) };
   };
   for (const [id, v] of Object.entries(DT.ITEMS)) add(id, v);
+  for (const [id, v] of Object.entries(DT.ITEMS)) if (v.consumable) {
+    if (typeof v.preview === 'function') throw new Error(`Native consumable preview needs an implementation: ${set.id}/${id}`);
+    add(`consumable:${id}`, { name: v.name, desc: DT.consumablePreview(id, { items: [] }, null, null).text });
+    const cap = DT.HYPER.itemCap;
+    for (let held = 0; held <= 3; held++) for (const bench of [1, cap - 2, cap, cap + 1]) {
+      const unit = { items: Array(held).fill(Object.keys(DT.ITEMS)[0]) };
+      const player = { items: Array(bench).fill(id), game: { R: DT.HYPER } };
+      consumableCases.push({ variant: `${set.id}/${pace}`, id, held, bench, text: DT.consumablePreview(id, unit, player, player.game).text });
+    }
+  }
   for (const [id, v] of Object.entries(DT.TRAITS)) add(id, v);
   for (const line of Object.values(DT.LINE)) for (let stage = 0; stage < line.forms.length; stage++) {
     add(`ability:${line.id}:${stage}`, { name: line.abil[stage], desc: DT.abilityText(line, stage) });
@@ -33,4 +44,5 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   variants[`${set.id}/${pace}`] = entries;
 }
 fs.writeFileSync(path.join(__dirname, '../content/display.json'), JSON.stringify(variants, null, 2) + '\n');
+fs.writeFileSync(path.join(__dirname, '../content/consumable-preview-cases.json'), JSON.stringify(consumableCases) + '\n');
 console.log('Exported native display text.');
