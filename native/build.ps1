@@ -174,6 +174,7 @@ try {
     Invoke-Checked 'node' @('tools/test-model-body-scale.cjs', 'catalog:CS_Renamon:chr391')
     Invoke-Checked 'node' @('tools/test-model-body-scale.cjs', 'biyomon:0')
     Invoke-Checked 'node' @('tools/test-model-body-scale.cjs', 'candlemon:1')
+    Invoke-Checked 'node' @('tools/test-model-clam-scale.cjs')
     Invoke-Checked 'node' @('tools/test-model-living-motion.cjs')
     Invoke-Checked 'node' @('tools/test-model-softbody.cjs')
     Invoke-Checked 'node' @('tools/test-model-fallback-anatomy.cjs')
