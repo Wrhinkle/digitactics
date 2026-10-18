@@ -23,6 +23,7 @@ public static class BoardSceneMotion
             "desert-haze"=>(Haze(time).U,Haze(time).V),
             "sewer-pour"=>(0d,(time*1.5)%1),
             "studio-led"=>(Math.Sin(time*.6)*.08,0d),
+            "pyramid-bands"=>((time*.01)%1,0d),
             "grid-floor"=>(0d,(time*.05)%1),
             _=>throw new ArgumentException("Unknown scrolling board texture: "+kind,nameof(kind))
         };
@@ -37,6 +38,7 @@ public static class BoardSceneMotion
         double x=p.X,y=p.Y,z=p.Z,rx=0,ry=p.Ry,rz=0,sx=p.S,sy=p.S,sz=p.S;
         switch(kind)
         {
+            case "pyramid-flames":return BoardPyramidMotion.Flame(p,time);
             case "freeze-men":return BoardFreezeMotion.Snowman(p,time);
             case "village-eggs": rz=Math.Sin(time*2+p.Phase)*.18; break;
             case "village-blocks":

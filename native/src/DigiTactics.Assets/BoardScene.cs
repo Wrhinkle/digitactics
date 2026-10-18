@@ -58,6 +58,8 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             Require(obj.Materials.Length > 0 && obj.Materials.All(i => i >= 0 && i < Materials.Length), "material references");
             Require(obj.Matrix.Length == 16 && obj.Matrix.All(double.IsFinite), "world matrix");
             Require(obj.SortCenter is null || obj.SortCenter.Length==3 && obj.SortCenter.All(double.IsFinite),"sort center");
+            if(obj.Motion is {Kind:"pyramid-beams" or "pyramid-bands"} pyramid)
+                Require(Id=="server-pyramid" && double.IsFinite(pyramid.Speed) && pyramid.Speed==Math.Floor(pyramid.Speed) && pyramid.Speed>=0 && pyramid.Speed<(pyramid.Kind=="pyramid-beams"?2:6),"pyramid effect index");
             if(obj.Motion?.Ghosts is {} ghosts)
             {
                 Require(Id=="overdell-graveyard" && obj.Motion.Kind=="graveyard-ghosts" && obj.Instances is not null && ghosts.Length==obj.Instances.Length,"graveyard ghosts");
@@ -135,7 +137,7 @@ public sealed record BoardScene(int Version, string Id, string[] Sky, JsonElemen
             }
             if(obj.Motion is { Props:{ } props } propMotion)
             {
-                Require(propMotion.Kind is "sewer-numemon" or "sewer-duck" or "freeze-men" or "village-eggs" or "village-blocks" or "toy-tops" or "toy-train" or "coliseum-banners" or "coliseum-flames" or "savanna-gears" or "grid-polys","prop motion kind");
+                Require(propMotion.Kind is "pyramid-flames" or "sewer-numemon" or "sewer-duck" or "freeze-men" or "village-eggs" or "village-blocks" or "toy-tops" or "toy-train" or "coliseum-banners" or "coliseum-flames" or "savanna-gears" or "grid-polys","prop motion kind");
                 Require(obj.Instances is not null && props.Length==obj.Instances.Length,"prop motion count");
                 Require(props.All(p=>new[] {p.X,p.Y,p.Z,p.S,p.Phase,p.Base,p.Cx,p.Cz,p.K,p.Ry,p.Rx,p.Spin}.All(double.IsFinite)),"prop motion values");
             }

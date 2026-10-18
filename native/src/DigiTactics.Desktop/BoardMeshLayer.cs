@@ -29,6 +29,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly BoardStudioMotion? studio;
     private readonly BoardTrainMotion? train;
     private readonly BoardGraveyardMotion? graveyard;
+    private readonly BoardPyramidMotion? pyramid;
     private readonly BoardConfetti? confetti;
     private static readonly Vector3 libraryTint=BoardLighting.Linear("#ffd090");
     private static readonly Vector3 freezeCalmFog=BoardLighting.Linear("#24405e"),freezeStormFog=BoardLighting.Linear("#8aa6c0");
@@ -44,6 +45,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false,int initialEvolution=0)
     {
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
+        if(scene.Id=="server-pyramid")pyramid=new(initialCombat);
         if(scene.Id=="overdell-graveyard")graveyard=new();
         if(scene.Id=="trailmon-station")train=new(initialCombat);
         if(scene.Id=="battle-studio"){studio=new();confetti=new(scene.Objects.FirstOrDefault(o=>o.Motion?.Kind=="studio-confetti")?.Instances?.Length??0,initialWon);}
@@ -77,7 +79,7 @@ internal sealed class BoardMeshLayer : IDisposable
                     {
                         var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
                         if(obj.Motion is { Kind:"sea" or "particles" or "circuit-pulses" or "freeze-aurora" or "knights-flashes" or "studio-sticks" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
-                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" or "temple-lava" or "underwater-caustics" or "underwater-caustics2" or "sewer-pour" or "studio-led" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
+                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" or "circuit-screen" or "circuit-floor" or "temple-lava" or "underwater-caustics" or "underwater-caustics2" or "sewer-pour" or "studio-led" or "pyramid-bands" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
                         var material = scene.Materials[part.Material];
                         return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
                     }).ToArray();
@@ -100,6 +102,7 @@ internal sealed class BoardMeshLayer : IDisposable
         studio?.Advance(delta,combat);
         train?.Advance(time,combat);
         graveyard?.Advance(delta,combat);
+        pyramid?.Advance(delta,time,combat,stage);
         confetti?.Advance(delta,won);
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
@@ -147,6 +150,7 @@ internal sealed class BoardMeshLayer : IDisposable
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = World(item.Object);
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
+            if(item.Object.Motion?.Kind is "pyramid-beams" or "pyramid-bands")opacity=pyramid!.Opacity(item.Object.Motion.Kind,(int)item.Object.Motion.Speed,time);
             if(item.Object.Motion?.TrainSteam==true)opacity=train!.SteamOpacity;
             if(item.Object.Motion?.Kind=="library-circle")opacity=library!.Opacity(time);
             if(item.Object.Motion?.Aurora is {} aurora)opacity=freeze!.Opacity((int)(aurora.Ph/2));
@@ -229,6 +233,7 @@ internal sealed class BoardMeshLayer : IDisposable
     internal static Matrix4D ConfettiMatrix(BoardConfettiPose p)=>new CompanionTransform(new(p.X,p.Y,p.Z),new(p.Rx,0,p.Rz),new(1,1,1)).Matrix;
     private Matrix4D World(BoardObject obj)
     {
+        if(obj.Motion?.Kind=="pyramid-beams")return pyramid!.Beam(obj.Matrix)*Root;
         if(obj.Motion?.TrainSteam==true)return train!.Steam*Root;
         if(obj.Motion?.Kind=="train-clock")return BoardTrainMotion.Clock(obj.Matrix,time)*Root;
         if(obj.Motion?.Kind is "studio-beam" or "studio-pool")return studio!.Light((int)obj.Motion.Speed,obj.Motion.Kind=="studio-beam",time)*Root;
