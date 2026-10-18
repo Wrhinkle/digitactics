@@ -253,6 +253,7 @@ internal sealed partial class MatchScreen : IDisposable
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
         sellDropHovered = partnerDropHovered = false;
+        itemDropSlot = -1;
         if (Session is null) CancelArenaDrag();
         if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
         Header(); if (Session is null) return;
@@ -475,12 +476,13 @@ internal sealed partial class MatchScreen : IDisposable
         for (int i = 0; i < Human.Items.Count; i++)
         {
             if (i % 6 != 0) ImGui.SameLine();
-            if (Button("item/" + i, Name(Human.Items[i]), (size.X - 78f) / 6, 24, selectedItem == i))
+            if (Button("item/" + i, Name(Human.Items[i]), (size.X - 78f) / 6, 24, selectedItem == i) && !itemDragMoved)
             {
                 if (selectedItem is { } old && old != i) { Act("swapItems", new { a = old, b = i }); selectedItem = null; }
                 else { selectedItem = selectedItem == i ? null : i; selectedUnit = null; status = "Select a holder to equip, or another item to swap positions."; }
             }
-            Tooltip(Human.Items[i]);
+            ItemDragSource(i);
+            if (!itemDragMoved) Tooltip(Human.Items[i]);
         }
         if (selectedItem is { } item && Session.State.Duos && Button("sendItem", "Send selected item")) { Act("portal", new { item }); selectedItem = null; }
         ImGui.EndDisabled(); ImGui.End();

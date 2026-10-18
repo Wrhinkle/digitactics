@@ -34,6 +34,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private int dragStep, draggedId;
     private readonly ArenaDropSmoke dropSmoke = new();
     private bool dropsVerified;
+    private readonly ItemDragSmoke itemDragSmoke = new();
+    private bool itemDragsVerified;
     public void Input(MatchScreen screen)
     {
         emoteTime+=100;screen.AiEmoteClock=()=>emoteTime;screen.AiEmoteRandom=()=>.01;
@@ -56,6 +58,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (cooldown-- > 0 || index >= commands.Length) return;
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
+        if (index == 22 && !itemDragsVerified) { itemDragsVerified = itemDragSmoke.Input(screen); cooldown = 3; return; }
         if (index == 22 && !dropsVerified) { dropsVerified = dropSmoke.Input(screen); cooldown = 3; return; }
         if (index == 9 && dragStep < 10)
         {
@@ -127,6 +130,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (index == 22 && cooldown == 1 && capture is not null && !itemDragsVerified && itemDragSmoke.CaptureName is { } itemCapture)
+            FrameCapture.SaveBitmap(Path.ChangeExtension(capture, itemCapture + ".bmp"), size.X, size.Y);
         if (index == 22 && cooldown == 1 && capture is not null && dropSmoke.CaptureName is { } dropCapture)
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, dropCapture + ".bmp"), size.X, size.Y);
         if (index == 9 && dragStep == 2 && cooldown == 1 && capture is not null)

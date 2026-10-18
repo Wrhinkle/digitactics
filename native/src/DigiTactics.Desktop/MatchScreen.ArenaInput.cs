@@ -15,6 +15,7 @@ internal sealed partial class MatchScreen
     internal int ArenaDropBench => arenaEnvironment.Feedback.HoverBench;
     private void CancelArenaDrag()
     {
+        itemDrag = null; itemDragMoved = false;
         arenaDrag = null; arenaDragMoved = false; arenaDragPosition = null;
         planning.DraggedUnit = null;
         if (battle is not null) battle.DraggedUnit = null;
@@ -30,9 +31,10 @@ internal sealed partial class MatchScreen
         if (!editable || arenaDrag is { } old && (old.Phase != Session!.Rounds.Phase || Human.Roster.At(old.From)?.Id != old.Id))
         { arenaDrag = null; arenaDragMoved = false; arenaDragPosition = null; }
         var mouse = ImGui.GetMousePos();
-        bool inside = ImGui.IsWindowHovered() && mouse.X >= Left && mouse.X < Left + Width && mouse.Y >= Top && mouse.Y < Top + Height;
+        bool inside = ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem) && mouse.X >= Left && mouse.X < Left + Width && mouse.Y >= Top && mouse.Y < Top + Height;
         var ground = ArenaPicking.Ground(mouse.X - Left, mouse.Y - Top, Width, Height, battle?.Combat.Columns ?? 7);
         var spot = inside && ground is { } p ? ArenaPicking.Spot(p, battle?.Combat.Columns > 7, battle is null) : null;
+        ItemDragPointer(editable, spot);
         if (editable && inside && ImGui.IsMouseClicked(ImGuiMouseButton.Left) && spot is { } start)
         {
             if (selectedItem is null && Human.Roster.At(start) is { } unit)
@@ -62,7 +64,7 @@ internal sealed partial class MatchScreen
             if (spot is { IsBoard: true } cell) feedback.HoverCell = (cell.Column, cell.Row);
             else if (spot is { IsBoard: false } bench) feedback.HoverBench = bench.Index;
         }
-        else if (inside && spot is { } hover && Session!.State.Players[viewed].Roster.At(hover) is { } unit)
+        else if (!itemDragMoved && inside && spot is { } hover && Session!.State.Players[viewed].Roster.At(hover) is { } unit)
         {
             ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); UnitDetails(unit.Line, unit.Stage); ImGui.EndTooltip();
         }
@@ -83,8 +85,12 @@ internal sealed partial class MatchScreen
 
     private void PartnerDropZone()
     {
-        if (!Session!.State.Duos || !arenaDragMoved || arenaDrag is not { } drag) return;
-        string eligibility = Session.Units.Portal.CanSend(Human, new(Uid: drag.Id), Session.Rounds.Phase, Session.Rounds.RoundType);
+        if (!Session!.State.Duos) return;
+        PortalRequest request;
+        if (itemDragMoved && itemDrag is { } item) request = new(ItemIndex: item.Index);
+        else if (arenaDragMoved && arenaDrag is { } drag) request = new(Uid: drag.Id);
+        else return;
+        string eligibility = Session.Units.Portal.CanSend(Human, request, Session.Rounds.Phase, Session.Rounds.RoundType);
         string label = eligibility switch
         {
             "ok" => "Drop to send to partner",
@@ -93,9 +99,11 @@ internal sealed partial class MatchScreen
             "limit" => "No sends remaining this round",
             "full" => "Partner's bench is full",
             "partner" => "Partner unavailable",
-            _ => "This unit cannot be sent"
+            "itemsFull" => "Partner's inventory is full",
+            _ => "Cannot send this to partner"
         };
         Button("dropPartner", label, 190, 64, eligibility == "ok");
-        partnerDropHovered = ImGui.IsItemHovered();
+        partnerDropHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem)
+            && ImGui.IsMouseHoveringRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax());
     }
 }
