@@ -1854,7 +1854,34 @@ preserving unknown fields. `--rewards-only` passed 4,660 comparisons against
 covering every variant in Solo and Duos. Both fixture exporters run in the native
 build pipeline. The Windows package and Solo/Duos UI smoke checks passed.
 
-The calculator is not yet connected to profile writes: the original award also
-grants Little Legend care and Digi-Data. That remaining reward component must be
-ported and saved atomically with Bits, missions and history before payouts are
-enabled. History therefore still records `bits` as null.
+The following payout integration now connects this calculator to native profile
+writes, including Little Legend rewards.
+
+### Atomic native match payouts
+
+Completing a native Solo/Duos match now saves Bits, daily missions, Little Legend
+care/Digi-Data and match history together through one atomic profile replacement.
+The standings panel shows the saved Bits breakdown and legend award. Failures
+expose a retry action; the original result timestamp, reward day and statistics
+remain fixed. Failed calculations or writes never publish a partial award.
+Repeated completion and reopened results use the original duplicate retention.
+An existing history entry with missing Bits can receive its cached reward total
+without incrementing the historical counters again.
+
+`LegendRewards` uses an embedded catalog generated from the original 37 legends,
+evolution reachability and XP constants. It preserves equipped-legend fallback,
+care increments, XP caps, form/record repair and the 60-game reward history.
+The exporter executes the original cosmetics registry and LegendEvo code to
+produce 12,025 cases; 24,050 save/award comparisons passed. The existing 4,660
+Bits/mission and tracker comparisons also passed.
+
+The 807 history/persistence checks include complete matches across every variant
+in Solo and Duos, wallet/history reward agreement, legend rewards across restart,
+malformed-domain rejection, lock failure and retry, fixed reward dates and
+no-write/no-payment duplicate completion. The Windows package and Solo/Duos UI
+smokes passed. Those UI smokes exercise five rounds, not the final reward panel;
+complete payouts are verified through the native session/storage integration.
+
+This enables match payouts only. The native cosmetic store, legend management,
+Digi-Farm, custom music, remaining settings and multiplayer are still unfinished;
+the full port is not ready for production release.

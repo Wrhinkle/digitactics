@@ -44,6 +44,10 @@ public static class MatchRewards
             throw new InvalidDataException("Invalid reward statistics.");
         var shop = Object(shopJson, "{\"awarded\":[],\"awards\":{},\"lastDay\":\"\",\"missions\":{\"day\":\"\",\"done\":[]}}");
         var wallet = Object(walletJson, "{\"bits\":0,\"owned\":{},\"equipped\":{},\"history\":[]}");
+        if (wallet["owned"] is not JsonObject || wallet["equipped"] is not JsonObject || wallet["history"] is not JsonArray || wallet["bits"] is null
+            || shop["awarded"] is not JsonArray || shop["awards"] is not JsonObject || shop["lastDay"] is null
+            || shop["missions"] is not JsonObject missions || missions["day"] is null || missions["done"] is not JsonArray)
+            throw new InvalidDataException("Invalid reward save fields.");
         var owned = wallet["owned"]!.AsObject();
         foreach (string kind in new[] { "legend", "emote", "board", "killscreen", "sound", "dance", "elimsound" })
             if (owned[kind] is null) owned[kind] = new JsonArray();

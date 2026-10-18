@@ -17,7 +17,12 @@ public static class MatchHistory
             throw new InvalidDataException("Invalid match placement.");
         var profile = saved is null ? new JsonObject() : JsonNode.Parse(saved) as JsonObject ?? throw new InvalidDataException("Invalid client progress.");
         var history = profile["matches"] as JsonArray ?? (profile["matches"] is null ? new JsonArray() : throw new InvalidDataException("Invalid match history."));
-        if (history.Any(entry => entry?["key"]?.GetValue<string>() == match.Key)) return saved!;
+        var existing = history.FirstOrDefault(entry => entry?["key"]?.GetValue<string>() == match.Key);
+        if (existing is not null)
+        {
+            if (existing["bits"] is null && match.Bits is not null) { existing["bits"] = match.Bits; return profile.ToJsonString(); }
+            return saved!;
+        }
         if (profile["matches"] is null) profile["matches"] = history;
         var recorded = match with { Traits = match.Traits.Take(8).ToArray(), Units = match.Units.Take(10).ToArray() };
         history.Insert(0, JsonSerializer.SerializeToNode(recorded, Options));

@@ -360,10 +360,16 @@ internal sealed class MatchScreen : IDisposable
             if (Button("view/" + p.Id, $"{p.Name}  {(p.Alive ? p.Health + " HP" : "#" + p.Placement)}", 192, 28)) Watch(p.Id);
         if (Session.State.Duos) ImGui.TextWrapped("Your partner: " + Session.Units.Portal.Partner(Human)?.Name);
         foreach (var orb in Human.Orbs.ToArray()) if (Button("orb/" + orb.Id, $"Collect {orb.Kind} loot")) Act("orb", new { id = orb.Id });
-        if (history?.Error is not null && Button("retryHistory", "Retry saving history"))
+        if (history?.Award is { } award)
+        {
+            ImGui.Separator(); ImGui.Text($"Earned {award.Total} Bits");
+            foreach (var line in award.Lines) ImGui.TextWrapped($"{line.Label}: +{line.N}");
+            if (history.LegendAward is { } legend) ImGui.TextWrapped($"{legend.Legend}: +{legend.Data} Digi-Data (level {legend.Level})");
+        }
+        if (history?.Error is not null && Button("retryHistory", "Retry saving progress"))
         {
             bool saved = history.Complete(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            status = saved ? "Match history saved." : history.Error!;
+            status = saved ? "Match progress saved." : history.Error!;
             profileMessage = saved ? null : history.Error;
         }
         ImGui.Separator(); ImGui.TextWrapped(status); ImGui.End();

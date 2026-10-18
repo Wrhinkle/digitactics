@@ -13,6 +13,10 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
     private int level;
     private bool saved;
     private HistoryMatch? pending;
+    private DateOnly rewardDay;
+    private RewardStats? rewardStats;
+    public RewardBreakdown? Award { get; private set; }
+    public LegendReward? LegendAward { get; private set; }
     public string? Error { get; private set; }
     public void Capture()
     {
@@ -34,18 +38,31 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
         var player = session.State.Players[0];
         if (saved) return true;
         if (player.Placement == 0) return false;
+        if (pending is null) { rewardDay = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime); rewardStats = tracker.Stats; }
         pending ??= new($"solo:{session.State.Seed}:{player.Id}", timestamp, "solo", session.State.Duos ? "duos" : "solo",
             session.State.Rules.Id.Split('/')[0], player.Placement, session.Rounds.Position.Label, Math.Max(level, player.Economy.Level), traits, units,
             System.Text.Json.JsonSerializer.SerializeToNode(tracker.Stats, new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase }));
         try
         {
+            var rewards = MatchRewards.Calculate(profile.Storage.GetValueOrDefault("dt.shop.v1"), profile.Storage.GetValueOrDefault("dt.cosmetics.v1"),
+                pending.Key, session.State.Duos, rewardStats!, rewardDay, pending.At);
+            var changes = new Dictionary<string, string>();
+            LegendRewardUpdate? legend = null;
+            if (rewards.Fresh)
+            {
+                changes["dt.shop.v1"] = rewards.Shop; changes["dt.cosmetics.v1"] = rewards.Wallet;
+                legend = LegendRewards.Calculate(profile.Storage.GetValueOrDefault("dt.legendevo.v1"), rewards.Wallet, pending.Key, rewards.RewardPlace);
+                if (legend.Save is not null) changes["dt.legendevo.v1"] = legend.Save;
+            }
             string? previous = profile.Storage.GetValueOrDefault("dt.client.v1");
-            string updated = MatchHistory.Append(previous, pending);
-            saved = updated == previous || profile.UpdateStorage(new Dictionary<string, string> { ["dt.client.v1"] = updated });
+            string updated = MatchHistory.Append(previous, pending with { Bits = rewards.Award?.Total });
+            if (updated != previous) changes["dt.client.v1"] = updated;
+            saved = changes.Count == 0 || profile.UpdateStorage(changes);
+            if (saved) { Award = rewards.Award; LegendAward = legend?.Award; }
             Error = saved ? null : profile.Error;
         }
         catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException)
-        { Error = "Match history could not be saved. Existing progress was preserved: " + error.Message; }
+        { Error = "Match progress could not be saved. Existing progress was preserved: " + error.Message; }
         return saved;
     }
 }
