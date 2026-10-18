@@ -16,11 +16,11 @@ try
     int separator=Array.IndexOf(args,"--");
     string[] options=separator<0?args:args[..separator],gameArgs=separator<0?[]:args[(separator+1)..];
     int index=0;string command="run";
-    if(options.Length>0 && options[0] is "run" or "stage")command=options[index++];
+    if(options.Length>0 && options[0] is "run" or "stage" or "fetch")command=options[index++];
     string? archive=null,descriptorPath=null;
-    if(command=="stage")
+    if(command is "stage" or "fetch")
     {
-        if(options.Length-index<2 || gameArgs.Length!=0)throw new ArgumentException("Usage: stage <archive.zip> <descriptor.json> [--bundle directory --version version] [--state directory]");
+        if(options.Length-index<2 || gameArgs.Length!=0)throw new ArgumentException("Usage: stage <archive.zip> <descriptor.json>, or fetch <https-url> <descriptor.json> [--bundle directory --version version] [--state directory]");
         archive=options[index++];descriptorPath=options[index++];
     }
     string? bundle=null,version=null;
@@ -49,10 +49,15 @@ try
     if(!File.Exists(Path.Combine(bundle,"DigiTactics.Desktop.exe")))throw new FileNotFoundException("Bundled native application is missing.");
     using var state=new NativeLaunchState(stateDirectory,version!);
     string candidates=Path.Combine(stateDirectory,"candidates");
-    if(command=="stage")
+    if(command is "stage" or "fetch")
     {
         if(new FileInfo(descriptorPath!).Length>16384)throw new InvalidDataException("Oversized update descriptor.");
         var expected=JsonSerializer.Deserialize<NativePackageExpectation>(File.ReadAllBytes(descriptorPath!),json)??throw new InvalidDataException("Missing native update descriptor.");
+        if(command=="fetch")
+        {
+            using var downloader=new NativeUpdateDownloader();
+            archive=await downloader.Download(new Uri(archive!,UriKind.Absolute),expected,Path.Combine(stateDirectory,"downloads"),launcherVersion);
+        }
         var staged=NativeUpdatePackage.Stage(archive!,candidates,expected,launcherVersion);
         using var verified=NativeUpdatePackage.OpenCandidate(candidates,staged.Release,launcherVersion);
         state.Queue(staged.Release);
