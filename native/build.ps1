@@ -232,6 +232,7 @@ try {
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--duos', '--capture', 'artifacts/match-duos.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--mode-bonus-smoke', '--capture', 'artifacts/mode-bonuses.bmp')
     Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-library-ui-smoke', '--capture', 'artifacts/music-library.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-library-ui-smoke', '--short-window', '--capture', 'artifacts/music-library-short.bmp')
     foreach($screen in @('postgame','profile-ui','collection','evolution','elimination-cinematic','training','farm-pointer','farm-caretaker','match-cosmetics','legend-navigation','galaxy-intro-ui','choice-presentation-ui','loot-notice-ui','network-match','spectator','save-data-ui','client-preferences','social-ui','match-keyboard','set-selection','mystery-loot-ui')) {
         foreach($minimum in @($false,$true)) {
             $profile=Join-Path $env:TEMP ('digitactics-'+$screen+'-'+[Guid]::NewGuid().ToString('N'))
