@@ -1522,3 +1522,27 @@ Production round transitions, settlement dispatch, combat projection and native
 match UI still need integration; these results are not full-game acceptance.
 
 Validation: **170,296,419 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.
+
+### Composed planning sessions and round transitions
+
+`MatchPlanningSession` owns match initialization, the shared unit lifecycle,
+offers, AI and rounds. Opening rounds start automatically; advancing finishes an
+active carousel before starting the next round. Carousel picks advance the AI
+pick queue. Combat creation and settlement remain the caller's responsibility.
+
+`MatchRoundEffects` composes income, mode rewards/offers, Tamer rank-ups, Duos
+transfers, carousels and AI turns. Care Package gifts run before set mechanics;
+Gizmos interleaves them with its augment listeners so Reserves snapshots gold at
+the original point, even if a gift causes a Proud Partner payout. Coliseum's
+recurring augment roll and sponsor income are included in the composed path.
+
+132 original-game sessions pass 1,126,287 checks (`--planning-session-only`).
+Each covers opening plus 24 actual round advances: 3,168 transitions across all
+22 variants, three seeds and Solo/Duos. Over 11,000 Care Package arrivals occur.
+Tests compare economy/streaks, offers, AI results, persistent economy state,
+rosters, items, transfers, carousel reservation/order/picks, opponent pairings,
+team health, pool counts, IDs and RNG. They deliberately skip combat between
+planning rounds; combat projection and settlement dispatch still need integration,
+followed by production UI, multiplayer, migration and release acceptance.
+
+Validation: **171,422,706 full-suite native checks passed**, including all 5,699 reference battles. Self-contained Windows publish and all packaged BRUTAL smoke checks passed.

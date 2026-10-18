@@ -41,11 +41,12 @@ public sealed class GizmosPlanning(MatchState state) : IMatchShopHooks
         }
     }
 
-    public void RoundStart(MatchPlayer player, RoundPosition round, string roundType)
+    public void RoundStart(MatchPlayer player, RoundPosition round, string roundType, Action<string>? augmentHook = null)
     {
         var mechanic = player.Mechanics.Gizmos;
         foreach (string id in player.Augments)
         {
+            augmentHook?.Invoke(id);
             if (id == "giz_a_calc" && mechanic.CalculatedRoll) { player.Shop.FreeRolls++; mechanic.CalculatedRoll = false; }
             if (id is "giz_a_trade" or "giz_a_highend") player.Shop.FreeRolls++;
             if (id == "giz_a_reserves") mechanic.GoldStart = player.Economy.Gold;
