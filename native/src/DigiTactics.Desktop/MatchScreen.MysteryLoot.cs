@@ -57,11 +57,11 @@ internal sealed partial class MatchScreen
             ImGui.Text($"Daybreak Box x {inventory.Daily}"); ImGui.SameLine();
             ImGui.BeginDisabled(inventory.Daily < 1 || inventory.Pending is not null);
             if (Button("mysteryOpen/daily", "Open")) OpenMysteryBox("daily"); ImGui.EndDisabled();
-            CollectionText("First completed round each day.");
+            CollectionText($"Complete a round on 2 different days to earn a Daybreak Box. Progress: {inventory.DayProgress}/2 active days. Breaks do not reset it.");
             ImGui.Text($"Cipher Box x {inventory.Vault} / Cipher Keys: {inventory.Keys}"); ImGui.SameLine();
             ImGui.BeginDisabled(inventory.Vault < 1 || inventory.Keys < 1 || inventory.Pending is not null);
             if (Button("mysteryOpen/vault", "Unlock")) OpenMysteryBox("vault"); ImGui.EndDisabled();
-            CollectionText("Boxes and keys can drop after rounds from stage 2 onward. Each box reveals one new cosmetic; the two pools never overlap. No purchases required.");
+            CollectionText("From stage 2, each completed round you participate in has a 3% Cipher Box chance and an independent 2.5% key chance. Guaranteed by 32 eligible rounds without a box or 40 without a key. Each box reveals one new cosmetic; the two pools never overlap. No purchases required.");
             if (mysteryLoot.Message is { } message) CollectionText(message);
             if (mysteryLoot.Error is { } error)
             {

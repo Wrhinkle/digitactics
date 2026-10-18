@@ -1,9 +1,10 @@
 // Cosmetic drops are local profile rewards, outside the deterministic combat simulation.
 const DT = window.DT, C = DT.Cosmetics, KEY = 'dt.mysteryLoot.v1';
-const fresh = () => ({ daily: 0, vault: 0, keys: 0, day: '', games: {}, boxMisses: 0, keyMisses: 0, pending: null });
+const fresh = () => ({ daily: 0, vault: 0, keys: 0, day: '', dayProgress: 0, games: {}, boxMisses: 0, keyMisses: 0, pending: null });
 let save = fresh();
 try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s === 'object') save = { ...save, ...s }; } catch (_) { /* fresh profile */ }
 for (const k of ['daily','vault','keys','boxMisses','keyMisses']) if (!Number.isSafeInteger(save[k]) || save[k] < 0) save[k] = 0;
+if (save.dayProgress !== 1) save.dayProgress = 0;
 if (!save.games || typeof save.games !== 'object' || Array.isArray(save.games)) save.games = {};
 const listeners = new Set();
 function persist(next) { try { localStorage.setItem(KEY, JSON.stringify(next)); save = next; return true; } catch (_) { DT.Client?.toast('Could not save loot. Free some storage and try again.', 'bad'); return false; } }
@@ -26,11 +27,16 @@ function roundEnd(g) {
   // Keep a generous bounded ledger. This is local progress, not a server-verified economy.
   const ids = Object.keys(next.games); for (const old of ids.slice(0, Math.max(0,ids.length-1000))) delete next.games[old];
   const date = new Date(), day = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
-  if (day > next.day) { next.day = day; next.daily++; drops.push('Daybreak Box'); }
-  // Stage 2 onward: independent 6% box / 5% key drops, with bad-luck protection.
+  // Count active days, not elapsed calendar days. Breaks retain progress; old saves
+  // start at zero and their last counted day prevents a same-day retroactive drop.
+  if (day > next.day) {
+    next.day = day;
+    if (++next.dayProgress >= 2) { next.dayProgress = 0; next.daily++; drops.push('Daybreak Box'); }
+  }
+  // Stage 2 onward: independent 3% box / 2.5% key drops; doubled pity preserves the lower earning cadence.
   if (g.stage >= 2) {
-    if (++next.boxMisses >= 16 || roll() < .06) { next.vault++; next.boxMisses=0; drops.push('Cipher Box'); }
-    if (++next.keyMisses >= 20 || roll() < .05) { next.keys++; next.keyMisses=0; drops.push('Cipher Key'); }
+    if (++next.boxMisses >= 32 || roll() < .03) { next.vault++; next.boxMisses=0; drops.push('Cipher Box'); }
+    if (++next.keyMisses >= 40 || roll() < .025) { next.keys++; next.keyMisses=0; drops.push('Cipher Key'); }
   }
   if (!persist(next)) return [];
   emit();
@@ -64,5 +70,5 @@ function reveal(reward) {
   el.querySelector('[data-equip]').onclick=()=>{C.equip(reward.kind,reward.id);DT.Client?.toast(`Equipped ${item.name}`,'good');el.close();};
   el.addEventListener('close',()=>{if(typeof dispose==='function')dispose();dispose=null;el.remove();if(dialog===el)dialog=null;},{once:true});
 }
-DT.MysteryLoot={ roundEnd,open,reveal, inventory:()=>({daily:save.daily,vault:save.vault,keys:save.keys,day:save.day}),onChange:fn=>{listeners.add(fn);return()=>listeners.delete(fn);} };
+DT.MysteryLoot={ roundEnd,open,reveal, inventory:()=>({daily:save.daily,vault:save.vault,keys:save.keys,day:save.day,dayProgress:save.dayProgress}),onChange:fn=>{listeners.add(fn);return()=>listeners.delete(fn);} };
 settle();

@@ -6,7 +6,7 @@ namespace DigiTactics.Storage;
 
 public sealed record MysteryRound(string Set, bool Duos, uint Seed, int Seat, int Stage, int Round, bool Participated, bool Live = true);
 public sealed record MysteryReward(string Kind, string Id);
-public sealed record MysteryInventory(long Daily, long Vault, long Keys, string Day, MysteryReward? Pending);
+public sealed record MysteryInventory(long Daily, long Vault, long Keys, string Day, MysteryReward? Pending, int DayProgress = 0);
 public sealed record MysteryLootUpdate(string Loot, string? Wallet, MysteryReward? Reward, string[] Drops, bool Changed, string? Message = null);
 
 /// <summary>Original local mystery rewards. Randomness is supplied by the caller and never touches combat RNG.</summary>
@@ -25,20 +25,21 @@ public static class MysteryLoot
     }
     private static JsonObject Read(string? json)
     {
-        var value = new JsonObject { ["daily"] = 0, ["vault"] = 0, ["keys"] = 0, ["day"] = "", ["games"] = new JsonObject(), ["boxMisses"] = 0, ["keyMisses"] = 0, ["pending"] = null };
+        var value = new JsonObject { ["daily"] = 0, ["vault"] = 0, ["keys"] = 0, ["day"] = "", ["dayProgress"] = 0, ["games"] = new JsonObject(), ["boxMisses"] = 0, ["keyMisses"] = 0, ["pending"] = null };
         if (json is not null)
         {
             var saved = JsonNode.Parse(json) as JsonObject ?? throw new InvalidDataException("Invalid mystery loot save.");
             foreach (var field in saved) value[field.Key] = field.Value?.DeepClone();
         }
         foreach (string key in new[] { "daily", "vault", "keys", "boxMisses", "keyMisses" }) value[key] = Counter(value[key]);
+        value["dayProgress"] = Counter(value["dayProgress"]) == 1 ? 1L : 0L;
         if (value["games"] is not JsonObject) value["games"] = new JsonObject();
         return value;
     }
     private static MysteryReward? Pending(JsonObject value) => value["pending"] is JsonObject pending && pending["kind"] is JsonValue kind && kind.TryGetValue<string>(out string? k) && pending["id"] is JsonValue id && id.TryGetValue<string>(out string? i) && k is not null && i is not null ? new(k, i) : null;
     public static MysteryInventory Inventory(string? json)
     {
-        var value = Read(json); return new(Counter(value["daily"]), Counter(value["vault"]), Counter(value["keys"]), value["day"]?.GetValue<string>() ?? "", Pending(value));
+        var value = Read(json); return new(Counter(value["daily"]), Counter(value["vault"]), Counter(value["keys"]), value["day"]?.GetValue<string>() ?? "", Pending(value), (int)Counter(value["dayProgress"]));
     }
     private static double Roll(Func<double> random)
     {
@@ -57,13 +58,19 @@ public static class MysteryLoot
         games[key] = sequence;
         foreach (string old in games.Select(x => x.Key).Take(Math.Max(0, games.Count - 1000)).ToArray()) games.Remove(old);
         var drops = new List<string>(); string date = day.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-        if (string.CompareOrdinal(date, value["day"]?.GetValue<string>() ?? "") > 0) { value["day"] = date; Increment(value, "daily"); drops.Add("Daybreak Box"); }
+        // Only a genuinely new active day advances progress. Gaps never reset it,
+        // and imported saves retain their last day without a retroactive reward.
+        if (string.CompareOrdinal(date, value["day"]?.GetValue<string>() ?? "") > 0)
+        {
+            value["day"] = date; Increment(value, "dayProgress");
+            if (Counter(value["dayProgress"]) >= 2) { value["dayProgress"] = 0; Increment(value, "daily"); drops.Add("Daybreak Box"); }
+        }
         if (round.Stage >= 2)
         {
             Increment(value, "boxMisses");
-            if (Counter(value["boxMisses"]) >= 16 || Roll(random) < .06) { Increment(value, "vault"); value["boxMisses"] = 0; drops.Add("Cipher Box"); }
+            if (Counter(value["boxMisses"]) >= 32 || Roll(random) < .03) { Increment(value, "vault"); value["boxMisses"] = 0; drops.Add("Cipher Box"); }
             Increment(value, "keyMisses");
-            if (Counter(value["keyMisses"]) >= 20 || Roll(random) < .05) { Increment(value, "keys"); value["keyMisses"] = 0; drops.Add("Cipher Key"); }
+            if (Counter(value["keyMisses"]) >= 40 || Roll(random) < .025) { Increment(value, "keys"); value["keyMisses"] = 0; drops.Add("Cipher Key"); }
         }
         return new(value.ToJsonString(), null, null, drops.ToArray(), true);
     }

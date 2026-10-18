@@ -36,7 +36,7 @@ internal static class MysteryLootIntegrationChecks
                         Check(projection.Participated && projection.Set == "faction-wars" && projection.Duos == duos && projection.Seed == 143 && projection.Seat == seat &&
                             projection.Stage == session.Rounds.Position.Stage && projection.Round == session.Rounds.Position.Round, format + " actual settled combat projects every participant and original ledger identity");
                         var update = MysteryLoot.RoundEnd(saves[seat], projection, day, () => 0); saves[seat] = update.Loot;
-                        Check(update.Changed && MysteryLoot.Inventory(update.Loot).Daily == 1, format + " settled combat awards one daily box per local profile");
+                        Check(update.Changed && MysteryLoot.Inventory(update.Loot) is { Daily: 0, DayProgress: 1 }, format + " settled combat advances only one active day per local profile");
                         Check(!MysteryLoot.RoundEnd(saves[seat], projection, day, () => throw new InvalidOperationException("Settled round rerolled.")).Changed, format + " duplicate real settlement does not re-award");
                     }
                     Check(session.State.Random.State == combatRandom, format + " local mystery rewards never consume deterministic combat randomness");
@@ -110,7 +110,7 @@ internal static class MysteryLootIntegrationChecks
                 }
                 int limit = 0;
                 while (!(live.Match!.Session.Rounds.Position.Stage >= 2 && live.Match.Session.Rounds.Phase == MatchPhase.Result) && limit++ < 50) NextDecision();
-                Check(appliedEnds > 0 && progress.Inventory is { Daily: 1, Vault: 1, Keys: 1 } && rolls == 2, format + " live authenticated stage-two settlement awards original daily, box and key once");
+                Check(appliedEnds > 0 && progress.Inventory is { Daily: 0, DayProgress: 1, Vault: 1, Keys: 1 } && rolls == 2, format + " live authenticated stage-two settlement advances active day and awards box/key once");
                 Check(!observerProfile.Exists && observerProfile.Storage.Count == 0, format + " spectator receives actual end events but never records drops");
                 string path = Path.Combine(target, "profile.json"), saved = File.ReadAllText(path); int endsBefore = appliedEnds;
                 Append(new JsonObject { ["k"] = "end" }); live.Pump(++now);

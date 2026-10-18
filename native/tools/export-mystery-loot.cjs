@@ -60,14 +60,19 @@ add('ledger-distinguishes-set-mode-seed-seat',{},[
   round(),round({setId:'origins'}),round({duo:true}),round({seed:144}),round({humanId:1}),round({humanId:1})]);
 add('daily-cross-year',{loot:{day:'2026-12-31'}},[round({}, {day:'2027-01-01'}),round({round:2},{day:'2027-01-01'})]);
 add('daily-future-clock-preserved',{loot:{daily:3,day:'2027-01-01',future:{keep:true}}},[round()]);
+add('active-days-gaps-no-retroactive-awards',{loot:{daily:7,vault:3,keys:2,day:'2026-10-18',future:{keep:true}}},[
+  round(),round({round:2},{day:'2026-10-19'}),round({round:3},{day:'2026-11-21'}),
+  round({round:3},{day:'2026-11-22'}),round({round:4},{day:'2026-11-20'}),round({round:5},{day:'2026-11-22'}),{op:'reload'}]);
+add('active-day-progress-survives-reload',{loot:{day:'2026-10-10',dayProgress:1}},[{op:'reload'},round(),round({round:2})]);
+for(const dayProgress of [-1,2,1.5,'1',null])add('invalid-active-day-progress-'+JSON.stringify(dayProgress),{loot:{dayProgress}},[round()]);
 for(const [name,random] of [['both-drop',[0,0]],['only-box',[0,MAX]],['only-key',[MAX,0]],['neither',[MAX,MAX]],
-  ['below-box-and-key-threshold',[257698037,214748364]],['above-box-and-key-threshold',[257698038,214748365]]])
+  ['below-box-and-key-threshold',[128849018,107374182]],['above-box-and-key-threshold',[128849019,107374183]]])
   add('stage2-'+name,{},[round({stage:2},{random})]);
-add('pity-both-without-random',{loot:{boxMisses:15,keyMisses:19}},[round({stage:2})]);
-add('pity-box-skips-first-random',{loot:{boxMisses:15,keyMisses:3}},[round({stage:2},{random:[0]})]);
-add('pity-key-skips-second-random',{loot:{boxMisses:3,keyMisses:19}},[round({stage:2},{random:[0]})]);
-add('stage1-does-not-advance-pity',{loot:{boxMisses:15,keyMisses:19}},[round(),round({stage:2})]);
-add('pity-through-21-misses',{},Array.from({length:21},(_,i)=>round({stage:2,round:i+1},{random:i===15||i===19?[MAX]:[MAX,MAX]})));
+add('pity-both-without-random',{loot:{boxMisses:31,keyMisses:39}},[round({stage:2})]);
+add('pity-box-skips-first-random',{loot:{boxMisses:31,keyMisses:3}},[round({stage:2},{random:[0]})]);
+add('pity-key-skips-second-random',{loot:{boxMisses:3,keyMisses:39}},[round({stage:2},{random:[0]})]);
+add('stage1-does-not-advance-pity',{loot:{boxMisses:31,keyMisses:39}},[round(),round({stage:2})]);
+add('pity-through-41-misses',{},Array.from({length:41},(_,i)=>round({stage:2,round:i+1},{random:i===31||i===39?[MAX]:[MAX,MAX]})));
 const games=Object.fromEntries(Array.from({length:1000},(_,i)=>[`old:solo:${i}:0`,101]));
 add('bounded-ledger-evicts-oldest',{loot:{games}},[round(),round({setId:'old',seed:0}),round({setId:'old',seed:999})]);
 for(const pool of ['daily','vault']){

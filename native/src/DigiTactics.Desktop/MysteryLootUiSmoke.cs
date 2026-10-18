@@ -5,7 +5,7 @@ using DigiTactics.Storage;
 
 namespace DigiTactics.Desktop;
 
-/// <summary>Earns a real first-round box, then opens and equips it through normal UI controls.</summary>
+/// <summary>Completes a second active day through a real round, then opens/equips its box through normal controls.</summary>
 internal sealed class MysteryLootUiSmoke
 {
     private readonly NativeProfileStore profile;
@@ -16,6 +16,8 @@ internal sealed class MysteryLootUiSmoke
     public MysteryLootUiSmoke(MatchScreen screen, NativeProfileStore profile)
     {
         if (profile.Exists) throw new InvalidOperationException("Mystery loot UI smoke requires a new isolated profile.");
+        string previousDay=DateOnly.FromDateTime(DateTime.Now).AddDays(-1).ToString("yyyy-MM-dd",System.Globalization.CultureInfo.InvariantCulture);
+        if(!profile.UpdateStorage(new Dictionary<string,string>{{MysteryLoot.StorageKey,System.Text.Json.JsonSerializer.Serialize(new{day=previousDay,dayProgress=1})}}))throw new InvalidOperationException("Mystery fixture could not preserve its prior active day.");
         this.profile = profile; screen.MysteryRandom = () => 0;
     }
     public void Input(MatchScreen screen)
@@ -38,7 +40,7 @@ internal sealed class MysteryLootUiSmoke
     {
         if (step == 3 && cooldown < 2 && !earned)
         {
-            if (screen.CompletedRounds < 1 || screen.MysteryInventory is not { Daily: 1, Vault: 0, Keys: 0 }) throw new InvalidOperationException($"Live completed battle did not award the first daily box exactly once: rounds={screen.CompletedRounds}, phase={screen.Session?.Rounds.Phase}, inventory={screen.MysteryInventory}, profile={profile.Error}.");
+            if (screen.CompletedRounds < 1 || screen.MysteryInventory is not { Daily: 1, DayProgress: 0, Vault: 0, Keys: 0 }) throw new InvalidOperationException($"Live completed battle did not finish its second active day exactly once: rounds={screen.CompletedRounds}, phase={screen.Session?.Rounds.Phase}, inventory={screen.MysteryInventory}, profile={profile.Error}.");
             earned = true;
         }
         if (step == 9 && cooldown < 2 && !blocked)
@@ -58,6 +60,6 @@ internal sealed class MysteryLootUiSmoke
         var collection = new CosmeticCollection(profile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
         if (!earned || !blocked || !discovered || reward is null || screen.RevealedMysteryReward is not null || screen.MysteryInventory is not { Daily: 0, Vault: 0, Keys: 0, Pending: null } || collection.Equipped(reward.Kind)?.GetValue<string>() != reward.Id || collection.Bits != 0)
             throw new InvalidOperationException("Equip/repeated empty-box action changed the discovery or spending currency.");
-        Console.WriteLine("Mystery loot UI passed: actual live-round daily drop, locked Cipher action, discovery reveal, durable ownership, Equip and empty-box idempotence."); return true;
+        Console.WriteLine("Mystery loot UI passed: actual live-round second active-day drop, locked Cipher action, discovery reveal, durable ownership, Equip and empty-box idempotence."); return true;
     }
 }

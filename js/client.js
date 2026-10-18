@@ -1391,9 +1391,9 @@ RENDER.loot = () => {
     </div>
     <aside class="loot-inv">
       <section class="mystery-boxes"><div class="tile-h">Mystery boxes</div><p>Exclusive surprises. Rewards appear in Collection only after you discover them.</p>
-        <article><span class="mystery-symbol">☀</span><div><b>Daybreak Box × ${boxes.daily}</b><small>First completed round each day.</small></div><button class="btn" data-mystery-open="daily" ${boxes.daily ? "" : "disabled"}>Open</button></article>
+        <article><span class="mystery-symbol">☀</span><div><b>Daybreak Box × ${boxes.daily}</b><small>Complete a round on 2 different days. Progress: ${boxes.dayProgress || 0}/2 active days. Breaks do not reset it.</small></div><button class="btn" data-mystery-open="daily" ${boxes.daily ? "" : "disabled"}>Open</button></article>
         <article><span class="mystery-symbol">◇</span><div><b>Cipher Box × ${boxes.vault}</b><small>Needs 1 Cipher Key. You have ${boxes.keys}.</small></div><button class="btn" data-mystery-open="vault" ${boxes.vault && boxes.keys ? "" : "disabled"}>Unlock</button></article>
-        <p>Boxes and keys can drop after rounds from stage 2 onward. No purchases required. Each box reveals one new cosmetic; the two pools never overlap.</p>
+        <p>From stage 2, each completed round you participate in has a 3% Cipher Box chance and an independent 2.5% key chance. Guaranteed by 32 eligible rounds without a box or 40 without a key. No purchases required. Each box reveals one new cosmetic; the two pools never overlap.</p>
       </section>
       <div class="tile-h"><span>Digi-Eggs</span><span class="muted">${eggs.length}</span></div>
       <div class="loot-grid">${eggs.map((e) => `<button class="loot-item egg${sel && sel.t === 'egg' && sel.id === e.id ? ' sel' : ''}" data-loot-egg="${esc(e.id)}" title="${esc(e.name)}">

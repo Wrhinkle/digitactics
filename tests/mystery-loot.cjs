@@ -7,7 +7,7 @@ const checks=[],check=(ok,name)=>{checks.push({ok:!!ok,name});console.log((ok?'P
 try{
  await new Promise(r=>setTimeout(r,500));browser=await chromium.launch({args:['--use-angle=d3d11']});const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];
  page.on('pageerror',e=>errors.push(String(e)));
- await page.addInitScript(()=>{if(!localStorage.getItem('dt.mysteryLoot.v1'))localStorage.setItem('dt.mysteryLoot.v1',JSON.stringify({daily:0,vault:0,keys:0,day:'',games:{},boxMisses:15,keyMisses:19,pending:null}));});
+ await page.addInitScript(()=>{if(!localStorage.getItem('dt.mysteryLoot.v1'))localStorage.setItem('dt.mysteryLoot.v1',JSON.stringify({daily:0,vault:0,keys:0,day:'',dayProgress:1,games:{},boxMisses:31,keyMisses:39,pending:null}));});
  await page.goto('http://localhost:8215/?bits=5000');await page.waitForSelector('#boot',{state:'detached'});
  const pools=await page.evaluate(()=>Object.fromEntries(['daily','vault'].map(pool=>[pool,Object.fromEntries(DT.Cosmetics.KINDS.map(k=>[k,DT.Cosmetics.list(k).filter(it=>it.lootPool===pool).length]))])));
  for(const [pool,kinds] of Object.entries(pools))check(Object.entries(kinds).every(([k,n])=>n===(k==='board'?5:20)),pool+' contains 20 per category and 5 boards');
@@ -24,7 +24,7 @@ try{
  await page.keyboard.press('t');await page.click('#emoteWheel [data-id="retro_hug"]');await page.waitForFunction(()=>DT.Emotes.pops().some(p=>p.ready&&p.inScene));
  check(true,'equipped Monzaemon Hug spawns 3D World model in match');await page.waitForTimeout(700);await page.screenshot({path:path.join(out,'retro-in-match.png')});
  await page.click('#readyBtn');await page.evaluate(()=>{__digi.ui.speed=16;__digi.renderer.speed=16;});
- await page.waitForFunction(()=>DT.MysteryLoot.inventory().daily===1,null,{timeout:60000});check(true,'first natural completed round grants daily box');
+ await page.waitForFunction(()=>DT.MysteryLoot.inventory().daily===1,null,{timeout:60000});check(true,'natural completed round finishes seeded second active day and grants its box');
  check(await page.evaluate(()=>{const before=JSON.stringify(DT.MysteryLoot.inventory());DT.MysteryLoot.roundEnd(__digi.game);return before===JSON.stringify(DT.MysteryLoot.inventory());}),'same completed round cannot award twice');
  // Fixture the next eligible round, then fight it through the real combat/UI path.
  await page.evaluate(()=>{const g=__digi.game;g.stage=2;g.round=1;g.phase='planning';g.carousel=null;g.roundType='pvp';g.human.offer=null;__digi.ui.timerOn=false;DT.UI.refresh();});

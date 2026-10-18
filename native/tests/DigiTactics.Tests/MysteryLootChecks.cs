@@ -18,7 +18,7 @@ internal static class MysteryLootChecks
             Check(JsonNode.DeepEquals(JsonNode.Parse(loot!), JsonNode.Parse(expected.GetProperty("state").GetRawText())), label + " complete source save including ledger and pity");
             var inventory = MysteryLoot.Inventory(loot); var source = expected.GetProperty("inventory");
             Check(inventory.Daily == source.GetProperty("daily").GetInt64() && inventory.Vault == source.GetProperty("vault").GetInt64() &&
-                inventory.Keys == source.GetProperty("keys").GetInt64() && inventory.Day == source.GetProperty("day").GetString(), label + " original inventory");
+                inventory.Keys == source.GetProperty("keys").GetInt64() && inventory.Day == source.GetProperty("day").GetString() && inventory.DayProgress == source.GetProperty("dayProgress").GetInt32(), label + " original inventory and active-day progress");
             var collection = new CosmeticCollection(wallet);
             foreach (string kind in CosmeticCollection.Kinds)
                 Check(CosmeticCollection.Items(kind).Where(item => collection.Owns(kind, item.Id)).Select(item => item.Id)
@@ -105,9 +105,11 @@ internal static class MysteryLootChecks
             string path = Path.Combine(directory, "profile.json"); var profile = new NativeProfileStore(directory); var progress = new MysteryLootProgress(profile);
             using (var guard = new FileStream(path + ".lock", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 Check(progress.RecordRound(liveRound, date, () => 0).Length == 0 && progress.Error is not null && !profile.Exists, "failed round transaction does not display or persist rewards");
-            Check(progress.RecordRound(liveRound, date, () => 0).SequenceEqual(new[] { "Daybreak Box", "Cipher Box", "Cipher Key" }), "failed round can retry all original drops");
+            Check(progress.RecordRound(liveRound, date, () => 0).SequenceEqual(new[] { "Cipher Box", "Cipher Key" }) && progress.Inventory.DayProgress == 1, "failed round can retry drops and first active-day progress");
             string before = File.ReadAllText(path);
             Check(progress.RecordRound(liveRound, date, () => throw new InvalidOperationException("Duplicate reward rerolled.")).Length == 0 && File.ReadAllText(path) == before, "same completed round never rerolls or writes");
+            Check(progress.RecordRound(liveRound with { Round = 2 }, date.AddDays(9), () => .9999).SequenceEqual(new[] { "Daybreak Box" }) && progress.Inventory.DayProgress == 0, "second nonconsecutive active day awards one chest");
+            before = File.ReadAllText(path);
             using (var guard = new FileStream(path + ".lock", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 Check(progress.Open("daily", () => 0) is null && progress.Inventory.Daily == 1 && File.ReadAllText(path) == before, "failed debit retains box and grants nothing");
             var opened = progress.Open("daily", () => 0);
