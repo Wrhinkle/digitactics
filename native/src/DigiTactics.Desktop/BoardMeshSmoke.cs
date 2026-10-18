@@ -80,6 +80,15 @@ internal static class BoardMeshSmoke
                 arena.SetTheme("file-island");arena.SetTheme("flame-temple");arena.Time+=.016;
                 arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
                 if(Math.Abs(renderer.BoardLight!.HemisphereIntensity-templeBase)>.001)throw new InvalidOperationException("Initial evolution count triggered a false flare.");
+                arena.Evolution=0;arena.SetTheme("witchelny-library");arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
+                float libraryBase=renderer.BoardLight!.HemisphereIntensity;
+                arena.Evolution=1;arena.Time+=.016;arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
+                var expectedTint=Vector3.Lerp(BoardLighting.Linear("#ffe0b0"),BoardLighting.Linear("#ffd090"),(float)((1-.016*.45)*.8));
+                if(Math.Abs(renderer.BoardLight!.HemisphereIntensity-libraryBase-1.12f)>.001 || Vector3.Distance(renderer.BoardLight.Sun,expectedTint)>.0001)
+                    throw new InvalidOperationException("Library evolution did not reach scene lighting.");
+                arena.SetTheme("file-island");arena.SetTheme("witchelny-library");arena.Time+=.016;
+                arena.Draw(renderer,view,BattleView.CameraEye(256,256,14),14,false,0,0,64,64,(_,_)=>{});
+                if(Math.Abs(renderer.BoardLight!.HemisphereIntensity-libraryBase)>.001)throw new InvalidOperationException("Initial library evolution triggered a false flare.");
             }
             renderer.BoardLight=null; renderer.ShadowTexture=0;
             var scenes=Directory.GetFiles(Path.Combine(AppContext.BaseDirectory,"content/boards"),"*.json.gz").Order().Select(BoardScene.Load).ToArray();
@@ -360,11 +369,11 @@ internal static class BoardMeshSmoke
             ("flame-temple","temple-lava"),("flame-temple","particles"),
             ("gekomon-castle","underwater-caustics"),("gekomon-castle","underwater-caustics2"),
             ("gekomon-castle","underwater-shafts"),("gekomon-castle","underwater-kelp"),
-            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour")})
+            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour"),("witchelny-library","library-pages"),("witchelny-library","library-candles"),("witchelny-library","library-flames"),("witchelny-library","library-halos"),("witchelny-library","library-circle"),("witchelny-library","library-outer")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();
-            if(objects.Length!=(kind=="freeze-aurora"?3:kind=="savanna-gears"?4:kind=="rotating-parent"?2:1)) throw new InvalidOperationException("Missing original animated prop: "+kind);
+            if(objects.Length!=(kind=="library-pages"?2:kind=="freeze-aurora"?3:kind=="savanna-gears"?4:kind=="rotating-parent"?2:1)) throw new InvalidOperationException("Missing original animated prop: "+kind);
             using var layer=new BoardMeshLayer(scene with { Objects=objects });
             byte[] Render()
             {

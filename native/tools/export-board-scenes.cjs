@@ -37,6 +37,11 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+  .replace('const flapFn = (p, i, t) => {','pagesL.nativeLibrary=pagesR.nativeLibrary="library-pages"; const flapFn = (p, i, t) => {')
+  .replace('anim(ctx, new THREE.CylinderGeometry(0.09, 0.09, 0.5, 8),','candles.nativeLibrary="library-candles"; anim(ctx, new THREE.CylinderGeometry(0.09, 0.09, 0.5, 8),')
+  .replace("basic({ color: '#ffd070' }), candles.map((c) => ({ ...c })),", "basic({ color: '#ffd070' }), Object.assign(candles.map((c) => ({ ...c })),{nativeLibrary:'library-flames'}),")
+  .replace("glow('#ffb040', 0.18), candles.map((c) => ({ ...c })),", "glow('#ffb040', 0.18), Object.assign(candles.map((c) => ({ ...c })),{nativeLibrary:'library-halos'}),")
+  .replace('const evo = { k: 0, spin: 0 };','c1.userData.nativeMotion={kind:"library-circle"}; c2.userData.nativeMotion={kind:"library-outer"}; sparks.userData.nativeMotion.librarySparks=true; const evo = { k: 0, spin: 0 };')
   .replace('anim(ctx, numemon,','nums.nativeSewer="sewer-numemon"; anim(ctx, numemon,')
   .replace('anim(ctx, duck, std({ vertexColors: true, roughness: 0.3 }), [{ s: 1.3 }],','anim(ctx, duck, std({ vertexColors: true, roughness: 0.3 }), Object.assign([{ s: 1.3 }],{nativeSewer:"sewer-duck"}),')
   .replace(/inst\(ctx, new THREE.CylinderGeometry\(0.32, 0.4, 2.2[^\n]+;/,line=>'const nativePour='+line+' nativePour.userData.nativeMotion={kind:"sewer-pour"};')
@@ -73,7 +78,7 @@ async function main(){
   .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
-  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
+  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
@@ -371,6 +376,25 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const libraryFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),spec=THEMES.find(s=>s.id==='witchelny-library'),scenarios=[];
+   for(const initialEvolution of [0,3]){
+    const L={hemi:new THREE.HemisphereLight(...spec.hemi),sun:new THREE.DirectionalLight(...spec.sun)},env=buildEnv(spec,{L}),objects=[],frames=[];
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.kind.startsWith('library-')||o.userData.nativeMotion?.librarySparks)objects.push(o);});
+    env.signal({phase:'planning',stage:1,won:false,evo:initialEvolution});env.tick(0,0);let time=0;
+    for(let frame=0;frame<600;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],evolution=initialEvolution+[0,1,0,2][Math.floor(frame/150)];time+=delta;
+     env.signal({phase:'planning',stage:1,won:false,evo:evolution});env.tick(delta,time);env.group.updateMatrixWorld(true);
+     frames.push({time,delta,evolution,flash:L.hemi.intensity-spec.hemi[2],sunColor:L.sun.color.toArray(),objects:objects.map(o=>{
+      const matrix=new THREE.Matrix4(),matrices=[];if(o.isInstancedMesh)for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+      return {matrix:o.matrixWorld.toArray(),matrices,color:o.material.color.toArray(),opacity:o.material.opacity};
+     })});
+    }
+    scenarios.push({initialEvolution,motions:objects.map(o=>o.userData.nativeMotion),frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-library.json.gz'),zlib.gzipSync(JSON.stringify(libraryFixture)));
   const sewerFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
    for(const initialWon of [false,true]){

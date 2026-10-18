@@ -24,12 +24,14 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly BoardUnderwaterMotion? underwater;
     private readonly BoardFreezeMotion? freeze;
     private readonly BoardSewerMotion? sewer;
+    private readonly BoardLibraryMotion? library;
+    private static readonly Vector3 libraryTint=BoardLighting.Linear("#ffd090");
     private static readonly Vector3 freezeCalmFog=BoardLighting.Linear("#24405e"),freezeStormFog=BoardLighting.Linear("#8aa6c0");
     public Vector3? AnimatedFogColor=>freeze is null?null:Vector3.Lerp(freezeCalmFog,freezeStormFog,(float)freeze.Weather);
     private static readonly Vector3 templeSunTint=BoardLighting.Linear("#fff6e0");
-    public (float Multiplier,float Weight,Vector3 Tint)? SunFlare=>temple is null?null:(temple.SunMultiplier,temple.TintWeight,templeSunTint);
+    public (float Multiplier,float Weight,Vector3 Tint)? SunFlare=>library is not null?(1,library.TintWeight,libraryTint):temple is null?null:(temple.SunMultiplier,temple.TintWeight,templeSunTint);
     public (float Near,float Far)? AnimatedFog=>freeze is not null?(freeze.FogNear,freeze.FogFar):kowloon is null?null:(kowloon.FogNear,kowloon.FogFar);
-    public float LightFlash=>(float)(lightning?.Flash??circuit?.LightFlash??temple?.LightFlash??0);
+    public float LightFlash=>(float)(lightning?.Flash??circuit?.LightFlash??temple?.LightFlash??library?.LightFlash??0);
     public Vector3? FlashColor { get; private set; }
     private readonly Dictionary<BoardObject,BoardSpiralMotion> spirals=[];
     public int DrawCalls { get; private set; }
@@ -37,6 +39,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false,int initialEvolution=0)
     {
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
+        if(scene.Id=="witchelny-library"){library=new(initialEvolution);FlashColor=BoardLighting.Linear("#ffe8a0");}
         if(scene.Id=="numemon-sewer")sewer=new(initialWon);
         if(scene.Id=="freezeland")freeze=new();
         if(scene.Id=="kowloon")kowloon=new();
@@ -83,6 +86,7 @@ internal sealed class BoardMeshLayer : IDisposable
         time=seconds;
         freeze?.Advance(delta,combat);
         sewer?.Advance(time,won);
+        library?.Advance(delta,evolution);
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
         kowloon?.Advance(delta,combat);
@@ -126,6 +130,7 @@ internal sealed class BoardMeshLayer : IDisposable
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = World(item.Object);
             float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
+            if(item.Object.Motion?.Kind=="library-circle")opacity=library!.Opacity(time);
             if(item.Object.Motion?.Aurora is {} aurora)opacity=freeze!.Opacity((int)(aurora.Ph/2));
             if(item.Object.Motion is {Kind:"circuit-screen" or "circuit-floor"} code)opacity=circuit!.Opacity(code.Kind);
             if(item.Object.Motion is {Kind:"kowloon-band" or "kowloon-lattice"} scan)
@@ -143,6 +148,8 @@ internal sealed class BoardMeshLayer : IDisposable
             {
                 var material = part.Material;
                 var color=item.Object.Motion?.Kind=="castle-moon"?castle!.MoonColor:new Vector3(material.Color[0],material.Color[1],material.Color[2]);
+                if(item.Object.Motion?.Kind=="library-circle")color=library!.CircleColor;
+                if(item.Object.Motion?.LibrarySparks==true)color=library!.SparkColor;
                 if(item.Object.Motion?.Kind=="temple-lava")color=new(temple!.LavaColor);
                 if (material.Transparent != transparent) continue;
                 void Draw(Matrix4D matrix, float r, float g, float b)
@@ -166,6 +173,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         {
                             { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
                             { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
+                            {Library:{} books} motion=>BoardLibraryMotion.Instance(motion.Kind,books[i],time),
                             {Kind:"sewer-numemon" or "sewer-duck",Props:{} sewerItems} motion=>sewer!.Instance(motion.Kind,sewerItems[i],time),
                             { Props:{ } props } motion=>BoardSceneMotion.Prop(motion.Kind,props[i],time),
                             { Castle:{ } items } motion=>castle!.Instance(motion.Kind,items[i],i,time),
@@ -194,6 +202,7 @@ internal sealed class BoardMeshLayer : IDisposable
     }
     private Matrix4D World(BoardObject obj)
     {
+        if(obj.Motion?.Kind is "library-circle" or "library-outer")return library!.Circle(obj.Motion.Kind,obj.Matrix)*Root;
         if(obj.Motion?.Lightning is not null)return new CompanionTransform(new(lightning!.X,lightning.Y,lightning.Z),new(0,lightning.Yaw,0),new(1,1,1)).Matrix*Root;
         if(obj.Motion is {Kind:"rotating-parent"} rotating)return BoardSceneMotion.RotatingParent(rotating,time)*Root;
         if(obj.Motion is {Kind:"beach-surf"} surf)return BoardSceneMotion.Surf(surf,time).Matrix*Root;
