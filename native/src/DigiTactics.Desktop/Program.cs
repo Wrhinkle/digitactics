@@ -19,7 +19,9 @@ try
     if (Option("--model-board-audit") is { } modelBoardDirectory)
     {
         string AuditValue(string name) { int index = Array.IndexOf(args, name); return index >= 0 && index + 1 < args.Length ? args[index + 1] : throw new ArgumentException("Missing " + name); }
-        ModelVisualAudit.RunBoard(modelBoardDirectory, int.Parse(AuditValue("--audit-start"), System.Globalization.CultureInfo.InvariantCulture), AuditValue("--audit-role"), double.Parse(AuditValue("--audit-time"), System.Globalization.CultureInfo.InvariantCulture)); return 0;
+        int BoardNumber(string name, int fallback) { int index = Array.IndexOf(args, name); return index < 0 ? fallback : int.Parse(args[index + 1], System.Globalization.CultureInfo.InvariantCulture); }
+        ModelVisualAudit.RunBoard(modelBoardDirectory, int.Parse(AuditValue("--audit-start"), System.Globalization.CultureInfo.InvariantCulture), AuditValue("--audit-role"), double.Parse(AuditValue("--audit-time"), System.Globalization.CultureInfo.InvariantCulture),
+            BoardNumber("--audit-width", 908), BoardNumber("--audit-height", 394), BoardNumber("--audit-cell-x", 3), BoardNumber("--audit-cell-y", 4)); return 0;
     }
     if (Option("--model-fitted-audit") is { } modelFittedDirectory)
     {
