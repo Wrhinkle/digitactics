@@ -45,6 +45,7 @@ internal sealed class BoardMeshLayer : IDisposable
         foreach (var item in objects)
         {
             if (!item.Object.Visible) continue;
+            if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = Matrix4D.From(item.Object.Matrix);
             foreach (var part in item.Parts)
             {

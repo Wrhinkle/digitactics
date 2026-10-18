@@ -15,6 +15,9 @@ internal sealed class ModelRenderer : IDisposable
     public Vector3 FarmEye { get; set; }
     public bool ShadowPass { get; set; }
     public uint ShadowTexture { get; set; }
+    public Matrix4x4 ShadowCamera { get; set; } = SceneShadowMap.FarmCamera;
+    public int ShadowMapSize { get; set; } = 1024;
+    public float ShadowBias { get; set; } = -.0015f;
     public bool ReceiveShadow { get; set; }
     private void SetFarmLight(Vector3 emissive = default, float roughness = -1, float metalness = 0, bool fog = true)
     {
@@ -38,7 +41,8 @@ internal sealed class ModelRenderer : IDisposable
         program.Uniform(29, 0);
         program.Uniform(30, new Brutal.Numerics.float4(0,0,0,0));
         program.Uniform(24, !ShadowPass && ReceiveShadow && ShadowTexture != 0 ? 1 : 0);
-        Matrix(25, From(FarmShadowMap.Camera));
+        Matrix(25, From(ShadowCamera));
+        program.Uniform(39, new Brutal.Numerics.float4(ShadowMapSize, ShadowBias, 0, 0));
         OpenGl.BindTextureUnit(5, ShadowPass ? 0 : ShadowTexture);
     }
     public ModelRenderer()
@@ -243,6 +247,7 @@ internal sealed class ModelRenderer : IDisposable
         layout(location=36) uniform vec4 boardDirection;
         layout(location=37) uniform vec4 boardFogColor;
         layout(location=38) uniform vec4 boardFog;
+        layout(location=39) uniform vec4 shadowSettings;
         out vec4 outputColor;
         vec3 toLinear(vec3 color) {
             return mix(color/12.92,pow((color+.055)/1.055,vec3(2.4)),step(vec3(.04045),color));
@@ -251,10 +256,10 @@ internal sealed class ModelRenderer : IDisposable
         float sunVisibility() {
             if(receiveShadow==0) return 1;
             vec4 p=shadowCamera*vec4(worldPosition,1);
-            vec3 uv=p.xyz/p.w; uv.xy=uv.xy*.5+.5; uv.z-=.0015;
+            vec3 uv=p.xyz/p.w; uv.xy=uv.xy*.5+.5; uv.z+=shadowSettings.y;
             if(any(lessThan(uv,vec3(0))) || any(greaterThan(uv,vec3(1)))) return 1;
-            vec2 f=fract(uv.xy*1024.0+.5); vec2 base=uv.xy-f/1024.0;
-            float d=1.0/1024.0, z=uv.z;
+            vec2 f=fract(uv.xy*shadowSettings.x+.5); vec2 base=uv.xy-f/shadowSettings.x;
+            float d=1.0/shadowSettings.x, z=uv.z;
             return (shadowCompare(base,z)+shadowCompare(base+vec2(d,0),z)+shadowCompare(base+vec2(0,d),z)+shadowCompare(base+vec2(d,d),z)
                 +mix(shadowCompare(base+vec2(-d,0),z),shadowCompare(base+vec2(2*d,0),z),f.x)
                 +mix(shadowCompare(base+vec2(-d,d),z),shadowCompare(base+vec2(2*d,d),z),f.x)

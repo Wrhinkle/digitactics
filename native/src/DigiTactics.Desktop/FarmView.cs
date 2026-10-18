@@ -38,7 +38,7 @@ internal sealed partial class FarmView : IDisposable
     private readonly ModelCatalog models = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
     private readonly CompanionCatalog companions = CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/companion-models.json"));
     private readonly ModelRenderer renderer = new();
-    private readonly FarmShadowMap shadows = new();
+    private readonly SceneShadowMap shadows = new();
     private readonly FarmAtmosphere atmosphere = new();
     private readonly FarmSelectionRing selectionRing = new();
     public string? Selected { get; set; }
@@ -219,7 +219,7 @@ internal sealed partial class FarmView : IDisposable
                 var mesh = room.Meshes[i];
                 if (!mesh.CastShadow || mesh.Meat >= meat && mesh.Meat >= 0) continue;
                 var material = room.Materials[mesh.Material];
-                renderer.DrawRoom(geometry[i], mesh.Motion?.Evaluate(choreography.Time) ?? Matrix4D.From(mesh.Matrix), FarmShadowMap.Camera, new(1,1,1,1), null, true, false, true, side: material.Side, shadowSide: material.ShadowSide);
+                renderer.DrawRoom(geometry[i], mesh.Motion?.Evaluate(choreography.Time) ?? Matrix4D.From(mesh.Matrix), SceneShadowMap.FarmCamera, new(1,1,1,1), null, true, false, true, side: material.Side, shadowSide: material.ShadowSide);
                 ShadowDrawCalls++;
             }
             foreach (var actor in actors.Values)
@@ -228,12 +228,12 @@ internal sealed partial class FarmView : IDisposable
                 var root = new CompanionTransform(new(a.X,a.Height,a.Z),new(0,0,a.Tilt*1.15),new(1,a.Breathe,1));
                 foreach (bool transparent in new[] { false, true })
                 {
-                    renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.PlaceCompanion(actor.Animator)*root.Matrix, FarmShadowMap.Camera, transparent);
+                    renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.PlaceCompanion(actor.Animator)*root.Matrix, SceneShadowMap.FarmCamera, transparent);
                     ShadowDrawCalls += renderer.DrawCalls;
                 }
             }
-            DrawFood(FarmShadowMap.Camera, true);
-            DrawPiles(FarmShadowMap.Camera, true);
+            DrawFood(SceneShadowMap.FarmCamera, true);
+            DrawPiles(SceneShadowMap.FarmCamera, true);
         }
         finally { renderer.ShadowPass = false; shadows.End(); }
     }
