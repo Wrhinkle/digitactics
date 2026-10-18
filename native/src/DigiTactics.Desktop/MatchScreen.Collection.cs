@@ -48,12 +48,27 @@ internal sealed partial class MatchScreen
             float width=Math.Min(1180,size.X-20),height=Math.Min(740,size.Y-top-10);
             Window("Digivolve",(size.X-width)/2,top+(size.Y-top-10-height)/2,width,height);
         }
+        else if(MatchCosmeticsVisible)
+        {
+            float width=Math.Min(1180,size.X-48),height=Math.Min(800,size.Y-48);
+            var at=new float2((size.X-width)/2,(size.Y-height)/2);
+            HomeCard("Match cosmetics",at,new(width,height),false,true);MatchCosmeticsBounds=(at,at+new float2(width,height));
+        }
         else HomeCard("Collection page",new(16,ClientPageTop),new(size.X-32,size.Y-ClientPageTop-16),false,true);
-        if (Button("closeCollection", "Back")&&!EvolutionBusy) { CloseEvolution();showCollection = false; purchase = null; eggPurchase = null; hatching = null; boughtCosmetic=null; mysteryReward=null; DisposeCollectionPreview(); ImGui.End(); return; }
+        string backLabel=MatchCosmeticsVisible?(evolutionLegend is null?"Return to match":"Back to cosmetics"):"Back";
+        if (Button("closeCollection", backLabel)&&!EvolutionBusy)
+        {
+            bool returnToCollection=MatchCosmeticsVisible&&evolutionLegend is not null;
+            CloseEvolution();
+            if(!returnToCollection){showCollection=false;purchase=null;eggPurchase=null;hatching=null;boughtCosmetic=null;mysteryReward=null;DisposeCollectionPreview();}
+            ImGui.End();return;
+        }
         try
         {
             var collection = new CosmeticCollection(profile!.Storage.GetValueOrDefault("dt.cosmetics.v1"));
             ImGui.SameLine(); ImGui.Text($"{collection.Bits} Bits");
+            MatchCollectionNavigation();
+            CollectionRewardControls();
             if (collectionMessage is not null) CollectionText(collectionMessage);
             if (evolutionLegend is not null) { EvolutionControls(evolutionLegend); ImGui.End(); return; }
             if(boughtCosmetic is not null){BoughtPanel(collection);ImGui.End();return;}

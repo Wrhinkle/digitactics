@@ -29,7 +29,7 @@ internal sealed partial class MatchScreen
     }
     private CosmeticItem[] CollectionFilters(CosmeticCollection collection,string kind)
     {
-        if(kind=="emote"&&Button("collectionRetro","Digimon World 1"))
+        if(!MatchLockerVisible&&kind=="emote"&&Button("collectionRetro","Digimon World 1"))
         {collectionSearch.SetValue("Digimon World 1");collectionOwnership=collectionRarity="all";previewCosmetic="retro_hug";}
         float available=ImGui.GetContentRegionAvail().X;
         ImGui.SetNextItemWidth(Math.Max(160,available-80));
@@ -37,7 +37,8 @@ internal sealed partial class MatchScreen
         collectionSearch.EvaluateLength();collectionSearchFocused=ImGui.IsItemActive();CollectionFilterAnchor("collectionSearch");
         ImGui.SameLine();if(Button("clearCollectionSearch","Clear",72,36))collectionSearch.SetValue("");
         int optionIndex=0;
-        foreach(var option in new[]{(Id:"all",Label:"All",Width:56),(Id:"owned",Label:"Owned",Width:80),(Id:"locked",Label:"Not owned",Width:112)})
+        if(MatchLockerVisible){collectionOwnership="owned";ImGui.Text("Owned cosmetics"u8);}
+        else foreach(var option in new[]{(Id:"all",Label:"All",Width:56),(Id:"owned",Label:"Owned",Width:80),(Id:"locked",Label:"Not owned",Width:112)})
         {
             if(optionIndex++>0)ImGui.SameLine();if(Button("collectionOwnership/"+option.Id,option.Label,option.Width,36,active:collectionOwnership==option.Id))collectionOwnership=option.Id;
         }

@@ -108,16 +108,17 @@ internal sealed partial class MatchScreen
             : evolution.Next is { } next ? $"Digivolves at level {next}. Gain Digi-Data from games played with it equipped, duplicate hatches and Digi-Farm care." : "Final form reached.");
         if (Button("lootDigivolve", "Digivolve")) { ClearEvolutionPreview(); evolutionLegend = legend.Item.Id; collectionMessage = null; }
         ImGui.SameLine();
-        if (Button("lootFarm", "Digi-Farm"))
-        {
-            farm!.Refresh(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            if (farm.Save is null || farm.Error is not null) { collectionMessage = farm.Error ?? "Digi-Farm could not be opened."; return; }
-            var residents = System.Text.Json.Nodes.JsonNode.Parse(farm.Save)!["residents"]!.AsArray().Select(id => id!.GetValue<string>()).ToArray();
-            string? equipped = collection.Equipped("legend")?.GetValue<string>();
-            farmPet = residents.Contains(legend.Item.Id) ? legend.Item.Id : residents.Contains(equipped) ? equipped : residents.FirstOrDefault();
-            farmManagement = false; showCollection = false; showFarm = true;
-        }
+        if (Button("lootFarm", "Digi-Farm"))OpenCollectionFarm(collection,legend.Item.Id);
         if (collection.Equipped("legend")?.GetValue<string>() == legend.Item.Id) ImGui.Text("Equipped"u8);
         else if (Button("lootEquip", "Equip") && ChangeCollection(next => next.Equip("legend", legend.Item.Id), "Equipped " + legend.Item.Name + ".")) audio.PlayClient("equip", false);
+    }
+    private void OpenCollectionFarm(CosmeticCollection collection,string legend)
+    {
+        farm!.Refresh(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+        if (farm.Save is null || farm.Error is not null) { collectionMessage = farm.Error ?? "Digi-Farm could not be opened."; return; }
+        var residents = System.Text.Json.Nodes.JsonNode.Parse(farm.Save)!["residents"]!.AsArray().Select(id => id!.GetValue<string>()).ToArray();
+        string? equipped = collection.Equipped("legend")?.GetValue<string>();
+        farmPet = residents.Contains(legend) ? legend : residents.Contains(equipped) ? equipped : residents.FirstOrDefault();
+        farmManagement = false; showCollection = false; showFarm = true;
     }
 }

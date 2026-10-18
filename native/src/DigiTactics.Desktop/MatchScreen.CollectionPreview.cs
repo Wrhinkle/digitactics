@@ -98,12 +98,12 @@ internal sealed partial class MatchScreen
     private void SelectedCosmetic(CosmeticCollection collection,string kind)
     {
         var item=CosmeticCollection.Item(kind,previewCosmetic);
-        if(item is null || item.Secret&&!collection.Owns(kind,item.Id))
+        if(item is null || (item.Secret||MatchLockerVisible)&&!collection.Owns(kind,item.Id))
         {
             string? equipped=CosmeticCollection.Multi(kind)?collection.Equipped(kind)?.AsArray().FirstOrDefault(x=>x is not null)?.GetValue<string>():collection.Equipped(kind)?.GetValue<string>();
-            item=CosmeticCollection.Item(kind,equipped)??CosmeticCollection.Items(kind).FirstOrDefault(x=>!x.Secret||collection.Owns(kind,x.Id));
+            item=CosmeticCollection.Item(kind,equipped)??CosmeticCollection.Items(kind).FirstOrDefault(x=>MatchLockerVisible?collection.Owns(kind,x.Id):!x.Secret||collection.Owns(kind,x.Id));
         }
-        if(item is null)return;previewCosmetic=item.Id;
+        if(item is null){if(MatchLockerVisible)CollectionText("No owned cosmetics in this category yet.");return;}previewCosmetic=item.Id;
         CosmeticPreview(kind,item,collection,ImGui.GetContentRegionAvail().X);
         ImGui.PushFont(default,23);ImGui.PushStyleColor(ImGuiCol.Text,HomeInk);CollectionText(item.Name);ImGui.PopStyleColor();ImGui.PopFont();
         ImGui.PushStyleColor(ImGuiCol.Text,RarityColor(item.Rarity));ImGui.Text(char.ToUpperInvariant((item.Rarity??"common")[0])+(item.Rarity??"common")[1..]);ImGui.PopStyleColor();

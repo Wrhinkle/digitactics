@@ -34,7 +34,7 @@ internal sealed partial class MatchScreen
         var draw=ImGui.GetWindowDrawList();
         draw.AddRectFilledMultiColor(at,at+new float2(fullWidth,bannerHeight),new ImColor8(1,10,19,235),new ImColor8(1,10,19,95),new ImColor8(1,10,19,160),new ImColor8(1,10,19,235));
         draw.AddRect(at,at+new float2(fullWidth,bannerHeight),HomeLine);
-        ImGui.SetCursorScreenPos(at+new float2(16,9));HomeLabel(collectionStore?"STORE":"COLLECTION",26,HomeInk);
+        ImGui.SetCursorScreenPos(at+new float2(16,9));HomeLabel(collectionStore?"STORE":MatchLockerVisible?"LOCKER":"COLLECTION",26,HomeInk);
         HomeLabel($"{CollectionNames[collectionKind]}  /  {owned} of {visible.Length} owned",17,HomeGold);
         ImGui.SetCursorScreenPos(at+new float2(fullWidth-296,20));
         ImGui.SetNextItemWidth(184);bool open=ImGui.BeginCombo("##collectionCategory"u8,CollectionNames[collectionKind]);CollectionFilterAnchor("collectionCategory");
@@ -47,7 +47,7 @@ internal sealed partial class MatchScreen
             }
             ImGui.EndCombo();
         }
-        ImGui.SameLine();if(Button("toggleEggs","Loot",88,36))showEggs=true;
+        if(!MatchLockerVisible){ImGui.SameLine();if(Button("toggleEggs","Loot",88,36))showEggs=true;}
         ImGui.SetCursorScreenPos(at+new float2(0,bannerHeight+10));
         for(int i=0;i<CollectionTabs.Length;i++)
         {
@@ -170,8 +170,15 @@ internal sealed partial class MatchScreen
                 if(ChangeCollection(c=>c.Equip(kind,item.Id,collectionSlot),"Equipped "+item.Name+"."))audio.PlayClient("equip",false);
             ImGui.EndDisabled();
             if(kind=="legend"&&Button("evolution/"+item.Id,"Digivolve / care",-1,40)){evolutionLegend=item.Id;collectionMessage=null;}
+            if(kind=="legend"&&Button("collectionFarm/"+item.Id,"Digi-Farm",-1,40))OpenCollectionFarm(collection,item.Id);
         }
-        else if(item.Linked is {Length:2} link)CollectionText("Unlocked by owning "+(CosmeticCollection.Item(link[0],link[1])?.Name??link[1]));
+        else if(item.Linked is {Length:2} link)
+        {
+            var source=CosmeticCollection.Item(link[0],link[1]);
+            CollectionText("Unlocked by owning "+(source?.Name??link[1]));
+            int price=source is null?0:CosmeticCollection.Price(link[0],source,DateOnly.FromDateTime(DateTime.Now));
+            if(Button("linkedCosmeticStore","Get the soundboard clip / "+price+" Bits",-1,40))OpenCollectionPage(store:true,kind:link[0],item:link[1]);
+        }
         else if(item.EggOnly)
         {
             CollectionText("Digi-Egg exclusive");

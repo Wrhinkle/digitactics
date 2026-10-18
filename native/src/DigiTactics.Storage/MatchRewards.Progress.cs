@@ -7,6 +7,13 @@ public sealed record DailyRewardProgress(DailyMissionProgress[] Missions, bool C
 
 public static partial class MatchRewards
 {
+    /// <summary>The original Store displays this match's counters, including completed daily missions.</summary>
+    public static DailyRewardProgress LiveProgress(string? shop,RewardStats? stats,DateOnly day)
+    {
+        var daily=Progress(shop,null,day);stats??=new(0,0,1,0,0);
+        return daily with { Missions=daily.Missions.Select(m=>m with
+        {Current=m.Done?m.Goal:Math.Clamp(Missions.Single(definition=>definition.Id==m.Id).Value(stats),0,m.Goal)}).ToArray() };
+    }
     /// <summary>Read-only client mission view. Partial progress is the best single match today, not a sum.</summary>
     public static DailyRewardProgress Progress(string? shop, string? client, DateOnly day)
     {

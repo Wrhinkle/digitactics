@@ -8,6 +8,7 @@ public sealed class MatchHistoryRecorder(MatchPlanningSession session, NativePro
 {
     private readonly MatchRewardTracker tracker = new(session, seat);
     public void Observe() { if (pending is null) tracker.Update(); }
+    public RewardStats LiveStats { get { Observe(); return rewardStats??tracker.Stats; } }
     private HistoryTrait[] traits = [];
     private HistoryUnit[] units = [];
     private int level;
