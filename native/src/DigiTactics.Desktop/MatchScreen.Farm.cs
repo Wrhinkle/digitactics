@@ -14,6 +14,7 @@ internal sealed partial class MatchScreen
     private string? farmViewError;
     private bool farmWasVisible;
     private readonly List<(string Text, double Remaining)> farmNotices = [];
+    private readonly FarmRewardPops farmRewardPops = new();
     private int FarmSceneWidth => Math.Max(250, (int)(size.X * .54f) - 24);
     private int FarmSceneHeight => Math.Max(200, size.Y - 150);
     public int FarmDrawCalls => farmView?.DrawCalls ?? 0;
@@ -35,6 +36,7 @@ internal sealed partial class MatchScreen
         if (farm.Error is null && farm.LastResult is { } receipt)
         {
             farmView?.Care(target, action, option, receipt, before);
+            farmRewardPops.Add(target, receipt);
             if (FarmFeedback.Sound(action, receipt) is { } sound) audio.Play(sound);
         }
     }
@@ -46,7 +48,7 @@ internal sealed partial class MatchScreen
             if (notice.Remaining <= delta) farmNotices.RemoveAt(i);
             else farmNotices[i] = (notice.Text, notice.Remaining - delta);
         }
-        if (!showFarm) farmWasVisible = false;
+        if (!showFarm) { farmWasVisible = false; farmRewardPops.Clear(); }
         if (!showFarm || farm?.Save is null || farm.Error is not null) return;
         try
         {
@@ -54,6 +56,8 @@ internal sealed partial class MatchScreen
             farmView.Sync(farm.Save, profile!.Storage.GetValueOrDefault("dt.legendevo.v1"), profile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
             FarmEvents(farm.DrainEvents(), !farmWasVisible); farmWasVisible = true;
             farmView.Update(delta); farmViewError = null;
+            var anchors = farmView.Anchors(FarmSceneWidth, FarmSceneHeight, .3).ToDictionary(a => a.Id);
+            farmRewardPops.Update(delta, id => anchors.TryGetValue(id, out var a) ? (a.X, a.Y) : null);
         }
         catch (Exception error) when (error is InvalidDataException or IOException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
         { farmViewError = "Room view unavailable: " + error.Message; }
@@ -110,6 +114,7 @@ internal sealed partial class MatchScreen
                     else { farmPet=hit.Id; FarmAct(FarmCareAction.Pet); }
                 }
             }
+            DrawFarmRewards();
             ImGui.End();
         }
         Window("Digi-Farm", training is null ? size.X * .55f : size.X * .12f, size.Y * .06f, training is null ? size.X * .44f : size.X * .76f, size.Y * .88f);
@@ -165,6 +170,19 @@ internal sealed partial class MatchScreen
         catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or KeyNotFoundException)
         { CollectionText("Farm unavailable: " + error.Message); }
         ImGui.End();
+    }
+    private void DrawFarmRewards()
+    {
+        var draw = ImGui.GetWindowDrawList();
+        foreach (var pop in farmRewardPops.Items)
+        {
+            if (pop.Age < 0 || pop.Position is not { } p) continue;
+            var textSize = ImGui.CalcTextSize(pop.Text);
+            var position = new Brutal.Numerics.float2(12 + p.X - textSize.X / 2, 70 + p.Y + pop.Offset - textSize.Y);
+            byte alpha = (byte)Math.Clamp((int)(pop.Opacity * 255), 0, 255);
+            draw.AddText(ImGui.GetFont(), ImGui.GetFontSize(), position + new Brutal.Numerics.float2(1, 1), new ImColor8(0, 0, 0, alpha), pop.Text);
+            draw.AddText(ImGui.GetFont(), ImGui.GetFontSize(), position, new ImColor8(255, 211, 106, alpha), pop.Text);
+        }
     }
     private void FarmRoomControls(JsonNode state, string[] residents)
     {

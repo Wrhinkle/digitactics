@@ -8,6 +8,17 @@ internal static class FarmEventChecks
     {
         int checks = 0;
         void Check(bool value, string message) { checks++; if (!value) throw new InvalidOperationException("Farm events: " + message); }
+        var pops = new FarmRewardPops();
+        JsonObject Receipt(bool ok, int bits, int data) => new() { ["ok"] = ok, ["reward"] = new JsonObject { ["bits"] = bits, ["data"] = data } };
+        pops.Add("tokomon", Receipt(false, 1, 2)); pops.Add("tokomon", Receipt(true, 0, 0));
+        Check(pops.Items.Count == 0, "no popup for refused or capped reward");
+        pops.Add("tokomon", Receipt(true, 1, 2)); pops.Update(.3, _ => (10, 20));
+        Check(pops.Items.Count == 1 && pops.Items[0].Position is null, "reward delay");
+        pops.Update(.1, _ => (30, 40));
+        Check(pops.Items[0].Position == (30, 40) && pops.Items[0].Text == "+1 Bits  +2 Data", "capture position when delay expires");
+        pops.Update(.5, _ => (50, 60));
+        Check(pops.Items[0].Position == (30, 40) && pops.Items[0].Opacity == 1 && pops.Items[0].Offset < 0, "rise stays at captured position");
+        pops.Update(1, _ => (50, 60)); Check(pops.Items.Count == 0, "popup expiry");
         string directory = Path.Combine(Path.GetTempPath(), "digitactics-farm-events-" + Guid.NewGuid().ToString("N"));
         try
         {

@@ -140,12 +140,13 @@ internal sealed partial class FarmView : IDisposable
         var eye = new Vector3(0, distance * .74f, distance * .84f);
         return (Matrix4x4.CreateLookAt(eye, new(0, -.35f, .55f), Vector3.UnitY) * Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI * 34 / 180, aspect, .1f, 100), eye);
     }
-    public IEnumerable<(string Id, float X, float Y)> Anchors(int width, int height)
+    public IEnumerable<(string Id, float X, float Y)> Anchors(int width, int height, double offset = 0)
     {
         var camera = Camera(width, height).Camera;
         foreach (var (id, actor) in actors)
         {
-            var point = Vector4.Transform(new Vector4((float)actor.Resident.X, 1.6f + (float)actor.Resident.Height, (float)actor.Resident.Z, 1), camera);
+            double head = actor.Visual.Height * (actor.Resident.Mode == "sleep" ? .55 : 1) + .25 + offset;
+            var point = Vector4.Transform(new Vector4((float)actor.Resident.X, (float)head, (float)actor.Resident.Z, 1), camera);
             yield return (id, (point.X / point.W * .5f + .5f) * width, (1 - (point.Y / point.W * .5f + .5f)) * height);
         }
     }
