@@ -45,6 +45,12 @@ public static class LegendRewards
         int value = obj[name]?.GetValue<int>() ?? throw new InvalidDataException("Missing legend " + name);
         return value >= 0 ? value : throw new InvalidDataException("Invalid legend " + name);
     }
+    internal static (JsonObject Save, JsonObject Record) Snapshot(string? saved, string id)
+    {
+        var legend = Content.Legends.FirstOrDefault(x => x.Id == id) ?? throw new InvalidDataException("Unknown legend.");
+        var save = ReadSave(saved);
+        return (save, Record(save, legend));
+    }
     private static int Level(int xp)
     {
         int level = 1;

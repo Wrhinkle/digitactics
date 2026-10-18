@@ -6,12 +6,15 @@ using DigiTactics.Storage;
 namespace DigiTactics.Desktop;
 
 /// <summary>Exercises visible controls through ImGui mouse events, not direct gameplay mutations.</summary>
-internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = null)
+internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = null, bool evolutionSmoke = false)
 {
-    private readonly string[] collectionCommands = ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
+    private readonly string[] collectionCommands = evolutionSmoke
+        ? ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "evolution/bukamon", "levelLegend", "levelLegend", "feedLegend", "digivolve", "revertLegend", "digivolve", "closeEvolution", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"]
+        : ["collection", "buyCosmetic/legend/bukamon", "confirmPurchase", "equip/legend/bukamon", "toggleEggs", "egg/legend", "confirmEgg", "closeCollection"];
     private readonly long initialBits = collectionProfile?.Progress.Bits ?? 0;
     private int collectionIndex;
     private bool collectionVerified;
+    public string Pending => collectionProfile is not null && collectionIndex < collectionCommands.Length ? collectionCommands[collectionIndex] : commands.ElementAtOrDefault(index) ?? "verification";
     private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "bench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
         "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "closeAudio", "mute", "mute"];
     private int index, cooldown = 3, battleFrames, pvpFrames;
@@ -49,14 +52,22 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (collectionProfile is not null && !collectionVerified)
         {
             if (collectionIndex == 4 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "collection.bmp"), size.X, size.Y);
-            if (collectionIndex == 7 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "egg.bmp"), size.X, size.Y);
+            if (collectionIndex == collectionCommands.Length - 1 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "egg.bmp"), size.X, size.Y);
+            if (evolutionSmoke && collectionIndex == 11 && cooldown == 1 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "evolution.bmp"), size.X, size.Y);
             if (collectionIndex < collectionCommands.Length) return false;
             var collection = new CosmeticCollection(collectionProfile.Storage.GetValueOrDefault("dt.cosmetics.v1"));
             int price = CosmeticCollection.Price("legend", CosmeticCollection.Item("legend", "bukamon")!, DateOnly.FromDateTime(DateTime.Now));
-            if (!collection.Owns("legend", "bukamon") || collection.Equipped("legend")?.GetValue<string>() != "bukamon" || collection.Bits != initialBits - price - 250)
+            if (!collection.Owns("legend", "bukamon") || collection.Equipped("legend")?.GetValue<string>() != "bukamon" || collection.Bits != initialBits - price - 250 - (evolutionSmoke ? 200 : 0))
                 throw new InvalidOperationException("Collection purchase/equipment smoke failed.");
             var wallet = System.Text.Json.Nodes.JsonNode.Parse(collection.Json)!;
             var legends = System.Text.Json.Nodes.JsonNode.Parse(collectionProfile.Storage.GetValueOrDefault("dt.legendevo.v1", "{\"legends\":{}}"))!;
+            if (evolutionSmoke)
+            {
+                var record = legends["legends"]!["bukamon"]!;
+                if (record["xp"]!.GetValue<int>() < 200 || record["form"]!.GetValue<string>() == "bukamon" || record["nonce"]!.GetValue<int>() != 1 || record["care"]!["food"]!.GetValue<int>() != 1 || record["path"]!.AsArray().Count != 1)
+                    throw new InvalidOperationException("Evolution actions did not persist the expected level, form, care and nonce.");
+                Console.WriteLine("Evolution UI smoke passed: buy levels, feed, digivolve, revert and digivolve again.");
+            }
             if (wallet["owned"]!["legend"]!.AsArray().Count < 3 && !legends["legends"]!.AsObject().Any(x => x.Value?["xp"]?.GetValue<int>() > 0))
                 throw new InvalidOperationException("Egg granted neither an item nor duplicate Digi-Data.");
             collectionVerified = true;

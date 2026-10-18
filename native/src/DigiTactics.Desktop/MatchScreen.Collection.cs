@@ -7,6 +7,7 @@ internal sealed partial class MatchScreen
 {
     private bool showCollection;
     private bool showEggs;
+    private string? evolutionLegend;
     private (string Id, double RarityRoll, double ItemRoll, long At)? eggPurchase;
     private int collectionKind, collectionSlot;
     private string? collectionMessage;
@@ -30,12 +31,13 @@ internal sealed partial class MatchScreen
     private void Collection()
     {
         Window("Collection and store", size.X * .12f, size.Y * .06f, size.X * .76f, size.Y * .88f);
-        if (Button("closeCollection", "Back")) { showCollection = false; purchase = null; eggPurchase = null; }
+        if (Button("closeCollection", "Back")) { showCollection = false; purchase = null; eggPurchase = null; evolutionLegend = null; }
         try
         {
             var collection = new CosmeticCollection(profile!.Storage.GetValueOrDefault("dt.cosmetics.v1"));
             ImGui.SameLine(); ImGui.Text($"{collection.Bits} Bits");
             if (collectionMessage is not null) CollectionText(collectionMessage);
+            if (evolutionLegend is not null) { EvolutionControls(evolutionLegend); ImGui.End(); return; }
             if (eggPurchase is { } eggPending)
             {
                 var egg = DigiEggs.Definitions.Single(x => x.Id == eggPending.Id);
@@ -109,6 +111,7 @@ internal sealed partial class MatchScreen
                 bool worn = CosmeticCollection.Multi(kind) ? equipped!.AsArray().ElementAtOrDefault(collectionSlot)?.GetValue<string>() == item.Id : equipped?.GetValue<string>() == item.Id;
                 if (owns)
                 {
+                    if (kind == "legend" && Button("evolution/" + item.Id, "Evolution and care")) evolutionLegend = item.Id;
                     if (worn) ImGui.Text("Equipped"u8);
                     else if (Button("equip/" + kind + "/" + item.Id, CosmeticCollection.Multi(kind) ? $"Put in slot {collectionSlot + 1}" : "Equip"))
                         ChangeCollection(c => c.Equip(kind, item.Id, collectionSlot), "Equipped " + item.Name + ".");

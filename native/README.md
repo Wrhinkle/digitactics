@@ -1969,3 +1969,38 @@ remain unfinished.
 Validation: 50,051 legend checks, 4,660 match reward/tracker checks, 810 history
 and persistence checks, and 7,694 egg checks passed. The Windows package rebuilt
 and its match UI smoke passed.
+
+
+### Native Little Legend evolution controls
+
+Owned legends now have an Evolution and care panel in Collection and store.
+It shows current form, level, Digi-Data, next level requirement and care-weighted
+branch odds. Digivolve, revert, buy the rest of a level and feed use native rules.
+Form history, discovered forms, XP, care and the revert nonce retain the original
+save format. Wallet and legend changes are committed in one profile replacement.
+Evolution rolls use the original legend/level/form/nonce seed; reloads keep the
+same outcome and reverting increments the nonce.
+
+The embedded evolution catalog includes 254 forms and companion-specific branch
+roots. Odds preserve original branch order, care caps, largest-remainder integer
+percentages and the saved Digi-Farm bonuses for training, bond, food, weight,
+sickness and neglect. This reads existing farm state; it does not yet simulate
+real-time/offline farm progression or provide the farm controls.
+
+`--evolution-only` passed 17,377 comparisons against original JavaScript:
+5,365 form/level/odds/roll views and 4,004 actions with result and both save-domain
+comparisons. Cases cover all 77 legends, reachable forms, unowned/poor wallets,
+invalid-form repair, imported farm care and missing progression records. The
+fresh-record cases were added after the packaged UI caught an integer-vs-double
+JSON care-value issue that existing-record fixtures did not expose.
+
+`--evolution-smoke --profile-directory <isolated>` clicks through buying and
+equipping Bukamon, two level purchases, feeding, evolution, reversion and a second
+evolution, then an egg purchase and the normal five-round Solo match test. It
+requires a fresh isolated legacy fixture with at least 1,000 Bits. The test passed
+with 2,000 starting Bits; disk readback confirmed Gizamon, XP 200, food care 1,
+nonce 1 and 1,400 remaining Bits after the egg. Unknown imported ownership was
+preserved. The evolution screenshot was inspected and Duos UI checks passed.
+
+Tree visualization, animated form previews, in-match legend rendering, farm
+simulation/UI and other production presentation work remain unfinished.

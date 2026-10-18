@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup><EmbeddedResource Include="legend-rewards.json" /></ItemGroup>
   <ItemGroup><EmbeddedResource Include="cosmetics.json" /></ItemGroup>
+  <ItemGroup><EmbeddedResource Include="evolution.json" /></ItemGroup>
 </Project>

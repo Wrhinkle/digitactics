@@ -10,7 +10,7 @@ namespace DigiTactics.Desktop;
 
 internal static class MatchApplication
 {
-    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false)
+    public static unsafe void Run(ContentCatalog catalog, bool smoke, string? capture, bool duos = false, string? profileDirectory = null, bool collectionSmoke = false, bool evolutionSmoke = false)
     {
         if (!Glfw.Init()) throw new InvalidOperationException("BRUTAL GLFW initialization failed.");
         try
@@ -41,7 +41,7 @@ internal static class MatchApplication
                 using var preferences = smoke ? null : new AudioSettingsBinding(audio);
                 var profile = smoke && profileDirectory is null ? null : new NativeProfileStore(profileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native"));
                 using var renderer = new OpenGlBackend(); using var screen = new MatchScreen(catalog, audio, smoke ? 143u : null, duos, profile);
-                var driver = smoke ? new MatchScreenSmoke(collectionSmoke ? profile : null) : null;
+                var driver = smoke ? new MatchScreenSmoke(collectionSmoke ? profile : null, evolutionSmoke) : null;
                 var clock = System.Diagnostics.Stopwatch.StartNew(); double last = 0;
                 for (int frame = 0; !window.ShouldClose; frame++)
                 {
@@ -57,7 +57,11 @@ internal static class MatchApplication
                     screen.Render(size); OpenGl.Viewport(0, 0, size.X, size.Y); renderer.RenderDrawData(ImGui.GetDrawData());
                     if (driver is not null && driver.Verify(screen, size, capture)) break;
                     window.SwapBuffers();
-                    if (smoke && frame > 900) throw new InvalidOperationException("Match UI smoke did not complete.");
+                    if (smoke && frame > 900)
+                    {
+                        if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "failure.bmp"), size.X, size.Y);
+                        throw new InvalidOperationException("Match UI smoke did not complete: " + driver?.Pending);
+                    }
                 }
             }
             finally { ImGui.DestroyContext(context); }

@@ -34,9 +34,10 @@ try
     if (args.Contains("--smoke") || args.Contains("--workbench")) NativeApplication.Run(catalog, args.Contains("--smoke"), capture);
     else
     {
-        bool collectionSmoke = args.Contains("--collection-smoke");
+        bool evolutionSmoke = args.Contains("--evolution-smoke");
+        bool collectionSmoke = args.Contains("--collection-smoke") || evolutionSmoke;
         if (collectionSmoke && profileDirectory is null) throw new ArgumentException("Collection smoke requires an isolated --profile-directory.");
-        MatchApplication.Run(catalog, args.Contains("--match-smoke") || collectionSmoke, capture, args.Contains("--duos"), profileDirectory, collectionSmoke);
+        MatchApplication.Run(catalog, args.Contains("--match-smoke") || collectionSmoke, capture, args.Contains("--duos"), profileDirectory, collectionSmoke, evolutionSmoke);
     }
     return 0;
 }
