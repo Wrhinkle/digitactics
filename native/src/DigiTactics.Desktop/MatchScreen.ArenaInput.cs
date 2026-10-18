@@ -10,6 +10,7 @@ internal sealed partial class MatchScreen
     private (int Id, UnitSpot From, float2 Start, MatchPhase Phase)? arenaDrag;
     private bool arenaDragMoved;
     private WorldPosition? arenaDragPosition;
+    private bool sellDropHovered, partnerDropHovered;
     internal bool ArenaDragging => arenaDragMoved;
     internal int ArenaDropBench => arenaEnvironment.Feedback.HoverBench;
     private void CancelArenaDrag()
@@ -45,7 +46,9 @@ internal sealed partial class MatchScreen
             if (ImGui.IsMouseClicked(ImGuiMouseButton.Right)) { arenaDrag = null; arenaDragMoved = false; arenaDragPosition = null; }
             else if (!ImGui.IsMouseDown(ImGuiMouseButton.Left))
             {
-                if (inside && spot is { } destination)
+                if (arenaDragMoved && partnerDropHovered) { Act("portal", new { uid = drag.Id }); selectedUnit = null; }
+                else if (arenaDragMoved && sellDropHovered) { Act("sell", new { uid = drag.Id }); selectedUnit = null; }
+                else if (inside && spot is { } destination)
                 {
                     if (arenaDragMoved) { if (destination != drag.From) Act("move", new { from = Spot(drag.From), to = Spot(destination) }); selectedUnit = null; }
                     else Select(drag.From);
@@ -66,5 +69,33 @@ internal sealed partial class MatchScreen
         planning.DraggedUnit = battle is null && arenaDragMoved ? arenaDrag?.Id : null;
         planning.DragPosition = arenaDragPosition;
         if (battle is not null) { battle.DraggedUnit = arenaDragMoved ? arenaDrag?.Id : null; battle.DragPosition = arenaDragPosition; }
+    }
+
+    private bool SellDropZone()
+    {
+        if (!arenaDragMoved || arenaDrag is not { } drag || Human.Roster.At(drag.From) is not { } unit) return false;
+        var line = Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == unit.Line);
+        bool canSell = !unit.NoSell && !line.NoSell && (Session!.Rounds.Phase != MatchPhase.Combat || !drag.From.IsBoard);
+        sellDropHovered = ImGui.IsWindowHovered();
+        Button("dropSell", canSell ? $"Drop to sell {UnitName(unit)} for {UnitValues.SellValue(line, unit.Stage)} gold" : "This unit cannot be sold", size.X - 48, 165, sellDropHovered && canSell);
+        return true;
+    }
+
+    private void PartnerDropZone()
+    {
+        if (!Session!.State.Duos || !arenaDragMoved || arenaDrag is not { } drag) return;
+        string eligibility = Session.Units.Portal.CanSend(Human, new(Uid: drag.Id), Session.Rounds.Phase, Session.Rounds.RoundType);
+        string label = eligibility switch
+        {
+            "ok" => "Drop to send to partner",
+            "bench" => "Move to bench before sending",
+            "phase" => "Send during planning",
+            "limit" => "No sends remaining this round",
+            "full" => "Partner's bench is full",
+            "partner" => "Partner unavailable",
+            _ => "This unit cannot be sent"
+        };
+        Button("dropPartner", label, 190, 64, eligibility == "ok");
+        partnerDropHovered = ImGui.IsItemHovered();
     }
 }

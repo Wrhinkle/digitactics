@@ -32,6 +32,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private int scoutSwitches;
     private bool switchingScout;
     private int dragStep, draggedId;
+    private readonly ArenaDropSmoke dropSmoke = new();
+    private bool dropsVerified;
     public void Input(MatchScreen screen)
     {
         emoteTime+=100;screen.AiEmoteClock=()=>emoteTime;screen.AiEmoteRandom=()=>.01;
@@ -54,6 +56,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (cooldown-- > 0 || index >= commands.Length) return;
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
+        if (index == 22 && !dropsVerified) { dropsVerified = dropSmoke.Input(screen); cooldown = 3; return; }
         if (index == 9 && dragStep < 10)
         {
             var dragIo = ImGui.GetIO();
@@ -124,6 +127,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if (index == 22 && cooldown == 1 && capture is not null && dropSmoke.CaptureName is { } dropCapture)
+            FrameCapture.SaveBitmap(Path.ChangeExtension(capture, dropCapture + ".bmp"), size.X, size.Y);
         if (index == 9 && dragStep == 2 && cooldown == 1 && capture is not null)
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "drag.bmp"), size.X, size.Y);
         if (collectionProfile is not null && !collectionVerified)
@@ -225,7 +230,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if (index < commands.Length || cooldown > 0) return false;
         if (!planningCaptured || !battleCaptured || !pvpCaptured || !combatBenchVerified || screen.CompletedRounds != 5 || screen.Session!.Rounds.Phase != MatchPhase.Planning || screen.AiEmotesShown == 0)
             throw new InvalidOperationException($"Match UI round transition smoke failed: planning={planningCaptured}, battle={battleCaptured}, pvp={pvpCaptured}, bench={combatBenchVerified}, rounds={screen.CompletedRounds}, phase={screen.Session!.Rounds.Phase}, emotes={screen.AiEmotesShown}.");
-        Console.WriteLine("Match UI smoke passed: menu, carousel, purchase, two placements, 3D planning, combat reserve, scouting both sides, PvE, mirrored PvP, five settlements and round advances.");
+        Console.WriteLine("Match UI smoke passed: menu, carousel, purchase, placement/drag/drop, sale/partner rules, 3D planning, combat reserve, scouting both sides, PvE, mirrored PvP, five settlements and round advances.");
         return true;
     }
 }

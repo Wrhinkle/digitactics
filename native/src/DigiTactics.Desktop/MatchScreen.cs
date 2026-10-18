@@ -252,6 +252,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
+        sellDropHovered = partnerDropHovered = false;
         if (Session is null) CancelArenaDrag();
         if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
         Header(); if (Session is null) return;
@@ -400,6 +401,7 @@ internal sealed partial class MatchScreen : IDisposable
     private void Sidebar()
     {
         Window("Team", 12, Top, 208, Height);
+        PartnerDropZone();
         var player = Session!.State.Players[viewed];
         ImGui.Text($"{player.Name}  {player.Roster.BoardCount}/{new MatchPlacement(Session.State).Capacity(player, Session.Rounds.Position.Stage)} deployed");
         var counts = TraitRules.Count(Rules, Session.CombatProjection.Board(player), player.Augments.ToArray());
@@ -450,6 +452,7 @@ internal sealed partial class MatchScreen : IDisposable
     {
         Window("Shop and bench", 12, size.Y - 207, size.X - 24, 195, ImGuiWindowFlags.NoTitleBar);
         if (IsSpectating) { ImGui.TextWrapped("Spectating. Take an available seat to control a team."u8); ImGui.End(); return; }
+        if (SellDropZone()) { ImGui.End(); return; }
         ImGui.BeginDisabled(Session!.State.Over || !Human.Alive);
         if (Button("reroll", $"Refresh ({(Human.Shop.FreeRolls > 0 ? "free" : Rules.RerollCost + "g")})")) Act("reroll");
         ImGui.SameLine(); if (Button("lock", Human.Shop.Locked ? "Unlock shop" : "Lock shop")) Act("lock");
