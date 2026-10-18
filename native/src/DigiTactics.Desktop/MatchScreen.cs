@@ -451,6 +451,7 @@ internal sealed partial class MatchScreen : IDisposable
         if (Session is null && showFarm && training is null && farmViewError is null && size.X > 0 && size.Y > 0)
         {
             float scaleX = (float)framebuffer.X / size.X, scaleY = (float)framebuffer.Y / size.Y;
+            if (farmView is not null) farmView.Selected = farmPet;
             farmView?.Draw((int)(12 * scaleX), (int)((size.Y - 70 - FarmSceneHeight) * scaleY), (int)(FarmSceneWidth * scaleX), (int)(FarmSceneHeight * scaleY));
             return;
         }

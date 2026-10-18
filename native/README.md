@@ -2471,3 +2471,17 @@ sleep/sickness eligibility, busy partners, and success/refusal sound selection.
 The rebuilt Windows app passed the integrated farm/evolution/Solo flow and audio
 smoke. Food props, bubbles, rewards and simulation-event presentation remain
 unfinished parts of farm fidelity; the full-port goal remains active.
+
+### Selected resident ring
+
+The selected farm resident now has the original pulsing gold ring: 40 segments,
+0.42/0.52 inner/outer radii, 0.9 opacity and a 0.03 ground offset. It follows the
+resident position, uses the shared animation clock, respects scene depth and is
+tinted by the night overlay. Selection is synchronized from the care controls
+before rendering; missing or banked residents do not retain a ring.
+
+The Windows build passed all six room GPU checks, including selection visibility
+and missing-resident removal, and the integrated farm/evolution/Solo flow. The
+meadow capture was inspected with the ring visible under the selected resident.
+Remaining care props, bubbles and event feedback are still part of the active
+full-port goal, along with the broader UI, multiplayer and release work.

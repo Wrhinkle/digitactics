@@ -21,13 +21,14 @@ internal static class FarmRoomSmoke
             var farm = JsonNode.Parse(FarmSimulation.Advance(null, null, null, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()).Save)!;
             foreach (var theme in FarmCare.Themes)
             {
-                farm["theme"] = theme.Id; room.Sync(farm.ToJsonString(), null, null);
+                farm["theme"] = theme.Id; room.Sync(farm.ToJsonString(), null, null); room.Selected = "tokomon";
                 room.React("tokomon", "happy"); for (int frame = 0; frame < 60; frame++) room.Update(.05);
                 OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
                 room.Draw(0, 0, 1000, 850);
                 if (room.Theme != theme.Id || room.DrawCalls < 150 || room.Residents.Count != 3) throw new InvalidOperationException("Farm room rendering failed: " + theme.Id);
                 if (room.SnowParticles != (theme.Id == "snowy" ? 260 : 0)) throw new InvalidOperationException("Farm snow theme lifecycle failed: " + theme.Id);
                 if (room.ShadowDrawCalls < 10) throw new InvalidOperationException("Farm shadow pass did not draw casters: " + theme.Id);
+                if (!room.SelectionVisible) throw new InvalidOperationException("Selected resident has no selection ring.");
                 ModelPreview.VerifyVisible(1000, 850);
                 if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, theme.Id + ".bmp"), 1000, 850);
                 var withShadows = new byte[1000 * 850 * 4]; var withoutShadows = new byte[withShadows.Length];
@@ -37,6 +38,9 @@ internal static class FarmRoomSmoke
                 int changed = 0; for (int p = 0; p < withShadows.Length; p += 4) if (withShadows[p] != withoutShadows[p] || withShadows[p+1] != withoutShadows[p+1] || withShadows[p+2] != withoutShadows[p+2]) changed++;
                 if (changed < 100) throw new InvalidOperationException("Farm shadow map did not affect the room: " + theme.Id);
                 room.EnableSunShadows = true;
+                room.Selected = "missing-resident"; room.Draw(0,0,1000,850);
+                if (room.SelectionVisible) throw new InvalidOperationException("Selection ring remained on a missing resident.");
+                room.Selected = "tokomon";
                 farm["lights"] = false;
                 foreach (var pet in farm["pets"]!.AsObject()) pet.Value!["flags"]!["asleep"] = true;
                 room.Sync(farm.ToJsonString(), null, null);

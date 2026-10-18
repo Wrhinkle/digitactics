@@ -32,6 +32,9 @@ internal sealed class FarmView : IDisposable
     private readonly ModelRenderer renderer = new();
     private readonly FarmShadowMap shadows = new();
     private readonly FarmAtmosphere atmosphere = new();
+    private readonly FarmSelectionRing selectionRing = new();
+    public string? Selected { get; set; }
+    public bool SelectionVisible { get; private set; }
     public double NightOpacity => atmosphere.Opacity;
     public int ShadowDrawCalls { get; private set; }
     internal bool EnableSunShadows { get; set; } = true;
@@ -179,6 +182,12 @@ internal sealed class FarmView : IDisposable
         }
         renderer.ReceiveShadow = false;
         foreach (var particles in snow) { particles.Draw(renderer, camera, eye); DrawCalls++; }
+        SelectionVisible = Selected is not null && actors.TryGetValue(Selected, out _);
+        if (SelectionVisible)
+        {
+            var selected = actors[Selected!].Resident;
+            selectionRing.Draw(renderer,camera,selected.X,selected.Z,choreography.Time); DrawCalls++;
+        }
         atmosphere.Draw(left,bottom,width,height,room.Sky,true);
         ModelRenderer.End();
     }
@@ -210,6 +219,6 @@ internal sealed class FarmView : IDisposable
     }
     public void Dispose()
     {
-        foreach (var particles in snow) particles.Dispose(); foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); atmosphere.Dispose(); shadows.Dispose(); renderer.Dispose();
+        foreach (var particles in snow) particles.Dispose(); foreach (var primitive in geometry) primitive.Dispose(); foreach (var texture in textures) texture.Dispose(); foreach (var model in loaded.Values) model.Dispose(); selectionRing.Dispose(); atmosphere.Dispose(); shadows.Dispose(); renderer.Dispose();
     }
 }
