@@ -10,6 +10,7 @@ if (args.Contains("--assets-only")) { ModelAssetParity.Run(root); TextureParity.
 if (args.Contains("--geometry-only")) { MaterialParity.Run(root); MeshParity.Run(root); RigParity.Run(root); return; }
 if (args.Contains("--companion-motion-only")) { CompanionMotionChecks.Run(root); return; }
 if (args.Contains("--companion-playback-only")) { CompanionPlaybackChecks.Run(root); return; }
+if (args.Contains("--farm-choreography-only")) { FarmChoreographyChecks.Run(root); return; }
 var catalog = ContentCatalog.Load(Path.Combine(root, "content/catalog.json"));
 if (args.Contains("--history-only")) { MatchHistoryChecks.Run(root, catalog); return; }
 if (args.Contains("--rewards-only")) { MatchRewardChecks.Run(root, catalog); LegendRewardChecks.Run(root); return; }
@@ -194,6 +195,7 @@ assertions += ModelAssetParity.Run(root);
 assertions += CompanionModelChecks.Run(root);
 assertions += CompanionMotionChecks.Run(root);
 assertions += CompanionPlaybackChecks.Run(root);
+assertions += FarmChoreographyChecks.Run(root);
 assertions += TextureParity.Run(root);
 assertions += MaterialParity.Run(root);
 assertions += ActionParity.Run(root);

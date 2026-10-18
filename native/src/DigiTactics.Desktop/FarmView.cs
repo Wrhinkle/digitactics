@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using DigiTactics.Assets;
 using DigiTactics.Storage;
+using DigiTactics.Presentation;
 
 namespace DigiTactics.Desktop;
 
@@ -13,7 +14,16 @@ internal sealed class FarmView : IDisposable
     private sealed record Texture(int Width, int Height, string Rgba, bool Clamp);
     private sealed record Mesh(float[] Vertices, uint[] Indices, double[] Matrix, int Material, bool Sprite, int Meat);
     private sealed record Room(int SchemaVersion, string Theme, string[] Sky, Material[] Materials, Texture[] Textures, Mesh[] Meshes);
-    private sealed record Actor(GpuModel Model, CompanionAnimator Animator, double X, double Z, CompanionVisual Visual);
+    private sealed record Actor(GpuModel Model, CompanionAnimator Animator, FarmResident Resident, CompanionVisual Visual);
+    private sealed class MotionView(CompanionAnimator animator) : IFarmCompanionView
+    {
+        public bool HasRun => animator.HasRun;
+        public double Yaw { get => animator.Yaw; set => animator.Yaw = value; }
+        public void SetMoving(bool moving) => animator.SetMoving(moving);
+        public void Play(string role) => animator.Play(role);
+        public void Update(double delta) => animator.Update(delta);
+    }
+    private readonly FarmChoreography choreography = new();
     private readonly ModelCatalog models = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
     private readonly CompanionCatalog companions = CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/companion-models.json"));
     private readonly ModelRenderer renderer = new();
@@ -27,6 +37,7 @@ internal sealed class FarmView : IDisposable
     public int DrawCalls { get; private set; }
     public IReadOnlyCollection<string> Residents => actors.Keys;
     public string? Theme => room?.Theme;
+    public int SleepingResidents => choreography.Residents.Values.Count(x => x.Mode == "sleep");
     public void Sync(string farmJson, string? legendJson, string? walletJson)
     {
         if (farmJson == lastFarm && legendJson == lastLegends) return;
@@ -35,15 +46,19 @@ internal sealed class FarmView : IDisposable
         if (room?.Theme != theme) LoadRoom(theme);
         meat = farm["meat"]!["n"]!.GetValue<int>();
         var residents = farm["residents"]!.AsArray().Select(x => x!.GetValue<string>()).ToArray();
-        foreach (string id in actors.Keys.Except(residents).ToArray()) actors.Remove(id);
+        foreach (string id in actors.Keys.Except(residents).ToArray()) { actors.Remove(id); choreography.Remove(id); }
         foreach (string id in residents)
         {
             string form = LegendEvolution.Inspect(legendJson, walletJson, farmJson, id).Form;
             var visual = companions.Resolve(form == id ? id : id + "@" + form);
-            if (actors.TryGetValue(id, out var existing) && existing.Visual == visual) continue;
+            var pet = farm["pets"]![id]!;
+            var needs = new FarmResidentNeeds(pet["flags"]?["asleep"]?.GetValue<bool>() == true, pet["sick"]!.GetValue<bool>(), pet["energy"]!.GetValue<double>(), pet["happy"]!.GetValue<double>(), pet["tantrum"]!.GetValue<double>() != 0);
+            if (actors.TryGetValue(id, out var existing) && existing.Visual == visual) { existing.Resident.Needs = needs; continue; }
             if (!loaded.TryGetValue(visual.Source, out var model)) loaded[visual.Source] = model = new(models, models.Sources[visual.Source]);
-            int k = actors.Count; double angle = k * 2.39996, radius = .7 * Math.Sqrt((k + 1) / 12.0);
-            actors[id] = new(model, model.CreateCompanionAnimator(visual, companions.Fallbacks), existing?.X ?? Math.Cos(angle) * 2.7 * radius, existing?.Z ?? .3 + Math.Sin(angle) * 2.3 * radius, visual);
+            var animator = model.CreateCompanionAnimator(visual, companions.Fallbacks);
+            if (existing is not null) { choreography.Remove(id); actors.Remove(id); }
+            var resident = choreography.Add(id, new MotionView(animator), existing?.Resident.X, existing?.Resident.Z); resident.Needs = needs;
+            actors[id] = new(model, animator, resident, visual);
         }
         foreach (string key in loaded.Keys.Where(key => !actors.Values.Any(a => a.Model == loaded[key])).ToArray()) { loaded[key].Dispose(); loaded.Remove(key); }
         lastFarm = farmJson; lastLegends = legendJson;
@@ -66,7 +81,7 @@ internal sealed class FarmView : IDisposable
         }
         catch { foreach (var primitive in geometry) primitive.Dispose(); geometry.Clear(); foreach (var texture in textures) texture.Dispose(); textures.Clear(); throw; }
     }
-    public void Update(double delta) { foreach (var actor in actors.Values) actor.Animator.Update(delta); }
+    public void Update(double delta) => choreography.Update(delta);
     public void React(string? id, string role) { if (id is not null && actors.TryGetValue(id, out var actor)) actor.Animator.Play(role); }
     private static (Matrix4x4 Camera, Vector3 Eye) Camera(int width, int height)
     {
@@ -80,7 +95,7 @@ internal sealed class FarmView : IDisposable
         var camera = Camera(width, height).Camera;
         foreach (var (id, actor) in actors)
         {
-            var point = Vector4.Transform(new Vector4((float)actor.X, 1.6f, (float)actor.Z, 1), camera);
+            var point = Vector4.Transform(new Vector4((float)actor.Resident.X, 1.6f + (float)actor.Resident.Height, (float)actor.Resident.Z, 1), camera);
             yield return (id, (point.X / point.W * .5f + .5f) * width, (1 - (point.Y / point.W * .5f + .5f)) * height);
         }
     }
@@ -104,7 +119,12 @@ internal sealed class FarmView : IDisposable
                 }
                 renderer.DrawRoom(geometry[i], matrix, camera, new(material.Color[0], material.Color[1], material.Color[2], material.Color[3]), material.Texture is { } texture ? textures[texture] : null, material.Unlit, transparent, material.DepthWrite); DrawCalls++;
             }
-            foreach (var actor in actors.Values) { renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.PlaceCompanion(actor.Animator, actor.X, 0, actor.Z), camera, transparent); DrawCalls += renderer.DrawCalls; }
+            foreach (var actor in actors.Values)
+            {
+                var resident = actor.Resident;
+                var root = new CompanionTransform(new(resident.X, resident.Height, resident.Z), new(0, 0, resident.Tilt * 1.15), new(1, resident.Breathe, 1));
+                renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.PlaceCompanion(actor.Animator) * root.Matrix, camera, transparent); DrawCalls += renderer.DrawCalls;
+            }
         }
         ModelRenderer.End();
     }

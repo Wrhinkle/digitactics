@@ -2252,3 +2252,23 @@ friend interactions, pile visuals, moving water/decorations, snowfall, night
 lighting, shadows, material polish and improved overlapping labels remain to be
 completed. Snow particle data is exported but not rendered yet. These limitations
 remain part of the active full-port goal; this checkpoint is not a release gate.
+
+### Farm resident choreography
+
+Residents now wander, approach friends, react to mood and sickness, separate
+when crowded, walk to one of six bed slots, sleep with a breathing pose, and wake
+when their saved needs change. Overflow sleepers retain their position. Models
+without a walk clip use the original hopping motion. Movement is presentation
+state and does not mutate saved needs. Newly admitted pets with no asleep flag
+are treated as awake, matching the original game.
+
+The seeded original-JavaScript fixture covers 18 combinations of population,
+frame interval and random seed, with 600 frames each. All 817,200 state and
+animation-command comparisons passed. The rebuilt Windows app also passed all
+six room themes with sleep/wake assertions, the integrated evolution/farm/Solo
+flow, four training games and the Duos match smoke. Awake and sleeping meadow
+captures were inspected.
+
+This supersedes the stationary-resident limitation above. Care-event routing,
+pile visuals, moving room decorations, snow, night lighting, shadows, material
+polish and label improvements remain part of the active full-port goal.

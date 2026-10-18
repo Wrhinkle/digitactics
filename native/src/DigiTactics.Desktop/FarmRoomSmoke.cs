@@ -22,14 +22,23 @@ internal static class FarmRoomSmoke
             foreach (var theme in FarmCare.Themes)
             {
                 farm["theme"] = theme.Id; room.Sync(farm.ToJsonString(), null, null);
-                room.React("tokomon", "happy"); room.Update(.37);
+                room.React("tokomon", "happy"); for (int frame = 0; frame < 60; frame++) room.Update(.05);
                 OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
                 room.Draw(0, 0, 1000, 850);
                 if (room.Theme != theme.Id || room.DrawCalls < 150 || room.Residents.Count != 3) throw new InvalidOperationException("Farm room rendering failed: " + theme.Id);
                 ModelPreview.VerifyVisible(1000, 850);
                 if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, theme.Id + ".bmp"), 1000, 850);
+                foreach (var pet in farm["pets"]!.AsObject()) pet.Value!["flags"]!["asleep"] = true;
+                room.Sync(farm.ToJsonString(), null, null);
+                for (int frame = 0; frame < 240; frame++) room.Update(.05);
+                if (room.SleepingResidents != 3) throw new InvalidOperationException("Farm residents did not reach their beds: " + theme.Id);
+                OpenGl.Clear(GlClearBit.Color); room.Draw(0, 0, 1000, 850);
+                if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, theme.Id + "-sleep.bmp"), 1000, 850);
+                foreach (var pet in farm["pets"]!.AsObject()) pet.Value!["flags"]!["asleep"] = false;
+                room.Sync(farm.ToJsonString(), null, null); room.Update(.05);
+                if (room.SleepingResidents != 0) throw new InvalidOperationException("Farm residents did not wake: " + theme.Id);
             }
-            Console.WriteLine("Farm room GPU smoke passed: all six themes, textures, care stations and three animated residents.");
+            Console.WriteLine("Farm room GPU smoke passed: all six themes, textures, care stations, resident movement and sleep/wake transitions.");
         }
         finally { Glfw.Terminate(); }
     }
