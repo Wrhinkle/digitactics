@@ -21,12 +21,16 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private readonly bool spectator;
     private bool spectatorVerified;
     private int soundEffects;
+    private int socialStep;
+    private int socialCheck;
+    private readonly string[] socialCommands = ["players", "playerMute/123", "playerMute/123", "closePlayers"];
     public string Pending => "network UI stage " + stage;
     public NetworkMatchSmoke(ContentCatalog catalog, MatchScreen screen, bool duos = false, bool spectator = false)
     {
         this.spectator = spectator; stage = spectator ? -2 : -5;
         var lobby = JsonNode.Parse("{\"host\":\"123\",\"name\":\"Test room\",\"hostName\":\"Host\",\"status\":\"playing\",\"slots\":{\"1\":{\"uid\":\"234\",\"name\":\"Guest\"}}}"u8)!.AsObject();
         if (spectator) { lobby["slots"]!.AsObject().Remove("1"); lobby["slots"]!["0"] = new JsonObject { ["uid"] = "123", ["name"] = "Host" }; }
+        else lobby["slots"]!["0"] = new JsonObject { ["uid"] = "123", ["name"] = "Host" };
         host = new("999", "123", lobby); guest = new("999", "234", lobby);
         host.Members(["123", "234"], "123", now); guest.Members(["123", "234"], "123", now);
         host.Send += p => packets.Enqueue(("123", p)); guest.Send += p => packets.Enqueue(("234", p));
@@ -34,6 +38,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
         host.PublishInit(JsonSerializer.SerializeToElement(new { seed = 143, at = now, planTime = 30, setId = "faction-wars", pace = "hyper", format = duos ? "duos" : "solo", slots = Enumerable.Range(0, 8).Select(i => new { name = i == 1 ? "Guest" : "Tamer " + i, human = i == (spectator ? 0 : 1) }).ToArray() }));
         PumpPackets(); replica = new(host, catalog); controller = new(host, replica, () => now); replica.Pump(now);
         guest.SetPresence(new JsonObject { ["name"] = "Guest" }, false, now); PumpPackets();
+        host.SetPresence(new JsonObject { ["name"] = "Host" }, false, now); PumpPackets();
         screen.AttachNetworkMatch(guest, () => now);
     }
     private void PumpPackets()
@@ -44,13 +49,34 @@ internal sealed class NetworkMatchSmoke : IDisposable
     {
         now += 200; PumpPackets(); controller.Pump(now); PumpPackets();
         if (cooldown-- > 0) return;
+        if (!spectator && socialStep < socialCommands.Length)
+        {
+            if (down)
+            {
+                ImGui.GetIO().AddMouseButtonEvent(0, false); down = false; socialStep++; cooldown = 3;
+                if (socialStep is 2 or 3) socialCheck = socialStep;
+                return;
+            }
+            if (screen.Buttons.Keys.Any(k => k.StartsWith("playerRemove/", StringComparison.Ordinal))) throw new InvalidOperationException("Guest sees host removal controls.");
+            if (screen.Buttons.TryGetValue(socialCommands[socialStep], out var socialPoint))
+            { ImGui.GetIO().AddMousePosEvent(socialPoint.X, socialPoint.Y); ImGui.GetIO().AddMouseButtonEvent(0, true); down = true; }
+            return;
+        }
         if (down) { ImGui.GetIO().AddMouseButtonEvent(0, false); down = false; stage++; cooldown = 3; return; }
-        string? key = stage switch { -5 => "soundboard", -4 => "soundboard/0", -3 => "closeSoundboard", -2 => "joinSeat", 0 when screen.Session?.Rounds.RoundType != "carousel" => "lock", 2 => "fight", 4 => "spectate", _ => null };
+        string? key = stage switch { -5 => "soundboard", -4 => "soundboard/0", -3 => "closeSoundboard", -2 => "joinSeat", 0 when screen.Session?.Rounds.RoundType != "carousel" => "lock", 2 => "fight", 4 => "spectate", 20 => "players", 21 => "playerRemove/234", 22 => "closePlayers", _ => null };
         if (key is not null && screen.Buttons.TryGetValue(key, out var point)) { ImGui.GetIO().AddMousePosEvent(point.X, point.Y); ImGui.GetIO().AddMouseButtonEvent(0, true); down = true; }
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
         planningRendered |= screen.PlanningDrawCalls > 0;
+        if (socialCheck != 0)
+        {
+            if (!host.SendEffect(JsonSerializer.SerializeToElement(new { s = 0, kind = "sound", id = "digivice" }))) throw new InvalidOperationException("Host effect was not sent.");
+            PumpPackets();
+            if (screen.ReceivedSoundboardEffects != (socialCheck == 2 ? 0 : 1)) throw new InvalidOperationException("Per-player mute/unmute did not filter incoming soundboard.");
+            socialCheck = 0;
+        }
+        if (!spectator && socialStep == 2 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "players.bmp"), size.X, size.Y);
         if (!spectator && stage == -3 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "soundboard.bmp"), size.X, size.Y);
         if (!spectator && stage == -2) { if (soundEffects != 1) throw new InvalidOperationException("Equipped soundboard clip did not reach host exactly once."); stage = 0; }
         if (stage == -2 && screen.IsSpectating)
@@ -76,6 +102,14 @@ internal sealed class NetworkMatchSmoke : IDisposable
         if (spectator && (!spectatorVerified || screen.Buttons.ContainsKey("lock") || screen.Buttons.ContainsKey("fight"))) throw new InvalidOperationException("Returning to spectating did not remove player controls.");
         if (!planningRendered || !combatRendered || screen.Session.State.Seed != replica.Match!.Session.State.Seed) throw new InvalidOperationException("Online match did not render planning and combat.");
         if (screen.NetworkStateHash != replica.Match.Check()) throw new InvalidOperationException("Rendered guest state differs from host after settlement.");
+        if (!spectator && stage == 3) { screen.AttachNetworkMatch(host, () => now); stage = 20; return false; }
+        if (!spectator && stage < 23)
+        {
+            if (screen.Buttons.ContainsKey("playerRemove/123")) throw new InvalidOperationException("Host can remove itself.");
+            if (stage == 21 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "host-players.bmp"), size.X, size.Y);
+            return false;
+        }
+        if (!spectator && (!guest.Authority.Banned("234") || host.Authority.Lobby!["slots"]!["1"] is not null)) throw new InvalidOperationException("Host removal did not reach peer and clear its seat.");
         if (capture is not null) FrameCapture.SaveBitmap(capture, size.X, size.Y);
         Console.WriteLine(spectator ? "Spectator UI smoke passed: read-only view, take seat, replicated controls/combat, return to spectating and matching host state."
             : "Network match UI smoke passed: guest seat-one input, replicated shop lock, ready vote, rendered 3D planning/combat, host settlement and next round."); return true;

@@ -234,12 +234,12 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear();
-        if (Session is null) { if (showMultiplayer) MultiplayerMenu(); else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
+        if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
         Header(); if (Session is null) return;
         Roster(); Sidebar();
         if (battle is null) Board();
         else battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height);
-        Choices(); Soundboard();
+        Choices(); Soundboard(); PlayersPanel();
         if (showAudio)
         {
             Window("Sound settings", size.X / 2 - 210, Top + 20, 420, 250);
@@ -290,6 +290,7 @@ internal sealed partial class MatchScreen : IDisposable
         ImGui.SameLine(); if (Button("mute", audio.Muted ? "Unmute" : "Mute")) audio.Muted = !audio.Muted;
         ImGui.SameLine(); if (Button("audioSettings", "Sound settings")) showAudio = !showAudio;
         ImGui.SameLine(); if (Button("soundboard", "Soundboard")) showSoundboard = !showSoundboard;
+        if (networkRoom is not null) { ImGui.SameLine(); if (Button("players", "Players")) showPlayers = !showPlayers; }
         if (session.State.Over)
         {
             ImGui.Text(IsSpectating ? "Match complete" : $"Match complete - placement #{Human.Placement}"); ImGui.SameLine();

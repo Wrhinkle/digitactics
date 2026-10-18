@@ -191,6 +191,7 @@ internal sealed partial class MatchScreen
                 if (room.Init is not null) ImGui.TextWrapped("Match in progress. Take an available seat to join."u8);
             }
             if (Button("steamLeave", "Leave room")) LeaveSteamRoom();
+            ImGui.SameLine(); if (Button("players", "Players")) showPlayers = !showPlayers;
         }
         else
         {

@@ -11,6 +11,7 @@ internal sealed partial class MatchScreen
     private bool showSoundboard;
     private MatchPlanningSession? soundboardSession;
     private MatchSoundboard soundboard = new();
+    internal int ReceivedSoundboardEffects { get; private set; }
     private void EnsureSoundboard()
     {
         if (ReferenceEquals(soundboardSession, Session)) return;
@@ -18,9 +19,9 @@ internal sealed partial class MatchScreen
     }
     private void NetworkEffect(string sender, JsonElement effect)
     {
-        if (Session is null || effect.GetProperty("kind"u8).GetString() != "sound") return;
+        if (Session is null || PlayerMuted(sender) || effect.GetProperty("kind"u8).GetString() != "sound") return;
         EnsureSoundboard();
-        soundboard.Receive((int)effect.GetProperty("s"u8).GetDouble(), effect.GetProperty("id"u8).GetString()!, localSeat, audio.MuteOthers, Environment.TickCount64);
+        if (soundboard.Receive((int)effect.GetProperty("s"u8).GetDouble(), effect.GetProperty("id"u8).GetString()!, localSeat, audio.MuteOthers, Environment.TickCount64)) ReceivedSoundboardEffects++;
     }
     private void Soundboard()
     {
