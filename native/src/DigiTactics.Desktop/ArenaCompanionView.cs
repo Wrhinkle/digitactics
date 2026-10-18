@@ -28,7 +28,13 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
     private CompanionTransform? overlay;
     public int DrawCalls { get; private set; }
     public int ShadowDrawCalls { get; private set; }
-    public void BeginFrame() { DrawCalls = 0; ShadowDrawCalls = 0; RetroDrawCalls = 0; }
+    public int RetroShadowDrawCalls { get; private set; }
+    public void BeginFrame() { DrawCalls = 0; ShadowDrawCalls = 0; RetroDrawCalls = 0; RetroShadowDrawCalls = 0; }
+    public void PrepareScene(System.Numerics.Matrix4x4 camera, System.Numerics.Vector3 eye)
+    {
+        if (animator is not null) retro?.Prepare(camera, eye,
+            new(opponent ? 7.6 : Travel.X, opponent ? 0 : Travel.Hop(animator.HasRun), opponent ? -6.6 : Travel.Z), frameNow);
+    }
     public void DrawModel(ModelRenderer sceneRenderer, System.Numerics.Matrix4x4 camera, bool transparent)
     {
         if (model is null || animator is null) return;
@@ -37,9 +43,9 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
         sceneRenderer.Draw(model, animator.Pose, placement, camera, transparent);
         if (sceneRenderer.ShadowPass) ShadowDrawCalls += sceneRenderer.DrawCalls;
         else DrawCalls += sceneRenderer.DrawCalls;
-        if (transparent && !sceneRenderer.ShadowPass)
-            RetroDrawCalls = retro?.Draw(sceneRenderer, camera, sceneRenderer.FarmEye,
-                new(opponent ? 7.6 : Travel.X, opponent ? 0 : Travel.Hop(animator.HasRun), opponent ? -6.6 : Travel.Z), frameNow) ?? 0;
+        int retroCalls = retro?.DrawPass(sceneRenderer, camera, transparent) ?? 0;
+        if (sceneRenderer.ShadowPass) RetroShadowDrawCalls += retroCalls;
+        else RetroDrawCalls += retroCalls;
     }
     public CompanionTravel Travel { get; } = new();
     public void Update(string nextKey, ActiveEmote? emote, long now, double delta, string? equippedDance = null)

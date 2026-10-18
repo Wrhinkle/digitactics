@@ -537,6 +537,9 @@ internal sealed partial class MatchScreen : IDisposable
         arenaEnvironment.Items.Ruleset = Rules.Id;
         arenaEnvironment.Items.Items = Session.State.Players[viewed].Items;
         arenaCompanion?.BeginFrame(); opponentCompanion?.BeginFrame();
+        var sceneCamera = arenaEnvironment.Camera.Matrix(w, h, battle?.Combat.Columns ?? 7);
+        var sceneEye = arenaEnvironment.Camera.Eye(w, h, battle?.Combat.Columns ?? 7);
+        arenaCompanion?.PrepareScene(sceneCamera, sceneEye); opponentCompanion?.PrepareScene(sceneCamera, sceneEye);
         arenaEnvironment.Actors = DrawCompanions;
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
     }
