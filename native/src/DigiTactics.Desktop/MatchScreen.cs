@@ -66,19 +66,19 @@ internal sealed partial class MatchScreen : IDisposable
     private void Tooltip(string id)
     {
         if (!ImGui.IsItemHovered()) return;
-        var entry = text.Get(Rules.Id, id); ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); ImGui.Text(entry.Name); ImGui.TextWrapped(entry.Description); ImGui.EndTooltip();
+        var entry = text.Get(Rules.Id, id); ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); ImGui.Text(entry.Name); UiText.Wrapped(entry.Description); ImGui.EndTooltip();
     }
     private string UnitName(PlanningUnit unit) => Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == unit.Line).Forms[unit.Stage];
     private void UnitDetails(string lineId, int stage)
     {
         var line = Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == lineId);
         var stats = UnitValues.Stats(line, stage);
-        ImGui.TextWrapped($"{line.Forms[stage]}  {new string('*', stage + 1)}");
-        ImGui.TextWrapped(string.Join(" / ", line.Traits.Select(Name)));
-        ImGui.TextWrapped($"Base stats: {stats.MaxHealth} HP, {stats.AttackDamage} attack, {stats.AttackSpeed:0.##} attacks/s");
-        ImGui.TextWrapped($"{stats.Armor} armor / {stats.MagicResist} magic resist / {stats.Range} range");
-        ImGui.TextWrapped($"Mana {stats.StartMana}/{stats.MaxMana}");
-        ImGui.TextWrapped(line.Ability.Names.ElementAtOrDefault(stage) ?? line.Ability.Kind);
+        UiText.Wrapped($"{line.Forms[stage]}  {new string('*', stage + 1)}");
+        UiText.Wrapped(string.Join(" / ", line.Traits.Select(Name)));
+        UiText.Wrapped($"Base stats: {stats.MaxHealth} HP, {stats.AttackDamage} attack, {stats.AttackSpeed:0.##} attacks/s");
+        UiText.Wrapped($"{stats.Armor} armor / {stats.MagicResist} magic resist / {stats.Range} range");
+        UiText.Wrapped($"Mana {stats.StartMana}/{stats.MaxMana}");
+        UiText.Wrapped(line.Ability.Names.ElementAtOrDefault(stage) ?? line.Ability.Kind);
     }
     private void UnitTooltip(string line, int stage)
     {
@@ -299,7 +299,7 @@ internal sealed partial class MatchScreen : IDisposable
             if (ImGui.Selectable("Duos"u8, duos)) duos = true;
             ImGui.EndCombo();
         }
-        ImGui.TextWrapped(duos ? "Team up with an AI partner. Share health and send units or items through your portal." : "Face seven AI Tamers. Your choices decide the team.");
+        UiText.Wrapped(duos ? "Team up with an AI partner. Share health and send units or items through your portal." : "Face seven AI Tamers. Your choices decide the team.");
         AudioControls();
         if (Button("start", "Start match", 220, 48))
         {
@@ -364,8 +364,8 @@ internal sealed partial class MatchScreen : IDisposable
         bool musicOff = audio.MusicOff, muted = audio.Muted;
         if (ImGui.Checkbox("Music off"u8, ref musicOff)) audio.MusicOff = musicOff;
         ImGui.SameLine(); if (ImGui.Checkbox("Mute all"u8, ref muted)) audio.Muted = muted;
-        if (audio.Error is { } error) ImGui.TextWrapped(error);
-        if (audio.SettingsError is { } settingsError) ImGui.TextWrapped(settingsError);
+        if (audio.Error is { } error) UiText.Wrapped(error);
+        if (audio.SettingsError is { } settingsError) UiText.Wrapped(settingsError);
     }
     private void ProfileControls()
     {
@@ -374,14 +374,14 @@ internal sealed partial class MatchScreen : IDisposable
         var saved = profile.Progress;
         ImGui.Text($"{saved.Name}  |  {Number(saved.Bits)} Bits");
         ImGui.Text($"Saved record: {Number(saved.Games)} games, {Number(saved.Wins)} wins, {Number(saved.TopFour)} top-four finishes");
-        if (profile.Error is { } error) ImGui.TextWrapped(error);
+        if (profile.Error is { } error) UiText.Wrapped(error);
         if (!profile.Exists)
         {
             if (profilePreview is not null) ImGui.Text("Reading backup..."u8);
             else if (profileCandidate is { } candidate)
             {
-                ImGui.TextWrapped($"Import {candidate.Progress.Name}'s saved profile? {candidate.Summary.StorageEntries} saved entries and {candidate.Summary.MusicTracks} music files will be preserved.");
-                ImGui.TextWrapped("Identity and saved totals are available now. Cosmetics, music-library playback and other migrated features are still being completed."u8);
+                UiText.Wrapped($"Import {candidate.Progress.Name}'s saved profile? {candidate.Summary.StorageEntries} saved entries and {candidate.Summary.MusicTracks} music files will be preserved.");
+                UiText.Wrapped("Identity and saved totals are available now. Cosmetics, music-library playback and other migrated features are still being completed."u8);
                 if (Button("importProfile", "Import profile"))
                 {
                     try { profile.Import(candidate); profileCandidate = null; profileMessage = "Profile imported. Your original backup is preserved."; }
@@ -399,7 +399,7 @@ internal sealed partial class MatchScreen : IDisposable
                 catch (Exception failure) { profileMessage = failure.Message; }
             }
         }
-        if (profileMessage is not null) ImGui.TextWrapped(profileMessage);
+        if (profileMessage is not null) UiText.Wrapped(profileMessage);
         ImGui.Separator();
     }
     private void Sidebar()
@@ -412,7 +412,7 @@ internal sealed partial class MatchScreen : IDisposable
         foreach (var count in counts.OrderByDescending(c => c.Value))
         {
             var trait = Rules.Traits.FirstOrDefault(t => t.Id == count.Key);
-            ImGui.TextWrapped($"{Name(count.Key)}  {count.Value}  ({string.Join('/', trait?.Breakpoints ?? [])})"); Tooltip(count.Key);
+            UiText.Wrapped($"{Name(count.Key)}  {count.Value}  ({string.Join('/', trait?.Breakpoints ?? [])})"); Tooltip(count.Key);
         }
         ImGui.SeparatorText("Selected"u8);
         var selected = Human.Roster.Entries.FirstOrDefault(e => e.Unit.Id == selectedUnit);
@@ -424,25 +424,25 @@ internal sealed partial class MatchScreen : IDisposable
             if (Session.State.Duos && Button("sendUnit", "Send to partner")) { Act("portal", new { uid = selected.Unit.Id }); selectedUnit = null; }
         }
         if (!IsSpectating && Human.Wisp is { } wisp && Button("wisp", $"{Name(wisp.Id)} ({wisp.Cost}g)")) Act("wisp");
-        if (Human.Power is { } power) ImGui.TextWrapped($"{Name(power.Id)} - rank {power.Rank}");
-        foreach (string id in Human.Augments) { ImGui.TextWrapped(Name(id)); Tooltip(id); }
-        foreach (string id in Human.Globals) { ImGui.TextWrapped(Name(id)); Tooltip(id); }
+        if (Human.Power is { } power) UiText.Wrapped($"{Name(power.Id)} - rank {power.Rank}");
+        foreach (string id in Human.Augments) { UiText.Wrapped(Name(id)); Tooltip(id); }
+        foreach (string id in Human.Globals) { UiText.Wrapped(Name(id)); Tooltip(id); }
         ImGui.End();
         Window("Standings", size.X - 228, Top, 216, Height);
         EnsureSoundboard(); var soundLabels = soundboard.Labels(Environment.TickCount64);
         foreach (var p in Session.State.Players.OrderByDescending(p => p.Alive).ThenByDescending(p => p.Health))
         {
             if (Button("view/" + p.Id, $"{p.Name}  {(p.Alive ? p.Health + " HP" : "#" + p.Placement)}", 192, 28)) Watch(p.Id);
-            if (soundLabels.FirstOrDefault(label => label.Seat == p.Id) is { } clip) ImGui.TextWrapped("Playing: " + DigiTactics.Storage.CosmeticCollection.Item("sound", clip.Id)!.Name);
+            if (soundLabels.FirstOrDefault(label => label.Seat == p.Id) is { } clip) UiText.Wrapped("Playing: " + DigiTactics.Storage.CosmeticCollection.Item("sound", clip.Id)!.Name);
             EmoteRow(p.Id);
         }
-        if (Session.State.Duos && !IsSpectating) ImGui.TextWrapped("Your partner: " + Session.Units.Portal.Partner(Human)?.Name);
+        if (Session.State.Duos && !IsSpectating) UiText.Wrapped("Your partner: " + Session.Units.Portal.Partner(Human)?.Name);
         if (!IsSpectating) foreach (var orb in Human.Orbs.ToArray()) if (Button("orb/" + orb.Id, $"Collect {orb.Kind} loot")) Act("orb", new { id = orb.Id });
         if (history?.Award is { } award)
         {
             ImGui.Separator(); ImGui.Text($"Earned {award.Total} Bits");
-            foreach (var line in award.Lines) ImGui.TextWrapped($"{line.Label}: +{line.N}");
-            if (history.LegendAward is { } legend) ImGui.TextWrapped($"{legend.Legend}: +{legend.Data} Digi-Data (level {legend.Level})");
+            foreach (var line in award.Lines) UiText.Wrapped($"{line.Label}: +{line.N}");
+            if (history.LegendAward is { } legend) UiText.Wrapped($"{legend.Legend}: +{legend.Data} Digi-Data (level {legend.Level})");
         }
         if (history?.Error is not null && Button("retryHistory", "Retry saving progress"))
         {
@@ -450,12 +450,12 @@ internal sealed partial class MatchScreen : IDisposable
             status = saved ? "Match progress saved." : history.Error!;
             profileMessage = saved ? null : history.Error;
         }
-        ImGui.Separator(); ImGui.TextWrapped(status); ImGui.End();
+        ImGui.Separator(); UiText.Wrapped(status); ImGui.End();
     }
     private void Roster()
     {
         Window("Shop and bench", 12, size.Y - 255, size.X - 24, 243, ImGuiWindowFlags.NoTitleBar);
-        if (IsSpectating) { ImGui.TextWrapped("Spectating. Take an available seat to control a team."u8); ImGui.End(); return; }
+        if (IsSpectating) { UiText.Wrapped("Spectating. Take an available seat to control a team."u8); ImGui.End(); return; }
         if (SellDropZone()) { ImGui.End(); return; }
         ImGui.BeginDisabled(Session!.State.Over || !Human.Alive);
         if (Button("reroll", $"Refresh ({(Human.Shop.FreeRolls > 0 ? "free" : Rules.RerollCost + "g")})")) Act("reroll");

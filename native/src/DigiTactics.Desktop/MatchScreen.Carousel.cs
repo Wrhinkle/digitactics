@@ -14,8 +14,8 @@ internal sealed partial class MatchScreen
         int columns = Math.Max(1, (Width - 32) / 175);
         int rows = (carousel.Options.Count + columns - 1) / columns;
         Window("Carousel", Left, Top + 12, Width, Math.Min(Height - 24, 75 + rows * 158));
-        ImGui.TextWrapped(myTurn ? "Your pick: one Digimon and its item." : carousel.Done ? "Everyone has picked." : $"Waiting for {carousel.Turn!.Name}...");
-        ImGui.TextWrapped(Session.Rounds.Position.Stage == 1 ? "Pick order is random." : "Lowest HP picks first.");
+        UiText.Wrapped(myTurn ? "Your pick: one Digimon and its item." : carousel.Done ? "Everyone has picked." : $"Waiting for {carousel.Turn!.Name}...");
+        UiText.Wrapped(Session.Rounds.Position.Stage == 1 ? "Pick order is random." : "Lowest HP picks first.");
         float width = (Width - 24f - (columns - 1) * 8) / columns;
         for (int i = 0; i < carousel.Options.Count; i++)
         {
@@ -47,8 +47,8 @@ internal sealed partial class MatchScreen
             if (hovered)
             {
                 ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); UnitDetails(option.Line, 0);
-                if (option.Item is { } tooltipItem) { var description = text.Get(Rules.Id, tooltipItem); ImGui.Separator(); ImGui.Text(description.Name); ImGui.TextWrapped(description.Description); }
-                if (taken) ImGui.TextWrapped("Taken by " + option.PickedBy);
+                if (option.Item is { } tooltipItem) { var description = text.Get(Rules.Id, tooltipItem); ImGui.Separator(); ImGui.Text(description.Name); UiText.Wrapped(description.Description); }
+                if (taken) UiText.Wrapped("Taken by " + option.PickedBy);
                 ImGui.EndTooltip();
             }
             if (pick) { Act("carousel", new { i }); break; }

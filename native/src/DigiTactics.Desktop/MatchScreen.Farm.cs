@@ -118,7 +118,7 @@ internal sealed partial class MatchScreen
                     }
                     if (farmView.Mood(id) is { } mood)
                     {
-                        if (hovered) ImGui.SetTooltip(mood.Text);
+                        if (hovered) { ImGui.BeginTooltip(); ImGui.Text(mood.Text); ImGui.EndTooltip(); }
                         DrawFarmMood(mood, 12 + x, 70 + y - 16);
                     }
                 }

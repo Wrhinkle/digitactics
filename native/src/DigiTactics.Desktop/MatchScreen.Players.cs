@@ -37,7 +37,7 @@ internal sealed partial class MatchScreen
         if (!showPlayers || room is null) return;
         ReadPlayerMutes();
         Window("Players", size.X / 2 - 230, Top + 25, 460, 460);
-        ImGui.TextWrapped("Mute hides a player's emotes and soundboard. Remove blocks them from this room."u8);
+        UiText.Wrapped("Mute hides a player's emotes and soundboard. Remove blocks them from this room."u8);
         var slots = room.Authority.Lobby?["slots"]?.AsObject();
         bool any = false;
         if (slots is not null) foreach (var slot in slots)
@@ -55,7 +55,7 @@ internal sealed partial class MatchScreen
             }
         }
         if (!any) ImGui.Text("No other seated players."u8);
-        if (playerMessage is not null) ImGui.TextWrapped(playerMessage);
+        if (playerMessage is not null) UiText.Wrapped(playerMessage);
         if (Button("closePlayers", "Close")) showPlayers = false;
         ImGui.End();
     }

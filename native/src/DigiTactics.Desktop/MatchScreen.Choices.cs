@@ -21,7 +21,7 @@ internal sealed partial class MatchScreen
         Window(heading.Name + "##reward", Left + 12, Top + 12, Width - 24, peekChoices ? 65 : Math.Min(Height - 24, 440));
         if (Button("peekChoices", peekChoices ? "Show choices" : "View board")) peekChoices = !peekChoices;
         if (peekChoices) { ImGui.End(); return; }
-        ImGui.TextWrapped(heading.Description);
+        UiText.Wrapped(heading.Description);
         ImGui.Separator();
         for (int i = 0; i < offer.Options.Length; i++)
         {
@@ -40,9 +40,9 @@ internal sealed partial class MatchScreen
             }
             else pick = Button("offer/" + i, choice.Name, Width - 65, 34);
             if (pick) { Act("offer", new { i }); break; }
-            ImGui.TextWrapped(choice.Description.Replace("%", "%%"));
+            UiText.Wrapped(choice.Description);
             if (item is { Component: false, Ingredients: { Length: > 0 } ingredients })
-                ImGui.TextWrapped("From " + string.Join(" + ", ingredients.Select(Name)));
+                UiText.Wrapped("From " + string.Join(" + ", ingredients.Select(Name)));
             ImGui.Separator();
         }
         if (offer.Rerolls > 0 && Button("offerReroll", $"Reroll choices ({offer.Rerolls})")) Act("offerReroll");

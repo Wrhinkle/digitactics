@@ -91,7 +91,7 @@ internal sealed partial class MatchScreen
         else if (!itemDragMoved && shelfHover >= 0)
         {
             var description = text.Get(Rules.Id, Session!.State.Players[viewed].Items[shelfHover]);
-            ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); ImGui.Text(description.Name); ImGui.TextWrapped(description.Description); ImGui.EndTooltip();
+            ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); ImGui.Text(description.Name); UiText.Wrapped(description.Description); ImGui.EndTooltip();
         }
         else if (!itemDragMoved && inside && spot is { } hover && Session!.State.Players[viewed].Roster.At(hover) is { } unit)
         {

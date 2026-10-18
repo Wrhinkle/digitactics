@@ -50,10 +50,10 @@ internal sealed partial class MatchScreen
                 ImGui.EndDisabled();
             }
             if (soundboard.Cooldown(now) > 0) ImGui.Text($"Ready in {soundboard.Cooldown(now) / 1000d:F1}s");
-            ImGui.TextWrapped(IsSpectating ? "Take a seat to use your soundboard." : "Choose your six clips in Collection and store.");
+            UiText.Wrapped(IsSpectating ? "Take a seat to use your soundboard." : "Choose your six clips in Collection and store.");
         }
         catch (Exception error) when (error is JsonException or InvalidDataException or InvalidOperationException or FormatException)
-        { ImGui.TextWrapped("Soundboard could not be loaded: " + error.Message); }
+        { UiText.Wrapped("Soundboard could not be loaded: " + error.Message); }
         if (Button("closeSoundboard", "Close")) showSoundboard = false;
         ImGui.End();
     }

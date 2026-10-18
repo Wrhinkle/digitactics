@@ -101,7 +101,7 @@ internal sealed partial class MatchScreen
             }
         }
         catch (Exception error) when (error is JsonException or InvalidDataException or InvalidOperationException or IOException or FormatException)
-        { ImGui.TextWrapped("Emotes could not be loaded: " + error.Message); }
+        { UiText.Wrapped("Emotes could not be loaded: " + error.Message); }
         if (Button("closeEmotes", "Close")) showEmotes = false;
         ImGui.End();
     }

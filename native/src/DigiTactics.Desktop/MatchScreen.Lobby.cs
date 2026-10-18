@@ -169,7 +169,7 @@ internal sealed partial class MatchScreen
         Window("Steam multiplayer", size.X * .15f, 70, size.X * .7f, size.Y - 140);
         if (steam is null)
         {
-            ImGui.TextWrapped("Play with other Tamers through Steam."u8);
+            UiText.Wrapped("Play with other Tamers through Steam."u8);
             if (Button("steamConnect", "Connect to Steam")) ConnectSteam();
         }
         else if (steam.Room is { } room)
@@ -195,7 +195,7 @@ internal sealed partial class MatchScreen
                     ImGui.EndDisabled();
                     if (!seated) ImGui.Text("Take a seat before starting the match."u8);
                 }
-                if (room.Init is not null) ImGui.TextWrapped("Match in progress. Take an available seat to join."u8);
+                if (room.Init is not null) UiText.Wrapped("Match in progress. Take an available seat to join."u8);
             }
             if (Button("steamLeave", "Leave room")) LeaveSteamRoom();
             ImGui.SameLine(); if (Button("players", "Players")) showPlayers = !showPlayers;
@@ -238,10 +238,10 @@ internal sealed partial class MatchScreen
                 foreach (var player in recent) ImGui.Text(player.Name);
             }
             catch (Exception error) when (error is JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException)
-            { ImGui.TextWrapped("Recent players could not be read: " + error.Message); }
+            { UiText.Wrapped("Recent players could not be read: " + error.Message); }
         }
-        if (recentPlayersError.Length > 0) ImGui.TextWrapped(recentPlayersError);
-        ImGui.Separator(); ImGui.TextWrapped(lobbyMessage);
+        if (recentPlayersError.Length > 0) UiText.Wrapped(recentPlayersError);
+        ImGui.Separator(); UiText.Wrapped(lobbyMessage);
         if (Button("steamBack", "Back to menu")) { LeaveSteamRoom(); showMultiplayer = false; }
         ImGui.End();
     }
