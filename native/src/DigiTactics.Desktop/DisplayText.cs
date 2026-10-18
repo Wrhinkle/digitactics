@@ -3,13 +3,20 @@ using DigiTactics.Rules;
 
 namespace DigiTactics.Desktop;
 
-internal sealed record DisplayEntry(string Name, string Description, string? Preview = null);
+internal sealed record DisplayEntry(string Name, string Description, string? Preview = null, int? AbilityValue = null, string? ScaledDescription = null);
 internal sealed class DisplayText
 {
     private readonly Dictionary<string, Dictionary<string, DisplayEntry>> variants = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, DisplayEntry>>>(
         File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "content/display.json")), new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     public DisplayEntry Get(string variant, string id) => variants[variant].GetValueOrDefault(id) ?? new(id, "");
     public DisplayEntry Ability(string variant, string line, int stage) => variants[variant][$"ability:{line}:{stage}"];
+    public DisplayEntry Ability(string variant, string line, int stage, double abilityPower)
+    {
+        var entry = Ability(variant, line, stage);
+        return entry.ScaledDescription is { } template && entry.AbilityValue is { } value
+            ? entry with { Description = template.Replace("{value}", UnitValues.Round(value * abilityPower / 100).ToString(System.Globalization.CultureInfo.InvariantCulture)) }
+            : entry;
+    }
     public DisplayEntry TraitBreakpoint(string variant, string trait, int index) => variants[variant][$"trait:{trait}:{index}"];
     public string ConsumablePreview(Ruleset rules, string id, int heldItems, int benchItems)
     {

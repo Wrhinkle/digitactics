@@ -24,9 +24,9 @@ internal sealed partial class MatchScreen
         UiText.Wrapped($"Attack {unit.AttackDamage:0.#} / Speed {unit.EffectiveAttackSpeed:0.##} / Range {unit.Range:0.#}");
         UiText.Wrapped($"Armor {unit.Armor:0.#} / Magic resist {unit.MagicResist:0.#}");
         UiText.Wrapped($"Mana {unit.Mana:0.#}/{unit.MaxMana:0.#} / Ability power {unit.AbilityPower:0.#}");
-        var ability = text.Ability(Rules.Id, unit.Line.Id, unit.Stage);
+        var ability = text.Ability(Rules.Id, unit.Line.Id, unit.Stage, unit.AbilityPower);
         ImGui.Separator(); UiText.Wrapped(ability.Name);
-        UiText.Wrapped("Ability description at base ability power:"u8);
+        if (ability.ScaledDescription is null) UiText.Wrapped("Ability description at base ability power:"u8);
         UiText.Wrapped(ability.Description);
         foreach (string id in unit.Items)
         {

@@ -5,6 +5,8 @@ if (!breakpointSource) throw new Error('Original trait breakpoint formatter coul
 const breakpointText = require('vm').runInNewContext(breakpointSource[1]);
 const variants = {};
 const consumableCases = [];
+const abilityCases = [];
+const sharedAbilities = new Set(['nuke','aoe','stun','slam','shield','heal','barrage','drain','dash','weaken','rally','line','execute','chain']);
 for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   DT.Sets.activate(set.id, pace);
   const entries = {};
@@ -28,6 +30,18 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
   });
   for (const line of Object.values(DT.LINE)) for (let stage = 0; stage < line.forms.length; stage++) {
     add(`ability:${line.id}:${stage}`, { name: line.abil[stage], desc: DT.abilityText(line, stage) });
+    if (!line.abilText && sharedAbilities.has(line.type)) {
+      const key = `ability:${line.id}:${stage}`, base = DT.abilityValue(line, stage);
+      const original = DT.abilityValue;
+      try {
+        DT.abilityValue = () => 1000000007;
+        entries[key].scaledDescription = DT.abilityText(line, stage).replaceAll('1000000007', '{value}');
+      } finally { DT.abilityValue = original; }
+      if (!entries[key].scaledDescription.includes('{value}')) throw Error(`Shared ability format missing value: ${key}`);
+      entries[key].abilityValue = base;
+      for (const ap of [0, 33.3, 99.5, 100, 127.25, 200, 999.9])
+        abilityCases.push({ variant: `${set.id}/${pace}`, line: line.id, stage, ap, text: DT.abilityText(line, stage, ap) });
+    }
   }
   for (const v of [...DT.Duos.AUGMENTS, ...DT.AUGMENTS, ...DT.POWERS, ...DT.WISPS]) add(v.id, v);
   const def = DT.Sets.def(set.id);
@@ -51,4 +65,5 @@ for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
 }
 fs.writeFileSync(path.join(__dirname, '../content/display.json'), JSON.stringify(variants, null, 2) + '\n');
 fs.writeFileSync(path.join(__dirname, '../content/consumable-preview-cases.json'), JSON.stringify(consumableCases) + '\n');
-console.log('Exported native display text.');
+fs.writeFileSync(path.join(__dirname, '../content/ability-display-cases.json'), JSON.stringify(abilityCases) + '\n');
+console.log(`Exported native display text and ${abilityCases.length} shared ability AP cases.`);

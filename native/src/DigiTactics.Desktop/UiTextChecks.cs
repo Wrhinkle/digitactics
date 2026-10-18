@@ -5,6 +5,7 @@ namespace DigiTactics.Desktop;
 
 internal static class UiTextChecks
 {
+    private sealed record AbilityCase(string Variant, string Line, int Stage, double Ap, string Text);
     private sealed record ConsumableCase(string Variant, string Id, int Held, int Bench, string Text);
     public static void Run(ContentCatalog catalog)
     {
@@ -36,6 +37,11 @@ internal static class UiTextChecks
                     abilities++;
                 }
         Console.WriteLine($"Ability display coverage passed: {abilities} forms across {catalog.Variants.Length} rulesets.");
+        var abilityCases = System.Text.Json.JsonSerializer.Deserialize<AbilityCase[]>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "content/ability-display-cases.json")), new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        foreach (var sample in abilityCases)
+            if (display.Ability(sample.Variant, sample.Line, sample.Stage, sample.Ap).Description != sample.Text)
+                throw new InvalidOperationException($"AP-scaled ability text differs from source: {sample}");
+        Console.WriteLine($"Shared ability AP display checks passed: {abilityCases.Length} source comparisons.");
         int breakpoints = 0;
         foreach (var rules in catalog.Variants)
             foreach (var trait in rules.Traits)
