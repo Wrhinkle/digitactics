@@ -18,8 +18,11 @@ internal sealed partial class MatchScreen
     }
     private void CloseEvolution()
     {
+        if(EvolutionBusy)return;
         evolutionLegend=null;ClearEvolutionPreview();
         if(evolutionReturnToFarm){showCollection=false;showFarm=true;farmManagement=false;}
+        if(evolutionReturnToHome)showCollection=false;
+        evolutionReturnToHome=false;
         evolutionReturnToFarm=false;
     }
     private void FarmEvolutionDetails(string id,FarmResidentDetails details)

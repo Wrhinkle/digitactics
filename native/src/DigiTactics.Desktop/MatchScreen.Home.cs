@@ -95,41 +95,6 @@ internal sealed partial class MatchScreen
 
         UpdatePanel();
     }
-    private void HomePartner(float2 at,float2 extent)
-    {
-        HomeCard("Home Little Legend",at,extent,false);HomeLabel("YOUR LITTLE LEGEND",12);
-        try
-        {
-            string? wallet=profile?.Storage.GetValueOrDefault("dt.cosmetics.v1"),legends=profile?.Storage.GetValueOrDefault("dt.legendevo.v1");
-            var collection=new CosmeticCollection(wallet);string id=collection.Equipped("legend")?.GetValue<string>()??"tokomon";
-            var view=LegendEvolution.Inspect(legends,wallet,profile?.Storage.GetValueOrDefault("dt.farm.v1"),id);
-            HomeLabel(LegendEvolution.Form(view.Form).Name,21,HomeInk);
-            homeLegend??=new(legendPedestal);
-            float imageHeight=Math.Min(190,extent.Y-234),imageWidth=imageHeight*CosmeticScenePreview.Width/CosmeticScenePreview.Height;
-            var imageAt=at+new float2((extent.X-imageWidth)/2,54);
-            Buttons["homeLegend"]=imageAt+new float2(imageWidth/2,imageHeight/2);
-            Buttons["homeLegend/outside"]=imageAt+new float2(-12,imageHeight/2);
-            if(homeLegend.PointerItem("homeLegend",imageAt,new(imageWidth,imageHeight)) is not null)audio.PlayClient("emote",true);
-            homeLegend.Draw("legend",id,LegendEvolution.VisualKey(id,view.Form),boardSceneTime,ClientMotion);
-            ImGui.GetWindowDrawList().AddImage(new ImTextureRef{_TexID=new((nint)homeLegend.Texture)},imageAt,imageAt+new float2(imageWidth,imageHeight),new(0,1),new(1,0));
-            ImGui.SetCursorScreenPos(at+new float2(14,extent.Y-184));HomeLabel($"Level {view.Level}  /  "+(view.Need>0?$"{view.Data}/{view.Need} Digi-Data":"Maximum level"),13,HomeMute);
-            ImGui.PushStyleColor(ImGuiCol.PlotHistogram,new ImColor8(49,185,202));ImGui.ProgressBar(view.Need>0?(float)view.Data/view.Need:1,new(extent.X-28,5),""u8);ImGui.PopStyleColor();
-        }
-        catch(Exception error) when(error is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
-        {UiText.Wrapped("Your Little Legend could not be displayed: "+error.Message);}
-        ImGui.SetCursorScreenPos(at+new float2(14,extent.Y-60));
-        ImGui.SetCursorScreenPos(at+new float2(14,extent.Y-152));
-        ImGui.SetNextItemWidth(extent.X-28);DrawSetChoice("homeRuleset",selectedSet,SelectHomeHeroSet);
-        ImGui.SetNextItemWidth((extent.X-34)*.56f);DrawPaceChoice("homePace",selectedPace,false,pace=>SelectPace(pace));
-        ImGui.SameLine(0,6);ImGui.SetNextItemWidth((extent.X-34)*.44f);DrawFormatChoice("homeFormat",duos,SelectFormat);
-        ImGui.SetCursorScreenPos(at+new float2(14,extent.Y-60));
-        bool inRoom=networkRoom is not null || steam?.Room is not null;
-        ImGui.BeginDisabled(inRoom);
-        if(HomeButton("start",duos?"PLAY DUOS":"PLAY SOLO",extent.X-28,42,true))StartLocalMatch(duos);
-        ImGui.EndDisabled();
-        if(inRoom && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))ResultTooltip("Leave your Steam room before starting a solo game.");
-        ImGui.End();
-    }
     private void HomeProgress(float2 at,float2 extent)
     {
         HomeProgressBounds=(at,at+extent);
