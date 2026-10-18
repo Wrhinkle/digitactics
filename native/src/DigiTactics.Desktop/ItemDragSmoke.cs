@@ -10,13 +10,27 @@ internal sealed class ItemDragSmoke
     private string[] inventory = [];
     private string item = "";
     private UnitSpot destination;
-    public string? CaptureName => step == 8 ? "item-equip" : step == 12 ? "item-partner" : null;
+    private bool tooltipHovered, tooltipChecked;
+    private string tooltipItem = "";
+    public string? CaptureName => tooltipHovered && !tooltipChecked ? "item-tooltip" : step == 8 ? "item-equip" : step == 12 ? "item-partner" : null;
     public bool Input(MatchScreen screen)
     {
         var session = screen.Session!; var player = session.State.Players[0]; var io = ImGui.GetIO();
         void Move(float2 point) => io.AddMousePosEvent(point.X, point.Y);
         void Start(int index) { Move(screen.Buttons[(step <= 3 ? "shelfItem/" : "item/") + index]); io.AddMouseButtonEvent(0, true); }
         void Up() => io.AddMouseButtonEvent(0, false);
+        if (!tooltipChecked)
+        {
+            if (!tooltipHovered)
+            {
+                int component = player.Items.FindIndex(id => session.State.Rules.Items.Single(item => item.Id == id).Component);
+                if (component < 0) throw new InvalidOperationException("Tooltip smoke requires a component.");
+                tooltipItem = player.Items[component]; Move(screen.Buttons["item/" + component]); tooltipHovered = true; return false;
+            }
+            int expected = session.State.Rules.Recipes!.Count(recipe => recipe.Key.Split('+').Contains(tooltipItem));
+            if (expected == 0 || screen.ItemTooltipRecipes != expected) throw new InvalidOperationException("Component tooltip omitted combination recipes.");
+            tooltipChecked = true;
+        }
         switch (step++)
         {
             case 0:

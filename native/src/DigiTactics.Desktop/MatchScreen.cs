@@ -66,6 +66,7 @@ internal sealed partial class MatchScreen : IDisposable
     private void Tooltip(string id)
     {
         if (!ImGui.IsItemHovered()) return;
+        if (Rules.Items.Any(item => item.Id == id)) { ItemTooltip(id); return; }
         var entry = text.Get(Rules.Id, id); ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); ImGui.Text(entry.Name); UiText.Wrapped(entry.Description); ImGui.EndTooltip();
     }
     private string UnitName(PlanningUnit unit) => Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == unit.Line).Forms[unit.Stage];
@@ -258,7 +259,7 @@ internal sealed partial class MatchScreen : IDisposable
     public void Draw(int2 windowSize)
     {
         size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
-        portraits.BeginFrame(); itemArtwork.BeginFrame(); CarouselCardsDrawn = 0;
+        portraits.BeginFrame(); itemArtwork.BeginFrame(); CarouselCardsDrawn = 0; InventoryArtworkDrawCalls = 0; ItemTooltipRecipes = 0;
         sellDropHovered = partnerDropHovered = false;
         itemDropSlot = -1;
         if (Session is null) { CancelArenaDrag(); cameraDrag = null; }

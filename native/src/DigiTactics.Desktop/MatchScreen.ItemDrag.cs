@@ -7,7 +7,7 @@ namespace DigiTactics.Desktop;
 internal sealed partial class MatchScreen
 {
     private readonly ItemArtwork itemArtwork = new();
-    internal int InventoryArtworkDrawCalls => itemArtwork.DrawCalls;
+    internal int InventoryArtworkDrawCalls { get; private set; }
 
     private bool ItemButton(int index, float width)
     {
@@ -15,6 +15,7 @@ internal sealed partial class MatchScreen
         var min = ImGui.GetItemRectMin(); var max = ImGui.GetItemRectMax();
         var draw = ImGui.GetWindowDrawList();
         draw.PushClipRect(min, max, true);
+        InventoryArtworkDrawCalls++;
         itemArtwork.Draw(Rules.Id, Human.Items[index], new(min.X + 2, min.Y + 1), 22);
         draw.AddText(ImGui.GetFont(), 13, new(min.X + 29, min.Y + 5), new ImColor8(235, 240, 248), Name(Human.Items[index]));
         draw.PopClipRect();
