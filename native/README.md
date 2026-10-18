@@ -2092,3 +2092,21 @@ package was rebuilt after the final validation guard.
 Theme selection is persisted but the animated/theme-specific room rendering is
 still pending. Training rules and mini-games also remain, along with the broader
 native port's multiplayer, presentation and release requirements.
+
+### Farm training outcomes
+
+The native farm controller now applies all four training results using the original
+eligibility rules, score thresholds, stat caps, energy/hunger costs, weight changes,
+happiness gains and daily Bits/Data limits. Training updates farm, wallet and legend
+progress in one atomic profile transaction. A failed write leaves every domain
+unchanged; retry and restart are covered by the persistence checks.
+
+The source exporter now streams compressed cases instead of retaining VM objects,
+which exceeded Node's heap limit with the expanded coverage. It exports 23,716
+care/room/training transactions across all 77 companions. Validation passed
+424,718 simulation comparisons and 118,599 care/result/save checks. The Windows
+self-contained package built successfully; Solo and Duos match UI smokes passed.
+
+This checkpoint implements training outcomes only. Power Swing, Beat Dash, Data
+Memory and Endurance Run still need their native gameplay and input interfaces.
+The full port remains in progress; this is not a production release.

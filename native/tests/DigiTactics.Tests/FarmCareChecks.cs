@@ -16,7 +16,7 @@ internal static class FarmCareChecks
         {
             var result = FarmCare.Apply(test.GetProperty("farm").GetRawText(), test.GetProperty("wallet").GetRawText(), test.GetProperty("legend").GetRawText(), test.GetProperty("time").GetInt64(),
                 Enum.Parse<FarmCareAction>(test.GetProperty("action").GetString()!), test.GetProperty("id").GetString(), test.TryGetProperty("option", out var option) ? option.GetString() : null,
-                test.TryGetProperty("pile", out var pile) ? pile.GetInt32() : 0, test.TryGetProperty("lights", out var lights) && lights.ValueKind != JsonValueKind.Null ? lights.GetBoolean() : null);
+                test.TryGetProperty("pile", out var pile) ? pile.GetInt32() : 0, test.TryGetProperty("lights", out var lights) && lights.ValueKind != JsonValueKind.Null ? lights.GetBoolean() : null, test.TryGetProperty("score", out var score) ? score.GetDouble() : 0);
             void Equal(JsonNode? actual, string field)
             {
                 checks++;
@@ -50,6 +50,15 @@ internal static class FarmCareChecks
             Check(reopened.UpdateStorage(new Dictionary<string, string> { ["dt.farm.v1"] = "{\"v\":1,\"themes\":null}" }), "malformed themes seeded");
             before = File.ReadAllText(path);
             Check(!future.Refresh(time + 60000) && future.Error is not null && File.ReadAllText(path) == before, "malformed themes preserved without crashing");
+            var training = fixture.RootElement.EnumerateArray().First(x => x.GetProperty("action").GetString() == "Train" && x.GetProperty("option").GetString() == "strength" && x.GetProperty("score").GetDouble() == 1);
+            Check(reopened.UpdateStorage(new Dictionary<string, string> { ["dt.farm.v1"] = training.GetProperty("farm").GetRawText(), ["dt.cosmetics.v1"] = training.GetProperty("wallet").GetRawText(), ["dt.legendevo.v1"] = training.GetProperty("legend").GetRawText() }), "seed training state");
+            before = File.ReadAllText(path);
+            using (var guard = new FileStream(path + ".lock", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                Check(!future.Act(time, FarmCareAction.Train, training.GetProperty("id").GetString(), "strength", score: 1) && File.ReadAllText(path) == before, "training has no partial stats or rewards when write fails");
+            Check(future.Act(time, FarmCareAction.Train, training.GetProperty("id").GetString(), "strength", score: 1), "retry training result");
+            var trained = new NativeProfileStore(directory);
+            foreach (var (key, expected) in new[] { ("dt.farm.v1", "farmAfter"), ("dt.cosmetics.v1", "walletAfter"), ("dt.legendevo.v1", "legendAfter") })
+                Check(JsonNode.DeepEquals(JsonNode.Parse(trained.Storage[key]), JsonNode.Parse(training.GetProperty(expected).GetRawText())), "training restart " + key);
         }
         finally
         {

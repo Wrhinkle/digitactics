@@ -3,11 +3,12 @@ using System.Text.Json.Nodes;
 namespace DigiTactics.Storage;
 
 public sealed record FarmCareUpdate(string Farm, string? Wallet, string? Legends, JsonObject Result, JsonArray Events);
-public enum FarmCareAction { Feed, Clean, CleanPile, Cure, Lights, Praise, Scold, Play, Pet, MoveIn, MoveOut, Swap, Expand, BuyTheme, SetTheme }
+public enum FarmCareAction { Feed, Clean, CleanPile, Cure, Lights, Praise, Scold, Play, Pet, MoveIn, MoveOut, Swap, Expand, BuyTheme, SetTheme, Train }
 public sealed record FarmTheme(string Id, string Name, int Price, string? Board = null, bool Free = false);
 
 public static class FarmCare
 {
+    private static readonly Dictionary<string, (string Name, string Stat)> Training = new() { ["strength"] = ("Strength", "str"), ["speed"] = ("Speed", "spd"), ["wisdom"] = ("Wisdom", "wis"), ["stamina"] = ("Stamina", "sta") };
     public static readonly FarmTheme[] Themes = [new("meadow", "File Island Meadow", 0, Free: true), new("tropical", "Tropical Isle", 300, "file-beach"),
         new("snowy", "Freezeland", 300, "infinity-mountain"), new("sewer", "Numemon Sewer", 200, "dark-ocean"), new("toy", "Toy Town Yard", 400, "toy-town"), new("grid", "Digital Grid", 600, "digital-grid")];
     public static bool OwnsTheme(JsonNode farm, CosmeticCollection collection, FarmTheme theme)
@@ -22,7 +23,7 @@ public static class FarmCare
         ["bigmeat"] = new("Giant Meat", 15, 70, 3, Happy: 4), ["sirloin"] = new("Sirloin", 25, 50, 2, Happy: 15, Energy: 10),
         ["cake"] = new("Digi-Cake", 10, 10, 3, Happy: 20, Disc: -5, Sweet: true)
     };
-    public static FarmCareUpdate Apply(string? farmJson, string? walletJson, string? legendJson, long timestamp, FarmCareAction action, string? id = null, string? option = null, int pile = 0, bool? lights = null)
+    public static FarmCareUpdate Apply(string? farmJson, string? walletJson, string? legendJson, long timestamp, FarmCareAction action, string? id = null, string? option = null, int pile = 0, bool? lights = null, double score = 0)
     {
         var advanced = (action is FarmCareAction.BuyTheme or FarmCareAction.SetTheme) && farmJson is not null
             ? new FarmUpdate(farmJson, new JsonArray()) : FarmSimulation.Advance(farmJson, walletJson, legendJson, timestamp);
@@ -176,6 +177,22 @@ public static class FarmCare
             case FarmCareAction.Pet:
                 if (timestamp - N(p, "lastPet") < 15000) return Done(true, "", ("small", JsonValue.Create(true)));
                 p["lastPet"] = timestamp; Stat(p, "happy", 3); Add(p, "goodBond", .05); return Done(true, "");
+            case FarmCareAction.Train:
+                if (Asleep(p)) return Done(false, name + " is asleep.");
+                if (B(p, "sick")) return Done(false, name + " is sick. Cure it first.");
+                if (N(p, "energy") < 15) return Done(false, name + " is too tired. Turn the lights off for a nap.");
+                if (N(p, "hunger") < 10) return Done(false, name + " is too hungry to train.");
+                if (N(p, "tantrum") != 0 && N(p, "disc") < 40) return Done(false, name + " won't listen. Scold it first.");
+                if (option is null || !Training.TryGetValue(option, out var training)) return Done(false, "Unknown training.");
+                score = double.IsNaN(score) ? 0 : Math.Clamp(score, 0, 1);
+                int gain = 2 + (int)Math.Floor(8 * score + .5);
+                var gains = new JsonObject { [training.Stat] = gain };
+                if (training.Stat != "sta") gains["sta"] = 1 + (score >= .6 ? 1 : 0);
+                foreach (var entry in gains) p[entry.Key] = Math.Clamp((p[entry.Key] is null ? 0 : N(p, entry.Key)) + entry.Value!.GetValue<int>(), 0, 300);
+                Stat(p, "energy", -15); Stat(p, "hunger", -8);
+                p["weight"] = Math.Max(Math.Floor(Ideal(id!) * .5 + .5), N(p, "weight") - (score >= .7 ? 2 : 1));
+                Add(p, "trained", 1); if (score >= .8) Stat(p, "happy", 5);
+                return Done(true, $"{training.Name} +{gain}", ("gains", gains), ("reward", Reward(id!, 3 + (int)Math.Floor(3 * score + .5), 6 + (int)Math.Floor(8 * score + .5))), ("score", JsonValue.Create(score)));
             default: throw new ArgumentOutOfRangeException(nameof(action));
         }
     }

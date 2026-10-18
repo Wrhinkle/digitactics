@@ -31,11 +31,11 @@ public sealed class FarmProgress(NativeProfileStore profile)
         catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException or KeyNotFoundException)
         { Error = "Farm progress could not be updated: " + error.Message; return false; }
     }
-    public bool Act(long timestamp, FarmCareAction action, string? id = null, string? option = null, int pile = 0, bool? lights = null)
+    public bool Act(long timestamp, FarmCareAction action, string? id = null, string? option = null, int pile = 0, bool? lights = null, double score = 0)
     {
         try
         {
-            var result = FarmCare.Apply(Save, profile.Storage.GetValueOrDefault("dt.cosmetics.v1"), profile.Storage.GetValueOrDefault("dt.legendevo.v1"), timestamp, action, id, option, pile, lights);
+            var result = FarmCare.Apply(Save, profile.Storage.GetValueOrDefault("dt.cosmetics.v1"), profile.Storage.GetValueOrDefault("dt.legendevo.v1"), timestamp, action, id, option, pile, lights, score);
             var changes = new Dictionary<string, string> { ["dt.farm.v1"] = result.Farm };
             if (result.Wallet is not null) changes["dt.cosmetics.v1"] = result.Wallet;
             if (result.Legends is not null) changes["dt.legendevo.v1"] = result.Legends;

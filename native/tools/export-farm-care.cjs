@@ -16,7 +16,15 @@ const operations=[...['meat','carrot','bigmeat','sirloin','cake','unknown'].map(
 operations.push({action:'MoveIn',fn:'moveIn',target:'bank'},{action:'MoveIn',fn:'moveIn',target:'unknown'},
  {action:'MoveOut',fn:'moveOut'},{action:'Swap',fn:'swap',target:'bank'},{action:'Expand',fn:'buyExpansion'},
  ...['meadow','tropical','snowy','sewer','toy','grid','unknown'].flatMap(theme=>[{action:'BuyTheme',fn:'buyTheme',theme},{action:'SetTheme',fn:'setTheme',theme}]));
-const cases=[];
+async function main(){
+const destination=path.join(root,'native/tests/fixtures/farm-care.json.gz');
+const output=fs.createWriteStream(destination+'.tmp'),gzip=zlib.createGzip();
+const completed=require('stream/promises').pipeline(gzip,output);
+// Serialize each VM result immediately, so fixtures do not retain whole VM contexts.
+const write=async text=>{if(!gzip.write(text))await require('events').once(gzip,'drain');};
+let count=0;
+await write('[');
+operations.push(...['strength','speed','wisdom','stamina','unknown'].flatMap(option=>[-1,0,.59,.6,.7,.8,1,2].map(score=>({action:'Train',fn:'train',option,score}))));
 for(let i=0;i<catalog.length;i++)for(let mode=0;mode<4;mode++){
  const id=catalog[i].id,wallet={bits:mode===3?0:1000,owned:{legend:catalog.map(x=>x.id),board:mode===2?allCatalog.board.map(x=>x.id):[]},equipped:{legend:id},history:[],future:true};
  const legend={v:1,legends:{[id]:{xp:mode===2?1999:mode===3?2000:0,form:id,path:[],dex:[id],nonce:0,care:{bond:0,battle:0,food:0}}},games:[],future:true};
@@ -28,11 +36,20 @@ for(let i=0;i<catalog.length;i++)for(let mode=0;mode<4;mode++){
  const bankId=catalog[(i+20)%catalog.length].id;if(mode===1)farm.pets[bankId]={...JSON.parse(JSON.stringify(pet)),t:time-86400000,hunger:12};
  for(const op of operations){
   const actionId=op.target==='bank'?bankId:op.target==='unknown'?'unknown':op.theme||id,option=op.action==='Swap'?id:op.option;
-  const ctx=load(wallet,legend,farm);let result;
+  const actionFarm=JSON.parse(JSON.stringify(farm));
+  if(op.action==='Train'){
+   const p=actionFarm.pets[id];
+   if(mode>=2){p.sick=false;p.tantrum=0;for(const key of ['str','spd','wis','sta'])p[key]=299;}
+   if(mode===1 && i%4!==0){p.flags.asleep=false;p.energy=i%4===1?14:80;p.hunger=i%4===2?9:40;p.tantrum=i%4===3?time+600000:0;p.disc=39;}
+  }
+  const ctx=load(wallet,legend,actionFarm);let result;
   if(op.action==='Lights')result=ctx.DT.Farm.setLights(op.lights);
+  else if(op.action==='Train')result=ctx.DT.Farm.train(actionId,option,op.score);
   else result=ctx.DT.Farm[op.fn](actionId,op.pile??option);
-  cases.push({...op,id:actionId,option,time,wallet,legend,farm,result,farmAfter:JSON.parse(JSON.stringify(ctx.DT.Farm._save())),walletAfter:JSON.parse(ctx.storage['dt.cosmetics.v1']),legendAfter:JSON.parse(ctx.storage['dt.legendevo.v1']),events:ctx.DT.Farm.drainEvents()});
+  await write((count++?',':'')+JSON.stringify({...op,id:actionId,option,time,wallet,legend,farm:actionFarm,result,farmAfter:ctx.DT.Farm._save(),walletAfter:JSON.parse(ctx.storage['dt.cosmetics.v1']),legendAfter:JSON.parse(ctx.storage['dt.legendevo.v1']),events:ctx.DT.Farm.drainEvents()}));
  }
 }
-fs.writeFileSync(path.join(root,'native/tests/fixtures/farm-care.json.gz'),zlib.gzipSync(JSON.stringify(cases)));
-console.log(`Exported ${cases.length} original farm care transactions.`);
+gzip.end(']');await completed;fs.renameSync(destination+'.tmp',destination);
+console.log(`Exported ${count} original farm care transactions.`);
+}
+main().catch(error=>{console.error(error);process.exitCode=1;});
