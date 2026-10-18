@@ -2,14 +2,15 @@ using DigiTactics.Rules;
 
 namespace DigiTactics.Presentation;
 
-/// <summary>Spiral Mountain's original strike scheduler and shared lightning flicker.</summary>
+/// <summary>The original configurable board strike scheduler and shared lightning flicker.</summary>
 public sealed class BoardLightning
 {
     private readonly DeterministicRandom bolts=new(91),delay;
     private readonly double[][] spots;
-    private readonly double intensity;
+    private readonly double intensity,delayBase,delayRange;
+    private readonly bool strikeOnCombat;
     private bool? previousCombat;
-    private double previousTime,strikeTime,next=1.5;
+    private double previousTime,strikeTime,next;
     public int Active { get; private set; }=-1;
     public bool Visible { get; private set; }
     public double X { get; private set; }
@@ -17,9 +18,9 @@ public sealed class BoardLightning
     public double Z { get; private set; }
     public double Yaw { get; private set; }
     public double Flash { get; private set; }
-    public BoardLightning(double[][] spots,double intensity,uint delaySeed,int delayCalls,int boltCalls)
+    public BoardLightning(double[][] spots,double intensity,uint delaySeed,int delayCalls,int boltCalls,double firstDelay=1.5,double delayBase=1.2,double delayRange=2.5,bool strikeOnCombat=true)
     {
-        this.spots=spots;this.intensity=intensity;delay=new(delaySeed);
+        this.spots=spots;this.intensity=intensity;next=firstDelay;this.delayBase=delayBase;this.delayRange=delayRange;this.strikeOnCombat=strikeOnCombat;delay=new(delaySeed);
         for(int i=0;i<delayCalls;i++)delay.Next();
         for(int i=0;i<boltCalls;i++)bolts.Next();
     }
@@ -31,7 +32,7 @@ public sealed class BoardLightning
     }
     public void Advance(double delta,double time,bool combat)
     {
-        if(previousCombat is false && combat) Strike(previousTime);
+        if(strikeOnCombat && previousCombat is false && combat) Strike(previousTime);
         previousCombat=combat;
         if(Active>=0)
         {
@@ -39,7 +40,7 @@ public sealed class BoardLightning
             Visible=age<.32 && (age<.08 || age>.14);
             if(age>.35) {Visible=false;Active=-1;}
         }
-        if(combat && time>next) {Strike(time);next=time+1.2+delay.Next()*2.5;}
+        if(combat && time>next) {Strike(time);next=time+delayBase+delay.Next()*delayRange;}
         Flash=Math.Max(0,Flash-delta*5); previousTime=time;
     }
 }

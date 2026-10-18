@@ -37,6 +37,7 @@ async function main(){
   +'\nexport function originalBurst(e){'+render.slice(render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)'),render.indexOf('const c = cellWorld(at.c, at.r);',render.indexOf('const col = new THREE.Color(this.viewTeam(e.team)')))+'}';
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const extra=fs.readFileSync(path.join(root,'js/boards-extra.js'),'utf8').replace(/\r\n/g,'\n')
+  .replace('anim(ctx, bake,','ghosts.nativeGhosts=true; anim(ctx, bake,')
   .replace("anim(ctx, car, std({ vertexColors: true, roughness: 0.6 }), cars,", "cars.nativeTrain='train-cars'; anim(ctx, car, std({ vertexColors: true, roughness: 0.6 }), cars,")
   .replace("anim(ctx, engine, std({ vertexColors: true, roughness: 0.5, metalness: 0.3 }), [{ y: -1.1, z: TZ }],", "anim(ctx, engine, std({ vertexColors: true, roughness: 0.5, metalness: 0.3 }), Object.assign([{ y: -1.1, z: TZ }],{nativeTrain:'train-engine'}),")
   .replace('ctx.tick(() => { steam.position.set','steam.userData.nativeMotion.trainSteam=true; ctx.tick(() => { steam.position.set')
@@ -88,13 +89,13 @@ async function main(){
   .replace('anim(ctx, new THREE.ConeGeometry(0.06, 0.2, 6),','flames.nativeCastle="castle-flames"; anim(ctx, new THREE.ConeGeometry(0.06, 0.2, 6),')
   .replace('anim(ctx, batGeo,','bats.nativeCastle="castle-bats"; anim(ctx, batGeo,')
   .replace('const bolts = [0, 1, 2].map(() => {','const bolts = [0, 1, 2].map(boltIndex => {')
-  .replace('const m = new THREE.Mesh(merge(parts), mat);','const m = new THREE.Mesh(merge(parts), mat); if(ctx.spec.id==="spiral-mountain") m.userData.nativeMotion={kind:"spiral-lightning",lightning:{index:boltIndex,spots:spots.map(p=>[p.x,p.y||0,p.z]),flash,flashColor}};')
+  .replace('const m = new THREE.Mesh(merge(parts), mat);','const m = new THREE.Mesh(merge(parts), mat); if(ctx.spec.id==="spiral-mountain"||ctx.spec.id==="overdell-graveyard") m.userData.nativeMotion={kind:ctx.spec.id==="spiral-mountain"?"spiral-lightning":"graveyard-lightning",lightning:{index:boltIndex,spots:spots.map(p=>[p.x,p.y||0,p.z]),flash,flashColor,...(ctx.spec.id==="overdell-graveyard"?{firstDelay:0,delayBase:2,delayRange:3,strikeOnCombat:false}:{})}};')
   .replace('const lit = ctx.light();','for(const b of bolts)if(b.userData.nativeMotion?.lightning)b.userData.nativeMotion.lightning.boltCalls=rng.calls; const lit = ctx.light();')
   .replace('const sp = { v: 1 };','const sp = { v: 1 }; rocks.nativeKind="spiral-rocks";')
   .replace('anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,','cry.nativeKind="spiral-crystals"; anim(ctx, new THREE.OctahedronGeometry(0.5, 0), basic({ color: \'#ffffff\' }), cry,')
   .replace('anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,','halo.nativeKind="spiral-halos"; anim(ctx, new THREE.SphereGeometry(0.7, 12, 8), glow(\'#ffffff\', 0.25), halo,')
   .replace('anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)', 'islets.nativeKind="spiral-islets"; anim(ctx, new THREE.ConeGeometry(1.2, 2.4, 6).rotateX(Math.PI)')
-  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeTrain)m.userData.nativeMotion={kind:items.nativeTrain}; if(items.nativeCrowd)m.userData.nativeMotion={kind:items.nativeCrowd,crowd:items.map(p=>({...p}))}; if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
+  .replace('const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts });','const m = inst(ctx, geo, mat, items, { moving: true, shadow: false, ...opts }); if(items.nativeGhosts)m.userData.nativeMotion={kind:"graveyard-ghosts",ghosts:items.map(p=>({...p}))}; if(items.nativeTrain)m.userData.nativeMotion={kind:items.nativeTrain}; if(items.nativeCrowd)m.userData.nativeMotion={kind:items.nativeCrowd,crowd:items.map(p=>({...p}))}; if(items.nativeLibrary)m.userData.nativeMotion={kind:items.nativeLibrary,library:items.map(p=>({...p}))}; if(items.nativeSewer)m.userData.nativeMotion={kind:items.nativeSewer,props:items.map(p=>({...p,phase:p.ph??0}))}; if(items.nativeFreeze)m.userData.nativeMotion={kind:"freeze-men",props:items.map(p=>({...p,phase:p.ph}))}; if(items.nativeKind) m.userData.nativeMotion={kind:items.nativeKind,spirals:items.map(p=>({...p}))}; if(items.nativeCastle) m.userData.nativeMotion={kind:items.nativeCastle,castle:items.map(p=>({...p}))}; if(items.nativeTemple)m.userData.nativeMotion={kind:items.nativeTemple,temple:items.map(p=>({...p}))}; if(items.nativeUnderwater)m.userData.nativeMotion={kind:items.nativeUnderwater,underwater:items.map(p=>({...p}))};');
  try{
   const page=await browser.newPage();
   await page.route('http://boards.local/**',async route=>{
@@ -392,6 +393,23 @@ async function main(){
    return scenarios;
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-underwater.json.gz'),zlib.gzipSync(JSON.stringify(underwaterFixture)));
+  const graveyardFixture=await page.evaluate(async()=>{
+   const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),spec=THEMES.find(s=>s.id==='overdell-graveyard'),scenarios=[];
+   for(const initialCombat of [false,true]){
+    const L={hemi:new THREE.HemisphereLight(...spec.hemi),sun:new THREE.DirectionalLight(...spec.sun)},scene={fog:new THREE.Fog(...spec.fog)},env=buildEnv(spec,{L,scene}),bolts=[],frames=[];let ghosts;
+    env.group.traverse(o=>{if(o.userData.nativeMotion?.lightning)bolts.push(o);if(o.userData.nativeMotion?.ghosts)ghosts=o;});
+    env.signal({phase:initialCombat?'combat':'planning',stage:1,won:false,evo:0});env.tick(0,0);let time=0;
+    for(let frame=0;frame<1600;frame++){
+     const delta=[0,1/60,.033,.1][frame%4],combat=frame%400<200;time+=delta;
+     env.signal({phase:combat?'combat':'planning',stage:1,won:false,evo:0});env.tick(delta,time);env.group.updateMatrixWorld(true);
+     const matrix=new THREE.Matrix4(),matrices=[];for(let i=0;i<ghosts.count;i++){ghosts.getMatrixAt(i,matrix);matrices.push(matrix.toArray());}
+     frames.push({time,delta,combat,matrices,fog:[scene.fog.near,scene.fog.far],flash:L.hemi.intensity-spec.hemi[2],bolts:bolts.map(o=>({visible:o.visible,matrix:o.matrixWorld.toArray()}))});
+    }
+    scenarios.push({initialCombat,config:bolts[0].userData.nativeMotion.lightning,ghosts:ghosts.userData.nativeMotion.ghosts,frames});disposeEnv(env);
+   }
+   return scenarios;
+  });
+  fs.writeFileSync(path.join(root,'native/tests/fixtures/board-graveyard.json.gz'),zlib.gzipSync(JSON.stringify(graveyardFixture)));
   const trainFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),scenarios=[];
    for(const initialCombat of [false,true]){

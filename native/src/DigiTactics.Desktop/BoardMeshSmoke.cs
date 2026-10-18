@@ -28,6 +28,7 @@ internal static class BoardMeshSmoke
             CheckParticleMotion(renderer);
             CheckPropMotion(renderer);
             CheckLightning(renderer);
+        CheckGraveyard(renderer);
             CheckWindowEmission(renderer);
             CheckTransparentOrder(renderer);
             using(var arena=new ArenaEnvironment())
@@ -317,6 +318,24 @@ internal static class BoardMeshSmoke
         if(darker<100 || !plain.SequenceEqual(restored))throw new InvalidOperationException("City emissive texture or per-draw shader reset failed.");
         Console.WriteLine($"City emissive map: {darker} wall pixels darkened; shader reset verified.");
     }
+    private static unsafe void CheckGraveyard(ModelRenderer renderer)
+    {
+        var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/overdell-graveyard.json.gz"));
+        using var layer=new BoardMeshLayer(scene with {Objects=scene.Objects.Where(o=>o.Motion?.Lightning is not null).ToArray()});
+        layer.Update(.016,.016,true);layer.Update(.032,.016,true);
+        var camera=Matrix4x4.CreateLookAt(new(0,25,28),Vector3.Zero,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(.9f,1,.1f,150);
+        ModelRenderer.Begin(256,256);OpenGl.ClearColor(new(0,0,0,1));OpenGl.Clear(GlClearBit.Color);layer.Draw(renderer,camera,true,256);
+        var pixels=new byte[256*256*4];fixed(byte* p=pixels)OpenGl.ReadPixels(0,0,256,256,OpenGl.GL_RGBA,OpenGl.GL_UNSIGNED_BYTE,p);ModelRenderer.End();
+        int lit=Enumerable.Range(0,256*256).Count(i=>pixels[i*4+1]>pixels[i*4]+10);
+        if(layer.DrawCalls!=1 || lit<5)throw new InvalidOperationException("Green graveyard lightning did not reach the framebuffer.");
+        using var arena=new ArenaEnvironment();arena.CombatActive=true;arena.SetTheme("overdell-graveyard");
+        for(int i=0;i<40;i++){arena.Time=i*.1;arena.Draw(renderer,camera,new(0,25,28),14,false,0,0,64,64,(_,_)=>{});}
+        if(renderer.BoardLight!.FogNear>10 || renderer.BoardLight.FogFar>39)throw new InvalidOperationException("Graveyard combat fog did not override wide-board defaults.");
+        float near=renderer.BoardLight.FogNear;arena.CombatActive=false;arena.Time+=.1;arena.Draw(renderer,camera,new(0,25,28),14,false,0,0,64,64,(_,_)=>{});
+        if(renderer.BoardLight!.FogNear<=near)throw new InvalidOperationException("Graveyard result fog did not ease out.");
+        renderer.BoardLight=null;renderer.ShadowTexture=0;
+        Console.WriteLine($"Graveyard GPU: {lit} green lightning pixels and combat/result fog verified.");
+    }
     private static unsafe void CheckLightning(ModelRenderer renderer)
     {
         var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,"content/boards/spiral-mountain.json.gz"));
@@ -369,7 +388,7 @@ internal static class BoardMeshSmoke
             ("flame-temple","temple-lava"),("flame-temple","particles"),
             ("gekomon-castle","underwater-caustics"),("gekomon-castle","underwater-caustics2"),
             ("gekomon-castle","underwater-shafts"),("gekomon-castle","underwater-kelp"),
-            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour"),("witchelny-library","library-pages"),("witchelny-library","library-candles"),("witchelny-library","library-flames"),("witchelny-library","library-halos"),("witchelny-library","library-circle"),("witchelny-library","library-outer"),("knights-coliseum","knights-crowd"),("knights-coliseum","knights-banners"),("knights-coliseum","knights-flashes"),("knights-coliseum","knights-confetti"),("battle-studio","studio-strip"),("battle-studio","studio-led"),("battle-studio","studio-audience"),("battle-studio","studio-sticks"),("battle-studio","studio-beam"),("battle-studio","studio-pool"),("battle-studio","studio-crane"),("battle-studio","studio-confetti"),("trailmon-station","train-cars"),("trailmon-station","train-engine"),("trailmon-station","train-clock"),("trailmon-station","particles")})
+            ("gekomon-castle","underwater-clams"),("gekomon-castle","underwater-fish"),("freezeland","freeze-men"),("freezeland","freeze-aurora"),("numemon-sewer","sewer-numemon"),("numemon-sewer","sewer-duck"),("numemon-sewer","sewer-pour"),("witchelny-library","library-pages"),("witchelny-library","library-candles"),("witchelny-library","library-flames"),("witchelny-library","library-halos"),("witchelny-library","library-circle"),("witchelny-library","library-outer"),("knights-coliseum","knights-crowd"),("knights-coliseum","knights-banners"),("knights-coliseum","knights-flashes"),("knights-coliseum","knights-confetti"),("battle-studio","studio-strip"),("battle-studio","studio-led"),("battle-studio","studio-audience"),("battle-studio","studio-sticks"),("battle-studio","studio-beam"),("battle-studio","studio-pool"),("battle-studio","studio-crane"),("battle-studio","studio-confetti"),("trailmon-station","train-cars"),("trailmon-station","train-engine"),("trailmon-station","train-clock"),("trailmon-station","particles"),("overdell-graveyard","graveyard-ghosts")})
         {
             var scene=BoardScene.Load(Path.Combine(AppContext.BaseDirectory,$"content/boards/{theme}.json.gz"));
             var objects=scene.Objects.Where(o=>o.Motion?.Kind==kind).ToArray();

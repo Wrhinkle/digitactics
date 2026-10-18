@@ -28,13 +28,14 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly BoardCrowdMotion? crowd;
     private readonly BoardStudioMotion? studio;
     private readonly BoardTrainMotion? train;
+    private readonly BoardGraveyardMotion? graveyard;
     private readonly BoardConfetti? confetti;
     private static readonly Vector3 libraryTint=BoardLighting.Linear("#ffd090");
     private static readonly Vector3 freezeCalmFog=BoardLighting.Linear("#24405e"),freezeStormFog=BoardLighting.Linear("#8aa6c0");
     public Vector3? AnimatedFogColor=>freeze is null?null:Vector3.Lerp(freezeCalmFog,freezeStormFog,(float)freeze.Weather);
     private static readonly Vector3 templeSunTint=BoardLighting.Linear("#fff6e0");
     public (float Multiplier,float Weight,Vector3 Tint)? SunFlare=>library is not null?(1,library.TintWeight,libraryTint):temple is null?null:(temple.SunMultiplier,temple.TintWeight,templeSunTint);
-    public (float Near,float Far)? AnimatedFog=>freeze is not null?(freeze.FogNear,freeze.FogFar):kowloon is null?null:(kowloon.FogNear,kowloon.FogFar);
+    public (float Near,float Far)? AnimatedFog=>graveyard is not null?(graveyard.FogNear,graveyard.FogFar):freeze is not null?(freeze.FogNear,freeze.FogFar):kowloon is null?null:(kowloon.FogNear,kowloon.FogFar);
     public float LightFlash=>(float)(lightning?.Flash??circuit?.LightFlash??temple?.LightFlash??library?.LightFlash??0);
     public Vector3? FlashColor { get; private set; }
     private readonly Dictionary<BoardObject,BoardSpiralMotion> spirals=[];
@@ -43,6 +44,7 @@ internal sealed class BoardMeshLayer : IDisposable
     public BoardMeshLayer(BoardScene scene,bool initialCombat=false,bool initialWon=false,int initialEvolution=0)
     {
         if(scene.Id=="vampire-castle")castle=new(initialCombat);
+        if(scene.Id=="overdell-graveyard")graveyard=new();
         if(scene.Id=="trailmon-station")train=new(initialCombat);
         if(scene.Id=="battle-studio"){studio=new();confetti=new(scene.Objects.FirstOrDefault(o=>o.Motion?.Kind=="studio-confetti")?.Instances?.Length??0,initialWon);}
         if(scene.Id=="knights-coliseum"){crowd=new(initialCombat,initialWon);confetti=new(scene.Objects.FirstOrDefault(o=>o.Motion?.Kind=="knights-confetti")?.Instances?.Length??0,initialWon);}
@@ -62,7 +64,7 @@ internal sealed class BoardMeshLayer : IDisposable
             {
                 if(lightning is null && obj.Motion?.Lightning is {} data)
                 {
-                    lightning=new(data.Spots,data.Flash,data.DelaySeed,data.DelayCalls,data.BoltCalls);
+                    lightning=new(data.Spots,data.Flash,data.DelaySeed,data.DelayCalls,data.BoltCalls,data.FirstDelay,data.DelayBase,data.DelayRange,data.StrikeOnCombat);
                     lightning.Advance(0,0,initialCombat);
                     FlashColor=BoardLighting.Linear(data.FlashColor);
                 }
@@ -97,6 +99,7 @@ internal sealed class BoardMeshLayer : IDisposable
         crowd?.Advance(time,combat,won);
         studio?.Advance(delta,combat);
         train?.Advance(time,combat);
+        graveyard?.Advance(delta,combat);
         confetti?.Advance(delta,won);
         lightning?.Advance(delta,time,combat);
         castle?.Advance(delta,time,combat,stage);
@@ -191,6 +194,7 @@ internal sealed class BoardMeshLayer : IDisposable
                         {
                             { Kind:"island-crystals",Items:{ } crystals }=>BoardSceneMotion.Crystal(crystals[i],time),
                             { Kind:"beach-palms",Palms:{ } palms }=>BoardSceneMotion.Palm(palms[i],time),
+                            {Ghosts:{} ghosts}=>graveyard!.Ghost(ghosts[i],time),
                             {Kind:"train-cars" or "train-engine"} motion=>train!.Instance(motion.Kind,i,instance.Matrix),
                             {Kind:"knights-confetti" or "studio-confetti"}=>ConfettiMatrix(confetti!.Poses[i]),
                             {Kind:"studio-audience",Crowd:{} audience}=>BoardStudioMotion.Audience(audience[i],time),
