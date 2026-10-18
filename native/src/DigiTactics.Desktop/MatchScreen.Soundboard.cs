@@ -19,7 +19,12 @@ internal sealed partial class MatchScreen
     }
     private void NetworkEffect(string sender, JsonElement effect)
     {
-        if (Session is null || PlayerMuted(sender) || effect.GetProperty("kind"u8).GetString() != "sound") return;
+        if (Session is null || PlayerMuted(sender)) return;
+        if (effect.GetProperty("kind"u8).GetString() == "emote")
+        {
+            EnsureEmotes(); emotes.Receive((int)effect.GetProperty("s"u8).GetDouble(), effect.GetProperty("id"u8).GetString()!, localSeat, muteEmotes, Environment.TickCount64); return;
+        }
+        if (effect.GetProperty("kind"u8).GetString() != "sound") return;
         EnsureSoundboard();
         if (soundboard.Receive((int)effect.GetProperty("s"u8).GetDouble(), effect.GetProperty("id"u8).GetString()!, localSeat, audio.MuteOthers, Environment.TickCount64)) ReceivedSoundboardEffects++;
     }
@@ -27,7 +32,7 @@ internal sealed partial class MatchScreen
     {
         EnsureSoundboard(); long now = Environment.TickCount64;
         bool keyboard = !ImGui.GetIO().WantTextInput;
-        if (keyboard && ImGui.IsKeyPressed(ImGuiKey.G, false)) showSoundboard = !showSoundboard;
+        if (keyboard && ImGui.IsKeyPressed(ImGuiKey.G, false)) { showSoundboard = !showSoundboard; if (showSoundboard) showEmotes = false; }
         if (!showSoundboard) return;
         Window("Soundboard", size.X / 2 - 210, Top + 30, 420, 330);
         ImGui.Text("Two clips per five seconds - G to close"u8);

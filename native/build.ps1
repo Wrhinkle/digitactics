@@ -21,6 +21,7 @@ try {
     Invoke-Checked 'node' @('tools/export-audio.cjs')
     Invoke-Checked 'node' @('../tests/profile-backup.cjs')
     Invoke-Checked 'node' @('tools/export-cosmetics.cjs')
+    Invoke-Checked 'node' @('tools/export-emotes.cjs')
     Invoke-Checked 'node' @('tools/export-content.cjs')
     Invoke-Checked 'node' @('tools/export-display.cjs')
     Invoke-Checked 'node' @('tools/export-match-history.cjs')

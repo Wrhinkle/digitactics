@@ -21,9 +21,10 @@ internal sealed class NetworkMatchSmoke : IDisposable
     private readonly bool spectator;
     private bool spectatorVerified;
     private int soundEffects;
+    private int emoteEffects;
     private int socialStep;
     private int socialCheck;
-    private readonly string[] socialCommands = ["players", "playerMute/123", "playerMute/123", "closePlayers"];
+    private readonly string[] socialCommands = ["players", "playerMute/123", "playerMute/123", "closePlayers", "emotes", "emote/0"];
     public string Pending => "network UI stage " + stage;
     public NetworkMatchSmoke(ContentCatalog catalog, MatchScreen screen, bool duos = false, bool spectator = false)
     {
@@ -35,6 +36,7 @@ internal sealed class NetworkMatchSmoke : IDisposable
         host.Members(["123", "234"], "123", now); guest.Members(["123", "234"], "123", now);
         host.Send += p => packets.Enqueue(("123", p)); guest.Send += p => packets.Enqueue(("234", p));
         host.Effect += (_, effect) => { if (effect.GetProperty("kind"u8).GetString() == "sound" && effect.GetProperty("s"u8).GetDouble() == 1) soundEffects++; };
+        host.Effect += (_, effect) => { if (effect.GetProperty("kind"u8).GetString() == "emote" && effect.GetProperty("s"u8).GetDouble() == 1) emoteEffects++; };
         host.PublishInit(JsonSerializer.SerializeToElement(new { seed = 143, at = now, planTime = 30, setId = "faction-wars", pace = "hyper", format = duos ? "duos" : "solo", slots = Enumerable.Range(0, 8).Select(i => new { name = i == 1 ? "Guest" : "Tamer " + i, human = i == (spectator ? 0 : 1) }).ToArray() }));
         PumpPackets(); replica = new(host, catalog); controller = new(host, replica, () => now); replica.Pump(now);
         guest.SetPresence(new JsonObject { ["name"] = "Guest" }, false, now); PumpPackets();
@@ -77,8 +79,9 @@ internal sealed class NetworkMatchSmoke : IDisposable
             socialCheck = 0;
         }
         if (!spectator && socialStep == 2 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "players.bmp"), size.X, size.Y);
+        if (!spectator && socialStep == 5 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "emotes.bmp"), size.X, size.Y);
         if (!spectator && stage == -3 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "soundboard.bmp"), size.X, size.Y);
-        if (!spectator && stage == -2) { if (soundEffects != 1) throw new InvalidOperationException("Equipped soundboard clip did not reach host exactly once."); stage = 0; }
+        if (!spectator && stage == -2) { if (soundEffects != 1 || emoteEffects != 1) throw new InvalidOperationException("Equipped social effects did not reach host exactly once."); stage = 0; }
         if (stage == -2 && screen.IsSpectating)
         {
             if (screen.Buttons.ContainsKey("lock") || screen.Buttons.ContainsKey("fight") || screen.Buttons.ContainsKey("buy/0")) throw new InvalidOperationException("Spectator sees player controls.");

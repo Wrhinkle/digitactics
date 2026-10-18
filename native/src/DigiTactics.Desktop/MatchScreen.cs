@@ -233,13 +233,13 @@ internal sealed partial class MatchScreen : IDisposable
     }
     public void Draw(int2 windowSize)
     {
-        size = windowSize; Buttons.Clear();
+        size = windowSize; Buttons.Clear(); emoteArtwork.BeginFrame();
         if (Session is null) { if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); } else if (showFarm) FarmPanel(); else { Menu(); if (showCollection) Collection(); } return; }
         Header(); if (Session is null) return;
         Roster(); Sidebar();
         if (battle is null) Board();
         else battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height);
-        Choices(); Soundboard(); PlayersPanel();
+        Choices(); Soundboard(); EmotePanel(); PlayersPanel();
         if (showAudio)
         {
             Window("Sound settings", size.X / 2 - 210, Top + 20, 420, 250);
@@ -289,7 +289,8 @@ internal sealed partial class MatchScreen : IDisposable
         ImGui.Text(IsSpectating ? $"Spectating {Human.Name}" : $"{Human.Health} HP     {Human.Economy.Gold} gold     Level {Human.Economy.Level}     Streak {Human.Economy.Streak}");
         ImGui.SameLine(); if (Button("mute", audio.Muted ? "Unmute" : "Mute")) audio.Muted = !audio.Muted;
         ImGui.SameLine(); if (Button("audioSettings", "Sound settings")) showAudio = !showAudio;
-        ImGui.SameLine(); if (Button("soundboard", "Soundboard")) showSoundboard = !showSoundboard;
+        ImGui.SameLine(); if (Button("soundboard", "Soundboard")) { showSoundboard = !showSoundboard; if (showSoundboard) showEmotes = false; }
+        ImGui.SameLine(); if (Button("emotes", "Emotes")) { showEmotes = !showEmotes; if (showEmotes) showSoundboard = false; }
         if (networkRoom is not null) { ImGui.SameLine(); if (Button("players", "Players")) showPlayers = !showPlayers; }
         if (session.State.Over)
         {
@@ -401,6 +402,7 @@ internal sealed partial class MatchScreen : IDisposable
         {
             if (Button("view/" + p.Id, $"{p.Name}  {(p.Alive ? p.Health + " HP" : "#" + p.Placement)}", 192, 28)) Watch(p.Id);
             if (soundLabels.FirstOrDefault(label => label.Seat == p.Id) is { } clip) ImGui.TextWrapped("Playing: " + DigiTactics.Storage.CosmeticCollection.Item("sound", clip.Id)!.Name);
+            EmoteRow(p.Id);
         }
         if (Session.State.Duos && !IsSpectating) ImGui.TextWrapped("Your partner: " + Session.Units.Portal.Partner(Human)?.Name);
         if (!IsSpectating) foreach (var orb in Human.Orbs.ToArray()) if (Button("orb/" + orb.Id, $"Collect {orb.Kind} loot")) Act("orb", new { id = orb.Id });
@@ -500,5 +502,5 @@ internal sealed partial class MatchScreen : IDisposable
         int x = (int)(Left * sx), y = (int)((size.Y - Top - Height) * sy), w = (int)(Width * sx), h = (int)(Height * sy);
         if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
     }
-    public void Dispose() { DetachNetworkMatch(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); }
+    public void Dispose() { DetachNetworkMatch(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); }
 }
