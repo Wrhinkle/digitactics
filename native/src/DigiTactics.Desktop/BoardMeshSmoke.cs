@@ -29,6 +29,20 @@ internal static class BoardMeshSmoke
             CheckPropMotion(renderer);
             using(var arena=new ArenaEnvironment())
             {
+                var rules=DigiTactics.Rules.ContentCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/catalog.json")).Variants[0];
+                arena.SetTheme("spiral-mountain"); arena.Time=3.7;
+                arena.Feedback.Flash(1,1,100,Vector3.One);
+                using(var planning=new PlanningView(arena))
+                {
+                    var combat=new DigiTactics.Rules.CombatSimulation(rules,[],[],84219,7,setup:new(new(),new()));
+                    using var battle=new BattleView(rules,combat,false,arena);
+                    if(battle.SceneTime!=3.7 || planning.SceneTime!=3.7 || arena.Theme!="spiral-mountain")
+                        throw new InvalidOperationException("View creation reset the shared arena.");
+                    battle.SceneTime=4.2;
+                    if(planning.SceneTime!=4.2) throw new InvalidOperationException("Planning and combat do not share the arena clock.");
+                }
+                arena.Draw(renderer,BattleView.Camera(256,256,7),BattleView.CameraEye(256,256,7),7,true,0,0,256,256,(_,_)=>{});
+                if(arena.DrawCalls<=75 || arena.Theme!="spiral-mountain") throw new InvalidOperationException("Disposing match views destroyed the shared arena.");
                 var view=BattleView.Camera(256,256,14);
                 foreach(string theme in new[] {"file-island","digital-grid","../invalid"})
                 {

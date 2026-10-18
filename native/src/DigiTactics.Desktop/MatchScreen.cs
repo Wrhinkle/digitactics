@@ -21,7 +21,8 @@ internal sealed partial class MatchScreen : IDisposable
     private readonly AbilityElements abilityElements = new(Path.Combine(AppContext.BaseDirectory, "content/ability-elements.json"));
     private CombatAudioCues? combatAudio;
     private readonly DisplayText text = new();
-    private PlanningView planning = new();
+    private readonly ArenaEnvironment arenaEnvironment = new();
+    private PlanningView planning;
     private BattleView? battle;
     private MatchBattle? watching;
     private int variant, viewed, localSeat;
@@ -44,7 +45,7 @@ internal sealed partial class MatchScreen : IDisposable
     private int Width => Math.Max(300, size.X - 470);
     private int Height => Math.Max(240, size.Y - 335);
     private const ImGuiWindowFlags Fixed = ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
-    public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; farm = profile is null ? null : new(profile); }
+    public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { planning=new(arenaEnvironment); this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; farm = profile is null ? null : new(profile); }
     private void Window(string name, float x, float y, float width, float height, ImGuiWindowFlags flags = 0)
     {
         ImGui.SetNextWindowPos(new(x, y)); ImGui.SetNextWindowSize(new(width, height)); ImGui.Begin(name, Fixed | flags);
@@ -186,7 +187,7 @@ internal sealed partial class MatchScreen : IDisposable
         if (next is not null)
         {
             bool mirror = next.B == player || next.TeamB is { } team && Session.State.Teams[team].Members.Any(p => p.Id == player);
-            battle = new(Rules, next.Combat, mirror);
+            battle = new(Rules, next.Combat, mirror,arenaEnvironment);
         }
     }
     private void Fight()
@@ -306,7 +307,7 @@ internal sealed partial class MatchScreen : IDisposable
         if (session.State.Over)
         {
             ImGui.Text(IsSpectating ? "Match complete" : $"Match complete - placement #{Human.Placement}"); ImGui.SameLine();
-            if (Button("menu", "Main menu")) { if (networkRoom is not null) LeaveSteamRoom(); Session = null; audio.Music(null); battle?.Dispose(); battle = null; watching = null; planning.Dispose(); planning = new(); }
+            if (Button("menu", "Main menu")) { if (networkRoom is not null) LeaveSteamRoom(); Session = null; audio.Music(null); battle?.Dispose(); battle = null; watching = null; planning.Dispose(); planning = new(arenaEnvironment); }
         }
         else if (IsSpectating) ImGui.Text($"{session.Rounds.Phase} - watching the shared match");
         else if (session.Rounds.Phase == MatchPhase.Planning) { if (networkRoom is not null && session.Rounds.RoundType == "carousel") ImGui.Text("Waiting for carousel picks..."u8); else if (Button("fight", session.Rounds.RoundType == "carousel" ? "Finish carousel" : "Ready for battle")) Fight(); }
@@ -517,5 +518,5 @@ internal sealed partial class MatchScreen : IDisposable
         if (!IsSpectating) arenaCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7);
         opponentCompanion?.Draw(x, y, w, h, battle?.Combat.Columns ?? 7);
     }
-    public void Dispose() { DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); }
+    public void Dispose() { DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); steam?.Dispose(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
 }

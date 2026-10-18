@@ -9,7 +9,9 @@ internal sealed class PlanningView : IDisposable
 {
     private readonly ModelCatalog catalog = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
     private readonly ModelRenderer renderer = new();
-    private readonly ArenaEnvironment board = new();
+    private readonly ArenaEnvironment board;
+    private readonly bool ownsBoard;
+    public PlanningView(ArenaEnvironment? environment=null) { board=environment??new(); ownsBoard=environment is null; }
     public string BoardTheme { get; set; } = "file-island";
     public int BoardDrawCalls => board.DrawCalls;
     public double SceneTime { get=>board.Time; set=>board.Time=value; }
@@ -58,5 +60,5 @@ internal sealed class PlanningView : IDisposable
         }
         board.Draw(renderer,camera,BattleView.CameraEye(width,height,7),7,true,left,bottom,width,height,Units);
     }
-    public void Dispose() { foreach (var model in models.Values) model.Dispose(); models.Clear(); board.Dispose(); renderer.Dispose(); }
+    public void Dispose() { foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
 }

@@ -14,7 +14,8 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
     private readonly ModelRenderer renderer = new();
     private readonly Dictionary<ModelSource, GpuModel> models = [];
     private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
-    private readonly ArenaEnvironment board = new();
+    private readonly ArenaEnvironment board;
+    private readonly bool ownsBoard;
     public string BoardTheme { get; set; } = "file-island";
     public int BoardDrawCalls => board.DrawCalls;
     public double SceneTime { get=>board.Time; set=>board.Time=value; }
@@ -33,6 +34,7 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
 
     public BattleView(Ruleset rules, CombatEntry[]? roster = null, int columns = 7)
     {
+        board=new(); ownsBoard=true;
         this.rules = rules;
         var side = roster is { Length: > 0 } ? roster : rules.Lines.Take(6).Select((line, i) => new CombatEntry(line.Id, i % 3, i % columns, 4 + i / columns, Items: [])).ToArray();
         var enemy = rules.Lines.Skip(3).Take(side.Length).Select((line, i) => new CombatEntry(line.Id, i % 3, i % columns, 4 + i / columns, Items: [])).ToArray();
@@ -40,8 +42,9 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
         boardBursts=new(columns,false);
         choreography = new(Combat, this); choreography.Update(0);
     }
-    public BattleView(Ruleset rules, CombatSimulation combat, bool mirror)
+    public BattleView(Ruleset rules, CombatSimulation combat, bool mirror,ArenaEnvironment? environment=null)
     {
+        board=environment??new(); ownsBoard=environment is null; board.Feedback.ClearFlashes();
         this.rules = rules; Combat = combat; this.mirror = mirror;
         boardBursts=new(combat.Columns,mirror);
         choreography = new(combat, this); choreography.Update(0, mirror);
@@ -119,5 +122,5 @@ internal sealed class BattleView : ICombatModelDriver, IDisposable
         }
         board.Draw(renderer,camera,CameraEye(width,height,Combat.Columns),Combat.Columns,false,left,bottom,width,height,Units);
     }
-    public void Dispose() { foreach (var model in models.Values) model.Dispose(); models.Clear(); board.Dispose(); renderer.Dispose(); }
+    public void Dispose() { foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
 }
