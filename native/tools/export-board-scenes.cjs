@@ -19,6 +19,11 @@ async function main(){
    .replace(/const tm = inst\(ctx, top,[^\n]+;/,line=>line+' tm.userData.nativeMotion={kind:"toy-tops",props:tops.map(p=>({...p}))};')
    .replace(/const trm = inst\(ctx, car,[^\n]+;/,line=>line+' trm.userData.nativeMotion={kind:"toy-train",props:cars.map(p=>({...p}))};')
    .replace(/const band = mesh\(ctx, new THREE.CylinderGeometry\(26, 26[^\n]+;/,line=>line+' band.userData.nativeMotion={kind:"desert-haze"};')
+   .replace('ctx.g.add(stars);','ctx.g.add(stars); stars.userData.nativeMotion={kind:"mountain-stars"};')
+   .replace('gears.push({ g, list });','gears.push({ g, list }); g.userData.nativeMotion={kind:"savanna-gears",props:list.map(p=>({...p}))};')
+   .replace(/const pm = inst\(ctx, new THREE.IcosahedronGeometry\(1, 0\)[^\n]+;/,line=>line+' pm.userData.nativeMotion={kind:"grid-polys",props:polys.map(p=>({...p}))};')
+   .replace(/const rm = inst\(ctx, ring,[^\n]+;/,line=>line+' rm.userData.nativeMotion={kind:"grid-rings"};')
+   .replace('const floor = plain(ctx, new THREE.MeshBasicMaterial({ map: grid }));','const floor = plain(ctx, new THREE.MeshBasicMaterial({ map: grid })); floor.userData.nativeMotion={kind:"grid-floor"};')
    .replace(/const bm = inst\(ctx, bGeo,[^\n]+;/,line=>line+' bm.userData.nativeMotion={kind:"coliseum-banners",props:banners.map(p=>({...p}))};')
    .replace(/const fm = inst\(ctx, new THREE.ConeGeometry\(0.16, 0.45, 8\)[^\n]+;/,line=>line+' fm.userData.nativeMotion={kind:"coliseum-flames",props:flames.map(p=>({...p}))};')
   +'\nexport {THREE,THEMES,buildEnv,disposeEnv,applySurface,tileLook};'
@@ -170,10 +175,12 @@ async function main(){
        rows.push({id:spec.id,time,motion,matrices});
       }else if(motion.kind==='beach-surf'){
        rows.push({id:spec.id,time,motion,matrix:o.matrixWorld.toArray(),opacity:o.material.opacity});
-      }else if(motion.kind==='desert-haze'){
+      }else if(motion.kind==='desert-haze'||motion.kind==='grid-floor'){
        const texture=o.material.map;texture.updateMatrix();const uv=o.geometry.attributes.uv,samples=[];
        for(let i=0;i<uv.count;i++) {const source=[uv.getX(i),uv.getY(i)];samples.push({source,expected:new THREE.Vector2(...source).applyMatrix3(texture.matrix).toArray()});}
        rows.push({id:spec.id,time,motion,samples,opacity:o.material.opacity});
+      }else if(motion.kind==='mountain-stars'||motion.kind==='grid-rings'){
+       rows.push({id:spec.id,time,motion,opacity:o.material.opacity});
       }
      }
     }

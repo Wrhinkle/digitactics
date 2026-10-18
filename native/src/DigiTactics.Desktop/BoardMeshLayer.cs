@@ -12,7 +12,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly List<GpuTexture> textures = [];
     private readonly List<ObjectParts> objects = [];
     private readonly List<(GpuPrimitive Geometry,float[] Vertices,BoardMotion Motion)> animatedGeometry=[];
-    private readonly List<(GpuPrimitive Geometry,float[] Vertices,float[] Initial)> animatedUv=[];
+    private readonly List<(GpuPrimitive Geometry,float[] Vertices,float[] Initial,string Kind)> animatedUv=[];
     private double time;
     public int DrawCalls { get; private set; }
     public Matrix4D Root { get; set; } = Matrix4D.Identity;
@@ -33,7 +33,7 @@ internal sealed class BoardMeshLayer : IDisposable
                     {
                         var gpu = new GpuPrimitive(part.Primitive, topology); geometry.Add(gpu);
                         if(obj.Motion is { Kind:"sea" or "particles" } motion) animatedGeometry.Add((gpu,part.Primitive.Vertices,motion));
-                        if(obj.Motion is { Kind:"desert-haze" }) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone()));
+                        if(obj.Motion is { Kind:"desert-haze" or "grid-floor" } scrolling) animatedUv.Add((gpu,part.Primitive.Vertices,(float[])part.Primitive.Vertices.Clone(),scrolling.Kind));
                         var material = scene.Materials[part.Material];
                         return new Part(gpu, material, part.Primitive.HasNormals, material.Map is { } map ? scene.Textures[map] : null);
                     }).ToArray();
@@ -50,7 +50,7 @@ internal sealed class BoardMeshLayer : IDisposable
         time=seconds;
         foreach(var uv in animatedUv)
         {
-            BoardSceneMotion.HazeUv(uv.Vertices,uv.Initial,time);
+            BoardSceneMotion.ScrollingUv(uv.Vertices,uv.Initial,time,uv.Kind);
             uv.Geometry.UpdateVertices(uv.Vertices);
         }
         foreach(var wave in animatedGeometry)
@@ -69,8 +69,7 @@ internal sealed class BoardMeshLayer : IDisposable
             if (!item.Object.Visible) continue;
             if (renderer.ShadowPass && !item.Object.CastShadow) continue;
             var world = Matrix4D.From(item.Object.Matrix) * Root;
-            float? opacity=null;
-            if(item.Object.Motion is { Kind:"desert-haze" }) opacity=BoardSceneMotion.Haze(time).Opacity;
+            float? opacity=BoardSceneMotion.Opacity(item.Object.Motion?.Kind,time);
             if(item.Object.Motion is { Kind:"beach-surf" } surf)
             {
                 var animated=BoardSceneMotion.Surf(surf,time); world=animated.Matrix*Root; opacity=animated.Opacity;

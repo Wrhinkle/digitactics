@@ -2,14 +2,26 @@ namespace DigiTactics.Assets;
 
 public static class BoardSceneMotion
 {
-    public static (double U,double V,float Opacity) Haze(double time)=>(time*.01,Math.Sin(time*2.3)*.04,(float)(.28+.08*Math.Sin(time*3.1)));
-    public static void HazeUv(float[] vertices,float[] initial,double time)
+    public static float? Opacity(string? kind,double time)=>kind switch
     {
-        var haze=Haze(time);
+        "mountain-stars"=>(float)(.75+.25*Math.Sin(time*1.7)),
+        "grid-rings"=>(float)(.7+.2*Math.Sin(time*2.2)),
+        "desert-haze"=>Haze(time).Opacity,
+        _=>null
+    };
+    public static (double U,double V,float Opacity) Haze(double time)=>(time*.01,Math.Sin(time*2.3)*.04,(float)(.28+.08*Math.Sin(time*3.1)));
+    public static void ScrollingUv(float[] vertices,float[] initial,double time,string kind)
+    {
+        var offset=kind switch
+        {
+            "desert-haze"=>(Haze(time).U,Haze(time).V),
+            "grid-floor"=>(0d,(time*.05)%1),
+            _=>throw new ArgumentException("Unknown scrolling board texture: "+kind,nameof(kind))
+        };
         for(int at=0;at<vertices.Length;at+=GltfPrimitive.Stride)
         {
-            vertices[at+6]=(float)(initial[at+6]+haze.U);
-            vertices[at+7]=(float)(initial[at+7]+haze.V);
+            vertices[at+6]=(float)(initial[at+6]+offset.Item1);
+            vertices[at+7]=(float)(initial[at+7]+offset.Item2);
         }
     }
     public static Matrix4D Prop(string kind,BoardProp p,double time)
@@ -26,6 +38,8 @@ public static class BoardSceneMotion
             case "toy-train":
                 double angle=time*.12-p.K*.085; x=Math.Cos(angle)*12.05; z=Math.Sin(angle)*12.05; ry=-angle-Math.PI/2; break;
             case "coliseum-banners": y=.65; rx=-.08+Math.Sin(time*1.6+p.Phase)*.08; break;
+            case "savanna-gears": rx=p.Rx; ry=p.Rx!=0?0:p.Ry; rz=time*p.Spin; break;
+            case "grid-polys": y=p.Base+Math.Sin(time+p.Phase)*.25; ry=time*.5+p.Phase; rx=time*.3; break;
             case "coliseum-flames":
                 sy=1+.18*Math.Sin(time*13+p.Phase)+.1*Math.Sin(time*7.3+p.Phase*2); sx=sz=1/Math.Sqrt(sy); break;
             default: throw new ArgumentException("Unknown board prop motion: "+kind,nameof(kind));
