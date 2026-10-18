@@ -21,7 +21,7 @@ internal sealed class BoardMeshLayer : IDisposable
     private readonly Dictionary<BoardObject,BoardSpiralMotion> spirals=[];
     public int DrawCalls { get; private set; }
     public Matrix4D Root { get; set; } = Matrix4D.Identity;
-    public BoardMeshLayer(BoardScene scene)
+    public BoardMeshLayer(BoardScene scene,bool initialCombat=false)
     {
         try
         {
@@ -33,6 +33,7 @@ internal sealed class BoardMeshLayer : IDisposable
                 if(lightning is null && obj.Motion?.Lightning is {} data)
                 {
                     lightning=new(data.Spots,data.Flash,data.DelaySeed,data.DelayCalls,data.BoltCalls);
+                    lightning.Advance(0,0,initialCombat);
                     LightningColor=BoardLighting.Linear(data.FlashColor);
                 }
                 if(obj.Motion is { Spirals:not null } spiral) spirals.Add(obj,new(spiral));

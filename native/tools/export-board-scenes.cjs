@@ -220,15 +220,18 @@ async function main(){
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-spiral.json.gz'),zlib.gzipSync(JSON.stringify(spiralFixture)));
   const lightningFixture=await page.evaluate(async()=>{
    const {THREE,THEMES,buildEnv,disposeEnv}=await import('/boards.js'),spec=THEMES.find(s=>s.id==='spiral-mountain');
+   function run(initialCombat){
    const L={hemi:new THREE.HemisphereLight(...spec.hemi),sun:new THREE.DirectionalLight(...spec.sun)},env=buildEnv(spec,{L}),bolts=[],frames=[];
    env.group.traverse(o=>{if(o.userData.nativeMotion?.lightning)bolts.push(o);});
-   env.signal({phase:'planning',stage:1,won:false,evo:0});env.tick(0,0);let time=0;
+   env.signal({phase:initialCombat?'combat':'planning',stage:1,won:false,evo:0});env.tick(0,0);let time=0;
    for(let frame=0;frame<1600;frame++){
-    const delta=[1/60,.033,0,.1][frame%4],combat=Math.floor(frame/200)%2===1;time+=delta;
-    env.signal({phase:combat?'combat':'planning',stage:1,won:false,evo:0});env.tick(delta,time);env.group.updateMatrixWorld(true);
+    const delta=[1/60,.033,0,.1][frame%4],phase=['combat','result','planning','combat'][Math.floor(frame/200)%4],combat=phase==='combat';time+=delta;
+    env.signal({phase,stage:1,won:false,evo:0});env.tick(delta,time);env.group.updateMatrixWorld(true);
     frames.push({time,delta,combat,flash:L.hemi.intensity-spec.hemi[2],bolts:bolts.map(o=>({visible:o.visible,matrix:o.matrixWorld.toArray()}))});
    }
-   const result={config:bolts[0].userData.nativeMotion.lightning,frames};disposeEnv(env);return result;
+   const result={initialCombat,config:bolts[0].userData.nativeMotion.lightning,frames};disposeEnv(env);return result;
+   }
+   return [run(false),run(true)];
   });
   fs.writeFileSync(path.join(root,'native/tests/fixtures/board-lightning.json.gz'),zlib.gzipSync(JSON.stringify(lightningFixture)));
   const particleFixture=await page.evaluate(async()=>{

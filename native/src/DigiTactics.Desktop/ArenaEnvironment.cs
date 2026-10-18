@@ -20,6 +20,7 @@ internal sealed class ArenaEnvironment : IDisposable
     public int DrawCalls { get; private set; }
     public BoardSurfaceFeedback Feedback { get; } = new();
     public double Time { get; set; }
+    public bool? CombatActive { get; set; }
     private double? previousTime;
 
     public void SetTheme(string? id)
@@ -28,7 +29,7 @@ internal sealed class ArenaEnvironment : IDisposable
         if(scene?.Id==id) return;
         var next=BoardScene.Load(Path.Combine(folder,id+".json.gz"));
         BoardMeshLayer? nextMeshes=null; BoardBackground? nextBackground=null; BoardSurfaceView? nextSurfaces=null;
-        try { nextMeshes=new(next); nextBackground=new(next); nextSurfaces=new(next,geometry.Value,Feedback); }
+        try { nextMeshes=new(next,CombatActive??false); nextBackground=new(next); nextSurfaces=new(next,geometry.Value,Feedback); }
         catch { nextMeshes?.Dispose(); nextBackground?.Dispose(); nextSurfaces?.Dispose(); throw; }
         meshes?.Dispose(); background?.Dispose(); surfaces?.Dispose();
         scene=next; meshes=nextMeshes; background=nextBackground; surfaces=nextSurfaces; lighting=new(next);
@@ -39,7 +40,7 @@ internal sealed class ArenaEnvironment : IDisposable
     {
         if(scene is null) SetTheme("file-island");
         double delta=previousTime is { } previous?Math.Clamp(Time-previous,0,.1):0;
-        previousTime=Time; meshes!.Update(Time,delta,!planning);
+        previousTime=Time; meshes!.Update(Time,delta,CombatActive??!planning);
         if(meshes.LightningColor is {} flashColor)
         {
             lighting!.FlashColor=flashColor;lighting.Flash=meshes.LightningFlash;lighting.Update(0);

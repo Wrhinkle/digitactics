@@ -22,7 +22,6 @@ public sealed class BoardLightning
         this.spots=spots;this.intensity=intensity;delay=new(delaySeed);
         for(int i=0;i<delayCalls;i++)delay.Next();
         for(int i=0;i<boltCalls;i++)bolts.Next();
-        Advance(0,0,false);
     }
     private void Strike(double time)
     {

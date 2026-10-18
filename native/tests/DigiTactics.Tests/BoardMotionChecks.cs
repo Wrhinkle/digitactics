@@ -86,9 +86,12 @@ internal static class BoardMotionChecks
         using var lightningFile=File.OpenRead(Path.Combine(root,"tests/fixtures/board-lightning.json.gz"));
         using var lightningGzip=new GZipStream(lightningFile,CompressionMode.Decompress);
         using var lightningFixture=JsonDocument.Parse(lightningGzip);
-        var config=lightningFixture.RootElement.GetProperty("config").Deserialize<BoardLightningData>(options)!;
+        foreach(var scenario in lightningFixture.RootElement.EnumerateArray())
+        {
+        var config=scenario.GetProperty("config").Deserialize<BoardLightningData>(options)!;
         var lightning=new DigiTactics.Presentation.BoardLightning(config.Spots,config.Flash,config.DelaySeed,config.DelayCalls,config.BoltCalls);
-        foreach(var frame in lightningFixture.RootElement.GetProperty("frames").EnumerateArray())
+        lightning.Advance(0,0,scenario.GetProperty("initialCombat").GetBoolean());
+        foreach(var frame in scenario.GetProperty("frames").EnumerateArray())
         {
             lightning.Advance(frame.GetProperty("delta").GetDouble(),frame.GetProperty("time").GetDouble(),frame.GetProperty("combat").GetBoolean());
             Near(lightning.Flash,frame.GetProperty("flash").GetDouble(),1e-12);
@@ -101,6 +104,7 @@ internal static class BoardMotionChecks
                 double[] values=new double[16];new CompanionTransform(new(lightning.X,lightning.Y,lightning.Z),new(0,lightning.Yaw,0),new(1,1,1)).Matrix.CopyTo(values);
                 for(int j=0;j<16;j++) Near(values[j],bolt.GetProperty("matrix")[j].GetDouble(),1e-10);
             }
+        }
         }
         Console.WriteLine($"Board motion: {checks:N0} original wave, crystal, palm, surf, prop, spiral and lightning comparisons passed."); return checks;
     }

@@ -267,6 +267,16 @@ internal static class BoardMeshSmoke
         float initial=renderer.BoardLight!.HemisphereIntensity;
         arena.Time=.016;arena.Draw(renderer,camera,eye,7,false,0,0,256,256,(_,_)=>{});
         if(renderer.BoardLight!.HemisphereIntensity<initial+1)throw new InvalidOperationException("Lightning flash did not reach scene lighting.");
+        arena.CombatActive=false;
+        for(int i=0;i<120;i++)
+        {
+            arena.Time+=.1;arena.Draw(renderer,camera,eye,7,false,0,0,64,64,(_,_)=>{});
+            if(i>4 && Math.Abs(renderer.BoardLight!.HemisphereIntensity-initial)>.001)
+                throw new InvalidOperationException("Result view continued scheduling combat lightning.");
+        }
+        using var combatLoaded=new ArenaEnvironment {CombatActive=true};combatLoaded.SetTheme("spiral-mountain");combatLoaded.Time=.016;
+        combatLoaded.Draw(renderer,camera,eye,7,false,0,0,256,256,(_,_)=>{});
+        if(Math.Abs(renderer.BoardLight!.HemisphereIntensity-initial)>.001)throw new InvalidOperationException("Loading a combat board emitted a false phase transition.");
         renderer.BoardLight=null;renderer.ShadowTexture=0;
         Console.WriteLine($"Lightning GPU: {lit} lit pixels, flicker gap and scene flash verified.");
     }
