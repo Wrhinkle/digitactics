@@ -24,7 +24,7 @@ if (args.Contains("--music-decoder-only"))
 if (args.Contains("--combat-picking-only")) { CombatPickingChecks.Run(root); return; }
 if (args.Contains("--music-playlist-only")) { MusicPlaylistChecks.Run(root); return; }
 if (args.Contains("--music-library-only")) { MusicLibraryChecks.Run(root); return; }
-if (args.Contains("--native-update-only")) { NativeUpdateChecks.Run(); NativeLaunchChecks.Run(); await NativeStartupChecks.Run(); await NativeSupervisorChecks.Run(); await NativeDownloadChecks.Run(); await NativeReleaseChecks.Run(); return; }
+if (args.Contains("--native-update-only")) { NativeUpdateChecks.Run(); NativeLaunchChecks.Run(); await NativeStartupChecks.Run(); await NativeSupervisorChecks.Run(); await NativeDownloadChecks.Run(); await NativeReleaseChecks.Run(); await NativeUpdateSessionChecks.Run(); return; }
 if (args.Contains("--settings-only")) { AudioSettingsChecks.Run(); return; }
 if (args.Contains("--soundboard-only")) { SoundboardChecks.Run(); return; }
 if (args.Contains("--player-mutes-only")) { PlayerMuteChecks.Run(); return; }
@@ -242,6 +242,7 @@ assertions += await NativeStartupChecks.Run();
 assertions += await NativeSupervisorChecks.Run();
 assertions += await NativeDownloadChecks.Run();
 assertions += await NativeReleaseChecks.Run();
+assertions += await NativeUpdateSessionChecks.Run();
 assertions += AudioSettingsChecks.Run();
 assertions += MatchHistoryChecks.Run(root, catalog);
 assertions += PlayOnChecks.Run(catalog);

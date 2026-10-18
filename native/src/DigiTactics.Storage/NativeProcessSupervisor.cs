@@ -10,7 +10,7 @@ public sealed record NativeProcessResult(int ExitCode,bool RolledBack,string? Fa
 public static class NativeProcessSupervisor
 {
     public static async Task<NativeProcessResult> Run(NativeLaunchState state,Func<NativeLaunchSelection,ProcessStartInfo> prepare,
-        TimeSpan? startupTimeout=null,CancellationToken cancellation=default)
+        TimeSpan? startupTimeout=null,CancellationToken cancellation=default,Action? started=null)
     {
         TimeSpan timeout=startupTimeout??TimeSpan.FromSeconds(90);
         if(timeout<=TimeSpan.Zero || timeout>TimeSpan.FromMinutes(10))throw new ArgumentOutOfRangeException(nameof(startupTimeout));
@@ -61,6 +61,7 @@ public static class NativeProcessSupervisor
                         state.Rollback(selection.TrialToken!);rolledBack=true;continue;
                     }
                 }
+                started?.Invoke();
                 await exited.ConfigureAwait(false);
                 return new(child.ExitCode,rolledBack,failure);
             }

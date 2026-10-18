@@ -169,7 +169,8 @@ try {
         @{ Flag = '--match-smoke'; Name = 'minimum-solo'; Duos = $false },
         @{ Flag = '--match-smoke'; Name = 'minimum-duos'; Duos = $true },
         @{ Flag = '--mode-bonus-smoke'; Name = 'minimum-bonus'; Duos = $false },
-        @{ Flag = '--music-library-ui-smoke'; Name = 'minimum-music'; Duos = $false }
+        @{ Flag = '--music-library-ui-smoke'; Name = 'minimum-music'; Duos = $false },
+        @{ Flag = '--update-ui-smoke'; Name = 'minimum-update'; Duos = $false }
     )) {
         $smokeArguments = @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', $scenario.Flag, '--minimum-window', '--capture', ('artifacts/' + $scenario.Name + '.bmp'))
         if ($scenario.Duos) { $smokeArguments += '--duos' }

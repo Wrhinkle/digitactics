@@ -306,6 +306,7 @@ internal sealed partial class MatchScreen : IDisposable
             status = "Select a unit, then a hex. Select an item, then its holder.";
         }
         ImGui.End();
+        UpdatePanel();
     }
     private void Header()
     {

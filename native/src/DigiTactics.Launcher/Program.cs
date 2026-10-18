@@ -29,11 +29,12 @@ try
         if(options.Length-index<2 || gameArgs.Length!=0)throw new ArgumentException("Usage: stage <archive.zip> <descriptor.json>, or fetch <https-url> <descriptor.json> [--bundle directory --version version] [--state directory]");
         archive=options[index++];descriptorPath=options[index++];
     }
-    string? bundle=null,version=null;
+    string? bundle=null,version=null,updateOwner=null,updateRepository=null;bool noUpdates=false;
     string stateDirectory=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"DigiTactics","native-updates");
     while(index<options.Length)
     {
-        string option=options[index++];if(index==options.Length)throw new ArgumentException("Missing value after "+option);
+        string option=options[index++];if(option=="--no-updates") {noUpdates=true;continue;}
+        if(index==options.Length)throw new ArgumentException("Missing value after "+option);
         string value=options[index++];
         switch(option)
         {
@@ -50,6 +51,7 @@ try
         var settings=JsonSerializer.Deserialize<LauncherConfiguration>(File.ReadAllBytes(configuration),json)??throw new InvalidDataException("Missing launcher configuration.");
         if(settings.SchemaVersion!=1)throw new InvalidDataException("Unsupported launcher configuration.");
         version=settings.BundledVersion;bundle=Path.Combine(AppContext.BaseDirectory,"app");
+        updateOwner=settings.UpdateOwner;updateRepository=settings.UpdateRepository;
     }
     if(!NativeUpdatePackage.ValidVersion(version))throw new InvalidDataException("Invalid bundled application version.");
     if(!File.Exists(Path.Combine(bundle,"DigiTactics.Desktop.exe")))throw new FileNotFoundException("Bundled native application is missing.");
@@ -78,28 +80,52 @@ try
     }
     using var cancellation=new CancellationTokenSource();
     Console.CancelKeyPress+=(_,e)=>{e.Cancel=true;cancellation.Cancel();};
-    NativeCandidateLease? candidate=null;
-    try
+    while(true)
     {
-        var result=await NativeProcessSupervisor.Run(state,selection=>
+        NativeCandidateLease? candidate=null;
+        var updates=!noUpdates && updateOwner is not null && updateRepository is not null?new NativeUpdateSession(stateDirectory):null;
+        using var updateCancellation=CancellationTokenSource.CreateLinkedTokenSource(cancellation.Token);
+        using var discovery=new NativeReleaseDiscovery();using var downloader=new NativeUpdateDownloader();
+        Task? updateTask=null;
+        NativeProcessResult result;
+        try
         {
-            candidate?.Dispose();candidate=null;
-            string executable=Path.Combine(bundle,"DigiTactics.Desktop.exe");
-            if(selection.Release is not null)
+            result=await NativeProcessSupervisor.Run(state,selection=>
             {
-                candidate=NativeUpdatePackage.OpenCandidate(candidates,selection.Release,launcherVersion,cancellation.Token);
-                executable=candidate.Executable;
-            }
-            var start=new ProcessStartInfo(executable) {UseShellExecute=false,CreateNoWindow=true,WorkingDirectory=Path.GetDirectoryName(executable)!};
-            foreach(string argument in gameArgs)start.ArgumentList.Add(argument);
-            return start;
-        },cancellation:cancellation.Token);
+                candidate?.Dispose();candidate=null;
+                string executable=Path.Combine(bundle,"DigiTactics.Desktop.exe");
+                if(selection.Release is not null)
+                {
+                    candidate=NativeUpdatePackage.OpenCandidate(candidates,selection.Release,launcherVersion,cancellation.Token);
+                    executable=candidate.Executable;
+                }
+                var start=new ProcessStartInfo(executable) {UseShellExecute=false,CreateNoWindow=true,WorkingDirectory=Path.GetDirectoryName(executable)!};
+                start.Environment.Remove(NativeUpdateSession.DirectoryVariable);start.Environment.Remove(NativeUpdateSession.SessionVariable);
+                if(updates is not null)
+                {
+                    start.Environment[NativeUpdateSession.DirectoryVariable]=updates.DirectoryPath;
+                    start.Environment[NativeUpdateSession.SessionVariable]=updates.Id;
+                }
+                foreach(string argument in gameArgs)start.ArgumentList.Add(argument);
+                return start;
+            },cancellation:cancellation.Token,started:()=>
+            {
+                if(updates is not null && updateTask is null)
+                    updateTask=Task.Run(()=>updates.Run(state,updateOwner!,updateRepository!,stateDirectory,launcherVersion,discovery,downloader,updateCancellation.Token));
+            });
+        }
+        finally
+        {
+            updateCancellation.Cancel();
+            if(updateTask is not null)try {await updateTask;}catch(Exception error) {Console.Error.WriteLine("Native update task ended: "+error.Message);}
+            candidate?.Dispose();
+        }
         if(result.RolledBack)Console.Error.WriteLine("Update rolled back: "+result.Failure);
+        if(result.ExitCode==0 && updates?.RestartRequested()==true)continue;
         return result.ExitCode;
     }
-    finally {candidate?.Dispose();}
 }
 catch(OperationCanceledException) {return 130;}
 catch(Exception error) {Console.Error.WriteLine("Digi-Tactics launcher: "+error.Message);return 1;}
 
-internal sealed record LauncherConfiguration(int SchemaVersion,string BundledVersion);
+internal sealed record LauncherConfiguration(int SchemaVersion,string BundledVersion,string? UpdateOwner=null,string? UpdateRepository=null);
