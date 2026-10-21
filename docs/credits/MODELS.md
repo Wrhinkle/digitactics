@@ -4,7 +4,7 @@ Generated from the actual bundled GLB files. Uploaders and extractors are credit
 
 | Asset / source | Contributor(s) | Recorded label | Files |
 | --- | --- | --- | --- |
-| [Aegiomon (Digimon Story: Time Stranger)](https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604898/) | ARealIdiot | Game rip | `models/files/rip_ts_aegiomon.glb`<br>`models/files/rip_cat_ts_elecmon_elecmon_aegiomon_chr564.glb` |
+| [Aegiomon (Digimon Story: Time Stranger, chr183a)](https://nuffle.me/dsts-viewer?m=aegiomon) | nuffle.me (dsts-extractor) | Game rip | `models/files/rip_ts_aegiomon_chr183a.glb` |
 | [AeroVeedramon (Digimon Links)](https://models.spriters-resource.com/mobile/digimonlinks/asset/304098/) | Hallow | Game rip | `models/files/rip_aeroveedramon.glb` |
 | [Agumon (Digimon Links)](https://models.spriters-resource.com/mobile/digimonlinks/asset/302502/) | Hallow, ChakraWarrior2012 | Game rip | `models/files/rip_cat_l_agumon_chr050.glb`<br>`models/files/rip_skin_l_agumon_chr143.glb`<br>`models/files/rip_skin_l_agumon_chr143_cs.glb` |
 | [Agumon (Digimon Story Cyber Sleuth: Complete Edition)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324396/) | Hallow | Game rip | `models/files/rip_cat_cs_agumon_chr050.glb`<br>`models/files/rip_skin_cs_agumon_chr143.glb` |
@@ -202,6 +202,7 @@ Generated from the actual bundled GLB files. Uploaders and extractors are credit
 | [Ebonwumon (Digimon ReArise)](https://models.spriters-resource.com/mobile/digimonrearise/asset/327450/) | Hallow, Chortos-2 | Game rip | `models/files/rip_ebonwumon.glb` |
 | [Elecmon (Digimon ReArise)](https://models.spriters-resource.com/mobile/digimonrearise/asset/327409/) | Hallow, Chortos-2 | Game rip | `models/files/rip_cat_elecmon_chr564.glb` |
 | [Elecmon (Digimon Story Cyber Sleuth: Complete Edition)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324503/) | Hallow | Game rip | `models/files/rip_cs_elecmon.glb` |
+| [Elecmon (Digimon Story Time Stranger)](https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604898/) | ARealIdiot | Game rip | `models/files/rip_cat_ts_elecmon_elecmon_aegiomon_chr564.glb` |
 | [EmperorGreymon (Digimon Story Cyber Sleuth: Complete Edition)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331594/) | Hallow | Game rip | `models/files/rip_emperorgreymon.glb` |
 | [Etemon (Digimon Links)](https://models.spriters-resource.com/mobile/digimonlinks/asset/304082/) | Hallow | Game rip | `models/files/rip_etemon.glb` |
 | [Examon (Boss) (Digimon Story Cyber Sleuth: Complete Edition)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324279/) | Hallow | Game rip | `models/files/rip_cat_cs_examon_chr350.glb`<br>`models/files/rip_cs_examon.glb` |
@@ -523,7 +524,7 @@ Generated from the actual bundled GLB files. Uploaders and extractors are credit
 | [Rapidmon Armor (Digimon Links)](https://models.spriters-resource.com/mobile/digimonlinks/asset/311329/) | Hallow | Game rip | `models/files/rip_cat_l_rapidmon_armor_chr751.glb` |
 | [Raptordramon (Digimon Story Cyber Sleuth: Complete Edition)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324414/) | Hallow | Game rip | `models/files/rip_cs_raptordramon.glb` |
 | [Raremon (Digimon Story Cyber Sleuth: Complete Edition)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324285/) | Hallow | Game rip | `models/files/rip_cs_raremon.glb` |
-| [Ravemon (Digimon Story Cyber Sleuth: Complete Edition)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/) | Hallow | Game rip | `models/files/rip_cs_ravemon.glb`<br>`models/files/rip_cat_cs_ravemon_chr740.glb` |
+| [Ravemon (Digimon Story Cyber Sleuth: Complete Edition)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/) | Hallow | Game rip | `models/files/rip_cat_cs_ravemon_chr740.glb`<br>`models/files/rip_cs_ravemon.glb` |
 | [Ravemon Burst Mode (Digimon Links)](https://models.spriters-resource.com/mobile/digimonlinks/asset/304220/) | Hallow | Game rip | `models/files/rip_l_ravemon_burst_mode.glb` |
 | [RedVeedramon (Digimon World: Next Order)](https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342137/) | Not yet verified | Game rip | `models/files/rip_no_redveedramon.glb` |
 | [RedVegiemon (Digimon World: Next Order)](https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342138/) | Hallow | Game rip | `models/files/rip_no_redvegiemon.glb` |
@@ -532,6 +533,7 @@ Generated from the actual bundled GLB files. Uploaders and extractors are credit
 | [Renamon (Digimon Story Time Stranger)](https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606695/) | ARealIdiot | Game rip | `models/files/rip_cat_ts_renamon_chr391.glb` |
 | [Reppamon (Digimon Links)](https://models.spriters-resource.com/mobile/digimonlinks/asset/304029/) | Hallow | Game rip | `models/files/rip_reppamon.glb` |
 | [Reppamon (Digimon Story Cyber Sleuth: Complete Edition)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/335827/) | Hallow | Game rip | `models/files/rip_cat_cs_reppamon_chr077.glb` |
+| rip_ts_aegiomon.glb | Not yet verified | Not recorded | `models/files/rip_ts_aegiomon.glb` |
 | [RizeGreymon (Digimon Links)](https://models.spriters-resource.com/mobile/digimonlinks/asset/304030/) | Hallow | Game rip | `models/files/rip_rizegreymon.glb` |
 | [Rosemon (Digimon Links)](https://models.spriters-resource.com/mobile/digimonlinks/asset/304031/) | Hallow | Game rip | `models/files/rip_l_rosemon.glb`<br>`models/files/rip_cat_l_rosemon_chr779.glb` |
 | [RustTyranomon (Digimon Links)](https://models.spriters-resource.com/mobile/digimonlinks/asset/304116/) | Hallow | Game rip | `models/files/rip_l_rusttyranomon.glb` |

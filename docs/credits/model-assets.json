@@ -6,19 +6,19 @@
   ],
   "assets": [
     {
-      "file": "models/files/rip_ts_aegiomon.glb",
+      "file": "models/files/rip_ts_aegiomon_chr183a.glb",
       "keys": [
         "ac:Aegiomon"
       ],
-      "name": "Aegiomon (Digimon Story: Time Stranger)",
-      "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604898/",
-      "author": "The Models Resource",
+      "name": "Aegiomon (Digimon Story: Time Stranger, chr183a)",
+      "url": "https://nuffle.me/dsts-viewer?m=aegiomon",
+      "author": "nuffle.me (dsts-extractor)",
       "license": "Game rip",
       "role": "Game asset / community extraction",
       "contributors": [
-        "ARealIdiot"
+        "nuffle.me (dsts-extractor)"
       ],
-      "attributionStatus": "Source page verified",
+      "attributionStatus": "Recorded upload credit",
       "permissionStatus": "Redistribution permission not established"
     },
     {
@@ -9223,9 +9223,10 @@
       "permissionStatus": "Redistribution permission not established"
     },
     {
-      "file": "models/files/rip_cs_ravemon.glb",
+      "file": "models/files/rip_cat_cs_ravemon_chr740.glb",
       "keys": [
-        "drg:Ravemon"
+        "drg:Ravemon",
+        "catalog:CS_Ravemon:chr740"
       ],
       "name": "Ravemon (Digimon Story Cyber Sleuth: Complete Edition)",
       "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/",
@@ -9239,10 +9240,8 @@
       "permissionStatus": "Redistribution permission not established"
     },
     {
-      "file": "models/files/rip_cat_cs_ravemon_chr740.glb",
-      "keys": [
-        "catalog:CS_Ravemon:chr740"
-      ],
+      "file": "models/files/rip_cs_ravemon.glb",
+      "keys": [],
       "name": "Ravemon (Digimon Story Cyber Sleuth: Complete Edition)",
       "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/",
       "author": "The Models Resource",
@@ -9378,6 +9377,18 @@
         "Hallow"
       ],
       "attributionStatus": "Source page verified",
+      "permissionStatus": "Redistribution permission not established"
+    },
+    {
+      "file": "models/files/rip_ts_aegiomon.glb",
+      "keys": [],
+      "name": "rip_ts_aegiomon.glb",
+      "url": null,
+      "author": null,
+      "license": "Not recorded",
+      "role": "Game asset / community extraction",
+      "contributors": [],
+      "attributionStatus": "Contributor not yet verified",
       "permissionStatus": "Redistribution permission not established"
     },
     {

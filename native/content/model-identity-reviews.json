@@ -43,6 +43,22 @@
       "references": [
         "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/"
       ]
+    },
+    {
+      "sourceKey": "ac:Aegiomon",
+      "status": "PASS",
+      "asset": "models/files/rip_ts_aegiomon_chr183a.glb",
+      "assetSha256": "ff91ade84aad416d4c3e2c3bc40bdb56dbee27d7d8f39dd28359377cc31d1c3c",
+      "sourceSha256": "f9e2e7b699769fe067fbf7da875355c48bfd83719c0a9f45ebd34a4666c2b912",
+      "originalSourceSha256": "6fa0d32b77d9b78111e07aa5cff620a87c57bee62ba4a9f2ea805419bcb02f53",
+      "declaredForm": "Aegiomon",
+      "expectedForm": "Champion Aegiomon, humanoid upper body and goat-like legs",
+      "observedForm": "chr183a: humanoid with goat horns, white hair, red scarf, gloves and goat legs; animated idle/run/attack/special (bs03)/win",
+      "review": "Replaces the chr563 FAIL row above, which is kept for its exact hash. Source index entry chr183a 'Aegiomon' in Nuffle's Time Stranger viewer. The native portrait, fitted idle/actions and live board render the humanoid Champion form. Material approximations: eye_s blends at the source DiffuseAlpha tint, eye_h blends with its sprite alpha; outline hulls are omitted.",
+      "evidence": [
+        "docs/MODEL_IDENTITY_AEGIOMON_RECOVERY.md",
+        "native/tools/prepare-aegiomon-candidate.cjs"
+      ]
     }
   ]
 }

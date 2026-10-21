@@ -2343,10 +2343,6 @@
   "file": "ac_Kotemon.a7af7473.webp",
   "src": "models/files/rip_ts_kotemon.glb"
  },
- "ac:Aegiomon": {
-  "file": "ac_Aegiomon.ee1ec666.webp",
-  "src": "models/files/rip_ts_aegiomon.glb"
- },
  "drg:Kotemon": {
   "file": "drg_Kotemon.a7af7473.webp",
   "src": "models/files/rip_ts_kotemon.glb"
@@ -3399,10 +3395,6 @@
   "file": "drg_BlackAgumon.742b99c4.webp",
   "src": "models/files/rip_ts_blackagumon.glb"
  },
- "giz:RapidmonArmor": {
-  "file": "giz_RapidmonArmor.b98e5af9.webp",
-  "src": "models/files/rip_cs_rapidmon_armor.glb"
- },
  "catalog:CS_Lopmon:chr750": {
   "file": "catalog_CS_Lopmon_chr750.8eb200f9.webp",
   "src": "models/files/rip_cat_cs_lopmon_chr750.glb"
@@ -3618,5 +3610,13 @@
  "catalog:L_Rosemon:chr779": {
   "file": "catalog_L_Rosemon_chr779.1f986763.webp",
   "src": "models/files/rip_cat_l_rosemon_chr779.glb"
+ },
+ "ac:Aegiomon": {
+  "file": "ac_Aegiomon.87cf93ae.webp",
+  "src": "models/files/rip_ts_aegiomon_chr183a.glb"
+ },
+ "giz:RapidmonArmor": {
+  "file": "giz_RapidmonArmor.306f47cf.webp",
+  "src": "models/files/rip_cs_rapidmon_armor.glb"
  }
 }

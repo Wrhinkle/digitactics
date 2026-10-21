@@ -5318,7 +5318,6 @@
     "giz:RapidmonArmor": {
       "form": "Rapidmon (Armor)",
       "uid": "rip-cs_rapidmon_armor",
-      "clipsFrom": "catalog:CS_Rapidmon:chr722",
       "rip": true,
       "name": "Rapidmon (Armor) (Digimon Story Cyber Sleuth: Complete Edition)",
       "author": "The Models Resource",
