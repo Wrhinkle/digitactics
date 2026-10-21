@@ -27,7 +27,7 @@ internal sealed partial class MatchScreen
         }
         var origin=ImGui.GetCursorScreenPos();var full=ImGui.GetContentRegionAvail();
         // .loot: minmax(0,1fr) clamp(280px,26vw,380px), 12px gap.
-        float inventoryWidth=Math.Clamp(ImGui.GetIO().DisplaySize.X*.26f,280,380),stageWidth=full.X-inventoryWidth-12;
+        float inventoryWidth=S.Narrow?290:Math.Clamp(ImGui.GetIO().DisplaySize.X*.26f,280,380),stageWidth=full.X-inventoryWidth-12;
         ImGui.PushStyleColor(ImGuiCol.ChildBg,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(0,0,0,0));
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
         try
@@ -51,13 +51,15 @@ internal sealed partial class MatchScreen
         draw.AddRect(at,end,S.Gold4);
         // .loot-head
         var eyebrow=S.Display(11,.16f);var title=S.Display(26,.04f);
-        S.TextIn(draw,at+new float2(24,16),14.85f,S.Gold2,"LOOT",eyebrow);
-        S.TextIn(draw,at+new float2(24,16+14.85f+2),28.6f,S.Gold1,"INCUBATOR",title);
+        // .loot-head padding: 16px 24px, or 12px 16px at <=820px tall
+        float headX=S.Short?16:24,headY=S.Short?12:16;
+        S.TextIn(draw,at+new float2(headX,headY),14.85f,S.Gold2,"LOOT",eyebrow);
+        S.TextIn(draw,at+new float2(headX,headY+14.85f+2),28.6f,S.Gold1,"INCUBATOR",title);
         string bits=collection.Bits.ToString("N0");
-        float x=at.X+width-24;
-        x-=LootMaterial(null,bits,"Bits",new(x,at.Y+17),true)+8;
-        x-=LootMaterial("loot-chest",incubator!.Ready.ToString(),"Ready to digivolve",new(x,at.Y+17),true)+8;
-        LootMaterial("loot-shard",incubator.DigiData.ToString("N0"),"Digi-Data · Legend XP",new(x,at.Y+17),true);
+        float x=at.X+width-headX;
+        x-=LootMaterial(null,bits,"Bits",new(x,at.Y+headY+1),true)+8;
+        x-=LootMaterial("loot-chest",incubator!.Ready.ToString(),"Ready to digivolve",new(x,at.Y+headY+1),true)+8;
+        LootMaterial("loot-shard",incubator.DigiData.ToString("N0"),"Digi-Data · Legend XP",new(x,at.Y+headY+1),true);
         // .loot-data-help band at the bottom
         var help=S.Body(12);string helpText="Digi-Data is XP for each Little Legend. Earn it through matches, duplicate legend hatches and Digi-Farm care to level up and unlock digivolution. Bits are your spending currency.";
         float helpHeight=S.ParagraphHeight(helpText,help,width-48,1.6f)+20;
@@ -65,17 +67,20 @@ internal sealed partial class MatchScreen
         draw.AddRectFilled(helpAt,new(end.X-1,end.Y-1),new ImColor8(11,21,33,221));
         S.Paragraph(draw,helpAt+new float2(23,10),LootText,helpText,help,width-48,1.6f);
         // .altar: two equal columns, 24px gap, 0 32px 24px padding, vertically centred
-        float top=at.Y+16+55+16,bottom=helpAt.Y-24;float column=(width-64-24)*.5f;
+        // .altar: equal columns, 24px gap, 0 32px 24px padding; .9fr/1.1fr, 16px gap and padding at <=1380px.
+        float altarPad=S.Narrow?16:32,altarGap=S.Narrow?16:24,altarBottom=S.Narrow?16:24;
+        float top=at.Y+headY+55+headY,bottom=helpAt.Y-altarBottom;float usable=width-altarPad*2-altarGap;
+        float column=S.Narrow?usable*.45f:usable*.5f,infoColumn=usable-column;
         var selection=incubatorSelection!.Value;
         float itemSide=Math.Min(Math.Min(column,380),bottom-top);
-        var itemAt=new float2(at.X+32+(column-itemSide)*.5f,top+(bottom-top-itemSide)*.5f);
+        var itemAt=new float2(at.X+altarPad+(column-itemSide)*.5f,top+(bottom-top-itemSide)*.5f);
         LootAltarItem(collection,selection,itemAt,itemSide);
         float infoHeight=Math.Min(bottom-top,incubatorInformationHeight>0?incubatorInformationHeight:bottom-top);
-        var infoAt=new float2(at.X+32+column+24,top+(bottom-top-infoHeight)*.5f);
-        draw.AddRectFilled(infoAt,infoAt+new float2(column,infoHeight),new ImColor8(1,10,19,209));draw.AddRect(infoAt,infoAt+new float2(column,infoHeight),S.Gold4);
+        var infoAt=new float2(at.X+altarPad+column+altarGap,top+(bottom-top-infoHeight)*.5f);
+        draw.AddRectFilled(infoAt,infoAt+new float2(infoColumn,infoHeight),new ImColor8(1,10,19,209));draw.AddRect(infoAt,infoAt+new float2(infoColumn,infoHeight),S.Gold4);
         ImGui.SetCursorScreenPos(infoAt);
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(24,16));ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(8,8));ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize,6);
-        ImGui.BeginChild("Incubator altar information"u8,new(column,infoHeight),ImGuiChildFlags.AlwaysUseWindowPadding,ImGuiWindowFlags.NoBackground);
+        ImGui.BeginChild("Incubator altar information"u8,new(infoColumn,infoHeight),ImGuiChildFlags.AlwaysUseWindowPadding,ImGuiWindowFlags.NoBackground);
         ImGui.PopStyleVar(3);
         IncubatorInformationBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
         try
@@ -215,8 +220,8 @@ internal sealed partial class MatchScreen
         var draw=ImGui.GetWindowDrawList();float width=ImGui.GetContentRegionAvail().X;
         var at=ImGui.GetCursorScreenPos();float y=at.Y;
         S.TextIn(draw,new(at.X,y),14.85f,S.Gold2,"DIGI-EGG",S.Display(11,.16f));y+=14.85f+8;
-        var h2=S.Display(36,.04f);
-        foreach(string line in CollectionNameLines(egg.Definition.Name.ToUpperInvariant(),h2,width)){S.TextIn(draw,new(at.X,y),36,S.Gold1,line,h2);y+=36;}
+        var h2=S.Display(S.Short?26:36,.04f);
+        foreach(string line in CollectionNameLines(egg.Definition.Name.ToUpperInvariant(),h2,width)){S.TextIn(draw,new(at.X,y),h2.Size/1.3f,S.Gold1,line,h2);y+=h2.Size/1.3f;}
         y+=8;string description=egg.Definition.Id=="mixed"?"Any cosmetic from any category.":"A random "+CollectionNames[Array.IndexOf(CosmeticCollection.Kinds,egg.Definition.Kinds[0])].ToLowerInvariant()+" cosmetic.";
         y+=S.Paragraph(draw,new(at.X,y),S.Text2,description,S.Body(12.5f),width)+8;
         // .odds chips
@@ -270,8 +275,8 @@ internal sealed partial class MatchScreen
         var evolution=legend.Evolution;var form=LegendEvolution.Form(evolution.Form);
         var draw=ImGui.GetWindowDrawList();float width=ImGui.GetContentRegionAvail().X;var at=ImGui.GetCursorScreenPos();float y=at.Y;
         S.TextIn(draw,new(at.X,y),14.85f,S.Gold2,"LITTLE LEGEND · "+form.Level.ToUpperInvariant(),S.Display(11,.16f));y+=14.85f+8;
-        var h2=S.Display(36,.04f);
-        foreach(string line in CollectionNameLines(form.Name.ToUpperInvariant(),h2,width)){S.TextIn(draw,new(at.X,y),36,S.Gold1,line,h2);y+=36;}
+        var h2=S.Display(S.Short?26:36,.04f);
+        foreach(string line in CollectionNameLines(form.Name.ToUpperInvariant(),h2,width)){S.TextIn(draw,new(at.X,y),h2.Size/1.3f,S.Gold1,line,h2);y+=h2.Size/1.3f;}
         y+=8;
         S.TextIn(draw,new(at.X,y),19,StoreMuted,evolution.Need==0?"Max level":$"{evolution.Data}/{evolution.Need} Digi-Data",S.Body(13));
         var lvl=S.Display(11);string level="Lv "+evolution.Level;float lw=lvl.Width(level)+16;var lvlAt=new float2(at.X+width-lw,y+1);

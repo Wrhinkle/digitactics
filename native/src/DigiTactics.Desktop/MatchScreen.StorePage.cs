@@ -134,14 +134,16 @@ internal sealed partial class MatchScreen
                 string kind=CosmeticCollection.Kinds[i];
                 count=(collectionStore?CosmeticCollection.Items(kind).Count(item=>!item.Secret&&item.Linked is null):CosmeticCollection.Items(kind).Count(item=>collection.Owns(kind,item.Id))).ToString();
             }
-            float nameWidth=label.Width(name),tabWidth=28+nameWidth+(count is null?0:space+counter.Width(count));
+            if(S.Narrow)count=null;
+            float pad=S.Narrow?9:14;
+            float nameWidth=label.Width(name),tabWidth=pad*2+nameWidth+(count is null?0:space+counter.Width(count));
             if(x>=width)break;
             var at=origin+new float2(x,0);
             bool clicked=CosmeticHit("collectionTab/"+i,at,new(Math.Min(tabWidth,width-x),height),out bool hover);
             draw.PushClipRect(origin,origin+new float2(width,height+1),true);
-            float baseline=at.Y+11+(18.9f-label.Size)*.5f+.992f*14;
-            S.Text(draw,new(at.X+14,baseline-.992f*14),selected||hover?S.Gold1:S.LcMute,name,label);
-            if(count is not null)S.Text(draw,new(at.X+14+nameWidth+space,baseline-.969f*12),StoreMuted,count,counter);
+            float baseline=at.Y+(S.Narrow?9:11)+(18.9f-label.Size)*.5f+.992f*14;
+            S.Text(draw,new(at.X+pad,baseline-.992f*14),selected||hover?S.Gold1:S.LcMute,name,label);
+            if(count is not null)S.Text(draw,new(at.X+pad+nameWidth+space,baseline-.969f*12),StoreMuted,count,counter);
             if(selected)
             {
                 draw.AddRectFilled(new(at.X+10,at.Y+height-6),new(at.X+tabWidth-10,at.Y+height),new ImColor8(200,155,60,26));

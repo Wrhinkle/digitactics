@@ -29,7 +29,17 @@ internal sealed partial class MatchScreen
         var nameLines=CollectionNameLines(item.Name.ToUpperInvariant(),nameType,innerWidth);
         float descHeight=item.Desc is null?0:S.ParagraphHeight(item.Desc,descType,innerWidth);
         float actsHeight=CollectionPaneActions(collection,kind,item,default,innerWidth,true);
-        float infoHeight=16+22+8+nameLines.Count*27.3f+(item.Desc is null?0:8+descHeight)+8+4+actsHeight+16;
+        // .cprev-top wraps: rarity, tag, kind label and the ownership badge flow onto extra rows when narrow.
+        var muted=S.Body(14);string kindName=CollectionKindName(kind);
+        string? status=owned?CollectionWorn(collection,kind,item.Id)?"Equipped":"Owned":null;
+        var chips=new List<float>{S.BadgeWidth(S.RarityName(item.Rarity))};
+        if(item.Tag is not null)chips.Add(S.BadgeWidth(item.Tag));
+        chips.Add(muted.Width(kindName));
+        if(status is not null)chips.Add(S.BadgeWidth(status));
+        var chipAt=new List<float2>();float cx=0,cy=0;
+        foreach(float w in chips){if(cx>0&&cx+w>innerWidth){cx=0;cy+=22+8;}chipAt.Add(new(cx,cy));cx+=w+8;}
+        float topHeight=cy+22;
+        float infoHeight=16+topHeight+8+nameLines.Count*27.3f+(item.Desc is null?0:8+descHeight)+8+4+actsHeight+16;
         float infoTop=Math.Max(origin.Y+170,end.Y-1-infoHeight);
         var stageAt=origin+new float2(1,1);var stageSize=new float2(extent.X-2,infoTop-origin.Y-1);
         CollectionPaneStage(collection,kind,item,stageAt,stageSize);
@@ -37,13 +47,13 @@ internal sealed partial class MatchScreen
         draw.AddRectFilled(new(origin.X+1,infoTop),end-new float2(1,1),new ImColor8(1,10,19,217));
         draw.AddLine(new(origin.X+1,infoTop+.5f),new(end.X-1,infoTop+.5f),S.Gold4);
         float x=origin.X+17,y=infoTop+17;
-        float bx=x+S.RarityBadge(draw,new(x,y),item.Rarity,22)+8;
-        if(item.Tag is not null)bx+=S.Badge(draw,new(bx,y),item.Tag,S.LcText,new ImColor8(1,10,19,217),S.Gold4,22)+8;
-        var muted=S.Body(14);string kindName=CollectionKindName(kind);
-        S.TextIn(draw,new(bx,y),22,new ImColor8(143,154,176),kindName,muted);bx+=muted.Width(kindName)+8;
-        if(owned&&CollectionWorn(collection,kind,item.Id))S.EquippedBadge(draw,new(bx,y),22);
-        else if(owned)S.OwnedBadge(draw,new(bx,y),22);
-        y+=22+8;
+        int chip=0;var top=new float2(x,y);
+        S.RarityBadge(draw,top+chipAt[chip++],item.Rarity,22);
+        if(item.Tag is not null)S.Badge(draw,top+chipAt[chip++],item.Tag,S.LcText,new ImColor8(1,10,19,217),S.Gold4,22);
+        S.TextIn(draw,top+chipAt[chip++],22,new ImColor8(143,154,176),kindName,muted);
+        if(status=="Equipped")S.EquippedBadge(draw,top+chipAt[chip],22);
+        else if(status=="Owned")S.OwnedBadge(draw,top+chipAt[chip],22);
+        y+=topHeight+8;
         foreach(string line in nameLines){S.TextIn(draw,new(x,y),27.3f,S.Gold1,line,nameType);y+=27.3f;}
         if(item.Desc is not null){y+=8;S.Paragraph(draw,new(x,y),S.Text2,item.Desc,descType,innerWidth);y+=descHeight;}
         y+=12;

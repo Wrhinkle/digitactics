@@ -38,14 +38,14 @@ internal sealed partial class MatchScreen
         ImGui.BeginDisabled(farmManagement||training is not null);
         bool Head(string key,string label,float rightEdge,out float left,bool active=false,int? price=null,bool disabled=false)
         {
-            float w=buttonType.Width(label)+20+(price is null?0:6+S.Price(draw,default,26,price.Value,null,S.LcText,13,true));left=rightEdge-w;
+            float w=buttonType.Width(label)+22+(price is null?0:6+S.Price(draw,default,26,price.Value,null,S.LcText,13,true));left=rightEdge-w;
             var bAt=new float2(left,rowY+(rowHeight-28)*.5f);
             bool pressed=CosmeticButton(key,bAt,new(w,28),price is null?label:"",buttonType,disabled:disabled,ink:active?FarmYellow:null);
             if(price is not null)
             {
                 float lw=buttonType.Width(label);var ink=S.Alpha(S.LcText,disabled?.45f:1);
-                S.TextIn(draw,bAt+new float2(10,0),28,ink,label,buttonType);
-                ImGui.PushStyleVar(ImGuiStyleVar.Alpha,disabled?.45f:1);S.Price(draw,bAt+new float2(10+lw+6,0),28,price.Value,null,S.LcText,13);ImGui.PopStyleVar();
+                S.TextIn(draw,bAt+new float2(11,0),28,ink,label,buttonType);
+                ImGui.PushStyleVar(ImGuiStyleVar.Alpha,disabled?.45f:1);S.Price(draw,bAt+new float2(11+lw+6,0),28,price.Value,null,S.LcText,13);ImGui.PopStyleVar();
             }
             if(active)draw.AddRect(bAt,bAt+new float2(w,28),FarmYellow);
             return pressed;
@@ -66,15 +66,15 @@ internal sealed partial class MatchScreen
             ("bits",$"{daily["bits"]}/60","today",daily["bits"]!.GetValue<int>()>=60,"Bits earned on the farm today (daily cap)"),
             ("data",$"{daily["data"]}/100",(string?)null,daily["data"]!.GetValue<int>()>=100,"Digi-Data earned on the farm today (daily cap)"),
             ("bits",profile!.Progress.Bits.ToString(),(string?)null,false,"Your Bits")};
-        float PillWidth((string Icon,string? Value,string? Suffix,bool Capped,string Tip) p)=>8+14+4+pillBold.Width(p.Value!)+(p.Suffix is null?0:4+pill.Width(p.Suffix))+8;
+        float PillWidth((string Icon,string? Value,string? Suffix,bool Capped,string Tip) p)=>8+17+4+pillBold.Width(p.Value!)+(p.Suffix is null?0:4+pill.Width(p.Suffix))+8;
         float total=pills.Sum(PillWidth)+5*(pills.Length-1);
         float px=narrow?at.X+13:bx-total,py=narrow?at.Y+44+(FarmHeaderHeight-44-24)*.5f:rowY+(rowHeight-24)*.5f;
         foreach(var p in pills)
         {
             float w=PillWidth(p);var pAt=new float2(px,py);
             draw.AddRectFilled(pAt,pAt+new float2(w,24),new ImColor8(1,10,19,191));draw.AddRect(pAt,pAt+new float2(w,24),p.Capped?new ImColor8(255,211,106,136):S.Gold5);
-            FarmHeaderGlyph(draw,p.Icon,pAt+new float2(8+7,12));
-            float tx=pAt.X+8+14+4;var ink=p.Capped?new ImColor8(255,211,106):S.Text1;
+            FarmHeaderGlyph(draw,p.Icon,pAt+new float2(8+8,12));
+            float tx=pAt.X+8+17+4;var ink=p.Capped?new ImColor8(255,211,106):S.Text1;
             tx+=S.TextIn(draw,new(tx,pAt.Y),24,ink,p.Value!,pillBold);
             if(p.Suffix is not null)S.TextIn(draw,new(tx+4,pAt.Y),24,p.Capped?ink:S.Text1,p.Suffix,pill);
             if(ImGui.IsMouseHoveringRect(pAt,pAt+new float2(w,24)))ImGui.SetTooltip(p.Tip);
@@ -140,7 +140,7 @@ internal sealed partial class MatchScreen
         float buttonWidth=Math.Min(64,(FarmSceneWidth-16-12-(count-1)*6)/(float)count);const float buttonHeight=48;
         float dockWidth=buttonWidth*count+(count-1)*6+12+2,dockHeight=buttonHeight+12+2;
         var dockAt=new float2(FarmSceneX+(FarmSceneWidth-dockWidth)*.5f,FarmSceneTop+FarmSceneHeight-10-dockHeight);
-        draw.AddRectFilled(dockAt+new float2(0,4),dockAt+new float2(dockWidth,dockHeight+8),new ImColor8(0,0,0,50),16);
+        for(int i=1;i<=8;i++)draw.AddRect(dockAt+new float2(-i,6-i*.5f),dockAt+new float2(dockWidth+i,dockHeight+6+i),new ImColor8(0,0,0,(byte)(16*(1-i/9f))),14+i,thickness:2);
         draw.AddRectFilled(dockAt,dockAt+new float2(dockWidth,dockHeight),new ImColor8(14,18,28,209),14);
         draw.AddRect(dockAt,dockAt+new float2(dockWidth,dockHeight),FarmLine2,14);
         string? selected=farmPet;var details=selected is null?null:FarmDetails(selected);var pet=selected is null?null:state["pets"]?[selected];
@@ -194,7 +194,7 @@ internal sealed partial class MatchScreen
         draw.AddLine(new(window.X+.5f,window.Y),new(window.X+.5f,windowEnd.Y),S.Gold5);
         draw.ChannelsSplit(2);draw.ChannelsSetCurrent(1);
         // .df-who
-        draw.AddRectFilled(new(x,y),new(x+56,y+56),FarmBg,12);
+        FarmPortraitTile(draw,new(x,y),56,12);
         portraits.DrawEvolution(form.Id,new(x+2,y+2),52,true);
         var mood=farmView?.Mood(id);var moodType=S.Body(12,true);string moodText=mood?.Text??"";
         float moodWidth=moodText.Length==0?0:moodType.Width(moodText)+16;
@@ -261,7 +261,8 @@ internal sealed partial class MatchScreen
         foreach(var branch in evolution.Odds)
         {
             bool isKnown=known.Contains(branch.Form);var at=new float2(x+11,y);
-            draw.AddRectFilled(at,at+new float2(26,26),FarmBg,6);portraits.DrawEvolution(branch.Form,at,26,isKnown);
+            FarmPortraitTile(draw,at,26,6);portraits.DrawEvolution(branch.Form,at,26,isKnown);
+            if(!isKnown)draw.AddRect(at+new float2(1,1),at+new float2(25,25),new ImColor8(120,170,255,60),6);
             S.TextFit(draw,new(at.X+32,at.Y+(26-statType.Size)*.5f),S.Text1,isKnown?LegendEvolution.Form(branch.Form).Name:"???",statType,width-22-32-64-34-18);
             var care=FarmCareColor(branch.Care);var tgType=S.Body(10);string tg=char.ToUpperInvariant(branch.Care[0])+branch.Care[1..];
             var tAt=new float2(x+width-11-34-6-64,at.Y+5);
@@ -298,8 +299,9 @@ internal sealed partial class MatchScreen
         // Native shortcuts kept for keyboard and pointer tests: pet, play with a partner, clean a single pile.
         ImGui.PushFont(NativeUiTheme.BodyFont,S.Body(12).Size);
         ImGui.PushStyleColor(ImGuiCol.Header,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.HeaderHovered,new ImColor8(200,170,110,20));ImGui.PushStyleColor(ImGuiCol.Text,FarmMuted);
+        ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,0);
         bool more=ImGui.CollapsingHeader("More care actions"u8);
-        ImGui.PopStyleColor(3);
+        ImGui.PopStyleVar();ImGui.PopStyleColor(3);
         if(more)
         {
             if(Button("farmPet","Pet "+CosmeticCollection.Item("legend",id)!.Name,ImGui.GetContentRegionAvail().X,30))FarmAct(FarmCareAction.Pet);
@@ -309,6 +311,16 @@ internal sealed partial class MatchScreen
                 if(Button("farmPile/"+pile!["k"],"Clean pile "+pile["k"],0,30))FarmAct(FarmCareAction.CleanPile,pile:pile["k"]!.GetValue<int>());
         }
         ImGui.PopFont();
+    }
+    /// <summary>A legend .pt tile: radial-gradient(circle at 50% 30%) between light and dark mixes of --fc #8a6d1f.</summary>
+    private static void FarmPortraitTile(ImDrawListPtr draw,float2 at,float size,float rounding)
+    {
+        var light=new ImColor8(173,153,98);var dark=new ImColor8(62,52,27);
+        draw.AddRectFilled(at,at+new float2(size,size),dark,rounding);
+        var c=at+new float2(size*.5f,size*.3f);float reach=size*.68f;
+        draw.PushClipRect(at+new float2(1,1),at+new float2(size-1,size-1),true);
+        for(int i=0;i<14;i++){float t=i/13f;draw.AddCircleFilled(c,reach*(1-t)+1,S.Mix(light,t,dark),32);}
+        draw.PopClipRect();
     }
     private static void FarmBoxFrame(ImDrawListPtr draw,float2 at,float2 extent)
     {

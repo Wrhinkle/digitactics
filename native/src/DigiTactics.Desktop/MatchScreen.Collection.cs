@@ -104,7 +104,11 @@ internal sealed partial class MatchScreen
             // a second toolbar above every collection/loot surface.
             // .coll/.loot/#dtStore sit directly on the client backdrop (no page frame).
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize,0);
-            Window("Collection page",24,ClientPageTop+12,size.X-48,size.Y-ClientPageTop-28,ImGuiWindowFlags.NoTitleBar|ImGuiWindowFlags.NoBackground|ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
+            // .coll/.loot padding: 12px 24px 16px; 16px sides at <=1500px wide, 8px/10px at <=820px tall.
+            // #dtStore keeps 12px 24px 16px at every size.
+            bool page=!(collectionStore&&!showEggs);
+            float padX=page&&CosmeticStyle.Medium?16:24,padTop=page&&CosmeticStyle.Short?8:12,padBottom=page&&CosmeticStyle.Short?10:16;
+            Window("Collection page",padX,ClientPageTop+padTop,size.X-padX*2,size.Y-ClientPageTop-padTop-padBottom,ImGuiWindowFlags.NoTitleBar|ImGuiWindowFlags.NoBackground|ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
             ImGui.PopStyleVar(2);
             CollectionPageBackdrop();
         }

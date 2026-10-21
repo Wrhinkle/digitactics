@@ -87,7 +87,7 @@ internal sealed partial class MatchScreen
         foreach(var set in codexCatalog.Value.Variants.GroupBy(v=>v.SetId).Select(group=>group.FirstOrDefault(v=>v.Pace==data.Pace)??group.First()))
         {
             bool locked=Session is not null&&set.SetId!=data.SetId,on=data.SetId==set.SetId;
-            const float setWidth=170,setHeight=58;var at=origin+new float2(x,0);
+            float setWidth=S.Narrow?140:170;const float setHeight=58;var at=origin+new float2(x,0);
             ImGui.BeginDisabled(locked);
             bool chosen=CosmeticHit("codexSet/"+set.SetId,at,new(setWidth,setHeight),out bool hover);
             ImGui.EndDisabled();

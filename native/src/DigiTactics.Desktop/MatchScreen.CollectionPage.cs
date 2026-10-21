@@ -13,7 +13,10 @@ namespace DigiTactics.Desktop;
 /// </summary>
 internal sealed partial class MatchScreen
 {
-    private const float CollectionCardHeight=154,CollectionToolHeight=37;
+    private const float CollectionToolHeight=37;
+    // .ccard-prev is 104px, 88px when the viewport is at most 820px tall.
+    private static float CollectionPreviewHeight=>S.Short?88:104;
+    private static float CollectionCardHeight=>CollectionPreviewHeight+50;
 
     /// <summary>An invisible hit target at an absolute position with the shell's anchor, focus and sound bookkeeping.</summary>
     private bool CosmeticHit(string key,float2 at,float2 extent,out bool hover,bool overlap=false,bool sound=true)
@@ -78,7 +81,7 @@ internal sealed partial class MatchScreen
     {
         var origin=ImGui.GetCursorScreenPos();var full=ImGui.GetContentRegionAvail();
         // .coll: minmax(0,1fr) clamp(270px,24vw,360px), 12px gap.
-        float right=Math.Clamp(ImGui.GetIO().DisplaySize.X*.24f,270,360),left=full.X-right-12;
+        float right=S.Narrow?270:Math.Clamp(ImGui.GetIO().DisplaySize.X*.24f,270,360),left=full.X-right-12;
         ImGui.PushStyleColor(ImGuiCol.ChildBg,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(0,0,0,0));
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
         ImGui.BeginChild("collectionBrowser"u8,new(left,full.Y),ImGuiChildFlags.None,ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse|ImGuiWindowFlags.NoBackground);
@@ -131,7 +134,7 @@ internal sealed partial class MatchScreen
     /// <summary>.coll-banner: 92px category art, left-to-right navy wash, eyebrow/title and the right-hand count stack.</summary>
     private void CollectionPageBanner(CosmeticCollection collection,string kind,CosmeticItem[] visible,int owned)
     {
-        float width=ImGui.GetContentRegionAvail().X;const float height=92;
+        float width=ImGui.GetContentRegionAvail().X;float height=S.Short?72:92;
         var at=ImGui.GetCursorScreenPos();var draw=ImGui.GetWindowDrawList();
         string art=kind switch{"legend"=>"coll-legends","board"=>"coll-boards","emote" or "sound"=>"coll-emotes",_=>"store-fx"};
         collectionArtwork.Draw(art,at,new(width,height),255,true,.45f);
@@ -175,7 +178,9 @@ internal sealed partial class MatchScreen
                 int owned=items.Count(item=>collection.Owns(kind,item.Id));
                 count=collectionStore?items.Length.ToString():MatchLockerVisible?owned.ToString():owned+"/"+items.Length;
             }
-            float nameWidth=label.Width(name),width=28+nameWidth+(count is null?0:space+3+counter.Width(count));
+            if(S.Narrow)count=null;
+            float pad=S.Narrow?9:14;
+            float nameWidth=label.Width(name),width=pad*2+nameWidth+(count is null?0:space+3+counter.Width(count));
             if(x>=available)break;
             float visibleWidth=Math.Min(width,available-x);
             bool clicked=CosmeticHit("collectionTab/"+i,origin+new float2(x,0),new(visibleWidth,height),out bool hover);
@@ -183,8 +188,8 @@ internal sealed partial class MatchScreen
             draw.PushClipRect(origin,origin+new float2(available,height+1),true);
             // Baselines: the label and its smaller body-font count share one line box (9px top padding).
             float baseline=at.Y+9+(18.9f-label.Size)*.5f+.992f*14;
-            S.Text(draw,new(at.X+14,baseline-.992f*14),selected||hover?S.Gold1:S.LcMute,name,label);
-            if(count is not null)S.Text(draw,new(at.X+14+nameWidth+space+3,baseline-.969f*11),S.Text3,count,counter);
+            S.Text(draw,new(at.X+pad,baseline-.992f*14),selected||hover?S.Gold1:S.LcMute,name,label);
+            if(count is not null)S.Text(draw,new(at.X+pad+nameWidth+space+3,baseline-.969f*11),S.Text3,count,counter);
             if(selected)
             {
                 draw.AddRectFilled(new(at.X+12,at.Y+height-6),new(at.X+width-12,at.Y+height),new ImColor8(200,155,60,26));
@@ -205,7 +210,9 @@ internal sealed partial class MatchScreen
         bool retro=kind=="emote";
         float retroWidth=retro?retroType.Width("DIGIMON WORLD 1")+34:0;
         (string Id,string Label)[] ownership=[("all","All"),("owned","Owned"),("locked","Not owned")];
-        float segWidth=6+ownership.Sum(option=>segType.Width(option.Label)+24)+2*(ownership.Length-1);
+        // Inter 600 sits between the bundled regular and bold faces: size by the regular face, draw bold.
+        var segMeasure=S.Body(12.5f);
+        float segWidth=6+ownership.Sum(option=>segMeasure.Width(option.Label)+24)+2*(ownership.Length-1);
         var rarityOptions=new[]{("all","All rarities")}.Concat(CosmeticBrowser.Rarities.Select(value=>(value,char.ToUpperInvariant(value[0])+value[1..]))).ToArray();
         (string,string)[] sortOptions=[("rarity","Rarity: high first"),("rarity-asc","Rarity: low first"),("name","Name"),("owned","Owned first")];
         float rarityWidth=rarityOptions.Max(option=>body.Width(option.Item2))+48,sortWidth=sortOptions.Max(option=>body.Width(option.Item2))+48;
@@ -240,11 +247,11 @@ internal sealed partial class MatchScreen
                         float bx=segAt.X+3;
                         foreach(var option in ownership)
                         {
-                            float bw=segType.Width(option.Label)+24;var buttonAt=new float2(bx,segAt.Y+3);var extent=new float2(bw,segHeight-6);
+                            float bw=segMeasure.Width(option.Label)+24;var buttonAt=new float2(bx,segAt.Y+3);var extent=new float2(bw,segHeight-6);
                             bool on=collectionOwnership==option.Id;
                             if(CosmeticHit("collectionOwnership/"+option.Id,buttonAt,extent,out bool hover))collectionOwnership=option.Id;
                             if(on){draw.AddRectFilledMultiColor(buttonAt,buttonAt+extent,new ImColor8(30,35,40),new ImColor8(30,35,40),new ImColor8(42,50,64),new ImColor8(42,50,64));draw.AddRect(buttonAt,buttonAt+extent,S.Gold4);}
-                            S.TextIn(draw,buttonAt+new float2(12,0),extent.Y,on||hover?S.Gold1:S.LcMute,option.Label,segType);
+                            S.TextIn(draw,buttonAt+new float2((bw-segType.Width(option.Label))*.5f,0),extent.Y,on||hover?S.Gold1:S.LcMute,option.Label,segType);
                             bx+=bw+2;
                         }
                         break;
@@ -344,7 +351,7 @@ internal sealed partial class MatchScreen
         if(selected)for(int i=1;i<=9;i++)draw.AddRect(at-new float2(1+i,1+i),end+new float2(1+i,1+i),new ImColor8(240,210,140,(byte)(28*(1-i/10f))),thickness:2);
         else if(hovered){for(int i=1;i<=7;i++)draw.AddRect(at-new float2(i,i),end+new float2(i,i),S.Alpha(rarity,.09f*(1-i/8f)),thickness:2);draw.AddRectFilled(at+new float2(0,8),end+new float2(0,12),new ImColor8(0,0,0,60));}
         draw.AddRectFilledMultiColor(at,end,new ImColor8(11,26,44),new ImColor8(11,26,44),S.Navy0,S.Navy0);
-        var prevAt=at+new float2(1,1);var prevEnd=new float2(end.X-1,at.Y+104);
+        var prevAt=at+new float2(1,1);var prevEnd=new float2(end.X-1,at.Y+CollectionPreviewHeight);float shift=CollectionPreviewHeight-104;
         int first=draw.VtxBuffer.Count;
         CollectionRadial(draw,prevAt,prevEnd,new(.5f,.4f),S.Mix(rarity,.3f,new(11,26,44)),S.Navy0,.85f);
         draw.PushClipRect(prevAt,prevEnd,true);
@@ -354,10 +361,10 @@ internal sealed partial class MatchScreen
         if(!owned)S.Filter(draw,first,.8f,.55f);
         draw.AddLine(new(prevAt.X,prevEnd.Y-.5f),new(prevEnd.X,prevEnd.Y-.5f),S.Gold5);
         var nameType=S.Body(12.5f,true);var metaType=S.Body(10.5f,true,.08f);
-        S.TextFit(draw,at+new float2(9,112),owned?S.Gold1:S.Text2,item.Name,nameType,width-18);
-        S.Diamond(draw,at+new float2(12.5f,137),7,rarity);
+        S.TextFit(draw,at+new float2(9,112+shift),owned?S.Gold1:S.Text2,item.Name,nameType,width-18);
+        S.Diamond(draw,at+new float2(12.5f,137+shift),7,rarity);
         string meta=S.RarityName(item.Rarity).ToUpperInvariant()+(item.Tag is not null?" · "+item.Tag.ToUpperInvariant():"");
-        S.TextFit(draw,at+new float2(21,130.5f),rarity,meta,metaType,width-26);
+        S.TextFit(draw,at+new float2(21,130.5f+shift),rarity,meta,metaType,width-26);
         bool equipped=owned&&CollectionWorn(collection,kind,item.Id);
         if(equipped||!owned)
         {

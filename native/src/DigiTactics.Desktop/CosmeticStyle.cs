@@ -17,6 +17,11 @@ internal static class CosmeticStyle
     internal static readonly ImColor8 Accent=new(63,214,255),Success=new(79,224,143),Bits=new(79,200,255),Brand=new(255,138,61),Brand2=new(255,194,74);
     internal static readonly ImColor8 Border1=new(34,48,73);
 
+    /// <summary>theme.js breakpoints on the viewport: max-width 1500px, max-width 1380px and max-height 820px.</summary>
+    internal static bool Medium=>ImGui.GetIO().DisplaySize.X<=1500;
+    internal static bool Narrow=>ImGui.GetIO().DisplaySize.X<=1380;
+    internal static bool Short=>ImGui.GetIO().DisplaySize.Y<=820;
+
     internal readonly record struct Type(ImFontPtr Font,float Size,float Tracking,float Ratio)
     {
         public float Width(string text)
@@ -24,7 +29,8 @@ internal static class CosmeticStyle
             if(Tracking==0)return Font.CalcTextSizeA(Size,float.MaxValue,0,text).X;
             float width=0;int count=0;
             foreach(var rune in text.EnumerateRunes()){width+=Font.CalcTextSizeA(Size,float.MaxValue,0,rune.ToString()).X;count++;}
-            return width+Tracking*Math.Max(0,count-1);
+            // CSS letter-spacing follows every glyph, including the last one.
+            return width+Tracking*count;
         }
         public float Height=>Size;
     }
@@ -43,7 +49,7 @@ internal static class CosmeticStyle
             string glyph=rune.ToString();draw.AddText(type.Font,type.Size,new(x,at.Y),color,glyph);
             x+=type.Font.CalcTextSizeA(type.Size,float.MaxValue,0,glyph).X+type.Tracking;
         }
-        return x-type.Tracking-at.X;
+        return x-at.X;
     }
     /// <summary>Draws text truncated with an ellipsis to fit the width (CSS text-overflow: ellipsis).</summary>
     internal static float TextFit(ImDrawListPtr draw,float2 at,ImColor8 color,string text,Type type,float width)=>Text(draw,at,color,Fit(text,type,width),type);
