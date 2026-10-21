@@ -430,12 +430,12 @@ internal sealed partial class MatchScreen
         var draw=ImGui.GetWindowDrawList();float gray=owned?0:.8f;
         switch(kind)
         {
-            case "legend":portraits.DrawCompanion(CurrentPreviewLegend(collection,item.Id),at+new float2((extent.X-extent.Y)/2,0),extent.Y,gray);break;
+            case "legend":portraits.DrawCompanion(CurrentPreviewLegend(collection,item.Id),at+new float2((extent.X-extent.Y)/2,0),extent.Y,grayscale:gray);break;
             // .em-prev > .em-svg: min(100%,120px) square, overflowing the 104px box.
             case "emote":{float side=Math.Min(extent.X,120);emoteArtwork.Draw(item.Id,(long)(boardSceneTime*1000),at+(extent-new float2(side,side))*.5f,side,grayscale:gray);break;}
             case "killscreen":
                 collectionTheme.Draw(item.Id,false,boardSceneTime%3.5,at,extent);
-                portraits.DrawCompanion(CurrentPreviewLegend(collection),at+new float2(extent.X*.5f-30,extent.Y*.5f-36),60,gray);
+                portraits.DrawCompanion(CurrentPreviewLegend(collection),at+new float2(extent.X*.5f-30,extent.Y*.5f-36),60,grayscale:gray);
                 break;
             case "dance":
                 if(!StoreDanceThumbnail(collection,item,at,extent)&&CollectionArt.Value.TryGetValue(kind+"/"+item.Id,out string? danceFile))collectionArtwork.Draw(danceFile,at+(extent-new float2(64,64))*.5f,new(64,64),grayscale:!owned);
