@@ -18,6 +18,8 @@ internal sealed partial class MatchScreen
     /// <summary>.tile-card / .box surface: navy gradient, gold-5 frame (gold-4 when hovered).</summary>
     private static void PaintTile(ImDrawListPtr draw,float2 lo,float2 hi,bool hovered=false,bool box=false)
     {
+        // .box: box-shadow var(--sh-2) = 0 6px 18px rgba(0,0,0,.45).
+        if(box)NativeUiPaint.BoxGlow(draw,lo+new float2(0,6),hi+new float2(0,6),new ImColor8(0,0,0,115),18);
         NativeUiPaint.VerticalGradient(draw,lo,hi,new ImColor8(10,20,40,(byte)(box?240:235)),new ImColor8(1,10,19,242));
         draw.AddRect(lo,hi,NativeUiPaint.Fade(hovered?NativeUiTheme.GoldBorder:NativeUiTheme.GoldDim));
         // .box::before: a gold-3 highlight fading out toward both ends of the top edge.

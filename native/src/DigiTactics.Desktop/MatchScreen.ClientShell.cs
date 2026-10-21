@@ -221,7 +221,7 @@ internal sealed partial class MatchScreen
         var textAt=new float2(markAt.X+nav.Mark+10,MathF.Round(middle-size.Y/2));
         NativeUiPaint.TextGlow(draw,NativeUiTheme.DisplayBoldFont,nav.PlayFont,textAt,label,.16f,new ImColor8(63,214,255,60),12);
         NativeUiPaint.Tracked(draw,NativeUiTheme.DisplayBoldFont,nav.PlayFont,textAt,hovered?new ImColor8(255,255,255):NativeUiTheme.AccentInk,label,.16f);
-        if(ImGui.IsItemFocused())draw.AddRect(lo-new float2(2,2),hi+new float2(2,2),NativeUiPaint.Fade(NativeUiTheme.Accent),0,ImDrawFlags.None,2);
+        if(ImGui.IsItemFocused()&&ImGui.GetIO().NavVisible)draw.AddRect(lo-new float2(2,2),hi+new float2(2,2),NativeUiPaint.Fade(NativeUiTheme.Accent),0,ImDrawFlags.None,2);
     }
 
     private static ImColor8 Mix(ImColor8 a,ImColor8 b,float t)
@@ -374,7 +374,8 @@ internal sealed partial class MatchScreen
     {
         var draw=ImGui.GetWindowDrawList();
         ImGui.SetCursorScreenPos(at);ImGui.BeginDisabled(profile is null);
-        bool clicked=ClientHitButton("profile",extent.X,extent.Y);bool hovered=ImGui.IsItemHovered();
+        // The Settings and hide-friends buttons (.cn-win) sit over the right edge; keep the profile hit area clear of them.
+        bool clicked=ClientHitButton("profile",extent.X-58,extent.Y);bool hovered=ImGui.IsItemHovered();
         ImGui.EndDisabled();
         NativeUiPaint.VerticalGradient(draw,at,at+extent,showProfile?new ImColor8(8,24,42):hovered?new ImColor8(6,18,31):NativeUiTheme.Navy0,showProfile?new ImColor8(13,34,54):hovered?new ImColor8(11,26,44):new ImColor8(6,16,29));
         draw.AddLine(at,at+new float2(0,extent.Y),NativeUiPaint.Fade(NativeUiTheme.GoldDim));

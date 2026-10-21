@@ -155,7 +155,7 @@ internal sealed partial class MatchScreen
         else draw.AddRectFilled(lo,hi,NativeUiPaint.Fade(new ImColor8(1,10,19,230)));
         draw.AddRect(lo,hi,NativeUiPaint.Fade(value?NativeUiTheme.Gold:NativeUiTheme.GoldBorder));
         var knob=lo+new float2(value?23:3,3);
-        if(value)NativeUiPaint.BoxGlow(draw,knob,knob+new float2(14,14),new ImColor8(63,214,255,170),8);
+        if(value)NativeUiPaint.BoxGlow(draw,knob,knob+new float2(14,14),new ImColor8(63,214,255,110),8);
         draw.AddRectFilled(knob,knob+new float2(14,14),NativeUiPaint.Fade(value?NativeUiTheme.AccentInk:NativeUiTheme.LcMute));
         float textTop=MathF.Round(middle-(labelHeight+captionHeight)/2);
         NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyBoldFont,14,new(at.X+52,textTop),labelHeight,NativeUiTheme.Text1,label);
@@ -184,7 +184,7 @@ internal sealed partial class MatchScreen
         // Chromium's accent-colored range: an 8px rounded track, gold fill, dark remainder, 16px round thumb.
         float x=trackLeft+8+(trackRight-trackLeft-16)*value;
         draw.AddRectFilled(new(trackLeft,middle-4),new(trackRight,middle+4),NativeUiPaint.Fade(new ImColor8(49,49,49)),4);
-        draw.AddRect(new(trackLeft,middle-4),new(trackRight,middle+4),NativeUiPaint.Fade(new ImColor8(118,118,118,120)),4);
+        draw.AddRect(new(trackLeft,middle-4),new(trackRight,middle+4),NativeUiPaint.Fade(new ImColor8(133,133,133)),4);
         draw.AddRectFilled(new(trackLeft,middle-4),new(x,middle+4),NativeUiPaint.Fade(hot?new ImColor8(214,188,136):NativeUiTheme.Gold),4);
         draw.AddCircleFilled(new(x,middle),8,NativeUiPaint.Fade(hot?new ImColor8(214,188,136):NativeUiTheme.Gold),24);
         string number=((int)MathF.Round(value*100)).ToString();float numberWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,12.5f,number,0);
