@@ -103,8 +103,11 @@ export function modelClips(gltf, src, borrowed = null) {
 // movement 1.1-1.7% of body height), so boards show a frozen statue. Scale
 // each rotation key's offset from its opening key: the authored rhythm, opening
 // pose, loop endpoints, translations, scales and every other clip stay exact.
+// Tankdramon is not listed: its project-generated tank rig already gets the
+// whole-body root idle (model-anatomy.js generatedBodyClips), and a gain here
+// would also triple that root lean/sway and the seam-prone generated joints.
 function livelyIdle(src,clips){
-  const gain={'rip-durandamon':4,'rip-tankdramon':3}[src?.uid];
+  const gain={'rip-durandamon':4}[src?.uid];
   if(!gain)return clips;
   return clips.map(clip=>{
     if(clip.name!=='idle')return clip;

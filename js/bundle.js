@@ -43468,7 +43468,7 @@ void main() {
     return anatomyFallbackClips(gltf.scene, src, fallback);
   }
   function livelyIdle(src, clips) {
-    const gain = { "rip-durandamon": 4, "rip-tankdramon": 3 }[src?.uid];
+    const gain = { "rip-durandamon": 4 }[src?.uid];
     if (!gain) return clips;
     return clips.map((clip2) => {
       if (clip2.name !== "idle") return clip2;
