@@ -10,7 +10,7 @@ internal sealed partial class MatchScreen
     private IncubatorOverview? incubator;
     private (string? Wallet, string? Legends, string? Farm) incubatorSave;
     private (bool Legend, string Id)? incubatorSelection;
-    private float incubatorInformationHeight;
+    private float incubatorInformationHeight,incubatorNativeRowsHeight;
     internal IncubatorOverview? DisplayedIncubator => incubator;
     internal string? IncubatorSelected => incubatorSelection?.Id;
     internal int IncubatorExclusiveCount { get; private set; }

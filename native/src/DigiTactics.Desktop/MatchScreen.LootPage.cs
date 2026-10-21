@@ -76,7 +76,9 @@ internal sealed partial class MatchScreen
         var itemAt=new float2(at.X+altarPad+(column-itemSide)*.5f,top+(bottom-top-itemSide)*.5f);
         LootAltarItem(collection,selection,itemAt,itemSide);
         float infoHeight=Math.Min(bottom-top,incubatorInformationHeight>0?incubatorInformationHeight:bottom-top);
-        var infoAt=new float2(at.X+altarPad+column+altarGap,top+(bottom-top-infoHeight)*.5f);
+        // The original centres .altar-info; the native-only owned/contents rows extend below that position.
+        float centred=Math.Min(infoHeight,Math.Max(0,infoHeight-incubatorNativeRowsHeight));
+        var infoAt=new float2(at.X+altarPad+column+altarGap,Math.Min(top+(bottom-top-centred)*.5f,bottom-infoHeight));
         draw.AddRectFilled(infoAt,infoAt+new float2(infoColumn,infoHeight),new ImColor8(1,10,19,209));draw.AddRect(infoAt,infoAt+new float2(infoColumn,infoHeight),S.Gold4);
         ImGui.SetCursorScreenPos(infoAt);
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(24,16));ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(8,8));ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize,6);
@@ -85,6 +87,7 @@ internal sealed partial class MatchScreen
         IncubatorInformationBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
         try
         {
+            incubatorNativeRowsHeight=0;
             if(selection.Legend)IncubatorLegendControls(collection,incubator.Legends.Single(legend=>legend.Item.Id==selection.Id));
             else IncubatorEggControls(collection,incubator.Eggs.Single(egg=>egg.Definition.Id==selection.Id));
         }
@@ -228,11 +231,11 @@ internal sealed partial class MatchScreen
         var odd=S.Body(11,true,.06f);float x=0;
         foreach(var o in egg.Odds)
         {
-            string text=$"{o.Rarity.ToUpperInvariant()} {o.Pct:0.#}%";float chip=8+7+5+odd.Width(text)+8;
+            string text=$"{o.Rarity.ToUpperInvariant()} {o.Pct:0.#}%";float chip=1+8+7+5+odd.Width(text)+8+1;
             if(x>0&&x+chip>width){x=0;y+=21+6;}
             var c=new float2(at.X+x,y);var color=S.Rarity(o.Rarity);
             draw.AddRectFilled(c,c+new float2(chip,21),new ImColor8(1,10,19,179));draw.AddRect(c,c+new float2(chip,21),S.Mix(color,.45f,new ImColor8(color.AsByte4().X,color.AsByte4().Y,color.AsByte4().Z,0)));
-            S.Diamond(draw,c+new float2(8+3.5f,10.5f),7,color);S.TextIn(draw,c+new float2(20,0),21,color,text,odd);
+            S.Diamond(draw,c+new float2(9+3.5f,10.5f),7,color);S.TextIn(draw,c+new float2(21,0),21,color,text,odd);
             x+=chip+6;
         }
         y+=21+8+4;
@@ -243,7 +246,7 @@ internal sealed partial class MatchScreen
         if(CosmeticButton("hatchSelectedEgg",new(at.X+priceWidth+8,y),new(hatchWidth,41),"HATCH",hatchType,cta:true,disabled:collection.Bits<egg.Definition.Price||egg.Total==0))BeginIncubatorHatch(egg.Definition.Id);
         ImGui.EndDisabled();
         Buttons["egg/"+egg.Definition.Id]=Buttons["hatchSelectedEgg"];
-        y+=41+6;
+        y+=41+6;float originalEnd=y-6;
         // Native additions retained on one row: owned count and the contents disclosure.
         var ownedType=S.Body(12.5f);string owned=$"{egg.Owned} / {egg.Total} owned";
         S.TextIn(draw,new(at.X,y),18,StoreMuted,owned,ownedType);
@@ -253,7 +256,7 @@ internal sealed partial class MatchScreen
         if(CosmeticHit("lootContents",new(lx,y),new(linkType.Width(link)+14,18),out bool linkHover))lootContentsOpen=!lootContentsOpen;
         var arrow=new float2(lx+4,y+9);var ink=linkHover?new ImColor8(205,250,250):S.Accent;
         if(lootContentsOpen)draw.AddTriangleFilled(arrow+new float2(-4,-2),arrow+new float2(4,-2),arrow+new float2(0,3),ink);else draw.AddTriangleFilled(arrow+new float2(-2,-4),arrow+new float2(-2,4),arrow+new float2(3,0),ink);
-        S.TextIn(draw,new(lx+14,y),18,ink,link,linkType);y+=18;
+        S.TextIn(draw,new(lx+14,y),18,ink,link,linkType);y+=18;incubatorNativeRowsHeight=y-originalEnd;
         IncubatorContentsExpanded=lootContentsOpen;
         ImGui.SetCursorScreenPos(new(at.X,y));ImGui.Dummy(new(width,0));
         if(!IncubatorContentsExpanded)return;

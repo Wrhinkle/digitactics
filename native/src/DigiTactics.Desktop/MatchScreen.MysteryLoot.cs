@@ -72,17 +72,19 @@ internal sealed partial class MatchScreen
         }
         catch(Exception error) when (error is System.Text.Json.JsonException or InvalidOperationException or InvalidDataException or FormatException or OverflowException)
         {y+=CosmeticStyle.Paragraph(draw,new(x,y),text,"Mystery loot could not be read. Your save was preserved: "+error.Message,body,inner,1.6f);}
-        y+=16;
+        // The closing <p> keeps its 12px bottom margin inside the 16px section padding; the border is the section's.
+        y+=12+16;
         draw.AddLine(new(at.X,y+.5f),new(at.X+width,y+.5f),new ImColor8(88,96,116));
-        return y+1+12;
+        return y+1;
     }
     private float MysteryBoxRow(string pool,string title,string detail,bool available,float2 at,float width)
     {
         var draw=ImGui.GetWindowDrawList();var gold=new ImColor8(238,194,121);var titleType=CosmeticStyle.Body(14,true);var small=CosmeticStyle.Body(11.7f);
         var buttonType=CosmeticStyle.Body(14,true);string label=pool=="daily"?"Open":"Unlock";float buttonWidth=buttonType.Width(label)+34;
-        const float symbolWidth=32;float textLeft=symbolWidth+12,textWidth=width-textLeft-12-buttonWidth;
-        float detailHeight=CosmeticStyle.ParagraphHeight(detail,small,textWidth,1.6f);
-        float contentHeight=18.9f+5+detailHeight,height=16+Math.Max(contentHeight,40)+16;
+        // .mystery-symbol is a 32px glyph (about 27px wide, 43.2px line box); <small> keeps the body's 1.35 line height.
+        const float symbolWidth=27,symbolLine=32*1.35f;float textLeft=symbolWidth+12,textWidth=width-textLeft-12-buttonWidth;
+        float detailHeight=CosmeticStyle.ParagraphHeight(detail,small,textWidth,1.35f);
+        float contentHeight=18.9f+5+detailHeight,height=16+Math.Max(contentHeight,symbolLine)+16;
         var center=at+new float2(symbolWidth*.5f,height*.5f);
         if(pool=="daily")
         {
@@ -96,7 +98,7 @@ internal sealed partial class MatchScreen
         }
         float top=at.Y+(height-contentHeight)*.5f;
         CosmeticStyle.TextIn(draw,new(at.X+textLeft,top),18.9f,CosmeticStyle.Text1,title,titleType);
-        CosmeticStyle.Paragraph(draw,new(at.X+textLeft,top+18.9f+5),new ImColor8(180,194,213),detail,small,textWidth,1.6f);
+        CosmeticStyle.Paragraph(draw,new(at.X+textLeft,top+18.9f+5),new ImColor8(180,194,213),detail,small,textWidth,1.35f);
         if(CosmeticButton("mysteryOpen/"+pool,new(at.X+width-buttonWidth,at.Y+(height-35)*.5f),new(buttonWidth,35),label,buttonType,disabled:!available))OpenMysteryBox(pool);
         draw.AddLine(new(at.X,at.Y+height-.5f),new(at.X+width,at.Y+height-.5f),new ImColor8(255,255,255,21));
         return at.Y+height;
