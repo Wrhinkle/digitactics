@@ -10,6 +10,7 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
     private readonly CompanionCatalog companions = CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/companion-models.json"));
     private readonly JsonDocument emoteData = JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "content/emotes/manifest.json")));
     private ModelRenderer? renderer;
+    private readonly UnitRing ring = new();
     private static readonly Lazy<DanceCatalog> Dances = new(() => DanceCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/dance-bindings.json")));
     private DanceSkeleton? dancer;
     private DanceRoot? danceRoot;
@@ -39,6 +40,9 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
     {
         if (model is null || animator is null) return;
         var placement = model.PlaceCompanion(animator, opponent ? 7.6 : Travel.X, opponent ? 0 : Travel.Hop(animator.HasRun), opponent ? -6.6 : Travel.Z, overlay, danceRoot);
+        // legends.js LegendView ring: gold under your Little Legend, red under the combat opponent's.
+        ring.Draw(sceneRenderer, camera, transparent, opponent ? 7.6 : Travel.X, opponent ? 0 : Travel.Hop(animator.HasRun), opponent ? -6.6 : Travel.Z,
+            opponent ? "#ff7a6a" : "#ffcf4a", radius: .8);
         sceneRenderer.ReceiveShadow = true;
         sceneRenderer.Draw(model, animator.Pose, placement, camera, transparent);
         if (sceneRenderer.ShadowPass) ShadowDrawCalls += sceneRenderer.DrawCalls;
@@ -108,5 +112,5 @@ internal sealed class ArenaCompanionView(bool opponent = false) : IDisposable
             new(opponent?7.6:Travel.X,opponent?0:Travel.Hop(animator.HasRun),opponent?-6.6:Travel.Z),frameNow) ?? 0;
         ModelRenderer.End();
     }
-    public void Dispose() { retro?.Dispose(); model?.Dispose(); emoteData.Dispose(); renderer?.Dispose(); }
+    public void Dispose() { ring.Dispose(); retro?.Dispose(); model?.Dispose(); emoteData.Dispose(); renderer?.Dispose(); }
 }

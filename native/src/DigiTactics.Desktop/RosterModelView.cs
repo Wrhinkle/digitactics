@@ -18,10 +18,17 @@ internal sealed class RosterModelView(ModelCatalog? modelCatalog = null) : IDisp
     private readonly Dictionary<int, WorldPosition> shown = [];
     internal const double SettleRate = 18, LiftRate = 25;
     private PlaceholderCreature? placeholder;
+    private readonly UnitRing ring = new();
     private string variant="";
     public HashSet<int> RenderedUnits { get; } = [];
     public int? DraggedUnit { get; set; }
     public WorldPosition? DragPosition { get; set; }
+    /// <summary>ui.hoverUid: the hovered unit grows to 1.08 and its ring turns white.</summary>
+    public int? HoveredUnit { get; set; }
+    /// <summary>render3d.js view alpha: .45 for the planning preview of the next opponent's side.</summary>
+    public double Opacity { get; init; } = 1;
+    /// <summary>Facing: π for the local side, 0 for the opponent's preview.</summary>
+    public double Yaw { get; init; } = Math.PI;
 
     public void Update(Ruleset rules, IEnumerable<(PlanningUnit Unit, WorldPosition Position)> roster, double delta)
     {
@@ -63,17 +70,20 @@ internal sealed class RosterModelView(ModelCatalog? modelCatalog = null) : IDisp
         foreach (var entry in entries)
         {
             var position = shown.TryGetValue(entry.Unit.Id, out var displayed) ? displayed : Target(entry.Unit.Id, entry.Position);
-            var view = new CombatVisual(entry.Unit.Id, position, Math.PI, default, 1, 0, 0, 1, null, false);
+            bool hovered = entry.Unit.Id == HoveredUnit && !(entry.Unit.Id == DraggedUnit && DragPosition is not null);
+            double scale = hovered ? 1.08 : 1;
+            var view = new CombatVisual(entry.Unit.Id, position, Yaw, default, scale, 0, 0, 1, null, false);
+            ring.Draw(renderer, camera, transparent, position.X, position.Y, position.Z, hovered ? "#ffffff" : UnitRing.TierColor(entry.Tier), Opacity, scale);
             if(!actors.TryGetValue(entry.Unit.Id,out var actor))
             {
-                if(!transparent)
+                if(transparent==Opacity<1)
                 {
-                    int drawn=(placeholder??=new()).Draw(renderer,camera,GpuModel.Transform(position.X,position.Y,position.Z,Math.PI,1),variant,entry.Unit.Line,fog:true);
+                    int drawn=(placeholder??=new()).Draw(renderer,camera,GpuModel.Transform(position.X,position.Y,position.Z,Yaw,scale),variant,entry.Unit.Line,fog:true,opacity:Opacity);
                     if(!renderer.ShadowPass){calls+=drawn;RenderedUnits.Add(entry.Unit.Id);}
                 }
                 continue;
             }
-            renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.Place(view, entry.Unit.Stage, entry.Tier), camera, transparent);
+            renderer.Draw(actor.Model, actor.Animator.Pose, actor.Model.Place(view, entry.Unit.Stage, entry.Tier), camera, transparent, opacity: Opacity);
             if (!renderer.ShadowPass)
             {
                 calls += renderer.DrawCalls;
@@ -87,7 +97,7 @@ internal sealed class RosterModelView(ModelCatalog? modelCatalog = null) : IDisp
 
     public void Dispose()
     {
-        placeholder?.Dispose();placeholder=null;
+        placeholder?.Dispose();placeholder=null;ring.Dispose();
         foreach (var model in models.Values) model.Dispose();
         models.Clear(); actors.Clear(); entries.Clear(); shown.Clear(); RenderedUnits.Clear();
     }

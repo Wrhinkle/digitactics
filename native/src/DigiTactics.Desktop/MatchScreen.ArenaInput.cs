@@ -26,6 +26,8 @@ internal sealed partial class MatchScreen
     private void ArenaPointer()
     {
         DetailedCombatUnit = null;
+        planning.HoveredUnit = null;
+        if (battle is not null) battle.HoveredBenchUnit = battle.HoveredUnit = null;
         for(int i=0;i<9;i++)
         {
             var point=planning.Bench(i,Width,Height);
@@ -113,7 +115,12 @@ internal sealed partial class MatchScreen
         CombatTooltip(inside && shelfHover < 0 && spot is null, mouse);
         planning.DraggedUnit = battle is null && arenaDragMoved ? arenaDrag?.Id : null;
         planning.DragPosition = arenaDragPosition;
-        if (battle is not null) { battle.DraggedUnit = arenaDragMoved ? arenaDrag?.Id : null; battle.DragPosition = arenaDragPosition; }
+        planning.HoveredUnit = hoveredOwnedUnit;
+        if (battle is not null)
+        {
+            battle.DraggedUnit = arenaDragMoved ? arenaDrag?.Id : null; battle.DragPosition = arenaDragPosition;
+            battle.HoveredBenchUnit = hoveredOwnedUnit; battle.HoveredUnit = DetailedCombatUnit?.Id;
+        }
     }
 
     private bool SellDropZone()

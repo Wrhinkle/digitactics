@@ -174,6 +174,13 @@ internal sealed partial class MatchScreen
             bool named=hoveredOwnedUnit==entry.Unit.Id||dragged;
             DrawUnitLabel(draw,new(Left+point.X,Top+point.Y),entry.Unit.Stage,entry.Unit.Items,named?line.Forms[entry.Unit.Stage]:null,null,null);
         }
+        // Preview side labels are .55 opaque (render3d.js updateViews d.preview).
+        foreach(var unit in planning.PreviewSide)
+        {
+            var line=Rules.Lines.Concat(Rules.ExtraLines).Single(l=>l.Id==unit.Line);var position=PlanningView.PreviewCell(unit);
+            var point=planning.Point(position,position.Y+BattleView.LabelHeight(unit.Stage,line.Tier),Width,Height);
+            DrawUnitLabel(draw,new(Left+point.X,Top+point.Y),unit.Stage,unit.Items??[],null,null,null,.55f);
+        }
         draw.PopClipRect();
     }
 }

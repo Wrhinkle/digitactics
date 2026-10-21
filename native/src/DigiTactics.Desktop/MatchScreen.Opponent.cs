@@ -21,6 +21,16 @@ internal sealed partial class MatchScreen
         if(!pve&&session.State.Duos)name+=" + "+session.State.Teams[opponent!.Value.Player.Team!.Value].Members.First(p=>p.Id!=opponent.Value.Player.Id).Name;
         return new(pve,label,name,pve?"":Math.Max(0,opponent!.Value.Player.Health)+" HP",opponent?.Ghost==true,pve?null:opponent!.Value.Player);
     }
+    // ui.js refresh previewSide: while planning a non-carousel round on your own board, the wild wave (PvE) or the
+    // next opponent's board (PvP) stands faded on the enemy rows.
+    private IReadOnlyList<CombatEntry>? PlanningPreviewSide()
+    {
+        var session=Session!;
+        if(session.Rounds.Phase!=MatchPhase.Planning||session.Rounds.RoundType=="carousel"||viewed!=localSeat)return null;
+        if(session.Rounds.RoundType=="pve")return session.State.Rules.MatchCombat?.Wave(session.Rounds.Position,session.State.TreasureVariant);
+        return StandingOpponent(session.State.Players[viewed]) is {} opponent
+            ?opponent.Player.Roster.Board.Select(e=>new CombatEntry(e.Unit.Line,e.Unit.Stage,e.Spot.Column,e.Spot.Row,Items:e.Unit.Items)).ToArray():null;
+    }
     // #opponentLabel: .ol 11px/1.1, .on 700 14px capped at 150px; <small> is the browser's "smaller" step.
     private const float OpponentSmall=14/1.2f;
     private float OpponentTextWidth(OpponentLabel card)

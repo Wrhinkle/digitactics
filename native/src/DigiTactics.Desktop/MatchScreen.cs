@@ -194,7 +194,7 @@ internal sealed partial class MatchScreen : IDisposable
         else if (Session.Rounds.Phase == MatchPhase.Result) {battle?.Advance(delta, ReplaySpeed);castFeed?.Observe(ReplaySpeed);}
         if (wasResult) UpdateResultCountdown(wallDelta ?? delta);
         else UpdatePlanningCountdown(delta);
-        planning.Update(Rules, Session.State.Players[viewed], delta);
+        planning.Update(Rules, Session.State.Players[viewed], delta, PlanningPreviewSide());
         UpdateBattleBench(delta);
         UpdateAiEmotes();
         UpdateArenaCompanion(delta);
@@ -218,6 +218,7 @@ internal sealed partial class MatchScreen : IDisposable
         if (next is not null)
         {
             battle = new(Rules, next.Combat, mirror,arenaEnvironment);
+            battle.CastColor = unit => CombatCastFeed.ElementColor(abilityElements.Get(Rules.Id, unit.Line.Id, unit.Stage));
             UpdateBattleBench(0);
         }
     }

@@ -19,6 +19,12 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
     internal IReadOnlySet<int> RenderedBenchUnits => bench.RenderedUnits;
     public int? DraggedUnit { get => bench.DraggedUnit; set => bench.DraggedUnit = value; }
     public WorldPosition? DragPosition { get => bench.DragPosition; set => bench.DragPosition = value; }
+    public int? HoveredBenchUnit { get => bench.HoveredUnit; set => bench.HoveredUnit = value; }
+    /// <summary>ui.hoverCombatId: the hovered fighter grows to 1.08 and its ring turns white.</summary>
+    public int? HoveredUnit { get; set; }
+    /// <summary>Element color of a caster's ability; its ring takes it while the cast glow lasts.</summary>
+    public Func<CombatUnit, string>? CastColor { get; set; }
+    private readonly UnitRing ring = new();
     private readonly ArenaEnvironment board;
     private readonly bool ownsBoard;
     public string BoardTheme { get; set; } = "file-island";
@@ -88,7 +94,7 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
         double playbackDelta = Math.Clamp(delta, 0, .1) * speed;
         accumulator += playbackDelta;
         while (accumulator >= CombatSimulation.Tick && !Combat.Done) { Combat.Step(); accumulator -= CombatSimulation.Tick; }
-        choreography.Update(delta, mirror); AdvanceMoveEffects(playbackDelta);
+        choreography.Update(delta, mirror, HoveredUnit); AdvanceMoveEffects(playbackDelta);
     }
     public void Controls(Brutal.Numerics.int2 size)
     {
@@ -156,6 +162,8 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
             foreach(var view in choreography.Views)
             {
                 var unit=Combat.Units[view.UnitId];
+                string ringColor=view.Glow>0&&CastColor is {} cast?cast(unit):view.UnitId==HoveredUnit?"#ffffff":UnitRing.TierColor(unit.Line.Tier);
+                ring.Draw(renderer,viewCamera,transparent,view.Position.X,view.Position.Y,view.Position.Z,ringColor,1,view.Scale,view.RingScale);
                 if(!actors.TryGetValue(view.UnitId,out var actor))
                 {
                     if(!transparent)
@@ -174,5 +182,5 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
         board.Draw(renderer,camera,board.Camera.Eye(width,height,Combat.Columns),Combat.Columns,false,left,bottom,width,height,Units);
         DrawMoveEffects(camera,width,height);
     }
-    public void Dispose() { combatMoves?.Clear();moveEffects?.Dispose(); placeholder?.Dispose();bench.Dispose(); foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
+    public void Dispose() { combatMoves?.Clear();moveEffects?.Dispose(); placeholder?.Dispose();ring.Dispose();bench.Dispose(); foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
 }
