@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace DigiTactics.Storage;
 
-public sealed record EvolutionForm(string Id, string Name, string Level, int Tier, int Rank);
+public sealed record EvolutionForm(string Id, string Name, string Level, int Tier, int Rank, string? Line = null);
 public sealed record EvolutionOdds(string Form, string Care, double Weight, int Pct);
 public sealed record EvolutionView(string Form, int Level, int Data, int Need, int? Next, bool CanDigivolve, bool CanRevert,
     EvolutionOdds[] Odds, int LevelBits, string? Roll);

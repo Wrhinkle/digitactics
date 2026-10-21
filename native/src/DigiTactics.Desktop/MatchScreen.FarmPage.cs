@@ -148,7 +148,7 @@ internal sealed partial class MatchScreen
         bool lights=state["lights"]!.GetValue<bool>();
         var label=S.Body(11,true);float x=dockAt.X+7;
         ImGui.BeginDisabled(farmManagement||training is not null||selected is null);
-        void Act(string key,string text,FarmSymbol? symbol,Action action,bool active=false,bool alert=false)
+        void Act(string key,string text,FarmUiIcon icon,Action action,bool active=false,bool alert=false)
         {
             var at=new float2(x,dockAt.Y+7);var extent=new float2(buttonWidth,buttonHeight);
             bool pressed=CosmeticHit(key,at,extent,out bool hover);
@@ -160,7 +160,7 @@ internal sealed partial class MatchScreen
             S.VerticalGradient(draw,first,at.Y,at.Y+extent.Y,top,S.Mix(top,.5f,bottom),.5f,bottom);
             if(alert&&!disabled)for(int i=1;i<=5;i++)draw.AddRect(at-new float2(i,i),at+extent+new float2(i,i),new ImColor8(255,138,90,(byte)(26*(1-i/6f))),10+i,thickness:2);
             draw.AddRect(at,at+extent,S.Alpha(active?FarmYellow:alert?new ImColor8(255,138,90):hover?S.Gold2:S.Gold4,alpha),10);
-            DrawFarmActionIcon(symbol,text,at+new float2(buttonWidth*.5f,5+11));
+            DrawFarmUiIcon(draw,icon,at+new float2(buttonWidth*.5f,5+11),13);
             var ink=S.Alpha(active?FarmYellow:hover?S.Gold1:S.LcText,alpha);
             S.TextIn(draw,new(at.X+(buttonWidth-label.Width(text))*.5f,at.Y+5+22+1),13.3f,ink,text,label);
             if(pressed)action();
@@ -168,14 +168,14 @@ internal sealed partial class MatchScreen
         }
         double hunger=pet?["hunger"]?.GetValue<double>()??100,energy=pet?["energy"]?.GetValue<double>()??100;
         bool piles=state["pets"]!.AsObject().Any(p=>p.Value?["poop"]?.AsArray().Count>0);
-        Act("farmAction/feed","Feed",FarmSymbol.Meat,()=>farmActionMenu=farmActionMenu=="feed"?null:"feed",farmActionMenu=="feed",hunger<25);
-        Act("farmClean","Clean",null,()=>FarmAct(FarmCareAction.Clean),false,piles);
-        Act("farmAction/cure","Medicine",FarmSymbol.Medicine,()=>farmActionMenu=farmActionMenu=="cure"?null:"cure",farmActionMenu=="cure",details?.Sick==true);
-        Act("farmLights",lights?"Lights off":"Lights on",FarmSymbol.Sleep,()=>FarmAct(FarmCareAction.Lights),!lights,lights&&energy<20);
-        Act("farmPraise","Praise",FarmSymbol.Heart,()=>FarmAct(FarmCareAction.Praise));
-        Act("farmScold","Scold",FarmSymbol.Exclaim,()=>FarmAct(FarmCareAction.Scold),false,FarmFlag(pet?["tantrum"]));
-        Act("farmAction/train","Train",null,()=>farmActionMenu=farmActionMenu=="train"?null:"train",farmActionMenu=="train");
-        Act("farmPlay","Play",FarmSymbol.Music,()=>FarmAct(FarmCareAction.Play));
+        Act("farmAction/feed","Feed",FarmUiIcon.Meat,()=>farmActionMenu=farmActionMenu=="feed"?null:"feed",farmActionMenu=="feed",hunger<25);
+        Act("farmClean","Clean",FarmUiIcon.Broom,()=>FarmAct(FarmCareAction.Clean),false,piles);
+        Act("farmAction/cure","Medicine",FarmUiIcon.Pill,()=>farmActionMenu=farmActionMenu=="cure"?null:"cure",farmActionMenu=="cure",details?.Sick==true);
+        Act("farmLights",lights?"Lights off":"Lights on",FarmUiIcon.Bulb,()=>FarmAct(FarmCareAction.Lights),!lights,lights&&energy<20);
+        Act("farmPraise","Praise",FarmUiIcon.Clap,()=>FarmAct(FarmCareAction.Praise));
+        Act("farmScold","Scold",FarmUiIcon.Anger,()=>FarmAct(FarmCareAction.Scold),false,FarmFlag(pet?["tantrum"]));
+        Act("farmAction/train","Train",FarmUiIcon.Lifter,()=>farmActionMenu=farmActionMenu=="train"?null:"train",farmActionMenu=="train");
+        Act("farmPlay","Play",FarmUiIcon.Ball,()=>FarmAct(FarmCareAction.Play));
         ImGui.EndDisabled();
     }
 
@@ -227,11 +227,11 @@ internal sealed partial class MatchScreen
         var tagType=S.Body(11);float tx=x;
         void Tag(string text,ImColor8? tone,string? glyph=null)
         {
-            float w=7+(glyph is null?0:15)+tagType.Width(text)+7;if(tx>x&&tx+w>x+width){tx=x;y+=22;}
+            float w=8+(glyph is null?0:15)+tagType.Width(text)+8;if(tx>x&&tx+w>x+width){tx=x;y+=25;}
             var at=new float2(tx,y);var ink=tone??S.Text1;
-            draw.AddRectFilled(at,at+new float2(w,19),FarmBg,9);draw.AddRect(at,at+new float2(w,19),tone is {} t?S.Alpha(t,.4f):FarmLine2,9);
-            float gx=at.X+7;if(glyph is not null){FarmTagGlyph(draw,glyph,new(gx+6,at.Y+9.5f),ink);gx+=15;}
-            S.TextIn(draw,new(gx,at.Y),19,ink,text,tagType);tx+=w+4;
+            draw.AddRectFilled(at,at+new float2(w,21),FarmBg,9);draw.AddRect(at,at+new float2(w,21),tone is {} t?S.Alpha(t,.4f):FarmLine2,9);
+            float gx=at.X+8;if(glyph is not null){FarmTagGlyph(draw,glyph,new(gx+6,at.Y+10.5f),ink);gx+=15;}
+            S.TextIn(draw,new(gx,at.Y),21,ink,text,tagType);tx+=w+4;
         }
         var good=new ImColor8(159,224,122);var bad=new ImColor8(255,154,122);
         Tag($"{pet["weight"]} G"+(details.Fat?" · chubby":details.Thin?" · thin":""),details.Fat||details.Thin?bad:good,"weight");
@@ -240,9 +240,9 @@ internal sealed partial class MatchScreen
         if(details.Sick)Tag("Sick"+(pet["sickWhy"]?.GetValue<string>() switch{"dirty"=>" (dirty room)","hungry"=>" (hungry)",_=>""}),bad);
         if(FarmFlag(pet["tantrum"]))Tag("Tantrum: scold it",bad);
         if(FarmFlag(pet["flags"]?["asleep"]))Tag("Asleep",null);
-        y+=19+8;
+        y+=21+8;
         // training
-        boxTop=y;y+=8;
+        boxTop=y;y+=9;
         FarmBoxHeading(draw,new(x+11,y),width-22,"TRAINING","cap 300");y+=14.85f+5;
         float column=(width-22-10)/2;
         string[][] stats=[["str","Strength"],["spd","Speed"],["wis","Wisdom"],["sta","Stamina"]];
@@ -254,15 +254,15 @@ internal sealed partial class MatchScreen
         }
         y+=2*(16.2f+2+6)+4;
         if(details.TrainingRefusal is {} refusal){y+=4;y+=S.Paragraph(draw,new(x+11,y),bad,refusal,S.Body(11),width-22,1.35f);}
-        y+=8;FarmBoxFrame(draw,new(x,boxTop),new(width,y-boxTop));y+=8;
+        y+=9;FarmBoxFrame(draw,new(x,boxTop),new(width,y-boxTop));y+=8;
         // next digivolution
-        boxTop=y;y+=8;var evolution=details.Evolution;FarmEvolutionBranches=0;
+        boxTop=y;y+=9;var evolution=details.Evolution;FarmEvolutionBranches=0;
         FarmBoxHeading(draw,new(x+11,y),width-22,"NEXT DIGIVOLUTION",evolution.CanDigivolve?"ready now":evolution.Next is {} next?$"at level {next}":null,evolution.CanDigivolve);y+=14.85f+5;
         var known=LegendEvolution.Discovery(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"),id).Dex.ToHashSet();
         foreach(var branch in evolution.Odds)
         {
-            bool isKnown=known.Contains(branch.Form);var at=new float2(x+11,y);
-            FarmPortraitTile(draw,at,26,6);portraits.DrawEvolution(branch.Form,at,26,isKnown);
+            bool isKnown=known.Contains(branch.Form);var at=new float2(x+11,y+1);
+            HudPortraitTile(draw,at,26,FarmFormColor(branch.Form),6);portraits.DrawEvolution(branch.Form,at,26,isKnown);
             if(!isKnown)draw.AddRect(at+new float2(1,1),at+new float2(25,25),new ImColor8(120,170,255,60),6);
             S.TextFit(draw,new(at.X+32,at.Y+(26-statType.Size)*.5f),S.Text1,isKnown?LegendEvolution.Form(branch.Form).Name:"???",statType,width-22-32-64-34-18);
             var care=FarmCareColor(branch.Care);var tgType=S.Body(10);string tg=char.ToUpperInvariant(branch.Care[0])+branch.Care[1..];
@@ -282,9 +282,9 @@ internal sealed partial class MatchScreen
             draw.AddRectFilledMultiColor(lo,hi,new ImColor8(255,210,122),new ImColor8(255,210,122),S.Brand,S.Brand);draw.AddRect(lo,hi,new ImColor8(240,210,140));
             S.TextIn(draw,new(lo.X+(width-22-evoType.Width("Open Digivolve"))*.5f,lo.Y),24,S.TextInv,"Open Digivolve",evoType);
         }
-        y+=24+8;FarmBoxFrame(draw,new(x,boxTop),new(width,y-boxTop));y+=8;
+        y+=24+9;FarmBoxFrame(draw,new(x,boxTop),new(width,y-boxTop));y+=8;
         // care pushes
-        boxTop=y;y+=8;FarmBoxHeading(draw,new(x+11,y),width-22,"FARM CARE PUSHES BRANCHES",null);y+=14.85f+5;
+        boxTop=y;y+=9;FarmBoxHeading(draw,new(x+11,y),width-22,"FARM CARE PUSHES BRANCHES",null);y+=14.85f+5;
         var bonus=details.Care.Bonus;var pushType=S.Body(11);var pushBold=S.Body(11,true);
         foreach(var (key,name,description) in new[]{("bond","Bond","Praise, play and petting"),("battle","Battle","Training stats (every 25 points)"),("food","Food","Meals when hungry (carrots count more)"),("wild","Wild",$"{details.Mistakes} mistakes ×3, {details.PoopNeglect} poop left out ×2")})
         {
@@ -294,7 +294,7 @@ internal sealed partial class MatchScreen
             string v=$"+{bonus[key]:0}";S.TextIn(draw,new(x+width-11-pushBold.Width(v),y),14,S.Text1,v,pushBold);
             y+=rowH+2;
         }
-        y+=8;FarmBoxFrame(draw,new(x,boxTop),new(width,y-boxTop));y+=8;
+        y+=9;FarmBoxFrame(draw,new(x,boxTop),new(width,y-boxTop));y+=8;
         draw.ChannelsMerge();
         ImGui.SetCursorScreenPos(new(x,y));ImGui.Dummy(new(width,0));
         // Native shortcuts kept for keyboard and pointer tests: pet, play with a partner, clean a single pile.
@@ -314,6 +314,17 @@ internal sealed partial class MatchScreen
         ImGui.PopFont();
     }
     /// <summary>A legend .pt tile: radial-gradient(circle at 50% 30%) between light and dark mixes of --fc #8a6d1f.</summary>
+    /// <summary>
+    /// DT.Legends.html: a form drawn with a shop line's model gets that line's family colour (render3d.js familyColor,
+    /// exported as the Codex portrait colour); legend-model forms keep --fc #8a6d1f.
+    /// </summary>
+    private static Rgb FarmFormColor(string form)
+    {
+        if(LegendEvolution.Form(form).Line is not {} line)return HudHex("8a6d1f");
+        foreach(var variant in codexCatalog.Value.Variants)
+            if(variant.Lines.FirstOrDefault(l=>l.Id==line) is {PortraitColor:{} color})return HudCss(color);
+        return HudHex("5b6b8c");
+    }
     private static void FarmPortraitTile(ImDrawListPtr draw,float2 at,float size,float rounding)
     {
         var light=new ImColor8(173,153,98);var dark=new ImColor8(62,52,27);
@@ -350,18 +361,26 @@ internal sealed partial class MatchScreen
             vertex.col=(vertex.col&0xFF000000)|((uint)Math.Round(a.Z+(b.Z-a.Z)*t)<<16)|((uint)Math.Round(a.Y+(b.Y-a.Y)*t)<<8)|(uint)Math.Round(a.X+(b.X-a.X)*t);
         }
     }
+    /// <summary>js/farm-ui.js emoji (ACTIONS, BARS, card tags), baked from Segoe UI Emoji into content/farm-ui-icons.png.</summary>
+    private enum FarmUiIcon { Meat, Broom, Pill, Bulb, Clap, Anger, Lifter, Ball, Bolt, Ruler, Cake }
+    private GpuTexture? farmUiIconTexture;
+    private void DrawFarmUiIcon(ImDrawListPtr draw,FarmUiIcon icon,float2 c,float half)
+    {
+        farmUiIconTexture??=new(DigiTactics.Assets.PngImage.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"content/farm-ui-icons.png"))),new(MinFilter:9729,WrapS:33071,WrapT:33071),false);
+        const float count=11;int i=(int)icon;
+        draw.AddImage(new ImTextureRef{_TexID=new((nint)farmUiIconTexture.Id)},c-new float2(half,half),c+new float2(half,half),new(i/count,0),new((i+1)/count,1));
+    }
     private void FarmStatIcon(ImDrawListPtr draw,string key,float2 c)
     {
-        farmSymbolTexture??=new(DigiTactics.Assets.PngImage.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"content/farm-symbols.png"))),new(MinFilter:9729,WrapS:33071,WrapT:33071),false);
         switch(key)
         {
-            case "hunger":{int i=(int)FarmSymbol.Meat;draw.AddImage(new ImTextureRef{_TexID=new((nint)farmSymbolTexture.Id)},c-new float2(7,7),c+new float2(7,7),new(i/18f,0),new((i+1)/18f,1));break;}
-            case "energy":draw.AddTriangleFilled(c+new float2(2,-7),c+new float2(-4,1),c+new float2(1,1),new ImColor8(255,190,60));draw.AddTriangleFilled(c+new float2(-1,-1),c+new float2(4,-1),c+new float2(-2,7),new ImColor8(255,190,60));break;
+            case "hunger":DrawFarmUiIcon(draw,FarmUiIcon.Meat,c,7);break;
+            case "energy":DrawFarmUiIcon(draw,FarmUiIcon.Bolt,c,7);break;
             case "happy":FarmTagGlyph(draw,"bond",c,new ImColor8(255,255,255));break;
-            default:draw.AddLine(c+new float2(-6,5),c+new float2(5,-6),new ImColor8(220,220,230),3);break;
+            default:DrawFarmUiIcon(draw,FarmUiIcon.Ruler,c,7);break;
         }
     }
-    private static void FarmTagGlyph(ImDrawListPtr draw,string glyph,float2 c,ImColor8 color)
+    private void FarmTagGlyph(ImDrawListPtr draw,string glyph,float2 c,ImColor8 color)
     {
         switch(glyph)
         {
@@ -369,10 +388,10 @@ internal sealed partial class MatchScreen
                 draw.AddCircleFilled(c+new float2(-2,-1),2.4f,color,12);draw.AddCircleFilled(c+new float2(2,-1),2.4f,color,12);
                 draw.AddTriangleFilled(c+new float2(-4.3f,0),c+new float2(4.3f,0),c+new float2(0,4.5f),color);break;
             case "battle":draw.AddLine(c+new float2(-4,-4),c+new float2(4,4),color,1.6f);draw.AddLine(c+new float2(4,-4),c+new float2(-4,4),color,1.6f);break;
-            case "food":draw.AddCircleFilled(c+new float2(1,-1),3.2f,new ImColor8(200,100,70),12);draw.AddLine(c+new float2(-1,1),c+new float2(-4,4),new ImColor8(240,230,220),1.6f);break;
+            case "food":DrawFarmUiIcon(draw,FarmUiIcon.Meat,c,6);break;
             case "wild":S.Text(draw,c-new float2(3,6.5f),color,"?",S.Body(10.5f,true));break;
             case "weight":draw.AddLine(c+new float2(-4,-3),c+new float2(4,-3),color,1.2f);draw.AddLine(c+new float2(0,-4),c+new float2(0,4),color,1.2f);draw.AddTriangle(c+new float2(-4,-3),c+new float2(-6,1),c+new float2(-2,1),color);draw.AddTriangle(c+new float2(4,-3),c+new float2(2,1),c+new float2(6,1),color);break;
-            case "age":draw.AddRectFilled(c+new float2(-4,-1),c+new float2(4,4),new ImColor8(240,180,120));draw.AddLine(c+new float2(0,-1),c+new float2(0,-4),new ImColor8(255,230,150),1.4f);break;
+            case "age":DrawFarmUiIcon(draw,FarmUiIcon.Cake,c,6.5f);break;
         }
     }
 }

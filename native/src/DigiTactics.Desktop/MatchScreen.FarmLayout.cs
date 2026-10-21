@@ -123,6 +123,7 @@ internal sealed partial class MatchScreen
             var picked = ImGui.IsWindowHovered() ? farmView.Pick(pointer.X - FarmSceneX, pointer.Y - FarmSceneTop, FarmSceneWidth, FarmSceneHeight) : null;
             foreach (var (id, x, y) in farmView.Anchors(FarmSceneWidth, FarmSceneHeight))
             {
+                if (id == farmPet || picked is { Pile: null } over && over.Id == id) DrawFarmResidentName(id, FarmSceneX + x, FarmSceneTop + y);
                 if (farmView.Mood(id) is { } mood)
                 {
                     if (picked is { Pile: null } hit && hit.Id == id && !ImGui.IsAnyItemHovered()) { ImGui.BeginTooltip(); ImGui.Text(mood.Text); ImGui.EndTooltip(); }
@@ -147,6 +148,18 @@ internal sealed partial class MatchScreen
             ImGui.PushTextWrapPos(FarmSceneWidth - 26); ImGui.TextWrapped(notice); ImGui.PopTextWrapPos();
         }
         ImGui.End();
+    }
+
+    /// <summary>.df-bub .nm: the selected or hovered resident's name (Inter 800 11px, white, black shadow) ending at the head anchor.</summary>
+    private void DrawFarmResidentName(string id, float x, float y)
+    {
+        var details = FarmDetails(id);
+        string name = LegendEvolution.Form(details.Evolution.Form).Name;
+        var draw = ImGui.GetWindowDrawList(); var type = CosmeticStyle.BodyExtraBold(11);
+        var at = new float2(MathF.Round(x - type.Width(name) / 2), MathF.Round(y - 11 * 1.35f));
+        foreach (var (offset, alpha) in new[] { (new float2(0, 1), (byte)200), (new float2(-1, 0), (byte)110), (new float2(1, 0), (byte)110), (new float2(0, -1), (byte)90), (new float2(0, 2), (byte)90) })
+            CosmeticStyle.TextIn(draw, at + offset, 11 * 1.35f, new ImColor8(0, 0, 0, alpha), name, type);
+        CosmeticStyle.TextIn(draw, at, 11 * 1.35f, new ImColor8(255, 255, 255), name, type);
     }
 
     private void DrawFarmActionIcon(FarmSymbol? symbol, string label, float2 center)

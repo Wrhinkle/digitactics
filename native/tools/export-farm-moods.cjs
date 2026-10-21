@@ -25,6 +25,15 @@ async function main(){
    return c.toDataURL('image/png').split(',')[1];
   },symbols);
   fs.writeFileSync(path.join(root,'native/content/farm-symbols.png'),Buffer.from(actionPng,'base64'));
+  // js/farm-ui.js ACTIONS, BARS and card tags drawn as emoji (order matches FarmUiIcon in MatchScreen.FarmPage.cs).
+  const uiIcons=['🍖','🧹','💊','💡','👏','💢','🏋️','⚽','⚡','📏','🎂'];
+  const uiPng=await page.evaluate(symbols=>{
+   const c=document.createElement('canvas');c.width=64*symbols.length;c.height=64;
+   const g=c.getContext('2d');g.textAlign='center';g.textBaseline='middle';g.fillStyle='#fff';g.font='40px "Segoe UI Emoji"';
+   symbols.forEach((s,i)=>g.fillText(s,i*64+32,32));
+   return c.toDataURL('image/png').split(',')[1];
+  },uiIcons);
+  fs.writeFileSync(path.join(root,'native/content/farm-ui-icons.png'),Buffer.from(uiPng,'base64'));
  }finally{await browser.close();}
  const evaluate=new Function('p','lights','ideal',`const save={lights},SLEEPY_AT=20,FAT=1.4;const asleepNow=p=>!!p.flags.asleep,idealOf=()=>ideal;${body};return moodOf(p,'test');`);
  let seed=1531;const random=()=>{seed=seed*16807%2147483647;return seed/2147483647;};const rows=[];
