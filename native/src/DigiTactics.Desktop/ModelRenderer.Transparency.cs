@@ -36,7 +36,7 @@ internal sealed partial class ModelRenderer
         var matrix = world * From(camera);
         return center.X * matrix.M13 + center.Y * matrix.M23 + center.Z * matrix.M33 + matrix.M43;
     }
-    private void QueueModel(GpuModel model, RigPose pose, Matrix4D placement, Matrix4x4 camera, double emission)
+    private void QueueModel(GpuModel model, RigPose pose, Matrix4D placement, Matrix4x4 camera, double emission, double opacity = 1)
     {
         DrawCalls = 0;
         var centers = sortCenters.GetOrCreateValue(pose);
@@ -44,7 +44,7 @@ internal sealed partial class ModelRenderer
         for (int i = 0; i < model.Mesh.Meshes[instance.Mesh].Length; i++)
         {
             var geometry = model.Mesh.Meshes[instance.Mesh][i];
-            if (!model.MaterialFor(geometry).Transparent) continue;
+            if (!model.MaterialFor(geometry).Transparent && opacity >= 1) continue;
             var key = (instance.Node, i);
             if (!centers.TryGetValue(key, out var center))
             {
@@ -76,7 +76,7 @@ internal sealed partial class ModelRenderer
             }
             int primitive = i;
             Enqueue(0, Depth(center, pose.World[instance.Node] * placement, camera),
-                () => Draw(model, pose, placement, camera, true, emission, instance.Node, primitive));
+                () => Draw(model, pose, placement, camera, true, emission, instance.Node, primitive, opacity));
             DrawCalls++;
         }
     }

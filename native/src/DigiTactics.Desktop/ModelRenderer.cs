@@ -98,9 +98,11 @@ internal sealed partial class ModelRenderer : IDisposable
         OpenGl.Native.glDisable((GlCapability)OpenGl.GL_FRAMEBUFFER_SRGB);
         OpenGl.Native.glDepthMask(true); if (clearDepth) OpenGl.Clear(GlClearBit.Depth);
     }
-    public unsafe void Draw(GpuModel model, RigPose pose, Matrix4D placement, Matrix4x4 camera, bool transparent, double emission = 0, int onlyNode = -1, int onlyPrimitive = -1)
+    /// <param name="opacity">render3d.js UnitView.applyAlpha: below 1 every material joins the transparent pass with
+    /// its opacity scaled and depth writes off (planning previews of the next opponent).</param>
+    public unsafe void Draw(GpuModel model, RigPose pose, Matrix4D placement, Matrix4x4 camera, bool transparent, double emission = 0, int onlyNode = -1, int onlyPrimitive = -1, double opacity = 1)
     {
-        if (collecting && transparent && !ShadowPass) { QueueModel(model, pose, placement, camera, emission); return; }
+        if (collecting && transparent && !ShadowPass) { QueueModel(model, pose, placement, camera, emission, opacity); return; }
         var rig = model.Rig; var mesh = model.Mesh; var textures = model.Textures; var primitives = model.Primitives;
         int required = Math.Max(1, rig.Skins.Select(s => s.Joints.Length).DefaultIfEmpty(0).Max());
         if (palette.Length < required)
@@ -133,7 +135,7 @@ internal sealed partial class ModelRenderer : IDisposable
                 if (onlyPrimitive >= 0 && i != onlyPrimitive) continue;
                 var geometry = mesh.Meshes[instance.Mesh][i];
                 var material = model.MaterialFor(geometry);
-                if (material.Transparent != transparent) continue;
+                if ((material.Transparent || opacity < 1) != transparent) continue;
                 SetFarmLight(new((float)(material.Emissive.R * material.EmissiveIntensity), (float)(material.Emissive.G * material.EmissiveIntensity), (float)(material.Emissive.B * material.EmissiveIntensity)), roughness: (float)material.Roughness);
                 program.Uniform(21, material.EmissiveMap is null ? 0 : 1);
                 program.Uniform(29, VertexColorMode(geometry.ColorComponents, material.Transparent, material.AlphaCutoff));
@@ -147,16 +149,19 @@ internal sealed partial class ModelRenderer : IDisposable
                 program.Uniform(9, geometry.HasNormals ? 1 : 0);
                 program.Uniform(10, material.Unlit ? 1 : 0);
                 program.Uniform(11, (float)material.AlphaCutoff);
-                program.Uniform(12, new Brutal.Numerics.float4((float)material.Color.R, (float)material.Color.G, (float)material.Color.B, (float)material.Color.A));
+                program.Uniform(12, new Brutal.Numerics.float4((float)material.Color.R, (float)material.Color.G, (float)material.Color.B, (float)(material.Color.A * opacity)));
                 program.Uniform(13, material.ColorMap is null ? 0 : 1);
                 OpenGl.BindTextureUnit(0, material.ColorMap is { } map ? textures[map.Texture].Id : 0);
                 SetSides(material.DoubleSided ? 2 : 0);
-                if (transparent) { OpenGl.Native.glEnable((GlCapability)OpenGl.GL_BLEND); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
-                // Glow cards add color but keep the target's alpha, matching render3d's custom additive blend.
-                if (transparent && material.Additive) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE, 0, OpenGl.GL_ONE);
+                if (transparent)
+                {
+                    OpenGl.Native.glEnable((GlCapability)OpenGl.GL_BLEND); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE_MINUS_SRC_ALPHA);
+                    // Glow cards add color but keep the target's alpha, matching render3d's custom additive blend.
+                    if (material.Additive) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE, 0, OpenGl.GL_ONE);
+                }
                 else OpenGl.Native.glDisable((GlCapability)OpenGl.GL_BLEND);
                 if((EvolutionStage || EliminationStage || CosmeticStage) && transparent && !material.Additive) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA,OpenGl.GL_ONE_MINUS_SRC_ALPHA,OpenGl.GL_ONE,OpenGl.GL_ONE_MINUS_SRC_ALPHA);
-                OpenGl.Native.glDepthMask(ShadowPass || material.DepthWrite);
+                OpenGl.Native.glDepthMask(ShadowPass || material.DepthWrite && opacity >= 1);
                 primitives[offset + i].Draw(); DrawCalls++;
             }
         }

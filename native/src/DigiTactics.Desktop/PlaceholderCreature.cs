@@ -23,14 +23,15 @@ internal sealed class PlaceholderCreature : IDisposable
         }).ToArray();
         parts = root.GetProperty("parts"u8).EnumerateArray().Select(p => (p.GetProperty("geometry"u8).GetInt32(), Matrix4D.From(p.GetProperty("matrix"u8).EnumerateArray().Select(n => n.GetDouble()).ToArray()))).ToArray();
     }
-    public int Draw(ModelRenderer renderer, Matrix4x4 camera, Matrix4D placement, string variant, string line, bool silhouette = false, bool fog = false, double emission = 0)
+    public int Draw(ModelRenderer renderer, Matrix4x4 camera, Matrix4D placement, string variant, string line, bool silhouette = false, bool fog = false, double emission = 0, double opacity = 1)
     {
+        bool faded = opacity < 1;
         var colors = Content.Value.RootElement.GetProperty("colors"u8).GetProperty(variant).GetProperty(line);
         for (int i = 0; i < parts.Length; i++)
         {
             var c = colors[i];
             renderer.DrawRoom(geometry[parts[i].Geometry], parts[i].Matrix * placement, camera,
-                silhouette ? new(.01033f,.00091f,.00091f,1) : new(c[0].GetSingle(),c[1].GetSingle(),c[2].GetSingle(),1), null, silhouette, false, true, emissive:new((float)emission), roughness:.55f, metalness:.05f, side:0, fog:fog,receiveShadow:false);
+                silhouette ? new(.01033f,.00091f,.00091f,1) : new(c[0].GetSingle(),c[1].GetSingle(),c[2].GetSingle(),(float)opacity), null, silhouette, faded, !faded, emissive:new((float)emission), roughness:.55f, metalness:.05f, side:0, fog:fog,receiveShadow:false);
         }
         return parts.Length;
     }
