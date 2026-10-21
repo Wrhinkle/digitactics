@@ -49,10 +49,10 @@ internal sealed partial class MatchScreen
     }
 
     /// <summary>
-    /// The Home page keeps drawing beneath client pages, so the frameless page repaints the client
-    /// backdrop (DrawClientBackdrop's navy gradient and hex lattice) over its own rectangle.
+    /// Repaints the client backdrop (DrawClientBackdrop's navy gradient and hex lattice) over the frameless page.
+    /// Home stops drawing beneath Collection/Loot/Store except while a match result is retained
+    /// (PostgamePending); then this keeps the Home postgame card from showing through.
     /// </summary>
-    // Home still draws beneath this page, so repaint the shared client backdrop over the page window.
     private void CollectionPageBackdrop()=>PaintClientBackdrop(ImGui.GetWindowDrawList(),ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
     private void CollectionPageBrowser(CosmeticCollection collection)
     {
