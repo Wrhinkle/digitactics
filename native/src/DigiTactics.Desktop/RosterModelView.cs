@@ -13,6 +13,10 @@ internal sealed class RosterModelView(ModelCatalog? modelCatalog = null) : IDisp
     private readonly Dictionary<ModelSource, GpuModel> models = [];
     private readonly Dictionary<int, (GpuModel Model, ModelAnimator Animator)> actors = [];
     private readonly List<(PlanningUnit Unit, WorldPosition Position, int Tier)> entries = [];
+    // Displayed positions: a dropped or moved unit glides into its new cell and a picked-up unit rises to the drag
+    // height instead of teleporting. Horizontal drag follows the cursor exactly.
+    private readonly Dictionary<int, WorldPosition> shown = [];
+    internal const double SettleRate = 18, LiftRate = 25;
     private PlaceholderCreature? placeholder;
     private string variant="";
     public HashSet<int> RenderedUnits { get; } = [];
@@ -35,8 +39,20 @@ internal sealed class RosterModelView(ModelCatalog? modelCatalog = null) : IDisp
             }
             actor.Animator.Update(delta);
         }
+        foreach (var entry in entries)
+        {
+            var target = Target(entry.Unit.Id, entry.Position);
+            if (!shown.TryGetValue(entry.Unit.Id, out var current)) { shown[entry.Unit.Id] = target; continue; }
+            double lift = 1 - Math.Exp(-LiftRate * delta), settle = 1 - Math.Exp(-SettleRate * delta);
+            bool dragged = entry.Unit.Id == DraggedUnit && DragPosition is not null;
+            var next = new WorldPosition(dragged ? target.X : current.X + (target.X - current.X) * settle, current.Y + (target.Y - current.Y) * lift,
+                dragged ? target.Z : current.Z + (target.Z - current.Z) * settle);
+            if (Math.Abs(next.X - target.X) + Math.Abs(next.Y - target.Y) + Math.Abs(next.Z - target.Z) < 1e-3) next = target;
+            shown[entry.Unit.Id] = next;
+        }
         var live = entries.Select(e => e.Unit.Id).ToHashSet();
         foreach (int id in actors.Keys.Where(id => !live.Contains(id)).ToArray()) actors.Remove(id);
+        foreach (int id in shown.Keys.Where(id => !live.Contains(id)).ToArray()) shown.Remove(id);
         var used = actors.Values.Select(a => a.Model.Source).ToHashSet();
         foreach (var source in models.Keys.Where(s => !used.Contains(s)).ToArray()) { models[source].Dispose(); models.Remove(source); }
     }
@@ -46,7 +62,7 @@ internal sealed class RosterModelView(ModelCatalog? modelCatalog = null) : IDisp
         int calls = 0;
         foreach (var entry in entries)
         {
-            var position = entry.Unit.Id == DraggedUnit && DragPosition is { } target ? target : entry.Position;
+            var position = shown.TryGetValue(entry.Unit.Id, out var displayed) ? displayed : Target(entry.Unit.Id, entry.Position);
             var view = new CombatVisual(entry.Unit.Id, position, Math.PI, default, 1, 0, 0, 1, null, false);
             if(!actors.TryGetValue(entry.Unit.Id,out var actor))
             {
@@ -67,10 +83,12 @@ internal sealed class RosterModelView(ModelCatalog? modelCatalog = null) : IDisp
         return calls;
     }
 
+    private WorldPosition Target(int unit, WorldPosition cell) => unit == DraggedUnit && DragPosition is { } drag ? drag : cell;
+
     public void Dispose()
     {
         placeholder?.Dispose();placeholder=null;
         foreach (var model in models.Values) model.Dispose();
-        models.Clear(); actors.Clear(); entries.Clear(); RenderedUnits.Clear();
+        models.Clear(); actors.Clear(); entries.Clear(); shown.Clear(); RenderedUnits.Clear();
     }
 }
