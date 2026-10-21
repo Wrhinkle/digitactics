@@ -127,10 +127,10 @@ internal sealed partial class MatchScreen
         try
         {
             HomeMissions(HomeDaily,new(at.X+pad.X,y),inner);
-            if(farm?.Error is {} farmError)Paragraph(draw,NativeUiTheme.BodyFont,11,new(at.X+pad.X,at.Y+extent.Y-pad.Y-16),inner,NativeUiTheme.Danger,farmError,1.4f,1);
+            if(farm?.Error is {} farmError)CssParagraph(draw,NativeUiTheme.BodyFont,11,new(at.X+pad.X,at.Y+extent.Y-pad.Y-16),inner,NativeUiTheme.Danger,farmError,1.4f,1);
         }
         catch(Exception error) when(error is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
-        {Paragraph(draw,NativeUiTheme.BodyFont,12.5f,new(at.X+pad.X,y),inner,NativeUiTheme.Muted,"Daily progress unavailable: "+error.Message);}
+        {CssParagraph(draw,NativeUiTheme.BodyFont,12.5f,new(at.X+pad.X,y),inner,NativeUiTheme.Muted,"Daily progress unavailable: "+error.Message);}
         draw.PopClipRect();
         ImGui.End();
     }
@@ -152,7 +152,7 @@ internal sealed partial class MatchScreen
             foreach(var offer in homeOffers.Take(3)){HomeOfferRow(offer.Kind,offer.Item,offer.Price,collection,new(at.X+pad.X,y),inner);y+=HomeOfferHeight+6;}
         }
         catch(Exception error) when(error is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
-        {Paragraph(draw,NativeUiTheme.BodyFont,12.5f,new(at.X+pad.X,y),inner,NativeUiTheme.Muted,"Featured items unavailable: "+error.Message);}
+        {CssParagraph(draw,NativeUiTheme.BodyFont,12.5f,new(at.X+pad.X,y),inner,NativeUiTheme.Muted,"Featured items unavailable: "+error.Message);}
         draw.PopClipRect();
         ImGui.End();
     }

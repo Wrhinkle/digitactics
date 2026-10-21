@@ -80,7 +80,7 @@ internal sealed partial class MatchScreen
             ImGui.EndDisabled();
         }
         catch(Exception error) when(error is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
-        {Paragraph(draw,NativeUiTheme.BodyFont,12.5f,new(at.X+12,infoTop+8),extent.X-24,NativeUiTheme.Muted,"Your Little Legend could not be displayed: "+error.Message);}
+        {CssParagraph(draw,NativeUiTheme.BodyFont,12.5f,new(at.X+12,infoTop+8),extent.X-24,NativeUiTheme.Muted,"Your Little Legend could not be displayed: "+error.Message);}
         // .qp-btns on #010a13.
         float buttonsTop=hi.Y-1-buttonsHeight;
         draw.AddRectFilled(new(at.X,buttonsTop),hi,NativeUiPaint.Fade(NativeUiTheme.Navy0));

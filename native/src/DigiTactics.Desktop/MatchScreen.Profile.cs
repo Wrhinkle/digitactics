@@ -86,7 +86,7 @@ internal sealed partial class MatchScreen
             if(chooseProfileAvatar||ImGui.IsPopupOpen("Choose your icon"u8))ProfileAvatarChoices(collection,colsHeight);
         }
         catch(Exception error) when(error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException or ArgumentOutOfRangeException)
-        {Paragraph(draw,NativeUiTheme.BodyFont,14,new(left+24,top+24),width-48,NativeUiTheme.Muted,"Profile could not be read. Your saved data has been preserved.");}
+        {CssParagraph(draw,NativeUiTheme.BodyFont,14,new(left+24,top+24),width-48,NativeUiTheme.Muted,"Profile could not be read. Your saved data has been preserved.");}
         ImGui.End();
     }
     private void ProfileBanner(ImDrawListPtr draw,ProfileSummary summary,CosmeticCollection collection,TamerLevel level,float2 at,float2 extent,bool shortWindow)

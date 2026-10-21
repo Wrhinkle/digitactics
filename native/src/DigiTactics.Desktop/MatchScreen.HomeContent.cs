@@ -76,7 +76,7 @@ internal sealed partial class MatchScreen
             float start=y;
             NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyBoldFont,12.5f,new(at.X+12,y),titleHeight,NativeUiTheme.GoldBright,SocialEllipsis(entry.Title,NativeUiTheme.BodyBoldFont,12.5f,width-12));
             y+=titleHeight+1;
-            y+=Paragraph(draw,NativeUiTheme.BodyFont,11,new(at.X+12,y),width-12,NativeUiTheme.Muted,entry.Text,1.4f,2);
+            y+=CssParagraph(draw,NativeUiTheme.BodyFont,11,new(at.X+12,y),width-12,NativeUiTheme.Muted,entry.Text,1.4f,2);
             draw.AddRectFilled(new(at.X,start),new(at.X+2,y),NativeUiPaint.Fade(NativeUiTheme.GoldBorder));
             y+=6;
         }

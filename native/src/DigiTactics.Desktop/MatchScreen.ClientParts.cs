@@ -87,7 +87,7 @@ internal sealed partial class MatchScreen
     }
 
     /// <summary>Draws wrapped text at a CSS line-height multiple and returns its height.</summary>
-    private static float Paragraph(ImDrawListPtr draw,ImFontPtr font,float px,float2 at,float width,ImColor8 color,string text,float lineHeight=1.45f,int maxLines=int.MaxValue,float tracking=0,ImColor8? shadow=null)
+    private static float CssParagraph(ImDrawListPtr draw,ImFontPtr font,float px,float2 at,float width,ImColor8 color,string text,float lineHeight=1.45f,int maxLines=int.MaxValue,float tracking=0,ImColor8? shadow=null)
     {
         var lines=WrapText(font,px,text,width,maxLines,tracking);
         float step=px*lineHeight,inset=(step-NativeUiTheme.LineHeight(font,px))/2;

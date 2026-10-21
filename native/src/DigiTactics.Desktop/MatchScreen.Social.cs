@@ -179,7 +179,7 @@ internal sealed partial class MatchScreen
                 };
                 // .cs-empty: 4px 14px 8px 26px, 11px, c-text-3, line-height 1.4.
                 var emptyAt=ImGui.GetCursorScreenPos()+new float2(26,4);
-                float emptyHeight=Paragraph(body,NativeUiTheme.BodyFont,11,emptyAt,extent.X-26-14,NativeUiTheme.Text3,empty,1.4f);
+                float emptyHeight=CssParagraph(body,NativeUiTheme.BodyFont,11,emptyAt,extent.X-26-14,NativeUiTheme.Text3,empty,1.4f);
                 ImGui.Dummy(new(extent.X,4+emptyHeight+8));
             }
             foreach (var row in rows) DrawSocialRow(row, top);

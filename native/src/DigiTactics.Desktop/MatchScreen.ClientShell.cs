@@ -224,12 +224,6 @@ internal sealed partial class MatchScreen
         if(ImGui.IsItemFocused()&&ImGui.GetIO().NavVisible)draw.AddRect(lo-new float2(2,2),hi+new float2(2,2),NativeUiPaint.Fade(NativeUiTheme.Accent),0,ImDrawFlags.None,2);
     }
 
-    private static ImColor8 Mix(ImColor8 a,ImColor8 b,float t)
-    {
-        t=Math.Clamp(t,0,1);var x=a.AsByte4();var y=b.AsByte4();
-        return new((byte)(x.X+(y.X-x.X)*t),(byte)(x.Y+(y.Y-x.Y)*t),(byte)(x.Z+(y.Z-x.Z)*t),(byte)(x.W+(y.W-x.W)*t));
-    }
-
     // .cn-right: status chip, Bits chip and the round Store/Loot icons, right-aligned before the profile block.
     private void DrawClientUtilities(ClientNavMetrics nav,float profileLeft)
     {

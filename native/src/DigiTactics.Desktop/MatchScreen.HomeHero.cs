@@ -151,7 +151,7 @@ internal sealed partial class MatchScreen
         if(descriptionLines.Count>0)
         {
             y+=8;lift=Rise(index++,out alpha);ImGui.PushStyleVar(ImGuiStyleVar.Alpha,alpha);
-            y+=Paragraph(draw,NativeUiTheme.BodyFont,14,new(left,y+lift),descriptionWidth,NativeUiTheme.Muted,string.Join("\n",descriptionLines),1.45f,int.MaxValue,0,new ImColor8(0,0,0,170));
+            y+=CssParagraph(draw,NativeUiTheme.BodyFont,14,new(left,y+lift),descriptionWidth,NativeUiTheme.Muted,string.Join("\n",descriptionLines),1.45f,int.MaxValue,0,new ImColor8(0,0,0,170));
             ImGui.PopStyleVar();
         }
         y+=8+6;lift=Rise(index,out alpha);
