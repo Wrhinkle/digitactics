@@ -5,7 +5,7 @@ namespace DigiTactics.Desktop;
 
 /// <summary>
 /// Whole-catalog run of <see cref="CombatAnimationProbe"/> (scale stability and transition continuity of board playback).
-/// Launch: DigiTactics.Desktop.exe --animation-stability &lt;dir&gt; [--stability-filter text] [--stability-start N --stability-count N]
+/// Launch: DigiTactics.Desktop.exe --animation-stability &lt;dir&gt; [--stability-filter text] [--stability-start N --stability-count N] [--stability-raw]
 /// Writes stability.json (all sources) and exits nonzero when a source breaks the scale or continuity limits.
 /// </summary>
 internal static class AnimationStability
@@ -29,7 +29,7 @@ internal static class AnimationStability
         File.AppendAllLines(Path.Combine(directory, "scales.txt"), lines);
     }
 
-    public static int Run(string directory, string? filter, int start, int count)
+    public static int Run(string directory, string? filter, int start, int count, bool smoothing = true)
     {
         Directory.CreateDirectory(directory);
         var catalog = ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory, "content/models.json"));
@@ -44,14 +44,14 @@ internal static class AnimationStability
             {
                 using var asset = catalog.Open(assets, source.Asset);
                 var rig = GltfRig.Load(asset).Prepare(source, assets); var mesh = GltfMesh.Load(asset);
-                reports[i] = CombatAnimationProbe.Measure(key, source.Asset, rig, mesh);
+                reports[i] = CombatAnimationProbe.Measure(key, source.Asset, rig, mesh, smoothing);
             }
             catch (Exception error) { reports[i] = new(key, source.Asset, 0, [], [], [], [], 0, [], 0, 0, ["error"], error.Message); }
         });
         int failures = reports.Count(r => r.Flags.Length > 0);
         var summary = new
         {
-            Generated = DateTime.Now, Sources = reports.Length, Failures = failures,
+            Generated = DateTime.Now, Smoothing = smoothing, Sources = reports.Length, Failures = failures,
             Limits = new { CombatAnimationProbe.MaxBodyScale, CombatAnimationProbe.MinBodyScale, CombatAnimationProbe.PopLimit, CombatAnimationProbe.PopFactor, CombatAnimationProbe.Step },
             Script = CombatAnimationProbe.Script.Select(e => $"{e.Time:0.00}s {e.Kind}").Append($"{CombatAnimationProbe.ScriptEnd:0.00}s end").ToArray(),
             Flagged = reports.Where(r => r.Flags.Length > 0).Select(r => $"{r.Source}: {string.Join(", ", r.Flags)}").ToArray(),

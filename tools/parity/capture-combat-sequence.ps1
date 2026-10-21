@@ -15,12 +15,13 @@ param(
     [string]$Size = '1600x900',
     [string]$Out,
     [ValidateSet('Debug','Release')][string]$Configuration = 'Debug',
-    [int]$TimeoutSeconds = 600
+    [int]$TimeoutSeconds = 600,
+    [string]$Exe
 )
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 if (-not $Out) { $Out = Join-Path $repo "parity/combat-$Line-$Stage" }
-$exe = Join-Path $repo "native/src/DigiTactics.Desktop/bin/$Configuration/net10.0/win-x64/DigiTactics.Desktop.exe"
+$exe = if ($Exe) { (Resolve-Path -LiteralPath $Exe).Path } else { Join-Path $repo "native/src/DigiTactics.Desktop/bin/$Configuration/net10.0/win-x64/DigiTactics.Desktop.exe" }
 if (-not (Test-Path -LiteralPath $exe)) { throw "Desktop build not found: $exe" }
 New-Item -ItemType Directory -Force -Path $Out | Out-Null
 $Out = (Resolve-Path -LiteralPath $Out).Path

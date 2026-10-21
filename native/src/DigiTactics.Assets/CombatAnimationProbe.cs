@@ -31,9 +31,9 @@ public static class CombatAnimationProbe
         Dictionary<string, double> MaxBodyScaleByRole, Dictionary<string, double> MinBodyScaleByRole, double MaxInClipJump, Switch[] Switches, double IdleLoopSeam, double RunLoopSeam, string[] Flags, string? Error);
 
     /// <summary>Runs the script through the production animator.</summary>
-    public static Report Measure(string key, string assetName, GltfRig rig, GltfMesh mesh)
+    public static Report Measure(string key, string assetName, GltfRig rig, GltfMesh mesh, bool smoothing = true)
     {
-        var animator = new CombatModelAnimator(rig, key);
+        var animator = new CombatModelAnimator(rig, key) { Smoothing = smoothing };
         var joints = rig.Skins.SelectMany(skin => skin.Joints).Distinct().ToArray();
         if (joints.Length == 0) joints = Enumerable.Range(0, rig.Nodes.Length).ToArray();
         var previous = new Vector3D[joints.Length]; var current = new Vector3D[joints.Length];

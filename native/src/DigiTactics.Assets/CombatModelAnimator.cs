@@ -24,6 +24,8 @@ public sealed class CombatModelAnimator
     public bool UsesTravelHop => locomotion.UsesTravelHop;
     /// <summary>True while the displayed pose is still easing out of a discontinuous switch.</summary>
     public bool Blending => blendElapsed < blendDuration;
+    /// <summary>False reproduces the unsmoothed original switches (diagnostic A/B captures only).</summary>
+    public bool Smoothing { get; init; } = true;
     public CombatModelAnimator(GltfRig rig, string source, double idleOffset = 0)
     {
         actions=new(rig,idleOffset);runPose=new(rig);
@@ -56,7 +58,7 @@ public sealed class CombatModelAnimator
             lastRunTime=runTime;
             runPose.Sample(run,actions.Time,loop:true);
             // Ease the linear gait ramp so the body does not start or stop moving with a velocity step.
-            double weight=runWeight*runWeight*(3-2*runWeight);
+            double weight=Smoothing?runWeight*runWeight*(3-2*runWeight):runWeight;
             for(int i=0;i<Pose.Local.Length;i++)
             {
                 var idle=Pose.Local[i];var travel=runPose.Local[i];
@@ -73,6 +75,7 @@ public sealed class CombatModelAnimator
     private void Crossfade(double duration)
     {
         // Blend from what is on screen now, including a crossfade that is still running.
+        if(!Smoothing)return;
         shown.CopyTo(from,0);blendElapsed=0;blendDuration=duration;
     }
     private void Finish(double delta)
