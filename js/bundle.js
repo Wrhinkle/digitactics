@@ -43770,6 +43770,23 @@ void main() {
   }
   var ACTION_ROLES = ["attack", "special", "win"];
   var EFFECT_NAME = /(^|[_\s.])(eff|ef|glw|glow|lig)(?=$|[_\s.\d])/i;
+  function cardTextureStats(px2) {
+    const count2 = px2.length / 4;
+    let low = 0, mid = 0, dark = 0;
+    for (let i = 0; i < px2.length; i += 4) {
+      if (px2[i + 3] < 128) low++;
+      if (px2[i + 3] > 16 && px2[i + 3] < 240) mid++;
+      if (Math.max(px2[i], px2[i + 1], px2[i + 2]) < 16) dark++;
+    }
+    return { low: low / count2, mid: mid / count2, dark: dark / count2 };
+  }
+  function effectCardMode(names, stats6) {
+    const effect2 = names.some((name2) => EFFECT_NAME.test(name2 || ""));
+    if (effect2 && stats6.low >= 0.05) return "blend";
+    if (effect2 && stats6.dark >= 0.45) return "additive";
+    if (!effect2 && stats6.low >= 0.3 && stats6.low <= 0.9 && stats6.mid > 0.06 && stats6.mid <= 0.25) return "blend";
+    return null;
+  }
   var cardStats = /* @__PURE__ */ new WeakMap();
   function effectCard(m) {
     const image = m.map && m.map.image;
@@ -43781,21 +43798,10 @@ void main() {
       canvas.height = image.height;
       const c2d = canvas.getContext("2d", { willReadFrequently: true });
       c2d.drawImage(image, 0, 0);
-      const px2 = c2d.getImageData(0, 0, image.width, image.height).data, count2 = px2.length / 4;
-      let low = 0, mid = 0, dark = 0;
-      for (let i = 0; i < px2.length; i += 4) {
-        if (px2[i + 3] < 128) low++;
-        if (px2[i + 3] > 16 && px2[i + 3] < 240) mid++;
-        if (Math.max(px2[i], px2[i + 1], px2[i + 2]) < 16) dark++;
-      }
-      stats6 = { low: low / count2, mid: mid / count2, dark: dark / count2 };
+      stats6 = cardTextureStats(c2d.getImageData(0, 0, image.width, image.height).data);
       cardStats.set(image, stats6);
     }
-    const effect2 = EFFECT_NAME.test(m.name || "") || EFFECT_NAME.test(m.map.name || "");
-    if (effect2 && stats6.low >= 0.05) return "blend";
-    if (effect2 && stats6.dark >= 0.45) return "additive";
-    if (!effect2 && stats6.low >= 0.3 && stats6.low <= 0.9 && stats6.mid > 0.06 && stats6.mid <= 0.25) return "blend";
-    return null;
+    return effectCardMode([m.name, m.map.name], stats6);
   }
   function prepareTemplate(gltf, src, borrowed = null) {
     const scene2 = gltf.scene;

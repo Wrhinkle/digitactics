@@ -85,6 +85,24 @@ const ACTION_ROLES = ['attack', 'special', 'win'];
 // real opacity blend; opaque glow textures on a mostly black background add. Outside
 // effect names only a cut-out atlas with soft edges blends. GltfMaterial.cs mirrors this.
 const EFFECT_NAME = /(^|[_\s.])(eff|ef|glw|glow|lig)(?=$|[_\s.\d])/i;
+// RGBA8 pixels -> shares of low alpha, fractional alpha and near-black texels.
+function cardTextureStats(px) {
+  const count = px.length / 4;
+  let low = 0, mid = 0, dark = 0;
+  for (let i = 0; i < px.length; i += 4) {
+    if (px[i + 3] < 128) low++;
+    if (px[i + 3] > 16 && px[i + 3] < 240) mid++;
+    if (Math.max(px[i], px[i + 1], px[i + 2]) < 16) dark++;
+  }
+  return { low: low / count, mid: mid / count, dark: dark / count };
+}
+function effectCardMode(names, stats) {
+  const effect = names.some((name) => EFFECT_NAME.test(name || ''));
+  if (effect && stats.low >= 0.05) return 'blend';
+  if (effect && stats.dark >= 0.45) return 'additive';
+  if (!effect && stats.low >= 0.3 && stats.low <= 0.9 && stats.mid > 0.06 && stats.mid <= 0.25) return 'blend';
+  return null;
+}
 const cardStats = new WeakMap();
 function effectCard(m) {
   const image = m.map && m.map.image;
@@ -93,20 +111,9 @@ function effectCard(m) {
   if (!stats) {
     const canvas = document.createElement('canvas'); canvas.width = image.width; canvas.height = image.height;
     const c2d = canvas.getContext('2d', { willReadFrequently: true }); c2d.drawImage(image, 0, 0);
-    const px = c2d.getImageData(0, 0, image.width, image.height).data, count = px.length / 4;
-    let low = 0, mid = 0, dark = 0;
-    for (let i = 0; i < px.length; i += 4) {
-      if (px[i + 3] < 128) low++;
-      if (px[i + 3] > 16 && px[i + 3] < 240) mid++;
-      if (Math.max(px[i], px[i + 1], px[i + 2]) < 16) dark++;
-    }
-    stats = { low: low / count, mid: mid / count, dark: dark / count }; cardStats.set(image, stats);
+    stats = cardTextureStats(c2d.getImageData(0, 0, image.width, image.height).data); cardStats.set(image, stats);
   }
-  const effect = EFFECT_NAME.test(m.name || '') || EFFECT_NAME.test(m.map.name || '');
-  if (effect && stats.low >= 0.05) return 'blend';
-  if (effect && stats.dark >= 0.45) return 'additive';
-  if (!effect && stats.low >= 0.3 && stats.low <= 0.9 && stats.mid > 0.06 && stats.mid <= 0.25) return 'blend';
-  return null;
+  return effectCardMode([m.name, m.map.name], stats);
 }
 
 export function prepareTemplate(gltf, src, borrowed = null) {

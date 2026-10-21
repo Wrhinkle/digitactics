@@ -28,6 +28,7 @@ internal static class MaterialParity
                 Check(!GltfMaterial.Load(asset, index, frontOnly: true, vertexAlpha: vertexAlpha).DoubleSided, "frontOnly");
                 Check(actual.Transparent == expected.GetProperty("transparent").GetBoolean(), "transparent");
                 Check(actual.DepthWrite == expected.GetProperty("depthWrite").GetBoolean(), "depthWrite");
+                Check(actual.Additive == expected.GetProperty("additive").GetBoolean(), "additive");
                 Check(actual.AlphaCutoff == expected.GetProperty("alphaCutoff").GetDouble(), "alphaCutoff");
                 Check(actual.Roughness == expected.GetProperty("roughness").GetDouble(), "roughness");
                 Check(actual.SpecularIntensity == expected.GetProperty("specularIntensity").GetDouble(), "specularIntensity");

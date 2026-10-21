@@ -82,8 +82,11 @@ public sealed record GltfMaterial(MaterialColor Color, bool Unlit, bool DoubleSi
     // materials only a cut-out atlas with soft edges (Lucemon Satan Mode's circles) blends.
     private static EffectCardMode EffectCard(GltfAsset asset, JsonElement material, TextureBinding map)
     {
-        var image = asset.Image(GltfTexture.Load(asset, map.Texture).Image);
-        string imageName = Property(asset.Root.GetProperty("images")[GltfTexture.Load(asset, map.Texture).Image], "name").GetStringOrDefault("");
+        // A binding without an embedded image (synthetic loader checks) has no pixels to classify.
+        if (Property(asset.Root, "textures").ValueKind != JsonValueKind.Array || Property(asset.Root, "images").ValueKind != JsonValueKind.Array) return EffectCardMode.None;
+        int source = GltfTexture.Load(asset, map.Texture).Image;
+        var image = asset.Image(source);
+        string imageName = Property(asset.Root.GetProperty("images")[source], "name").GetStringOrDefault("");
         bool effect = EffectName.IsMatch(Property(material, "name").GetStringOrDefault("")) || EffectName.IsMatch(imageName);
         int count = image.Width * image.Height, low = 0, mid = 0, dark = 0;
         for (int i = 0; i < count; i++)
