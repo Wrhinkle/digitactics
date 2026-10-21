@@ -108,80 +108,186 @@ internal sealed partial class MatchScreen
         float top = ClientPageTop;
         if (!docked && (!wasVisible || socialDisplayedModule!=socialDrawnModule)) ImGui.SetNextWindowFocus();
         socialDisplayedModule=socialDrawnModule;
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize,0);
         HomeCard("Friends", new(size.X - SocialWidth, top), new(SocialWidth, size.Y - top), false, bringToFront: !docked);
+        ImGui.PopStyleVar(2);
+        var at=new float2(size.X-SocialWidth,top);var extent=new float2(SocialWidth,size.Y-top);var draw=ImGui.GetWindowDrawList();
+        // #csocial: linear-gradient(180deg, #06101d, #010a13 40%) with a gold-5 left rule.
+        NativeUiPaint.VerticalGradient(draw,at,at+new float2(extent.X,extent.Y*.4f),new ImColor8(6,16,29),NativeUiTheme.Navy0);
+        draw.AddRectFilled(at+new float2(0,extent.Y*.4f),at+extent,NativeUiPaint.Fade(NativeUiTheme.Navy0));
+        draw.AddLine(at,at+new float2(0,extent.Y),NativeUiPaint.Fade(NativeUiTheme.GoldDim));
         ImGui.BeginDisabled(ClientNavigationBlocked);
-        ImGui.PushFont(NativeUiTheme.BodyFont,17);ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(8,8));
-        SocialBodyFontSize=17;SocialPanelTop=top;
-        HomeLabel("SOCIAL",14,HomeGold);
-        ImGui.SetCursorPos(new(SocialWidth-(docked?44:76),8));
-        if(steam is null)
-        {if(ClientTextButton("socialConnect","+",28,28,false,19))ConnectSteam();if(ImGui.IsItemHovered())ResultTooltip("Connect to Steam friends");}
-        else
-        {if(ClientTextButton("socialRefresh","R",28,28,false,14)){socialPollAt=0;RefreshSocial();}if(ImGui.IsItemHovered())ResultTooltip("Refresh friends");}
-        if(!docked){ImGui.SameLine(0,4);if(ClientTextButton("closeSocial","X",28,28,false,14))socialDrawer=false;}
-        ImGui.SetCursorPos(new(12,46));ImGui.Separator();
-        ImGui.BeginChild("Social people"u8,new(0,-92));
+        SocialBodyFontSize=NativeUiTheme.Css(NativeUiTheme.BodyFont,11);SocialPanelTop=top;
+        // .cs-head: 8px 10px 8px 14px, Chakra 700 11px, .18em, gold-2, 26 px icon buttons, gold-5 rule.
+        const float headHeight=42;
+        var headText=NativeUiPaint.TrackedSize(NativeUiTheme.DisplayBoldFont,11,"SOCIAL",.18f);
+        NativeUiPaint.Tracked(draw,NativeUiTheme.DisplayBoldFont,11,at+new float2(14,MathF.Round((headHeight-headText.Y)/2)),NativeUiTheme.Gold,"SOCIAL",.18f);
+        draw.AddLine(at+new float2(0,headHeight-.5f),at+new float2(extent.X,headHeight-.5f),NativeUiPaint.Fade(NativeUiTheme.GoldDim));
+        float buttonX=extent.X-10-28;
+        void HeadButton(string key,string tip,Action<float2,ImColor8> glyph,Action act)
+        {
+            ImGui.SetCursorScreenPos(at+new float2(buttonX,8));
+            if(ClientHitButton(key,28,26))act();
+            bool hot=ImGui.IsItemHovered();
+            if(hot){draw.AddRect(ImGui.GetItemRectMin(),ImGui.GetItemRectMax(),NativeUiPaint.Fade(NativeUiTheme.GoldBorder));ResultTooltip(tip);}
+            glyph((ImGui.GetItemRectMin()+ImGui.GetItemRectMax())*.5f,NativeUiPaint.Fade(NativeUiTheme.Gold));
+            buttonX-=4+28;
+        }
+        if(!docked)HeadButton("closeSocial","Close",(c,ink)=>{draw.AddLine(c-new float2(4.5f,4.5f),c+new float2(4.5f,4.5f),ink,1.6f);draw.AddLine(c+new float2(-4.5f,4.5f),c+new float2(4.5f,-4.5f),ink,1.6f);},()=>socialDrawer=false);
+        if(steam is null)HeadButton("socialConnect","Connect to Steam friends",(c,ink)=>DrawInviteGlyph(draw,c,ink),ConnectSteam);
+        else HeadButton("socialRefresh","Refresh friends",(c,ink)=>{draw.PathArcTo(c,5,-MathF.PI*.15f,MathF.PI*1.45f,16);draw.PathStroke(ink,ImDrawFlags.None,1.6f);
+            draw.AddTriangleFilled(c+new float2(5.6f,-5.2f),c+new float2(5.6f,.4f),c+new float2(.6f,-2.2f),ink);},()=>{socialPollAt=0;RefreshSocial();});
+        // .cs-foot: 10px 12px, gold-5 top rule, rgba(1,10,19,.85).
+        const float footHeight=56;
+        ImGui.SetCursorScreenPos(at+new float2(0,headHeight));
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
+        ImGui.BeginChild("Social people"u8,new(extent.X,extent.Y-headHeight-footHeight),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
+        var body=ImGui.GetWindowDrawList();
+        ImGui.SetCursorPosY(4);
         foreach (var group in Enum.GetValues<SocialGroup>())
         {
             var rows = socialGroups.GetValueOrDefault(group) ?? [];
             if (group == SocialGroup.Party && steam?.Room is null || group==SocialGroup.Recent&&rows.Length==0) continue;
-            string title = group switch { SocialGroup.InGame => "In Game", SocialGroup.Recent => "Recent players", _ => group.ToString() };
+            string title = group switch { SocialGroup.InGame => "In Game", SocialGroup.Recent => "Recent players",
+                SocialGroup.Party => steam?.Room?.Authority.Lobby?["status"]?.GetValue<string>()=="playing" ? "Match" : "Party", _ => group.ToString() };
             bool open = socialOpen.Contains(group);
-            ImGui.PushStyleColor(ImGuiCol.Header,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.HeaderHovered,new ImColor8(200,170,110,24));
-            bool toggled=ImGui.Selectable((open ? "v  " : ">  ") + title.ToUpperInvariant() + " (" + rows.Length + ")",false,ImGuiSelectableFlags.None,new(0,36));
-            SelectionButton("socialGroup/"+group);ClientItemSound("socialGroup/"+group,toggled);ImGui.PopStyleColor(2);
+            // .cs-sh: 7px 12px, caret, Chakra 700 11px .14em lc-mute; the count in c-text-3 at .04em.
+            ImGui.SetCursorPosY(ImGui.GetCursorPosY()+2);
+            var rowAt=ImGui.GetCursorScreenPos();
+            bool toggled=ClientHitButton("socialGroup/"+group,extent.X,28);
+            SelectionButton("socialGroup/"+group);
+            bool hot=ImGui.IsItemHovered();
+            if(hot)body.AddRectFilled(rowAt,rowAt+new float2(extent.X,28),NativeUiPaint.Fade(new ImColor8(200,170,110,15)));
+            var ink=hot?NativeUiTheme.GoldBright:NativeUiTheme.LcMute;
+            NativeUiPaint.Caret(body,rowAt+new float2(12+2.5f,14),open,ink);
+            string heading=title.ToUpperInvariant();
+            var headingSize=NativeUiPaint.TrackedSize(NativeUiTheme.DisplayBoldFont,11,heading,.14f);
+            float textY=MathF.Round(rowAt.Y+(28-headingSize.Y)/2);
+            NativeUiPaint.Tracked(body,NativeUiTheme.DisplayBoldFont,11,new(rowAt.X+12+5+6,textY),ink,heading,.14f);
+            float space=NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,11," ",.14f);
+            NativeUiPaint.Tracked(body,NativeUiTheme.DisplayBoldFont,11,new(rowAt.X+12+5+6+headingSize.X+space,textY),NativeUiTheme.Text3,"("+rows.Length+")",.04f);
             if (toggled)
             { if (open) socialOpen.Remove(group); else socialOpen.Add(group); open = !open; }
             if (!open) continue;
-            if (rows.Length == 0) {ImGui.PushTextWrapPos(0);HomeLabel(group switch
+            if (rows.Length == 0)
             {
-                SocialGroup.Online => "No friends online right now.", SocialGroup.InGame => "Nobody is mid-game.",
-                SocialGroup.Offline => "No offline friends.", SocialGroup.Recent => "Players you meet appear here.", _ => "Nobody here yet."
-            }, 15, HomeMute);ImGui.PopTextWrapPos();}
+                string empty=group switch
+                {
+                    SocialGroup.Online => steam is null ? "Open Multiplayer to see who is in a lobby." : "No Steam friends in a Digi-Tactics lobby right now.",
+                    SocialGroup.InGame => "Nobody is mid-game.", SocialGroup.Offline or SocialGroup.Recent => "Players from your lobbies show up here.", _ => "Nobody here yet"
+                };
+                // .cs-empty: 4px 14px 8px 26px, 11px, c-text-3, line-height 1.4.
+                ImGui.SetCursorPos(new(26,ImGui.GetCursorPosY()+4));
+                ImGui.PushFont(NativeUiTheme.BodyFont,NativeUiTheme.Css(NativeUiTheme.BodyFont,11));ImGui.PushStyleColor(ImGuiCol.Text,NativeUiTheme.Text3);
+                ImGui.PushTextWrapPos(extent.X-14);UiText.Wrapped(empty);ImGui.PopTextWrapPos();
+                ImGui.PopStyleColor();ImGui.PopFont();
+                ImGui.SetCursorPosY(ImGui.GetCursorPosY()+8);
+            }
             foreach (var row in rows) DrawSocialRow(row, top);
         }
-        ImGui.EndChild(); ImGui.Separator();
-        if (socialError is not null) { HomeLabel("Friends unavailable",16,HomeMute); if(ImGui.IsItemHovered())ResultTooltip(socialError); }
+        ImGui.EndChild();ImGui.PopStyleVar();
+        var footAt=at+new float2(0,extent.Y-footHeight);
+        draw.AddRectFilled(footAt,at+extent,NativeUiPaint.Fade(new ImColor8(1,10,19,217)));
+        draw.AddLine(footAt+new float2(1,.5f),footAt+new float2(extent.X,.5f),NativeUiPaint.Fade(NativeUiTheme.GoldDim));
+        string roomTitle,roomNote,action;
+        if (socialError is not null) {roomTitle="Friends unavailable";roomNote=socialError;action="Lobbies";}
         else if(steam?.Room?.Authority.Lobby is {} lobby)
         {
-            HomeLabel(LobbyEllipsis(lobby["name"]?.GetValue<string>()??"Your party",ImGui.GetContentRegionAvail().X),17,HomeInk);
-            HomeLabel(lobby["status"]?.GetValue<string>()=="playing"?"In game":$"{(lobby["slots"] as JsonObject)?.Count??0}/8 Tamers seated",16,HomeMute);
+            roomTitle=lobby["name"]?.GetValue<string>()??"Your party";
+            roomNote=lobby["status"]?.GetValue<string>()=="playing"?"Game in progress":$"{(lobby["slots"] as JsonObject)?.Count??0}/8 players";action="Open";
         }
-        else {HomeLabel("Not in a lobby",15,HomeInk);}
-        ImGui.BeginDisabled(ClientNavigationBlocked);
-        if (HomeButton("socialLobby", steam?.Room is null ? "Lobbies" : "Open party", ImGui.GetContentRegionAvail().X, 38))
+        else if(steam is not null){roomTitle="Steam";roomNote="Friends come from your Steam friends list";action="Lobbies";}
+        else {roomTitle="Not in a lobby";roomNote="Create a lobby to invite friends";action="Lobbies";}
+        // .cs-fbtn: 5px 10px, Chakra 700 11px .1em uppercase, default button frame.
+        string actionText=action.ToUpperInvariant();
+        float actionWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,11,actionText,.1f)+20+2;
+        float actionHeight=NativeUiTheme.Css(NativeUiTheme.DisplayBoldFont,11)+10+2;
+        float textRight=extent.X-12-actionWidth-8;
+        var titleSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyBoldFont,12.5f,"T",0);var noteSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyFont,11,"T",0);
+        float textTop=MathF.Round(footAt.Y+(footHeight-titleSize.Y-noteSize.Y)/2);
+        NativeUiPaint.Tracked(draw,NativeUiTheme.BodyBoldFont,12.5f,new(footAt.X+12,textTop),NativeUiTheme.GoldBright,SocialEllipsis(roomTitle,NativeUiTheme.BodyBoldFont,12.5f,textRight-12));
+        NativeUiPaint.Tracked(draw,NativeUiTheme.BodyFont,11,new(footAt.X+12,textTop+titleSize.Y),NativeUiTheme.Text3,SocialEllipsis(roomNote,NativeUiTheme.BodyFont,11,textRight-12));
+        if(socialError is not null&&ImGui.IsMouseHoveringRect(footAt,footAt+new float2(textRight,footHeight)))ResultTooltip(socialError);
+        ImGui.SetCursorScreenPos(new(footAt.X+extent.X-12-actionWidth,MathF.Round(footAt.Y+(footHeight-actionHeight)/2)));
+        if (ClientButton("socialLobby", actionText, actionWidth, actionHeight, ClientButtonKind.Default, 11, tracking: .1f, font: NativeUiTheme.DisplayBoldFont))
         { NavigateClient("multiplayer"); }
-        ImGui.EndDisabled();
-        ImGui.PopStyleVar();ImGui.PopFont();ImGui.EndDisabled();ImGui.End();
+        ImGui.EndDisabled();ImGui.End();
     }
 
+    private static string SocialEllipsis(string value,ImFontPtr font,float px,float width)
+    {
+        if(NativeUiPaint.TrackedWidth(font,px,value,0)<=width)return value;
+        for(int length=value.Length-1;length>0;length--)
+        {
+            string candidate=value[..length].TrimEnd()+"...";
+            if(NativeUiPaint.TrackedWidth(font,px,candidate,0)<=width)return candidate;
+        }
+        return "...";
+    }
+
+    private static void DrawInviteGlyph(ImDrawListPtr draw,float2 center,ImColor8 ink)
+    {
+        // The original 16 px person-plus icon.
+        float s=16f/24;float2 P(float x,float y)=>center+new float2((x-12)*s,(y-12)*s);
+        draw.AddCircleFilled(P(10,8),4*s,ink,16);
+        draw.PathArcTo(P(10,20),7*s,MathF.PI,MathF.Tau,14);draw.PathFillConvex(ink);
+        draw.AddRectFilled(P(17,5),P(19,13),ink);draw.AddRectFilled(P(14,8),P(22,10),ink);
+    }
+
+    // .cs-row: 44 px, 34 px avatar ring with presence dot, 12.5px/700 name and 11px state; the action shows on hover.
     private void DrawSocialRow(SocialRow row, float top)
     {
         var at = ImGui.GetCursorScreenPos();
-        float width=ImGui.GetContentRegionAvail().X,height=row.JoinLobby is null?62:102;
+        float width=ImGui.GetWindowWidth(),height=44;
+        at.X=ImGui.GetWindowPos().X;
         bool visible = at.Y > top - height && at.Y < size.Y - 24;
-        var draw=ImGui.GetWindowDrawList();var rowColor=row.Online?HomeInk:HomeMute;
-        var stateColor = !row.Online ? HomeMute : row.Group == SocialGroup.InGame ? new ImColor8(79,166,255) : new ImColor8(112,196,132);
-        if(ImGui.IsMouseHoveringRect(at,at+new float2(width,height)))draw.AddRectFilledMultiColor(at,at+new float2(width,height),new ImColor8(200,170,110,22),new ImColor8(200,170,110,0),new ImColor8(200,170,110,0),new ImColor8(200,170,110,22));
+        var draw=ImGui.GetWindowDrawList();
+        var stateColor = !row.Online ? NativeUiTheme.Text3 : row.Group == SocialGroup.InGame ? new ImColor8(106,185,255) : NativeUiTheme.Success;
+        var dotColor = !row.Online ? NativeUiTheme.Text3 : row.Group == SocialGroup.InGame ? new ImColor8(79,166,255) : NativeUiTheme.Success;
+        bool hovered=ImGui.IsMouseHoveringRect(at,at+new float2(width,height));
+        if(hovered)NativeUiPaint.HorizontalGradient(draw,at,at+new float2(width,height),new ImColor8(200,170,110,26),new ImColor8(200,170,110,0));
+        float alpha=row.Online?1:.6f;
         if (visible)
         {
-            DrawLobbyAvatar(row.Id == 0 ? null : row.Id.ToString(),40,false);
+            var center=at+new float2(14+17,22);
+            draw.AddCircleFilled(center,17,NativeUiPaint.Fade(NativeUiTheme.Navy1,alpha),32);
+            NativeUiPaint.Radial(draw,center-new float2(0,7),new(24),new ImColor8(42,58,92,(byte)(255*alpha)),new ImColor8(10,20,40,0),32);
+            ImGui.SetCursorScreenPos(center-new float2(17,17));DrawLobbyAvatar(row.Id == 0 ? null : row.Id.ToString(),34,false);
             if (!lobbyAvatars.TryGetValue(row.Id, out var cached) || cached.Texture is null)
-            {string initials=row.Name[..Math.Min(2,row.Name.Length)].ToUpperInvariant();draw.AddText(at+(new float2(40)-ImGui.CalcTextSize(initials))*.5f,HomeGold,initials);}
-            draw.AddCircleFilled(at+new float2(36,36),6,new ImColor8(1,10,19));draw.AddCircleFilled(at+new float2(36,36),4,stateColor);
+            {
+                string initials=row.Name[..Math.Min(2,row.Name.Length)].ToUpperInvariant();
+                var initialSize=NativeUiPaint.TrackedSize(NativeUiTheme.DisplayBoldFont,11,initials,0);
+                NativeUiPaint.Tracked(draw,NativeUiTheme.DisplayBoldFont,11,center-initialSize*.5f,NativeUiPaint.Alpha(NativeUiTheme.GoldBright,(byte)(255*alpha)),initials);
+            }
+            draw.AddCircle(center,17,NativeUiPaint.Fade(NativeUiTheme.GoldBorder,alpha),32,1);
+            var dot=center+new float2(14,13);
+            draw.AddCircleFilled(dot,5,NativeUiPaint.Fade(NativeUiTheme.Navy0),16);draw.AddCircleFilled(dot,3,NativeUiPaint.Fade(dotColor,alpha),16);
         }
-        ImGui.SetCursorScreenPos(at+new float2(50,0));HomeLabel(LobbyEllipsis(row.Name,width-50),17,rowColor);
-        if(ImGui.IsItemHovered())ResultTooltip(row.Name);
-        ImGui.SetCursorScreenPos(at+new float2(50,25));HomeLabel(LobbyEllipsis(row.Note,width-50),16,stateColor);
-        if(ImGui.IsItemHovered())ResultTooltip(row.Note);
+        float textLeft=at.X+14+34+9,actionWidth=row.JoinLobby is null?0:NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,10.5f,"JOIN",.08f)+18;
+        float textWidth=width-(textLeft-at.X)-10-(actionWidth>0?actionWidth+9:0);
+        var nameSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyBoldFont,12.5f,"T",0);var noteSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyFont,11,"T",0);
+        float textTop=MathF.Round(at.Y+(height-nameSize.Y-noteSize.Y)/2);
+        var nameColor=row.Id!=0&&row.Id==steam?.SteamId?NativeUiTheme.Accent:NativeUiTheme.GoldBright;
+        NativeUiPaint.Tracked(draw,NativeUiTheme.BodyBoldFont,12.5f,new(textLeft,textTop),NativeUiPaint.Alpha(nameColor,(byte)(255*alpha)),SocialEllipsis(row.Name,NativeUiTheme.BodyBoldFont,12.5f,textWidth));
+        NativeUiPaint.Tracked(draw,NativeUiTheme.BodyFont,11,new(textLeft,textTop+nameSize.Y),NativeUiPaint.Alpha(stateColor,(byte)(255*alpha)),SocialEllipsis(row.Note,NativeUiTheme.BodyFont,11,textWidth));
+        if(hovered&&(NativeUiPaint.TrackedWidth(NativeUiTheme.BodyBoldFont,12.5f,row.Name,0)>textWidth||NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,11,row.Note,0)>textWidth))
+            ResultTooltip(row.Name+"\n"+row.Note);
         if (row.JoinLobby is { } lobby)
         {
-            ImGui.SetCursorScreenPos(at+new float2(50,52));
+            float actionHeight=NativeUiTheme.Css(NativeUiTheme.DisplayBoldFont,10.5f)+6+2;
+            ImGui.SetCursorScreenPos(new(at.X+width-10-actionWidth,MathF.Round(at.Y+(height-actionHeight)/2)));
             ImGui.BeginDisabled(!row.CanJoin || enteringRoom is not null || ClientNavigationBlocked);
-            if (HomeButton("socialJoin/" + row.Id, "Join lobby", width-50, 36)) { JoinSteamRoom(lobby); NavigateClient("multiplayer"); }
+            // .cs-act stays transparent until its row is hovered or it takes keyboard focus.
+            float previous=ImGui.GetStyle().Alpha;
+            bool shown=hovered||KeyboardFocusedButton=="socialJoin/" + row.Id;
+            if(!shown)ImGui.GetStyle().Alpha=0;
+            bool join=ClientButton("socialJoin/" + row.Id, "JOIN", actionWidth, actionHeight, ClientButtonKind.Default, 10.5f, tracking: .08f, font: NativeUiTheme.DisplayBoldFont);
+            ImGui.GetStyle().Alpha=previous;
+            if (join) { JoinSteamRoom(lobby); NavigateClient("multiplayer"); }
             ImGui.EndDisabled();
             if (!row.CanJoin && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ResultTooltip("Leave your current party before joining another.");
         }
-        ImGui.SetCursorScreenPos(at+new float2(0,height));ImGui.Dummy(new(width,1));
+        ImGui.SetCursorScreenPos(at+new float2(0,height));ImGui.Dummy(new(width,0));
     }
+
 }

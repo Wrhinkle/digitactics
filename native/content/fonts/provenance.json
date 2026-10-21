@@ -10,6 +10,20 @@
       "repositoryCommit": "0b58fb370093f9a9f4ff785d94405710b79de67c"
     },
     {
+      "path": "inter/Inter-SemiBold.ttf",
+      "size": 342688,
+      "sha256": "b5996a92e34bb74df9080bf429c33cbed0d3b911926659fcf8b8871ac15ca8a4",
+      "derivedFrom": "inter/Inter[opsz,wght].ttf",
+      "sourceSha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+      "license": "inter/OFL.txt",
+      "generator": "native/tools/export-ui-fonts.py",
+      "fontToolsVersion": "4.60.1",
+      "axes": {
+        "opsz": 14,
+        "wght": 600
+      }
+    },
+    {
       "path": "inter/Inter-Bold.ttf",
       "size": 343072,
       "sha256": "202f240469f916722233188ec316107f6cecaf13b801e9b3939b82b9f7a816d6",
@@ -21,6 +35,20 @@
       "axes": {
         "opsz": 14,
         "wght": 700
+      }
+    },
+    {
+      "path": "inter/Inter-ExtraBold.ttf",
+      "size": 344000,
+      "sha256": "6885a1141a15827fc0c0ed03b6da7393c77f062abed4a1ed722747899e961656",
+      "derivedFrom": "inter/Inter[opsz,wght].ttf",
+      "sourceSha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+      "license": "inter/OFL.txt",
+      "generator": "native/tools/export-ui-fonts.py",
+      "fontToolsVersion": "4.60.1",
+      "axes": {
+        "opsz": 14,
+        "wght": 800
       }
     },
     {

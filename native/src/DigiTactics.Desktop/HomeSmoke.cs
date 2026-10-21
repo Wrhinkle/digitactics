@@ -55,7 +55,7 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
             AddClick("profile",s=>Check(s.ProfileVisible&&!s.CollectionVisible,"Profile route failed to replace Collection."));
             AddClick("closeProfile",s=>Check(!s.ProfileVisible&&s.CollectionVisible,"Profile Back lost the preceding Collection page."));
             steps.Add(new("collection-history-back",_=>Escape(),s=>Check(!s.CollectionVisible&&!s.ProfileVisible&&s.Buttons.ContainsKey("start"),"Collection Back did not return Home.")));
-            AddClick("settings");AddClick("about",s=>Check(s.AboutVisible&&!s.SettingsVisible,"About did not replace Settings."));
+            AddClick("settings");AddClick("settingsCredits",s=>Check(s.AboutVisible&&!s.SettingsVisible,"About did not replace Settings."));
             AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.SettingsVisible,"About Back lost Settings."));
             AddClick("closeSettings",s=>Check(!s.SettingsVisible&&s.Buttons.ContainsKey("start"),"Settings Back did not return Home."));
         }
@@ -97,7 +97,8 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         AddClick("homePlayConfirm",s=>Check(s.HomePlayPartyVisible&&s.HomePlayLayoutFits&&s.HomePartySeatCount==8&&s.Buttons.ContainsKey("homePlayStart"),"Mode confirmation did not reach the party/start screen."));
         AddClick("homePlayModes",s=>Check(s.HomePlayVisible&&!s.HomePlayPartyVisible,"Party Modes button did not return to mode select."));
         AddClick("clientModes");steps.Add(new("mode-card-initial",s=>ModeCard(s,initialSet),s=>Check(s.SelectedSet==initialSet&&s.HomeHeroId=="set-"+initialSet,"Ruleset card did not preserve its selection and reveal the matching hero.")));AddClick("homeOverview");
-        AddClick("about",s=>Check(s.AboutVisible,"About did not open."));AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.Buttons.ContainsKey("start"),"About did not return Home."));
+        AddClick("settings");AddClick("settingsCredits",s=>Check(s.AboutVisible,"About did not open."));AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.SettingsVisible,"About did not return to Settings."));
+        AddClick("homeOverview",s=>Check(!s.SettingsVisible&&s.Buttons.ContainsKey("start"),"Home tab did not leave Settings."));
         AddClick("homeTab/patch",s=>Check(s.HomeTab=="patch"&&s.HomeHighlights==7&&s.HomeRotationSets==11,"Patch notes omitted source highlights or rotation sets."));
         steps.Add(new("patch-scroll",s=>{var b=s.HomeArticleBounds;ImGui.GetIO().AddMousePosEvent((b.Min.X+b.Max.X)/2,(b.Min.Y+b.Max.Y)/2);ImGui.GetIO().AddMouseWheelEvent(0,-24);return true;},s=>Check(s.HomeArticleScroll>0,"Full patch notes cannot scroll through the set rotation.")));
         AddClick("homeTab/events",s=>Check(s.HomeTab=="events"&&s.HomeCountdown==HomeRotation.Label(HomeRotation.UntilMidnight(clock,TimeZoneInfo.Local)),"Events countdown diverged from local midnight."));
@@ -154,7 +155,7 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         if(step==0)
         {
             Check(screen.HomeLayoutFits&&screen.HomeHeroArt is not null&&screen.HomeLegendDrawCalls>0,"Selected set artwork, live Little Legend or responsive layout is missing.");
-            foreach(string key in new[]{"start","multiplayer","clientModes","settings","about","homeTab/patch","homeTab/events"})
+            foreach(string key in new[]{"start","multiplayer","clientModes","settings","homeTab/patch","homeTab/events"})
                 Check(screen.Buttons.TryGetValue(key,out var point)&&point.X>=0&&point.X<size.X&&point.Y>=0&&point.Y<size.Y,"Control outside supported window: "+key);
         }
         string scene=screen.AboutVisible?"about":screen.HomePlayVisible?(screen.HomePlayPartyVisible?"hero-play":"mode-select"):screen.CodexVisible?"set-news-codex":screen.CollectionVisible?"featured-store":screen.HomeTab=="overview"&&screen.HomeHeroId is "store" or "mp"?"hero-"+screen.HomeHeroId:screen.HomeTab+(screen.HomeArticleScroll>0&&screen.HomeTab=="patch"?"-scrolled":"");

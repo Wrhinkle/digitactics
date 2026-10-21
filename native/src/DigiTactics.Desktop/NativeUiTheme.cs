@@ -12,6 +12,8 @@ internal static class NativeUiTheme
     internal const float HeadingSize = 22;
     internal static ImFontPtr BodyFont { get; private set; }
     internal static ImFontPtr BodyBoldFont { get; private set; }
+    internal static ImFontPtr BodySemiBoldFont { get; private set; }
+    internal static ImFontPtr BodyExtraBoldFont { get; private set; }
     internal static ImFontPtr DisplayFont { get; private set; }
     internal static ImFontPtr DisplayBoldFont { get; private set; }
 
@@ -27,6 +29,26 @@ internal static class NativeUiTheme
     internal static readonly ImColor8 PlayTop = new(255, 210, 106);
     internal static readonly ImColor8 PlayText = new(20, 13, 5);
     internal static readonly ImColor8 PlayBorder = new(255, 224, 154);
+    // Remaining style.css :root tokens used by the client shell (Gold = --lc-gold-2, GoldBright = --lc-gold-1,
+    // GoldBorder = --lc-gold-4, Muted = --c-text-2).
+    internal static readonly ImColor8 GoldDeep = new(200, 155, 60);     // --lc-gold-3
+    internal static readonly ImColor8 GoldDim = new(70, 55, 20);        // --lc-gold-5
+    internal static readonly ImColor8 LcText = new(205, 190, 145);      // --lc-text
+    internal static readonly ImColor8 LcMute = new(160, 155, 140);      // --lc-mute
+    internal static readonly ImColor8 Text1 = new(238, 242, 250);       // --c-text-1
+    internal static readonly ImColor8 Text3 = new(116, 129, 154);       // --c-text-3
+    internal static readonly ImColor8 Accent = new(63, 214, 255);       // --c-accent
+    internal static readonly ImColor8 AccentInk = new(205, 250, 250);   // .lc-cta / PLAY label
+    internal static readonly ImColor8 Success = new(79, 224, 143);      // --c-success
+    internal static readonly ImColor8 Danger = new(255, 84, 104);       // --c-danger
+    internal static readonly ImColor8 Bits = new(79, 200, 255);         // --c-bits
+
+    /// <summary>
+    /// ImGui sizes a face by its ascent-to-descent height while CSS font-size is the em size. Multiply CSS pixels by the
+    /// face's (ascent - descent) / unitsPerEm: 1.3 for Chakra Petch, 1.21 for Inter. Use for 1:1 sizes with the original.
+    /// </summary>
+    internal static float Css(ImFontPtr font, float pixels)
+        => pixels * (font.FontId == DisplayFont.FontId || font.FontId == DisplayBoldFont.FontId ? 1.3f : 1.21f);
 
     // Call once after creating each ImGui context, before constructing the renderer.
     // Explicitly select the body face so an auxiliary cinematic font can never become the UI default.
@@ -36,6 +58,10 @@ internal static class NativeUiTheme
             "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031");
         BodyBoldFont = Load("inter/Inter-Bold.ttf", BodySize,
             "202f240469f916722233188ec316107f6cecaf13b801e9b3939b82b9f7a816d6");
+        BodySemiBoldFont = Load("inter/Inter-SemiBold.ttf", BodySize,
+            "b5996a92e34bb74df9080bf429c33cbed0d3b911926659fcf8b8871ac15ca8a4");
+        BodyExtraBoldFont = Load("inter/Inter-ExtraBold.ttf", BodySize,
+            "6885a1141a15827fc0c0ed03b6da7393c77f062abed4a1ed722747899e961656");
         DisplayFont = Load("chakrapetch/ChakraPetch-SemiBold.ttf", HeadingSize,
             "45264de3204ddbd5fb3e14a2402acd5c630d16650ae5fc221d2c52da46a6734b");
         DisplayBoldFont = Load("chakrapetch/ChakraPetch-Bold.ttf", HeadingSize,
