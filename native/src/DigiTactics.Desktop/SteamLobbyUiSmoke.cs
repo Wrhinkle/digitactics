@@ -72,8 +72,8 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
               "settings","saveData","__prepareBackup","exportSave","__inviteWithBackup","__joinedWithBackup","__backupCanceled","steamLeave","steamBack",
               "__prepareSocialRoom","__friends","socialRefresh","settings","__settings","socialJoin/"+Peer,"__joined","steamLeave","steamBack",
               "__prepareSocialRoom","__friends","socialRefresh","codex","__codex","socialJoin/"+Peer,"__joined","steamLeave","steamBack",
-              "__friends","clientModes","homePlayRuleset","homePlayRuleset/faction-wars","homePlayConfirm","__friends","__homePlay","socialLobby","__lobby","steamBack",
-              "__prepareSocialRoom","__friends","socialRefresh","clientModes","homePlayRuleset","homePlayRuleset/faction-wars","homePlayConfirm","__friends","__homePlay","socialJoin/"+Peer,"__joined","steamLeave","steamBack",
+              "__friends","clientModes","homeMode/faction-wars","homePlayConfirm","__friends","__homePlay","socialLobby","__lobby","steamBack",
+              "__prepareSocialRoom","__friends","socialRefresh","clientModes","homeMode/faction-wars","homePlayConfirm","__friends","__homePlay","socialJoin/"+Peer,"__joined","steamLeave","steamBack",
               "farm","farmDigivolve","digivolve","__inviteDuringEvolution","__waitDeferredEvolution","__joined","steamLeave","steamBack","__evolutionCleaned",
               "__pendingInvite","__cancelPendingInvite","__pendingCancelled","steamBack"];
         if(callback is not null)

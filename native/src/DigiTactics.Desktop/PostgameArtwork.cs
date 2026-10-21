@@ -22,7 +22,8 @@ internal sealed class PostgameArtwork(string folder="postgame") : IDisposable
                     image.Rgba[pixel]=image.Rgba[pixel+1]=image.Rgba[pixel+2]=gray;
                 }
             }
-            item = (new(image, new(MinFilter:9729,WrapS:33071,WrapT:33071), false), image.Width, image.Height);
+            // Mipmapped like a browser's downscale: emblems and mode art are drawn far below their source size.
+            item = (new(image, new(MinFilter:9987,WrapS:33071,WrapT:33071), false), image.Width, image.Height);
             textures.Add(key, item);
         }
         float2 uv0 = new(0,0), uv1 = new(1,1);

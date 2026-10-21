@@ -71,18 +71,21 @@ internal sealed partial class MatchScreen
     }
 
     private float postgameScroll;
+    internal float PostgameScroll=>postgameScroll;
+    internal float PostgameScrollMax {get;private set;}
     internal (float2 Min,float2 Max) PostgamePageBounds {get;private set;}
     private readonly Dictionary<string,(float2 Min,float2 Max)> postgameControls=[];
     /// <summary>
-    /// For drivers: scrolls the result page so the control is visible and returns where it will be drawn
-    /// on the next frame (the page moves by exactly the scroll change).
+    /// For drivers: true when the result control is fully on screen; otherwise scrolls the page toward it
+    /// and returns false, so the caller clicks on a later frame (hover uses the previous frame's layout).
     /// </summary>
-    internal float2 RevealPostgameControl(string key,float2 point)
+    internal bool RevealPostgameControl(string key)
     {
-        if(!PostgameVisible||!postgameControls.TryGetValue(key,out var box))return point;
-        var page=PostgamePageBounds;float delta=0;
-        if(box.Min.Y<page.Min.Y)delta=box.Min.Y-page.Min.Y-8;else if(box.Max.Y>page.Max.Y)delta=box.Max.Y-page.Max.Y+8;
-        postgameScroll+=delta;return point-new float2(0,delta);
+        if(!PostgameVisible||!postgameControls.TryGetValue(key,out var box))return true;
+        var page=PostgamePageBounds;
+        if(box.Min.Y>=page.Min.Y&&box.Max.Y<=page.Max.Y)return true;
+        postgameScroll+=box.Min.Y<page.Min.Y?box.Min.Y-page.Min.Y-8:box.Max.Y-page.Max.Y+8;
+        return false;
     }
 
     // #homeResults .results (js/client.js showResults, theme.js "Results"), in CSS pixels. Like the original
@@ -131,7 +134,7 @@ internal sealed partial class MatchScreen
         var io=ImGui.GetIO();
         PostgamePageBounds=(new(0,ClientPageTop),new(size.X,size.Y));
         bool pageHovered=io.MousePos.X>=0&&io.MousePos.X<size.X&&io.MousePos.Y>=ClientPageTop&&io.MousePos.Y<size.Y;
-        postgameScroll=Math.Clamp(postgameScroll,0,Math.Max(0,padTop+height+padBottom-pageHeight));
+        PostgameScrollMax=Math.Max(0,padTop+height+padBottom-pageHeight);postgameScroll=Math.Clamp(postgameScroll,0,PostgameScrollMax);
         float panelTop=ClientPageTop+padTop-postgameScroll;
 
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize,0);
@@ -383,7 +386,7 @@ internal sealed partial class MatchScreen
             float nameLeft=8+30+8+28+8;
             ClientCss.Text(draw,ClientCss.Face.BodyBold,12.5f,at+new float2(nameLeft,6.6f),me?ClientCss.Gold1:ClientCss.Text1,ClientCss.Ellipsis(ClientCss.Face.BodyBold,12.5f,name,Math.Max(20,rowWidth-6-statusWidth-8-nameLeft)),0,16.875f);
             ImGui.Dummy(new(rowWidth,30)); if (ImGui.IsItemHovered()) ResultTooltip(name);
-            ResultAdvance(2); PostgameStandings++;
+            if(++PostgameStandings<Session.State.Players.Count)ResultAdvance(2);
         }
     }
 

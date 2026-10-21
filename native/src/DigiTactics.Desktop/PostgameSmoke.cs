@@ -23,12 +23,14 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
     public string Pending=>$"postgame scenario {scenario}, step {step}";
     public void Input(MatchScreen screen)
     {
-        void Click(string key)
+        bool Click(string key)
         {
             if(!screen.Buttons.TryGetValue(key,out var point))throw new InvalidOperationException($"Postgame button missing: {key}; {Pending}");
-            // The result page scrolls when it is taller than the window; the press lands where the control moves to.
-            point=screen.RevealPostgameControl(key,point);
+            // The result page scrolls when it is taller than the window: bring the control on screen first and
+            // retry on the next frame without advancing the step.
+            if(!screen.RevealPostgameControl(key))return false;
             ImGui.GetIO().AddMousePosEvent(point.X,point.Y); ImGui.GetIO().AddMouseButtonEvent(0,true);
+            return true;
         }
         if(step==0)
         {
@@ -74,7 +76,7 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
             if(scenario==12&&step==111)Click("homeOverview");
             step++;return;
         }
-        if(step==95)Click("resultHistory");
+        if(step==95&&!Click("resultHistory"))return;
         if(step==96 || step==100 || step==106 || step==110 || step==115)ImGui.GetIO().AddMouseButtonEvent(0,false);
         if(step==99)Click("closeProfile");
         if(step==103 && !screen.PostgameStoreButtonVisible)
@@ -82,9 +84,9 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
             var center=(screen.PostgameRewardsMin+screen.PostgameRewardsMax)*.5f;
             ImGui.GetIO().AddMousePosEvent(center.X,center.Y); ImGui.GetIO().AddMouseWheelEvent(0,-8);
         }
-        if(step==105)Click("resultStore");
+        if(step==105&&!Click("resultStore"))return;
         if(step==109)Click("homeOverview");
-        if(step==114)Click(scenario is 4 or 6 or 10?"resultDismiss":scenario is 5 or 7 or 9?"menu":outNow?"spectateRemaining":"resultAgain");
+        if(step==114&&!Click(scenario is 4 or 6 or 10?"resultDismiss":scenario is 5 or 7 or 9?"menu":outNow?"spectateRemaining":"resultAgain"))return;
         if(step==140 && dismiss)Click("start");
         if(step==141 && dismiss)ImGui.GetIO().AddMouseButtonEvent(0,false);
         step++;
@@ -99,7 +101,7 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
                 throw new InvalidOperationException($"Only {screen.PostgameVisibleStandings}/8 standings are fully visible at {size.X}x{size.Y}.");
             if(!screen.PostgamePending || screen.PostgameHomeVisible || !screen.Buttons.ContainsKey("settings")
                 || !screen.Buttons.ContainsKey("homeOverview") || !screen.Buttons.ContainsKey("collection")
-                || screen.PostgamePanelMin.Y<80 || screen.PostgamePanelMax.Y>size.Y || screen.PostgamePanelMax.X>size.X)
+                || screen.PostgamePanelMin.Y+screen.PostgameScroll<80 || screen.PostgamePanelMax.Y-size.Y>screen.PostgameScrollMax-screen.PostgameScroll+.5f || screen.PostgamePanelMax.X>size.X)
                 throw new InvalidOperationException("Results must be embedded below the live client navigation without leaving the viewport.");
             if(screen.PostgameRewardsBelow!=(size.X<=1500) || screen.PostgameProgressMin.X<=screen.PostgameStandingsMax.X ||
                 (screen.PostgameRewardsBelow ? screen.PostgameRewardsMin.Y<=screen.PostgameStandingsMax.Y || Math.Abs(screen.PostgameRewardsMin.X-screen.PostgameStandingsMin.X)>1 || Math.Abs(screen.PostgameRewardsMax.X-screen.PostgameProgressMax.X)>1

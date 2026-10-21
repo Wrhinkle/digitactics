@@ -53,18 +53,20 @@ internal static class ClientCss
             draw.AddText(font, size, at, color, text);
             return Width(face, px, text);
         }
+        // CalcTextSize rounds each measurement up to a whole pixel, so place every glyph by the width of
+        // the whole prefix before it (one rounding) rather than summing rounded single-glyph widths.
         ImGui.PushFont(font, size);
-        float x = at.X;
-        for (int i = 0; i < text.Length; i++)
+        float advance = 0;
+        for (int i = 0, count = 0; i < text.Length; count++)
         {
             int length = char.IsHighSurrogate(text[i]) && i + 1 < text.Length ? 2 : 1;
-            string glyph = text.Substring(i, length);
-            draw.AddText(font, size, new(x, at.Y), color, glyph);
-            x += ImGui.CalcTextSize(glyph).X + tracking;
-            i += length - 1;
+            float prefix = i == 0 ? 0 : ImGui.CalcTextSize(text[..i]).X;
+            draw.AddText(font, size, new(at.X + prefix + count * tracking, at.Y), color, text.Substring(i, length));
+            i += length;
+            if (i >= text.Length) advance = ImGui.CalcTextSize(text).X + (count + 1) * tracking;
         }
         ImGui.PopFont();
-        return x - at.X;
+        return advance;
     }
 
     /// <summary>Text centered horizontally in a box of the given width.</summary>
@@ -131,30 +133,63 @@ internal static class ClientCss
         => draw.AddRectFilledMultiColor(min, max, left, right, right, left);
 
     /// <summary>Approximates a blurred box-shadow (0 0 blur color) outside the box.</summary>
-    internal static void Glow(ImDrawListPtr draw, float2 min, float2 max, ImColor8 color, float blur, float rounding = 0)
+    internal static void Glow(ImDrawListPtr draw, float2 min, float2 max, ImColor8 color, float blur, float rounding = 0, bool filled = false)
     {
-        int steps = Math.Max(3, (int)Math.Ceiling(blur / 2));
-        var rgba = color.AsByte4();
-        for (int i = steps; i >= 1; i--)
+        // A filled shadow also darkens its own box (an offset drop shadow shows below the element).
+        if (filled) { var c = color.AsByte4(); draw.AddRectFilled(min, max, new ImColor8(c.X, c.Y, c.Z, (byte)(c.W * .7f)), rounding); }
+        // A CSS blur radius is twice the Gaussian sigma; outside a straight edge the shadow falls off as
+        // 0.5 * erfc(d / (sigma * sqrt 2)). Paint that profile as adjacent 1px rings.
+        var rgba = color.AsByte4();float sigma = Math.Max(.5f, blur / 2);int rings = (int)Math.Ceiling(blur * 1.2f);
+        for (int i = 0; i < rings; i++)
         {
-            float t = i / (float)steps, grow = blur * .5f * t;
-            float alpha = rgba.W / 255f * (1 - t) * (1 - t) * 2f / steps;
-            draw.AddRect(min - new float2(grow), max + new float2(grow), new ImColor8(rgba.X, rgba.Y, rgba.Z, (byte)Math.Clamp(alpha * 255 * 3, 0, 255)), rounding + grow, ImDrawFlags.None, blur / steps + 1);
+            float d = i + .5f, intensity = .5f * Erfc(d / (sigma * 1.41421356f));
+            byte alpha = (byte)Math.Clamp(Math.Round(rgba.W * intensity), 0, 255);
+            if (alpha == 0) continue;
+            draw.AddRect(min - new float2(d), max + new float2(d), new ImColor8(rgba.X, rgba.Y, rgba.Z, alpha), rounding > 0 ? rounding + d : 0, ImDrawFlags.None, 1);
         }
+    }
+    private static float Erfc(float x)
+    {
+        // Abramowitz and Stegun 7.1.26, |error| < 1.5e-7 for x >= 0.
+        float t = 1 / (1 + .3275911f * x);
+        return t * (.254829592f + t * (-.284496736f + t * (1.421413741f + t * (-1.453152027f + t * 1.061405429f)))) * MathF.Exp(-x * x);
     }
 
     /// <summary>Approximates an inset glow (inset 0 0 blur color).</summary>
     internal static void InsetGlow(ImDrawListPtr draw, float2 min, float2 max, ImColor8 color, float blur)
     {
-        int steps = Math.Max(3, (int)Math.Ceiling(blur / 3));
-        var rgba = color.AsByte4();
-        for (int i = 0; i < steps; i++)
+        // The inside of an inset shadow follows the same edge profile as Glow, measured inward.
+        var rgba = color.AsByte4();float sigma = Math.Max(.5f, blur / 2);int rings = (int)Math.Min(Math.Ceiling(blur * 1.2f), Math.Min(max.X - min.X, max.Y - min.Y) / 2);
+        for (int i = 0; i < rings; i++)
         {
-            float t = i / (float)steps, inset = blur * .5f * t;
-            byte alpha = (byte)Math.Clamp(rgba.W * (1 - t) * (1 - t) * 1.6f / steps * 2, 0, 255);
-            draw.AddRect(min + new float2(inset), max - new float2(inset), new ImColor8(rgba.X, rgba.Y, rgba.Z, alpha), 0, ImDrawFlags.None, blur * .5f / steps + 1);
+            float d = i + .5f, intensity = .5f * Erfc(d / (sigma * 1.41421356f));
+            byte alpha = (byte)Math.Clamp(Math.Round(rgba.W * intensity), 0, 255);
+            if (alpha == 0) continue;
+            draw.AddRect(min + new float2(d), max - new float2(d), new ImColor8(rgba.X, rgba.Y, rgba.Z, alpha), 0, ImDrawFlags.None, 1);
         }
     }
+    /// <summary>
+    /// CSS radial-gradient(circle at center, color, transparent radius): a triangle fan whose vertex colors
+    /// interpolate from the center color to transparent at the given radius.
+    /// </summary>
+    internal static void Radial(ImDrawListPtr draw, float2 center, float radius, ImColor8 color)
+    {
+        const int segments = 64;
+        var rgba = color.AsByte4(); var clear = new ImColor8(rgba.X, rgba.Y, rgba.Z, 0);
+        var uv = ImGui.GetFontTexUvWhitePixel();
+        draw.PrimReserve(segments * 3, segments * 3);
+        for (int i = 0; i < segments; i++)
+        {
+            float a = i * MathF.Tau / segments, b = (i + 1) * MathF.Tau / segments;
+            draw.PrimVtx(center, uv, color);
+            draw.PrimVtx(center + new float2(MathF.Cos(a), MathF.Sin(a)) * radius, uv, clear);
+            draw.PrimVtx(center + new float2(MathF.Cos(b), MathF.Sin(b)) * radius, uv, clear);
+        }
+    }
+
+    /// <summary>Radius of a CSS "circle at x% y%" gradient's farthest-corner size inside a box.</summary>
+    internal static float FarthestCorner(float2 extent, float x, float y)
+        => MathF.Sqrt(MathF.Pow(extent.X * Math.Max(x, 1 - x), 2) + MathF.Pow(extent.Y * Math.Max(y, 1 - y), 2));
 
     /// <summary>Dashed 1px border, like CSS border-style: dashed.</summary>
     internal static void Dashed(ImDrawListPtr draw, float2 at, float2 extent, ImColor8 color, float dash = 3, float gap = 3)

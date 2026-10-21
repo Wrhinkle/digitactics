@@ -139,7 +139,7 @@ internal sealed partial class MatchScreen
     }
     private static void LobbyChevron(float2 at,float width)
     {
-        var draw=ImGui.GetWindowDrawList();var center=at+new float2(width-15,18.5f);
+        var draw=ImGui.GetWindowDrawList();var center=at+new float2(width-11,18.5f);
         draw.AddLine(center+new float2(-4,-2),center+new float2(0,2),ClientCss.Text1,1.5f);draw.AddLine(center+new float2(0,2),center+new float2(4,-2),ClientCss.Text1,1.5f);
     }
     private bool LobbyCombo(string key,string preview,float2 at,float width)

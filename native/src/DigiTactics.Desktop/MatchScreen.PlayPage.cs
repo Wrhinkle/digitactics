@@ -171,7 +171,7 @@ internal sealed partial class MatchScreen
             if(hover)Glow(draw,at,max,new ImColor8(200,170,110,46),10,2);
             Gradient(draw,at+new float2(1),max-new float2(1),hover?new ImColor8(38,45,54):new ImColor8(30,35,40),hover?new ImColor8(26,33,43):new ImColor8(20,26,34));
             Border(draw,at,max,hover?Gold2:Gold4,1,2);
-            float glyphWidth=Width(Face.BodyBold,24,glyph);Text(draw,Face.BodyBold,24,at+new float2((arrowWidth-glyphWidth)/2,5),hover?Gold1:LcText,glyph,0,32.4f);
+            float glyphWidth=Width(Face.Body,24,glyph);Text(draw,Face.Body,24,at+new float2((arrowWidth-glyphWidth)/2,5),hover?Gold1:LcText,glyph,0,32.4f);
             return pressed;
         }
         if(Arrow("homeModePrevious","←",controlsLeft))homeModeScrollRequest=(selected+ids.Length-1)%ids.Length;
@@ -420,7 +420,7 @@ internal sealed partial class MatchScreen
         foreach(var (key,action) in new[]{("D","reroll"),("E","sell"),("Space","fight"),("T","emotes"),("C","codex")})
         {
             x+=6;Keycap(draw,new(x,keysY),key,out float capWidth);x+=capWidth+6;
-            x+=Text(draw,Face.Body,12.5f,new(x,keysY+.5f),Text3,action,0,16.875f);
+            // .play-keys: gap 6 between items plus each kbd
         }
         float startWidth=Width(Face.DisplayBold,startPx,"START",startPx*.14f)+startPadX*2+2;
         bool inRoom=networkRoom is not null||steam?.Room is not null;ImGui.BeginDisabled(inRoom);
@@ -456,8 +456,7 @@ internal sealed partial class MatchScreen
             Glow(draw,at,max,new ImColor8(200,170,110,51),24);
             Gradient(draw,at+new float2(1),max-new float2(1),new ImColor8(10,20,40,77),new ImColor8(1,10,19,230));
             // radial-gradient(circle at 50% 55%, rgba(63,214,255,.18), transparent 60%)
-            var glowCenter=at+new float2(extent.X*.5f,extent.Y*.55f);float radius=MathF.Sqrt(extent.X*extent.X+extent.Y*extent.Y)*.5f*.6f;
-            for(int ring=12;ring>=1;ring--)draw.AddCircleFilled(glowCenter,radius*ring/12,new ImColor8(63,214,255,(byte)(46f/12*(1-(ring-1)/12f)*1.4f)),48);
+            draw.PushClipRect(at,max,true);Radial(draw,at+new float2(extent.X*.5f,extent.Y*.55f),FarthestCorner(extent,.5f,.55f)*.6f,new ImColor8(63,214,255,46));draw.PopClipRect();
             var look=CosmeticLoadouts.Local(wallet,legends);string id=look["legend"]?.GetValue<string>()??"tokomon";
             var evolution=LegendEvolution.Inspect(legends,wallet,profile?.Storage.GetValueOrDefault("dt.farm.v1"),id);
             ownForm=LegendEvolution.Form(evolution.Form).Name;ownLevel=evolution.Level;
@@ -468,8 +467,7 @@ internal sealed partial class MatchScreen
             Border(draw,at,max,Gold2);
             var crown=at+new float2(9,9);
             float2[] points=[crown+new float2(0,12),crown+new float2(0,2.4f),crown+new float2(4.5f,7.2f),crown+new float2(9,0),crown+new float2(13.5f,7.2f),crown+new float2(18,2.4f),crown+new float2(18,12)];
-            Glow(draw,crown,crown+new float2(18,12),new ImColor8(200,155,60,120),8,3);
-            foreach(var point in points)draw.PathLineTo(point);draw.PathFillConcave(Gold2);
+           foreach(var point in points)draw.PathLineTo(point);draw.PathFillConcave(Gold2);
         }
         else
         {

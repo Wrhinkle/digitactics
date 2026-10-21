@@ -104,12 +104,12 @@ internal sealed partial class MatchScreen
             var at = new float2(x + i * (cardWidth + gap), cardsY);
             var max = at + new float2(cardWidth, cardHeight);
             // .ld-card: 0 10px 30px rgba(0,0,0,.6); the local card adds a gold ring and glow.
-            ClientCss.Glow(draw, at + new float2(0, 10), max + new float2(0, 10), new ImColor8(0, 0, 0, 120), 30);
+            ClientCss.Glow(draw, at + new float2(0, 10), max + new float2(0, 10), new ImColor8(0, 0, 0, 153), 30, 0, true);
             if (local) ClientCss.Glow(draw, at, max, new ImColor8(240, 210, 140, 90), 30);
             ClientCss.Gradient(draw, at, max, new ImColor8(11, 26, 44), NativeUiTheme.Navy0);
-            var glow = at + new float2(cardWidth * .5f, cardHeight * .35f); float radius = MathF.Sqrt(cardWidth * cardWidth + cardHeight * cardHeight) * .5f * .6f;
+            // radial-gradient(circle at 50% 35%, rgba(63,214,255,.22), transparent 60%)
             draw.PushClipRect(at, max, true);
-            for (int ring = 10; ring >= 1; ring--) draw.AddCircleFilled(glow, radius * ring / 10, new ImColor8(63, 214, 255, (byte)(56f / 10 * (1 - (ring - 1) / 10f) * 1.5f)), 48);
+            ClientCss.Radial(draw, at + new float2(cardWidth * .5f, cardHeight * .35f), ClientCss.FarthestCorner(new(cardWidth, cardHeight), .5f, .35f) * .6f, new ImColor8(63, 214, 255, 56));
             draw.PopClipRect();
             float picHeight = cardHeight - 2 - nameHeight, portraitSize = Math.Min(cardWidth - 2 - 16, picHeight - 16);
             var portraitAt = at + new float2((cardWidth - portraitSize) * .5f, 1 + (picHeight - portraitSize) * .5f);
@@ -157,11 +157,14 @@ internal sealed partial class MatchScreen
     private static string LoadingInitials(string name) => string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(n => char.ToUpperInvariant(n[0])));
     private static void LoadingVignette(ImDrawListPtr draw, float2 extent)
     {
+        // radial-gradient(ellipse at 50% 45%, transparent 30%, rgba(1,10,19,.85) 80%): the farthest-corner
+        // ellipse keeps the closest-side aspect (half width : 45% height) scaled through the bottom corners.
+        double scale = Math.Sqrt(1 + Math.Pow(.55 / .45, 2)), rx = extent.X * .5 * scale, ry = extent.Y * .45 * scale;
         ImColor8 At(float x, float y)
         {
-            double dx = (x / extent.X - .5) * 2, dy = (y / extent.Y - .45) * 2;
-            double amount = Math.Clamp((Math.Sqrt(dx * dx + dy * dy) - .3) / .75, 0, 1);
-            return new(1, 10, 19, (byte)(amount * 217));
+            double dx = (x - extent.X * .5) / rx, dy = (y - extent.Y * .45) / ry;
+            double amount = Math.Clamp((Math.Sqrt(dx * dx + dy * dy) - .3) / .5, 0, 1);
+            return new(1, 10, 19, (byte)Math.Round(amount * 217));
         }
         for (int y = 0; y < 16; y++) for (int x = 0; x < 24; x++)
         {
