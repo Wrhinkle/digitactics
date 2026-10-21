@@ -118,7 +118,8 @@ internal static class GaitAnatomyChecks
             for (int frame = 0; frame < 17; frame++) { moving.Update(1d / 60, true); idle.Update(1d / 60); }
             Check(moving.Play("attack") && idle.Play("attack"), key + " accepts an attack during travel");
             bool actionPriority = true;
-            for (int frame = 0; frame < 24; frame++) { moving.Update(1d / 60, true); idle.Update(1d / 60); actionPriority &= moving.Pose.Local.SequenceEqual(idle.Pose.Local); }
+            // The gait-to-action switch crossfades for CombatModelAnimator.StartBlend; after that the action owns the pose exactly.
+            for (int frame = 0; frame < 24; frame++) { moving.Update(1d / 60, true); idle.Update(1d / 60); if (!moving.Blending) actionPriority &= moving.Pose.Local.SequenceEqual(idle.Pose.Local); }
             Check(actionPriority, key + " action pose takes priority over gait");
             evidence.Add(new { source = key, assetSha256 = catalog.Assets[source.Asset].Sha256, motionSha256 = source.Motion!.Sha256,
                 kind = helper.Kind.ToString(), legs = helper.LegCount, bodySpan = span, footNames, limbLengths = length, effectiveLimbWeight = totalWeight,

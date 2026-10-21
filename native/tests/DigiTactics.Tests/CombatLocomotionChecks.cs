@@ -24,7 +24,10 @@ internal static class CombatLocomotionChecks
             foreach(string role in new[]{"attack","special","win"})
             {
                 Check(still.Play(role)&&moving.Play(role),key+" accepts "+role+" during travel");
-                for(int frame=0;frame<25;frame++){still.Update(1d/60);moving.Update(1d/60,true);Check(still.Pose.Local.SequenceEqual(moving.Pose.Local),key+" authored "+role+" has priority over gait");}
+                // The gait-to-action switch crossfades from the displayed pose for CombatModelAnimator.StartBlend, then the action owns the pose exactly.
+                int eased=0;
+                for(int frame=0;frame<25;frame++){still.Update(1d/60);moving.Update(1d/60,true);if(moving.Blending){eased++;continue;}Check(still.Pose.Local.SequenceEqual(moving.Pose.Local),key+" authored "+role+" has priority over gait");}
+                Check(eased is >0 and <=8,key+" "+role+" eases out of the gait within the start blend");
             }
         }
         foreach(string key in new[]{"hagurumon:0","ac:Flymon"})

@@ -16,6 +16,7 @@ if(args.Contains("--live-missions-only")){LiveMissionChecks.Run();return;}
 if(args.Contains("--match-hud-only")){MatchHudProjectionChecks.Run(root);return;}
 if(args.Contains("--model-dance-audit")){ModelDanceAudit.Run(root,args.Contains("--source-filter")?args[Array.IndexOf(args,"--source-filter")+1]:null);return;}
 if(args.Contains("--combat-locomotion-only")){CombatLocomotionChecks.Run(root);return;}
+if(args.Contains("--combat-animation-only")){CombatAnimationChecks.Run(root);return;}
 if(args.Contains("--model-animation-audit")){ModelRuntimeAudit.Run(root,args.Contains("--source-filter")?args[Array.IndexOf(args,"--source-filter")+1]:null);return;}
 if(args.Contains("--model-animation-probe")){int p=Array.IndexOf(args,"--model-animation-probe");ModelRuntimeProbe.Run(root,args[p+1],args[p+2],double.Parse(args[p+3],System.Globalization.CultureInfo.InvariantCulture));return;}
 if(args.Contains("--native-game-instance-only")){await NativeGameInstanceChecks.Run();return;}
@@ -279,6 +280,7 @@ assertions += CompanionMotionChecks.Run(root);
 assertions += CompanionPlaybackChecks.Run(root);
 assertions += CompanionLocomotionChecks.Run(root);
 assertions += CombatLocomotionChecks.Run(root);
+assertions += CombatAnimationChecks.Run(root);
 assertions += FarmChoreographyChecks.Run(root);
 assertions += TextureParity.Run(root);
 assertions += MaterialParity.Run(root);
