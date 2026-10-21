@@ -51,6 +51,12 @@ const anatomy = {
   'rip-ts_terriermon_assistant': {body:'J_spine01',chest:'J_spine02',head:'J_neck',headRange:.6,jaw:'J_mouth',bodyLean:.3,armRange:.25,
     elbowAttack:.7,elbowWin:.7,family:'biped',arms:pair('J_arm_l','J_arm_r'),elbows:pair('J_elbow_l','J_elbow_r'),
     chains:['l','r'].map(side=>chain([1,2,3,4].map(i=>`J_ear0${i}_${side}`),.12,.6,'x'))},
+  // Its Noesis reel is unrelated (anim:false). The visible creature is the
+  // core sphere and its eight-link chain arms, which generic fallback never
+  // reaches; rock the core and send traveling waves along each chain.
+  'rip-cat_l_apocalymon_chr328': {body:'J_root_core',head:'J_head',family:'tentacle',
+    chains:[['top','s_l'],['top','s_r'],['under','b_r'],['under','f'],['under','s_l']].map(([row,side])=>
+      chain(Array.from({length:8},(_,i)=>`J_${row}chain0${i+1}${side==='f'?'_f':'_'+side}`),.07,.6))},
 };
 // Every project-generated biped rig (tools/convert/rig-static.mjs) shares these bone names.
 const generatedBiped={body:'chest',head:'head',family:'biped',elbowAxis:'y',elbowSigns:[1,-1]};
