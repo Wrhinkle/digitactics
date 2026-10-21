@@ -118,7 +118,8 @@ internal sealed partial class MatchScreen
         CodexBeginWindow("Codex",new(left,pageTop),new(width,size.Y-pageTop-16));
         ImGui.BeginDisabled(codexUnit is not null);
         CodexHead(data,new(left,pageTop),width);
-        ImGui.BeginChild("Codex body"u8,new(0,0));
+        // Like the collection grid, the scrollbar overlays the right padding instead of narrowing the cards.
+        ImGui.BeginChild("Codex body"u8,new(0,0),ImGuiChildFlags.None,ImGuiWindowFlags.NoScrollbar);
         CodexBodyMin=ImGui.GetWindowDrawList().GetClipRectMin();CodexBodyMax=ImGui.GetWindowDrawList().GetClipRectMax();
         if(codexResetScroll){ImGui.SetScrollY(0);codexResetScroll=false;}
         switch(codexTab)
@@ -132,6 +133,7 @@ internal sealed partial class MatchScreen
         }
         if(CodexRows==0){ImGui.Spacing();CodexHeading("Nothing matches these filters.");CodexText("Search: \""+codexSearch.ToString()+"\"",CodexMuted);}
         CodexBodyScrollY=ImGui.GetScrollY();CodexBodyScrollMaxY=ImGui.GetScrollMaxY();
+        CollectionOverlayScrollbar();
         ImGui.EndChild();ImGui.EndDisabled();
         if(codexUnit is not null)ImGui.GetWindowDrawList().AddRectFilled(new(left,pageTop),new(left+width,size.Y-16),new ImColor8(5,7,12,175));
         CodexEndWindow();

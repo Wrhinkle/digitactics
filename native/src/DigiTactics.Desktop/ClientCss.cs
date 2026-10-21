@@ -11,8 +11,6 @@ namespace DigiTactics.Desktop;
 /// </summary>
 internal static class ClientCss
 {
-    // BodySemi stands in for Inter 600: drawn with the bold face, measured halfway between regular and
-    // bold so text wraps where the original does.
     internal enum Face { Body, BodyBold, BodySemi, Display, DisplayBold }
 
     internal static readonly ImColor8 Gold1=new(240,230,210),Gold2=new(200,170,110),Gold3=new(200,155,60),Gold4=new(120,90,40),Gold5=new(70,55,20);
@@ -23,7 +21,7 @@ internal static class ClientCss
     {
         Face.Body => NativeUiTheme.BodyFont,
         Face.BodyBold => NativeUiTheme.BodyBoldFont,
-        Face.BodySemi => NativeUiTheme.BodyBoldFont,
+        Face.BodySemi => NativeUiTheme.BodySemiBoldFont,
         Face.Display => NativeUiTheme.DisplayFont,
         _ => NativeUiTheme.DisplayBoldFont,
     };
@@ -39,7 +37,6 @@ internal static class ClientCss
     internal static float Width(Face face, float px, string text, float tracking = 0)
     {
         if (text.Length == 0) return 0;
-        if (face == Face.BodySemi) return (Width(Face.Body, px, text, tracking) + Width(Face.BodyBold, px, text, tracking)) * .5f;
         // ImFont.CalcTextSizeA is unrounded (ImGui.CalcTextSize rounds up to whole pixels).
         return Font(face).CalcTextSizeA(Size(face, px), float.MaxValue, 0, text).X + tracking * text.Length;
     }

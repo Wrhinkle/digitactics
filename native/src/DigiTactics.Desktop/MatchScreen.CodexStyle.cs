@@ -22,7 +22,7 @@ internal sealed partial class MatchScreen
         ImGui.PushStyleColor(ImGuiCol.Text,CodexBody);ImGui.PushStyleColor(ImGuiCol.Separator,new ImColor8(70,55,20));
         ImGui.PushStyleColor(ImGuiCol.FrameBg,CodexNavy);ImGui.PushStyleColor(ImGuiCol.FrameBgHovered,new ImColor8(20,32,48));
         ImGui.PushStyleColor(ImGuiCol.FrameBgActive,new ImColor8(26,42,57));ImGui.PushStyleColor(ImGuiCol.ScrollbarBg,CodexNavy);
-        ImGui.PushStyleColor(ImGuiCol.ScrollbarGrab,new ImColor8(104,85,49));
+        ImGui.PushStyleColor(ImGuiCol.ScrollbarGrab,new ImColor8(70,55,20));
         ImGui.SetNextWindowBgAlpha(1);
         Window(id,at.X,at.Y,extent.X,extent.Y,ImGuiWindowFlags.NoTitleBar|(scroll?ImGuiWindowFlags.None:ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse));
         ImGui.GetWindowDrawList().AddRectFilledMultiColor(at+new float2(1,1),at+extent-new float2(1,1),CodexPanel,CodexPanel,CodexNavy,CodexNavy);

@@ -350,6 +350,21 @@ internal sealed partial class MatchScreen
         // window must reveal that render rather than an opaque client backdrop.
         if(showFarm)return;
         PaintClientBackdrop(ImGui.GetBackgroundDrawList(),new(0,0),new(socialWindowSize.X,socialWindowSize.Y));
+        if(CurrentClientRoute is "store" or "codex")PaintDockedPageBackdrop(ImGui.GetBackgroundDrawList());
+    }
+
+    /// <summary>
+    /// Store and Codex dock under the top bar (theme.js body.client-on #dtStore, #cxFull) over their own background:
+    /// a near-solid navy with radial-gradient(900px 500px at 90% 0%, rgba(63,214,255,.07), transparent 60%) and no hex.
+    /// </summary>
+    private void PaintDockedPageBackdrop(ImDrawListPtr draw)
+    {
+        float top=ClientNav.Height,right=socialWindowSize.X-(SocialDocked?SocialWidth:0);
+        var lo=new float2(0,top);var hi=new float2(right,socialWindowSize.Y);
+        draw.PushClipRect(lo,hi,false);
+        draw.AddRectFilled(lo,hi,new ImColor8(1,8,16));
+        NativeUiPaint.Radial(draw,new(right*.9f,top),new float2(900,500)*.6f,new ImColor8(63,214,255,18),new ImColor8(63,214,255,0),48);
+        draw.PopClipRect();
     }
 
     /// <summary>

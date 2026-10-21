@@ -133,7 +133,9 @@ internal static class NativeUiTheme
         style.ItemSpacing = new(8, 8);
         style.ItemInnerSpacing = new(6, 4);
         style.CellPadding = new(8, 6);
+        // theme.js ::-webkit-scrollbar: 8px track at rgba(1,10,19,.5), square --lc-gold-5 thumb, --lc-gold-4 on hover.
         style.ScrollbarSize = 8;
+        style.ScrollbarRounding = 0;
         style.GrabMinSize = 12;
         style.DisabledAlpha = .55f;
 
@@ -151,10 +153,10 @@ internal static class NativeUiTheme
         Set(ImGuiCol.TitleBgActive, 11, 26, 44);
         Set(ImGuiCol.TitleBgCollapsed, 1, 10, 19);
         Set(ImGuiCol.MenuBarBg, 10, 20, 40);
-        Set(ImGuiCol.ScrollbarBg, 1, 10, 19);
-        Set(ImGuiCol.ScrollbarGrab, 91, 79, 57);
-        Set(ImGuiCol.ScrollbarGrabHovered, 151, 123, 71);
-        Set(ImGuiCol.ScrollbarGrabActive, 200, 170, 110);
+        Set(ImGuiCol.ScrollbarBg, 1, 10, 19, 128);
+        Set(ImGuiCol.ScrollbarGrab, 70, 55, 20);
+        Set(ImGuiCol.ScrollbarGrabHovered, 120, 90, 40);
+        Set(ImGuiCol.ScrollbarGrabActive, 120, 90, 40);
         Set(ImGuiCol.CheckMark, 200, 170, 110);
         Set(ImGuiCol.SliderGrab, 200, 170, 110);
         Set(ImGuiCol.SliderGrabActive, 240, 230, 210);
