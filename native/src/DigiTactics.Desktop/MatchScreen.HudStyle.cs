@@ -175,7 +175,8 @@ internal sealed partial class MatchScreen
         rounding=Math.Min(rounding,Math.Min(max.X-min.X,max.Y-min.Y)/2);
         var boundary=new List<float2>();
         void Edge(float2 a,float2 b){for(int i=0;i<6;i++)boundary.Add(a+(b-a)*(i/6f));}
-        void Arc(float2 c,float from){if(rounding<=0){boundary.Add(c);return;}for(int i=0;i<=6;i++){float angle=from+i*MathF.PI/12;boundary.Add(c+new float2(MathF.Cos(angle),MathF.Sin(angle))*rounding);}}
+        int arcSteps=Math.Clamp((int)MathF.Ceiling(rounding*1.5f),6,24);
+        void Arc(float2 c,float from){if(rounding<=0){boundary.Add(c);return;}for(int i=0;i<=arcSteps;i++){float angle=from+i*MathF.PI/2/arcSteps;boundary.Add(c+new float2(MathF.Cos(angle),MathF.Sin(angle))*rounding);}}
         // clockwise from the top-left corner (screen y grows downward)
         Arc(new(min.X+rounding,min.Y+rounding),MathF.PI);Edge(new(min.X+rounding,min.Y),new(max.X-rounding,min.Y));
         Arc(new(max.X-rounding,min.Y+rounding),1.5f*MathF.PI);Edge(new(max.X,min.Y+rounding),new(max.X,max.Y-rounding));
@@ -211,7 +212,7 @@ internal sealed partial class MatchScreen
         float r=diameter/2;var min=center-new float2(r,r);var max=center+new float2(r,r);var light=min+new float2(diameter*.35f,diameter*.35f);
         HudRadialRect(draw,min,max,r,light,diameter*.92f,HudHex("ffcf4a"),1,HudHex("c48a12"),1);
         HudRadialRect(draw,min,max,r,light,diameter*.41f,HudHex("fff2b0"),1,HudHex("ffcf4a"),0);
-        draw.AddCircle(center,r-.5f,HudHex("8a5f08"),24);
+        draw.AddCircle(center,r-.5f,HudAlpha(HudHex("8a5f08"),.6f),24);
     }
     private static void HudDashedRect(ImDrawListPtr draw,float2 min,float2 max,ImColor8 color,float thickness,float dash=6,float gap=4)
     {

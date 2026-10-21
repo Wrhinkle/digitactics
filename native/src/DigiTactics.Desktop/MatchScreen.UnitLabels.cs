@@ -48,7 +48,7 @@ internal sealed partial class MatchScreen
         float sx=x-(count*step)/2+step/2,sy=y-starSize/2-.5f;
         for(int i=0;i<count;i++)
         {
-            HudStar(draw,new(sx+i*step,sy+1),starSize*.4f,new ImColor8(0,0,0,(byte)(200*alpha)));
+            HudStar(draw,new(sx+i*step,sy+.5f),starSize*.46f,new ImColor8(0,0,0,(byte)(235*alpha)));
             HudStar(draw,new(sx+i*step,sy),starSize*.38f,A(stageColors[Math.Clamp(stage,0,2)]));
         }
         y-=starSize+1;
