@@ -194,7 +194,7 @@ internal static class NativeUiTheme
 
     // Chromium's Windows text (DirectWrite grayscale with contrast enhancement) renders the same faces visibly heavier
     // than stb_truetype's linear coverage. Boost glyph coverage so strokes have the original's weight and contrast.
-    private const float RasterizerMultiply = 1.3f;
+    private const float RasterizerMultiply = 1.2f;
 
     private static unsafe ImFontPtr Load(string relative, float size, string sha256)
     {

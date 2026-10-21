@@ -122,6 +122,8 @@ internal sealed partial class MatchScreen
         NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,12.5f,new(left+17,y),NativeUiTheme.TextLine(12.5f),NativeUiTheme.MutedNote,"Digi-Tactics is an unofficial, non-commercial fan project. See Credits for asset sources and acknowledgements.");
         y+=NativeUiTheme.TextLine(12.5f)+6;
         if(SettingsLink("settingsCredits","Credits & acknowledgements",new(left+17,y)))NavigateClient("about");
+        // Native save management (import, profile backups) has no web counterpart; it sits beside the credits link.
+        if(profile is not null&&SettingsLink("saveData","Manage save / import backup",new(left+17+NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,12.5f,"Credits & acknowledgements",0)+24,y)))NavigateClient("savedata");
         y=aboutTop+aboutHeight+32;
         ImGui.SetCursorScreenPos(new(origin.X,y));ImGui.Dummy(new(1,0));
         DrawResetSaveModal();
@@ -165,8 +167,8 @@ internal sealed partial class MatchScreen
         var draw=ImGui.GetWindowDrawList();float middle=at.Y+rowHeight/2;
         float labelHeight=NativeUiTheme.TextLine(12.5f);
         NativeUiPaint.Tracked(draw,NativeUiTheme.BodyFont,12.5f,new(at.X,MathF.Round(middle-labelHeight/2)),NativeUiTheme.Muted,label);
-        float trackLeft=at.X+130+12,trackRight=at.X+width-36-12;
-        ImGui.SetCursorScreenPos(new(trackLeft,middle-10));ImGui.SetNextItemWidth(trackRight-trackLeft);
+        float inputLeft=at.X+130+12,inputRight=at.X+width-36-12,trackLeft=inputLeft+3,trackRight=inputRight-3;
+        ImGui.SetCursorScreenPos(new(inputLeft,middle-10));ImGui.SetNextItemWidth(inputRight-inputLeft);
         float percent=value*100;
         ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(0,2));ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,0);ImGui.PushStyleVar(ImGuiStyleVar.GrabMinSize,16);
         foreach(var color in new[]{ImGuiCol.FrameBg,ImGuiCol.FrameBgHovered,ImGuiCol.FrameBgActive,ImGuiCol.SliderGrab,ImGuiCol.SliderGrabActive})ImGui.PushStyleColor(color,new ImColor8(0,0,0,0));
@@ -269,9 +271,6 @@ internal sealed partial class MatchScreen
             if(!CanResetSave&&!SaveDataBusy){y+=6;y+=SettingsNote(draw,new(x,y),inner,"Leave your match or lobby and finish any file operation before resetting your save.",measure);}
             if(SaveDataBusy){y+=6;y+=SettingsNote(draw,new(x,y),inner,backupSelection is not null?"Choose where to save the backup...":"Preparing backup...",measure);}
             if(saveDataMessage is not null){y+=6;y+=SettingsNote(draw,new(x,y),inner,saveDataMessage,measure,NativeUiTheme.Text1);}
-            // Native save management (import, profile backups) has no web counterpart; it stays one link away.
-            y+=8;if(!measure&&SettingsLink("saveData","Manage save / import backup",new(x,y)))NavigateClient("savedata");
-            y+=NativeUiTheme.TextLine(12.5f);
             y+=12.5f;
         }
         // With the desktop updater (UPD in RENDER.settings) an About heading shows the installed version.
@@ -305,7 +304,7 @@ internal sealed partial class MatchScreen
         foreach(var (keys,action) in ClientKeys)
         {
             var lines=WrapText(NativeUiTheme.BodyFont,12.5f,action,inner-keyColumn-8);
-            float rowHeight=12+Math.Max(lines.Count*lineHeight,kbdHeight)+1;
+            float rowHeight=12+lines.Count*lineHeight+1;
             if(!measure)
             {
                 float kx=x+4,middle=y+6+(rowHeight-13)/2;

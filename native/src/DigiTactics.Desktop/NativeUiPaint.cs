@@ -172,6 +172,8 @@ internal static class NativeUiPaint
         draw.PrimReserve(6, 6);
         draw.PrimVtx(left, uv, light); draw.PrimVtx(top, uv, light); draw.PrimVtx(right, uv, middle);
         draw.PrimVtx(left, uv, middle); draw.PrimVtx(right, uv, middle); draw.PrimVtx(bottom, uv, dark);
+        // border-radius: 2px and antialiasing: a soft outline instead of hard vertex edges.
+        draw.AddQuad(top, right, bottom, left, Fade(new ImColor8(120, 215, 255, 150)), 1);
     }
 
     /// <summary>A single right-pointing (or, when open, downward) caret as drawn by .cs-car.</summary>
