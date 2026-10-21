@@ -19,7 +19,7 @@ internal sealed class ParityCaptureDriver
         "home", "play", "party", "lobby",
         "collection-legends", "collection-emotes", "collection-boards", "collection-killscreens", "collection-dances", "collection-soundboard", "collection-elimsounds",
         "store", "loot", "farm", "codex", "profile", "settings", "postgame", "match-loading",
-        "match-carousel", "match-planning", "match-shop-tooltip", "match-combat", "match-augment",
+        "match-carousel", "match-planning", "match-shop-tooltip", "match-drag", "match-combat", "match-augment",
     ];
     private static readonly MethodInfo Navigate = typeof(MatchScreen).GetMethod("NavigateClient", BindingFlags.Instance | BindingFlags.NonPublic)!;
     private readonly string state;
@@ -27,7 +27,7 @@ internal sealed class ParityCaptureDriver
     private readonly NativeProfileStore? profile;
     private readonly int settleFrames;
     private readonly double combatSeconds;
-    private int frame, cooldown = 30, settled = -1, carouselStep;
+    private int frame, cooldown = 30, settled = -1, carouselStep, dragStep;
     private bool mouseDown, keyDown, ready, postgameReady;
     private double combatElapsed;
     private string phase = "start";
@@ -121,6 +121,7 @@ internal sealed class ParityCaptureDriver
     private void Hover(MatchScreen screen)
     {
         if (state == "match-shop-tooltip" && screen.Buttons.TryGetValue("buy/0", out var card)) ImGui.GetIO().AddMousePosEvent(card.X, card.Y);
+        else if (state == "match-drag" && screen.Buttons.TryGetValue(DragTarget, out var hex)) ImGui.GetIO().AddMousePosEvent(hex.X, hex.Y);
         else Park();
     }
 
@@ -195,6 +196,7 @@ internal sealed class ParityCaptureDriver
         {
             case MatchPhase.Planning:
                 if (state is "match-planning" or "match-shop-tooltip") { ready = true; return; }
+                if (state == "match-drag") { Drag(screen); return; }
                 if (sequenceLine is not null && !sequencePlaced) { PlaceSequence(session); sequencePlaced = true; cooldown = 10; return; }
                 Press(ImGuiKey.Space); combatElapsed = 0; return;
             case MatchPhase.Combat:
@@ -208,6 +210,19 @@ internal sealed class ParityCaptureDriver
             case MatchPhase.Result:
                 Click(screen, "next"); return;
         }
+    }
+
+    // match-drag: the first bench unit held over a hex with the button still down (drag ghost and hex hover).
+    private const string DragTarget = "hex/3/5";
+    private void Drag(MatchScreen screen)
+    {
+        if (!screen.Buttons.TryGetValue("bench/0", out var from) || !screen.Buttons.TryGetValue(DragTarget, out var to)) return;
+        var io = ImGui.GetIO(); const int steps = 8;
+        if (dragStep == 0) io.AddMousePosEvent(from.X, from.Y);
+        else if (dragStep == 1) io.AddMouseButtonEvent(0, true);
+        else { float t = Math.Min(1, (dragStep - 1) / (float)steps); io.AddMousePosEvent(from.X + (to.X - from.X) * t, from.Y + (to.Y - from.Y) * t); }
+        phase = $"dragging bench/0 to {DragTarget}";
+        if (++dragStep > steps + 2) ready = true;
     }
 
     private void PlaceSequence(MatchPlanningSession session)

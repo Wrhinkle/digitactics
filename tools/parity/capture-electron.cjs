@@ -228,7 +228,7 @@ async function matchStates(run, want, shotPath, results) {
     catch (e) { r.error = errText(e); throw Object.assign(e, { record: r }); }
     finally { const now = Date.now(); r.ms = now - last; last = now; r.errors = run.errors.splice(0); results.push(r); }
   };
-  const order = ['match-carousel', 'match-planning', 'match-shop-tooltip', 'match-combat', 'match-augment'];
+  const order = ['match-carousel', 'match-planning', 'match-shop-tooltip', 'match-drag', 'match-combat', 'match-augment'];
   const lastNeeded = Math.max(...want.map((w) => order.indexOf(w)));
   try {
     await record('match-carousel', async () => {
@@ -244,12 +244,32 @@ async function matchStates(run, want, shotPath, results) {
       return box ? { x: Math.round(box.x + box.width / 2), y: Math.round(box.y + box.height / 2) } : null;
     });
     if (lastNeeded < 3) return;
+    // the first bench unit held over hex (3,5) with the button down: drag ghost, hex hover; then put back
+    const benchPoint = () => run.ev(() => {
+      const r = window.__digi.renderer, c = r.canvas.getBoundingClientRect();
+      const toScreen = (x, z) => { const p = r.project(x, 0.14, z); return { x: Math.round(c.left + p.x), y: Math.round(c.top + p.y) }; };
+      const SQ3 = Math.sqrt(3);
+      return { bench: toScreen(-4 * 1.45, 1.5 * 3.5 + 2.3), hex: toScreen((3 + 0.5 * (5 & 1) - 3.25) * SQ3, (5 - 3.5) * 1.5) };
+    });
+    await record('match-drag', async (shot) => {
+      const p = await benchPoint();
+      await run.page.mouse.move(p.bench.x, p.bench.y); await run.advance(50);
+      await run.page.mouse.down(); await run.advance(50);
+      for (let i = 1; i <= 8; i++) { await run.page.mouse.move(p.bench.x + (p.hex.x - p.bench.x) * i / 8, p.bench.y + (p.hex.y - p.bench.y) * i / 8); await run.advance(16, 16); }
+      if (!shot) { await run.page.mouse.move(p.bench.x, p.bench.y); await run.page.mouse.up(); await run.advance(100); }
+      return p.hex;
+    });
+    if (want.includes('match-drag')) {
+      const p = await benchPoint();
+      await run.page.mouse.move(p.bench.x, p.bench.y); await run.advance(50); await run.page.mouse.up(); await run.advance(100);
+    }
+    if (lastNeeded < 4) return;
     await record('match-combat', async () => {
       await run.page.locator('#readyBtn').click(FORCE);
       await run.until(() => window.__digi.game.phase === 'combat', null, 'first combat', 15000);
       await run.advance(2000, 100);
     });
-    if (lastNeeded < 4) return;
+    if (lastNeeded < 5) return;
     await record('match-augment', async () => {
       if (await run.page.locator('#skipBtn:not([disabled])').count()) await run.page.locator('#skipBtn').click(FORCE);
       await run.until(() => window.__digi.game.phase === 'planning' || window.__digi.game.over, null, 'planning after the first combat', 60000, 250);
