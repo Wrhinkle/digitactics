@@ -218,7 +218,9 @@ internal sealed partial class MatchScreen
             bool chosen=CssHit(key,cardAt,new(cardWidth,cardHeight),out bool hover);
             HomeModeCardCount++;
             if(cardMax.X<rowAt.X-4||cardAt.X>rowMax.X+4){if(chosen&&!homeModeDragged)SelectHomeHeroSet(id);continue;}
-            if(on)draw.AddRect(Snap(cardAt)-new float2(1.5f),Snap(cardMax)+new float2(1.5f),Gold1,7,ImDrawFlags.None,2);
+            // 1px gold-1 border plus box-shadow 0 0 0 2px gold-1: one 3px band, so the rounded corners stay solid.
+            // Painted as a filled rounded box under the opaque card so the corners carry no stroke seams.
+            if(on)draw.AddRectFilled(Snap(cardAt)-new float2(2),Snap(cardMax)+new float2(2),Gold1,8);
             else if(hover)Glow(draw,cardAt,cardMax,new ImColor8(200,164,98,48),18,6);
             draw.AddRectFilled(cardAt,cardMax,new ImColor8(7,19,32),6);
             var artAt=cardAt+new float2(1,1);float artWidth=Math.Min(cardWidth-2,artHeight*2/3),drawnHeight=artWidth*1.5f;
@@ -227,6 +229,8 @@ internal sealed partial class MatchScreen
             // linear-gradient(150deg, #102438, #071320): lighter at the top left.
             draw.AddRectFilledMultiColor(textAt,cardMax-new float2(1,1),new ImColor8(16,36,56),new ImColor8(11,27,43),new ImColor8(7,19,32),new ImColor8(12,28,45));
             Border(draw,cardAt,cardMax,on?Gold1:hover?Gold2:Gold4,1,6);
+            // Cover the card fill's anti-aliased corner fringe where it overlaps the selection band.
+            if(on)draw.AddRect(Snap(cardAt)-new float2(1),Snap(cardMax)+new float2(1),Gold1,7,ImDrawFlags.None,2);
             var text=textAt+new float2(18,18);
             Text(draw,Face.DisplayBold,11,text,SetAccent.GetValueOrDefault(id,new ImColor8(63,214,255)),SetModeName(SetChoices.Options.FirstOrDefault(o=>o.Id==id)?.Mode).ToUpperInvariant(),1.54f,14);
             float titleHeight=Paragraph(draw,Face.DisplayBold,titlePx,text+new float2(0,22),textWidth,titlePx*1.12f,Gold1,Title(id),titlePx*.02f);
