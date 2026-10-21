@@ -349,18 +349,28 @@ internal sealed partial class MatchScreen
         // The farm scene is drawn directly before ImGui; its transparent room
         // window must reveal that render rather than an opaque client backdrop.
         if(showFarm)return;
-        var draw=ImGui.GetBackgroundDrawList();float width=socialWindowSize.X,height=socialWindowSize.Y;
-        // #overlay: #010a13 with a warm glow top-left and a cyan glow top-right.
-        draw.AddRectFilled(new(0,0),new(width,height),NativeUiTheme.Navy0);
+        PaintClientBackdrop(ImGui.GetBackgroundDrawList(),new(0,0),new(socialWindowSize.X,socialWindowSize.Y));
+    }
+
+    /// <summary>
+    /// The #overlay page background clipped to [lo, hi): #010a13 with a warm glow top-left and a cyan glow
+    /// top-right, under tex-hex at 256 px (opacity .55, masked by radial-gradient(ellipse at 50% 40%, #000 20%,
+    /// transparent 85%)). Pages that must cover what is drawn beneath them repaint this same background.
+    /// </summary>
+    private void PaintClientBackdrop(ImDrawListPtr draw,float2 lo,float2 hi)
+    {
+        float width=socialWindowSize.X,height=socialWindowSize.Y;
+        draw.PushClipRect(lo,hi,false);
+        draw.AddRectFilled(lo,hi,NativeUiTheme.Navy0);
         NativeUiPaint.Radial(draw,new(width*.15f,0),new float2(900,500)*.6f,new ImColor8(255,138,61,15),new ImColor8(255,138,61,0),48);
         NativeUiPaint.Radial(draw,new(width*.9f,height*.1f),new float2(900,600)*.6f,new ImColor8(63,214,255,18),new ImColor8(63,214,255,0),48);
-        // #overlay::before: tex-hex at 256 px, opacity .55, masked by radial-gradient(ellipse at 50% 40%, #000 20%, transparent 85%).
         var center=new float2(width*.5f,height*.4f);var radius=new float2(width*.5f,height*.6f)*MathF.Sqrt(2);
         homeArtwork.DrawTiled("tex-hex",new(0,0),new(width,height),256,.55f,point=>
         {
             var d=(point-center)/radius;float t=MathF.Sqrt(d.X*d.X+d.Y*d.Y);
             return Math.Clamp((.85f-t)/(.85f-.2f),0,1);
         },draw);
+        draw.PopClipRect();
     }
 
     // .cn-profile: level ring with avatar and badge, name and presence; the window buttons sit over its corner.

@@ -52,31 +52,8 @@ internal sealed partial class MatchScreen
     /// The Home page keeps drawing beneath client pages, so the frameless page repaints the client
     /// backdrop (DrawClientBackdrop's navy gradient and hex lattice) over its own rectangle.
     /// </summary>
-    private void CollectionPageBackdrop()
-    {
-        var draw=ImGui.GetWindowDrawList();var lo=ImGui.GetWindowPos();var hi=lo+ImGui.GetWindowSize();
-        float width=socialWindowSize.X,height=socialWindowSize.Y;
-        draw.PushClipRect(lo,hi,false);
-        static float Lerp(float a,float b,float t)=>a+(b-a)*t;
-        float t0=(lo.Y-ClientPageTop)/Math.Max(1,height-ClientPageTop),t1=(hi.Y-ClientPageTop)/Math.Max(1,height-ClientPageTop);
-        ImColor8 Left(float t)=>new((byte)Lerp(5,1,t),(byte)Lerp(18,10,t),(byte)Lerp(28,19,t));
-        ImColor8 Right(float t)=>new((byte)Lerp(4,1,t),(byte)Lerp(23,10,t),(byte)Lerp(33,19,t));
-        ImColor8 Across(Func<float,ImColor8> left,Func<float,ImColor8> right,float t,float x)
-        {var a=left(t).AsByte4();var b=right(t).AsByte4();float u=x/Math.Max(1,width);return new((byte)Lerp(a.X,b.X,u),(byte)Lerp(a.Y,b.Y,u),(byte)Lerp(a.Z,b.Z,u));}
-        draw.AddRectFilledMultiColor(lo,hi,Across(Left,Right,t0,lo.X),Across(Left,Right,t0,hi.X),Across(Left,Right,t1,hi.X),Across(Left,Right,t1,lo.X));
-        const float radius=24,rowHeight=41.57f;
-        for(int col=(int)Math.Max(0,(lo.X-radius)/36);col*36<hi.X+radius;col++)
-        for(int row=(int)Math.Max(0,(lo.Y-ClientPageTop-rowHeight)/rowHeight);ClientPageTop+row*rowHeight<hi.Y+rowHeight;row++)
-        {
-            var center=new float2(col*36,ClientPageTop+row*rowHeight+(col%2)*rowHeight/2);
-            for(int edge=0;edge<6;edge++)
-            {
-                float a=edge*MathF.PI/3,b=(edge+1)*MathF.PI/3;
-                draw.AddLine(center+new float2(MathF.Cos(a),MathF.Sin(a))*radius,center+new float2(MathF.Cos(b),MathF.Sin(b))*radius,new ImColor8(74,126,143,16));
-            }
-        }
-        draw.PopClipRect();
-    }
+    // Home still draws beneath this page, so repaint the shared client backdrop over the page window.
+    private void CollectionPageBackdrop()=>PaintClientBackdrop(ImGui.GetWindowDrawList(),ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
     private void CollectionPageBrowser(CosmeticCollection collection)
     {
         var origin=ImGui.GetCursorScreenPos();var full=ImGui.GetContentRegionAvail();
