@@ -161,46 +161,11 @@ internal sealed partial class MatchScreen
         if(CollectionActionButton("lockerLegendFarm/"+item.Id,"Digi-Farm",120,36))OpenCollectionFarm(collection,item.Id);
         ImGui.SetCursorScreenPos(at+new float2(0,116));ImGui.Dummy(new(0,0));ImGui.EndGroup();
     }
-    private void CollectionStoreBrowser(CosmeticCollection collection)
-    {
-        if(!MatchCosmeticsVisible)
-        {
-            var at=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
-            collectionArtwork.Draw("store-hero",at,new(width,68),255,true,.35f);
-            ImGui.GetWindowDrawList().AddRectFilled(at,at+new float2(width,68),new ImColor8(1,10,19,145));
-            ImGui.SetCursorScreenPos(at+new float2(18,16));HomeLabel("STORE",26,HomeInk);
-            ImGui.SameLine(0,20);if(CollectionActionButton("storeLocker","Locker",96,36))OpenCollectionPage();
-            CollectionRewardControls();
-            // Mission controls may wrap at compact sizes; preserve their real extent.
-            ImGui.SetCursorScreenPos(new(at.X,Math.Max(at.Y+76,ImGui.GetCursorScreenPos().Y)));
-        }
-        CollectionCategoryTabs(collection);
-        ImGui.BeginChild("collectionItems"u8,new(0,0),ImGuiChildFlags.None);
-        try
-        {
-            if(collectionResetScroll){ImGui.SetScrollY(0);collectionResetScroll=false;}
-            CollectionListBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());CollectionDetailBounds=CollectionListBounds;
-            if(collectionStoreEggs)CollectionStoreEggs(collection);
-            else
-            {
-                CollectionFeatured(collection);
-                CollectionBanner(collection,true);
-                string kind=CosmeticCollection.Kinds[collectionKind];
-                CollectionStoreGrid(collection,kind,StoreItems(collection,kind));
-            }
-        }
-        finally{ImGui.EndChild();}
-    }
     private CosmeticItem[] StoreItems(CosmeticCollection collection,string kind)
     {
         var items=CosmeticCollection.Items(kind).Where(item=>!item.Secret&&item.Linked is null)
             .OrderBy(item=>item.Free?0:1).ThenBy(item=>Array.IndexOf(DigiTactics.Presentation.CosmeticBrowser.Rarities,item.Rarity??"common")).ThenBy(item=>item.Price).ToArray();
         CollectionFilterIds=items.Select(item=>item.Id).ToArray();
-        if(kind=="elimsound")
-        {
-            CollectionText("Every Soundboard clip you own also works as an elimination sound. Equip one in the Locker.");
-            if(CollectionActionButton("storeSoundboardClips","Soundboard clips",170,34))OpenCollectionPage(store:true,kind:"sound");
-        }
         return items;
     }
     private void CollectionStoreEggs(CosmeticCollection collection)
@@ -293,47 +258,6 @@ internal sealed partial class MatchScreen
         }
         ImGui.PopFont();ImGui.Dummy(new(width,y+22));
     }
-    private void CollectionFeatured(CosmeticCollection collection)
-    {
-        var origin=ImGui.GetCursorScreenPos();float available=ImGui.GetContentRegionAvail().X;
-        float height=available<950?256:300;
-        collectionArtwork.Draw("store-hero",origin,new(available,height+52),255,true,.45f);
-        ImGui.GetWindowDrawList().AddRectFilled(origin,origin+new float2(available,height+52),new ImColor8(1,10,19,170));
-        ImGui.GetWindowDrawList().AddRect(origin,origin+new float2(available,height+52),HomeGold);
-        ImGui.SetCursorScreenPos(origin+new float2(12,10));HomeLabel("FEATURED TODAY",18,HomeInk);ImGui.SameLine();HomeLabel("25% off / changes at midnight",15,HomeMute);
-        var offers=CosmeticCollection.Featured(DateOnly.FromDateTime(DateTime.Now));
-        float width=Math.Min(210,(available-60)/4);
-        for(int i=0;i<offers.Length;i++)
-        {
-            ImGui.SetCursorScreenPos(origin+new float2(12+i*(width+12),42));
-            var offer=offers[i];var at=ImGui.GetCursorScreenPos();var extent=new float2(width,height);
-            string key="collectionOffer/"+offer.Kind+"/"+offer.Item.Id;
-            ImGui.InvisibleButton(key,extent);CollectionFilterAnchor(key);
-            if(ImGui.IsItemClicked()){CollectionCategoryChanged(Array.IndexOf(CosmeticCollection.Kinds,offer.Kind));previewCosmetic=offer.Item.Id;ClientItemSound(key,true);}
-            bool hovered=ImGui.IsItemHovered();var draw=ImGui.GetWindowDrawList();
-            draw.AddRectFilled(at,at+extent,new ImColor8(3,14,24));
-            CollectionThumbnail(collection,offer.Kind,offer.Item,at+new float2(8,8),new(width-16,120),store:true);
-            ImGui.SetCursorScreenPos(at+new float2(9,136));ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+width-18);
-            ImGui.BeginGroup();
-            HomeLabel(offer.Item.Name,17,HomeInk);HomeLabel((offer.Item.Rarity??"common").ToUpperInvariant(),15,RarityColor(offer.Item.Rarity));
-            ImGui.PushStyleColor(ImGuiCol.Text,HomeMute);ImGui.PushFont(NativeUiTheme.BodyFont,15);
-            draw.PushClipRect(at+new float2(9,132),at+new float2(width-9,height-48),true);
-            if(height>=280&&offer.Item.Desc is not null)ImGui.Text(offer.Item.Desc);
-            draw.PopClipRect();
-            ImGui.PopFont();ImGui.PopStyleColor();ImGui.PopTextWrapPos();
-            ImGui.EndGroup();
-            draw.AddRectFilled(at+new float2(8,8),at+new float2(48,30),new ImColor8(190,35,35));
-            draw.AddText(at+new float2(11,10),HomeInk,"-25%"u8);
-            draw.AddRect(at,at+extent,hovered?HomeGold:HomeLine);
-            ImGui.SetCursorScreenPos(at+new float2(10,height-42));
-            int price=CosmeticCollection.Price(offer.Kind,offer.Item,DateOnly.FromDateTime(DateTime.Now));
-            ImGui.BeginDisabled(collection.Owns(offer.Kind,offer.Item.Id)||price>collection.Bits);
-            if(CollectionActionButton("featuredBuy/"+offer.Kind+"/"+offer.Item.Id,collection.Owns(offer.Kind,offer.Item.Id)?"Owned":price+" Bits",width-20,34))purchase=(offer.Kind,offer.Item.Id,DateOnly.FromDateTime(DateTime.Now));
-            ImGui.EndDisabled();
-            if(hovered)ImGui.SetTooltip(offer.Item.Name+" / "+CollectionNames[Array.IndexOf(CosmeticCollection.Kinds,offer.Kind)]);
-        }
-        ImGui.SetCursorScreenPos(origin+new float2(0,height+70));
-    }
     private void CollectionThumbnail(CosmeticCollection collection,string kind,CosmeticItem item,float2 at,float2 extent,bool store=false)
     {
         if(!ImGui.IsRectVisible(at,at+extent))return;
@@ -346,76 +270,9 @@ internal sealed partial class MatchScreen
     }
     private void CollectionStoreGrid(CosmeticCollection collection,string kind,CosmeticItem[] items,bool locker=false)
     {
-        float available=ImGui.GetContentRegionAvail().X;int columns=Math.Max(3,(int)((available+12)/212));
-        float width=(available-(columns-1)*12)/columns,height=kind=="legend"?380:locker&&kind=="killscreen"?360:310;
-        for(int i=0;i<items.Length;i++)
-        {
-            if(i%columns!=0)ImGui.SameLine(0,12);
-            var item=items[i];bool owned=collection.Owns(kind,item.Id);var at=ImGui.GetCursorScreenPos();var draw=ImGui.GetWindowDrawList();
-            ImGui.BeginChild("storeCard/"+kind+"/"+item.Id,new(width,height),ImGuiChildFlags.Borders,ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
-            try
-            {
-                float inside=ImGui.GetContentRegionAvail().X;var imageAt=ImGui.GetCursorScreenPos();
-                bool livePreview=locker&&previewCosmetic==item.Id&&kind is ("legend" or "board" or "dance" or "killscreen");
-                if(livePreview)
-                {
-                    CosmeticPreview(kind,item,collection,inside,120,true);
-                    ImGui.Dummy(new(0,0));
-                    Buttons["preview/"+kind+"/"+item.Id]=imageAt+new float2(inside/2,60);
-                }
-                else
-                {
-                    ImGui.InvisibleButton("storePreview/"+kind+"/"+item.Id,new(inside,120));CollectionFilterAnchor("preview/"+kind+"/"+item.Id);
-                    if(ImGui.IsItemClicked())
-                    {
-                        previewCosmetic=item.Id;ClientItemSound("preview/"+kind+"/"+item.Id,true);
-                        if(kind is "sound" or "elimsound")
-                        {
-                            if(kind=="elimsound")audio.PlayEliminationSound(item.Id,true,true,0);
-                            else audio.PlayBoard(item.Data.TryGetProperty("clip"u8,out var clip)?clip.GetString()!:item.Id);
-                        }
-                    }
-                    CollectionThumbnail(collection,kind,item,imageAt,new(inside,120),store:!locker);
-                    if(kind is "sound" or "elimsound")Buttons["previewSound/"+kind+"/"+item.Id]=Buttons["preview/"+kind+"/"+item.Id];
-                }
-                ImGui.PushTextWrapPos(0);HomeLabel(item.Name,18,HomeInk);HomeLabel((item.Rarity??"common").ToUpperInvariant(),15,RarityColor(item.Rarity));ImGui.PopTextWrapPos();
-                ImGui.PushFont(NativeUiTheme.BodyFont,15);ImGui.PushStyleColor(ImGuiCol.Text,HomeMute);
-                ImGui.GetWindowDrawList().PushClipRect(ImGui.GetCursorScreenPos(),at+new float2(width-8,height-(kind=="legend"&&owned?150:60)),true);
-                if(item.Desc is not null)CollectionText(item.Desc);ImGui.GetWindowDrawList().PopClipRect();ImGui.PopStyleColor();ImGui.PopFont();
-                if(kind=="legend"&&owned)
-                {
-                    var evolution=LegendEvolution.Inspect(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"),profile.Storage.GetValueOrDefault("dt.cosmetics.v1"),profile.Storage.GetValueOrDefault("dt.farm.v1"),item.Id);
-                    ImGui.SetCursorPosY(height-142);HomeLabel("Lv "+evolution.Level+(evolution.CanDigivolve?" / READY":evolution.Next is {} level?" / Digivolves at Lv "+level:" / Final form"),15,HomeGold);
-                    ImGui.ProgressBar(evolution.Need==0?1:(float)evolution.Data/evolution.Need,new(-1,5),""u8);
-                    ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(6,6));
-                    if(CollectionActionButton("evolution/"+item.Id,"Digivolve",locker?(inside-8)/2:-1,32,accent:evolution.CanDigivolve)){evolutionLegend=item.Id;collectionMessage=null;}
-                    if(locker){ImGui.SameLine(0,8);if(CollectionActionButton("collectionFarm/"+item.Id,"Digi-Farm",(inside-8)/2,32))OpenCollectionFarm(collection,item.Id);}
-                    ImGui.PopStyleVar();
-                }
-                ImGui.SetCursorPosY(height-54);
-                if(owned)
-                {
-                    bool multiLocker=locker&&CosmeticCollection.Multi(kind),worn=CollectionWorn(collection,kind,item.Id,multiLocker);ImGui.BeginDisabled(worn&&!multiLocker);
-                    if(CollectionActionButton("equip/"+kind+"/"+item.Id,multiLocker?"Put in slot "+(collectionSlot+1):worn?"Equipped":"Equip",-1,36,primary:locker&&(multiLocker||!worn),accent:!locker&&worn))
-                        if(ChangeCollection(c=>c.Equip(kind,item.Id,collectionSlot),"Equipped "+item.Name+"."))
-                        {
-                            if(multiLocker)collectionSlot=(collectionSlot+1)%6;
-                            if(locker)audio.PlayClient("equip",false);
-                        }
-                    ImGui.EndDisabled();
-                }
-                else if(item.EggOnly)
-                {if(CollectionActionButton("storeEgg/"+kind+"/"+item.Id,"Egg only / See eggs",-1,36)){collectionStoreEggs=true;collectionResetScroll=true;}}
-                else
-                {
-                    DateOnly day=DateOnly.FromDateTime(DateTime.Now);int price=CosmeticCollection.Price(kind,item,day);ImGui.BeginDisabled(price>collection.Bits);
-                    if(CollectionActionButton("buyCosmetic/"+kind+"/"+item.Id,price+" Bits",-1,36))purchase=(kind,item.Id,day);
-                    ImGui.EndDisabled();
-                }
-            }
-            finally{ImGui.EndChild();}
-            draw.AddRect(at,at+new float2(width,height),previewCosmetic==item.Id?HomeGold:HomeLine);
-        }
+        var at=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
+        float end=StoreGrid(collection,kind,items,at,width,locker);
+        ImGui.SetCursorScreenPos(at);ImGui.Dummy(new(width,Math.Max(0,end-at.Y)+12));
     }
     private bool CollectionWorn(CosmeticCollection collection,string kind,string id,bool selectedSlot=false)=>CosmeticCollection.Multi(kind)
         ?selectedSlot?collection.Equipped(kind)!.AsArray().ElementAtOrDefault(collectionSlot)?.GetValue<string>()==id:collection.Equipped(kind)!.AsArray().Any(value=>value?.GetValue<string>()==id)

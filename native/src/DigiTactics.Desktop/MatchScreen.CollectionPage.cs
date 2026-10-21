@@ -373,16 +373,19 @@ internal sealed partial class MatchScreen
     /// <summary>radial-gradient(circle at cx cy, inner, outer stop) sized to the farthest corner, drawn as a fan clipped to the box.</summary>
     private static void CollectionRadial(ImDrawListPtr draw,float2 lo,float2 hi,float2 centre,ImColor8 inner,ImColor8 outer,float stop,float scaleY=1)
     {
-        draw.AddRectFilled(lo,hi,outer);
-        var c=lo+(hi-lo)*centre;float fx=Math.Max(c.X-lo.X,hi.X-c.X),fy=Math.Max(c.Y-lo.Y,hi.Y-c.Y);
-        float radius=MathF.Sqrt(fx*fx+fy*fy)*stop;
+        var c=lo+(hi-lo)*centre;float fx=Math.Max(c.X-lo.X,hi.X-c.X),fy=Math.Max(c.Y-lo.Y,hi.Y-c.Y)/scaleY;
+        float corner=MathF.Sqrt(fx*fx+fy*fy),radius=corner*stop,beyond=corner*1.05f;
         draw.PushClipRect(lo,hi,true);
         var flags=draw.Flags;draw.Flags&=~ImDrawListFlags.AntiAliasedFill;
-        int first=draw.VtxBuffer.Count;const int segments=40;
+        int first=draw.VtxBuffer.Count;const int segments=48;
+        float2 Point(double angle,float r)=>c+new float2((float)Math.Cos(angle)*r,(float)Math.Sin(angle)*r*scaleY);
         for(int i=0;i<segments;i++)
         {
             double a=i*Math.PI*2/segments,b=(i+1)*Math.PI*2/segments;
-            draw.AddTriangleFilled(c,c+new float2((float)Math.Cos(a)*radius,(float)Math.Sin(a)*radius*scaleY),c+new float2((float)Math.Cos(b)*radius,(float)Math.Sin(b)*radius*scaleY),inner);
+            // Centre fan to the last colour stop, then a flat band out past the farthest corner;
+            // translucent stops therefore replace rather than stack.
+            draw.AddTriangleFilled(c,Point(a,radius),Point(b,radius),inner);
+            if(beyond>radius)draw.AddQuadFilled(Point(a,radius),Point(a,beyond),Point(b,beyond),Point(b,radius),outer);
         }
         RadialRecolor(draw,first,c,radius,inner,outer,scaleY);
         draw.Flags=flags;draw.PopClipRect();

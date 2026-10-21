@@ -43,60 +43,63 @@ internal sealed partial class MatchScreen
         }
         if (mysteryLoot.Error is { } error) profileMessage = error;
     }
-    private void MysteryLootControls(CosmeticCollection collection)
+    /// <summary>.mystery-boxes: heading, intro, the Daybreak and Cipher rows and the earning rules. Returns the next y.</summary>
+    private float MysteryLootControls(CosmeticCollection collection,float2 at,float width)
     {
         UpdateMysteryLoot();
-        HomeLabel("MYSTERY BOXES",17,HomeInk);
-        ImGui.PushFont(NativeUiTheme.BodyFont,15);
-        CollectionText("Exclusive surprises. Rewards appear in Collection only after you discover them.");
+        var draw=ImGui.GetWindowDrawList();var text=new ImColor8(180,194,213);var body=CosmeticStyle.Body(12);
+        float x=at.X+16,inner=width-32,y=at.Y+16;
+        y+=4;CosmeticStyle.TextIn(draw,new(x,y),18.9f,CosmeticStyle.Gold1,"MYSTERY BOXES",CosmeticStyle.Display(12.5f,.1f));y+=18.9f+8;
+        y+=CosmeticStyle.Paragraph(draw,new(x,y),text,"Exclusive surprises. Rewards appear in Collection only after you discover them.",body,inner,1.6f)+12;
         try
         {
-            var inventory = mysteryLoot!.Inventory;
-            MysteryBoxRow("daily",$"Daybreak Box × {inventory.Daily}",$"{inventory.DayProgress}/2 active days toward your next box",inventory.Daily>0&&inventory.Pending is null);
-            MysteryBoxRow("vault",$"Cipher Box × {inventory.Vault}",$"Needs 1 Cipher Key. You have {inventory.Keys}.",inventory.Vault>0&&inventory.Keys>0&&inventory.Pending is null);
-            CollectionText("Boxes and keys can drop after rounds from stage 2 onward. No purchases required. Each reveals one new cosmetic; the two pools never overlap.");
-            if(ImGui.CollapsingHeader("Earning boxes and keys"u8))CollectionText("Complete a round on 2 different days for a Daybreak Box; breaks do not reset progress. Eligible rounds have a 3% Cipher Box chance and an independent 2.5% key chance. Guaranteed by 32 rounds without a box or 40 without a key.");
-            if (mysteryLoot.Message is { } message) CollectionText(message);
-            if (mysteryLoot.Error is { } error)
+            var inventory=mysteryLoot!.Inventory;
+            y=MysteryBoxRow("daily",$"Daybreak Box × {inventory.Daily}",$"Complete a round on 2 different days. Progress: {inventory.DayProgress}/2 active days. Breaks do not reset it.",inventory.Daily>0&&inventory.Pending is null,new(x,y),inner);
+            y=MysteryBoxRow("vault",$"Cipher Box × {inventory.Vault}",$"Needs 1 Cipher Key. You have {inventory.Keys}.",inventory.Vault>0&&inventory.Keys>0&&inventory.Pending is null,new(x,y),inner);
+            y+=12;
+            y+=CosmeticStyle.Paragraph(draw,new(x,y),text,"From stage 2, each completed round you participate in has a 3% Cipher Box chance and an independent 2.5% key chance. Guaranteed by 32 eligible rounds without a box or 40 without a key. No purchases required. Each box reveals one new cosmetic; the two pools never overlap.",body,inner,1.6f);
+            if(mysteryLoot.Message is {} message){y+=8;y+=CosmeticStyle.Paragraph(draw,new(x,y),CosmeticStyle.Gold2,message,body,inner,1.6f);}
+            if(mysteryLoot.Error is {} error)
             {
-                CollectionText(error);
-                if (inventory.Pending is { } pending && Button("retryMysteryGrant", "Retry saving discovery") && mysteryLoot.Recover()) mysteryReward = pending;
+                y+=8;y+=CosmeticStyle.Paragraph(draw,new(x,y),new ImColor8(255,84,104),error,body,inner,1.6f)+6;
+                if(inventory.Pending is {} pending)
+                {
+                    var type=CosmeticStyle.Body(14,true);
+                    if(CosmeticButton("retryMysteryGrant",new(x,y),new(type.Width("Retry saving discovery")+32,35),"Retry saving discovery",type)&&mysteryLoot.Recover())mysteryReward=pending;
+                    y+=35;
+                }
             }
         }
-        catch (Exception error) when (error is System.Text.Json.JsonException or InvalidOperationException or InvalidDataException or FormatException or OverflowException)
-        { CollectionText("Mystery loot could not be read. Your save was preserved: " + error.Message); }
-        finally{ImGui.PopFont();}
-        ImGui.Separator();
+        catch(Exception error) when (error is System.Text.Json.JsonException or InvalidOperationException or InvalidDataException or FormatException or OverflowException)
+        {y+=CosmeticStyle.Paragraph(draw,new(x,y),text,"Mystery loot could not be read. Your save was preserved: "+error.Message,body,inner,1.6f);}
+        y+=16;
+        draw.AddLine(new(at.X,y+.5f),new(at.X+width,y+.5f),new ImColor8(88,96,116));
+        return y+1+12;
     }
-    private void MysteryBoxRow(string pool,string title,string detail,bool available)
+    private float MysteryBoxRow(string pool,string title,string detail,bool available,float2 at,float width)
     {
-        const float symbolWidth=32,textLeft=44,buttonWidth=76,gap=12;
-        var at=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X,textWidth=width-textLeft-buttonWidth-gap;
-        ImGui.PushFont(NativeUiTheme.DisplayBoldFont,17);float titleHeight=ImGui.CalcTextSize(title,false,textWidth).Y;ImGui.PopFont();
-        ImGui.PushFont(NativeUiTheme.BodyFont,15);float detailHeight=ImGui.CalcTextSize(detail,false,textWidth).Y;ImGui.PopFont();
-        float height=Math.Max(76,32+titleHeight+5+detailHeight);var center=at+new float2(symbolWidth*.5f,height*.5f);
-        var draw=ImGui.GetWindowDrawList();var gold=new ImColor8(238,194,121);
+        var draw=ImGui.GetWindowDrawList();var gold=new ImColor8(238,194,121);var titleType=CosmeticStyle.Body(14,true);var small=CosmeticStyle.Body(11.7f);
+        var buttonType=CosmeticStyle.Body(14,true);string label=pool=="daily"?"Open":"Unlock";float buttonWidth=buttonType.Width(label)+34;
+        const float symbolWidth=32;float textLeft=symbolWidth+12,textWidth=width-textLeft-12-buttonWidth;
+        float detailHeight=CosmeticStyle.ParagraphHeight(detail,small,textWidth,1.6f);
+        float contentHeight=18.9f+5+detailHeight,height=16+Math.Max(contentHeight,40)+16;
+        var center=at+new float2(symbolWidth*.5f,height*.5f);
         if(pool=="daily")
         {
-            draw.AddCircleFilled(center,7,gold);
-            for(int ray=0;ray<8;ray++)
-            {
-                float angle=ray*MathF.PI/4;var direction=new float2(MathF.Cos(angle),MathF.Sin(angle));
-                draw.AddLine(center+direction*11,center+direction*15,gold,2);
-            }
+            draw.AddCircleFilled(center,6,gold);
+            for(int ray=0;ray<8;ray++){float angle=ray*MathF.PI/4;var direction=new float2(MathF.Cos(angle),MathF.Sin(angle));draw.AddLine(center+direction*9,center+direction*13,gold,2);}
         }
         else
         {
             float2[] corners=[new(0,-11),new(11,0),new(0,11),new(-11,0)];
             for(int edge=0;edge<4;edge++)draw.AddLine(center+corners[edge],center+corners[(edge+1)%4],gold,2);
         }
-        ImGui.SetCursorScreenPos(at+new float2(textLeft,16));ImGui.PushFont(NativeUiTheme.DisplayBoldFont,17);ImGui.PushStyleColor(ImGuiCol.Text,HomeInk);
-        ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+textWidth);ImGui.Text(title);ImGui.PopTextWrapPos();ImGui.PopStyleColor();ImGui.PopFont();
-        ImGui.SetCursorScreenPos(at+new float2(textLeft,21+titleHeight));ImGui.PushFont(NativeUiTheme.BodyFont,15);ImGui.PushStyleColor(ImGuiCol.Text,HomeMute);
-        ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+textWidth);ImGui.Text(detail);ImGui.PopTextWrapPos();ImGui.PopStyleColor();ImGui.PopFont();
-        ImGui.SetCursorScreenPos(at+new float2(width-buttonWidth,(height-36)*.5f));ImGui.BeginDisabled(!available);
-        if(Button("mysteryOpen/"+pool,pool=="daily"?"Open":"Unlock",buttonWidth,36))OpenMysteryBox(pool);
-        ImGui.EndDisabled();ImGui.SetCursorScreenPos(at+new float2(0,height));ImGui.Separator();
+        float top=at.Y+(height-contentHeight)*.5f;
+        CosmeticStyle.TextIn(draw,new(at.X+textLeft,top),18.9f,CosmeticStyle.Text1,title,titleType);
+        CosmeticStyle.Paragraph(draw,new(at.X+textLeft,top+18.9f+5),new ImColor8(180,194,213),detail,small,textWidth,1.6f);
+        if(CosmeticButton("mysteryOpen/"+pool,new(at.X+width-buttonWidth,at.Y+(height-35)*.5f),new(buttonWidth,35),label,buttonType,disabled:!available))OpenMysteryBox(pool);
+        draw.AddLine(new(at.X,at.Y+height-.5f),new(at.X+width,at.Y+height-.5f),new ImColor8(255,255,255,21));
+        return at.Y+height;
     }
     private void OpenMysteryBox(string pool)
     {
