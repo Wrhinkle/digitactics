@@ -170,6 +170,16 @@ async function clientState(run, id) {
     await run.advance(500);
     return;
   }
+  if (id === 'match-loading') {
+    // #cload stays up for 2.1 s; the screenshot's animations: 'disabled' shows its cards and bar at their end state
+    await nav(run, 'play'); await run.click('[data-mode-pick="solo"]'); await run.click('#playConfirm'); await run.advance(300);
+    await run.click('#playSoloBtn');
+    await run.until(() => !!document.getElementById('cload'), null, 'match loading screen', 15000, 50);
+    // keep the screen up while settle() waits for arena models: its timers only fade and remove this element
+    await run.ev(() => { const el = document.getElementById('cload'); el.classList.add = () => {}; el.remove = () => {}; });
+    await run.advance(900, 100);
+    return;
+  }
   if (COLLECTION_TABS[id]) { await nav(run, 'collection'); await run.click(`#pgCollection [data-ctab="${COLLECTION_TABS[id]}"]`); await run.advance(900); return; }
   if (NAV_PAGES.includes(id)) return nav(run, id);
   throw new Error(`no client route for ${id}`);

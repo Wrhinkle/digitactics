@@ -30,47 +30,35 @@ internal sealed partial class MatchScreen
             {HomePlayRank=null;HomePlayRankError="Profile statistics unavailable";}
         }
 
-        const float emblem=46,textLeft=62,rightPadding=14,numberSize=18,labelSize=14,rowHeight=20;
-        (long Value,string Label)[] stats=HomePlayRank is {} summary
-            ?[(summary.Games,"games"),(summary.TopFour,"top finishes"),(summary.Wins,"wins")]:[];
-        string[] values=stats.Select(stat=>stat.Value.ToString(CultureInfo.InvariantCulture)).ToArray();
-        var numberWidths=new float[stats.Length];var groupWidths=new float[stats.Length];
-        for(int i=0;i<stats.Length;i++)
-        {
-            ImGui.PushFont(NativeUiTheme.DisplayBoldFont,numberSize);numberWidths[i]=ImGui.CalcTextSize(values[i]).X;ImGui.PopFont();
-            ImGui.PushFont(NativeUiTheme.BodyFont,labelSize);groupWidths[i]=numberWidths[i]+5+ImGui.CalcTextSize(stats[i].Label).X;ImGui.PopFont();
-        }
-        float naturalWidth=textLeft+groupWidths.Sum()+Math.Max(0,stats.Length-1)*11+rightPadding;
-        float width=Math.Min(Math.Max(270,headerWidth-220),Math.Max(270,naturalWidth));
-        float textWidth=width-textLeft-rightPadding,x=0;int row=0;
-        var positions=new float2[stats.Length];
-        for(int i=0;i<stats.Length;i++)
-        {
-            if(x>0&&x+groupWidths[i]>textWidth){x=0;row++;}
-            positions[i]=new(x,row*rowHeight);x+=groupWidths[i]+11;
-        }
-        float height=Math.Max(58,35+(row+1)*rowHeight);
+        // .play-status: 46px emblem, eyebrow label and the .ps-row totals (theme.js), in CSS pixels.
+        var draw=ImGui.GetWindowDrawList();const float height=60;
+        string label=HomePlayRank is {} known?known.Rank.Label.ToUpperInvariant():"RANK UNAVAILABLE";
+        (long Value,string Label)[] stats=HomePlayRank is {} summary?[(summary.Games,"games"),(summary.TopFour,"top finishes"),(summary.Wins,"wins")]:[];
+        float rowWidth=stats.Sum(stat=>ClientCss.Width(ClientCss.Face.DisplayBold,16,stat.Value.ToString(CultureInfo.InvariantCulture))+5+ClientCss.Width(ClientCss.Face.Body,11,stat.Label)+6)+Math.Max(0,stats.Length-1)*5;
+        if(HomePlayRank is null)rowWidth=ClientCss.Width(ClientCss.Face.Body,11,HomePlayRankError??"");
+        float textWidth=Math.Max(ClientCss.Width(ClientCss.Face.DisplayBold,11,label,1.76f),rowWidth);
+        float width=Math.Min(headerWidth-200,1+6+46+10+textWidth+14+1);
         var at=headerAt+new float2(headerWidth-width,0);var extent=new float2(width,height);
         HomePlayRankBounds=(at,at+extent);
-        HomePlayRankLayoutFits=at.X>=headerAt.X+200&&at.X+width<=headerAt.X+headerWidth+.5f&&groupWidths.All(value=>value<=textWidth);
-        var draw=ImGui.GetWindowDrawList();
-        draw.AddRectFilled(at,at+extent,new ImColor8(1,10,19,180));draw.AddRect(at,at+extent,HomeLine);
+        HomePlayRankLayoutFits=at.X>=headerAt.X+200&&at.X+width<=headerAt.X+headerWidth+.5f;
+        draw.AddRectFilled(at,at+extent,new ImColor8(1,10,19,179));ClientCss.Border(draw,at,at+extent,ClientCss.Gold5);
         draw.PushClipRect(at+new float2(1,1),at+extent-new float2(1,1),true);
+        var text=at+new float2(1+6+46+10,1+(height-2-36.4f)/2);
         if(HomePlayRank is {} rank)
         {
-            postgameArtwork.Draw("emblem-"+rank.Rank.Id,at+new float2(6,(height-emblem)/2),new(emblem,emblem),grayscale:rank.Rank.Unranked,brightness:rank.Rank.Unranked?(byte)153:(byte)255);
-            draw.AddText(NativeUiTheme.DisplayBoldFont,15,at+new float2(textLeft,8),HomeGold,rank.Rank.Label.ToUpperInvariant());
-            for(int i=0;i<stats.Length;i++)
+            postgameArtwork.Draw("emblem-"+rank.Rank.Id,at+new float2(7,7),new(46,46),grayscale:rank.Rank.Unranked,brightness:rank.Rank.Unranked?(byte)153:(byte)255);
+            ClientCss.Text(draw,ClientCss.Face.DisplayBold,11,text,ClientCss.Gold2,label,1.76f,14.85f);
+            float x=text.X;
+            foreach(var stat in stats)
             {
-                var valueAt=at+new float2(textLeft,27)+positions[i];
-                draw.AddText(NativeUiTheme.DisplayBoldFont,numberSize,valueAt,HomeInk,values[i]);
-                draw.AddText(NativeUiTheme.BodyFont,labelSize,valueAt+new float2(numberWidths[i]+5,3),HomeMute,stats[i].Label);
+                x+=ClientCss.Text(draw,ClientCss.Face.DisplayBold,16,new(x,text.Y+14.8f),ClientCss.Gold1,stat.Value.ToString(CultureInfo.InvariantCulture),0,21.6f)+5;
+                x+=ClientCss.Text(draw,ClientCss.Face.Body,11,new(x,text.Y+14.8f+5),ClientCss.Text3,stat.Label,0,14.85f)+6+5;
             }
         }
         else
         {
-            draw.AddText(NativeUiTheme.DisplayBoldFont,15,at+new float2(14,10),HomeGold,"RANK UNAVAILABLE"u8);
-            draw.AddText(NativeUiTheme.BodyFont,labelSize,at+new float2(14,31),HomeMute,HomePlayRankError!);
+            ClientCss.Text(draw,ClientCss.Face.DisplayBold,11,text,ClientCss.Gold2,label,1.76f,14.85f);
+            ClientCss.Text(draw,ClientCss.Face.Body,11,text+new float2(0,14.8f+5),ClientCss.Text3,HomePlayRankError??"",0,14.85f);
         }
         draw.PopClipRect();return height;
     }

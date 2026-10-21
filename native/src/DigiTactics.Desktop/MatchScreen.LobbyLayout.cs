@@ -12,6 +12,7 @@ internal sealed partial class MatchScreen
     private readonly ImInputString lobbyRoomName=new(160);
     private static readonly string[] LobbyAiNames=["Tai","Matt","Sora","Izzy","Mimi","Joe","Kari","T.K."];
     internal int LobbySeatCards {get;private set;}
+    internal bool MultiplayerVisible=>showMultiplayer;
     internal float LobbyBodyFontSize {get;private set;}
     internal bool LobbyLayoutFits {get;private set;}
     internal bool LobbyArtworkVisible {get;private set;}
@@ -54,30 +55,72 @@ internal sealed partial class MatchScreen
     }
     private void MultiplayerMenu()
     {
-        RefreshSetSelection();LobbySeatCards=0;LobbyBodyFontSize=17;
-        float width=size.X-48,height=size.Y-ClientPageTop-28;var at=new float2(24,ClientPageTop+12);
-        LobbyLayoutFits=width>=700&&height>=520;LobbyArtworkVisible=false;
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(24,20));
+        RefreshSetSelection();LobbySeatCards=0;
+        // .play-mp inside .play: the same framed lobby painting as the solo party (theme.js).
+        float viewWidth=socialWindowSize.X,viewHeight=socialWindowSize.Y;bool shortView=viewHeight<=820;
+        float pageWidth=Math.Min(size.X,1720),pad=viewWidth<=1500?16:24,padTop=shortView?8:12,padBottom=shortView?10:16;
+        var at=new float2((size.X-pageWidth)/2+pad,ClientPageTop+padTop);float width=pageWidth-2*pad,height=size.Y-ClientPageTop-padTop-padBottom;
+        float padX=shortView?16:24,padY=shortView?12:16;
+        LobbyLayoutFits=width>=700&&height>=440;LobbyArtworkVisible=false;
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(1+padX,1+padY));
         HomeCard("Steam multiplayer",at,new(width,height),false);
-        // Original .play-mp surface: the lobby painting, shaded down to navy,
-        // remains visible behind the form and the eight individual seat cards.
-        homeArtwork.Draw("lobby-bg",at,new(width,height),255,true,.4f);LobbyArtworkVisible=true;
-        var draw=ImGui.GetWindowDrawList();draw.AddRectFilledMultiColor(at,at+new float2(width,height),new ImColor8(1,10,19,145),new ImColor8(1,10,19,145),new ImColor8(1,10,19,220),new ImColor8(1,10,19,220));
-        draw.AddRect(at,at+new float2(width,height),HomeLine);
-        LobbyContentBounds=(at+new float2(24,20),at+new float2(width-24,height-20));
-        LobbyFooterBounds=(new(at.X+24,at.Y+height-64),new(at.X+width-24,at.Y+height-20));
-        ImGui.PushFont(NativeUiTheme.BodyFont,17);LobbyBodyFontSize=ImGui.GetFontSize();ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(10,8));ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(10,7));
+        var draw=ImGui.GetWindowDrawList();var max=at+new float2(width,height);
+        draw.PushClipRect(at+new float2(1),max-new float2(1),true);
+        homeArtwork.Draw("lobby-bg",at+new float2(1),new(width-2,height-2),255,true,.4f);LobbyArtworkVisible=true;
+        float fadeEnd=at.Y+1+(height-2)*.7f;
+        ClientCss.Gradient(draw,at+new float2(1),new(max.X-1,fadeEnd),new ImColor8(1,10,19,140),new ImColor8(1,10,19,235));
+        draw.AddRectFilled(new(at.X+1,fadeEnd),max-new float2(1),new ImColor8(1,10,19,235));
+        draw.PopClipRect();ClientCss.Border(draw,at,max,ClientCss.Gold4);
+        LobbyContentBounds=(at+new float2(1+padX,1+padY),max-new float2(1+padX,1+padY));
+        // .mpfoot sits at the bottom of the panel: 16px top padding, then the 34.8px ghost button.
+        LobbyFooterBounds=(new(LobbyContentBounds.Min.X,LobbyContentBounds.Max.Y-34.8f),LobbyContentBounds.Max);
+        ImGui.PushFont(NativeUiTheme.BodyFont,ClientCss.Size(ClientCss.Face.Body,14));LobbyBodyFontSize=ImGui.GetFontSize();
+        ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(12,10));ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(10,7));
         if(steam is null)
         {
-            LobbyHeading("Multiplayer · Steam","Lobbies","Every lobby has 8 Tamers. Seats you and your friends don't take are played by the AI.");
-            ImGui.Spacing();UiText.Wrapped("Connect to Steam to create a lobby, find your friends and join a game."u8);
-            if(HomeButton("steamConnect","Connect to Steam",230,44,true))ConnectSteam();
-            LobbyStatus();
-            ImGui.SetCursorScreenPos(LobbyFooterBounds.Min);if(ClientTextButton("steamBack","Back",120,40,false,16))ReturnFromLobbies();
+            float top=LobbyHeading(LobbyContentBounds.Min,"Multiplayer · Steam","Lobbies","Every lobby has 8 Tamers. Seats you and your friends don't take are played by the AI.")+12;
+            ClientCss.Text(draw,ClientCss.Face.Body,14,LobbyContentBounds.Min+new float2(0,top),ClientCss.Text2,"Connect to Steam to create a lobby, find your friends and join a game.",0,18.9f);
+            if(PrimaryButton("steamConnect","Connect to Steam",LobbyContentBounds.Min+new float2(0,top+30)))ConnectSteam();
+            LobbyStatus(LobbyContentBounds.Min+new float2(0,top+76),LobbyContentBounds.Max.X-LobbyContentBounds.Min.X);
+            if(GhostButton("steamBack","Back",LobbyFooterBounds.Min))ReturnFromLobbies();
         }
         else if(steam.Room is {} room)DrawLobbyRoom(room,height);
         else DrawLobbyBrowser(height);
         ImGui.PopStyleVar(2);ImGui.PopFont();ImGui.End();ImGui.PopStyleVar();
+    }
+    /// <summary>.mp-head: eyebrow, page title and sub line; returns its height.</summary>
+    private float LobbyHeading(float2 at,string eyebrow,string title,string? description)
+    {
+        var draw=ImGui.GetWindowDrawList();
+        ClientCss.Text(draw,ClientCss.Face.DisplayBold,11,at,ClientCss.Gold2,eyebrow.ToUpperInvariant(),1.76f,14.85f);
+        ClientCss.Text(draw,ClientCss.Face.DisplayBold,26,at+new float2(0,16.8f),ClientCss.Gold1,title.ToUpperInvariant(),1.04f,28.6f);
+        if(description is null)return 45.4f;
+        ClientCss.Text(draw,ClientCss.Face.Body,12.5f,at+new float2(0,49.4f),ClientCss.Text2,description,0,16.875f);
+        return 66.3f;
+    }
+    private void LobbyStatus(float2 at,float width)
+    {
+        string message=recentPlayersError.Length>0?recentPlayersError:lobbyMessage;
+        // The original keeps the connected browser quiet; only problems are reported.
+        if(message.Length==0||message.StartsWith("Connected as ",StringComparison.Ordinal))return;
+        ClientCss.Paragraph(ImGui.GetWindowDrawList(),ClientCss.Face.Body,12.5f,at,width,16.875f,ClientCss.Text2,message);
+    }
+    // .btn.btn-primary: orange gradient with a light frame.
+    private bool PrimaryButton(string key,string label,float2 at)
+    {
+        float width=ClientCss.Width(ClientCss.Face.BodyBold,14,label)+34,height=34.8f;
+        bool pressed=CssHit(key,at,new(width,height),out bool hover);var draw=ImGui.GetWindowDrawList();var max=at+new float2(width,height);
+        float alpha=ImGui.GetStyle().Alpha;
+        if(hover)ClientCss.Glow(draw,at,max,new ImColor8(255,138,61,89),24,2);else ClientCss.Glow(draw,at+new float2(0,2),max+new float2(0,2),new ImColor8(255,138,61,64),10,2);
+        float split=at.Y+1+(height-2)*.3f;
+        var top=new ImColor8(255,210,122);var middle=new ImColor8(255,194,74);var bottom=new ImColor8(255,138,61);
+        if(hover){top=new ImColor8(255,227,132);middle=new ImColor8(255,209,80);bottom=new ImColor8(255,149,66);}
+        ClientCss.Gradient(draw,at+new float2(1),new(max.X-1,split),ClientCss.Alpha(top,alpha),ClientCss.Alpha(middle,alpha));
+        ClientCss.Gradient(draw,new(at.X+1,split),max-new float2(1),ClientCss.Alpha(middle,alpha),ClientCss.Alpha(bottom,alpha));
+        draw.AddLine(at+new float2(1,1.5f),new(max.X-1,at.Y+1.5f),ClientCss.Alpha(new ImColor8(255,255,255,89),alpha));
+        ClientCss.Border(draw,at,max,ClientCss.Alpha(new ImColor8(240,210,140),alpha),1,2);
+        ClientCss.Text(draw,ClientCss.Face.BodyBold,14,at+new float2(17,9),ClientCss.Alpha(new ImColor8(20,13,5),alpha),label,0,16.8f);
+        return pressed;
     }
     private void ReturnFromLobbies()
     {
@@ -85,69 +128,159 @@ internal sealed partial class MatchScreen
         // The separate Leave lobby / Cancel join controls own disconnection.
         BackClient();
     }
+    // .field: uppercase label above a navy input or select.
+    private static void LobbyFieldLabel(float2 at,string label)
+        =>ClientCss.Text(ImGui.GetWindowDrawList(),ClientCss.Face.BodyBold,11,at,ClientCss.LcMute,label.ToUpperInvariant(),1.1f,14.85f);
+    private static void LobbyFieldFrame(float2 at,float width,bool focused)
+    {
+        var draw=ImGui.GetWindowDrawList();var max=at+new float2(width,36.9f);
+        if(focused)draw.AddRect(at-new float2(2),max+new float2(2),new ImColor8(200,170,110,46),0,ImDrawFlags.None,2);
+        draw.AddRectFilled(at,max,new ImColor8(1,10,19,217));ClientCss.Border(draw,at,max,focused?ClientCss.Gold2:ClientCss.Gold5);
+    }
+    private static void LobbyChevron(float2 at,float width)
+    {
+        var draw=ImGui.GetWindowDrawList();var center=at+new float2(width-15,18.5f);
+        draw.AddLine(center+new float2(-4,-2),center+new float2(0,2),ClientCss.Text1,1.5f);draw.AddLine(center+new float2(0,2),center+new float2(4,-2),ClientCss.Text1,1.5f);
+    }
+    private bool LobbyCombo(string key,string preview,float2 at,float width)
+    {
+        LobbyFieldFrame(at,width,false);
+        ImGui.PushStyleColor(ImGuiCol.FrameBg,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.FrameBgHovered,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.FrameBgActive,new ImColor8(0,0,0,0));
+        ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.Text,ClientCss.Text1);
+        ImGui.SetCursorScreenPos(at);ImGui.SetNextItemWidth(width);
+        bool open=ImGui.BeginCombo("##"+key,preview,ImGuiComboFlags.NoArrowButton|ImGuiComboFlags.HeightLargest);
+        ImGui.PopStyleColor(5);SelectionButton(key);LobbyChevron(at,width);
+        return open;
+    }
+    private float steamListedAt=float.NegativeInfinity;
+    private bool lobbyNameFocused;
     private void DrawLobbyBrowser(float height)
     {
-        LobbyHeading("Multiplayer · Steam","Lobbies","Every lobby has 8 Tamers. Seats you and your friends don't take are played by the AI.");
+        var content=LobbyContentBounds.Min;float contentWidth=LobbyContentBounds.Max.X-content.X;var draw=ImGui.GetWindowDrawList();
+        float headHeight=LobbyHeading(content,"Multiplayer · Steam","Lobbies","Every lobby has 8 Tamers. Seats you and your friends don't take are played by the AI.");
         if(lobbyRoomName.ToString().Length==0)lobbyRoomName.SetValue((SteamName+"'s lobby").AsSpan());
+        // Keep polling the room list while the browser is open, as the original does every 4 s.
+        float clock=Environment.TickCount64/1000f;
+        if(listingRooms is not null||listingFriendRooms is not null)steamListedAt=clock;
+        else if(clock-steamListedAt>=4)RefreshSteamRooms();
         ImGui.BeginDisabled(enteringRoom is not null);
-        float width=ImGui.GetContentRegionAvail().X-24;var formAt=ImGui.GetCursorScreenPos();var start=formAt+new float2(12,12);
-        var fields=new (string Label,float Width,Action<float> Draw)[]
+        string visibilityLabel=visibility switch{SteamLobbyVisibility.Public=>"Public",SteamLobbyVisibility.Friends=>"Friends only",_=>"Private"};
+        // .mp-create: a wrapping flex row (gap 12, items aligned to the bottom); Lobby name grows from 220px.
+        var items=new (string Key,string Label,float Width,bool Grow)[]
         {
-            ("YOUR NAME",170,w=>
-            {
-                var point=ImGui.GetCursorScreenPos();var list=ImGui.GetWindowDrawList();list.AddRectFilled(point,point+new float2(w,34),new ImColor8(1,10,19,220));list.AddRect(point,point+new float2(w,34),HomeLine);
-                list.AddText(point+new float2(10,8),HomeInk,LobbyEllipsis(SteamName,w-20));ImGui.Dummy(new(w,34));
-            }),
-            ("LOBBY NAME",220,w=>{ImGui.SetNextItemWidth(w);ImGui.InputText("##steamRoomName"u8,lobbyRoomName);SelectionButton("steamRoomName");}),
-            ("SET",240,w=>{ImGui.SetNextItemWidth(w);DrawSetChoice("steamSet",selectedSet,SelectSet);}),
-            ("PACE",124,w=>{ImGui.SetNextItemWidth(w);DrawPaceChoice("steamPace",lobbyPaceChoice,true,pace=>SelectPace(pace,true));}),
-            ("FORMAT",128,w=>{ImGui.SetNextItemWidth(w);DrawFormatChoice("steamFormat",lobbyDuos,format=>lobbyDuos=format=="duos");}),
-            ("ROUNDS",132,w=>
-            {
-                ImGui.SetNextItemWidth(w);if(ImGui.BeginCombo("##steamPlanning"u8,lobbyPlanningSeconds+" s rounds"))
-                {
-                    foreach(int seconds in new[]{30,45,60}){if(ImGui.Selectable(seconds+" s rounds",lobbyPlanningSeconds==seconds))lobbyPlanningSeconds=seconds;SelectionButton("planningSeconds/"+seconds);}
-                    ImGui.EndCombo();
-                }
-                SelectionButton("steamPlanning");
-            }),
-            ("WHO CAN JOIN",146,w=>
-            {
-                ImGui.SetNextItemWidth(w);if(ImGui.BeginCombo("##steamVisibility"u8,visibility switch{SteamLobbyVisibility.Public=>"Public",SteamLobbyVisibility.Friends=>"Friends only",_=>"Private"}))
-                {
-                    foreach(var item in Enum.GetValues<SteamLobbyVisibility>())if(ImGui.Selectable(item switch{SteamLobbyVisibility.Public=>"Public",SteamLobbyVisibility.Friends=>"Friends only",_=>"Private"},visibility==item))visibility=item;
-                    ImGui.EndCombo();
-                }
-                SelectionButton("steamVisibility");
-            }),
-            ("",160,w=>{if(HomeButton("steamCreate",enteringRoom is null?"Create lobby":"Creating…",w,40,true))CreateSteamRoom();}),
-            ("",180,w=>{if(HomeButton("steamRefresh",listingRooms is null&&listingFriendRooms is null?"Refresh lobbies":"Searching…",w,40))RefreshSteamRooms();})
+            ("steamName","Your name",170,false),("steamRoomName","Lobby name",220,true),("steamSet","Set",280,false),("steamPace","Pace",123,false),
+            ("steamFormat","Format",116,false),("steamPlanning","Rounds",123,false),("steamVisibility","Who can join",125,false),
+            ("steamCreate","",ClientCss.Width(ClientCss.Face.BodyBold,14,enteringRoom is null?"Create lobby":"Creating…")+34,false),
         };
-        var positions=new float2[fields.Length];float fieldX=0,fieldY=0;
-        for(int i=0;i<fields.Length;i++){if(fieldX>0&&fieldX+fields[i].Width>width){fieldX=0;fieldY+=70;}positions[i]=start+new float2(fieldX,fieldY);fieldX+=fields[i].Width+12;}
-        float formHeight=fieldY+90;var draw=ImGui.GetWindowDrawList();draw.AddRectFilled(formAt,formAt+new float2(width+24,formHeight),new ImColor8(1,10,19,210));draw.AddRect(formAt,formAt+new float2(width+24,formHeight),HomeLine);
-        for(int i=0;i<fields.Length;i++)
+        float boxTop=headHeight+12+1,innerWidth=contentWidth-2-32;
+        var rows=new List<List<int>>{new()};float lineWidth=0;
+        for(int i=0;i<items.Length;i++)
         {
-            var field=fields[i];ImGui.SetCursorScreenPos(positions[i]);if(field.Label.Length>0)HomeLabel(field.Label,15);
-            ImGui.SetCursorScreenPos(positions[i]+new float2(0,24));field.Draw(field.Width);
+            float add=(rows[^1].Count>0?12:0)+items[i].Width;
+            if(rows[^1].Count>0&&lineWidth+add>innerWidth+.5f){rows.Add([]);lineWidth=0;add=items[i].Width;}
+            rows[^1].Add(i);lineWidth+=add;
         }
-        ImGui.EndDisabled();ImGui.SetCursorScreenPos(formAt+new float2(0,formHeight+18));
+        var widths=items.Select(item=>item.Width).ToArray();
+        foreach(var row in rows)
+        {
+            float used=row.Sum(i=>items[i].Width)+12*(row.Count-1);int grow=row.FirstOrDefault(i=>items[i].Grow,-1);
+            if(grow>=0)widths[grow]+=innerWidth-used;
+        }
+        // A wrapped line is as tall as its tallest item: a field (56.8) or the lone Create button (34.8).
+        float RowHeight(List<int> row)=>row.Any(i=>items[i].Key!="steamCreate")?56.8f:34.8f;
+        float boxHeight=2+24+rows.Sum(RowHeight)+(rows.Count-1)*12;
+        var boxAt=content+new float2(0,boxTop-1);var boxMax=boxAt+new float2(contentWidth,boxHeight);
+        draw.AddRectFilled(boxAt+new float2(0,6),boxMax+new float2(0,6),new ImColor8(0,0,0,38));
+        draw.AddRectFilled(boxAt,boxMax,new ImColor8(1,10,19,209));ClientCss.Border(draw,boxAt,boxMax,ClientCss.Gold5);
+        // .box::before: a gold-3 highlight fading out toward both ends of the top edge.
+        float mid=(boxAt.X+boxMax.X)/2;
+        ClientCss.GradientX(draw,boxAt-new float2(1,0),new(mid,boxAt.Y+1),new ImColor8(200,155,60,0),ClientCss.Gold3);ClientCss.GradientX(draw,new(mid,boxAt.Y),new(boxMax.X+1,boxAt.Y+1),ClientCss.Gold3,new ImColor8(200,155,60,0));
+        for(int r=0;r<rows.Count;r++)
+        {
+            float rowHeight=RowHeight(rows[r]),x=boxAt.X+1+16,y=boxAt.Y+1+12+rows.Take(r).Sum(row=>RowHeight(row)+12);
+            foreach(int i in rows[r])
+            {
+                var item=items[i];float w=widths[i];var inputAt=new float2(x,y+19.9f);
+                if(item.Key=="steamCreate")
+                {if(PrimaryButton("steamCreate",enteringRoom is null?"Create lobby":"Creating…",new(x,y+rowHeight-34.8f)))CreateSteamRoom();}
+                else
+                {
+                    LobbyFieldLabel(new(x,y),item.Label);
+                    switch(item.Key)
+                    {
+                        case "steamName":
+                            LobbyFieldFrame(inputAt,w,false);ClientCss.Text(draw,ClientCss.Face.Body,14,inputAt+new float2(12,0),ClientCss.Text1,ClientCss.Ellipsis(ClientCss.Face.Body,14,SteamName,w-24),0,36.9f);
+                            break;
+                        case "steamRoomName":
+                            ImGui.SetCursorScreenPos(inputAt);LobbyFieldFrame(inputAt,w,lobbyNameFocused);
+                            ImGui.PushStyleColor(ImGuiCol.FrameBg,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.Text,ClientCss.Text1);
+                            ImGui.SetNextItemWidth(w);ImGui.InputText("##steamRoomName"u8,lobbyRoomName);lobbyNameFocused=ImGui.IsItemActive();SelectionButton("steamRoomName");ImGui.PopStyleColor(3);
+                            break;
+                        case "steamSet":
+                            if(LobbyCombo("steamSet",SetChoices.Label(selectedSet),inputAt,w))
+                            {
+                                foreach(string id in SetChoices.Options.Select(s=>s.Id).Concat(SetChoices.HasChaos?["chaos"]:Array.Empty<string>()))
+                                {bool picked=ImGui.Selectable(SetChoices.Label(id),selectedSet==id);SelectionButton("steamSet/"+id);if(picked)SelectSet(id);ClientItemSound("steamSet/"+id,picked,"levelup",false);}
+                                ImGui.EndCombo();
+                            }
+                            break;
+                        case "steamPace":
+                            if(LobbyCombo("steamPace",SetSelection.PaceLabel(lobbyPaceChoice),inputAt,w))
+                            {
+                                foreach(string pace in new[]{"hyper","normal","chaos"})
+                                {bool picked=ImGui.Selectable(SetSelection.PaceLabel(pace),lobbyPaceChoice==pace);SelectionButton("steamPace/"+pace);if(picked)SelectPace(pace,true);ClientItemSound("steamPace/"+pace,picked);}
+                                ImGui.EndCombo();
+                            }
+                            break;
+                        case "steamFormat":
+                            if(LobbyCombo("steamFormat",lobbyDuos?"Duos · 2v2":"Free for all",inputAt,w))
+                            {
+                                foreach(string format in new[]{"solo","duos"})
+                                {bool picked=ImGui.Selectable(format=="duos"?"Duos · 2v2":"Free for all",lobbyDuos==(format=="duos"));SelectionButton("steamFormat/"+format);if(picked)lobbyDuos=format=="duos";ClientItemSound("steamFormat/"+format,picked);}
+                                ImGui.EndCombo();
+                            }
+                            break;
+                        case "steamPlanning":
+                            if(LobbyCombo("steamPlanning",lobbyPlanningSeconds+" s rounds",inputAt,w))
+                            {
+                                foreach(int seconds in new[]{30,45,60}){if(ImGui.Selectable(seconds+" s rounds",lobbyPlanningSeconds==seconds))lobbyPlanningSeconds=seconds;SelectionButton("planningSeconds/"+seconds);}
+                                ImGui.EndCombo();
+                            }
+                            break;
+                        case "steamVisibility":
+                            if(LobbyCombo("steamVisibility",visibilityLabel,inputAt,w))
+                            {
+                                foreach(var option in new[]{SteamLobbyVisibility.Public,SteamLobbyVisibility.Friends})if(ImGui.Selectable(option==SteamLobbyVisibility.Public?"Public":"Friends only",visibility==option))visibility=option;
+                                ImGui.EndCombo();
+                            }
+                            break;
+                    }
+                }
+                x+=w+12;
+            }
+        }
+        ImGui.EndDisabled();
+        // h3.mph and the list.
         var displayed=friendRooms.Select(r=>r.Lobby).Concat(availableRooms).DistinctBy(r=>r.Id).Where(r=>r.Data.GetValueOrDefault("state")!="over").ToArray();
-        HomeLabel($"OPEN LOBBIES  ({displayed.Length})",18,HomeGold);
-        float listHeight=Math.Max(64,LobbyFooterBounds.Min.Y-ImGui.GetCursorScreenPos().Y-44);
-        ImGui.BeginChild("Open Steam lobbies"u8,new(0,listHeight));
+        float headingTop=boxTop-1+boxHeight+16;
+        float headingWidth=ClientCss.Text(draw,ClientCss.Face.DisplayBold,14,content+new float2(0,headingTop),ClientCss.Gold1,"OPEN LOBBIES",1.68f,18.9f);
+        if(displayed.Length>0)ClientCss.Text(draw,ClientCss.Face.Body,13,content+new float2(headingWidth+8,headingTop+1),ClientCss.Muted,displayed.Length.ToString(),0,17.55f);
+        float listTop=headingTop+18.9f+8;var listAt=content+new float2(0,listTop);
+        float listHeight=Math.Max(64,LobbyFooterBounds.Min.Y-16-listAt.Y);
+        ImGui.SetCursorScreenPos(listAt);ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));
+        ImGui.BeginChild("Open Steam lobbies"u8,new(contentWidth,listHeight),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);ImGui.PopStyleVar();
         foreach(var listed in displayed)DrawListedLobby(listed);
         if(displayed.Length==0)
         {
-            var empty=ImGui.GetCursorScreenPos();float emptyWidth=ImGui.GetContentRegionAvail().X;
-            draw.AddRectFilled(empty,empty+new float2(emptyWidth,Math.Min(92,listHeight)),new ImColor8(1,10,19,155));
-            DrawLobbyDashedBorder(empty,new(emptyWidth,Math.Min(92,listHeight)),HomeLine);
-            string emptyMessage=listingRooms is null&&listingFriendRooms is null?"No open lobbies right now. Create one and invite your Steam friends.":"Searching Steam for open lobbies…";
-            var measured=ImGui.CalcTextSize(emptyMessage);ImGui.SetCursorScreenPos(empty+new float2(Math.Max(18,(emptyWidth-measured.X)/2),Math.Max(12,(Math.Min(92,listHeight)-measured.Y)/2)));ImGui.PushStyleColor(ImGuiCol.Text,HomeMute);
-            UiText.Wrapped(emptyMessage);ImGui.PopStyleColor();
+            var list=ImGui.GetWindowDrawList();var empty=ImGui.GetCursorScreenPos();var emptyMax=empty+new float2(contentWidth,68.9f);
+            list.AddRectFilled(empty,emptyMax,new ImColor8(1,10,19,153));ClientCss.Dashed(list,empty,emptyMax-empty,ClientCss.Gold5);
+            const string emptyMessage="No open lobbies right now. Create one and invite your Steam friends.";
+            ClientCss.TextCentered(list,ClientCss.Face.Body,14,empty+new float2(0,25),contentWidth,ClientCss.Text3,emptyMessage,0,18.9f);
+            ImGui.Dummy(new(contentWidth,68.9f));
         }
-        ImGui.EndChild();LobbyStatus();
-        ImGui.SetCursorScreenPos(LobbyFooterBounds.Min);if(ClientTextButton("steamBack","Back",120,40,false,16))ReturnFromLobbies();
+        ImGui.EndChild();
+        LobbyStatus(listAt+new float2(0,Math.Min(listHeight,displayed.Length==0?68.9f:listHeight)+8),contentWidth);
+        if(GhostButton("steamBack","Back",LobbyFooterBounds.Min))ReturnFromLobbies();
     }
     private void DrawListedLobby(SteamLobby listed)
     {

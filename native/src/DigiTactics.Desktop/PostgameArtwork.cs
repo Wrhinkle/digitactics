@@ -7,7 +7,7 @@ namespace DigiTactics.Desktop;
 internal sealed class PostgameArtwork(string folder="postgame") : IDisposable
 {
     private readonly Dictionary<(string Name,bool Grayscale), (GpuTexture Texture, int Width, int Height)> textures = [];
-    public void Draw(string name, float2 position, float2 size, byte opacity = 255, bool cover = false, float verticalAlignment = .5f,ImDrawListPtr? drawList=null,bool grayscale=false,byte brightness=255)
+    public void Draw(string name, float2 position, float2 size, byte opacity = 255, bool cover = false, float verticalAlignment = .5f,ImDrawListPtr? drawList=null,bool grayscale=false,byte brightness=255,float rounding=0)
     {
         var key=(name,grayscale);
         if (!textures.TryGetValue(key, out var item))
@@ -32,7 +32,9 @@ internal sealed class PostgameArtwork(string folder="postgame") : IDisposable
             var fraction = new float2(size.X / (item.Width * scale), size.Y / (item.Height * scale));
             uv0 = new((1-fraction.X)*.5f,(1-fraction.Y)*verticalAlignment); uv1 = uv0 + fraction;
         }
-        (drawList??ImGui.GetWindowDrawList()).AddImage(new ImTextureRef { _TexID = new((nint)item.Texture.Id) }, position, position + size, uv0, uv1, new ImColor8(brightness,brightness,brightness,opacity));
+        var target = drawList ?? ImGui.GetWindowDrawList(); var texture = new ImTextureRef { _TexID = new((nint)item.Texture.Id) }; var tint = new ImColor8(brightness,brightness,brightness,opacity);
+        if (rounding > 0) target.AddImageRounded(texture, position, position + size, uv0, uv1, tint, rounding);
+        else target.AddImage(texture, position, position + size, uv0, uv1, tint);
     }
     public void Dispose() { foreach (var item in textures.Values) item.Texture.Dispose(); textures.Clear(); }
 }

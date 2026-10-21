@@ -186,7 +186,7 @@ internal sealed class MatchKeyboardSmoke : IDisposable
     private void AddKey(string name,ImGuiKey value,Action<MatchScreen>? verify=null,bool control=false)=>steps.Add(new(name,_=>Press(value,control),verify));
     private bool Click(MatchScreen screen,string button)
     {
-        if(!screen.Buttons.TryGetValue(button,out var target))return false;
+        if(!screen.Buttons.TryGetValue(button,out var target)||!screen.RevealHomePlayControl(button))return false;
         if(button=="digivolve")
         {
             var bounds=screen.EvolutionCareBounds;

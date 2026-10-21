@@ -19,6 +19,7 @@
     {"id": "profile", "group": "client"},
     {"id": "settings", "group": "client"},
     {"id": "postgame", "group": "client", "note": "victory/result screen after a solo match"},
+    {"id": "match-loading", "group": "client", "note": "match loading screen (eight Tamer cards) about 1 s after Start; finite animations at their end state"},
     {"id": "match-carousel", "group": "match", "note": "opening carousel round"},
     {"id": "match-planning", "group": "match", "note": "first planning phase after the carousel"},
     {"id": "match-combat", "group": "match", "note": "about 2 s into the first combat"},

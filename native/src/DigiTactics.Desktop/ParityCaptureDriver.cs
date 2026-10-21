@@ -18,7 +18,7 @@ internal sealed class ParityCaptureDriver
     [
         "home", "play", "party", "lobby",
         "collection-legends", "collection-emotes", "collection-boards", "collection-killscreens", "collection-dances", "collection-soundboard", "collection-elimsounds",
-        "store", "loot", "farm", "codex", "profile", "settings", "postgame",
+        "store", "loot", "farm", "codex", "profile", "settings", "postgame", "match-loading",
         "match-carousel", "match-planning", "match-combat", "match-augment",
     ];
     private static readonly MethodInfo Navigate = typeof(MatchScreen).GetMethod("NavigateClient", BindingFlags.Instance | BindingFlags.NonPublic)!;
@@ -62,6 +62,8 @@ internal sealed class ParityCaptureDriver
     private bool Click(MatchScreen screen, string key)
     {
         if (!screen.Buttons.TryGetValue(key, out var point)) return false;
+        // The Play page scrolls like the original .cpage; bring a control into view before clicking it.
+        if (!screen.RevealHomePlayControl(key)) { cooldown = 2; return false; }
         var io = ImGui.GetIO(); io.AddMousePosEvent(point.X, point.Y); io.AddMouseButtonEvent(0, true); mouseDown = true; return true;
     }
     private void Press(ImGuiKey key) { ImGui.GetIO().AddKeyEvent(key, true); keyDown = true; }
@@ -73,6 +75,9 @@ internal sealed class ParityCaptureDriver
         if (keyDown) { ImGui.GetIO().AddKeyEvent(ImGuiKey.Space, false); ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape, false); keyDown = false; cooldown = 4; return; }
         if (ready) { Park(); return; }
         if (cooldown-- > 0) return;
+        // The loading screen is held at 2.0 s: cards in and the bar full, like the Electron capture whose finite
+        // animations are disabled (finished) when it takes the screenshot.
+        if (state == "match-loading" && screen.MatchLoadingVisible) { phase = "match loading"; screen.MatchLoadingPin = 2.0; ready = true; Park(); return; }
         if (screen.MatchLoadingVisible) { phase = "match loading"; return; }
         if (screen.EliminationCinematicActive) { Press(ImGuiKey.Escape); return; }
         switch (state)
@@ -83,7 +88,12 @@ internal sealed class ParityCaptureDriver
                 if (!screen.HomePlayVisible) { Go(screen, "play"); cooldown = 6; break; }
                 if (!screen.HomePlayPartyVisible) { phase = "confirm mode"; Click(screen, "homePlayConfirm"); break; }
                 ready = true; break;
-            case "lobby": Go(screen, "multiplayer"); ready = true; break;
+            case "lobby":
+                // With --steam-api (the fake Steam library) this connects and shows the empty lobby browser,
+                // the state the Electron capture reaches through its mock Steam hub.
+                if (!screen.MultiplayerVisible) { phase = "open lobbies"; Go(screen, "multiplayer"); cooldown = 6; break; }
+                if (screen.Buttons.ContainsKey("steamConnect")) { phase = "connect"; Click(screen, "steamConnect"); cooldown = 20; break; }
+                ready = true; break;
             case "store": Go(screen, "store"); ready = true; break;
             case "loot": Go(screen, "loot"); ready = true; break;
             case "farm": Go(screen, "farm"); ready = true; break;
@@ -112,7 +122,7 @@ internal sealed class ParityCaptureDriver
         // every opponent eliminated in one combat, then the normal result route.
         if (!postgameReady)
         {
-            var session = new MatchPlanningSession(catalog.Variants[0], 900, Enumerable.Range(0, 8).Select(i => new MatchSeat(i == 0 ? "Result Tamer" : "Opponent " + i, i == 0)).ToArray(), false);
+            var session = new MatchPlanningSession(catalog.Variants[0], 900, Enumerable.Range(0, 8).Select(i => new MatchSeat(MatchScreen.LocalSeatName(i, profile!.Progress.Name), i == 0)).ToArray(), false);
             var player = session.State.Players[0];
             foreach (var old in player.Roster.Entries.ToArray()) player.Roster.Remove(old.Unit.Id, false);
             for (int i = 0; i < 3; i++)

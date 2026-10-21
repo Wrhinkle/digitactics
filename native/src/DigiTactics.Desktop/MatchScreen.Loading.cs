@@ -21,6 +21,8 @@ internal sealed partial class MatchScreen
     internal string[] MatchLoadingNames { get; private set; } = [];
     internal (float2 Min, float2 Max) MatchLoadingCardsBounds { get; private set; }
     internal double MatchLoadingElapsed => loadingElapsed;
+    /// <summary>For capture drivers: holds the entrance at a fixed time so a still frame is deterministic.</summary>
+    internal double? MatchLoadingPin { get; set; }
     private bool MatchEntranceActive => loadingSession is not null && ReferenceEquals(loadingSession, Session) &&
         Session!.State.Over == false && loadingElapsed < loadingDuration;
 
@@ -46,17 +48,21 @@ internal sealed partial class MatchScreen
     {
         if (!ReferenceEquals(loadingSession, Session) || Session?.State.Over != false)
         { loadingSession = null; MatchLoadingVisible = false; return; }
-        loadingElapsed += Math.Max(0, wallDelta);
+        loadingElapsed = MatchLoadingPin ?? loadingElapsed + Math.Max(0, wallDelta);
     }
 
+    // #cload (theme.js "match loading screen") in CSS pixels: a centered column of the set heading,
+    // eight 9:15 cards and the 2 s loading bar.
     private unsafe void DrawMatchLoading(int2 viewport)
     {
         MatchLoadingVisible = false; MatchLoadingCards = MatchLoadingPortraits = 0;
         MatchLoadingLocalSeat = null; MatchLoadingTitle = null; MatchLoadingNames = [];
         if (!MatchEntranceActive || Session is null) return;
         MatchLoadingVisible = true;
+        // dtFade 0.25 s in; .out fades over 0.45 s from 2.1 s (1.8 s online).
+        double fadeAt = loadingMultiplayer ? 1.8 : 2.1;
         float opacity = ClientMotion ? (float)Math.Min(Math.Clamp(loadingElapsed / .25, 0, 1),
-            Math.Clamp((loadingDuration - loadingElapsed) / .5, 0, 1)) : 1;
+            1 - Math.Clamp((loadingElapsed - fadeAt) / .45, 0, 1)) : 1;
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new float2(0, 0));
         Window("Entering the arena", 0, 0, viewport.X, viewport.Y, ImGuiWindowFlags.NoTitleBar |
             ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoInputs |
@@ -65,66 +71,68 @@ internal sealed partial class MatchScreen
         var draw = ImGui.GetWindowDrawList(); int firstVertex = draw.VtxBuffer.Count;
         var extent = new float2(viewport.X, viewport.Y);
         draw.AddRectFilled(new(0, 0), extent, NativeUiTheme.Navy0);
+        // .ld-bg: cover, opacity .55, saturate(.8) (approximated by a slightly dimmer tint).
         postgameArtwork.Draw("loading-bg", new(0, 0), extent, 140, true);
         LoadingVignette(draw, extent);
 
         int count = Session.State.Players.Count;
-        float cardsWidth = Math.Min(1500, viewport.X - 48), gap = 10;
-        float cardWidth = (cardsWidth - gap * (count - 1)) / count;
-        float cardHeight = cardWidth * 15 / 9;
-        float headingSize = Math.Clamp(viewport.X * .032f, 30, 52);
-        float headerHeight = headingSize + 35, totalHeight = headerHeight + cardHeight + 75;
-        float top = (viewport.Y - totalHeight) * .5f, x = (viewport.X - cardsWidth) * .5f;
+        float cardsWidth = Math.Min(viewport.Y <= 820 ? 1180 : 1500, viewport.X - 48), gap = 10;
+        float cardWidth = (cardsWidth - gap * (count - 1)) / count, cardHeight = cardWidth * 15 / 9;
+        float headingPx = Math.Clamp(viewport.X * .032f, 30, 52), headingLine = headingPx * 1.35f;
+        float headHeight = 14.85f + 4 + headingLine, footHeight = 3 + 8 + 16.875f;
+        float totalHeight = headHeight + 22 + cardHeight + 22 + footHeight;
+        float top = Math.Max(24, (viewport.Y - totalHeight) * .5f), x = (viewport.X - cardsWidth) * .5f;
         string setId = Session.State.Chaos ? "chaos" : Rules.Id.Split('/')[0];
         string tag = HomeSets.Value.GetValueOrDefault(setId)?.Tag ?? "SET";
         string eyebrow = $"{(loadingMultiplayer ? "Multiplayer" : "Solo vs AI")} · {tag} · {MatchPaceTitle}";
-        LoadingCenteredText(draw, viewport.X * .5f, top, cardsWidth, eyebrow.ToUpperInvariant(),
-            13, NativeUiTheme.Gold, NativeUiTheme.DisplayBoldFont, 1.2f);
+        ClientCss.TextCentered(draw, ClientCss.Face.DisplayBold, 11, new(0, top), viewport.X, ClientCss.Gold2, eyebrow.ToUpperInvariant(), 1.76f, 14.85f);
         MatchLoadingTitle = MatchSetTitle;
-        LoadingCenteredText(draw, viewport.X * .5f + 2, top + 28, cardsWidth, MatchSetTitle.ToUpperInvariant(),
-            headingSize, new ImColor8(0, 0, 0, 220), NativeUiTheme.DisplayBoldFont, headingSize * .1f);
-        LoadingCenteredText(draw, viewport.X * .5f, top + 25, cardsWidth, MatchSetTitle.ToUpperInvariant(),
-            headingSize, NativeUiTheme.GoldBright, NativeUiTheme.DisplayBoldFont, headingSize * .1f);
-        float cardsY = top + headerHeight + 22;
+        string heading = MatchSetTitle.ToUpperInvariant();
+        float headingTop = top + 14.85f + 4, headingWidth = ClientCss.Width(ClientCss.Face.DisplayBold, headingPx, heading, headingPx * .1f);
+        // text-shadow: 0 0 24px rgba(200,170,110,.4), 0 3px 0 #000
+        ClientCss.Glow(draw, new((viewport.X - headingWidth) * .5f + headingWidth * .1f, headingTop + headingLine * .35f),
+            new((viewport.X + headingWidth) * .5f - headingWidth * .1f, headingTop + headingLine * .65f), new ImColor8(200, 170, 110, 60), 24, headingPx * .2f);
+        ClientCss.TextCentered(draw, ClientCss.Face.DisplayBold, headingPx, new(0, headingTop + 3), viewport.X, new ImColor8(0, 0, 0), heading, headingPx * .1f, headingLine);
+        ClientCss.TextCentered(draw, ClientCss.Face.DisplayBold, headingPx, new(0, headingTop), viewport.X, ClientCss.Gold1, heading, headingPx * .1f, headingLine);
+        float cardsY = top + headHeight + 22;
         MatchLoadingCardsBounds = (new(x, cardsY), new(x + cardsWidth, cardsY + cardHeight));
         MatchLoadingNames = Session.State.Players.Select(p => p.Name).ToArray();
+        const float nameHeight = 51.8f;
         for (int i = 0; i < count; i++)
         {
             var player = Session.State.Players[i]; bool local = player.Id == localSeat;
             var at = new float2(x + i * (cardWidth + gap), cardsY);
             var max = at + new float2(cardWidth, cardHeight);
-            for (int shadow = 12; shadow >= 3; shadow -= 3)
-                draw.AddRectFilled(at + new float2(-shadow, 7), max + new float2(shadow, shadow + 7), new ImColor8(0, 0, 0, 12));
-            draw.AddRectFilledMultiColor(at, max, new ImColor8(14, 39, 55), new ImColor8(14, 39, 55),
-                NativeUiTheme.Navy0, NativeUiTheme.Navy0);
-            float footerHeight = 54, portraitSize = cardWidth - 16;
-            var portraitAt = at + new float2(8, (cardHeight - footerHeight - portraitSize) * .5f);
+            // .ld-card: 0 10px 30px rgba(0,0,0,.6); the local card adds a gold ring and glow.
+            ClientCss.Glow(draw, at + new float2(0, 10), max + new float2(0, 10), new ImColor8(0, 0, 0, 120), 30);
+            if (local) ClientCss.Glow(draw, at, max, new ImColor8(240, 210, 140, 90), 30);
+            ClientCss.Gradient(draw, at, max, new ImColor8(11, 26, 44), NativeUiTheme.Navy0);
+            var glow = at + new float2(cardWidth * .5f, cardHeight * .35f); float radius = MathF.Sqrt(cardWidth * cardWidth + cardHeight * cardHeight) * .5f * .6f;
+            draw.PushClipRect(at, max, true);
+            for (int ring = 10; ring >= 1; ring--) draw.AddCircleFilled(glow, radius * ring / 10, new ImColor8(63, 214, 255, (byte)(56f / 10 * (1 - (ring - 1) / 10f) * 1.5f)), 48);
+            draw.PopClipRect();
+            float picHeight = cardHeight - 2 - nameHeight, portraitSize = Math.Min(cardWidth - 2 - 16, picHeight - 16);
+            var portraitAt = at + new float2((cardWidth - portraitSize) * .5f, 1 + (picHeight - portraitSize) * .5f);
             if (portraits.DrawCompanion(ResultCompanion(player), portraitAt, portraitSize)) MatchLoadingPortraits++;
-            else LoadingCenteredText(draw, at.X + cardWidth * .5f, portraitAt.Y + portraitSize * .4f,
-                cardWidth - 16, LoadingInitials(player.Name), 28, NativeUiTheme.GoldBright, NativeUiTheme.DisplayBoldFont);
-            float footerY = max.Y - footerHeight;
-            draw.AddRectFilled(new(at.X, footerY), max, new ImColor8(1, 10, 19, 235));
-            draw.AddLine(new(at.X, footerY), new(max.X, footerY), new ImColor8(70, 55, 20));
-            LoadingCenteredText(draw, at.X + cardWidth * .5f, footerY + 8, cardWidth - 12,
-                player.Name.ToUpperInvariant(), 15, NativeUiTheme.GoldBright, NativeUiTheme.DisplayBoldFont);
-            LoadingCenteredText(draw, at.X + cardWidth * .5f, footerY + 30, cardWidth - 12,
-                local ? "You" : player.IsHuman ? "Tamer" : "AI Tamer", 12, NativeUiTheme.Muted, NativeUiTheme.BodyFont);
-            draw.AddRect(at, max, local ? NativeUiTheme.GoldBright : player.IsHuman ? new ImColor8(63, 214, 255) : NativeUiTheme.GoldBorder);
-            if (local) { draw.AddRect(at - new float2(1, 1), max + new float2(1, 1), NativeUiTheme.Gold); MatchLoadingLocalSeat = player.Id; }
+            else ClientCss.TextCentered(draw, ClientCss.Face.DisplayBold, 28, portraitAt + new float2(0, portraitSize * .5f - 18), portraitSize, ClientCss.Gold1, LoadingInitials(player.Name), 0, 36.4f);
+            var nameAt = new float2(at.X + 1, max.Y - 1 - nameHeight);
+            ClientCss.Gradient(draw, nameAt, max - new float2(1), new ImColor8(1, 10, 19, 153), NativeUiTheme.Navy0);
+            draw.AddLine(nameAt + new float2(0, .5f), new(max.X - 1, nameAt.Y + .5f), ClientCss.Gold5);
+            string name = ClientCss.Ellipsis(ClientCss.Face.DisplayBold, 14, player.Name.ToUpperInvariant(), cardWidth - 14, .56f);
+            ClientCss.TextCentered(draw, ClientCss.Face.DisplayBold, 14, nameAt + new float2(0, 9), cardWidth - 2, ClientCss.Gold1, name, .56f, 18);
+            ClientCss.TextCentered(draw, ClientCss.Face.Body, 11, nameAt + new float2(0, 27), cardWidth - 2, ClientCss.LcMute, local ? "You" : player.IsHuman ? "Tamer" : "AI Tamer", 0, 14.85f);
+            if (local) { draw.AddRect(at - new float2(1), max + new float2(1), ClientCss.Gold2); MatchLoadingLocalSeat = player.Id; }
+            ClientCss.Border(draw, at, max, local ? ClientCss.Gold1 : player.IsHuman ? ClientCss.Accent : ClientCss.Gold4);
             MatchLoadingCards++;
         }
-        float lineY = cardsY + cardHeight + 22;
-        float lineWidth = Math.Min(320, cardsWidth);
+        // .ld-foot: 320x3 bar filling over 2 s (ease-out), then the caption.
+        float lineY = cardsY + cardHeight + 22, lineWidth = Math.Min(320, cardsWidth);
         var lineAt = new float2((viewport.X - lineWidth) * .5f, lineY);
-        draw.AddRectFilled(lineAt, lineAt + new float2(lineWidth, 3), new ImColor8(70, 55, 20));
-        // A traveling highlight communicates an entrance animation, never a
-        // fabricated completion percentage for work that already finished.
-        float sweep = ClientMotion ? (float)(loadingElapsed % 1.2 / 1.2) : .5f;
-        float highlight = 64, sweepX = lineAt.X + sweep * (lineWidth - highlight);
-        draw.AddRectFilledMultiColor(new(sweepX, lineY + 1), new(sweepX + highlight, lineY + 2),
-            NativeUiTheme.GoldBorder, new ImColor8(63, 214, 255), new ImColor8(63, 214, 255), NativeUiTheme.GoldBorder);
-        LoadingCenteredText(draw, viewport.X * .5f, lineY + 11, cardsWidth, "Entering the arena",
-            14, NativeUiTheme.Muted, NativeUiTheme.BodyFont, .7f);
+        draw.AddRectFilled(lineAt, lineAt + new float2(lineWidth, 3), new ImColor8(1, 10, 19, 217));
+        float t = ClientMotion ? (float)Math.Clamp(loadingElapsed / 2, 0, 1) : 1, fill = LoadingEaseOut(t) * (lineWidth - 2);
+        if (fill > 0) ClientCss.GradientX(draw, lineAt + new float2(1, 1), lineAt + new float2(1 + fill, 2), ClientCss.Gold3, ClientCss.Accent);
+        ClientCss.Border(draw, lineAt, lineAt + new float2(lineWidth, 3), ClientCss.Gold5);
+        ClientCss.TextCentered(draw, ClientCss.Face.Body, 12.5f, new(0, lineY + 3 + 8), viewport.X, ClientCss.LcMute, "Loading the arena", .75f, 16.875f);
         if (opacity < 1)
             for (int i = firstVertex; i < draw.VtxBuffer.Count; i++)
             {
@@ -134,30 +142,19 @@ internal sealed partial class MatchScreen
         ImGui.End();
     }
 
-    private static string LoadingInitials(string name) => string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(n => char.ToUpperInvariant(n[0])));
-
-    private static void LoadingCenteredText(ImDrawListPtr draw, float centerX, float y, float width, string value,
-        float fontSize, ImColor8 color, ImFontPtr font, float spacing = 0)
+    // CSS "ease-out": cubic-bezier(0, 0, .58, 1), solved for x by bisection.
+    private static float LoadingEaseOut(float x)
     {
-        // The native rasterizer sizes the full ascent/descent box; CSS uses
-        // the em square. Match the original visible glyph size on these cards.
-        ImGui.PushFont(font, fontSize * 1.25f);
-        float Measure(string text) => ImGui.CalcTextSize(text).X + Math.Max(0, text.Length - 1) * spacing;
-        if (Measure(value) > width)
+        float lo = 0, hi = 1, s = x;
+        for (int i = 0; i < 24; i++)
         {
-            while (value.Length > 0 && Measure(value + "...") > width) value = value[..^1];
-            value += "...";
+            s = (lo + hi) * .5f; float bx = 3 * (1 - s) * s * s * .58f + s * s * s;
+            if (bx < x) lo = s; else hi = s;
         }
-        float x = centerX - Measure(value) * .5f;
-        if (spacing == 0) draw.AddText(new(x, y), color, value);
-        else foreach (char letter in value)
-        {
-            string glyph = letter.ToString(); draw.AddText(new(x, y), color, glyph);
-            x += ImGui.CalcTextSize(glyph).X + spacing;
-        }
-        ImGui.PopFont();
+        return 3 * (1 - s) * (1 - s) * s * 0 + 3 * (1 - s) * s * s + s * s * s;
     }
 
+    private static string LoadingInitials(string name) => string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(n => char.ToUpperInvariant(n[0])));
     private static void LoadingVignette(ImDrawListPtr draw, float2 extent)
     {
         ImColor8 At(float x, float y)

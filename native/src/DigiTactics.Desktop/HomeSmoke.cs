@@ -24,6 +24,7 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
     private bool Click(MatchScreen screen,string key,(float2 Min,float2 Max)? bounds=null)
     {
         if(!screen.Buttons.TryGetValue(key,out var point))return false;
+        if(!screen.RevealHomePlayControl(key)){cooldown=4;return false;}
         if(bounds is {} box&&(point.Y<box.Min.Y+12||point.Y>box.Max.Y-12))
         {var center=(box.Min+box.Max)*.5f;ImGui.GetIO().AddMousePosEvent(center.X,center.Y);ImGui.GetIO().AddMouseWheelEvent(0,point.Y<box.Min.Y+12 ? .5f : -.5f);cooldown=4;return false;}
         ImGui.GetIO().AddMousePosEvent(point.X,point.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=true;return true;
@@ -39,13 +40,8 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
     }
     private bool ModeCard(MatchScreen screen,string id)
     {
-        if(!screen.Buttons.TryGetValue("homeMode/"+id,out var point))return false;
-        var bounds=screen.HomeModeCarouselBounds;
-        if(point.X<bounds.Min.X+8||point.X>bounds.Max.X-8)
-        {
-            var center=(bounds.Min+bounds.Max)*.5f;ImGui.GetIO().AddMousePosEvent(center.X,center.Y);
-            ImGui.GetIO().AddMouseWheelEvent(0,point.X<bounds.Min.X+8?3:-3);cooldown=4;return false;
-        }
+        if(!screen.Buttons.ContainsKey("homeMode/"+id))return false;
+        // Click reveals the card first: the row scrolls sideways and the page vertically, as needed.
         return Click(screen,"homeMode/"+id);
     }
     private void AddClick(string key,Action<MatchScreen>? check=null)=>steps.Add(new(key,s=>Click(s,key),check));
@@ -99,8 +95,8 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         AddClick("clientModes",s=>Check(s.HomePlayVisible&&!s.HomePlayPartyVisible&&s.HomePlayLayoutFits&&s.HomeModeCardCount==12&&s.Buttons.ContainsKey("homeMode/faction-wars"),"Modes navigation did not show selectable ruleset cards."));
         steps.Add(new("mode-card-faction-wars",s=>ModeCard(s,"faction-wars"),s=>Check(s.SelectedSet=="faction-wars","Ruleset card did not select Faction Wars.")));
         AddClick("homePlayConfirm",s=>Check(s.HomePlayPartyVisible&&s.HomePlayLayoutFits&&s.HomePartySeatCount==8&&s.Buttons.ContainsKey("homePlayStart"),"Mode confirmation did not reach the party/start screen."));
-        AddClick("homePlayBack");
-        AddClick("clientModes");AddClick("homePlayRuleset");AddClick("homePlayRuleset/"+initialSet,s=>Check(s.SelectedSet==initialSet&&s.HomeHeroId=="set-"+initialSet,"Ruleset picker did not preserve its selection and reveal the matching hero."));AddClick("homeOverview");
+        AddClick("homePlayModes",s=>Check(s.HomePlayVisible&&!s.HomePlayPartyVisible,"Party Modes button did not return to mode select."));
+        AddClick("clientModes");steps.Add(new("mode-card-initial",s=>ModeCard(s,initialSet),s=>Check(s.SelectedSet==initialSet&&s.HomeHeroId=="set-"+initialSet,"Ruleset card did not preserve its selection and reveal the matching hero.")));AddClick("homeOverview");
         AddClick("about",s=>Check(s.AboutVisible,"About did not open."));AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.Buttons.ContainsKey("start"),"About did not return Home."));
         AddClick("homeTab/patch",s=>Check(s.HomeTab=="patch"&&s.HomeHighlights==7&&s.HomeRotationSets==11,"Patch notes omitted source highlights or rotation sets."));
         steps.Add(new("patch-scroll",s=>{var b=s.HomeArticleBounds;ImGui.GetIO().AddMousePosEvent((b.Min.X+b.Max.X)/2,(b.Min.Y+b.Max.Y)/2);ImGui.GetIO().AddMouseWheelEvent(0,-24);return true;},s=>Check(s.HomeArticleScroll>0,"Full patch notes cannot scroll through the set rotation.")));
@@ -135,7 +131,7 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         steps.Add(new("return-overview",_=>Escape(),s=>Check(!s.CodexVisible&&s.HomeTab=="overview","Set news Codex did not return Home.")));
         // The subsequent planning/shop driver is the Normal-pace fixture. Select
         // it through the visible control without changing the source Hyper default.
-        AddClick("clientModes");AddClick("homePlayPace");AddClick("homePlayPace/normal",s=>Check(s.SelectedPace=="normal","Could not select Normal pace for the downstream shop fixture."));AddClick("homeOverview");
+        AddClick("clientModes");AddClick("homePlayPace/normal",s=>Check(s.SelectedPace=="normal","Could not select Normal pace for the downstream shop fixture."));AddClick("homeOverview");
     }
     public void Input(MatchScreen screen)
     {

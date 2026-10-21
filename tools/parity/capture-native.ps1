@@ -80,8 +80,13 @@ foreach ($state in $States) {
         $profileDir = New-Profile
         $timer = [Diagnostics.Stopwatch]::StartNew()
         $log = Join-Path $logs "$state-$size.log"
-        $code = Invoke-Hidden @('--parity-capture', $state, '--capture-size', $size, '--capture', $png, '--profile-directory', $profileDir,
-            '--parity-settle-frames', "$SettleFrames", '--parity-combat-seconds', ([string]::Format([Globalization.CultureInfo]::InvariantCulture, '{0}', $CombatSeconds))) $log
+        $arguments = @('--parity-capture', $state, '--capture-size', $size, '--capture', $png, '--profile-directory', $profileDir,
+            '--parity-settle-frames', "$SettleFrames", '--parity-combat-seconds', ([string]::Format([Globalization.CultureInfo]::InvariantCulture, '{0}', $CombatSeconds)))
+        # The lobby browser needs a Steam connection: use the fake Steam library (built by native/test-steam.ps1),
+        # like the Electron capture's MockSteamHub.
+        $fakeSteam = Join-Path $repo 'native/artifacts/steam-native/fake_steam_api.dll'
+        if ($state -eq 'lobby' -and (Test-Path -LiteralPath $fakeSteam)) { $arguments += @('--steam-api', $fakeSteam) }
+        $code = Invoke-Hidden $arguments $log
         $ok = $code -eq 0 -and (Test-Path -LiteralPath $png)
         $line = "{0,-24} {1,-10} {2} {3,6:0.0}s" -f $state, $size, $(if ($ok) { 'ok  ' } else { "FAIL($code)" }), $timer.Elapsed.TotalSeconds
         Write-Output $line

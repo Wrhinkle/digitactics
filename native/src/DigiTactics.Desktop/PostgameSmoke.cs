@@ -26,6 +26,8 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
         void Click(string key)
         {
             if(!screen.Buttons.TryGetValue(key,out var point))throw new InvalidOperationException($"Postgame button missing: {key}; {Pending}");
+            // The result page scrolls when it is taller than the window; the press lands where the control moves to.
+            point=screen.RevealPostgameControl(key,point);
             ImGui.GetIO().AddMousePosEvent(point.X,point.Y); ImGui.GetIO().AddMouseButtonEvent(0,true);
         }
         if(step==0)

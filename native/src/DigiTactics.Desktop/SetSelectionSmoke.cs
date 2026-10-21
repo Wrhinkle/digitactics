@@ -25,12 +25,13 @@ internal sealed class SetSelectionSmoke
         screen.UsePrivateLobbyForSmoke();
         void Add(string button,Action<MatchScreen>? check=null)=>steps.Add(new(button,check));
         void Leave(){Add("gameMenu");Add("requestLeave");Add("confirmLeave",s=>Require(s.Session is null,"Local leave did not return to the picker."));}
-        Add("clientModes");Add("homePlayRuleset",s=>Require(s.Buttons.ContainsKey("homePlayRuleset/chaos"),"Chaos is absent from set options."));
-        Add("homePlayRuleset/chaos",s=>Require(s.SelectedSet=="chaos"&&profile.Storage.GetValueOrDefault("dt.set.v1")=="chaos",$"Chaos selection, source artwork or persisted choice differs: {s.SelectedSet}/{profile.Storage.GetValueOrDefault("dt.set.v1")}/{s.HomeHeroArt}."));
-        Add("homePlayPace",s=>Require(!s.Buttons.ContainsKey("homePlayPace/chaos")&&s.Buttons.ContainsKey("homePlayPace/hyper")&&s.Buttons.ContainsKey("homePlayPace/normal"),"Solo picker pace options differ from original."));
-        Add("homePlayPace/normal");Add("homePlayFormat");Add("homePlayFormat/duos");
+        // The original Play page picks the set with its cards; Chaos is the last card.
+        Add("clientModes",s=>Require(s.Buttons.ContainsKey("homeMode/chaos"),"Chaos is absent from set options."));
+        Add("homeMode/chaos",s=>Require(s.SelectedSet=="chaos"&&profile.Storage.GetValueOrDefault("dt.set.v1")=="chaos",$"Chaos selection, source artwork or persisted choice differs: {s.SelectedSet}/{profile.Storage.GetValueOrDefault("dt.set.v1")}/{s.HomeHeroArt}."));
+        Add("homePlayPace/normal",s=>Require(!s.Buttons.ContainsKey("homePlayPace/chaos")&&s.Buttons.ContainsKey("homePlayPace/hyper")&&s.Buttons.ContainsKey("homePlayPace/normal"),"Solo picker pace options differ from original."));
+        Add("homePlayFormat/duos");
         Add("homeOverview");Add("start",s=>CheckMatch(s,"normal",true,false));Leave();Add("clientModes");
-        Add("homePlayPace");Add("homePlayPace/hyper");Add("homePlayFormat");Add("homePlayFormat/solo");
+        Add("homePlayPace/hyper");Add("homePlayFormat/solo");
         Add("homeOverview");Add("start",s=>CheckMatch(s,"hyper",false,false));Leave();
         Add("multiplayer");Add("steamConnect");Add("steamPace");Add("steamPace/chaos",_=>Require(profile.Storage["dt.pace.v1"]=="hyper","Lobby Chaos pace replaced the persisted solo pace."));
         Add("steamCreate",s=>Require(s.LobbySetId=="chaos"&&s.LobbyPaceId=="chaos","Room creation lost unresolved choices."));
@@ -39,7 +40,7 @@ internal sealed class SetSelectionSmoke
         Add("steamRoomFormat");Add("steamRoomFormat/duos",s=>Require(s.LobbyFormatId=="duos"&&profile.Storage["dt.format.v1"]=="solo","Host format change was not shared or overwrote the local format."));
         Add("steamRoomSet");Add("steamRoomSet/chaos");Add("steamRoomPace");Add("steamRoomPace/chaos");
         Add("steamStart",s=>CheckMatch(s,"chaos",true,true));Add("menuEscape");Add("requestLeave");Add("confirmLeave");Add("steamBack");
-        Add("clientModes");Add("homePlayFormat");Add("homePlayFormat/duos");Add("homeOverview");
+        Add("clientModes");Add("homePlayFormat/duos");Add("homeOverview");
     }
     private static void Require(bool value,string message){if(!value)throw new InvalidOperationException("Set selection UI: "+message);}
     private void CheckMatch(MatchScreen screen,string pace,bool duos,bool online)
@@ -75,6 +76,7 @@ internal sealed class SetSelectionSmoke
             return;
         }
         if(!screen.Buttons.TryGetValue(steps[index].Button,out var point))return;
+        if(!screen.RevealHomePlayControl(steps[index].Button)){cooldown=3;return;}
         if(point.Y<12||point.Y>=ImGui.GetIO().DisplaySize.Y-20){ImGui.GetIO().AddMousePosEvent(point.X,ImGui.GetIO().DisplaySize.Y*.65f);ImGui.GetIO().AddMouseWheelEvent(0,point.Y<12?4:-4);cooldown=3;return;}
         ImGui.GetIO().AddMousePosEvent(point.X,point.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=true;index++;cooldown=3;
     }

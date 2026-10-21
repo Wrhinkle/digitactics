@@ -222,7 +222,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if(down){input.AddMouseButtonEvent(0,false);down=false;if(screen.Session is not null)index=1;cooldown=3;return;}
             if(screen.Session is not null){index=1;cooldown=3;return;}
             string launch=screen.Buttons.ContainsKey("homePlayStart")?"homePlayStart":screen.Buttons.ContainsKey("homePlayConfirm")?"homePlayConfirm":"clientPlay";
-            if(screen.Buttons.TryGetValue(launch,out var launchAt)){input.AddMousePosEvent(launchAt.X,launchAt.Y);input.AddMouseButtonEvent(0,true);down=true;cooldown=3;}
+            if(screen.Buttons.TryGetValue(launch,out var launchAt)&&screen.RevealHomePlayControl(launch)){input.AddMousePosEvent(launchAt.X,launchAt.Y);input.AddMouseButtonEvent(0,true);down=true;cooldown=3;}
             return;
         }
         if(index==1){if(carouselFlow.Input(screen))index=4;cooldown=3;return;}

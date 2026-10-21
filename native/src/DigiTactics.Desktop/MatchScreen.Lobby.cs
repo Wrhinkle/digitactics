@@ -19,7 +19,7 @@ internal sealed partial class MatchScreen
     private Task<IReadOnlyList<SteamFriendRoom>>? listingFriendRooms;
     private IReadOnlyList<SteamFriendRoom> friendRooms = [];
     private IReadOnlyList<SteamLobby> availableRooms = [];
-    private SteamLobbyVisibility visibility = SteamLobbyVisibility.Friends;
+    private SteamLobbyVisibility visibility = SteamLobbyVisibility.Public;
     private int lobbyPlanningSeconds = 30;
     private long presenceAt;
     private long recentPlayersAt;

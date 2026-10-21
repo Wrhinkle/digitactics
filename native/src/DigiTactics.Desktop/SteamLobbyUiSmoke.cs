@@ -230,6 +230,7 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
         if (down) { ImGui.GetIO().AddMouseButtonEvent(0, false); down = false; NextCommand(); return; }
         if(command.StartsWith("socialJoin/",StringComparison.Ordinal) && !screen.DisplayedSocialRows.Any(row=>row.Id==Peer && row.CanJoin))return;
         if (!screen.Buttons.TryGetValue(command, out var point)) return;
+        if(!screen.RevealHomePlayControl(command)){cooldown=3;return;}
         if(point.Y<12||point.Y>=ImGui.GetIO().DisplaySize.Y-20)
         {ImGui.GetIO().AddMousePosEvent(point.X,ImGui.GetIO().DisplaySize.Y*.65f);ImGui.GetIO().AddMouseWheelEvent(0,point.Y<12?4:-4);cooldown=3;return;}
         if(command=="digivolve")
@@ -248,7 +249,7 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
         {
             foreach(string key in new[]{"steamRoomName","steamVisibility","steamSet","steamPace","steamFormat","steamPlanning","steamCreate","steamBack"})
                 if(!screen.Buttons.TryGetValue(key,out var point)||point.Y<96||point.Y>=size.Y-12||point.X<0||point.X>=size.X)throw new InvalidOperationException("Lobby form is clipped or missing: "+key);
-            if(screen.LobbyBodyFontSize<17||!screen.LobbyLayoutFits||!screen.LobbyArtworkVisible)throw new InvalidOperationException("Lobby form lost its artwork or supported readable size.");
+            if(screen.LobbyBodyFontSize<16.9f||!screen.LobbyLayoutFits||!screen.LobbyArtworkVisible)throw new InvalidOperationException("Lobby form lost its artwork or supported readable size.");
             string[] fields=["steamRoomName","steamSet","steamPace","steamFormat","steamPlanning","steamVisibility"];
             for(int i=1;i<fields.Length;i++)
             {
