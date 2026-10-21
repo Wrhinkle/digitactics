@@ -123,13 +123,14 @@ internal sealed partial class MatchScreen
         draw.PopClipRect();
         if(hovered)
         {
-            BeginInspectionTooltip(290);
-            UnitDetails(id,stage,null,meta?.Unit?.BonusTraits,meta?.Unit?.Mods);
+            // renderTooltip: tooltipFor plus the offer tag and pool footers, above the card.
             string offer=string.IsNullOrEmpty(meta?.Tag)?"":meta.Tag+" offer"+(string.IsNullOrEmpty(meta.Note)?"":": "+meta.Note);
             string pool=$"{Session!.State.Pool.Remaining(id)} more in the shared pool (of {Rules.PoolSizes[line.Tier]})";
-            ImGui.Separator();if(offer.Length>0)HudText(offer,16,new ImColor8(229,139,255));HudText(pool,16,HudMuted);
+            var parts=PlanningTip(id,stage,[],meta?.Unit?.BonusTraits,meta?.Unit?.Mods);
+            if(offer.Length>0)parts.Add(new TipFoot(Runs(offer,HudHex("e58bff"),true)));
+            parts.Add(new TipFoot(Runs(pool,CssMuted)));
+            ShowTip(parts,TipSide.Top,min,max);
             ShopTooltipFooter=offer.Length>0?offer+"\n"+pool:pool;ShopTooltipSerial++;
-            EndInspectionTooltip();
         }
         if(buy)Act("buy",new {slot});
     }

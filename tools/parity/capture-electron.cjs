@@ -145,9 +145,9 @@ async function parkMouse(run) {
   await run.page.mouse.move(60, Math.round(run.size.h * 0.78));
   await run.advance(50);
 }
-async function shoot(run, file) {
+async function shoot(run, file, hover) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  await parkMouse(run);
+  if (hover) { await run.page.mouse.move(hover.x, hover.y); await run.advance(300); } else await parkMouse(run);
   await run.settle();
   await run.page.screenshot({ path: file, animations: 'disabled', caret: 'hide' });
 }
@@ -220,14 +220,15 @@ async function nextRound(run) {
 async function matchStates(run, want, shotPath, results) {
   const t0 = Date.now();
   let last = t0;
+  // fn may return a pointer position to hover for the screenshot (tooltip states)
   const record = async (id, fn) => {
     if (!want.includes(id)) { await fn(false); return; }
     const r = { state: id, size: run.size.id, ok: false };
-    try { await fn(true); await shoot(run, shotPath(id)); r.ok = true; r.file = path.relative(ROOT, shotPath(id)); }
+    try { const hover = await fn(true); await shoot(run, shotPath(id), hover); r.ok = true; r.file = path.relative(ROOT, shotPath(id)); }
     catch (e) { r.error = errText(e); throw Object.assign(e, { record: r }); }
     finally { const now = Date.now(); r.ms = now - last; last = now; r.errors = run.errors.splice(0); results.push(r); }
   };
-  const order = ['match-carousel', 'match-planning', 'match-combat', 'match-augment'];
+  const order = ['match-carousel', 'match-planning', 'match-shop-tooltip', 'match-combat', 'match-augment'];
   const lastNeeded = Math.max(...want.map((w) => order.indexOf(w)));
   try {
     await record('match-carousel', async () => {
@@ -238,12 +239,17 @@ async function matchStates(run, want, shotPath, results) {
     if (lastNeeded < 1) return;
     await record('match-planning', async () => { await finishCarousel(run); await run.advance(1000); });
     if (lastNeeded < 2) return;
+    await record('match-shop-tooltip', async () => {
+      const box = await run.page.locator('.card[data-slot="0"]').first().boundingBox();
+      return box ? { x: Math.round(box.x + box.width / 2), y: Math.round(box.y + box.height / 2) } : null;
+    });
+    if (lastNeeded < 3) return;
     await record('match-combat', async () => {
       await run.page.locator('#readyBtn').click(FORCE);
       await run.until(() => window.__digi.game.phase === 'combat', null, 'first combat', 15000);
       await run.advance(2000, 100);
     });
-    if (lastNeeded < 3) return;
+    if (lastNeeded < 4) return;
     await record('match-augment', async () => {
       if (await run.page.locator('#skipBtn:not([disabled])').count()) await run.page.locator('#skipBtn').click(FORCE);
       await run.until(() => window.__digi.game.phase === 'planning' || window.__digi.game.over, null, 'planning after the first combat', 60000, 250);

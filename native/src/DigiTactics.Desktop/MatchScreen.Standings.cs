@@ -12,7 +12,6 @@ internal sealed partial class MatchScreen
     internal int StandingAvatarCount {get;private set;}
     internal int? StandingTooltipSeat {get;private set;}
     internal (float2 Min,float2 Max) StandingTooltipBounds {get;private set;}
-    private float standingTooltipHeight=220;
     internal IReadOnlyList<HudRound> StandingRecent(int seat)=>matchHud.Recent(seat);
     internal string MatchReadyLabel=>networkReplica?.Match is {} online?MatchHudProjection.ReadyLabel(Session!.State,online.Votes,localSeat):"Fight!";
     private void MatchHudBuilding(LockstepMatch match)=>matchHud.Reset(match.Session);
@@ -136,7 +135,7 @@ internal sealed partial class MatchScreen
             }
             // .pl.dead { opacity: .38 }
             if(!player.Alive)draw.AddRectFilled(at,end,HudAlpha(CssRail,.62f),8);
-            if(hovered)StandingTooltip(player,at);
+            if(hovered)StandingTooltip(player,at,end);
             if(pressed)Watch(player.Id);
             if(sounds.FirstOrDefault(label=>label.Seat==player.Id) is {} clip)UiText.Wrapped("Playing: "+DigiTactics.Storage.CosmeticCollection.Item("sound",clip.Id)!.Name);
             EmoteRow(player.Id);
@@ -176,27 +175,27 @@ internal sealed partial class MatchScreen
         }
         ImGui.PopStyleVar();
     }
-    private void StandingTooltip(MatchPlayer player,float2 standingAt)
+    // ui.js playerTip, to the left of the row.
+    private void StandingTooltip(MatchPlayer player,float2 standingAt,float2 standingEnd)
     {
         StandingTooltipSeat=player.Id;
-        float width=Math.Min(390,Math.Max(200,standingAt.X-16));
-        ImGui.SetNextWindowPos(new(Math.Max(8,standingAt.X-width-8),Math.Clamp(standingAt.Y,8,Math.Max(8,size.Y-standingTooltipHeight-8))));
-        ImGui.SetNextWindowSize(new(width,0));ImGui.BeginTooltip();
-        var at=ImGui.GetCursorScreenPos();ImGui.Dummy(new(52,52));portraits.DrawCompanion(ResultCompanion(player),at,52);
-        ImGui.SameLine();ImGui.BeginGroup();HudText(player.Name,22,HudGold);
-        HudText((player.Alive?$"{Math.Max(0,player.Health)} HP / Level {player.Economy.Level}":$"Placed #{player.Placement}")+" / "+(player.IsHuman?"Player":"AI"));ImGui.EndGroup();
-        if(Session!.State.Duos)HudText("Team "+(player.Team+1)+" / Partner: "+Session.State.Teams[player.Team!.Value].Members.First(p=>p.Id!=player.Id).Name);
-        var board=Session.CombatProjection.Board(player);var counts=TraitRules.Count(Rules,board,player.Augments.ToArray());
-        var active=counts.Where(pair=>Rules.Traits.Any(t=>t.Id==pair.Key&&TraitRules.Level(t,pair.Value)>0)).Select(pair=>$"{pair.Value} {Name(pair.Key)}").ToArray();
-        if(active.Length>0)HudText(string.Join(" / ",active),16,HudGold);
+        bool network=networkRoom is not null;
+        string role=network?(player.IsHuman?" · Player":" · AI"):player.Id==localSeat?"":" · AI";
+        var parts=new List<TipPart>{new TipHead((draw,at)=>DrawStandingAvatar(draw,player,at,52),player.Name,CssText,
+            Runs((player.Alive?$"{Math.Max(0,player.Health)} HP · Level {player.Economy.Level}":$"Placed #{player.Placement}")+role,CssMuted))};
+        var codex=codexCatalog.Value.Variant(Rules.Id);
+        var board=Session!.CombatProjection.Board(player);var counts=TraitRules.Count(Rules,board,player.Augments.ToArray());
+        var active=counts.Where(pair=>Rules.Traits.Any(t=>t.Id==pair.Key&&TraitRules.Level(t,pair.Value)>0))
+            .Select(pair=>($"{pair.Value} {Name(pair.Key)}",codex.Traits.FirstOrDefault(t=>t.Id==pair.Key) is {} t?HudCss(t.Color):CssMuted)).ToArray();
+        if(active.Length>0)parts.Add(new TipTags(active));
+        if(Session.State.Duos)parts.Add(new TipFoot(Runs("Team "+(player.Team+1)+" · Partner: "+Session.State.Teams[player.Team!.Value].Members.First(p=>p.Id!=player.Id).Name,CssMuted)));
         var lines=Rules.Lines.Concat(Rules.ExtraLines).ToDictionary(l=>l.Id);
-        var units=player.Roster.Board.Select(e=>e.Unit).OrderByDescending(u=>lines[u.Line].Tier+u.Stage*2).ToArray();
-        if(units.Length>0)HudText("Board: "+string.Join(", ",units.Select(u=>lines[u.Line].Forms[u.Stage]+" "+new string('*',u.Stage+1)+(u.Items.Length>0?$" ({u.Items.Length} items)":""))));
-        HudText("Augments: "+(player.Augments.Count==0?"none yet":string.Join(", ",player.Augments.Select(Name))));
-        foreach(var round in matchHud.Recent(player.Id).TakeLast(6))
-            HudText($"{round.Round} / {(round.Outcome=="w"?"Won":round.Outcome=="l"?"Lost":"Draw")} vs {round.Opponent}"+(round.Damage>0?$" / -{round.Damage} HP":""),15,RoundOutcomeColor(round.Outcome));
-        standingTooltipHeight=ImGui.GetWindowSize().Y;
-        StandingTooltipBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
-        ImGui.EndTooltip();
+        double Value(PlanningUnit u)=>lines[u.Line].Tier*Math.Pow(lines[u.Line].Copies,u.Stage);
+        var units=player.Roster.Board.Select(e=>e.Unit).OrderByDescending(Value).ToArray();
+        if(units.Length>0)parts.Add(new TipFoot(Runs("Board: "+string.Join(", ",units.Select(u=>lines[u.Line].Forms[u.Stage]+(u.Items.Length>0?$" ({u.Items.Length} item{(u.Items.Length>1?"s":"")})":""))),CssMuted)));
+        parts.Add(new TipFoot(Runs("Augments: "+(player.Augments.Count==0?"none yet":string.Join(", ",player.Augments.Select(Name))),CssMuted)));
+        var recent=matchHud.Recent(player.Id).TakeLast(6).ToArray();
+        if(recent.Length>0)parts.Add(new TipFoot(Runs("Recent: "+string.Join(" · ",recent.Select(r=>$"{r.Round} {r.Outcome.ToUpperInvariant()}")),CssMuted)));
+        StandingTooltipBounds=ShowTip(parts,TipSide.Left,standingAt,standingEnd);
     }
 }

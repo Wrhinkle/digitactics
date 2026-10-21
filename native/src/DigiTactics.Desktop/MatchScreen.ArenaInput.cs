@@ -103,7 +103,12 @@ internal sealed partial class MatchScreen
         }
         else if (!itemDragMoved && inside && spot is { } hover && Session!.State.Players[viewed].Roster.At(hover) is { } unit)
         {
-            ImGui.SetNextWindowSize(new(340, 0)); ImGui.BeginTooltip(); UnitDetails(unit); ImGui.EndTooltip();
+            DetailedUnit = unit.Id; DetailedItems = unit.Items;
+            var unitLine = Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == unit.Line);
+            var parts = PlanningTip(unit.Line, unit.Stage, unit.Items, unit.BonusTraits, unit.Mods);
+            parts.Add(new TipFoot(Runs(unitLine.NoSell ? "Can't be sold"
+                : $"Sell for {UnitValues.SellValue(unitLine, unit.Stage)} gold (E)" + (unit.Items.Length > 0 ? ", items return to your bench" : ""), CssMuted)));
+            ShowTip(parts, TipSide.Cursor);
         }
         CombatTooltip(inside && shelfHover < 0 && spot is null, mouse);
         planning.DraggedUnit = battle is null && arenaDragMoved ? arenaDrag?.Id : null;

@@ -19,7 +19,7 @@ internal sealed class ParityCaptureDriver
         "home", "play", "party", "lobby",
         "collection-legends", "collection-emotes", "collection-boards", "collection-killscreens", "collection-dances", "collection-soundboard", "collection-elimsounds",
         "store", "loot", "farm", "codex", "profile", "settings", "postgame", "match-loading",
-        "match-carousel", "match-planning", "match-combat", "match-augment",
+        "match-carousel", "match-planning", "match-shop-tooltip", "match-combat", "match-augment",
     ];
     private static readonly MethodInfo Navigate = typeof(MatchScreen).GetMethod("NavigateClient", BindingFlags.Instance | BindingFlags.NonPublic)!;
     private readonly string state;
@@ -73,7 +73,7 @@ internal sealed class ParityCaptureDriver
         frame++;
         if (mouseDown) { ImGui.GetIO().AddMouseButtonEvent(0, false); mouseDown = false; cooldown = 4; return; }
         if (keyDown) { ImGui.GetIO().AddKeyEvent(ImGuiKey.Space, false); ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape, false); keyDown = false; cooldown = 4; return; }
-        if (ready) { Park(); return; }
+        if (ready) { Hover(screen); return; }
         if (cooldown-- > 0) return;
         // The loading screen is held at 2.0 s: cards in and the bar full, like the Electron capture whose finite
         // animations are disabled (finished) when it takes the screenshot.
@@ -105,7 +105,13 @@ internal sealed class ParityCaptureDriver
                 if (state.StartsWith("collection-", StringComparison.Ordinal)) { Collection(screen); break; }
                 Match(screen); break;
         }
-        if (ready) Park();
+        if (ready) Hover(screen);
+    }
+    // Tooltip states keep the pointer on their target; every other state parks it off screen.
+    private void Hover(MatchScreen screen)
+    {
+        if (state == "match-shop-tooltip" && screen.Buttons.TryGetValue("buy/0", out var card)) ImGui.GetIO().AddMousePosEvent(card.X, card.Y);
+        else Park();
     }
 
     private void Collection(MatchScreen screen)
@@ -178,7 +184,7 @@ internal sealed class ParityCaptureDriver
         switch (rounds.Phase)
         {
             case MatchPhase.Planning:
-                if (state == "match-planning") { ready = true; return; }
+                if (state is "match-planning" or "match-shop-tooltip") { ready = true; return; }
                 if (sequenceLine is not null && !sequencePlaced) { PlaceSequence(session); sequencePlaced = true; cooldown = 10; return; }
                 Press(ImGuiKey.Space); combatElapsed = 0; return;
             case MatchPhase.Combat:

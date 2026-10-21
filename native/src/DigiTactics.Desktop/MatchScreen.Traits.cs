@@ -91,30 +91,25 @@ internal sealed partial class MatchScreen
             if(open&&(!active||ImGui.GetMousePos().Y<min.Y+portraitY))OpenCodexPanel(row.Trait.Id);
             if (hovered && (!active||ImGui.GetMousePos().Y<min.Y+portraitY))
             {
-                ImGui.SetNextWindowSize(new(340,0)); ImGui.BeginTooltip();
-                ImGui.Text(Name(row.Trait.Id));
-                ImGui.Text("Breakpoints: " + string.Join(" / ", row.Trait.Breakpoints));
-                UiText.Wrapped(text.Get(Rules.Id, row.Trait.Id).Description);
-                ImGui.Separator();
+                // ui.js traitTip, to the right of the row.
+                var parts=new List<TipPart>{new TipTitle(Name(row.Trait.Id),traitColor),
+                    new TipLine(Runs($"{(row.Trait.Kind.Length>0?char.ToUpperInvariant(row.Trait.Kind[0])+row.Trait.Kind[1..]:"Trait")} · {row.Count} unique Digimon on the board",CssMuted)),
+                    new TipAbility(Runs(text.Get(Rules.Id,row.Trait.Id).Description,CssText))};
                 for (int i = 0; i < row.Trait.Breakpoints.Length; i++)
                 {
-                    var effect = text.TraitBreakpoint(Rules.Id, row.Trait.Id, i);
-                    ImGui.PushStyleColor(ImGuiCol.Text, i < row.Level ? new ImColor8(255,220,140) : new ImColor8(145,155,170));
-                    UiText.Wrapped($"({effect.Name}) {effect.Description}");
-                    ImGui.PopStyleColor();
+                    var effect = text.TraitBreakpoint(Rules.Id, row.Trait.Id, i);bool on=i<row.Level;
+                    parts.Add(new TipBreakpoint([new($"({row.Trait.Breakpoints[i]}) ",true,on?traitColor:CssMuted),new(effect.Description,false,on?CssText:CssMuted)],on));
                     TraitTooltipLevels++;
                 }
                 TraitTooltipUnits = contributors.Select(unit => unit.Uid).ToArray();
-                if (contributors.Length > 0) ImGui.SeparatorText("On the board"u8);
-                foreach (var unit in contributors)
-                {
-                    var position = ImGui.GetCursorScreenPos(); ImGui.Dummy(new(32,32));
-                    portraits.Draw(Rules.Id, unit.Line, unit.Stage, position, 32);
-                    ImGui.SameLine();
-                    var line = Rules.Lines.Concat(Rules.ExtraLines).Single(line => line.Id == unit.Line);
-                    UiText.Wrapped(line.Forms[unit.Stage] + " " + new string('*', unit.Stage + 1));
-                }
-                ImGui.EndTooltip();
+                var allLines=Rules.Lines.Concat(Rules.ExtraLines).ToDictionary(l=>l.Id);
+                if (contributors.Length > 0) parts.Add(new TipFoot(Runs("Counting: "+string.Join(", ",contributors.Select(u=>allLines[u.Line].Forms[u.Stage])),CssMuted)));
+                var counted=contributors.Select(u=>u.Line).ToHashSet();
+                var benched=player.Roster.Bench.Where(u=>u is not null&&!counted.Contains(u.Line)&&TraitRules.UnitTraits(new(u.Line,u.Stage,0,0,Items:u.Items),Rules).Contains(row.Trait.Id))
+                    .Select(u=>allLines[u!.Line].Forms[u.Stage]).Distinct().ToArray();
+                if (benched.Length > 0) parts.Add(new TipFoot(Runs((player.Id==localSeat?"On your bench: ":"On their bench: ")+string.Join(", ",benched),CssMuted)));
+                parts.Add(new TipFoot(Runs("Each different Digimon counts once.",CssMuted)));
+                ShowTip(parts,TipSide.Right,min,max);
             }
             // .tu: 22px portraits with a 1px tier border.
             for(int i=0;active&&i<contributors.Length;i++)

@@ -22,6 +22,7 @@
     {"id": "match-loading", "group": "client", "note": "match loading screen (eight Tamer cards) about 1 s after Start; finite animations at their end state"},
     {"id": "match-carousel", "group": "match", "note": "opening carousel round"},
     {"id": "match-planning", "group": "match", "note": "first planning phase after the carousel"},
+    {"id": "match-shop-tooltip", "group": "match", "note": "first planning phase, pointer over the first shop card (unit tooltip)"},
     {"id": "match-combat", "group": "match", "note": "about 2 s into the first combat"},
     {"id": "match-augment", "group": "match", "note": "first augment/offer choice visible"}
   ],
