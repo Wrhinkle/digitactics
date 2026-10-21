@@ -18,7 +18,7 @@ export function modelClips(gltf, src) {
   const rigid = rigidPartClips(gltf, src);
   if (rigid) return rigid;
   if(src?.uid==='rip-l_garurumon_greymon_statue')return statueClips(gltf.scene);
-  const authored = livelyIdle(src,generatedBipedClips(gltf,src,blobBodyClips(gltf,src,heldWeaponOrigin(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src)))))).filter(c=>!src?.fallbackRoles?.includes(c.name));
+  const authored = livelyIdle(src,generatedBipedClips(gltf,src,blobBodyClips(gltf,src,heldWeaponOrigin(gltf,src,sampledRootAnchor(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src))))))).filter(c=>!src?.fallbackRoles?.includes(c.name));
   if (authored.length && src?.anim !== false) {
     // This Seadramon export labels a single unchanging pose "idle". Build a
     // gentle skeletal loop from that assembled pose, retaining other actions.
@@ -231,6 +231,24 @@ function boardRootTravel(gltf,src,clips){
     'rip-stingmon':['J_center','special'], 'rip-dinobeemon':['J_center','special','win'],
     'rip-zubamon':['J_center','special'], 'rip-zubaeagermon':['J_center','special'],
     'rip-puppetmon':['J_center','special'],
+    // Whole-body roots (100% of the weighted skin) that travel 2.5-19 idle
+    // heights in these actions, so the creature leaves its hex and the frame.
+    'rip-fanbeemon':['J_center','special','win'], 'rip-cs_gaomon':['J_root','special'],
+    'rip-cs_sistermon_blanc_awakened':['J_center','special'], 'rip-cs_tyrantkabuterimon':['J_center','win'],
+    'rip-cs_coelamon':['J_center','special'], 'rip-hackmon':['J_center','special'], 'rip-baohuckmon':['J_center','special'],
+    '6ccfdb5317e14d39b899181ffef0860b':['J_root_03','attack'], 'rip-cs_aquilamon':['mass','special'],
+    'rip-jazamon':['J_center','win'], 'rip-jazardmon':['J_center','special','win'], 'rip-jazarichmon':['J_center','special','win'],
+    'rip-chirinmon':['J_center','special'], 'rip-kuwagamon':['J_center','special'],
+    'rip-kendogarurumon':['J_center','special','win'], 'rip-magnagarurumon':['J_center','special','win'],
+    'rip-lekismon':['J_center','special','win'], 'rip-princemamemon':['J_center','special'],
+    'rip-meicoomon':['chr999J_center','special'], 'rip-meicrackmon_vicious_mode':['J_center','special'], 'rip-raguelmon':['J_center','special'],
+    'rip-monodramon':['J_center','special'], 'rip-strikedramon':['J_center','special'],
+    'rip-cs_alphamon_nx':['J_center','special'], 'rip-cs_alphamon_ouryuken':['J_center','special'],
+    'rip-cs_arcadiamon_in_training':['J_center','special','win'], 'rip-cs_omnimon_nx':['J_center','special'],
+    'rip-l_cresgarurumon':['J_center','special'], 'rip-l_minervamon':['J_center','special'], 'rip-l_omnimon_zwart_d':['J_center','special'],
+    'rip-l_pandamon':['J_mass','special'], 'rip-vorvomon':['chr120J_center','win'],
+    // The body root covers 97-98%; the thrown weapon / held lance is a sibling.
+    'rip-ryudamon':['J_center','special'], 'rip-ginryumon':['J_center','special','win'],
   }[src?.uid];
   if(!policy)return clips;
   const [body,...roles]=policy,idle=clips.find(c=>c.name==='idle'),name=body+'.position',node=gltf.scene.getObjectByName(body);
@@ -238,9 +256,10 @@ function boardRootTravel(gltf,src,clips){
   const mixer=new THREE.AnimationMixer(gltf.scene);mixer.clipAction(idle).play();mixer.update(0);gltf.scene.updateMatrixWorld(true);
   const origin=node.getWorldPosition(V()),parent=node.parent.matrixWorld.clone(),inverse=parent.clone().invert();
   const box=new THREE.Box3().setFromObject(gltf.scene),height=Math.max(1e-9,box.max.y-box.min.y);
-  // Puppetmon's mallet is a sibling of the body/string subtree. Move their
-  // unanimated common parent so every authored mallet/body relationship survives.
-  const shared=src.uid==='rip-puppetmon'?node.parent:null;
+  // Puppetmon's mallet (Ryudamon's thrown blade, Ginryumon's lance) is a sibling
+  // of the body subtree. Move their unanimated common parent so every authored
+  // weapon/body relationship survives.
+  const shared=['rip-puppetmon','rip-ryudamon','rip-ginryumon'].includes(src.uid)?node.parent:null;
   const sharedInverse=shared?new THREE.Matrix3().setFromMatrix4(shared.parent.matrixWorld.clone().invert()):null;
   const result=clips.map(action=>{
     const role=action.name,track=action.tracks.find(t=>t.name===name);
@@ -268,6 +287,40 @@ function boardRootTravel(gltf,src,clips){
   });
   mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);
   return src.uid==='rip-zubaeagermon'?somersaultClearance(gltf,result):result;
+}
+
+// Turuiemon's special dash translates and turns J_root while its body root
+// J_center travels inside that rotating frame (3.5 + 6 idle heights in all), so
+// a single-track correction cannot hold the hex. Sample the complete pose and
+// counter-translate J_root so J_center keeps its hex, with the same bounded,
+// settling vertical envelope. Every rotation and the J_center track stay exact.
+function sampledRootAnchor(gltf,src,clips){
+  const policy={'rip-cs_turuiemon':['J_center','J_root','special']}[src?.uid];
+  if(!policy)return clips;
+  const [bodyName,moverName,...roles]=policy,scene=gltf.scene,body=scene.getObjectByName(bodyName),mover=scene.getObjectByName(moverName),idle=clips.find(c=>c.name==='idle');
+  if(!body||!mover||!idle)return clips;
+  const mixer=new THREE.AnimationMixer(scene);mixer.clipAction(idle).play();mixer.update(0);scene.updateMatrixWorld(true);
+  const origin=body.getWorldPosition(V()),box=new THREE.Box3().setFromObject(scene),height=Math.max(1e-9,box.max.y-box.min.y);
+  const toParent=new THREE.Matrix3().setFromMatrix4(mover.parent.matrixWorld.clone().invert());
+  mixer.stopAllAction();
+  const result=clips.map(clip=>{
+    if(!roles.includes(clip.name))return clip;
+    const times=Array.from({length:Math.ceil(clip.duration*240)+1},(_,i)=>Math.min(clip.duration,i/240));
+    const action=mixer.clipAction(clip);action.setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
+    const samples=times.map(time=>{mixer.setTime(time);scene.updateMatrixWorld(true);return {world:body.getWorldPosition(V()),local:mover.position.clone()};});
+    mixer.stopAllAction();
+    const lifts=samples.map(sample=>sample.world.y-origin.y);
+    const up=Math.min(1,height*.35/Math.max(...lifts,1e-9)),down=Math.min(1,height*.08/Math.max(...lifts.map(y=>-y),1e-9)),values=[];
+    samples.forEach((sample,i)=>{
+      const end=Math.min(1,Math.max(0,(1-times[i]/clip.duration)/.2)),settle=end*end*(3-2*end);
+      const desired=origin.clone().add(V().set(0,lifts[i]*(lifts[i]<0?down:up)*settle,0));
+      sample.local.clone().add(desired.sub(sample.world).applyMatrix3(toParent)).toArray(values,values.length);
+    });
+    const corrected=clip.clone();corrected.tracks=corrected.tracks.filter(track=>track.name!==moverName+'.position');
+    corrected.tracks.push(new THREE.VectorKeyframeTrack(moverName+'.position',times,values));
+    return corrected;
+  });
+  mixer.uncacheRoot(scene);return result;
 }
 
 // Anchoring this exact special exposed a second issue: its preserved somersault
