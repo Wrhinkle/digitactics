@@ -479,10 +479,6 @@
   "file": "gaomon_1.cb5c6b06.webp",
   "src": "models/files/rip_gaogamon.glb"
  },
- "gaomon:2": {
-  "file": "gaomon_2.071e2d70.webp",
-  "src": "models/files/rip_machgaogamon.glb"
- },
  "lalamon:0": {
   "file": "lalamon_0.a04b9ede.webp",
   "src": "models/files/rip_lalamon.glb"
@@ -519,17 +515,9 @@
   "file": "agunimon_2.6f9ff686.webp",
   "src": "models/files/rip_emperorgreymon.glb"
  },
- "lobomon:0": {
-  "file": "lobomon_0.08e4f2dc.webp",
-  "src": "models/files/rip_lobomon.glb"
- },
  "lobomon:1": {
   "file": "lobomon_1.35bdf2b2.webp",
   "src": "models/files/rip_kendogarurumon.glb"
- },
- "lobomon:2": {
-  "file": "lobomon_2.233f55e7.webp",
-  "src": "models/files/rip_magnagarurumon.glb"
  },
  "hackmon:0": {
   "file": "hackmon_0.2f916910.webp",
@@ -622,10 +610,6 @@
  "lucemon:1": {
   "file": "lucemon_1.9783b0ef.webp",
   "src": "models/files/rip_lucemon_fm.glb"
- },
- "lucemon:2": {
-  "file": "lucemon_2.f6608d77.webp",
-  "src": "models/files/rip_lucemon_sm.glb"
  },
  "beelzemon:0": {
   "file": "beelzemon_0.0fb13e30.webp",
@@ -2631,10 +2615,6 @@
   "file": "catalog_Gotsumon_chr081.c127b8b4.webp",
   "src": "models/files/rip_cat_gotsumon_chr081.glb"
  },
- "catalog:MagnaGarurumon:chr678": {
-  "file": "catalog_MagnaGarurumon_chr678.e6fdd882.webp",
-  "src": "models/files/rip_cat_magnagarurumon_chr678.glb"
- },
  "catalog:PawnChessmon_Black:g153": {
   "file": "catalog_PawnChessmon_Black_g153.b69d36b7.webp",
   "src": "models/files/rip_cat_pawnchessmon_black_g153.glb"
@@ -3098,14 +3078,6 @@
  "catalog:L_Justimon:main": {
   "file": "catalog_L_Justimon_main.5ca0432c.webp",
   "src": "models/files/rip_cat_l_justimon_main.glb"
- },
- "catalog:L_MirageGaogamon:chr777": {
-  "file": "catalog_L_MirageGaogamon_chr777.acffe22a.webp",
-  "src": "models/files/rip_cat_l_miragegaogamon_chr777.glb"
- },
- "catalog:L_Rosemon:chr779": {
-  "file": "catalog_L_Rosemon_chr779.813e2980.webp",
-  "src": "models/files/rip_cat_l_rosemon_chr779.glb"
  },
  "catalog:L_Susanoomon:f068": {
   "file": "catalog_L_Susanoomon_f068.b2e8d4bf.webp",
@@ -3618,5 +3590,33 @@
  "catalog:TS_Zubamon:chr697": {
   "file": "catalog_TS_Zubamon_chr697.22da5ee6.webp",
   "src": "models/files/rip_cat_ts_zubamon_chr697.glb"
+ },
+ "gaomon:2": {
+  "file": "gaomon_2.a1c83326.webp",
+  "src": "models/files/rip_machgaogamon.glb"
+ },
+ "lobomon:0": {
+  "file": "lobomon_0.08e4f2dc.webp",
+  "src": "models/files/rip_lobomon.glb"
+ },
+ "lobomon:2": {
+  "file": "lobomon_2.f374d1ab.webp",
+  "src": "models/files/rip_magnagarurumon.glb"
+ },
+ "lucemon:2": {
+  "file": "lucemon_2.c8ed0577.webp",
+  "src": "models/files/rip_lucemon_sm.glb"
+ },
+ "catalog:MagnaGarurumon:chr678": {
+  "file": "catalog_MagnaGarurumon_chr678.9ffecb00.webp",
+  "src": "models/files/rip_cat_magnagarurumon_chr678.glb"
+ },
+ "catalog:L_MirageGaogamon:chr777": {
+  "file": "catalog_L_MirageGaogamon_chr777.62383603.webp",
+  "src": "models/files/rip_cat_l_miragegaogamon_chr777.glb"
+ },
+ "catalog:L_Rosemon:chr779": {
+  "file": "catalog_L_Rosemon_chr779.1f986763.webp",
+  "src": "models/files/rip_cat_l_rosemon_chr779.glb"
  }
 }

@@ -54,6 +54,8 @@ public sealed record GltfMaterial(MaterialColor Color, bool Unlit, bool DoubleSi
         double cutoff = mode == "MASK" ? Number(material, "alphaCutoff", .5) : 0;
         // The rip cutout correction must not discard an authored per-vertex opacity gradient.
         if (transparent && color.A >= 1 && map is not null && !vertexAlpha) { transparent = false; cutoff = .5; }
+        var card = mode == "OPAQUE" && map is not null ? EffectCard(asset, material, map) : EffectCardMode.None;
+        if (card != EffectCardMode.None) transparent = true;
         var specular = Property(extensions, "KHR_materials_specular");
         return new(color, unlit, !frontOnly && Property(material, "doubleSided").ValueKind == JsonValueKind.True,
             transparent, !transparent, cutoff, unlit ? 1 : Number(pbr, "roughnessFactor", 1), Number(specular, "specularFactor", 1),
@@ -63,8 +65,39 @@ public sealed record GltfMaterial(MaterialColor Color, bool Unlit, bool DoubleSi
             Emissive = !unlit && Property(material, "emissiveFactor") is { ValueKind: JsonValueKind.Array } e ? new(e[0].GetDouble(), e[1].GetDouble(), e[2].GetDouble()) : new(0, 0, 0),
             EmissiveIntensity = Number(Property(extensions, "KHR_materials_emissive_strength"), "emissiveStrength", 1),
             EmissiveMap = unlit ? null : Binding(material, "emissiveTexture", true),
-            NormalScale = Number(Property(material, "normalTexture"), "scale", 1)
+            NormalScale = Number(Property(material, "normalTexture"), "scale", 1),
+            Additive = card == EffectCardMode.Additive
         };
+    }
+
+    /// <summary>Additive blending (SRC_ALPHA, ONE) for a glow card whose source uses a black background.</summary>
+    public bool Additive { get; init; }
+
+    private enum EffectCardMode { None, Blend, Additive }
+    private static readonly System.Text.RegularExpressions.Regex EffectName = new(@"(^|[_\s.])(eff|ef|glw|glow|lig)(?=$|[_\s.\d])", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+    // Same rule as render3d.js effectCard(). Rips export effect cards as OPAQUE even
+    // though the game blends them: textures with real opacity become BLEND; opaque
+    // glow textures on a mostly black background become additive. Outside effect-named
+    // materials only a cut-out atlas with soft edges (Lucemon Satan Mode's circles) blends.
+    private static EffectCardMode EffectCard(GltfAsset asset, JsonElement material, TextureBinding map)
+    {
+        var image = asset.Image(GltfTexture.Load(asset, map.Texture).Image);
+        string imageName = Property(asset.Root.GetProperty("images")[GltfTexture.Load(asset, map.Texture).Image], "name").GetStringOrDefault("");
+        bool effect = EffectName.IsMatch(Property(material, "name").GetStringOrDefault("")) || EffectName.IsMatch(imageName);
+        int count = image.Width * image.Height, low = 0, mid = 0, dark = 0;
+        for (int i = 0; i < count; i++)
+        {
+            byte a = image.Rgba[i * 4 + 3];
+            if (a < 128) low++;
+            if (a is > 16 and < 240) mid++;
+            if (Math.Max(image.Rgba[i * 4], Math.Max(image.Rgba[i * 4 + 1], image.Rgba[i * 4 + 2])) < 16) dark++;
+        }
+        double lowShare = (double)low / count, midShare = (double)mid / count, darkShare = (double)dark / count;
+        if (effect && lowShare >= .05) return EffectCardMode.Blend;
+        if (effect && darkShare >= .45) return EffectCardMode.Additive;
+        if (!effect && lowShare is >= .3 and <= .9 && midShare is > .06 and <= .25) return EffectCardMode.Blend;
+        return EffectCardMode.None;
     }
 
     public IEnumerable<TextureBinding> Textures()

@@ -80,6 +80,35 @@ function pickIdle(clips) {
 // optimize.mjs keeps one clip per role and names it after the role
 const ACTION_ROLES = ['attack', 'special', 'win'];
 
+// Rips export effect cards as OPAQUE although the game blends them (MachGaogamon's
+// jet glows, sword lights, Lucemon Satan Mode's circles). Effect-named textures with
+// real opacity blend; opaque glow textures on a mostly black background add. Outside
+// effect names only a cut-out atlas with soft edges blends. GltfMaterial.cs mirrors this.
+const EFFECT_NAME = /(^|[_\s.])(eff|ef|glw|glow|lig)(?=$|[_\s.\d])/i;
+const cardStats = new WeakMap();
+function effectCard(m) {
+  const image = m.map && m.map.image;
+  if (!image || typeof document === 'undefined' || !image.width) return null;
+  let stats = cardStats.get(image);
+  if (!stats) {
+    const canvas = document.createElement('canvas'); canvas.width = image.width; canvas.height = image.height;
+    const c2d = canvas.getContext('2d', { willReadFrequently: true }); c2d.drawImage(image, 0, 0);
+    const px = c2d.getImageData(0, 0, image.width, image.height).data, count = px.length / 4;
+    let low = 0, mid = 0, dark = 0;
+    for (let i = 0; i < px.length; i += 4) {
+      if (px[i + 3] < 128) low++;
+      if (px[i + 3] > 16 && px[i + 3] < 240) mid++;
+      if (Math.max(px[i], px[i + 1], px[i + 2]) < 16) dark++;
+    }
+    stats = { low: low / count, mid: mid / count, dark: dark / count }; cardStats.set(image, stats);
+  }
+  const effect = EFFECT_NAME.test(m.name || '') || EFFECT_NAME.test(m.map.name || '');
+  if (effect && stats.low >= 0.05) return 'blend';
+  if (effect && stats.dark >= 0.45) return 'additive';
+  if (!effect && stats.low >= 0.3 && stats.low <= 0.9 && stats.mid > 0.06 && stats.mid <= 0.25) return 'blend';
+  return null;
+}
+
 export function prepareTemplate(gltf, src, borrowed = null) {
   const scene = gltf.scene;
   const clips = modelClips(gltf, src, borrowed);
@@ -118,7 +147,14 @@ export function prepareTemplate(gltf, src, borrowed = null) {
       // No environment map in the scene, so metallic surfaces render near-black. Treat everything as non-metal.
       if (m.isMeshStandardMaterial) { m.metalness = 0; m.metalnessMap = null; }
       // Authored RGBA vertices contain opacity gradients that must survive the rip cutout correction.
+      const card = !m.transparent && !m.alphaTest ? effectCard(m) : null;
       if (m.transparent && m.opacity >= 1 && m.map && o.geometry?.getAttribute('color')?.itemSize !== 4) { m.transparent = false; m.alphaTest = 0.5; m.depthWrite = true; }
+      if (card) {
+        m.transparent = true; m.depthWrite = false;
+        // Glow cards add color but keep the target's alpha, so transparent portrait canvases get no box.
+        if (card === 'additive') Object.assign(m, { blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.SrcAlphaFactor,
+          blendDst: THREE.OneFactor, blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor });
+      }
     }
   });
   const actions = {};

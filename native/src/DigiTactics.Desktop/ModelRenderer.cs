@@ -152,8 +152,10 @@ internal sealed partial class ModelRenderer : IDisposable
                 OpenGl.BindTextureUnit(0, material.ColorMap is { } map ? textures[map.Texture].Id : 0);
                 SetSides(material.DoubleSided ? 2 : 0);
                 if (transparent) { OpenGl.Native.glEnable((GlCapability)OpenGl.GL_BLEND); OpenGl.Native.glBlendFunc(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE_MINUS_SRC_ALPHA); }
+                // Glow cards add color but keep the target's alpha, matching render3d's custom additive blend.
+                if (transparent && material.Additive) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA, OpenGl.GL_ONE, 0, OpenGl.GL_ONE);
                 else OpenGl.Native.glDisable((GlCapability)OpenGl.GL_BLEND);
-                if((EvolutionStage || EliminationStage || CosmeticStage) && transparent) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA,OpenGl.GL_ONE_MINUS_SRC_ALPHA,OpenGl.GL_ONE,OpenGl.GL_ONE_MINUS_SRC_ALPHA);
+                if((EvolutionStage || EliminationStage || CosmeticStage) && transparent && !material.Additive) OpenGl.Native.glBlendFuncSeparate(OpenGl.GL_SRC_ALPHA,OpenGl.GL_ONE_MINUS_SRC_ALPHA,OpenGl.GL_ONE,OpenGl.GL_ONE_MINUS_SRC_ALPHA);
                 OpenGl.Native.glDepthMask(ShadowPass || material.DepthWrite);
                 primitives[offset + i].Draw(); DrawCalls++;
             }

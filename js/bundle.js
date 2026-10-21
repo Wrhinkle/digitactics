@@ -43769,6 +43769,34 @@ void main() {
     return clips[0] || null;
   }
   var ACTION_ROLES = ["attack", "special", "win"];
+  var EFFECT_NAME = /(^|[_\s.])(eff|ef|glw|glow|lig)(?=$|[_\s.\d])/i;
+  var cardStats = /* @__PURE__ */ new WeakMap();
+  function effectCard(m) {
+    const image = m.map && m.map.image;
+    if (!image || typeof document === "undefined" || !image.width) return null;
+    let stats6 = cardStats.get(image);
+    if (!stats6) {
+      const canvas = document.createElement("canvas");
+      canvas.width = image.width;
+      canvas.height = image.height;
+      const c2d = canvas.getContext("2d", { willReadFrequently: true });
+      c2d.drawImage(image, 0, 0);
+      const px2 = c2d.getImageData(0, 0, image.width, image.height).data, count2 = px2.length / 4;
+      let low = 0, mid = 0, dark = 0;
+      for (let i = 0; i < px2.length; i += 4) {
+        if (px2[i + 3] < 128) low++;
+        if (px2[i + 3] > 16 && px2[i + 3] < 240) mid++;
+        if (Math.max(px2[i], px2[i + 1], px2[i + 2]) < 16) dark++;
+      }
+      stats6 = { low: low / count2, mid: mid / count2, dark: dark / count2 };
+      cardStats.set(image, stats6);
+    }
+    const effect2 = EFFECT_NAME.test(m.name || "") || EFFECT_NAME.test(m.map.name || "");
+    if (effect2 && stats6.low >= 0.05) return "blend";
+    if (effect2 && stats6.dark >= 0.45) return "additive";
+    if (!effect2 && stats6.low >= 0.3 && stats6.low <= 0.9 && stats6.mid > 0.06 && stats6.mid <= 0.25) return "blend";
+    return null;
+  }
   function prepareTemplate(gltf, src, borrowed = null) {
     const scene2 = gltf.scene;
     const clips = modelClips(gltf, src, borrowed);
@@ -43803,10 +43831,23 @@ void main() {
           m.metalness = 0;
           m.metalnessMap = null;
         }
+        const card3 = !m.transparent && !m.alphaTest ? effectCard(m) : null;
         if (m.transparent && m.opacity >= 1 && m.map && o.geometry?.getAttribute("color")?.itemSize !== 4) {
           m.transparent = false;
           m.alphaTest = 0.5;
           m.depthWrite = true;
+        }
+        if (card3) {
+          m.transparent = true;
+          m.depthWrite = false;
+          if (card3 === "additive") Object.assign(m, {
+            blending: CustomBlending,
+            blendEquation: AddEquation,
+            blendSrc: SrcAlphaFactor,
+            blendDst: OneFactor,
+            blendSrcAlpha: ZeroFactor,
+            blendDstAlpha: OneFactor
+          });
         }
       }
     });
