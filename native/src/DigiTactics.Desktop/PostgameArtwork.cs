@@ -37,6 +37,17 @@ internal sealed class PostgameArtwork(string folder="postgame") : IDisposable
         if (rounding > 0) target.AddImageRounded(texture, position, position + size, uv0, uv1, tint, rounding);
         else target.AddImage(texture, position, position + size, uv0, uv1, tint);
     }
+    /// <summary>Pixel size of a painting, for object-fit: contain layouts.</summary>
+    public float2 Size(string name)
+    {
+        if (!textures.TryGetValue((name, false), out var item))
+        {
+            var image = PngImage.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "content", folder, name + ".png")));
+            item = (new(image, new(MinFilter:9729,WrapS:33071,WrapT:33071), false), image.Width, image.Height);
+            textures.Add((name, false), item);
+        }
+        return new(item.Width, item.Height);
+    }
     /// <summary>CSS background repeat at <paramref name="tile"/> px with an opacity mask sampled per 32 px cell (mask-image).</summary>
     public void DrawTiled(string name, float2 min, float2 max, float tile, float opacity, Func<float2, float> mask, ImDrawListPtr drawList)
     {

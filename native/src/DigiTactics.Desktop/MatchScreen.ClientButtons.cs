@@ -65,7 +65,9 @@ internal sealed partial class MatchScreen
                 }
                 draw.AddLine(new(lo.X+cut,lo.Y+1),new(hi.X-1,lo.Y+1),NativeUiPaint.Fade(new ImColor8(255,255,255,140)));
                 NativeUiPaint.VerticalGradient(draw,new(lo.X+1,hi.Y-3),new(hi.X-cut,hi.Y),new ImColor8(120,50,0,40),new ImColor8(120,50,0,70));
-                foreach(var i in Enumerable.Range(0,shape.Length))draw.PathLineTo(shape[i]);
+                // Stroke half a pixel inside so the 1px border covers whole pixels.
+                float2[] edge=[new(lo.X+cut,lo.Y+.5f),new(hi.X-.5f,lo.Y+.5f),new(hi.X-.5f,hi.Y-cut),new(hi.X-cut,hi.Y-.5f),new(lo.X+.5f,hi.Y-.5f),new(lo.X+.5f,lo.Y+cut)];
+                foreach(var point in edge)draw.PathLineTo(point);
                 draw.PathStroke(NativeUiPaint.Fade(new ImColor8(255,224,154)),ImDrawFlags.Closed,1);
                 font=NativeUiTheme.DisplayBoldFont;ink=NativeUiTheme.PlayText;spacing=.14f;upper=true;break;
             }

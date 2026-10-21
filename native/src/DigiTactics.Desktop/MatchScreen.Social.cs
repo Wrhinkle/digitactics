@@ -138,7 +138,8 @@ internal sealed partial class MatchScreen
         else HeadButton("socialRefresh","Refresh friends",(c,ink)=>{draw.PathArcTo(c,5,-MathF.PI*.15f,MathF.PI*1.45f,16);draw.PathStroke(ink,ImDrawFlags.None,1.6f);
             draw.AddTriangleFilled(c+new float2(5.6f,-5.2f),c+new float2(5.6f,.4f),c+new float2(.6f,-2.2f),ink);},()=>{socialPollAt=0;RefreshSocial();});
         // .cs-foot: 10px 12px, gold-5 top rule, rgba(1,10,19,.85).
-        const float footHeight=56;
+        // .cs-foot: 10px padding around a 12.5px/11px two-line block, plus its 1px rule.
+        float footHeight=20+1+NativeUiTheme.LineHeight(NativeUiTheme.BodyBoldFont,12.5f)+NativeUiTheme.LineHeight(NativeUiTheme.BodyFont,11);
         ImGui.SetCursorScreenPos(at+new float2(0,headHeight));
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
         ImGui.BeginChild("Social people"u8,new(extent.X,extent.Y-headHeight-footHeight),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
@@ -153,16 +154,16 @@ internal sealed partial class MatchScreen
             bool open = socialOpen.Contains(group);
             // .cs-sh: 7px 12px, caret, Chakra 700 11px .14em lc-mute; the count in c-text-3 at .04em.
             ImGui.SetCursorPosY(ImGui.GetCursorPosY()+2);
-            var rowAt=ImGui.GetCursorScreenPos();
-            bool toggled=ClientHitButton("socialGroup/"+group,extent.X,28);
+            var rowAt=ImGui.GetCursorScreenPos();float rowHeight=14+NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,11);
+            bool toggled=ClientHitButton("socialGroup/"+group,extent.X,rowHeight);
             SelectionButton("socialGroup/"+group);
             bool hot=ImGui.IsItemHovered();
-            if(hot)body.AddRectFilled(rowAt,rowAt+new float2(extent.X,28),NativeUiPaint.Fade(new ImColor8(200,170,110,15)));
+            if(hot)body.AddRectFilled(rowAt,rowAt+new float2(extent.X,rowHeight),NativeUiPaint.Fade(new ImColor8(200,170,110,15)));
             var ink=hot?NativeUiTheme.GoldBright:NativeUiTheme.LcMute;
-            NativeUiPaint.Caret(body,rowAt+new float2(12+2.5f,14),open,ink);
+            NativeUiPaint.Caret(body,rowAt+new float2(12+2.5f,rowHeight/2),open,ink);
             string heading=title.ToUpperInvariant();
             var headingSize=NativeUiPaint.TrackedSize(NativeUiTheme.DisplayBoldFont,11,heading,.14f);
-            float textY=MathF.Round(rowAt.Y+(28-headingSize.Y)/2);
+            float textY=rowAt.Y+7;
             NativeUiPaint.Tracked(body,NativeUiTheme.DisplayBoldFont,11,new(rowAt.X+12+5+6,textY),ink,heading,.14f);
             float space=NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,11," ",.14f);
             NativeUiPaint.Tracked(body,NativeUiTheme.DisplayBoldFont,11,new(rowAt.X+12+5+6+headingSize.X+space,textY),NativeUiTheme.Text3,"("+rows.Length+")",.04f);
@@ -177,11 +178,9 @@ internal sealed partial class MatchScreen
                     SocialGroup.InGame => "Nobody is mid-game.", SocialGroup.Offline or SocialGroup.Recent => "Players from your lobbies show up here.", _ => "Nobody here yet"
                 };
                 // .cs-empty: 4px 14px 8px 26px, 11px, c-text-3, line-height 1.4.
-                ImGui.SetCursorPos(new(26,ImGui.GetCursorPosY()+4));
-                ImGui.PushFont(NativeUiTheme.BodyFont,NativeUiTheme.Css(NativeUiTheme.BodyFont,11));ImGui.PushStyleColor(ImGuiCol.Text,NativeUiTheme.Text3);
-                ImGui.PushTextWrapPos(extent.X-14);UiText.Wrapped(empty);ImGui.PopTextWrapPos();
-                ImGui.PopStyleColor();ImGui.PopFont();
-                ImGui.SetCursorPosY(ImGui.GetCursorPosY()+8);
+                var emptyAt=ImGui.GetCursorScreenPos()+new float2(26,4);
+                float emptyHeight=Paragraph(body,NativeUiTheme.BodyFont,11,emptyAt,extent.X-26-14,NativeUiTheme.Text3,empty,1.4f);
+                ImGui.Dummy(new(extent.X,4+emptyHeight+8));
             }
             foreach (var row in rows) DrawSocialRow(row, top);
         }
@@ -201,7 +200,7 @@ internal sealed partial class MatchScreen
         // .cs-fbtn: 5px 10px, Chakra 700 11px .1em uppercase, default button frame.
         string actionText=action.ToUpperInvariant();
         float actionWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,11,actionText,.1f)+20+2;
-        float actionHeight=NativeUiTheme.Css(NativeUiTheme.DisplayBoldFont,11)+10+2;
+        float actionHeight=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,11)+10+2;
         float textRight=extent.X-12-actionWidth-8;
         var titleSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyBoldFont,12.5f,"T",0);var noteSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyFont,11,"T",0);
         float textTop=MathF.Round(footAt.Y+(footHeight-titleSize.Y-noteSize.Y)/2);
@@ -214,15 +213,16 @@ internal sealed partial class MatchScreen
         ImGui.EndDisabled();ImGui.End();
     }
 
-    private static string SocialEllipsis(string value,ImFontPtr font,float px,float width)
+    /// <summary>CSS text-overflow: ellipsis: the longest prefix that fits, followed by U+2026.</summary>
+    private static string SocialEllipsis(string value,ImFontPtr font,float px,float width,float tracking=0)
     {
-        if(NativeUiPaint.TrackedWidth(font,px,value,0)<=width)return value;
+        if(NativeUiPaint.TrackedWidth(font,px,value,tracking)<=width)return value;
         for(int length=value.Length-1;length>0;length--)
         {
-            string candidate=value[..length].TrimEnd()+"...";
-            if(NativeUiPaint.TrackedWidth(font,px,candidate,0)<=width)return candidate;
+            string candidate=value[..length]+"…";
+            if(NativeUiPaint.TrackedWidth(font,px,candidate,tracking)<=width)return candidate;
         }
-        return "...";
+        return "…";
     }
 
     private static void DrawInviteGlyph(ImDrawListPtr draw,float2 center,ImColor8 ink)
@@ -274,7 +274,7 @@ internal sealed partial class MatchScreen
             ResultTooltip(row.Name+"\n"+row.Note);
         if (row.JoinLobby is { } lobby)
         {
-            float actionHeight=NativeUiTheme.Css(NativeUiTheme.DisplayBoldFont,10.5f)+6+2;
+            float actionHeight=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,10.5f)+6+2;
             ImGui.SetCursorScreenPos(new(at.X+width-10-actionWidth,MathF.Round(at.Y+(height-actionHeight)/2)));
             ImGui.BeginDisabled(!row.CanJoin || enteringRoom is not null || ClientNavigationBlocked);
             // .cs-act stays transparent until its row is hovered or it takes keyboard focus.

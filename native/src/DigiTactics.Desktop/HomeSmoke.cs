@@ -59,9 +59,6 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
             AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.SettingsVisible,"About Back lost Settings."));
             AddClick("closeSettings",s=>Check(!s.SettingsVisible&&s.Buttons.ContainsKey("start"),"Settings Back did not return Home."));
         }
-        string arrowOrigin="";
-        steps.Add(new("hero-next-arrow",s=>{arrowOrigin=s.HomeHeroId;return Click(s,"homeHeroNext");},s=>Check(s.HomeHeroId!=arrowOrigin,"Next carousel arrow did not change the slide.")));
-        AddClick("homeHeroPrevious",s=>Check(s.HomeHeroId==arrowOrigin,"Previous carousel arrow did not return to the same slide."));
         steps.Add(new("hero-initial",s=>HeroThumb(s,"set-faction-wars"),s=>Check(s.HomeHeroId=="set-faction-wars"&&s.HomeHeroCount==14&&s.SelectedSet==initialSet,"Carousel thumbnails changed the selected ruleset or omitted source slides.")));
         steps.Add(new("hero-hover-timeout",s=>{var b=s.HomeHeroBounds;ImGui.GetIO().AddMousePosEvent((b.Min.X+b.Max.X)/2,b.Min.Y+18);heroTimeOffset+=8.01;return true;},s=>Check(s.HomeHeroId=="set-faction-wars","Carousel advanced while hovered.")));
         steps.Add(new("hero-deferred-refresh",s=>{ImGui.GetIO().AddMousePosEvent(5,5);heroTimeOffset+=8.01;return true;},s=>Check(s.HomeHeroId=="set-faction-wars","Blocked timeout must first refresh the same slide after eight seconds.")));

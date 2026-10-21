@@ -49,7 +49,7 @@ internal static class MatchApplication
                 window.SetSizeLimits(NativeUiMetrics.WindowSize(NativeUiMetrics.MinimumLogicalSize, workArea, monitorScale, frame), new(-1, -1));
                 window.Position = NativeUiMetrics.WindowPosition(clientSize, workOrigin, workArea, frame);
             }
-            else window.SetSizeLimits(options.ShortWindow||options.Smoke&&options.CompactSmokeWindow?desiredLogical:NativeUiMetrics.MinimumLogicalSize, new(-1, -1));
+            else window.SetSizeLimits(options.ShortWindow||options.Smoke&&(options.CompactSmokeWindow||options.CaptureSize is not null)?desiredLogical:NativeUiMetrics.MinimumLogicalSize, new(-1, -1));
             window.MakeContextCurrent();
             if (!Glad.Initialize(name => Glfw.PInvoke.GetProcAddress(name))) throw new InvalidOperationException("OpenGL initialization failed.");
             Glfw.SwapInterval(options.Smoke ? 0 : 1);
@@ -65,6 +65,8 @@ internal static class MatchApplication
                 using var platform = new NativeUiPlatform(window, options.Smoke ? options.SmokeUiScale : null);
                 using var audio = new GameAudio();
                 audio.EffectsVolume = options.Smoke ? 0 : .8f; audio.MusicVolume = options.Smoke ? 0 : .6f; audio.BoardVolume = options.Smoke ? 0 : .8f;
+                // Parity captures show the default volumes in Settings, like the muted Electron reference, with playback paused.
+                if (options.ParityState is not null) { audio.EffectsVolume = .8f; audio.MusicVolume = .6f; audio.BoardVolume = .8f; audio.SetHidden(true); }
                 string saveDirectory = options.ProfileDirectory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native");
                 var profile = options.Smoke && options.ProfileDirectory is null ? null : new NativeProfileStore(saveDirectory);
                 using var preferences = options.Smoke ? null : new AudioSettingsBinding(audio, profile!, saveDirectory);

@@ -37,6 +37,7 @@ internal static class NativeUiTheme
     internal static readonly ImColor8 LcMute = new(160, 155, 140);      // --lc-mute
     internal static readonly ImColor8 Text1 = new(238, 242, 250);       // --c-text-1
     internal static readonly ImColor8 Text3 = new(116, 129, 154);       // --c-text-3
+    internal static readonly ImColor8 MutedNote = new(143, 154, 176);   // --muted (.muted)
     internal static readonly ImColor8 Accent = new(63, 214, 255);       // --c-accent
     internal static readonly ImColor8 AccentInk = new(205, 250, 250);   // .lc-cta / PLAY label
     internal static readonly ImColor8 Success = new(79, 224, 143);      // --c-success
@@ -49,6 +50,41 @@ internal static class NativeUiTheme
     /// </summary>
     internal static float Css(ImFontPtr font, float pixels)
         => pixels * (font.FontId == DisplayFont.FontId || font.FontId == DisplayBoldFont.FontId ? 1.3f : 1.21f);
+
+    private static bool IsDisplay(ImFontPtr font) => font.FontId == DisplayFont.FontId || font.FontId == DisplayBoldFont.FontId;
+    // hhea ascent/descent per em: Chakra Petch 992/308 of 1000, Inter 1984/494 of 2048.
+    internal static float Ascent(ImFontPtr font) => IsDisplay(font) ? .992f : 1984f / 2048;
+    internal static float Descent(ImFontPtr font) => IsDisplay(font) ? .308f : 494f / 2048;
+
+    /// <summary>
+    /// CSS line-height: normal as Chromium computes it on Windows: the ascent and descent are each rounded up to whole
+    /// pixels (14px Chakra Petch is 19px tall, 12.5px Inter 17px). Text drawn with NativeUiPaint.Tracked at a line-box
+    /// top lands on the same baseline.
+    /// </summary>
+    internal static float LineHeight(ImFontPtr font, float pixels)
+        => MathF.Ceiling(Ascent(font) * pixels - .01f) + MathF.Ceiling(Descent(font) * pixels - .01f);
+
+    private static readonly Dictionary<uint, (float UnitsPerEm, Dictionary<int, short> Pairs)> kerning = [];
+
+    /// <summary>GPOS pair kerning in em for two characters of <paramref name="font"/> (content/fonts/kerning.json).</summary>
+    internal static float Kerning(ImFontPtr font, char first, char second)
+        => kerning.TryGetValue(font.FontId, out var face) && face.Pairs.TryGetValue(first << 16 | second, out short value) ? value / face.UnitsPerEm : 0;
+
+    internal static bool HasKerning(ImFontPtr font) => kerning.ContainsKey(font.FontId);
+
+    private static void LoadKerning(params (ImFontPtr Font, string Path)[] faces)
+    {
+        using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "content", "fonts", "kerning.json")));
+        var table = document.RootElement.GetProperty("faces"u8);
+        kerning.Clear();
+        foreach (var (font, path) in faces)
+        {
+            var face = table.GetProperty(path);
+            var pairs = new Dictionary<int, short>();
+            foreach (var pair in face.GetProperty("pairs"u8).EnumerateObject()) pairs[pair.Name[0] << 16 | pair.Name[1]] = pair.Value.GetInt16();
+            kerning[font.FontId] = (face.GetProperty("unitsPerEm"u8).GetInt32(), pairs);
+        }
+    }
 
     // Call once after creating each ImGui context, before constructing the renderer.
     // Explicitly select the body face so an auxiliary cinematic font can never become the UI default.
@@ -66,6 +102,8 @@ internal static class NativeUiTheme
             "45264de3204ddbd5fb3e14a2402acd5c630d16650ae5fc221d2c52da46a6734b");
         DisplayBoldFont = Load("chakrapetch/ChakraPetch-Bold.ttf", HeadingSize,
             "65fbf76d95651697275e19db4d717c0e95a789ddd3476478b05292104db278a0");
+        LoadKerning((BodyFont, "inter/Inter[opsz,wght].ttf"), (BodySemiBoldFont, "inter/Inter-SemiBold.ttf"), (BodyBoldFont, "inter/Inter-Bold.ttf"),
+            (BodyExtraBoldFont, "inter/Inter-ExtraBold.ttf"), (DisplayFont, "chakrapetch/ChakraPetch-SemiBold.ttf"), (DisplayBoldFont, "chakrapetch/ChakraPetch-Bold.ttf"));
         ImGui.GetIO().FontDefault = BodyFont;
         ImGui.StyleColorsDark();
         var style = ImGui.GetStyle();
@@ -147,14 +185,20 @@ internal static class NativeUiTheme
         Set(ImGuiCol.ModalWindowDimBg, 1, 10, 19, 190);
     }
 
-    private static ImFontPtr Load(string relative, float size, string sha256)
+    // Chromium's Windows text (DirectWrite grayscale with contrast enhancement) renders the same faces visibly heavier
+    // than stb_truetype's linear coverage. Boost glyph coverage so strokes have the original's weight and contrast.
+    private const float RasterizerMultiply = 1.3f;
+
+    private static unsafe ImFontPtr Load(string relative, float size, string sha256)
     {
         string path = Path.Combine(AppContext.BaseDirectory, "content", "fonts", relative);
         if (!File.Exists(path)) throw new FileNotFoundException("The bundled UI font is missing. Repair the application files.", path);
         using var stream = File.OpenRead(path);
         if (!Convert.ToHexStringLower(SHA256.HashData(stream)).Equals(sha256, StringComparison.Ordinal))
             throw new InvalidDataException($"The bundled UI font has changed: {relative}");
-        var font = ImGui.GetIO().Fonts.AddFontFromFileTTF(path, size);
+        // ImFontConfig's constructor defaults, plus the coverage boost; AddFontFromFileTTF copies the template.
+        var config = new ImFontConfig { FontDataOwnedByAtlas = true, GlyphMaxAdvanceX = float.MaxValue, RasterizerMultiply = RasterizerMultiply, RasterizerDensity = 1 };
+        var font = ImGui.GetIO().Fonts.AddFontFromFileTTF(path, size, new ImFontConfigPtr(&config), default);
         if (font.IsNull()) throw new InvalidOperationException($"Could not load the bundled UI font: {relative}");
         return font;
     }

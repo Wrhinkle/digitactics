@@ -30,23 +30,38 @@ internal static class NativeUiPaint
         // CalcTextSizeA keeps fractional advances; ImGui.CalcTextSize rounds each call up to whole pixels.
         float width = font.CalcTextSizeA(scaled, float.MaxValue, 0, text, default).X;
         if (tracking != 0) width += text.EnumerateRunes().Count() * tracking * size;
-        return width;
+        return width + Kerning(font, text) * size;
     }
 
+    /// <summary>Sum of the GPOS pair adjustments (em) Chromium applies to <paramref name="text"/> and ImGui does not.</summary>
+    private static float Kerning(ImFontPtr font, string text)
+    {
+        float total = 0;
+        for (int i = 1; i < text.Length; i++) total += NativeUiTheme.Kerning(font, text[i - 1], text[i]);
+        return total;
+    }
+
+    /// <summary>Width and CSS line-height: normal (see NativeUiTheme.LineHeight).</summary>
     internal static float2 TrackedSize(ImFontPtr font, float size, string text, float tracking)
-        => new(TrackedWidth(font, size, text, tracking), NativeUiTheme.Css(font, size));
+        => new(TrackedWidth(font, size, text, tracking), NativeUiTheme.LineHeight(font, size));
 
     internal static void Tracked(ImDrawListPtr draw, ImFontPtr font, float size, float2 at, ImColor8 color, string text, float tracking = 0)
     {
         color = Fade(color);
         float scaled = NativeUiTheme.Css(font, size);
-        if (tracking == 0) { draw.AddText(font, scaled, at, color, text); return; }
+        // at is the top of a CSS line box; its baseline sits at the rounded-up ascent.
+        float ascent = NativeUiTheme.Ascent(font) * size;
+        at.Y += MathF.Ceiling(ascent - .01f) - ascent;
+        if (tracking == 0 && Kerning(font, text) == 0) { draw.AddText(font, scaled, at, color, text); return; }
         float x = at.X;
-        foreach (var rune in text.EnumerateRunes())
+        for (int i = 0; i < text.Length; i++)
         {
-            string glyph = rune.ToString();
+            int length = char.IsHighSurrogate(text[i]) && i + 1 < text.Length ? 2 : 1;
+            string glyph = text.Substring(i, length);
+            if (i > 0) x += NativeUiTheme.Kerning(font, text[i - 1], text[i]) * size;
             draw.AddText(font, scaled, new(MathF.Round(x), at.Y), color, glyph);
             x += font.CalcTextSizeA(scaled, float.MaxValue, 0, glyph, default).X + tracking * size;
+            i += length - 1;
         }
     }
 
@@ -139,7 +154,8 @@ internal static class NativeUiPaint
     internal static void Bit(ImDrawListPtr draw, float2 center, float size)
     {
         float half = size * 0.72f;
-        Radial(draw, center, new(half * 1.7f), new ImColor8(79, 200, 255, 110), new ImColor8(79, 200, 255, 0), 24);
+        // box-shadow: 0 0 6px rgba(79,200,255,.7) around the 11px square.
+        Radial(draw, center, new(half * 1.45f), new ImColor8(79, 200, 255, 80), new ImColor8(79, 200, 255, 0), 24);
         var top = center + new float2(0, -half);
         var right = center + new float2(half, 0);
         var bottom = center + new float2(0, half);

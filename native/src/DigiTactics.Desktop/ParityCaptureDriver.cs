@@ -68,9 +68,19 @@ internal sealed class ParityCaptureDriver
     }
     private void Press(ImGuiKey key) { ImGui.GetIO().AddKeyEvent(key, true); keyDown = true; }
 
+    // capture-electron.cjs installs Playwright's fake clock at this instant; the daily rotation, featured
+    // row and missions derive from it, and the home carousel stays on its first slide.
+    private static readonly DateTimeOffset ElectronClock = DateTimeOffset.Parse("2026-10-01T12:00:00Z");
+
     public void Input(MatchScreen screen)
     {
         frame++;
+        if (frame == 1)
+        {
+            screen.HomeClock = () => ElectronClock.AddSeconds(frame / 60d);
+            double heroStart = screen.HomeHeroClock();
+            screen.HomeHeroClock = () => heroStart + frame / 60d;
+        }
         if (mouseDown) { ImGui.GetIO().AddMouseButtonEvent(0, false); mouseDown = false; cooldown = 4; return; }
         if (keyDown) { ImGui.GetIO().AddKeyEvent(ImGuiKey.Space, false); ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape, false); keyDown = false; cooldown = 4; return; }
         if (ready) { Hover(screen); return; }

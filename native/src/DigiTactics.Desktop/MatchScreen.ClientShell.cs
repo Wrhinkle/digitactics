@@ -121,7 +121,7 @@ internal sealed partial class MatchScreen
         DrawClientBackdrop();
         var nav=ClientNav;
         float width=socialWindowSize.X,height=nav.Height,profileLeft=width-nav.ProfileWidth;
-        HomeCard("Client navigation",new(0,0),new(width,height),false,true);
+        ClientLayer("Client navigation",new(0,0),new(width,height),false,true);
         var draw=ImGui.GetWindowDrawList();
         NativeUiPaint.VerticalGradient(draw,new(0,0),new(width,height),NativeUiTheme.Navy0,new ImColor8(7,17,31),new ImColor8(10,20,40),.7f);
         // box-shadow: 0 6px 24px rgba(0,0,0,.55) falls over the page below the bar.
@@ -205,7 +205,8 @@ internal sealed partial class MatchScreen
         var innerLo=lo+new float2(2,2);var innerHi=hi-new float2(3,2);
         float bright=hovered?1.35f:active?1.25f:1;
         ImColor8 Lift(ImColor8 c){var v=c.AsByte4();return new((byte)Math.Min(255,v.X*bright),(byte)Math.Min(255,v.Y*bright),(byte)Math.Min(255,v.Z*bright),v.W);}
-        Chevron(innerLo,innerHi+new float2(2,0),21,Lift(new(15,74,92)),Lift(new(6,32,51)),Lift(new(4,22,36)),.6f);
+        // ::after: inset 2px 3px 2px 2px, its tip 1px inside that box (calc(100% - 1px) 50%).
+        Chevron(innerLo,new(hi.X-4,innerHi.Y),20,Lift(new(15,74,92)),Lift(new(6,32,51)),Lift(new(4,22,36)),.6f);
         // inset 0 0 18px rgba(63,214,255,.35) within the plate's rectangular body.
         draw.PushClipRect(innerLo,new(innerHi.X-18,innerHi.Y),true);
         NativeUiPaint.InsetGlow(draw,innerLo,new(innerHi.X+20,innerHi.Y),new ImColor8(63,214,255,(byte)Math.Min(255,89*bright)),18);
@@ -215,7 +216,7 @@ internal sealed partial class MatchScreen
         homeArtwork.Draw("client-mark",markAt,new(nav.Mark,nav.Mark),(byte)Math.Clamp(Math.Round(255*ImGui.GetStyle().Alpha),0,255));
         var label=ClientPrimaryLabel;var size=NativeUiPaint.TrackedSize(NativeUiTheme.DisplayBoldFont,nav.PlayFont,label,.16f);
         var textAt=new float2(markAt.X+nav.Mark+10,MathF.Round(middle-size.Y/2));
-        NativeUiPaint.TextGlow(draw,NativeUiTheme.DisplayBoldFont,nav.PlayFont,textAt,label,.16f,new ImColor8(63,214,255,140),12);
+        NativeUiPaint.TextGlow(draw,NativeUiTheme.DisplayBoldFont,nav.PlayFont,textAt,label,.16f,new ImColor8(63,214,255,90),12);
         NativeUiPaint.Tracked(draw,NativeUiTheme.DisplayBoldFont,nav.PlayFont,textAt,hovered?new ImColor8(255,255,255):NativeUiTheme.AccentInk,label,.16f);
         if(ImGui.IsItemFocused())draw.AddRect(lo-new float2(2,2),hi+new float2(2,2),NativeUiPaint.Fade(NativeUiTheme.Accent),0,ImDrawFlags.None,2);
     }
@@ -248,18 +249,20 @@ internal sealed partial class MatchScreen
         }
         // Bits: .chip-bits (border gold-5, navy fill, 800-weight gold-1 numerals, glowing diamond).
         string balance=$"{profile?.Progress.Bits??0:N0}";
-        var balanceSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyExtraBoldFont,15,balance,0);
-        float chipWidth=1+10+15+6+balanceSize.X+12+1;
-        right-=chipWidth;ImGui.SetCursorPos(new(right,middle-15));
-        if(ClientHitButton("clientBalance",chipWidth,30))NavigateClient("store");
+        // The chip sets no font-size, so the label uses Chromium's 13.333px button default.
+        const float bitsFont=13.333f;
+        var balanceSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyExtraBoldFont,bitsFont,balance,0);
+        float chipWidth=1+10+15+6+balanceSize.X+12+1,chipHeight=12+balanceSize.Y;
+        right-=chipWidth;ImGui.SetCursorPos(new(right,MathF.Round(middle-chipHeight/2)));
+        if(ClientHitButton("clientBalance",chipWidth,chipHeight))NavigateClient("store");
         bool bitsHover=ImGui.IsItemHovered();
         if(bitsHover)ResultTooltip("Bits: earned by playing games");
-        var chipLo=new float2(right,middle-15);var chipHi=chipLo+new float2(chipWidth,30);
+        var chipLo=new float2(right,MathF.Round(middle-chipHeight/2));var chipHi=chipLo+new float2(chipWidth,chipHeight);
         if(bitsHover)NativeUiPaint.BoxGlow(draw,chipLo,chipHi,new ImColor8(79,200,255,64),14);
         draw.AddRectFilled(chipLo,chipHi,NativeUiPaint.Fade(new ImColor8(1,10,19,179)));
         draw.AddRect(chipLo,chipHi,NativeUiPaint.Fade(bitsHover?NativeUiTheme.GoldDeep:NativeUiTheme.GoldDim));
         NativeUiPaint.Bit(draw,new(chipLo.X+1+10+1+5.5f,middle),11);
-        NativeUiPaint.Tracked(draw,NativeUiTheme.BodyExtraBoldFont,15,new(chipLo.X+1+10+15+6,MathF.Round(middle-balanceSize.Y/2)),NativeUiTheme.GoldBright,balance);
+        NativeUiPaint.Tracked(draw,NativeUiTheme.BodyExtraBoldFont,bitsFont,new(chipLo.X+1+10+15+6,chipLo.Y+6),NativeUiTheme.GoldBright,balance);
         right-=nav.RightGap;
         // Status: .cn-status (dot + "Solo"/"Online"/"Lobby n/8"); the label hides at 1500 px and below.
         string status=ClientStatusLabel;bool live=steam?.Room is not null,online=steam is not null;
@@ -332,9 +335,9 @@ internal sealed partial class MatchScreen
         for(int i=0;i<8;i++)
         {
             float a=i*MathF.PI/4;var d=new float2(MathF.Cos(a),MathF.Sin(a));var n=new float2(-d.Y,d.X);
-            draw.AddQuadFilled(center+d*4.5f-n*1.5f,center+d*7f-n*1.2f,center+d*7f+n*1.2f,center+d*4.5f+n*1.5f,ink);
+            draw.AddQuadFilled(center+d*3.6f-n*1.2f,center+d*5.7f-n*1f,center+d*5.7f+n*1f,center+d*3.6f+n*1.2f,ink);
         }
-        draw.AddCircle(center,4.3f,ink,20,2.6f);
+        draw.AddCircle(center,3.5f,ink,20,2.2f);
     }
 
     private static void DrawPeopleGlyph(ImDrawListPtr draw,float2 center,ImColor8 ink)

@@ -7,7 +7,7 @@ namespace DigiTactics.Desktop;
 
 internal sealed partial class MatchScreen
 {
-    private sealed record HomeSet(string Name,string Description,string Mechanic,string MechanicDescription,string Hero,string Tag);
+    private sealed record HomeSet(string Name,string Description,string Mechanic,string MechanicDescription,string Hero,string Tag,string? Render=null);
     private static readonly Lazy<Dictionary<string,HomeSet>> HomeSets=new(()=>JsonSerializer.Deserialize<Dictionary<string,HomeSet>>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"content/home/sets.json")),new JsonSerializerOptions{PropertyNameCaseInsensitive=true})!);
     private readonly PostgameArtwork homeArtwork=new("home");
     private CosmeticScenePreview? homeLegend;
@@ -75,66 +75,85 @@ internal sealed partial class MatchScreen
         Window(id,at.X,at.Y,extent.X,extent.Y,ImGuiWindowFlags.NoTitleBar|(bringToFront?ImGuiWindowFlags.None:ImGuiWindowFlags.NoBringToFrontOnFocus)|(scroll?ImGuiWindowFlags.None:ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse));
         ImGui.PopStyleVar();ImGui.PopStyleColor(2);
     }
+    // .home: 10px 24px 16px (16px sides at 1500 px and below, 8/10px vertical at 820 px tall), max-width 1720;
+    // .home-top: 1fr | clamp(240px, 21vw, 320px); .home-tiles: clamp(176px, 25vh, 250px), 168px when short.
     private void HomePanel()
     {
         if(DrawPostgame())return;
         RefreshSetSelection();
         UpdateClient?.Refresh();
-        float margin=socialWindowSize.X<=1500?16:24,gap=socialWindowSize.X<=1380?8:12,width=size.X-margin*2,right=Math.Clamp(socialWindowSize.X*.21f,240,320),heroWidth=width-right-gap;
-        float tabsTop=ClientPageTop+10,top=tabsTop+49,available=size.Y-top-16;
-        float lowerHeight=Math.Clamp(size.Y*.25f,176,250),heroHeight=Math.Max(300,available-lowerHeight-gap);
+        bool shortWindow=socialWindowSize.Y<=820;
+        float margin=socialWindowSize.X<=1500?16:24,gap=socialWindowSize.X<=1380?8:12;
+        float width=Math.Min(size.X-margin*2,1720),left=MathF.Round((size.X-width)/2);
+        float right=Math.Clamp(socialWindowSize.X*.21f,240,320),heroWidth=width-right-gap;
+        float tabsTop=ClientPageTop+(shortWindow?8:10),tabsHeight=HomeTabsHeight,top=tabsTop+tabsHeight+(shortWindow?6:10),available=size.Y-top-(shortWindow?10:16);
+        float lowerHeight=shortWindow?168:Math.Clamp(socialWindowSize.Y*.25f,176,250),heroHeight=Math.Max(280,available-lowerHeight-gap);
         if(heroHeight+lowerHeight+gap>available)lowerHeight=Math.Max(130,available-heroHeight-gap);
+        // Chromium snaps box edges to whole pixels.
+        top=MathF.Round(top);heroHeight=MathF.Round(heroHeight);lowerHeight=MathF.Round(lowerHeight);right=MathF.Round(right);heroWidth=width-right-gap;
         float bottom=top+heroHeight+gap;
-        HomeLayoutFits=lowerHeight>=130&&margin+width<=size.X&&bottom+lowerHeight<=size.Y;
+        HomeLayoutFits=lowerHeight>=130&&left+width<=size.X&&bottom+lowerHeight<=size.Y;
         if(showAbout){HomeAbout();return;}
         HomeHighlights=HomeRotationSets=HomeFeaturedCount=HomeFeaturedOwned=0;
-        HomeTabs(margin,tabsTop,width);
-        if(homeTab=="patch")HomePatchNotes(new(margin,top),new(heroWidth,heroHeight+gap+lowerHeight));
-        else if(homeTab=="events")HomeEventsPanel(new(margin,top),new(heroWidth,heroHeight+gap+lowerHeight));
+        HomeTabs(left,tabsTop,width);
+        if(homeTab=="patch")HomePatchNotes(new(left,top),new(heroWidth,heroHeight+gap+lowerHeight));
+        else if(homeTab=="events")HomeEventsPanel(new(left,top),new(heroWidth,heroHeight+gap+lowerHeight));
         else
         {
-            HomeHero(new(margin,top),new(heroWidth,heroHeight));
+            HomeHero(new(left,top),new(heroWidth,heroHeight));
             float tileWidth=(width-gap*3)/4;
-            HomeCard("Home set news",new(margin,bottom),new(tileWidth,lowerHeight));
-            var set=HomeSets.Value[selectedSet];var artAt=ImGui.GetCursorScreenPos();float artWidth=ImGui.GetContentRegionAvail().X;
-            homeArtwork.Draw(set.Hero,artAt,new(artWidth,54),255,true);ImGui.Dummy(new(artWidth,58));HomeSetNews();ImGui.End();
-            HomeFeatured(new(margin+tileWidth+gap,bottom),new(tileWidth,lowerHeight));
-            HomeProgress(new(margin+(tileWidth+gap)*2,bottom),new(tileWidth,lowerHeight));
-            HomePatchBounds=(new(margin+(tileWidth+gap)*3,bottom),new(margin+width,bottom+lowerHeight));
-            HomeCard("Home patch preview",HomePatchBounds.Min,new(tileWidth,lowerHeight));
-            artAt=ImGui.GetCursorScreenPos();artWidth=ImGui.GetContentRegionAvail().X;
-            homeArtwork.Draw("hero-digivice-energy",artAt,new(artWidth,54),255,true);ImGui.Dummy(new(artWidth,58));
-            HomePatchPreview();ImGui.End();
+            float TileLeft(int i)=>MathF.Round(left+i*(tileWidth+gap));
+            float2 Tile(int i)=>new(TileLeft(i),bottom);float2 TileSize(int i)=>new(MathF.Round(left+i*(tileWidth+gap)+tileWidth)-TileLeft(i),lowerHeight);
+            HomeSetNews(Tile(0),TileSize(0));
+            HomeFeatured(Tile(1),TileSize(1));
+            HomeProgress(Tile(2),TileSize(2));
+            HomePatchPreview(Tile(3),TileSize(3));
         }
-        HomePartner(new(margin+heroWidth+gap,top),new(right,heroHeight));
+        HomePartner(new(left+heroWidth+gap,top),new(right,heroHeight));
     }
+    // .tile-card padding (8px 10px at 1380 px and below) and .tile-art height (48px; 40px when short).
+    private float2 HomeTilePadding=>socialWindowSize.X<=1380?new(10,8):new(12,10);
+    private float HomeTileArtHeight=>socialWindowSize.Y<=820?40:socialWindowSize.X<=1380?48:62;
     private void HomeProgress(float2 at,float2 extent)
     {
         HomeProgressBounds=(at,at+extent);
-        HomeCard("Home progress",at,extent);HomeLabel("MISSIONS",15,HomeInk);
+        ClientLayer("Home progress",at,extent);var draw=ImGui.GetWindowDrawList();
+        bool hovered=ImGui.IsMouseHoveringRect(at,at+extent)&&ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem);
+        PaintTile(draw,at,at+extent,hovered);
+        var pad=HomeTilePadding;float inner=extent.X-pad.X*2;
+        TileHeading(draw,at+pad,inner,"Missions","Reset at midnight");
+        float y=at.Y+pad.Y+NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,12.5f)+6;
+        draw.PushClipRect(at+new float2(pad.X,0),at+extent-new float2(pad.X,pad.Y),true);
         try
         {
-            HomeMissions(HomeDaily);
-            if(farm?.Error is {} farmError)UiText.Wrapped(farmError);
+            HomeMissions(HomeDaily,new(at.X+pad.X,y),inner);
+            if(farm?.Error is {} farmError)Paragraph(draw,NativeUiTheme.BodyFont,11,new(at.X+pad.X,at.Y+extent.Y-pad.Y-16),inner,NativeUiTheme.Danger,farmError,1.4f,1);
         }
         catch(Exception error) when(error is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
-        {UiText.Wrapped("Daily progress unavailable: "+error.Message);}
+        {Paragraph(draw,NativeUiTheme.BodyFont,12.5f,new(at.X+pad.X,y),inner,NativeUiTheme.Muted,"Daily progress unavailable: "+error.Message);}
+        draw.PopClipRect();
         ImGui.End();
     }
     private void HomeFeatured(float2 at,float2 extent)
     {
         HomeStoreBounds=(at,at+extent);
-        HomeCard("Home store",at,extent);float imageWidth=ImGui.GetContentRegionAvail().X;
-        HomeLabel("FEATURED",15,HomeInk);
+        ClientLayer("Home store",at,extent);var draw=ImGui.GetWindowDrawList();
+        bool hovered=ImGui.IsMouseHoveringRect(at,at+extent)&&ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem);
+        PaintTile(draw,at,at+extent,hovered);
+        var pad=HomeTilePadding;float inner=extent.X-pad.X*2;
+        TileHeading(draw,at+pad,inner,"Featured","Today only");
         RefreshHomeOffers();
+        float y=at.Y+pad.Y+NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,12.5f)+6;
+        draw.PushClipRect(at+new float2(pad.X,0),at+extent-new float2(pad.X,pad.Y),true);
         try
         {
             var collection=new CosmeticCollection(profile?.Storage.GetValueOrDefault("dt.cosmetics.v1"));
-            foreach(var offer in homeOffers)HomeOfferRow(offer.Kind,offer.Item,offer.Price,collection,imageWidth);
+            // renderFeatured shows the first three of the day's featured row.
+            foreach(var offer in homeOffers.Take(3)){HomeOfferRow(offer.Kind,offer.Item,offer.Price,collection,new(at.X+pad.X,y),inner);y+=HomeOfferHeight+6;}
         }
         catch(Exception error) when(error is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
-        {UiText.Wrapped("Featured items unavailable: "+error.Message);}
-        if(profile is not null && HomeButton("homeStore","Open Store",imageWidth,28))OpenHomeStore();
+        {Paragraph(draw,NativeUiTheme.BodyFont,12.5f,new(at.X+pad.X,y),inner,NativeUiTheme.Muted,"Featured items unavailable: "+error.Message);}
+        draw.PopClipRect();
         ImGui.End();
     }
     private void DisposeHome(){ClearHomeOfferPreviews();homeLegend?.Dispose();homeLegend=null;homeArtwork.Dispose();}
