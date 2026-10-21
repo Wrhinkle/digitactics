@@ -39,6 +39,10 @@ internal static class CosmeticStyle
     internal static Type Display(float css,float em=0,bool bold=true)=>new(bold?NativeUiTheme.DisplayBoldFont:NativeUiTheme.DisplayFont,css*1.3f,css*em,1.3f);
     /// <summary>Inter at a CSS pixel size; weights of 700 and above use the static bold face.</summary>
     internal static Type Body(float css,bool bold=false,float em=0)=>new(bold?NativeUiTheme.BodyBoldFont:NativeUiTheme.BodyFont,css*1.21f,css*em,1.21f);
+    /// <summary>Inter 600 (the static SemiBold face).</summary>
+    internal static Type BodySemi(float css,float em=0)=>new(NativeUiTheme.BodySemiBoldFont,css*1.21f,css*em,1.21f);
+    /// <summary>Inter 800 (the static ExtraBold face).</summary>
+    internal static Type BodyExtraBold(float css,float em=0)=>new(NativeUiTheme.BodyExtraBoldFont,css*1.21f,css*em,1.21f);
 
     internal static float Text(ImDrawListPtr draw,float2 at,ImColor8 color,string text,Type type)
     {

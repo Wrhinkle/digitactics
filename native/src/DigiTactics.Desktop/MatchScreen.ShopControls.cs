@@ -33,7 +33,6 @@ internal sealed partial class MatchScreen
         float contentTop=top+1+(HudNarrow?6:8);
         ImGui.SetCursorScreenPos(new(ShopPadding,contentTop));
         if(IsSpectating){HudRun(draw,HudWeight(400),14,ShopPadding,contentTop,18.9f,"Spectating. Take an available seat to control a team.",CssMuted);ImGui.Dummy(new(1,1));ImGui.End();return;}
-        if(SellDropZone()){ImGui.End();return;}
         ImGui.BeginDisabled(Session!.State.Over||!Human.Alive);
         ShopControls(contentTop);
         float shopX=ShopPadding+EconWidth+ShopGap+ShopButtonsWidth+ShopGap,shopWidth=size.X-ShopPadding-shopX;
@@ -43,7 +42,9 @@ internal sealed partial class MatchScreen
         float unit=(shopWidth-gap*slots)/(slots+.85f);
         for(int i=0;i<slots;i++)ShopCard(i,new(shopX+i*(unit+gap),contentTop),unit);
         WispShopCard(new(shopX+slots*(unit+gap),contentTop),unit*.85f,Rules.Wisps is {Length:>0});
-        ImGui.EndDisabled();ImGui.End();
+        ImGui.EndDisabled();
+        SellDropZone(top);
+        ImGui.End();
         DrawMatchInventory();
     }
 

@@ -83,11 +83,11 @@ internal sealed partial class MatchScreen
         if(CosmeticHit("storeLocker",lockerAt,new(lockerWidth,30),out bool lockerHover))OpenCollectionPage();
         S.TextIn(draw,lockerAt+new float2(16,0),30,lockerHover?S.Gold1:S.LcMute,"LOCKER",modeType);
         // .dts-wallet (right)
-        var walletType=S.Body(18,true);string bits=collection.Bits.ToString();var histType=S.Body(12);
+        var walletType=S.BodyExtraBold(18);string bits=collection.Bits.ToString();var histType=S.Body(12);
         float historyWidth=histType.Width("History")+18,walletWidth=12+17+walletType.Width(bits)+8+historyWidth+6;
         var wallet=new float2(at.X+width-16-walletWidth,at.Y+(height-34)*.5f);
         draw.AddRectFilled(wallet,wallet+new float2(walletWidth,34),new ImColor8(1,10,19,217));draw.AddRect(wallet,wallet+new float2(walletWidth,34),S.Gold4);
-        S.BitsGem(draw,wallet+new float2(12+6,17));S.TextIn(draw,wallet+new float2(12+17,0),34,S.LcText,bits,walletType);
+        S.BitsGem(draw,wallet+new float2(12+6,17));S.TextIn(draw,wallet+new float2(12+17,0),34,S.Text1,bits,walletType);
         var historyAt=new float2(wallet.X+walletWidth-6-historyWidth,wallet.Y+6);
         ImGui.SetCursorScreenPos(historyAt);
         ImGui.PushFont(histType.Font,histType.Size);ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(9,(22-histType.Size)*.5f));
@@ -96,9 +96,10 @@ internal sealed partial class MatchScreen
         CollectionHistoryControl(historyWidth);
         ImGui.PopStyleVar(2);ImGui.PopStyleColor(4);ImGui.PopFont();
         // .dts-missions: muted label and chips, flex:1 between the modes and the wallet
-        var label=S.Body(12);var chip=S.Body(12);var chipBold=S.Body(12,true);
+        // The label is a .muted span (13px); flex gap 10px separates it and every chip.
+        var label=S.Body(13);var chip=S.Body(12);var chipBold=S.Body(12,true);
         float x=seg.X+segWidth+14,limit=wallet.X-14;
-        x+=S.TextIn(draw,new(x,at.Y),height,StoreMuted,"Daily missions:",label)+8;
+        x+=S.TextIn(draw,new(x,at.Y),height,StoreMuted,"Daily missions:",label)+10;
         foreach(var mission in daily.Missions)
         {
             string progress=mission.Done?"done":"";
@@ -120,7 +121,8 @@ internal sealed partial class MatchScreen
     {
         int[] order=collectionStore?[0,1,2,3,4,5,6,7]:[0,1,2,3,4,5,6];
         var origin=ImGui.GetCursorScreenPos();var draw=ImGui.GetWindowDrawList();
-        var label=S.Display(14,.1f);var counter=S.Body(12);const float height=42;
+        // The count span inherits the tab's Chakra Petch 700 and its computed 1.4px letter-spacing.
+        var label=S.Display(14,.1f);var counter=S.Display(12,1.4f/12);const float height=42;
         float space=label.Font.CalcTextSizeA(label.Size,float.MaxValue,0," "u8).X+label.Tracking;
         draw.AddRectFilled(origin,origin+new float2(width,height),new ImColor8(1,10,19,153));
         draw.AddLine(new(origin.X,origin.Y+height+.5f),new(origin.X+width,origin.Y+height+.5f),S.Gold5);
@@ -145,7 +147,7 @@ internal sealed partial class MatchScreen
             draw.PushClipRect(origin,origin+new float2(width,height+1),true);
             float baseline=at.Y+(compact?9:11)+(18.9f-label.Size)*.5f+.992f*14;
             S.Text(draw,new(at.X+pad,baseline-.992f*14),selected||hover?S.Gold1:S.LcMute,name,label);
-            if(count is not null)S.Text(draw,new(at.X+pad+nameWidth+space,baseline-.969f*12),StoreMuted,count,counter);
+            if(count is not null)S.Text(draw,new(at.X+pad+nameWidth+space,baseline-.992f*12),StoreMuted,count,counter);
             if(selected)
             {
                 draw.AddRectFilled(new(at.X+10,at.Y+height-6),new(at.X+tabWidth-10,at.Y+height),new ImColor8(200,155,60,26));

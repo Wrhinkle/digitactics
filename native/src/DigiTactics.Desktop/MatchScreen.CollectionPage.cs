@@ -206,16 +206,16 @@ internal sealed partial class MatchScreen
     private CosmeticItem[] CollectionPageFilters(CosmeticCollection collection,string kind)
     {
         var origin=ImGui.GetCursorScreenPos();float available=ImGui.GetContentRegionAvail().X;var draw=ImGui.GetWindowDrawList();
-        var body=S.Body(14);var segType=S.Body(12.5f,true);var retroType=S.Display(14,.08f);
+        var body=S.Body(14);var segType=S.BodySemi(12.5f);var retroType=S.Display(14,.08f);
         bool retro=kind=="emote";
         float retroWidth=retro?retroType.Width("DIGIMON WORLD 1")+34:0;
         (string Id,string Label)[] ownership=[("all","All"),("owned","Owned"),("locked","Not owned")];
-        // Inter 600 sits between the bundled regular and bold faces: size by the regular face, draw bold.
-        var segMeasure=S.Body(12.5f);
+        var segMeasure=segType;
         float segWidth=6+ownership.Sum(option=>segMeasure.Width(option.Label)+24)+2*(ownership.Length-1);
         var rarityOptions=new[]{("all","All rarities")}.Concat(CosmeticBrowser.Rarities.Select(value=>(value,char.ToUpperInvariant(value[0])+value[1..]))).ToArray();
         (string,string)[] sortOptions=[("rarity","Rarity: high first"),("rarity-asc","Rarity: low first"),("name","Name"),("owned","Owned first")];
-        float rarityWidth=rarityOptions.Max(option=>body.Width(option.Item2))+48,sortWidth=sortOptions.Max(option=>body.Width(option.Item2))+48;
+        // A select is as wide as its widest option plus 11px padding each side and Chromium's 22px arrow box.
+        float rarityWidth=rarityOptions.Max(option=>body.Width(option.Item2))+44,sortWidth=sortOptions.Max(option=>body.Width(option.Item2))+44;
         // Flex-wrap: lay out the fixed controls after a search box of at least 200px.
         float[] widths=[retroWidth,200,segWidth,rarityWidth,sortWidth];
         var rows=new List<List<int>>{new()};float rowWidth=0;
@@ -381,8 +381,15 @@ internal sealed partial class MatchScreen
         draw.AddRect(at,end,border);
         if(selected)draw.AddRect(at-new float2(1,1),end+new float2(1,1),S.Gold2);
         Hit();
-        if(hovered)ImGui.SetTooltip(item.Name);
+        // title="name": the browser shows it as a system tooltip only after the pointer rests on the card.
+        if(hovered)
+        {
+            if(collectionTitleHover!=item.Id){collectionTitleHover=item.Id;collectionTitleSince=ImGui.GetTime();}
+            if(ImGui.GetTime()-collectionTitleSince>=1)ImGui.SetTooltip(item.Name);
+        }
+        else if(collectionTitleHover==item.Id)collectionTitleHover=null;
     }
+    private string? collectionTitleHover;private double collectionTitleSince;
     /// <summary>radial-gradient(circle at cx cy, inner, outer stop) sized to the farthest corner, drawn as a fan clipped to the box.</summary>
     private static void CollectionRadial(ImDrawListPtr draw,float2 lo,float2 hi,float2 centre,ImColor8 inner,ImColor8 outer,float stop,float scaleY=1)
     {

@@ -123,14 +123,24 @@ internal sealed partial class MatchScreen
         }
     }
 
-    private bool SellDropZone()
+    /// <summary>
+    /// #sellZone: while a unit is dragged, the shop bar becomes the sell target; the red banner covers it only while
+    /// the pointer is over the bar (ui.js toggles it on ui.drag.moved &amp;&amp; overShop).
+    /// </summary>
+    private void SellDropZone(float top)
     {
-        if (!arenaDragMoved || arenaDrag is not { } drag || Human.Roster.At(drag.From) is not { } unit) return false;
+        if (!arenaDragMoved || arenaDrag is not { } drag || Human.Roster.At(drag.From) is not { } unit) return;
         var line = Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == unit.Line);
         bool canSell = !unit.NoSell && !line.NoSell && (Session!.Rounds.Phase != MatchPhase.Combat || !drag.From.IsBoard);
-        sellDropHovered = ImGui.IsWindowHovered();
-        Button("dropSell", canSell ? $"Drop to sell {UnitName(unit)} for {UnitValues.SellValue(line, unit.Stage)} gold" : "This unit cannot be sold", size.X - 24, ShopHeight - 20, sellDropHovered && canSell);
-        return true;
+        ImGui.SetCursorScreenPos(new(0, top));
+        ClientHitButton("dropSell", size.X, ShopHeight);
+        sellDropHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem) && canSell;
+        if (!ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem)) return;
+        var draw = ImGui.GetWindowDrawList();
+        draw.AddRectFilled(new(0, top), new(size.X, size.Y), new ImColor8(120, 20, 30, 224));
+        string label = canSell ? $"Sell for {UnitValues.SellValue(line, unit.Stage)} gold" : "Can't be sold";
+        var face = HudWeight(800);
+        HudRun(draw, face, 22, (size.X - HudWidth(face, 22, label)) / 2, top + (ShopHeight - 22 * 1.35f) / 2, 22 * 1.35f, label, CssText);
     }
 
     private void PartnerDropZone()

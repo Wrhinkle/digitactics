@@ -126,7 +126,7 @@ internal sealed partial class MatchScreen
         draw.AddCircleFilled(center,inner,NativeUiPaint.Fade(NativeUiTheme.Navy1),48);
         NativeUiPaint.Radial(draw,center-new float2(0,inner*.4f),new(inner*1.4f),new ImColor8(42,58,92),new ImColor8(10,20,40,0),48);
         string? avatar=summary.Avatar is { } owned && collection.Owns("legend",owned)?owned:collection.Equipped("legend")?.GetValue<string>();
-        if(avatar is not null)DrawProfileAvatar(avatar,center-new float2(inner),inner*2);
+        if(avatar is not null)DrawProfileAvatar(avatar,center-new float2(inner),inner*2,true);
         float ring=58*scale;draw.AddCircle(center,ring,NativeUiPaint.Fade(NativeUiTheme.GoldDim),64,4*scale);
         float progress=level.Need>0?Math.Clamp((float)level.Xp/level.Need,0,1):0;
         if(progress>0)
@@ -195,10 +195,10 @@ internal sealed partial class MatchScreen
             x+=46+4;
         }
     }
-    private void DrawProfileAvatar(string id,float2 position,float pixels)
+    private void DrawProfileAvatar(string id,float2 position,float pixels,bool circle=false)
     {
         var discovered=LegendEvolution.Discovery(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"),id);
-        portraits.DrawEvolution(discovered.Current,position,pixels,true);ProfilePortraits++;
+        portraits.DrawEvolution(discovered.Current,position,pixels,true,circle);ProfilePortraits++;
     }
     /// <summary>.empty (24px padding, 14px) or .empty.small (12px padding, 12.5px): centred c-text-3 text in a dashed gold-5 frame.</summary>
     private static float ProfileEmptyHeight(bool small)=>small?12*2+NativeUiTheme.TextLine(12.5f)+2:24*2+NativeUiTheme.TextLine(14)+2;

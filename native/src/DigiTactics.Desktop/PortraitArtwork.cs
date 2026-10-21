@@ -26,10 +26,11 @@ internal sealed class PortraitArtwork : IDisposable
         if (!files.TryGetValue(key,out var file)) throw new InvalidDataException($"Missing portrait for {key}.");
         DrawFile(Path.Combine(folder,file),position,size,tint??new ImColor8(255,255,255,alpha));
     }
-    public void DrawEvolution(string form,float2 position,float size,bool discovered)
+    /// <summary>An evolution portrait; <paramref name="circle"/> clips it to the inscribed circle (border-radius: 50%; overflow: hidden).</summary>
+    public void DrawEvolution(string form,float2 position,float size,bool discovered,bool circle=false)
     {
         if(!evolutionFiles.TryGetValue(form,out var file)) throw new InvalidDataException($"Missing evolution portrait for {form}.");
-        DrawFile(Path.Combine(evolutionFolder,file),position,size,discovered?new ImColor8(255,255,255):new ImColor8(0,0,0));
+        DrawFile(Path.Combine(evolutionFolder,file),position,size,discovered?new ImColor8(255,255,255):new ImColor8(0,0,0),rounding:circle?size/2:0);
     }
     /// <summary>Draws a legend portrait; <paramref name="grayscale"/> applies CSS grayscale(amount) to the texture (locked cards).</summary>
     public bool DrawCompanion(string? key,float2 position,float size,byte alpha=255,float grayscale=0)
@@ -37,7 +38,7 @@ internal sealed class PortraitArtwork : IDisposable
         if(key is null || !evolutionFiles.TryGetValue(key.Split('@')[^1],out var file))return false;
         DrawFile(Path.Combine(evolutionFolder,file),position,size,new ImColor8(255,255,255,alpha),grayscale); return true;
     }
-    private void DrawFile(string path,float2 position,float size,ImColor8 tint,float grayscale=0)
+    private void DrawFile(string path,float2 position,float size,ImColor8 tint,float grayscale=0,float rounding=0)
     {
         string key=grayscale>0?path+"|gray"+grayscale.ToString(System.Globalization.CultureInfo.InvariantCulture):path;
         if (!cache.TryGetValue(key,out var entry))
@@ -53,7 +54,9 @@ internal sealed class PortraitArtwork : IDisposable
             entry=(PostgameArtwork.Sharpen(new(image,new(MinFilter:9987,WrapS:33071,WrapT:33071),false)),frame);
         }
         cache[key]=(entry.Texture,frame);
-        ImGui.GetWindowDrawList().AddImage(new ImTextureRef {_TexID=new((nint)entry.Texture.Id)},position,new(position.X+size,position.Y+size),new(0,0),new(1,1),tint);
+        var texture=new ImTextureRef {_TexID=new((nint)entry.Texture.Id)};
+        if(rounding>0)ImGui.GetWindowDrawList().AddImageRounded(texture,position,new(position.X+size,position.Y+size),new(0,0),new(1,1),tint,rounding);
+        else ImGui.GetWindowDrawList().AddImage(texture,position,new(position.X+size,position.Y+size),new(0,0),new(1,1),tint);
         DrawCalls++;
     }
     public void Dispose(){foreach(var entry in cache.Values)entry.Texture.Dispose();cache.Clear();}

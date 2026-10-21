@@ -117,12 +117,14 @@ internal sealed class ParityCaptureDriver
         }
         if (ready) Hover(screen);
     }
-    // Tooltip states keep the pointer on their target; every other state parks it off screen.
+    // Tooltip states keep the pointer on their target; every other state rests it where capture-electron.cjs parkMouse
+    // does (x 60, 78% of the height, the left column), so hover styling under it is compared too.
     private void Hover(MatchScreen screen)
     {
-        if (state == "match-shop-tooltip" && screen.Buttons.TryGetValue("buy/0", out var card)) ImGui.GetIO().AddMousePosEvent(card.X, card.Y);
-        else if (state == "match-drag" && screen.Buttons.TryGetValue(DragTarget, out var hex)) ImGui.GetIO().AddMousePosEvent(hex.X, hex.Y);
-        else Park();
+        var io = ImGui.GetIO();
+        if (state == "match-shop-tooltip" && screen.Buttons.TryGetValue("buy/0", out var card)) io.AddMousePosEvent(card.X, card.Y);
+        else if (state == "match-drag" && screen.Buttons.TryGetValue(DragTarget, out var hex)) io.AddMousePosEvent(hex.X, hex.Y);
+        else io.AddMousePosEvent(60, MathF.Round(io.DisplaySize.Y * .78f));
     }
 
     private void Collection(MatchScreen screen)
