@@ -73,7 +73,7 @@ internal sealed partial class MatchScreen
         draw.AddRectFilledMultiColor(at+new float2(split,0),at+new float2(width,height),new ImColor8(1,10,19,140),new ImColor8(1,10,19,217),new ImColor8(1,10,19,217),new ImColor8(1,10,19,140));
         draw.AddLine(new(at.X,at.Y+height+.5f),new(at.X+width,at.Y+height+.5f),S.Gold5);
         // .dts-modes segment
-        var modeType=S.Display(15,.1f,false);float storeWidth=modeType.Width("STORE")+32,lockerWidth=modeType.Width("LOCKER")+32;
+        var modeType=S.Display(15,.1f,false);float storeWidth=modeType.Width("STORE")+34,lockerWidth=modeType.Width("LOCKER")+34;
         var seg=at+new float2(16,(height-36)*.5f);float segWidth=storeWidth+lockerWidth+6;
         draw.AddRectFilled(seg,seg+new float2(segWidth,36),new ImColor8(1,10,19,217));draw.AddRect(seg,seg+new float2(segWidth,36),S.Gold5);
         var storeAt=seg+new float2(3,3);var lockerAt=storeAt+new float2(storeWidth+2,0);
@@ -121,6 +121,7 @@ internal sealed partial class MatchScreen
         int[] order=collectionStore?[0,1,2,3,4,5,6,7]:[0,1,2,3,4,5,6];
         var origin=ImGui.GetCursorScreenPos();var draw=ImGui.GetWindowDrawList();
         var label=S.Display(14,.1f);var counter=S.Body(12);const float height=42;
+        float space=label.Font.CalcTextSizeA(label.Size,float.MaxValue,0," "u8).X+label.Tracking;
         draw.AddRectFilled(origin,origin+new float2(width,height),new ImColor8(1,10,19,153));
         draw.AddLine(new(origin.X,origin.Y+height+.5f),new(origin.X+width,origin.Y+height+.5f),S.Gold5);
         float x=16;
@@ -133,14 +134,14 @@ internal sealed partial class MatchScreen
                 string kind=CosmeticCollection.Kinds[i];
                 count=(collectionStore?CosmeticCollection.Items(kind).Count(item=>!item.Secret&&item.Linked is null):CosmeticCollection.Items(kind).Count(item=>collection.Owns(kind,item.Id))).ToString();
             }
-            float nameWidth=label.Width(name),tabWidth=28+nameWidth+(count is null?0:label.Tracking+4+counter.Width(count));
+            float nameWidth=label.Width(name),tabWidth=28+nameWidth+(count is null?0:space+counter.Width(count));
             if(x>=width)break;
             var at=origin+new float2(x,0);
             bool clicked=CosmeticHit("collectionTab/"+i,at,new(Math.Min(tabWidth,width-x),height),out bool hover);
             draw.PushClipRect(origin,origin+new float2(width,height+1),true);
             float baseline=at.Y+11+(18.9f-label.Size)*.5f+.992f*14;
             S.Text(draw,new(at.X+14,baseline-.992f*14),selected||hover?S.Gold1:S.LcMute,name,label);
-            if(count is not null)S.Text(draw,new(at.X+14+nameWidth+label.Tracking+4,baseline-.969f*12),StoreMuted,count,counter);
+            if(count is not null)S.Text(draw,new(at.X+14+nameWidth+space,baseline-.969f*12),StoreMuted,count,counter);
             if(selected)
             {
                 draw.AddRectFilled(new(at.X+10,at.Y+height-6),new(at.X+tabWidth-10,at.Y+height),new ImColor8(200,155,60,26));
@@ -185,6 +186,7 @@ internal sealed partial class MatchScreen
         string art=kind switch{"legend"=>"store-legends","board"=>"store-boards","killscreen" or "dance" or "emote" or "sound"=>"store-fx",_=>"store-hero"};
         collectionArtwork.Draw(art,at,new(width,height),255,true,.45f);
         draw.AddRectFilledMultiColor(at,at+new float2(width*.7f,height),new ImColor8(1,10,19,235),new ImColor8(1,10,19,89),new ImColor8(1,10,19,89),new ImColor8(1,10,19,235));
+        draw.AddRectFilled(at+new float2(width*.7f,0),at+new float2(width,height),new ImColor8(1,10,19,89));
         draw.AddRect(at,at+new float2(width,height),S.Gold5);
         var heading=S.Display(14,.12f);
         float w=S.TextIn(draw,new(at.X+19,at.Y+26),18.9f,S.Gold1,CollectionNames[collectionKind].ToUpperInvariant(),heading);
@@ -362,8 +364,8 @@ internal sealed partial class MatchScreen
                 if(hover)for(int i=1;i<=5;i++)draw.AddRect(at-new float2(i,i),at+extent+new float2(i,i),new ImColor8(63,214,255,(byte)(18*(1-i/6f))),thickness:2);
             }
             var ink=poor?S.LcText:new ImColor8(205,250,250);
-            float priceWidth=S.Price(draw,default,extent.Y,price,price<item.Price?item.Price:null,ink,13.33f,true);
-            S.Price(draw,new(at.X+(width-priceWidth)*.5f,at.Y),extent.Y,price,price<item.Price?item.Price:null,S.Faded(ink),13.33f);
+            float priceWidth=S.Price(draw,default,extent.Y,price,price<item.Price?item.Price:null,ink,14,true);
+            S.Price(draw,new(at.X+(width-priceWidth)*.5f,at.Y),extent.Y,price,price<item.Price?item.Price:null,S.Faded(ink),14);
             ImGui.PopStyleVar();
             if(pressed&&!poor)purchase=(kind,item.Id,day);
         }

@@ -126,7 +126,7 @@ internal sealed partial class MatchScreen
             static float Peak(float t,float centre)=>Math.Max(0,1-Math.Abs(t-centre)/.05f);
             float cyan=Math.Max(Peak(turn,.15f),Peak(turn,.85f)),orange=Peak(turn,.5f);
             if(cyan<=0&&orange<=0)continue;
-            color=cyan>=orange?new ImColor8(63,214,255):new ImColor8(255,138,61);strength=Math.Max(cyan,orange)*.35f;
+            color=cyan>=orange?new ImColor8(63,214,255):new ImColor8(255,138,61);strength=Math.Max(cyan,orange)*.22f;
             double r0=a0+spin-Math.PI/2,r1=a1+spin-Math.PI/2;
             var c=S.Alpha(color,strength);
             var p0=centre+new float2((float)Math.Cos(r0),(float)Math.Sin(r0))*inner;var p1=centre+new float2((float)Math.Cos(r1),(float)Math.Sin(r1))*inner;
@@ -136,7 +136,7 @@ internal sealed partial class MatchScreen
         draw.AddCircle(centre,outer,new ImColor8(200,170,110,128),96,2);
         // ::after: inset 18% radial cyan glow, blurred
         float glow=side*.32f*(ClientMotion?(float)(1-.08*(.5-.5*Math.Cos(boardSceneTime*Math.PI*2/3))):1);
-        for(int i=12;i>=1;i--)draw.AddCircleFilled(centre,glow*i/12f,new ImColor8(63,214,255,(byte)(8+3*(12-i)/12f)),48);
+        for(int i=12;i>=1;i--)draw.AddCircleFilled(centre,glow*i/12f,new ImColor8(63,214,255,(byte)(4+2*(12-i)/12f)),48);
         float bob=ClientMotion?(float)(-3+3*Math.Cos(boardSceneTime*Math.PI*2/3)):0;
         if(selection.Legend)
         {
@@ -238,16 +238,17 @@ internal sealed partial class MatchScreen
         if(CosmeticButton("hatchSelectedEgg",new(at.X+priceWidth+8,y),new(hatchWidth,41),"HATCH",hatchType,cta:true,disabled:collection.Bits<egg.Definition.Price||egg.Total==0))BeginIncubatorHatch(egg.Definition.Id);
         ImGui.EndDisabled();
         Buttons["egg/"+egg.Definition.Id]=Buttons["hatchSelectedEgg"];
-        y+=41+8;
-        // Native additions retained: owned count and the contents disclosure.
-        S.TextIn(draw,new(at.X,y),17,StoreMuted,$"{egg.Owned} / {egg.Total} items owned",S.Body(12.5f));y+=17+6;
-        ImGui.SetCursorScreenPos(new(at.X,y));
+        y+=41+6;
+        // Native additions retained on one row: owned count and the contents disclosure.
+        var ownedType=S.Body(12.5f);string owned=$"{egg.Owned} / {egg.Total} owned";
+        S.TextIn(draw,new(at.X,y),18,StoreMuted,owned,ownedType);
         IncubatorExclusiveCount=egg.Exclusives.Length;
-        var linkType=S.Display(11,.1f);string link=(lootContentsOpen?"HIDE ":"")+"CONTENTS AND DUPLICATE REWARDS";
-        if(CosmeticHit("lootContents",new(at.X,y),new(linkType.Width(link)+14,18),out bool linkHover))lootContentsOpen=!lootContentsOpen;
-        var arrow=new float2(at.X+4,y+9);var ink=linkHover?new ImColor8(205,250,250):S.Accent;
+        var linkType=S.Display(11,.1f);string link=lootContentsOpen?"HIDE CONTENTS":"CONTENTS AND DUPLICATES";
+        float lx=at.X+ownedType.Width(owned)+14;
+        if(CosmeticHit("lootContents",new(lx,y),new(linkType.Width(link)+14,18),out bool linkHover))lootContentsOpen=!lootContentsOpen;
+        var arrow=new float2(lx+4,y+9);var ink=linkHover?new ImColor8(205,250,250):S.Accent;
         if(lootContentsOpen)draw.AddTriangleFilled(arrow+new float2(-4,-2),arrow+new float2(4,-2),arrow+new float2(0,3),ink);else draw.AddTriangleFilled(arrow+new float2(-2,-4),arrow+new float2(-2,4),arrow+new float2(3,0),ink);
-        S.TextIn(draw,new(at.X+14,y),18,ink,link,linkType);y+=18;
+        S.TextIn(draw,new(lx+14,y),18,ink,link,linkType);y+=18;
         IncubatorContentsExpanded=lootContentsOpen;
         ImGui.SetCursorScreenPos(new(at.X,y));ImGui.Dummy(new(width,0));
         if(!IncubatorContentsExpanded)return;

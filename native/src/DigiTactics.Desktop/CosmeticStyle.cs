@@ -112,7 +112,7 @@ internal static class CosmeticStyle
     internal static void BitsGem(ImDrawListPtr draw,float2 center,float side=11)
     {
         float r=side*.7071f;float alpha=ImGui.GetStyle().Alpha;
-        draw.AddCircleFilled(center,r+2.5f,Alpha(new ImColor8(79,200,255),.18f*alpha),16);
+        draw.AddCircleFilled(center,r+1.5f,Alpha(new ImColor8(79,200,255),.08f*alpha),16);
         int first=draw.VtxBuffer.Count;
         draw.AddQuadFilled(center+new float2(0,-r),center+new float2(r,0),center+new float2(0,r),center+new float2(-r,0),new ImColor8(255,255,255,(byte)(255*alpha)));
         VerticalGradient(draw,first,center.Y-r,center.Y+r,new(200,253,255),Bits,.55f,new(27,95,208));
