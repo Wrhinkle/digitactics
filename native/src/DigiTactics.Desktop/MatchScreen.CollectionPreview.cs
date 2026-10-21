@@ -39,7 +39,7 @@ internal sealed partial class MatchScreen
         string form=LegendEvolution.Discovery(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"),legend).Current;
         return LegendEvolution.VisualKey(legend,form);
     }
-    private void CosmeticPreview(string kind,CosmeticItem item,CosmeticCollection collection,float width,float? stageHeight=null,bool compactControls=false)
+    private void CosmeticPreview(string kind,CosmeticItem item,CosmeticCollection collection,float width,float? stageHeight=null,bool compactControls=false,bool bare=false)
     {
         string signature=kind+":"+item.Id;
         if(collectionPreviewSignature!=signature){collectionPreviewSignature=signature;collectionPreviewStarted=boardSceneTime;}
@@ -47,11 +47,15 @@ internal sealed partial class MatchScreen
         if(kind is not("legend" or "dance" or "board") && collectionPreview is not null){RetireCollectionPreview(collectionPreview);collectionPreview=null;}
         width=Math.Max(120,width);float naturalHeight=width*CosmeticScenePreview.Height/CosmeticScenePreview.Width,height=stageHeight??naturalHeight;
         var at=ImGui.GetCursorScreenPos();ImGui.Dummy(new(width,height));var draw=ImGui.GetWindowDrawList();
-        draw.AddRectFilledMultiColor(at,at+new float2(width,height),new ImColor8(20,37,54),new ImColor8(20,37,54),new ImColor8(1,10,19),new ImColor8(1,10,19));
+        if(!bare)draw.AddRectFilledMultiColor(at,at+new float2(width,height),new ImColor8(20,37,54),new ImColor8(20,37,54),new ImColor8(1,10,19),new ImColor8(1,10,19));
         CollectionPreviewDrawCalls=0;CollectionPreviewKind=kind;
         if(kind is "legend" or "dance" or "board")
         {
-            int renderWidth=Math.Clamp((int)Math.Ceiling(width),120,1600),renderHeight=Math.Clamp((int)Math.Ceiling(kind=="legend"?height:naturalHeight),120,1600);
+            bool fill=kind=="legend"||bare&&kind=="dance";
+            // dances.js frames the dancer at about 44% of the Collection stage height; the companion camera
+            // fills ~79%, so render a taller target and show its centre band.
+            float zoom=bare&&kind=="dance"?.56f:1,renderTall=fill?Math.Min(1600,height/zoom):naturalHeight;zoom=fill?height/renderTall:1;
+            int renderWidth=Math.Clamp((int)Math.Ceiling(width),120,1600),renderHeight=Math.Clamp((int)Math.Ceiling(renderTall),120,1600);
             if(collectionPreview is not null && (collectionPreview.RenderWidth!=renderWidth || collectionPreview.RenderHeight!=renderHeight)){RetireCollectionPreview(collectionPreview);collectionPreview=null;}
             collectionPreview??=new(legendPedestal,renderWidth,renderHeight);
             if(kind=="legend")
@@ -60,28 +64,28 @@ internal sealed partial class MatchScreen
                 Buttons["collectionLegend/outside"]=at+new float2(-12,height/2);
                 if(collectionPreview.PointerItem("collectionLegend",at,new(width,height)) is not null)audio.PlayClient("emote",true);
             }
-            collectionPreview.Draw(kind,item.Id,CurrentPreviewLegend(collection,kind=="legend"?item.Id:null),boardSceneTime,ClientMotion,kind=="legend"?width/height:null);
-            float pictureHeight=kind=="legend"?height:Math.Min(height,naturalHeight);
+            collectionPreview.Draw(kind,item.Id,CurrentPreviewLegend(collection,kind=="legend"?item.Id:null),boardSceneTime,ClientMotion,fill?width/renderTall:null);
+            float pictureHeight=fill?height:Math.Min(height,naturalHeight);
             var pictureAt=at+new float2(0,Math.Max(0,(height-pictureHeight)*.5f));
-            draw.AddImage(new ImTextureRef{_TexID=new((nint)collectionPreview.Texture)},pictureAt,pictureAt+new float2(width,pictureHeight),new(0,1),new(1,0));
+            float band=(1-zoom)*.5f;
+            draw.AddImage(new ImTextureRef{_TexID=new((nint)collectionPreview.Texture)},pictureAt,pictureAt+new float2(width,pictureHeight),new(0,1-band),new(1,band));
             CollectionPreviewDrawCalls=collectionPreview.DrawCalls;
+        }
+        else if(bare)
+        {
+            if(kind=="emote"){float side=Math.Min(width-24,120);emoteArtwork.Draw(item.Id,(long)(boardSceneTime*1000),at+new float2((width-side)/2,(height-side)/2),side);CollectionPreviewDrawCalls=1;}
+            else if(kind=="killscreen")
+            {
+                collectionTheme.Draw(item.Id,false,(boardSceneTime-collectionPreviewStarted)%3.5,at,new(width,height));
+                CollectionKillTexture(item,collection,at,new(width,height));
+            }
+            return;
         }
         else if(kind=="emote") {float s=Math.Min(width,height)*.8f;emoteArtwork.Draw(item.Id,(long)(boardSceneTime*1000),at+new float2((width-s)/2,(height-s)/2),s);CollectionPreviewDrawCalls=1;}
         else if(kind=="killscreen")
         {
             collectionTheme.Draw(item.Id,false,(boardSceneTime-collectionPreviewStarted)%3.5,at,new(width,height));
-            string legend=CurrentPreviewLegend(collection),dance=collection.Equipped("dance")?.GetValue<string>()??"floss";
-            var team=Session?.State.Players[localSeat>=0?localSeat:0].Roster.Entries.Where(x=>x.Spot.IsBoard).Select(x=>new DigiTactics.Presentation.EliminationMember(x.Unit.Line,x.Unit.Stage)).ToArray();
-            string teamKey=team is null?"":string.Join(",",team.Select(x=>x.Line+":"+x.Stage));
-            string key=Rules.Id+":"+item.Id+":"+legend+":"+dance+":"+teamKey;
-            if(collectionKillSignature!=key)
-            {
-                RetireCollectionPreview(collectionKillPreview);collectionKillPreview=null;collectionKillSignature=null;
-                collectionKillPreview=new(Rules,legend,dance,item.Id,team);collectionKillSignature=key;
-            }
-            collectionKillPreview!.Draw((int)width,(int)height,boardSceneTime);
-            draw.AddImage(new ImTextureRef{_TexID=new((nint)collectionKillPreview.Texture)},at,at+new float2(width,height),new(0,1),new(1,0));
-            CollectionPreviewDrawCalls=collectionTheme.Operations+collectionKillPreview.DrawCalls;
+            CollectionKillTexture(item,collection,at,new(width,height));
         }
         else
         {
@@ -102,32 +106,21 @@ internal sealed partial class MatchScreen
             if(item.Data.TryGetProperty("dur"u8,out var duration))ImGui.Text($"{duration.GetDouble():0.##} seconds");
         }
     }
-    private void SelectedCosmetic(CosmeticCollection collection,string kind,bool fullHeight=false)
+    private void CollectionKillTexture(CosmeticItem item,CosmeticCollection collection,float2 at,float2 extent)
     {
-        var item=CosmeticCollection.Item(kind,previewCosmetic);
-        if(item is null || (item.Secret||MatchLockerVisible)&&!collection.Owns(kind,item.Id))
+        float width=extent.X,height=extent.Y;var draw=ImGui.GetWindowDrawList();
+        string legend=CurrentPreviewLegend(collection),dance=collection.Equipped("dance")?.GetValue<string>()??"floss";
+        var team=Session?.State.Players[localSeat>=0?localSeat:0].Roster.Entries.Where(x=>x.Spot.IsBoard).Select(x=>new DigiTactics.Presentation.EliminationMember(x.Unit.Line,x.Unit.Stage)).ToArray();
+        string teamKey=team is null?"":string.Join(",",team.Select(x=>x.Line+":"+x.Stage));
+        string key=Rules.Id+":"+item.Id+":"+legend+":"+dance+":"+teamKey;
+        if(collectionKillSignature!=key)
         {
-            string? equipped=CosmeticCollection.Multi(kind)?collection.Equipped(kind)?.AsArray().FirstOrDefault(x=>x is not null)?.GetValue<string>():collection.Equipped(kind)?.GetValue<string>();
-            item=CosmeticCollection.Item(kind,equipped)??CosmeticCollection.Items(kind).FirstOrDefault(x=>MatchLockerVisible?collection.Owns(kind,x.Id):!x.Secret||collection.Owns(kind,x.Id));
+            RetireCollectionPreview(collectionKillPreview);collectionKillPreview=null;collectionKillSignature=null;
+            collectionKillPreview=new(Rules,legend,dance,item.Id,team);collectionKillSignature=key;
         }
-        if(item is null){if(MatchLockerVisible)CollectionText("No owned cosmetics in this category yet.");return;}previewCosmetic=item.Id;
-        float room=ImGui.GetContentRegionAvail().Y;
-        float? stageHeight=fullHeight?Math.Max(210,room-(kind=="legend"?288:CosmeticCollection.Multi(kind)?340:235)):null;
-        CosmeticPreview(kind,item,collection,ImGui.GetContentRegionAvail().X,stageHeight);
-        ImGui.Separator();
-        CollectionBadge((item.Rarity??"common").ToUpperInvariant(),RarityColor(item.Rarity));
-        ImGui.SameLine();HomeLabel(CollectionKindName(kind),15,HomeMute);
-        string status=CollectionWorn(collection,kind,item.Id)?"EQUIPPED":collection.Owns(kind,item.Id)?"OWNED":"";
-        if(status.Length>0)
-        {
-            ImGui.PushFont(NativeUiTheme.DisplayBoldFont,13);float badgeWidth=ImGui.CalcTextSize(status).X+16;ImGui.PopFont();
-            if(ImGui.GetItemRectMax().X+badgeWidth+16<ImGui.GetWindowPos().X+ImGui.GetWindowSize().X-ImGui.GetStyle().WindowPadding.X)ImGui.SameLine();
-            CollectionBadge(status,HomeGold,status=="EQUIPPED");
-        }
-        ImGui.PushFont(NativeUiTheme.DisplayBoldFont,27);ImGui.PushStyleColor(ImGuiCol.Text,HomeInk);CollectionText(item.Name.ToUpperInvariant());ImGui.PopStyleColor();ImGui.PopFont();
-        if(item.Desc is not null)CollectionText(item.Desc);
-        if(kind=="dance")CollectionText("Shown on your equipped Little Legend.");
-        ImGui.Separator();CollectionActions(collection,kind,item);
+        collectionKillPreview!.Draw((int)width,(int)height,boardSceneTime);
+        draw.AddImage(new ImTextureRef{_TexID=new((nint)collectionKillPreview.Texture)},at,at+new float2(width,height),new(0,1),new(1,0));
+        CollectionPreviewDrawCalls=collectionTheme.Operations+collectionKillPreview.DrawCalls;
     }
     private static string CollectionKindName(string kind)=>kind switch
     {
