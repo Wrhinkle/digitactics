@@ -96,7 +96,8 @@ internal sealed partial class MatchScreen
             homeArtwork.Draw(art,at,new(setWidth,setHeight),255,true,.3f,draw);
             draw.AddRectFilledMultiColor(at,at+new float2(setWidth,setHeight),new ImColor8(1,10,19,64),new ImColor8(1,10,19,64),new ImColor8(1,10,19,235),new ImColor8(1,10,19,235));
             S.TextFit(draw,new(at.X+11,at.Y+setHeight-1-7-13.5f-18.9f+(18.9f-nameType.Size)*.5f),S.Gold1,set.Name.ToUpperInvariant(),nameType,setWidth-22);
-            string sub=$"{set.Traits.Length} traits · {CodexTitle(set.Pace)}";
+            // codex.js: "<n> traits · " + DT.SetPicker.modeName(set mode), as on the Play cards.
+            string sub=$"{set.Traits.Length} traits · {SetModeName(SetChoices.Options.FirstOrDefault(o=>o.Id==set.SetId)?.Mode)}";
             S.TextFit(draw,new(at.X+11,at.Y+setHeight-1-7-13.5f+(13.5f-small.Size)*.5f),S.LcMute,sub,small,setWidth-22);
             // filter: saturate(.55) brightness(.8) unless hovered or chosen.
             if(!on&&!hover)S.Filter(draw,first,.45f,.8f);
