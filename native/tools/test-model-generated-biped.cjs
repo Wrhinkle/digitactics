@@ -165,8 +165,18 @@ async function main(){
   // reach forward (Ballistamon), keep their generated clips byte-for-byte.
   const forward=await load('extra:Ballistamon'),forwardHashes=forward.gltf.animations.map(clipHash),forwardClips=modelClips(forward.gltf,forward.entry.metadata);
   check(JSON.stringify(forwardClips.map(clipHash))===JSON.stringify(forwardHashes),'generated biped with forward-reaching arms retains its generated clips');
-  const quadruped=await load('ac:Labramon'),quadrupedHashes=quadruped.gltf.animations.map(clipHash),quadrupedClips=modelClips(quadruped.gltf,quadruped.entry.metadata);
-  check(quadruped.gltf.scene.getObjectByName('DT_Rig')?.userData.body==='quadruped'&&JSON.stringify(quadrupedClips.map(clipHash))===JSON.stringify(quadrupedHashes),'generated quadruped rig retains its generated clips');
+  // Other generated body plans keep every generated joint track byte-for-byte
+  // and gain only a whole-body root bob/lean/hop that starts and ends at rest.
+  const quadruped=await load('ac:Labramon'),quadrupedClips=modelClips(quadruped.gltf,quadruped.entry.metadata),rootBone=quadruped.gltf.scene.getObjectByName('root');
+  check(quadruped.gltf.scene.getObjectByName('DT_Rig')?.userData.body==='quadruped'&&quadrupedClips.length===quadruped.gltf.animations.length,'generated quadruped keeps its four roles');
+  for(const clip of quadrupedClips){
+    const source=quadruped.gltf.animations.find(c=>c.name===clip.name);
+    const kept=source.tracks.every(raw=>{const current=clip.tracks.find(t=>t.name===raw.name);return current&&bytes(current.times).equals(bytes(raw.times))&&bytes(current.values).equals(bytes(raw.values));});
+    const position=clip.tracks.find(t=>t.name==='root.position'),rotation=clip.tracks.find(t=>t.name==='root.quaternion');
+    const closed=position&&rotation&&[0,position.times.length-1].every(i=>new THREE.Vector3().fromArray(position.values,i*3).distanceTo(rootBone.position)<1e-6&&Math.abs(new THREE.Quaternion().fromArray(rotation.values,i*4).dot(rootBone.quaternion))>1-1e-6);
+    let lift=0;if(position)for(let i=1;i<position.values.length;i+=3)lift=Math.max(lift,position.values[i]-rootBone.position.y);
+    check(kept&&closed&&lift<=.1,'generated quadruped keeps joint tracks and adds a closed, bounded root motion',{role:clip.name,kept,closed,lift});
+  }
   const other=await load('agumon:0'),otherBefore=immutable(other.gltf),otherHashes=other.gltf.animations.map(clipHash),otherClips=modelClips(other.gltf,other.entry.metadata);
   check(JSON.stringify(otherClips.map(clipHash))===JSON.stringify(otherHashes),'unrelated authored model clips unchanged');check(immutable(other.gltf)===otherBefore,'unrelated authored model geometry unchanged');
   const report={sourceSha256:sha(fs.readFileSync(path.join(root,'js/model-motion.js'))),anatomySha256:sha(fs.readFileSync(path.join(root,'js/model-anatomy.js'))),rigBuilderSha256:sha(fs.readFileSync(path.join(root,'tools/convert/rig-static.mjs'))),checks,results,failures};

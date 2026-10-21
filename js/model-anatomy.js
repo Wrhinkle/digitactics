@@ -165,7 +165,8 @@ export function anatomyFallbackClips(scene,source,original,map=anatomy[source?.u
 // tentacles at hip height), keep their direction so limbs never reach the floor.
 export function generatedBipedClips(gltf,source,clips){
   const rig=gltf.scene.getObjectByName('DT_Rig');
-  if(rig?.userData.digitacticsRig!==1||rig.userData.body!=='biped')return clips;
+  if(rig?.userData.digitacticsRig!==1)return clips;
+  if(rig.userData.body!=='biped')return generatedBodyClips(gltf,clips);
   if(!['chest','head','arm_L','arm_R','forearm_L','forearm_R'].every(name=>gltf.scene.getObjectByName(name)?.isBone))return clips;
   const idle=clips.find(c=>c.name==='idle');if(!idle)return clips;
   const rest=[];gltf.scene.traverse(node=>rest.push([node,node.position.clone(),node.quaternion.clone(),node.scale.clone()]));
@@ -202,4 +203,50 @@ export function generatedBipedClips(gltf,source,clips){
     return new THREE.AnimationClip(clip.name,clip.duration,[...original.tracks.filter(t=>!bindings.has(t.name)).map(t=>t.clone()),...clip.tracks]);
   });
   mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);return result;
+}
+
+// The other project-generated body plans (quadruped, insect, ghost, baby,
+// spider, mecha, tank) carry the same generator's clips at 0.01-0.16 rad, so
+// every role reads as the frozen static mesh. Their generated weights are hard
+// per-part islands, so larger joint angles open seams. Move the unweighted
+// rig root instead: the whole creature bobs, leans into actions and hops in
+// victory without any skin deformation. The generator's joint tracks, timing
+// and loop endpoints are kept; only the smooth two-bone babies get a larger
+// joint gain as well. Rig units are normalized to the creature's height.
+function generatedBodyClips(gltf,clips){
+  const root=gltf.scene.getObjectByName('root'),rig=gltf.scene.getObjectByName('DT_Rig');
+  if(!root?.isBone||root.parent!==rig)return clips;
+  const baby=rig.userData.body==='baby',base=root.quaternion.clone(),origin=root.position.clone();
+  const rest=new Map();gltf.scene.traverse(node=>{if(node.isBone)rest.set(node.name,node.quaternion.clone());});
+  const gain=track=>{
+    const dot=track.name.lastIndexOf('.'),bind=rest.get(track.name.slice(0,dot));
+    if(!baby||!bind||track.name.slice(dot+1)!=='quaternion')return track.clone();
+    const inverse=bind.clone().invert(),values=new Float32Array(track.values.length),q=new THREE.Quaternion();
+    for(let i=0;i<values.length;i+=4){
+      const delta=inverse.clone().multiply(q.fromArray(track.values,i)).normalize();
+      if(delta.w<0)delta.set(-delta.x,-delta.y,-delta.z,-delta.w);
+      const length=Math.hypot(delta.x,delta.y,delta.z),angle=2*Math.atan2(length,delta.w);
+      const scaled=length>1e-9?new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(delta.x/length,delta.y/length,delta.z/length),Math.min(.6,angle*2)):new THREE.Quaternion();
+      bind.clone().multiply(scaled).toArray(values,i);
+    }
+    return new THREE.QuaternionKeyframeTrack(track.name,Array.from(track.times),Array.from(values));
+  };
+  return clips.map(clip=>{
+    const role=clip.name;if(!['idle','attack','special','win'].includes(role))return clip;
+    const times=Array.from({length:65},(_,i)=>clip.duration*i/64),positions=[],rotations=[];
+    for(const time of times){
+      const u=time/clip.duration,wave=Math.sin(2*Math.PI*u),pulse=Math.sin(Math.PI*u)**2;
+      // Forward lean pivots on the floor; each hop at least clears that pivot.
+      let lean=0,sway=0,turn=0,hop=0;
+      if(role==='idle'){lean=.02*wave;sway=.015*Math.sin(4*Math.PI*u);hop=.012*(1-Math.cos(2*Math.PI*u))/2;}
+      else if(role==='attack'){lean=.14*pulse;hop=.04*pulse;}
+      else if(role==='special'){lean=.2*pulse;turn=.12*wave*pulse;hop=.07*pulse;}
+      else{sway=.08*wave*pulse;hop=.09*Math.abs(Math.sin(2*Math.PI*u))*pulse;}
+      origin.clone().add(new THREE.Vector3(0,hop,0)).toArray(positions,positions.length);
+      base.clone().multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(lean,turn,sway,'YXZ'))).toArray(rotations,rotations.length);
+    }
+    const tracks=clip.tracks.filter(t=>!/^root\.(?:position|quaternion)$/.test(t.name)).map(gain);
+    tracks.push(new THREE.VectorKeyframeTrack('root.position',times,positions),new THREE.QuaternionKeyframeTrack('root.quaternion',times,rotations));
+    return new THREE.AnimationClip(role,clip.duration,tracks);
+  });
 }
