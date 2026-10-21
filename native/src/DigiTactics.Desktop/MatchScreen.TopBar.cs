@@ -199,7 +199,7 @@ internal sealed partial class MatchScreen
                 var under=CssPanel;
                 draw.AddRectFilled(min,max,HudOver(fill,under,alpha),6);
                 draw.AddRect(min,max,HudOver(border,under,alpha),6);
-                HudRunCentered(draw,HudWeight(tool.Style==ToolPrimary?700:400),TopToolFont,(min.X+max.X)/2,min.Y+1,layout.ToolHeight-2,tool.Label,HudOver(ink,under,alpha));
+                HudRunCentered(draw,HudWeight(tool.Style==ToolPrimary?700:400),TopToolFont,(min.X+max.X)/2,min.Y+1+(HudCompact?5:6),TopToolFont*1.35f,tool.Label,HudOver(ink,under,alpha));
                 if(pressed)ToolbarAction(tool.Key);
             }
             else
@@ -208,7 +208,7 @@ internal sealed partial class MatchScreen
                 var under=HudMix(CssTopTop,CssPanel,.5f);
                 draw.AddRectFilled(min,max,HudOver(fill,under,.45f),6);
                 draw.AddRect(min,max,HudOver(border,under,.45f),6);
-                HudRunCentered(draw,HudWeight(tool.Style==ToolPrimary?700:400),TopToolFont,(min.X+max.X)/2,min.Y+1,layout.ToolHeight-2,tool.Label,HudOver(ink,under,.45f));
+                HudRunCentered(draw,HudWeight(tool.Style==ToolPrimary?700:400),TopToolFont,(min.X+max.X)/2,min.Y+1+(HudCompact?5:6),TopToolFont*1.35f,tool.Label,HudOver(ink,under,.45f));
             }
             x+=width+6;
         }

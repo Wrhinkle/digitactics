@@ -52,10 +52,10 @@ internal sealed partial class MatchScreen
         {
             float healthWidth=4+HudWidth(HudWeight(600),OpponentSmall,card.Health);
             float nameWidth=HudRun(draw,HudWeight(700),14,textX,nameTop,14*1.35f,card.Name,nameInk,Math.Max(20,150-healthWidth));
-            // <small> shares the name's baseline. Segoe UI's ascent is 81% of its ascent-to-descent height.
+            // <small> shares the name's baseline.
             var bold=HudWeight(700);var small=HudWeight(600);
-            float baseline=nameTop+(14*1.35f-14*bold.Factor)/2+.81f*14*bold.Factor;
-            float smallTop=baseline-.81f*OpponentSmall*small.Factor;
+            float baseline=HudBaseline(bold,14,nameTop,14*1.35f);
+            float smallTop=baseline-MathF.Ceiling(OpponentSmall*small.Ascent);
             draw.AddText(small.Font,OpponentSmall*small.Factor,new(textX+nameWidth+4,smallTop),CssBad,card.Health);
         }
         if(ImGui.IsItemHovered()){HeaderOpponentTooltip=detail;ResultTooltip(detail);}

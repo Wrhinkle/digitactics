@@ -12,7 +12,11 @@ namespace DigiTactics.Desktop;
 /// </summary>
 internal sealed partial class MatchScreen
 {
-    private readonly record struct HudFace(ImFontPtr Font,float Factor);
+    // Ascent and Descent are hhea metrics in em; Factor (their sum) converts a CSS em size to ImGui's pixel height.
+    private readonly record struct HudFace(ImFontPtr Font,float Ascent,float Descent)
+    {
+        public float Factor=>Ascent+Descent;
+    }
     private static HudFace hudRegular,hudSemibold,hudBold,hudBlack,modalRegular,modalBold,modalDisplay;
     private static bool hudFontsLoaded;
 
@@ -20,15 +24,15 @@ internal sealed partial class MatchScreen
     {
         string system=Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
         string bundled=Path.Combine(AppContext.BaseDirectory,"content","fonts");
-        modalRegular=new(NativeUiTheme.BodyFont,FaceFactor(Path.Combine(bundled,"inter","Inter[opsz,wght].ttf")));
-        modalBold=new(NativeUiTheme.BodyBoldFont,FaceFactor(Path.Combine(bundled,"inter","Inter-Bold.ttf")));
-        modalDisplay=new(NativeUiTheme.DisplayBoldFont,FaceFactor(Path.Combine(bundled,"chakrapetch","ChakraPetch-Bold.ttf")));
+        modalRegular=Face(NativeUiTheme.BodyFont,Path.Combine(bundled,"inter","Inter[opsz,wght].ttf"));
+        modalBold=Face(NativeUiTheme.BodyBoldFont,Path.Combine(bundled,"inter","Inter-Bold.ttf"));
+        modalDisplay=Face(NativeUiTheme.DisplayBoldFont,Path.Combine(bundled,"chakrapetch","ChakraPetch-Bold.ttf"));
         HudFace System(string file,HudFace fallback)
         {
             string path=Path.Combine(system,file);
             if(!File.Exists(path))return fallback;
-            var font=ImGui.GetIO().Fonts.AddFontFromFileTTF(path,NativeUiTheme.BodySize);
-            return font.IsNull()?fallback:new(font,FaceFactor(path));
+            var font=AddHudFont(path);
+            return font.IsNull()?fallback:Face(font,path);
         }
         // Chromium resolves CSS weight 800 to Segoe UI Black, the next heavier installed face.
         hudRegular=System("segoeui.ttf",modalRegular);
@@ -38,8 +42,14 @@ internal sealed partial class MatchScreen
         hudFontsLoaded=true;
     }
 
-    // hhea ascender minus descender over unitsPerEm: the factor stb_truetype applies to a pixel height.
-    private static float FaceFactor(string path)
+    // Chromium draws this text with ClearType; a heavier rasterizer keeps grayscale ImGui text as bright and crisp.
+    private static unsafe ImFontPtr AddHudFont(string path)
+    {
+        var config=new ImFontConfig{FontDataOwnedByAtlas=true,GlyphMaxAdvanceX=float.MaxValue,RasterizerMultiply=1.3f,RasterizerDensity=1};
+        return ImGui.GetIO().Fonts.AddFontFromFileTTF(path,NativeUiTheme.BodySize,new ImFontConfigPtr(&config),default);
+    }
+    // hhea ascender and descender over unitsPerEm: stb_truetype sizes a face by their sum.
+    private static HudFace Face(ImFontPtr font,string path)
     {
         try
         {
@@ -53,31 +63,38 @@ internal sealed partial class MatchScreen
                 if(tag=="head")head=U32(data,record+8);else if(tag=="hhea")hhea=U32(data,record+8);
             }
             int unitsPerEm=head<0?0:U16(data,head+18);
-            if(hhea<0||unitsPerEm==0)return 1.2f;
-            return ((short)U16(data,hhea+4)-(short)U16(data,hhea+6))/(float)unitsPerEm;
+            if(hhea<0||unitsPerEm==0)return new(font,.97f,.24f);
+            return new(font,(short)U16(data,hhea+4)/(float)unitsPerEm,-(short)U16(data,hhea+6)/(float)unitsPerEm);
         }
-        catch(IOException){return 1.2f;}
+        catch(IOException){return new(font,.97f,.24f);}
     }
 
     private static HudFace HudWeight(int weight)
     {
-        if(!hudFontsLoaded)return new(NativeUiTheme.BodyFont,1.21f);
+        if(!hudFontsLoaded)return new(NativeUiTheme.BodyFont,.97f,.24f);
         return weight>=800?hudBlack:weight>=700?hudBold:weight>=600?hudSemibold:hudRegular;
     }
     private static HudFace ModalWeight(int weight)
     {
-        if(!hudFontsLoaded)return new(weight>=600?NativeUiTheme.BodyBoldFont:NativeUiTheme.BodyFont,1.21f);
+        if(!hudFontsLoaded)return new(weight>=600?NativeUiTheme.BodyBoldFont:NativeUiTheme.BodyFont,.97f,.24f);
         return weight>=600?modalBold:modalRegular;
     }
-    private static HudFace ModalDisplay=>hudFontsLoaded?modalDisplay:new(NativeUiTheme.DisplayBoldFont,1.3f);
+    private static HudFace ModalDisplay=>hudFontsLoaded?modalDisplay:new(NativeUiTheme.DisplayBoldFont,1f,.3f);
 
     private static float HudWidth(HudFace face,float css,string value,float spacing=0)
         =>value.Length==0?0:face.Font.CalcTextSizeA(css*face.Factor,float.MaxValue,0,value).X+spacing*value.Length;
 
+    private static float HudBaseline(HudFace face,float css,float lineTop,float lineHeight)
+    {
+        float ascent=MathF.Round(css*face.Ascent),descent=MathF.Round(css*face.Descent);
+        return MathF.Floor(lineTop+(lineHeight-ascent-descent)/2+ascent);
+    }
     /// <summary>Draws one CSS text run whose line box starts at <paramref name="lineTop"/>.</summary>
     private static float HudRun(ImDrawListPtr draw,HudFace face,float css,float x,float lineTop,float lineHeight,string value,ImColor8 color,float maxWidth=0,float spacing=0)
     {
-        float size=css*face.Factor,y=lineTop+(lineHeight-size)/2;
+        // Chromium rounds ascent and descent to whole pixels and centres them in the line box;
+        // ImGui snaps the run to a pixel and rounds its baked ascent up.
+        float size=css*face.Factor,y=HudBaseline(face,css,lineTop,lineHeight)-MathF.Ceiling(css*face.Ascent);
         if(maxWidth>0&&HudWidth(face,css,value,spacing)>maxWidth)
         {
             const string ellipsis="…";
@@ -115,6 +132,8 @@ internal sealed partial class MatchScreen
         =>new((byte)MathF.Round(top.R*alpha+bottom.R*(1-alpha)),(byte)MathF.Round(top.G*alpha+bottom.G*(1-alpha)),(byte)MathF.Round(top.B*alpha+bottom.B*(1-alpha)));
     private static Rgb HudMix(Rgb a,Rgb b,float amountOfA)=>HudOver(a,b,amountOfA);
 
+    // Chromium snaps each laid-out box to whole pixels.
+    private static float2 HudSnap(float2 point)=>new(MathF.Round(point.X),MathF.Round(point.Y));
     private static Rgb HudCss(string color)=>color.Length==7&&color[0]=='#'?HudHex(color):new(142,152,173);
     // filter: grayscale(.7) brightness(.7), the unaffordable shop card.
     private static Rgb HudPoor(Rgb color)
@@ -150,11 +169,14 @@ internal sealed partial class MatchScreen
     /// <summary>.coin: radial gold disc with a dark rim.</summary>
     private static void HudCoin(ImDrawListPtr draw,float2 center,float diameter)
     {
-        float r=diameter/2;
-        draw.AddCircleFilled(center,r,HudHex("c48a12"),24);
-        draw.AddCircleFilled(center-new float2(r*.12f,r*.12f),r*.82f,HudHex("ffcf4a"),24);
-        HudRadial(draw,center-new float2(r*.3f,r*.3f),r*.62f,HudHex("fff2b0"),.95f,8);
-        draw.AddCircle(center,r-.5f,HudHex("8a5f08"),24);
+        // radial-gradient(circle at 35% 35%, #fff2b0, #ffcf4a 45%, #c48a12): gold reaches the rim except bottom right.
+        float r=diameter/2;var light=center-new float2(r*.3f,r*.3f);
+        draw.AddCircleFilled(center,r,HudMix(HudHex("ffcf4a"),HudHex("c48a12"),.55f),24);
+        draw.PushClipRect(center-new float2(r,r),center+new float2(r,r),true);
+        HudRadial(draw,light,r*1.25f,HudHex("ffcf4a"),1,10);
+        HudRadial(draw,light,r*.7f,HudHex("fff2b0"),.9f,8);
+        draw.PopClipRect();
+        draw.AddCircle(center,r-.5f,HudAlpha(HudHex("8a5f08"),.85f),24);
     }
     private static void HudDashedRect(ImDrawListPtr draw,float2 min,float2 max,ImColor8 color,float thickness,float dash=6,float gap=4)
     {

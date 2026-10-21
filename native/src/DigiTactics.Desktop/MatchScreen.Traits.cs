@@ -38,7 +38,9 @@ internal sealed partial class MatchScreen
         var board = CombinedTraits ? Session.CombatProjection.Team(Session.State.Teams[player.Team!.Value]).Units : Session.CombatProjection.Board(player);
         // Keep long trait lists from pushing combat controls out of the sidebar.
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
+        ImGui.PushStyleColor(ImGuiCol.ChildBg,new ImColor8(0,0,0,0));
         ImGui.BeginChild("Trait cards"u8, new(0, Math.Max(160,ImGui.GetContentRegionAvail().Y-(selectedUnit is null?0:96))));
+        ImGui.PopStyleColor();
         TraitCardsBounds=(ImGui.GetWindowDrawList().GetClipRectMin(),ImGui.GetWindowDrawList().GetClipRectMax());
         var codexTraits=codexCatalog.Value.Variant(Rules.Id).Traits;
         foreach (var row in ordered)
@@ -54,7 +56,7 @@ internal sealed partial class MatchScreen
             float portraitRows=active&&contributors.Length>0?MathF.Ceiling((float)contributors.Length/columns):0;
             float bodyHeight=34.4f+(portraitRows>0?2+3+portraitRows*22+(portraitRows-1)*3:0);
             float cardHeight=bodyHeight+2*padY+2;
-            var min=ImGui.GetCursorScreenPos();var max=min+new float2(width,cardHeight);
+            var min=HudSnap(ImGui.GetCursorScreenPos());var max=min+new float2(width,cardHeight);ImGui.SetCursorScreenPos(min);
             bool open=ImGui.InvisibleButton("trait/"+row.Trait.Id,new(width,cardHeight));
             Buttons["trait/"+row.Trait.Id]=(min+max)*.5f;
             bool hovered=ImGui.IsItemHovered();

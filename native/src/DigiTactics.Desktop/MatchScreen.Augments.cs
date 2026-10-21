@@ -23,7 +23,7 @@ internal sealed partial class MatchScreen
             var description = text.Get(Rules.Id, id);
             var definition = Rules.Offers!.Augments.Concat(Rules.Offers.DuoAugments).Single(augment => augment.Id == id);
             var color = definition.Tier switch { 1 => HudHex("c9d1dc"), 2 => CssGold, _ => HudHex("e58bff") };
-            var position=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
+            var position=HudSnap(ImGui.GetCursorScreenPos());ImGui.SetCursorScreenPos(position);float width=ImGui.GetContentRegionAvail().X;
             bool art=ItemArtwork.Has(Rules.Id,"aug:"+id);
             float textX=1+7+(art?30+8:0),bodyWidth=width-textX-8;
             var title=WrapHud(HudWeight(700),12.5f,description.Name,bodyWidth);

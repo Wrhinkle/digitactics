@@ -23,7 +23,7 @@ internal sealed partial class MatchScreen
         ChartUnits = units.Select(u => u.Id).ToArray();
         double maximum = Math.Max(1, units.Select(Value).DefaultIfEmpty().Max());
         ImGui.Dummy(new(0,10-ImGui.GetStyle().ItemSpacing.Y));
-        var min=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
+        var min=HudSnap(ImGui.GetCursorScreenPos());float width=ImGui.GetContentRegionAvail().X;
         float header=2+11*1.35f+6,tabs=11*1.35f+4+2,rowsHeight=units.Length*(22+4);
         float height=1+8+header+tabs+6+rowsHeight-(units.Length>0?4:0)+8+1;
         var max=min+new float2(width,height);

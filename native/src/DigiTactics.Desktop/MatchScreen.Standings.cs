@@ -73,7 +73,7 @@ internal sealed partial class MatchScreen
         foreach(var seat in ScoutOrder())
         {
             var player=state.Players[seat.Id];float width=ImGui.GetContentRegionAvail().X;
-            var at=ImGui.GetCursorScreenPos();var end=at+new float2(width,rowHeight);
+            var at=HudSnap(ImGui.GetCursorScreenPos());var end=at+new float2(width,rowHeight);ImGui.SetCursorScreenPos(at);
             bool pressed=ImGui.InvisibleButton("view/"+player.Id,new(width,rowHeight));
             Buttons["view/"+player.Id]=(at+end)*.5f;
             var draw=ImGui.GetWindowDrawList();

@@ -427,14 +427,18 @@ internal sealed partial class MatchScreen : IDisposable
         float railPadding=HudNarrow?6:10;
         ImGui.PushStyleColor(ImGuiCol.WindowBg,CssRail);ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(0,0,0,0));
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(railPadding,railPadding));
-        Window("Team",0,Top,Left,Height,ImGuiWindowFlags.NoTitleBar);
+        // The rail's 1px border belongs to the rail box, outside its padding.
+        Window("Team",0,Top,Left-1,Height,ImGuiWindowFlags.NoTitleBar);
         ImGui.PopStyleColor(2);ImGui.PopStyleVar();
-        HudEdgeLine(new(Left-.5f,Top),new(Left-.5f,Top+Height));
+        ImGui.GetBackgroundDrawList().AddLine(new(Left-.5f,Top),new(Left-.5f,Top+Height),CssLine);
         TeamSidebarBounds=(ImGui.GetWindowDrawList().GetClipRectMin(),ImGui.GetWindowDrawList().GetClipRectMax());
+        ImGui.SetCursorScreenPos(new(railPadding,Top+railPadding));
         PartnerDropZone();
         var player = Session!.State.Players[viewed];
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(8,0));
         AugmentSidebar(player);
         TraitSidebar(player);
+        ImGui.PopStyleVar();
         var selected = Human.Roster.Entries.FirstOrDefault(e => e.Unit.Id == selectedUnit);
         if (selected is not null)
         {
@@ -448,13 +452,16 @@ internal sealed partial class MatchScreen : IDisposable
         ImGui.End();
         ImGui.PushStyleColor(ImGuiCol.WindowBg,CssRail);ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(0,0,0,0));
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(railPadding,railPadding));
-        Window("Standings",size.X-RightRail,Top,RightRail,Height,ImGuiWindowFlags.NoTitleBar);
+        Window("Standings",size.X-RightRail+1,Top,RightRail-1,Height,ImGuiWindowFlags.NoTitleBar);
         ImGui.PopStyleColor(2);ImGui.PopStyleVar();
-        HudEdgeLine(new(size.X-RightRail+.5f,Top),new(size.X-RightRail+.5f,Top+Height));
+        ImGui.GetBackgroundDrawList().AddLine(new(size.X-RightRail+.5f,Top),new(size.X-RightRail+.5f,Top+Height),CssLine);
         ScoutingBounds=(ImGui.GetWindowDrawList().GetClipRectMin(),ImGui.GetWindowDrawList().GetClipRectMax());
+        ImGui.SetCursorScreenPos(new(size.X-RightRail+1+railPadding,Top+railPadding));
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(8,0));
         StandingsCards();
         RoundHistoryStrip();
         DamageChart();
+        ImGui.PopStyleVar();
         if (Session.State.Duos && !IsSpectating) UiText.Wrapped("Your partner: " + Session.Units.Portal.Partner(Human)?.Name);
         if (!IsSpectating) foreach (var orb in Human.Orbs.ToArray()) if (Button("orb/" + orb.Id, $"Collect {orb.Kind} loot")) Act("orb", new { id = orb.Id });
         if (history?.Award is { } award)
