@@ -2,7 +2,7 @@
 // Authored clips take priority, with the documented source-specific repairs below.
 // These motions preserve the original mesh and skin.
 import * as THREE from 'three';
-import { anatomyFallbackClips, generatedBipedClips } from './model-anatomy.js';
+import { anatomyFallbackClips, generatedBipedClips, hasFallbackAnatomy } from './model-anatomy.js';
 import { rigidPartClips } from './model-rigid-parts.js';
 
 const V = () => new THREE.Vector3();
@@ -41,7 +41,8 @@ export function modelClips(gltf, src) {
     pose.clipAction(authored[0]).play();
     pose.update(0);
   }
-  const fallback=fallbackClips(gltf.scene);
+  // Reviewed anatomy maps keep the paired arm reference their weapon arms blend toward.
+  const fallback=fallbackClips(gltf.scene,true,hasFallbackAnatomy(src));
   // This clipless Kotemon already parents the sword to its hand, but retains a
   // separate staging offset. Correct only its attachment origin, after fallback
   // preparation so the existing body/arm animation channels remain identical.
@@ -401,7 +402,7 @@ function somersaultClearance(gltf,clips){
   return clips.map(c=>c===clip?corrected:c);
 }
 
-export function fallbackClips(scene, adjustRest = true) {
+export function fallbackClips(scene, adjustRest = true, pairedArms = false) {
   const bones = new Set();
   scene.traverse(o => { if (o.isSkinnedMesh) for (const b of o.skeleton.bones) bones.add(b); });
   if (!bones.size) return [];
@@ -456,7 +457,7 @@ export function fallbackClips(scene, adjustRest = true) {
     const side = origin.x >= box.getCenter(V()).x ? 1 : -1;
     const current = child.getWorldPosition(V()).sub(b.getWorldPosition(V()));
     const elevation = Math.atan2(current.y, Math.abs(current.x));
-    arms.push({ bone: b, side, raise: Number.isFinite(elevation) ? Math.min(2.4, Math.max(.25, .96 - elevation)) : 1.6 });
+    arms.push({ bone: b, side, limb: armName.test(b.name), raise: Number.isFinite(elevation) ? Math.min(2.4, Math.max(.25, .96 - elevation)) : 1.6 });
   }
   // Ears and wings are often the largest moving shapes on small or blob-like
   // rigs (Lopmon's ears, PlatinumNumemon's wings). Flap the root of each chain.
@@ -482,12 +483,22 @@ export function fallbackClips(scene, adjustRest = true) {
         const pulse = Math.sin(Math.PI * u) ** 2;
         const delta = Q();
         const turn = (axis, angle) => delta.multiply(Q().setFromAxisAngle(axis, angle));
+        // Upper arms strike asymmetrically: the -X arm leads, the other guards. Two
+        // arms thrust to the same height read as a T-pose at mid-action. Victory
+        // raises both by their measured elevation; wings keep their paired flap.
+        const lead = !pairedArms && r.arm?.limb && r.arm.side < 0, guard = !pairedArms && r.arm?.limb && !lead;
         if (role === 'idle') {
           if (r.arm) turn(Z, r.arm.side * .035 * wave);
           if (r.head) turn(X, .025 * wave);
           if (r.chest) turn(X, .018 * wave);
           if (r.tail) turn(Y, .08 * wave);
           if (r.flap) turn(Z, r.flap * .06 * wave);
+        } else if (lead && role !== 'win') {
+          if (role === 'attack') { turn(X, -.95 * pulse); turn(Z, r.arm.side * .12 * pulse); }
+          else turn(X, -1.7 * pulse);
+        } else if (guard && role !== 'win') {
+          if (role === 'attack') turn(X, .22 * pulse);
+          else { turn(Z, r.arm.side * .5 * pulse); turn(X, -.45 * pulse); }
         } else if (role === 'attack' || role === 'special') {
           if (r.arm) turn(X, -(role === 'special' ? 1.25 : .8) * pulse);
           if (r.head) turn(X, .12 * pulse);

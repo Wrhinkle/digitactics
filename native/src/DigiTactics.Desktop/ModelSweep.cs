@@ -275,7 +275,13 @@ internal static partial class ModelSweep
         double extent = 0, change = 0;
         var first = a.World.Select(Position).ToArray(); var second = b.World.Select(Position).ToArray();
         for (int i = 1; i < first.Length; i++) extent = Math.Max(extent, Distance(first[i], first[0]));
-        if (extent < 1e-9) return 0;
+        if (extent < 1e-9)
+        {
+            // One-node rigid rips: whole-body motion shows only in the posed mesh bounds.
+            var (minA, maxA) = model.Mesh.Bounds(model.Rig, a, precise: false); var (minB, maxB) = model.Mesh.Bounds(model.Rig, b, precise: false);
+            double height = maxA.Y - minA.Y;
+            return height > 1e-9 && double.IsFinite(height) ? Math.Max(Distance(minA, minB), Distance(maxA, maxB)) / height : 0;
+        }
         for (int i = 0; i < first.Length; i++) change = Math.Max(change, Distance(first[i], second[i]));
         return change / extent;
     }

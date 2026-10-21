@@ -123,7 +123,9 @@ async function main(){
     }
     check(blends.maxNearestContactGapGrowthHeight<.018,key+': interruption blend nearest attachment contact',blends);
     check(immutable(gltf)===identity,key+': source attributes/materials survive playback');
-    const control=await load(key);check(modelClips(control.gltf,{...entry.metadata,uid:entry.metadata.uid+'-control'}).length===0,key+': nonmatching UID unchanged');
+    // A nonmatching UID falls back to the automatic rigid map (model-rigid-parts.js), never this reviewed map.
+    const control=await load(key),controlClips=modelClips(control.gltf,{...entry.metadata,uid:entry.metadata.uid+'-control'});
+    check(controlClips.length===5&&controlClips.some((c,i)=>c.tracks.some((t,j)=>t.values.length!==clips[i].tracks[j]?.values.length||t.values.some((v,k)=>Math.abs(v-clips[i].tracks[j].values[k])>1e-6))),key+': nonmatching UID does not use the reviewed map');
     const browser=await load(key),template=ctx.prepareTemplate(browser.gltf,entry.metadata);check(template.actions.run?.name==='run',key+': actual browser companion template exposes run');
     const context={key,sourceSha256:preview?originalHashes[key]:catalog.assets[entry.asset].sourceSha256,roles,blends};results.push(context);
     const visualName=preview?'DW1_Brachiomon_Recovered':key.split(':')[1];

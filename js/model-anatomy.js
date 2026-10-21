@@ -61,6 +61,7 @@ const anatomy = {
 // Every project-generated biped rig (tools/convert/rig-static.mjs) shares these bone names.
 const generatedBiped={body:'chest',head:'head',family:'biped',elbowAxis:'y',elbowSigns:[1,-1]};
 
+export const hasFallbackAnatomy = source => Object.hasOwn(anatomy, source?.uid ?? '');
 const pulse = (u,start,end) => u<=start||u>=end?0:Math.sin(Math.PI*(u-start)/(end-start))**2;
 function gesture(role,u){
   const envelope=Math.sin(Math.PI*u)**2,wave=Math.sin(2*Math.PI*u);

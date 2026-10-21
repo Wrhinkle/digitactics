@@ -76,7 +76,9 @@ async function main(){
  // overlap when blended anchor separation is less than their combined radii.
  check(report.blends.maxOverlapRadiusFraction<1,'Interrupted blends preserve overlapping cap volumes',report.blends);
  check(immutable()===before,'Every source attribute/material survives all playback');
- const control=await parse();check(modelClips(control,{...s.metadata,uid:s.metadata.uid+'-control'}).length===0,'Other UIDs unchanged');
+ // Other UIDs get the automatic rigid map (model-rigid-parts.js), never these reviewed offsets/tracks.
+ const control=await parse(),controlClips=modelClips(control,{...s.metadata,uid:s.metadata.uid+'-control'});
+ check(controlClips.length===5&&controlClips.some((c,i)=>c.tracks.some((t,j)=>t.values.length!==clips[i].tracks[j]?.values.length||t.values.some((v,k)=>Math.abs(v-clips[i].tracks[j].values[k])>1e-6))),'Other UIDs do not use the reviewed map');
  report.checks=checks;report.failures=failures;report.geometrySha256=before;
  fs.mkdirSync(D,{recursive:true});fs.writeFileSync(path.join(D,'frigimon-rigid-checks.json'),JSON.stringify(report,null,2));fs.writeFileSync(path.join(D,'Frigimon_prepared.motion.json'),JSON.stringify({frames:visual}));
  console.log(JSON.stringify(report,null,2));if(failures.length)process.exitCode=1;

@@ -205,7 +205,8 @@ function angles(family, p, role, u) {
 
 export function rigidPartClips(gltf, src) {
   const spec = rigs[src?.uid];
-  if (!spec || gltf.animations.length) return null;
+  if (gltf.animations.length) return null;
+  if (!spec) return autoRigidClips(gltf, src);
   const scene = gltf.scene, prepared = new Map();
   if (spec.restOffsets && scene.userData.rigidAssemblyPrepared !== src.uid) {
     // Validate the whole exact source before mutating any node. Repeated
@@ -250,6 +251,229 @@ export function rigidPartClips(gltf, src) {
       poses.forEach((pose, i) => {
         pose.position.y += lift;
         positions[i].push(...pose.position.toArray()); rotations[i].push(...pose.rotation.toArray());
+      });
+    }
+    const tracks = all.flatMap((p, i) => [new THREE.VectorKeyframeTrack(p.name + '.position', times, positions[i]), new THREE.QuaternionKeyframeTrack(p.name + '.quaternion', times, rotations[i])]);
+    return new THREE.AnimationClip(role, duration, tracks);
+  });
+}
+
+// Clipless, unskinned imports without a reviewed map above: the remaining DW1
+// assemblies and single-mesh rips. Their original nodes stay the only animated
+// objects (no mesh, material, skin or hierarchy edits). A part tree is grown
+// from the torso through the nearest original contacts; each joint pivots at
+// that contact. Outstretched arms are lowered as a constant clip offset, as in
+// the reviewed Agumon/Frigimon maps. One-part rips move as a whole.
+export function autoRigidPartRig(gltf) {
+  const scene = gltf.scene;
+  let skinned = false, meshes = 0;
+  scene.traverse(o => { if (o.isSkinnedMesh || o.isBone) skinned = true; if (o.isMesh) meshes++; });
+  if (skinned || !meshes) return null;
+  scene.updateMatrixWorld(true);
+  let container = scene;
+  while (container.children.length === 1 && !container.children[0].isMesh && container.children[0].children.length) container = container.children[0];
+  const nodes = container.children.filter(o => { let mesh = false; o.traverse(c => { if (c.isMesh) mesh = true; }); return mesh; });
+  if (!nodes.length || nodes.some(n => !n.name) || new Set(nodes.map(n => n.name)).size !== nodes.length) return null;
+  const parts = nodes.map(node => {
+    const vertices = [], triangles = [];
+    node.traverse(o => {
+      if (!o.isMesh) return;
+      const local = [];
+      for (let i = 0; i < o.geometry.attributes.position.count; i++) local.push(o.getVertexPosition(i, new THREE.Vector3()).applyMatrix4(o.matrixWorld));
+      const ids = o.geometry.index ? o.geometry.index.array : local.map((_, i) => i);
+      for (let i = 0; i + 2 < ids.length; i += 3) triangles.push(new THREE.Triangle(local[ids[i]], local[ids[i + 1]], local[ids[i + 2]]));
+      vertices.push(...local);
+    });
+    const step = Math.max(1, Math.floor(vertices.length / 200)), sample = vertices.filter((_, i) => i % step === 0);
+    const box = new THREE.Box3().setFromPoints(vertices);
+    return { node, name: node.name, vertices, triangles, sample, box, center: box.getCenter(new THREE.Vector3()) };
+  });
+  const all = new THREE.Box3(); parts.forEach(p => all.union(p.box));
+  const size = all.getSize(new THREE.Vector3()), height = Math.max(size.y, 1e-6), floor = all.min.y;
+  if (parts.length === 1) {
+    const p = parts[0];
+    return { family: 'auto', single: true, height, parts: [{ name: p.name, parent: null, pivot: [p.center.x, floor, p.center.z], kind: 'body', side: 0, segment: 0, restZ: 0, offset: [0, 0, 0] }] };
+  }
+  // Contact between two original parts: surface distance (vertex to triangle),
+  // with the centre of the touching region as the joint pivot.
+  const near = height * .06, band = height * .015, cache = new Map();
+  const surface = (points, part, box) => {
+    const triangles = part.triangles.filter(t => box.intersectsTriangle(t)), target = new THREE.Vector3();
+    return points.map(v => {
+      let best = Infinity, point = null;
+      for (const t of triangles) { t.closestPointToPoint(v, target); const d = v.distanceTo(target); if (d < best) { best = d; point = target.clone(); } }
+      return { d: best, v, point };
+    });
+  };
+  const contact = (a, b) => {
+    const key = a.name < b.name ? a.name + '|' + b.name : b.name + '|' + a.name;
+    if (cache.has(key)) return cache.get(key);
+    const boxGap = Math.max(0, ...['x', 'y', 'z'].map(k => Math.max(a.box.min[k] - b.box.max[k], b.box.min[k] - a.box.max[k])));
+    let result = { gap: boxGap };
+    if (boxGap <= near) {
+      const region = a.box.clone().expandByScalar(near).intersect(b.box.clone().expandByScalar(near));
+      const da = surface(a.sample, b, region), db = surface(b.sample, a, region), gap = Math.min(...da.map(x => x.d), ...db.map(x => x.d));
+      const touching = [...da, ...db].filter(x => x.d <= gap + band).map(x => x.v);
+      if (Number.isFinite(gap)) {
+        // The closest pair, keyed by part, closes staged (exploded) assemblies.
+        const ab = da.find(x => x.d === gap), ba = db.find(x => x.d === gap);
+        const points = ab ? { [a.name]: ab.v, [b.name]: ab.point } : { [a.name]: ba.point, [b.name]: ba.v };
+        result = { gap, points, pivot: touching.reduce((sum, v) => sum.add(v), new THREE.Vector3()).multiplyScalar(1 / touching.length) };
+      }
+    }
+    cache.set(key, result); return result;
+  };
+  // Minimum spanning tree over contacts, rooted at its vertex-weighted median.
+  const neighbours = new Map(parts.map(p => [p, []])), linked = [parts[0]], pending = parts.slice(1);
+  while (pending.length) {
+    let best = null;
+    for (const p of pending) for (const q of linked) { const c = contact(p, q); if (!best || c.gap < best.c.gap - height * 1e-4) best = { p, q, c }; }
+    const pivot = best.c.pivot || best.q.box.clampPoint(best.p.center, new THREE.Vector3());
+    const link = { pivot, gap: best.c.gap, points: best.c.points };
+    neighbours.get(best.p).push({ part: best.q, ...link }); neighbours.get(best.q).push({ part: best.p, ...link });
+    linked.push(best.p); pending.splice(pending.indexOf(best.p), 1);
+  }
+  const cost = root => {
+    let total = 0; const seen = new Set([root]), queue = [[root, 0]];
+    while (queue.length) { const [p, d] = queue.shift(); total += d * p.vertices.length; for (const n of neighbours.get(p)) if (!seen.has(n.part)) { seen.add(n.part); queue.push([n.part, d + 1]); } }
+    return total;
+  };
+  const torso = parts.reduce((a, b) => cost(b) < cost(a) ? b : a);
+  const order = [torso], parentOf = new Map([[torso, null]]);
+  for (let i = 0; i < order.length; i++) for (const n of neighbours.get(order[i])) if (!parentOf.has(n.part)) { parentOf.set(n.part, { part: order[i], pivot: n.pivot, gap: n.gap, points: n.points }); order.push(n.part); }
+  const subtree = new Map();
+  for (const p of [...order].reverse()) { const box = p.box.clone(); for (const q of order) if (parentOf.get(q)?.part === p) box.union(subtree.get(q)); subtree.set(p, box); }
+  const tc = torso.center, wide = size.x * .12, total = parts.reduce((n, p) => n + p.vertices.length, 0), info = new Map([[torso, { kind: 'body', side: 0, segment: 0, restZ: 0 }]]);
+  for (const p of order.slice(1)) {
+    const { part: parent, pivot } = parentOf.get(p), up = info.get(parent), box = subtree.get(p), c = box.getCenter(new THREE.Vector3());
+    const own = p.center.x - tc.x, side = Math.abs(own) > size.x * .04 ? Math.sign(own) : up.side;
+    if (['head', 'arm', 'leg', 'tail', 'wing'].includes(up.kind) && (up.side === 0 || side === up.side)) { info.set(p, { kind: up.kind, side: up.side || side, segment: up.segment + 1, restZ: 0 }); continue; }
+    const central = Math.abs(c.x - tc.x) < wide, spans = box.min.x < tc.x - wide && box.max.x > tc.x + wide;
+    // Hips sit in the lower half of the torso (or below it); shoulders above.
+    const members = order.filter(q => { for (let r = q; r; r = parentOf.get(r)?.part) if (r === p) return true; return false; });
+    const low = pivot.y < torso.box.min.y + (torso.box.max.y - torso.box.min.y) * .5;
+    const light = members.reduce((n, m) => n + m.vertices.length, 0) < total * .06;
+    let kind = 'link';
+    if (central && box.min.y > tc.y - height * .05 && c.y > pivot.y) kind = 'head';
+    else if (box.min.y < floor + height * .15 && c.y < pivot.y && !spans && side !== 0 && low) kind = 'leg';
+    else if (central && c.z < tc.z && box.max.z < pivot.z + height * .05 && !spans) kind = 'tail';
+    else if (!spans && side !== 0 && light) kind = 'wing';
+    else if (!spans && side !== 0 && Math.abs(c.x - tc.x) > wide && (!low || box.min.y > floor + height * .25)) kind = 'arm';
+    else if (!spans && side !== 0 && box.min.y < floor + height * .15) kind = 'leg';
+    let restZ = 0;
+    if (kind === 'arm') {
+      // Lower outstretched arms toward 50 degrees below horizontal.
+      const far = members.flatMap(m => m.sample).reduce((a, b) => b.distanceToSquared(pivot) > a.distanceToSquared(pivot) ? b : a);
+      // Long arms on short bodies stop where the hand would reach the floor.
+      const d = far.clone().sub(pivot), elevation = Math.atan2(d.y, Math.abs(d.x)), reach = Math.hypot(d.x, d.y);
+      for (let target = -.87; Math.abs(d.x) > d.length() * .6 && elevation > -.6 && target < Math.min(-.26, elevation); target += .05)
+        if (pivot.y + reach * Math.sin(target) > floor + height * .08) { restZ = -Math.sign(d.x) * (elevation - target); break; }
+    }
+    info.set(p, { kind, side: ['arm', 'leg', 'wing'].includes(kind) ? side : 0, segment: 0, restZ });
+  }
+  // Staged DW1 assemblies (MudFrigimon, Monzaemon) leave limb pieces apart.
+  // Like Frigimon's reviewed offsets, seat each separated limb piece on its
+  // parent's nearest surface; the shift is carried by the clip tracks.
+  const offset = new Map([[torso, new THREE.Vector3()]]), pivots = new Map([[torso, new THREE.Vector3(tc.x, floor, tc.z)]]);
+  for (const p of order.slice(1)) {
+    const { part: parent, pivot, gap, points } = parentOf.get(p), seat = new THREE.Vector3();
+    if (gap > height * .015 && points && ['arm', 'leg', 'head'].includes(info.get(p).kind)) seat.subVectors(points[parent.name], points[p.name]);
+    offset.set(p, offset.get(parent).clone().add(seat));
+    pivots.set(p, pivot.clone().add(offset.get(parent)).addScaledVector(seat, .5));
+  }
+  return { family: 'auto', height, parts: order.map(p => ({ name: p.name, parent: parentOf.get(p)?.part.name ?? null,
+    pivot: pivots.get(p).toArray(), offset: offset.get(p).toArray(), gap: p === torso ? 0 : parentOf.get(p).gap / height, ...info.get(p) })) };
+}
+
+function autoAngles(spec, p, role, u) {
+  const cycle = u * Math.PI * 2, s = Math.sin(cycle), c = Math.cos(cycle), side = p.side, first = p.segment === 0;
+  const hit = pulse(u, .15, .43, .80), wind = pulse(u, 0, .18, .42), big = pulse(u, .12, .52, .90), raise = (1 - c) / 2;
+  let x = 0, y = 0, z = p.restZ;
+  if (spec.single) {
+    if (role === 'idle') { x = .025 * s; z = .03 * Math.sin(cycle + .7); }
+    else if (role === 'run') { x = .08 * raise; z = .06 * s; }
+    else if (role === 'attack') x = .3 * hit - .1 * wind;
+    else if (role === 'special') { const k = Math.min(1, Math.max(0, (u - .12) / .66)); x = -.12 * wind; y = Math.PI * 2 * k * k * (3 - 2 * k); }
+    else { z = .14 * s; y = .25 * Math.sin(cycle * 2) * raise; }
+  } else if (p.kind === 'wing') {
+    // Light lateral panels flap as a pair, distal panels flexing less.
+    const flap = role === 'idle' ? .1 * s : role === 'run' ? .35 * s : role === 'attack' ? .3 * hit - .12 * wind : role === 'special' ? .45 * Math.sin(cycle * 2) * big : .3 * s;
+    z = side * flap * (first ? 1 : .3);
+  } else if (role === 'idle') {
+    if (p.kind === 'body') x = .012 * s;
+    if (p.kind === 'head') { x = .035 * s; y = .03 * Math.sin(cycle + .5); }
+    if (p.kind === 'arm' && first) z += side * .03 * s;
+    if (p.kind === 'tail') y = .05 * (Math.sin(cycle - p.segment * .5) - Math.sin(-p.segment * .5));
+  } else if (role === 'run') {
+    if (p.kind === 'leg') x = first ? side * .35 * s : -side * .12 * s;
+    if (p.kind === 'arm' && first) x = -side * .28 * s;
+    if (p.kind === 'head') x = -.03 * (1 - c);
+    if (p.kind === 'tail') y = .08 * (Math.sin(cycle - p.segment * .5) - Math.sin(-p.segment * .5));
+  } else if (role === 'attack') {
+    // The -X arm leads; the other guards, so the strike never reads as a T.
+    if (p.kind === 'body') { x = .12 * hit - .05 * wind; y = .1 * hit; }
+    if (p.kind === 'head') x = -.09 * hit;
+    if (p.kind === 'arm' && side < 0) x = first ? -1.0 * hit + .25 * wind : -.35 * hit;
+    if (p.kind === 'arm' && side > 0 && first) x = .2 * hit;
+    if (p.kind === 'tail') y = .18 * hit;
+  } else if (role === 'special') {
+    if (p.kind === 'body') x = .1 * big - .08 * wind;
+    if (p.kind === 'head') x = -.18 * big;
+    if (p.kind === 'arm' && side < 0) x = first ? -1.5 * big : -.3 * big;
+    if (p.kind === 'arm' && side > 0 && first) { z += side * .6 * big; x = -.3 * big; }
+    if (p.kind === 'tail') x = -.1 * big;
+  } else {
+    if (p.kind === 'body') y = .12 * s;
+    if (p.kind === 'head') { x = .08 * Math.sin(cycle * 2); z = .06 * s; }
+    if (p.kind === 'arm' && side < 0 && first) { z += side * 2.2 * raise; x = .15 * s; }
+    if (p.kind === 'arm' && side > 0 && first) { z += side * .35 * raise; x = -.2 * raise; }
+    if (p.kind === 'leg' && first) x = side * .08 * s;
+    if (p.kind === 'tail') y = .12 * (Math.sin(cycle - p.segment * .5) - Math.sin(-p.segment * .5));
+  }
+  return new THREE.Quaternion().setFromEuler(new THREE.Euler(x, y, z, 'XYZ'));
+}
+
+function autoRigidClips(gltf) {
+  const spec = autoRigidPartRig(gltf);
+  if (!spec) return null;
+  const scene = gltf.scene;
+  scene.updateMatrixWorld(true);
+  const all = spec.parts.map(p => {
+    const node = scene.getObjectByName(p.name), vertices = [];
+    node.traverse(o => {
+      if (!o.isMesh) return;
+      for (let i = 0; i < o.geometry.attributes.position.count; i++) vertices.push(o.getVertexPosition(i, new THREE.Vector3()).applyMatrix4(o.matrixWorld));
+    });
+    // The assembly container may carry an import transform (UprightFix), so
+    // world-space joint deltas are converted back into the node's parent space.
+    const space = node.parent.matrixWorld.clone();
+    return { ...p, node, pivot: new THREE.Vector3(...p.pivot), seat: new THREE.Matrix4().makeTranslation(...p.offset), vertices, space, spaceInverse: space.clone().invert(), local: node.matrix.clone() };
+  });
+  const floor = Math.min(...all.flatMap(p => p.vertices.map(v => v.y)));
+  return Object.entries(durations).map(([role, duration]) => {
+    const count = Math.ceil(duration * 120), times = [], positions = all.map(() => []), rotations = all.map(() => []);
+    for (let frame = 0; frame <= count; frame++) {
+      const u = frame / count, delta = new Map(), poses = [];
+      times.push(u * duration);
+      for (const p of all) {
+        const rotation = autoAngles(spec, p, role, u), local = new THREE.Matrix4().makeRotationFromQuaternion(rotation);
+        local.setPosition(p.pivot.clone().sub(p.pivot.clone().applyQuaternion(rotation)));
+        const world = p.parent !== null && delta.has(p.parent) ? delta.get(p.parent).clone().multiply(local) : local;
+        delta.set(p.name, world); poses.push(world.clone().multiply(p.seat));
+      }
+      let minimum = Infinity;
+      all.forEach((p, i) => { for (const v of p.vertices) minimum = Math.min(minimum, v.clone().applyMatrix4(poses[i]).y); });
+      // Whole-body hops over a grounded lowest point (seated pieces may rise or drop).
+      const wave = Math.sin(u * Math.PI * 2), bell = Math.sin(Math.PI * u) ** 2;
+      const hop = spec.height * (spec.single
+        ? role === 'idle' ? .02 * (1 - Math.cos(u * Math.PI * 4)) / 2 : role === 'special' ? .18 * bell : role === 'win' ? .1 * Math.abs(wave) : role === 'run' ? .06 * Math.abs(wave) : 0
+        : role === 'special' ? .05 * bell : role === 'win' ? .03 * wave * wave : 0);
+      const lift = new THREE.Matrix4().makeTranslation(0, floor - minimum + hop, 0);
+      all.forEach((p, i) => {
+        const matrix = p.spaceInverse.clone().multiply(lift.clone().multiply(poses[i])).multiply(p.space).multiply(p.local);
+        const position = new THREE.Vector3(), quaternion = new THREE.Quaternion(), scale = new THREE.Vector3();
+        matrix.decompose(position, quaternion, scale);
+        positions[i].push(...position.toArray()); rotations[i].push(...quaternion.toArray());
       });
     }
     const tracks = all.flatMap((p, i) => [new THREE.VectorKeyframeTrack(p.name + '.position', times, positions[i]), new THREE.QuaternionKeyframeTrack(p.name + '.quaternion', times, rotations[i])]);
