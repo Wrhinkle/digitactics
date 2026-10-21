@@ -20,7 +20,8 @@ internal sealed partial class MatchScreen
     private static readonly Rgb[] stageColors = [HudHex("d08a4a"),HudHex("d6dbe4"),HudHex("ffd84a")];
     private static readonly Rgb CardSurface=HudHex("161c2a"),CardBar=HudHex("0e121b");
 
-    private Rgb FamilyColor(string line)=>codexCatalog.Value.Variant(Rules.Id).Lines.FirstOrDefault(l=>l.Id==line) is {} codex?HudCss(codex.Color):HudHex("5b6b8c");
+    // render3d.js familyColor, exported as the codex portrait colour.
+    private Rgb FamilyColor(string line)=>codexCatalog.Value.Variant(Rules.Id).Lines.FirstOrDefault(l=>l.Id==line) is {PortraitColor:{} color}?HudCss(color):HudHex("5b6b8c");
     private Rgb AttributeColor(string attribute)=>attribute switch{"Vaccine"=>HudHex("4fb3ff"),"Data"=>HudHex("4fe08a"),"Virus"=>HudHex("c45cff"),_=>HudHex("c8c8c8")};
 
     /// <summary>style.css .card: tier border, portrait art with the family glow, traits, attribute, name bar and price.</summary>
@@ -60,7 +61,8 @@ internal sealed partial class MatchScreen
         draw.PushClipRect(inner,artMax,true);
         float portrait=height==112?112:height==100?100:80;
         var portraitAt=new float2(artMax.X+4-portrait,inner.Y-6);
-        HudRadial(draw,portraitAt+new float2(portrait*.6f,portrait*.45f),portrait*.57f,Paint(FamilyColor(id)),.6f);
+        // radial-gradient(circle at 60% 45%, mix(fc 60%, transparent), transparent 70%) on the .pt box
+        HudRadialRect(draw,portraitAt,portraitAt+new float2(portrait,portrait),0,portraitAt+new float2(portrait*.6f,portrait*.45f),portrait*.57f,Paint(FamilyColor(id)),.6f,Paint(FamilyColor(id)),0);
         int beforePortrait=portraits.DrawCalls;
         portraits.Draw(Rules.Id,id,stage,portraitAt,portrait,255,affordable?null:new ImColor8(150,150,150));
         ShopPortraitDrawCalls+=portraits.DrawCalls-beforePortrait;

@@ -80,11 +80,12 @@ internal sealed partial class MatchScreen
         if(peekChoices){EndChoicePanel();return;}
         // .msub: 13px muted, margin 4px 0 12px.
         ModalText(draw,ModalWeight(400),13,headAt.X,headAt.Y+headHeight+4,innerWidth,heading.Description,CssMuted,true);
-        var cardsAt=new float2(headAt.X,panelAt.Y+cardsOffset);
+        var cardsAt=new float2(headAt.X,MathF.Round(panelAt.Y+cardsOffset));
         ImGui.SetCursorScreenPos(cardsAt);
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));
+        ImGui.PushStyleColor(ImGuiCol.ChildBg,new ImColor8(0,0,0,0));
         ImGui.BeginChild("Reward comparisons"u8,new(innerWidth,viewportHeight),ImGuiChildFlags.None,scrolls?ImGuiWindowFlags.None:ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
-        ImGui.PopStyleVar();
+        ImGui.PopStyleColor();ImGui.PopStyleVar();
         ChoiceViewportBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
         var cardsDraw=ImGui.GetWindowDrawList();
         float rowOrigin=ImGui.GetCursorScreenPos().X,rowY=ImGui.GetCursorScreenPos().Y,contentTop=rowY,available=ImGui.GetContentRegionAvail().X;

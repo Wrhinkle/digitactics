@@ -16,7 +16,7 @@ internal sealed partial class MatchScreen
         AugmentPortraits = 0;
         if (DisplayedAugments.Count == 0) return;
         var draw=ImGui.GetWindowDrawList();var header=ImGui.GetCursorScreenPos();float railWidth=ImGui.GetContentRegionAvail().X;
-        ImGui.Dummy(new(railWidth,HudSectionHeader(draw,header.X,header.Y,railWidth,"Augments",$"{DisplayedAugments.Count}/3")));
+        ImGui.Dummy(new(railWidth,MathF.Round(HudSectionHeader(draw,header.X,header.Y,railWidth,"Augments",$"{DisplayedAugments.Count}/3"))));
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
         foreach (string id in DisplayedAugments)
         {

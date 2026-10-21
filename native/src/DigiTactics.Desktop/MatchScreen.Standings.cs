@@ -61,7 +61,7 @@ internal sealed partial class MatchScreen
         int alive=state.Duos?state.Teams.Count(t=>t.Alive):state.Players.Count(p=>p.Alive);
         var header=ImGui.GetCursorScreenPos();float railWidth=ImGui.GetContentRegionAvail().X;
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
-        ImGui.Dummy(new(railWidth,HudSectionHeader(ImGui.GetWindowDrawList(),header.X,header.Y,railWidth,state.Duos?"Teams":"Tamers",$"{alive} left")));
+        ImGui.Dummy(new(railWidth,MathF.Round(HudSectionHeader(ImGui.GetWindowDrawList(),header.X,header.Y,railWidth,state.Duos?"Teams":"Tamers",$"{alive} left"))));
         var opponent=StandingOpponent(state.Players[viewed]);
         EnsureSoundboard();var sounds=soundboard.Labels(Environment.TickCount64);
         // .hpv small: the HP each Tamer lost in the last results, shown outside combat.
@@ -158,7 +158,7 @@ internal sealed partial class MatchScreen
         ImGui.Dummy(new(0,10-ImGui.GetStyle().ItemSpacing.Y));
         var header=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(3,3));
-        ImGui.Dummy(new(width,HudSectionHeader(ImGui.GetWindowDrawList(),header.X,header.Y,width,"Your rounds",$"PvP {rounds.Count(r=>!r.Pve&&r.Outcome=="w")}-{rounds.Count(r=>!r.Pve&&r.Outcome=="l")}")-3));
+        ImGui.Dummy(new(width,MathF.Round(HudSectionHeader(ImGui.GetWindowDrawList(),header.X,header.Y,width,"Your rounds",$"PvP {rounds.Count(r=>!r.Pve&&r.Outcome=="w")}-{rounds.Count(r=>!r.Pve&&r.Outcome=="l")}"))-3));
         int columns=Math.Max(1,(int)((width+3)/33));
         foreach(var round in rounds.TakeLast(14))
         {

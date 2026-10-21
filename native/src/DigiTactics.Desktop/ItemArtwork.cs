@@ -24,14 +24,14 @@ internal sealed class ItemArtwork : IDisposable
 
     public static bool Has(string variant, string id) => manifest.Sets.TryGetValue(variant.Split('/')[0], out var icons) && icons.ContainsKey(id);
 
-    public void Draw(string variant, string item, float2 position, float size)
+    public void Draw(string variant, string item, float2 position, float size, byte alpha = 255)
     {
         if (!manifest.Sets.TryGetValue(variant.Split('/')[0], out var icons) || !icons.TryGetValue(item, out var file))
             throw new InvalidDataException($"Missing item artwork: {variant}/{item}");
         if (!textures.TryGetValue(file, out var entry))
             entry = (new(PngImage.Decode(File.ReadAllBytes(Path.Combine(folder, file))), new(MinFilter: 9729, WrapS: 33071, WrapT: 33071), false), frame);
         textures[file] = (entry.Texture, frame);
-        ImGui.GetWindowDrawList().AddImage(new ImTextureRef { _TexID = new((nint)entry.Texture.Id) }, position, new(position.X + size, position.Y + size), new(0, 0), new(1, 1), new ImColor8(255, 255, 255));
+        ImGui.GetWindowDrawList().AddImage(new ImTextureRef { _TexID = new((nint)entry.Texture.Id) }, position, new(position.X + size, position.Y + size), new(0, 0), new(1, 1), new ImColor8(255, 255, 255, alpha));
         DrawCalls++;
     }
 

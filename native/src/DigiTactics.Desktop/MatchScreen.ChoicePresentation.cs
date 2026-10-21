@@ -97,8 +97,8 @@ internal sealed partial class MatchScreen
     /// <summary>Opens the arena-centred .mpanel. The window covers the screen as an input barrier; the scrim covers only the arena.</summary>
     private void BeginChoicePanel(string name,float width,float height,bool peek=false)
     {
-        float x=Math.Clamp(Left+(Width-width)/2,12,size.X-width-12);
-        float y=peek?Top+10:Math.Clamp(Top+(Height-height)/2,Top+10,Math.Max(Top+10,size.Y-height-12));
+        float x=MathF.Round(Math.Clamp(Left+(Width-width)/2,12,size.X-width-12));
+        float y=peek?Top+10:MathF.Round(Math.Clamp(Top+(Height-height)/2,Top+10,Math.Max(Top+10,size.Y-height-12)));
         ImGui.PushStyleColor(ImGuiCol.WindowBg,new ImColor8(0,0,0,0));
         ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize,0);
         Window(name,peek?x:0,peek?y:0,peek?width:size.X,peek?height:size.Y,

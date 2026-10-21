@@ -45,11 +45,12 @@ internal sealed partial class MatchScreen
         if(lead.Length>0)subX+=HudRun(draw,ModalWeight(700),13,subX,y,13*ModalLine,lead,CssGold);
         if(subWidth<=innerWidth)HudRun(draw,ModalWeight(400),13,subX,y,13*ModalLine,rest,CssMuted);
         else ModalText(draw,ModalWeight(400),13,x,y,innerWidth,(lead+rest).Trim(),CssMuted,true);
-        var cardsAt=new float2(x,panelAt.Y+cardsOffset);
+        var cardsAt=new float2(x,MathF.Round(panelAt.Y+cardsOffset));
         ImGui.SetCursorScreenPos(cardsAt);
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));
+        ImGui.PushStyleColor(ImGuiCol.ChildBg,new ImColor8(0,0,0,0));
         ImGui.BeginChild("Carousel choices"u8,new(innerWidth,viewportHeight),ImGuiChildFlags.None,scrolls?ImGuiWindowFlags.None:ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
-        ImGui.PopStyleVar();
+        ImGui.PopStyleColor();ImGui.PopStyleVar();
         CarouselChoicesBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
         var cardsDraw=ImGui.GetWindowDrawList();
         float available=ImGui.GetContentRegionAvail().X,rowOrigin=ImGui.GetCursorScreenPos().X,rowY=ImGui.GetCursorScreenPos().Y,contentTop=rowY;
@@ -78,7 +79,7 @@ internal sealed partial class MatchScreen
             var portraitAt=new float2(min.X+(cardWidth-96)/2,min.Y+2+8);
             HudPortraitTile(cardsDraw,portraitAt,96,Paint(FamilyColor(option.Line)),10);
             portraits.Draw(Rules.Id,option.Line,0,portraitAt,96,(byte)(255*alpha));
-            if(option.Item is { } item)itemArtwork.Draw(Rules.Id,item,portraitAt+new float2(96+8-34,96+6-34),34);
+            if(option.Item is { } item)itemArtwork.Draw(Rules.Id,item,portraitAt+new float2(96+8-34,96+6-34),34,(byte)(255*alpha));
             float inner=cardWidth-4-16,textX=min.X+2+8;
             ModalText(cardsDraw,ModalWeight(700),14,textX,min.Y+2+8+96+4,inner,label.Name,Paint(CssText),true);
             ModalText(cardsDraw,ModalWeight(400),11,textX,min.Y+layout.TraitsY,inner,label.Traits,Paint(CssMuted),true);

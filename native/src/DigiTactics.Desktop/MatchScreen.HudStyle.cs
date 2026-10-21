@@ -166,17 +166,52 @@ internal sealed partial class MatchScreen
             draw.AddCircleFilled(center,radius*(1-(float)i/rings),HudAlpha(color,step),48);
         }
     }
+    /// <summary>
+    /// A CSS radial-gradient (inner colour at <paramref name="center"/> to outer colour at <paramref name="radius"/>,
+    /// outer beyond it) filling a rounded rectangle, as a vertex-coloured polar mesh.
+    /// </summary>
+    private static void HudRadialRect(ImDrawListPtr draw,float2 min,float2 max,float rounding,float2 center,float radius,Rgb inner,float innerAlpha,Rgb outer,float outerAlpha)
+    {
+        rounding=Math.Min(rounding,Math.Min(max.X-min.X,max.Y-min.Y)/2);
+        var boundary=new List<float2>();
+        void Edge(float2 a,float2 b){for(int i=0;i<6;i++)boundary.Add(a+(b-a)*(i/6f));}
+        void Arc(float2 c,float from){if(rounding<=0){boundary.Add(c);return;}for(int i=0;i<=6;i++){float angle=from+i*MathF.PI/12;boundary.Add(c+new float2(MathF.Cos(angle),MathF.Sin(angle))*rounding);}}
+        // clockwise from the top-left corner (screen y grows downward)
+        Arc(new(min.X+rounding,min.Y+rounding),MathF.PI);Edge(new(min.X+rounding,min.Y),new(max.X-rounding,min.Y));
+        Arc(new(max.X-rounding,min.Y+rounding),1.5f*MathF.PI);Edge(new(max.X,min.Y+rounding),new(max.X,max.Y-rounding));
+        Arc(new(max.X-rounding,max.Y-rounding),0);Edge(new(max.X-rounding,max.Y),new(min.X+rounding,max.Y));
+        Arc(new(min.X+rounding,max.Y-rounding),.5f*MathF.PI);Edge(new(min.X,max.Y-rounding),new(min.X,min.Y+rounding));
+        const int rings=10;int count=boundary.Count;
+        ImColor8 At(float2 p)
+        {
+            float t=Math.Clamp(MathF.Sqrt((p.X-center.X)*(p.X-center.X)+(p.Y-center.Y)*(p.Y-center.Y))/Math.Max(.001f,radius),0,1);
+            var color=HudMix(outer,inner,t);float alpha=innerAlpha+(outerAlpha-innerAlpha)*t;
+            return HudAlpha(color,alpha);
+        }
+        var origin=new float2(Math.Clamp(center.X,min.X,max.X),Math.Clamp(center.Y,min.Y,max.Y));
+        var uv=ImGui.GetFontTexUvWhitePixel();
+        draw.PrimReserve(count*3+(rings-1)*count*6,1+rings*count);
+        uint first=draw._VtxCurrentIdx;
+        draw.PrimWriteVtx(origin,uv,At(origin));
+        for(int ring=1;ring<=rings;ring++)
+            foreach(var point in boundary){var p=origin+(point-origin)*(ring/(float)rings);draw.PrimWriteVtx(p,uv,At(p));}
+        ushort V(int ring,int k)=>(ushort)(first+1+(ring-1)*count+(k%count));
+        for(int k=0;k<count;k++){draw.PrimWriteIdx((ushort)first);draw.PrimWriteIdx(V(1,k));draw.PrimWriteIdx(V(1,k+1));}
+        for(int ring=1;ring<rings;ring++)
+            for(int k=0;k<count;k++)
+            {
+                draw.PrimWriteIdx(V(ring,k));draw.PrimWriteIdx(V(ring+1,k));draw.PrimWriteIdx(V(ring+1,k+1));
+                draw.PrimWriteIdx(V(ring,k));draw.PrimWriteIdx(V(ring+1,k+1));draw.PrimWriteIdx(V(ring,k+1));
+            }
+    }
     /// <summary>.coin: radial gold disc with a dark rim.</summary>
     private static void HudCoin(ImDrawListPtr draw,float2 center,float diameter)
     {
         // radial-gradient(circle at 35% 35%, #fff2b0, #ffcf4a 45%, #c48a12): gold reaches the rim except bottom right.
-        float r=diameter/2;var light=center-new float2(r*.3f,r*.3f);
-        draw.AddCircleFilled(center,r,HudMix(HudHex("ffcf4a"),HudHex("c48a12"),.55f),24);
-        draw.PushClipRect(center-new float2(r,r),center+new float2(r,r),true);
-        HudRadial(draw,light,r*1.25f,HudHex("ffcf4a"),1,10);
-        HudRadial(draw,light,r*.7f,HudHex("fff2b0"),.9f,8);
-        draw.PopClipRect();
-        draw.AddCircle(center,r-.5f,HudAlpha(HudHex("8a5f08"),.85f),24);
+        float r=diameter/2;var min=center-new float2(r,r);var max=center+new float2(r,r);var light=min+new float2(diameter*.35f,diameter*.35f);
+        HudRadialRect(draw,min,max,r,light,diameter*.92f,HudHex("ffcf4a"),1,HudHex("c48a12"),1);
+        HudRadialRect(draw,min,max,r,light,diameter*.41f,HudHex("fff2b0"),1,HudHex("ffcf4a"),0);
+        draw.AddCircle(center,r-.5f,HudHex("8a5f08"),24);
     }
     private static void HudDashedRect(ImDrawListPtr draw,float2 min,float2 max,ImColor8 color,float thickness,float dash=6,float gap=4)
     {
@@ -237,11 +272,9 @@ internal sealed partial class MatchScreen
     /// <summary>.pt: a family-coloured radial tile (light at 50% 30%) behind a portrait.</summary>
     private static void HudPortraitTile(ImDrawListPtr draw,float2 min,float size,Rgb family,float rounding)
     {
-        var max=min+new float2(size,size);
-        draw.AddRectFilled(min,max,HudMix(family,HudHex("0b0e15"),.4f),rounding);
-        draw.PushClipRect(min,max,true);
-        HudRadial(draw,min+new float2(size*.5f,size*.3f),size*.69f,HudMix(family,HudHex("ffffff"),.7f),1,14);
-        draw.PopClipRect();
+        // radial-gradient(circle at 50% 30%, mix(fc 70%, #fff), mix(fc 40%, #0b0e15) 80%)
+        HudRadialRect(draw,min,min+new float2(size,size),rounding,min+new float2(size*.5f,size*.3f),size*.69f,
+            HudMix(family,HudHex("ffffff"),.7f),1,HudMix(family,HudHex("0b0e15"),.4f),1);
     }
 
     // style.css breakpoints. Compact covers max-height 800 or max-width 1360.

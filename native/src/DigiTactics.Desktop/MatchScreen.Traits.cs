@@ -34,7 +34,7 @@ internal sealed partial class MatchScreen
         var headerAt=ImGui.GetCursorScreenPos();float railWidth=ImGui.GetContentRegionAvail().X;
         string heading=CombinedTraits?"Combined team traits":player.Id==localSeat||localSeat<0?"Traits":player.Name+"'s traits";
         float headerHeight=HudSectionHeader(ImGui.GetWindowDrawList(),headerAt.X,headerAt.Y,railWidth,heading,$"{ordered.Count(row => row.Level > 0)} active");
-        ImGui.Dummy(new(railWidth,headerHeight));
+        ImGui.Dummy(new(railWidth,MathF.Round(headerHeight)));
         var board = CombinedTraits ? Session.CombatProjection.Team(Session.State.Teams[player.Team!.Value]).Units : Session.CombatProjection.Board(player);
         // Keep long trait lists from pushing combat controls out of the sidebar.
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
