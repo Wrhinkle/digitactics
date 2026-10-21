@@ -11,7 +11,7 @@ internal sealed class SaveDataUiSmoke : IDisposable
     private readonly GameAudio audio;
     private FileOperationUiSmoke? operations;
     private readonly string directory, backup;
-    private int step, cooldown = 5, selections;
+    private int step = -1, cooldown = 5, selections;
     private bool down, checkedInvalid, checkedCancel, checkedExport, checkedReset;
     public SaveDataUiSmoke(MatchScreen screen, NativeProfileStore profile,GameAudio audio)
     {
@@ -32,7 +32,7 @@ internal sealed class SaveDataUiSmoke : IDisposable
             ImGui.GetIO().AddInputCharactersUTF8(step == 4 ? "RESE"u8 : " reset "u8); step++; cooldown = 5; return;
         }
         if (step >= 13) {operations??=new(screen,profile,audio);operations.Input(screen);return;}
-        string key = step switch { 0 => "saveData", 1 or 7 => "exportSave", 2 or 8 => "resetSave", 3 or 9 => "resetSaveText", 5 or 11 => "confirmResetSave", 6 => "cancelResetSave", 12 => "closeSaveData", _ => throw new InvalidOperationException("Unexpected save data step.") };
+        string key = step switch { -1 => "settings", 0 => "saveData", 1 or 7 => "exportSave", 2 or 8 => "resetSave", 3 or 9 => "resetSaveText", 5 or 11 => "confirmResetSave", 6 => "cancelResetSave", 12 => "closeSaveData", _ => throw new InvalidOperationException("Unexpected save data step.") };
         if (!screen.Buttons.TryGetValue(key, out var point)) return;
         if (point.X < 0 || point.Y < 0 || point.X >= ImGui.GetIO().DisplaySize.X || point.Y >= ImGui.GetIO().DisplaySize.Y) throw new InvalidOperationException("Save data control outside window: " + key);
         ImGui.GetIO().AddMousePosEvent(point.X, point.Y); ImGui.GetIO().AddMouseButtonEvent(0, true); down = true;
@@ -64,8 +64,8 @@ internal sealed class SaveDataUiSmoke : IDisposable
         }
         if (step < 13 || cooldown > 0) return false;
         if(operations is not null)return operations.Verify(screen,size,capture);
-        if (screen.SaveDataVisible || !checkedInvalid || !checkedCancel || !checkedExport || !checkedReset || !screen.Buttons.ContainsKey("chooseProfile")) throw new InvalidOperationException("Save data flow did not finish with a fresh import-ready Home.");
-        Console.WriteLine("Save data UI passed: canceled picker, current-profile export, invalid RESET disabled, cancellation, typed reset, backup preservation and fresh import navigation."); return false;
+        if (screen.SaveDataVisible || !checkedInvalid || !checkedCancel || !checkedExport || !checkedReset || !profile.CanImport || !screen.SettingsVisible || !screen.Buttons.ContainsKey("saveData")) throw new InvalidOperationException("Save data flow did not return to Settings with a fresh import-ready profile.");
+        Console.WriteLine("Save data UI passed: canceled picker, current-profile export, invalid RESET disabled, cancellation, typed reset, backup preservation and return to Settings with fresh import available."); return false;
     }
     public void Dispose()
     {

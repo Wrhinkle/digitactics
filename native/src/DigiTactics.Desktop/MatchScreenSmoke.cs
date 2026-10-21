@@ -47,13 +47,14 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private string? hatchWalletBefore,hatchLegendsBefore;
     private bool collectionVerified,treeScrolled,transformWhite,transformFlash,settledPreview,announcementExpired,announcementFadedIn,announcementFadedOut;
     private readonly string[] farmCommands = evolutionSmoke
-        ? ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "farmRoom", "farmOut/tsunomon", "farmIn/tsunomon", "farmOut/motimon", "farmSelect/tsunomon", "farmSwap/motimon", "farmIn/tsunomon", "farmExpand", "farmTheme/sewer", "closeFarm"]
+        ? ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "farmRoom", "farmOut/tsunomon", "farmIn/tsunomon", "farmOut/motimon", "farmIn/motimon", "farmSelect/tsunomon", "farmExpand", "farmTheme/sewer", "closeFarm"]
         : ["farm", "farmFeed/meat", "farmPlay", "farmPraise", "farmPet", "farmLights", "farmLights", "closeFarm"];
     private int farmIndex;
     private bool farmVerified, farmAuxiliaryClick;
     private long farmInitialBits;
     public string Pending => !collectionLayoutSmoke && !home.Done ? home.Pending : !codex.HomeDone ? codex.HomePending
         : collectionProfile is not null && !collectionVerified ? "Collection/"+(collectionIndex<collectionCommands.Length ? collectionCommands[collectionIndex]=="egg/legend"&&!incubator.Done?incubator.Pending:collectionCommands[collectionIndex] : "reward verification")
+        : collectionLayoutSmoke && collectionVerified ? "Collection routes/"+collectionRoutes.Pending
         : collectionProfile is not null && !farmVerified ? "Farm/"+(farmCommands.ElementAtOrDefault(farmIndex)??"save verification")
         : !gameplayVerified ? index==1?carouselFlow.Pending:$"Gameplay/{index}/"+(commands.ElementAtOrDefault(index)??"result verification")
         : !loot.Done ? loot.Pending : !elimination.Done ? elimination.Pending : gameMenu.Pending;
@@ -65,13 +66,14 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         // consume those budgets, and a stuck phase cannot extend its own budget.
         var phase=!collectionLayoutSmoke && !home.Done?(0,"Home",900):!codex.HomeDone?(1,"Codex",600)
             :collectionProfile is not null&&!collectionVerified?(2,"Collection",evolutionSmoke?1800:1200)
+            :collectionLayoutSmoke&&collectionVerified?(3,"Collection routes",500)
             :collectionProfile is not null&&!farmVerified?(3,"Farm",evolutionSmoke?400:200)
             :!gameplayVerified?(4,"Gameplay",1600):!loot.Done?(5,"Loot",800)
             :!elimination.Done?(6,"Elimination",256):(7,"Game menu",128);
         return deadline.Check(phase.Item1,phase.Item2,frame,phase.Item3);
     }
     private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "arenaBench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
-        "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "reconnectAudio", "closeAudio", "mute", "mute"];
+        "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "closeAudio", "mute", "mute"];
     private int index, cooldown = 3, battleFrames, pvpFrames;
     private bool down, planningCaptured, battleCaptured, pvpCaptured;
     private long emoteTime;
@@ -102,6 +104,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     private bool eliminationSkipDown;
     public void Input(MatchScreen screen)
     {
+        if(screen.MatchLoadingVisible)return;
         if(!collectionLayoutSmoke&&!home.Done){home.Input(screen);return;}
         if(!codex.HomeDone){codex.HomeInput(screen);return;}
         if (eliminationSkipDown) { ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,false); eliminationSkipDown=false; return; }
@@ -148,6 +151,16 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 input.AddMousePosEvent(cardPoint.X,cardPoint.Y);input.AddMouseButtonEvent(0,true);down=true;collectionSelectingCard=true;return;
             }
             if (!screen.Buttons.TryGetValue(collectionCommand, out var target)) return;
+            if(collectionCommand is "levelLegend" or "feedLegend" or "digivolve" or "revertLegend" or "openEvolutionTree")
+            {
+                var bounds=screen.EvolutionCareBounds;
+                float inset=collectionCommand=="openEvolutionTree"?16:18;
+                if(target.Y<bounds.Min.Y+inset||target.Y>bounds.Max.Y-inset)
+                {
+                    input.AddMousePosEvent((bounds.Min.X+bounds.Max.X)*.5f,(bounds.Min.Y+bounds.Max.Y)*.5f);
+                    input.AddMouseWheelEvent(0,target.Y<bounds.Min.Y+inset?3:-3);cooldown=3;return;
+                }
+            }
             if(collectionCommands[collectionIndex]=="confirmEgg")
             {
                 hatchWalletBefore=collectionProfile.Storage.GetValueOrDefault("dt.cosmetics.v1");
@@ -180,18 +193,38 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             if (down) { input.AddMouseButtonEvent(0, false); down = false; if (!farmAuxiliaryClick) farmIndex++; farmAuxiliaryClick = false; cooldown = 3; return; }
             string farmCommand = farmCommands[farmIndex];
             string routed = farmCommand;
-            if (farmCommand == "closeFarm" && screen.Buttons.ContainsKey("farmManagementClose")) routed = "farmManagementClose";
+            bool portraitPet = farmCommand == "farmPet";
+            if (portraitPet) routed = "farmResident/" + screen.FarmSelectedResident;
+            else if (farmCommand == "closeFarm" && screen.Buttons.ContainsKey("farmManagementClose")) routed = "farmManagementClose";
             else if (!screen.Buttons.ContainsKey(farmCommand))
             {
                 if (farmCommand.StartsWith("farmFeed/", StringComparison.Ordinal)) routed = "farmAction/feed";
                 else if (farmCommand.StartsWith("farmTheme/", StringComparison.Ordinal)) routed = screen.Buttons.ContainsKey("farmManageThemes") ? "farmManageThemes" : "farmThemes";
             }
             if (!screen.Buttons.TryGetValue(routed, out var target)) return;
-            farmAuxiliaryClick = routed != farmCommand;
+            if(screen.Buttons.ContainsKey("farmManagementClose") && routed!="farmManagementClose")
+            {
+                var bounds=screen.FarmManagementBounds;
+                if(target.Y<bounds.Min.Y+20||target.Y>bounds.Max.Y-20)
+                {
+                    input.AddMousePosEvent(bounds.Max.X-10,(bounds.Min.Y+bounds.Max.Y)/2);
+                    input.AddMouseWheelEvent(0,target.Y<bounds.Min.Y+20?2:-2);cooldown=3;return;
+                }
+            }
+            farmAuxiliaryClick = routed != farmCommand && !portraitPet;
             input.AddMousePosEvent(target.X, target.Y); input.AddMouseButtonEvent(0, true); down = true; return;
         }
         if (index >= commands.Length) { if (cooldown-- > 0) return; if (!loot.Done) loot.Input(screen); else if (!elimination.Done) elimination.Input(screen); else gameMenu.Input(screen); cooldown = 3; return; }
         if (cooldown-- > 0) return;
+        if(index==0)
+        {
+            var input=ImGui.GetIO();
+            if(down){input.AddMouseButtonEvent(0,false);down=false;if(screen.Session is not null)index=1;cooldown=3;return;}
+            if(screen.Session is not null){index=1;cooldown=3;return;}
+            string launch=screen.Buttons.ContainsKey("homePlayStart")?"homePlayStart":screen.Buttons.ContainsKey("homePlayConfirm")?"homePlayConfirm":"clientPlay";
+            if(screen.Buttons.TryGetValue(launch,out var launchAt)){input.AddMousePosEvent(launchAt.X,launchAt.Y);input.AddMouseButtonEvent(0,true);down=true;cooldown=3;}
+            return;
+        }
         if(index==1){if(carouselFlow.Input(screen))index=4;cooldown=3;return;}
         if (index == 10 && battleFrames < 60) return;
         if (index == 20 && pvpFrames < 60) return;
@@ -231,10 +264,10 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             {
                 int metric = (chartStep / 2 + 1) % 3;
                 var chartPoint = screen.Buttons["chart/" + metric];
-                var bounds=screen.TeamSidebarBounds;
+                var bounds=screen.ScoutingBounds;
                 if(chartPoint.Y<bounds.Min.Y+18 || chartPoint.Y>bounds.Max.Y-18)
                 {
-                    // Scroll the outer sidebar beside its nested trait list.
+                    // The original damage chart sits below the standings in the right rail.
                     chartIo.AddMousePosEvent(bounds.Max.X-3,(bounds.Min.Y+bounds.Max.Y)/2);
                     chartIo.AddMouseWheelEvent(0,chartPoint.Y<bounds.Min.Y+18?1:-1);cooldown=3;return;
                 }
@@ -377,6 +410,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
     }
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
+        if(screen.MatchLoadingVisible)return false;
         if(matchHud.CaptureRequested is {} hudCapture)
         {if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,hudCapture+".bmp"),size.X,size.Y);matchHud.CaptureRequested=null;}
         if(incubator.CaptureRequested is { } incubatorCapture)
@@ -407,6 +441,8 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
             string title = result.Match.Winner == (isA ? 0 : 1) ? "Victory" : result.Match.Winner == (isA ? 1 : 0) ? "Defeat" : "Draw";
             if (screen.ResultTitle != title || screen.ResultHealthLoss != (isA ? result.DamageA : result.DamageB))
                 throw new InvalidOperationException("Result banner does not match the local player's settled outcome.");
+            if(screen.RoundHistoryCards<1||screen.RoundHistoryCards>14)
+                throw new InvalidOperationException("Settled round history is missing or exceeds the original fourteen-card limit.");
             if (resultRounds.Add(resultSession.Rounds.Position.Label) && capture is not null)
                 FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "result-" + resultSession.Rounds.Position.Label + ".bmp"), size.X, size.Y);
         }
@@ -444,12 +480,12 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         if(index==23 && cooldown==1)
         {
             var bounds=screen.AudioSettingsBounds;
-            foreach(string key in new[]{"matchEffectsVolume","matchMusicVolume","matchBoardVolume","reconnectAudio","closeAudio"})
+            foreach(string key in new[]{"matchEffectsVolume","matchMusicVolume","matchBoardVolume","closeAudio"})
                 if(!screen.Buttons.TryGetValue(key,out var point)||point.X<bounds.Min.X||point.X>bounds.Max.X||point.Y<bounds.Min.Y+18||point.Y>bounds.Max.Y-18)
                     throw new InvalidOperationException("Sound setting is outside the visible panel: "+key);
             if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"audio-settings.bmp"),size.X,size.Y);
         }
-        if(index==25 && cooldown==1 && screen.AudioSettingsVisible)throw new InvalidOperationException("Sound settings Close did not dismiss the panel before arena interaction.");
+        if(index==24 && cooldown==1 && screen.AudioSettingsVisible)throw new InvalidOperationException("Sound settings Close did not dismiss the panel before arena interaction.");
         if (index == 22 && cooldown == 1 && offerSmoke.AugmentCapture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "augment.bmp"), size.X, size.Y);
         if (index == 22 && cooldown == 1 && offerSmoke.Capture && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "reward.bmp"), size.X, size.Y);
         if (index == 1 && cooldown == 1 && screen.Session!.Units.Carousel.Active)
@@ -561,11 +597,11 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 throw new InvalidOperationException("Farm room management persistence failed.");
             farmVerified = true; Console.WriteLine("Farm UI smoke passed: feed, play, praise, pet, lights and saved rewards.");
         }
-        if (index == 0 && cooldown == 1)
+        if (index == 0 && cooldown == 1 && screen.Session is null && !screen.HomePlayVisible && !screen.CollectionVisible)
         {
             if(!screen.HomeLayoutFits || screen.HomeHeroArt is null || screen.HomeLegendDrawCalls==0)
                 throw new InvalidOperationException("Home omitted its selected set artwork, live Little Legend or responsive panel layout.");
-            foreach(string key in new[]{"start","multiplayer","homeRuleset","settings"})
+            foreach(string key in new[]{"start","multiplayer","clientModes","settings"})
                 if(!screen.Buttons.TryGetValue(key,out var point) || point.X<0 || point.X>=size.X || point.Y<0 || point.Y>=size.Y)
                     throw new InvalidOperationException("Home control is not visible inside the supported window: "+key);
             if (capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "menu.bmp"), size.X, size.Y);

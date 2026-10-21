@@ -43,6 +43,7 @@ internal sealed partial class MatchScreen
         CompletedRounds = networkRoom!.Log.Entries.Count(e => e.GetProperty("k"u8).GetString() == "end");
         Watch(viewed); audio.Music(Session.Rounds.Phase == MatchPhase.Combat ? "combat" : "planning");
         status = IsSpectating ? "Spectating. Choose a Tamer in the standings to watch." : "Connected. Your actions are confirmed by the host.";
+        BeginNetworkMatchLoading();
     }
     private void NetworkApplied(JsonElement entry, LockstepResult result)
     {

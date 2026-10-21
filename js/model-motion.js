@@ -41,7 +41,15 @@ export function modelClips(gltf, src) {
     pose.clipAction(authored[0]).play();
     pose.update(0);
   }
-  return anatomyFallbackClips(gltf.scene,src,fallbackClips(gltf.scene));
+  const fallback=fallbackClips(gltf.scene);
+  // This clipless Kotemon already parents the sword to its hand, but retains a
+  // separate staging offset. Correct only its attachment origin, after fallback
+  // preparation so the existing body/arm animation channels remain identical.
+  if(src?.uid==='rip-ts_kotemon'&&!gltf.animations.length){
+    const sword=gltf.scene.getObjectByName('J_bamboo_sword');
+    if(sword?.parent?.name==='J_hand_r')sword.position.set(0,0,0);
+  }
+  return anatomyFallbackClips(gltf.scene,src,fallback);
 }
 
 // Pabumon's disconnected body roots are animated independently in two imported
@@ -193,6 +201,9 @@ function boardRootTravel(gltf,src,clips){
     'rip-durandamon':['J_center','special'], 'rip-kimeramon':['J_center','win'],
     'rip-cs_grademon':['J_center','special'], 'rip-cs_gryphonmon':['J_center','win'],
     'rip-l_gumdramon':['J_center','special'],
+    'rip-stingmon':['J_center','special'], 'rip-dinobeemon':['J_center','special','win'],
+    'rip-zubamon':['J_center','special'], 'rip-zubaeagermon':['J_center','special'],
+    'rip-puppetmon':['J_center','special'],
   }[src?.uid];
   if(!policy)return clips;
   const [body,...roles]=policy,idle=clips.find(c=>c.name==='idle'),name=body+'.position',node=gltf.scene.getObjectByName(body);
@@ -200,27 +211,74 @@ function boardRootTravel(gltf,src,clips){
   const mixer=new THREE.AnimationMixer(gltf.scene);mixer.clipAction(idle).play();mixer.update(0);gltf.scene.updateMatrixWorld(true);
   const origin=node.getWorldPosition(V()),parent=node.parent.matrixWorld.clone(),inverse=parent.clone().invert();
   const box=new THREE.Box3().setFromObject(gltf.scene),height=Math.max(1e-9,box.max.y-box.min.y);
+  // Puppetmon's mallet is a sibling of the body/string subtree. Move their
+  // unanimated common parent so every authored mallet/body relationship survives.
+  const shared=src.uid==='rip-puppetmon'?node.parent:null;
+  const sharedInverse=shared?new THREE.Matrix3().setFromMatrix4(shared.parent.matrixWorld.clone().invert()):null;
   const result=clips.map(action=>{
     const role=action.name,track=action.tracks.find(t=>t.name===name);
     if(!roles.includes(role)||!track)return action;
     // Some entrances contain only two root keys; some attack roots stop keying
     // before the other joints. Sample the complete settling envelope in both cases.
-    const resample=role==='win'||track.times[track.times.length-1]<action.duration;
+    const resample=!!shared||role==='win'||track.times[track.times.length-1]<action.duration;
     const times=resample?[...new Set([...track.times,...Array.from({length:65},(_,i)=>action.duration*i/64)])].sort((a,b)=>a-b):Array.from(track.times);
     const interpolant=track.createInterpolant(),displacements=times.map(time=>new THREE.Vector3().fromArray(interpolant.evaluate(time)).applyMatrix4(parent).y-origin.y);
     const up=Math.min(1,height*.35/Math.max(...displacements,1e-9)),down=Math.min(1,height*.08/Math.max(...displacements.map(y=>-y),1e-9));
-    const corrected=action.clone(),out=corrected.tracks.find(t=>t.name===name);
+    const corrected=action.clone(),out=shared?new THREE.VectorKeyframeTrack(shared.name+'.position',times,new Array(times.length*3).fill(0)):corrected.tracks.find(t=>t.name===name);
+    if(shared)corrected.tracks.push(out);
     out.times=new Float32Array(times);out.values=new Float32Array(times.length*3);
     for(let i=0;i<displacements.length;i++){
       const u=times[i]/action.duration,end=Math.min(1,Math.max(0,(1-u)/.2)),start=role==='win'?Math.min(1,u/.15):1;
       const settle=end*end*(3-2*end)*start*start*(3-2*start);
       const y=displacements[i]*(displacements[i]<0?down:up)*settle;
-      origin.clone().add(new THREE.Vector3(0,y,0)).applyMatrix4(inverse).toArray(out.values,i*3);
+      const desired=origin.clone().add(new THREE.Vector3(0,y,0));
+      if(shared){
+        const authored=new THREE.Vector3().fromArray(interpolant.evaluate(times[i])).applyMatrix4(parent);
+        desired.sub(authored).applyMatrix3(sharedInverse).add(shared.position).toArray(out.values,i*3);
+      }else desired.applyMatrix4(inverse).toArray(out.values,i*3);
     }
     return corrected;
   });
   mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);
-  return result;
+  return src.uid==='rip-zubaeagermon'?somersaultClearance(gltf,result):result;
+}
+
+// Anchoring this exact special exposed a second issue: its preserved somersault
+// can put the head through the board when the old cinematic jump is compressed.
+// Keep the authored pose and XZ anchor; add only the minimum vertical clearance
+// for the head/torso/feet. The separately weighted tail blade keeps its intended
+// reach and does not lift the whole creature whenever its tip sweeps downward.
+function somersaultClearance(gltf,clips){
+  const scene=gltf.scene,idle=clips.find(c=>c.name==='idle'),clip=clips.find(c=>c.name==='special');
+  const node=scene.getObjectByName('J_center'),track=clip?.tracks.find(t=>t.name==='J_center.position');
+  if(!idle||!node||!track)return clips;
+  const mixer=new THREE.AnimationMixer(scene);mixer.clipAction(idle).play();mixer.update(0);scene.updateMatrixWorld(true);
+  const base=new THREE.Box3().setFromObject(scene,true),height=Math.max(1e-9,base.max.y-base.min.y),meshes=[];
+  scene.traverse(mesh=>{
+    if(!mesh.isSkinnedMesh)return;
+    const indices=[],joints=mesh.geometry.attributes.skinIndex,weights=mesh.geometry.attributes.skinWeight;
+    for(let i=0;i<joints.count;i++){
+      let tail=0;for(let k=0;k<4;k++)if(/^J_tail/.test(mesh.skeleton.bones[joints.getComponent(i,k)].name))tail+=weights.getComponent(i,k);
+      if(tail<.5)indices.push(i);
+    }
+    meshes.push({mesh,indices});
+  });
+  mixer.stopAllAction();
+  const action=mixer.clipAction(clip);action.setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
+  const times=[...new Set([...track.times,...Array.from({length:257},(_,i)=>clip.duration*i/256)])].sort((a,b)=>a-b),values=[];
+  for(const time of times){
+    mixer.setTime(time);scene.updateMatrixWorld(true);
+    let floor=Infinity;
+    for(const {mesh,indices} of meshes){mesh.skeleton.update();for(const index of indices)floor=Math.min(floor,mesh.getVertexPosition(index,V()).applyMatrix4(mesh.matrixWorld).y);}
+    const margin=height*.01*Math.sin(Math.PI*time/clip.duration)**2;
+    const lift=Math.max(0,base.min.y+margin-floor);
+    const delta=new THREE.Vector3(0,lift,0).applyMatrix3(new THREE.Matrix3().setFromMatrix4(node.parent.matrixWorld.clone().invert()));
+    node.position.clone().add(delta).toArray(values,values.length);
+  }
+  mixer.stopAllAction();mixer.uncacheRoot(scene);
+  const corrected=clip.clone(),out=corrected.tracks.find(t=>t.name===track.name);
+  out.times=new Float32Array(times);out.values=new Float32Array(values);
+  return clips.map(c=>c===clip?corrected:c);
 }
 
 export function fallbackClips(scene, adjustRest = true) {

@@ -87,10 +87,10 @@ internal sealed partial class MatchScreen
     }
     private void DrawFormatChoice(string key,bool duo,Action<string> choose)
     {
-        if(ImGui.BeginCombo("##"+key,duo?"Duos":"Solo"))
+        if(ImGui.BeginCombo("##"+key,duo?"Duos · 2v2":"Free for all"))
         {
             foreach(string format in new[]{"solo","duos"})
-            {bool picked=ImGui.Selectable(format=="duos"?"Duos":"Solo",duo==(format=="duos"));SelectionButton(key+"/"+format);if(picked)choose(format);ClientItemSound(key+"/"+format,picked);}
+            {bool picked=ImGui.Selectable(format=="duos"?"Duos · 2v2":"Free for all",duo==(format=="duos"));SelectionButton(key+"/"+format);if(picked)choose(format);ClientItemSound(key+"/"+format,picked);}
             ImGui.EndCombo();
         }
         SelectionButton(key);

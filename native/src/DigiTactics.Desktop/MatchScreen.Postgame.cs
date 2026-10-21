@@ -19,6 +19,7 @@ internal sealed partial class MatchScreen
     private int postgameAwardSounds;
     internal bool PostgameVisible { get; private set; }
     internal int PostgameStandings { get; private set; }
+    internal int PostgameVisibleStandings { get; private set; }
     internal int PostgameUnitPortraits { get; private set; }
     internal int PostgameMissionCount { get; private set; }
     internal int PostgameAvatarCount { get; private set; }
@@ -34,11 +35,32 @@ internal sealed partial class MatchScreen
     internal float2 PostgameStandingsMax { get; private set; }
     internal float2 PostgameProgressMin { get; private set; }
     internal float2 PostgameProgressMax { get; private set; }
+    internal float2 PostgamePanelMin { get; private set; }
+    internal float2 PostgamePanelMax { get; private set; }
     internal bool PostgameHistoryVisible => ProfileVisible && Session is not null;
     internal bool PostgameHomeVisible => Session is not null && ReferenceEquals(dismissedHomeSession,Session);
-    private bool PostgameClientOverlay => Session is not null && ReferenceEquals(postgameSession,Session)
-        && (showProfile || postgameStore&&showCollection) && (Session.State.Over || !IsSpectating&&Human.Placement>0);
+    private bool PostgameStillPlaying => Session is not null && (Session.State.Duos
+        ? Session.State.Teams.Count(t => t.Alive) : Session.State.Players.Count(p => p.Alive)) > 1;
+    internal bool PostgamePending => Session is not null && !PostgameHomeVisible
+        && (Session.State.Over || !IsSpectating && Human.Placement > 0)
+        && (!ReferenceEquals(postgameSession,Session) || !postgameDismissed || !PostgameStillPlaying);
+    // The result belongs to Home, not to a replacement fullscreen match view.
+    // Visiting another client page must retain it until an explicit result action.
+    private bool PostgameClientOverlay => PostgamePending;
     private bool ClientHomeVisible => Session is null || PostgameHomeVisible || PostgameClientOverlay;
+    private void PreparePostgameClient()
+    {
+        PostgameVisible=false;
+        if(postgameStore && !showCollection)postgameStore=false;
+        if(!PostgamePending || ReferenceEquals(postgameSession,Session))return;
+        postgameSession=Session;dismissedHomeSession=null;
+        postgameDismissed=postgameStore=false;postgameAnimatedAward=null;
+        clientHistory.Clear();
+        showMultiplayer=showProfile=showCollection=showFarm=showAbout=showSettings=showSaveData=showHomePlay=false;
+        showGameMenu=showMusicLibrary=showAudio=showPlayers=showEmotes=showSoundboard=false;
+        codexFull=codexSide=false;codexUnit=codexModalLine=null;
+        CancelArenaDrag();cameraDrag=null;
+    }
     private void DismissResults()
     {
         // The original result X/Home actions hide the result in the client shell.
@@ -51,39 +73,38 @@ internal sealed partial class MatchScreen
     private bool DrawPostgame()
     {
         PostgameVisible = false;
-        if (!ReferenceEquals(postgameSession, Session)) { postgameSession = Session; postgameDismissed = postgameStore = false; postgameAnimatedAward = null; }
-        if (Session is null || PostgameHomeVisible) return false;
-        bool stillPlaying = (Session.State.Duos ? Session.State.Teams.Count(t => t.Alive) : Session.State.Players.Count(p => p.Alive)) > 1;
-        if ((postgameDismissed && stillPlaying) || !Session.State.Over && (IsSpectating || Human.Placement == 0)) return false;
-        PostgameVisible = true; PostgameStandings = PostgameUnitPortraits = PostgameMissionCount = PostgameAvatarCount = 0;
-        if(postgameStore) { Collection(); if(!showCollection)postgameStore=false; return true; }
-        bool outNow = !IsSpectating && !Human.Alive && stillPlaying;
+        if (!PostgamePending || Session is null || showProfile || showCollection || showFarm || showAbout
+            || showSettings || showSaveData || showHomePlay || showMultiplayer || codexFull) return false;
+        PostgameVisible = true; PostgameStandings = PostgameVisibleStandings = PostgameUnitPortraits = PostgameMissionCount = PostgameAvatarCount = 0;
+        bool outNow = !IsSpectating && !Human.Alive && PostgameStillPlaying;
         int place = Human.Placement;
         bool gold = !IsSpectating && place == 1;
         bool top = !IsSpectating && place <= (Session.State.Duos ? 2 : 4);
         string title = IsSpectating ? "Match complete" : outNow ? "Eliminated" : gold ? "Victory" : top ? Session.State.Duos ? "Top 2 teams" : "Top 4" : "Defeat";
         var accent = gold ? new ImColor8(255,213,106) : top ? new ImColor8(63,214,255) : new ImColor8(167,178,199);
-        bool compact = size.X <= 1100;
-        PostgameRewardsBelow = size.X <= 1500;
+        bool compact = socialWindowSize.X <= 1100 || size.Y <= 760;
+        PostgameRewardsBelow = socialWindowSize.X <= 1500;
         PostgameStoreButtonVisible = false;
-        float margin = 24, width = size.X - margin * 2, height = size.Y - margin * 2;
+        float margin = socialWindowSize.X <= 1500 ? 16 : 24;
+        float resultTop = ClientPageTop + 12, width = size.X - margin * 2, height = size.Y - resultTop - 16;
         float padding = compact ? 16 : 24, topPadding = compact ? 12 : 16, gap = compact ? 8 : 12;
-        Window("Match results", margin, margin, width, height, ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+        Window("Match results", margin, resultTop, width, height, ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
         var origin = ImGui.GetWindowPos(); var draw = ImGui.GetWindowDrawList();
+        PostgamePanelMin=origin;PostgamePanelMax=origin+new float2(width,height);
         postgameArtwork.Draw(gold && !outNow ? "postgame-bg" : "loading-bg", origin, new(width,height), 255, true, .3f);
         var topTint=new ImColor8(1,10,19,140); var bottomTint=new ImColor8(1,10,19,235);
         draw.AddRectFilledMultiColor(origin,origin+new float2(width,height*.55f),topTint,topTint,bottomTint,bottomTint);
         draw.AddRectFilled(origin+new float2(0,height*.55f),origin+new float2(width,height),bottomTint);
-        draw.AddRect(origin, origin + new float2(width,height), gold?new ImColor8(200,170,110):new ImColor8(120,90,40), 8, ImDrawFlags.None, 1);
+        draw.AddRect(origin, origin + new float2(width,height), gold?new ImColor8(200,170,110):new ImColor8(120,90,40), 0, ImDrawFlags.None, 1);
         ImGui.SetCursorPos(new(width-46,10));
-        if(Button("resultDismiss","X",36,36)) { DismissResults(); ImGui.End(); return true; }
+        if(Button("resultDismiss","×",36,36)) { DismissResults(); ImGui.End(); return true; }
         ImGui.PushFont(NativeUiTheme.BodyFont,NativeUiTheme.BodySize);
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(8,6));
         float heroX = padding + (IsSpectating ? 0 : 194), heroWidth = width-padding-heroX;
         ImGui.SetCursorPos(new(heroX,topPadding));
         ImGui.BeginGroup();
-        ResultText($"{(networkRoom is null ? "Solo vs AI" : "Multiplayer")} / {MatchSetTitle} / results",NativeUiTheme.DisplayFont,16,NativeUiTheme.Gold);
-        ResultText(title.ToUpperInvariant(),NativeUiTheme.DisplayBoldFont,Math.Clamp(size.X*.04f,38,64),NativeUiTheme.GoldBright);
+        ResultText($"{(networkRoom is null ? "Solo vs AI" : "Multiplayer")} · {MatchSetTitle} · results",NativeUiTheme.DisplayFont,16,NativeUiTheme.Gold);
+        ResultText(title.ToUpperInvariant(),NativeUiTheme.DisplayBoldFont,Math.Clamp(socialWindowSize.X*.04f,38,64),NativeUiTheme.GoldBright);
         var record = history?.Match;
         var winningPlayer = Session.State.Players.FirstOrDefault(p => p.Placement == 1);
         string? winner = winningPlayer is not null && winningPlayer.Id != localSeat ? winningPlayer.Name : null;
@@ -107,7 +128,11 @@ internal sealed partial class MatchScreen
         }
         float colsY = topPadding+heroHeight+gap, footerY = height-topPadding-38;
         float columnsHeight = Math.Max(120,footerY-gap-colsY), contentWidth = width-padding*2;
-        float topHeight = PostgameRewardsBelow ? Math.Min(300,Math.Max(120,(columnsHeight-gap)*.60f)) : columnsHeight;
+        // Preserve all eight standings at the supported minimum height. Reward
+        // details can scroll independently instead of cutting the final Tamers.
+        float topHeight = PostgameRewardsBelow
+            ? Math.Min(Math.Max(120,columnsHeight-gap-96),Math.Max(300,(columnsHeight-gap)*.60f))
+            : columnsHeight;
         float standingsWidth = PostgameRewardsBelow ? (contentWidth-gap)/2 : (contentWidth-gap*2)*1.1f/3.1f;
         float progressWidth = PostgameRewardsBelow ? standingsWidth : (contentWidth-gap*2)/3.1f;
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(12,10));
@@ -134,34 +159,53 @@ internal sealed partial class MatchScreen
         ImGui.EndChild();
         ImGui.PopStyleColor(2); ImGui.PopStyleVar();
         ImGui.SetCursorPos(new(width-padding-536,footerY));
-        ImGui.BeginDisabled(profile is null); if(Button("resultHistory","Match history",180,38)) OpenProfile(); ImGui.EndDisabled();
+        ImGui.PushStyleColor(ImGuiCol.Button,new ImColor8(0,0,0,0));
+        ImGui.PushStyleColor(ImGuiCol.ButtonHovered,new ImColor8(200,170,110,20));
+        ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(0,0,0,0));
+        ImGui.PushStyleColor(ImGuiCol.Text,NativeUiTheme.Muted);
+        ImGui.BeginDisabled(profile is null); if(Button("resultHistory","Match history",180,38)) NavigateClient("profile"); ImGui.EndDisabled();
+        ImGui.PopStyleColor(4);
         ImGui.SameLine(0,8);
-        if(Button("menu",outNow?"Leave":"Home",140,38))
+        ImGui.PushFont(NativeUiTheme.DisplayBoldFont,17);
+        if(Button("menu",outNow?"LEAVE":"HOME",140,38))
         {
             if(outNow){bool online=networkRoom is not null;LeaveMatch();if(online)OpenMultiplayerView();}
             else DismissResults();
         }
+        ImGui.PopFont();
         ImGui.SameLine(0,8);
         if (Session is not null)
         {
-            ImGui.PushFont(NativeUiTheme.DisplayBoldFont,18);
-            ImGui.PushStyleColor(ImGuiCol.Button,NativeUiTheme.Play); ImGui.PushStyleColor(ImGuiCol.ButtonHovered,NativeUiTheme.PlayMiddle);
-            ImGui.PushStyleColor(ImGuiCol.ButtonActive,NativeUiTheme.PlayTop); ImGui.PushStyleColor(ImGuiCol.Text,NativeUiTheme.PlayText);
             if (outNow)
             {
-                if(Button("spectateRemaining","Spectate",200,38)) { postgameDismissed=true; if(networkRoom is null) ContinueAfterElimination(); }
+                if(ResultCta("spectateRemaining","SPECTATE")) { postgameDismissed=true; if(networkRoom is null) ContinueAfterElimination(); }
             }
-            else if(Button("resultAgain",networkRoom is null?"Play again":"Back to lobbies",200,38))
+            else if(ResultCta("resultAgain",networkRoom is null?"PLAY AGAIN":"BACK TO LOBBIES"))
             {
                 bool online=networkRoom is not null; bool nextDuos=Session.State.Duos;
                 LeaveMatch();
                 if(online) OpenMultiplayerView();
                 else StartLocalMatch(nextDuos);
             }
-            ImGui.PopStyleColor(4); ImGui.PopFont();
         }
         ImGui.PopStyleVar(); ImGui.PopFont();
         ImGui.End(); return true;
+    }
+
+    private bool ResultCta(string key,string label)
+    {
+        ImGui.PushFont(NativeUiTheme.DisplayBoldFont,18);
+        bool pressed=Button(key,label,200,38);
+        var min=ImGui.GetItemRectMin();var max=ImGui.GetItemRectMax();var draw=ImGui.GetWindowDrawList();
+        bool hovered=ImGui.IsItemHovered();
+        var top=hovered?new ImColor8(15,82,102):new ImColor8(11,58,74);
+        var bottom=hovered?new ImColor8(8,48,74):new ImColor8(6,32,51);
+        draw.AddRectFilledMultiColor(min,max,top,top,bottom,bottom);
+        draw.AddRect(min,max,hovered?NativeUiTheme.GoldBright:NativeUiTheme.Gold,0,ImDrawFlags.None,2);
+        draw.AddRect(min+new float2(2,2),max-new float2(2,2),new ImColor8(63,214,255,40));
+        draw.AddText(min+(max-min-ImGui.CalcTextSize(label))*.5f,hovered?new ImColor8(255,255,255):new ImColor8(205,250,250),label);
+        if(ImGui.IsItemFocused())draw.AddRect(min+new float2(4,4),max-new float2(4,4),NativeUiTheme.GoldBright);
+        ImGui.PopFont();return pressed;
     }
 
     private void DrawResultStandings()
@@ -170,6 +214,7 @@ internal sealed partial class MatchScreen
         foreach (var player in Session!.State.Players.OrderBy(p => p.Placement))
         {
             var at = ImGui.GetCursorScreenPos(); float rowWidth=ImGui.GetContentRegionAvail().X;
+            if(at.Y>=ImGui.GetWindowDrawList().GetClipRectMin().Y && at.Y+30<=ImGui.GetWindowDrawList().GetClipRectMax().Y)PostgameVisibleStandings++;
             if (player.Id == localSeat)
             {
                 var tint=new ImColor8(200,170,110,46);var clear=new ImColor8(200,170,110,0);
@@ -179,8 +224,11 @@ internal sealed partial class MatchScreen
             var draw=ImGui.GetWindowDrawList();
             ImGui.PushFont(NativeUiTheme.DisplayBoldFont,17);
             draw.AddText(at+new float2(8,6),NativeUiTheme.Gold,player.Placement > 0 ? $"#{player.Placement}" : "-"); ImGui.PopFont();
+            var avatarCenter=at+new float2(57,15);
+            draw.AddCircleFilled(avatarCenter,13,NativeUiTheme.Navy1);
             if(portraits.DrawCompanion(ResultCompanion(player),at+new float2(44,2),26))PostgameAvatarCount++;
-            string name = (Session.State.Duos ? $"Team {player.Team+1} / " : "") + player.Name;
+            draw.AddCircle(avatarCenter,13,new ImColor8(70,55,20));
+            string name = (Session.State.Duos ? $"Team {player.Team+1} · " : "") + player.Name;
             string status=player.Placement == 1 ? "Winner" : player.Placement > 0 ? "Eliminated" : $"{Math.Max(0,player.Health)} HP";
             ImGui.PushFont(NativeUiTheme.BodyFont,16);
             float statusWidth=ImGui.CalcTextSize(status).X;
@@ -204,18 +252,17 @@ internal sealed partial class MatchScreen
             for(int i=0;i<award.Lines.Length;i++)
             {
                 var line=award.Lines[i]; int count=history.FreshAward?PostgameAwardCount.Line(line.N,i,time):line.N;
-                ResultPair(line.Label,$"+{count}",new ImColor8(245,207,109),17);
+                ResultPair(line.Label,$"+{count}",new ImColor8(63,214,255),17);
             }
-            ImGui.Separator(); ResultPair("Total",$"{PostgameDisplayedBits.Value} Bits",NativeUiTheme.GoldBright,19);
+            ImGui.Separator(); ResultPair("Total",PostgameDisplayedBits.Value.ToString(),NativeUiTheme.GoldBright,19,bits:true);
             ImGui.PopStyleVar();
             float rowY=ImGui.GetCursorPosY(),right=ImGui.GetCursorPosX()+ImGui.GetContentRegionAvail().X;
             ResultText($"Wallet: {profile?.Progress.Bits ?? 0} Bits",NativeUiTheme.BodyFont,16,NativeUiTheme.Muted);
             ImGui.SameLine(); ImGui.SetCursorPos(new(right-86,rowY));
             if(Button("resultStore","Store",86,36))
             {
-                // The multiplayer client stays selected behind an online game.
-                // Results must open Store above that retained lobby selection.
-                showMultiplayer=false;OpenCollectionPage(store:true);postgameStore=true;
+                // Shared navigation remembers Home so Back restores this result.
+                NavigateClient("store");postgameStore=true;
             }
             var storeMin=ImGui.GetItemRectMin();var storeMax=ImGui.GetItemRectMax();
             var clipMin=ImGui.GetWindowDrawList().GetClipRectMin();var clipMax=ImGui.GetWindowDrawList().GetClipRectMax();
@@ -233,20 +280,21 @@ internal sealed partial class MatchScreen
         try
         {
             var level = TamerProgress.Read(profile!.Storage.GetValueOrDefault("dt.client.v1"));
-            ResultPair($"Tamer level {level.Level}"+(history?.LeveledUp==true?" / Level up!":""),history?.XpGained>0?$"+{history.XpGained} XP":"",NativeUiTheme.Gold,17);
-            ImGui.ProgressBar((float)((double)level.Xp/level.Need),new(-1,6), ""u8);
+            ResultPair($"Tamer level {level.Level}"+(history?.LeveledUp==true?" / Level up!":""),history?.XpGained>0?$"+{history.XpGained} XP":"",NativeUiTheme.Muted,17);
+            ResultProgress((float)((double)level.Xp/level.Need));
             if(ImGui.IsItemHovered())ResultTooltip($"{level.Xp} / {level.Need} XP");
             ImGui.Dummy(new(0,2));
             var daily=MatchRewards.Progress(profile.Storage.GetValueOrDefault("dt.shop.v1"),profile.Storage.GetValueOrDefault("dt.client.v1"),DateOnly.FromDateTime(DateTime.Now));
             foreach(var mission in daily.Missions)
             {
-                ResultPair(mission.Name,$"{mission.Bits} Bits",NativeUiTheme.Gold,17);
-                ImGui.ProgressBar((float)mission.Current/mission.Goal,new(-1,5), ""u8);
-                ResultText(mission.Done ? "Complete" : $"Best today {mission.Current}/{mission.Goal}",NativeUiTheme.BodyFont,16,NativeUiTheme.Muted);
-                ImGui.Dummy(new(0,1)); PostgameMissionCount++;
+                ResultPair(mission.Name,mission.Bits.ToString(),NativeUiTheme.GoldBright,17,bits:true);
+                ResultProgress((float)mission.Current/mission.Goal);
+                if(ImGui.IsItemHovered())ResultTooltip(mission.Done ? "Complete" : $"Best today {mission.Current}/{mission.Goal}");
+                ImGui.Dummy(new(0,5)); PostgameMissionCount++;
             }
-            ImGui.Separator(); ResultPair("Daily bonus",$"{daily.Bits} Bits",NativeUiTheme.Gold,17);
-            ResultText(daily.Claimed ? "Claimed. Back tomorrow." : "Complete your first game today.",NativeUiTheme.BodyFont,16,NativeUiTheme.Muted);
+            ImGui.Separator(); ResultPair("Daily bonus",daily.Bits.ToString(),NativeUiTheme.GoldBright,17,bits:true);
+            if(ImGui.IsItemHovered())ResultTooltip(daily.Claimed ? "Claimed. Back tomorrow." : "Complete your first game today.");
+            ImGui.Dummy(new(0,0));
         }
         catch(Exception error) when(error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException or ArgumentOutOfRangeException)
         { UiText.Wrapped("Saved progress could not be read. Your data has been preserved."u8); }
@@ -259,13 +307,29 @@ internal sealed partial class MatchScreen
     }
     private static void ResultHeading(string label)
         => ResultText(label.ToUpperInvariant(),NativeUiTheme.DisplayBoldFont,17,NativeUiTheme.GoldBright);
-    private static void ResultPair(string label,string value,ImColor8 valueColor,float fontSize)
+    private static void ResultProgress(float value)
+    {
+        var min=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
+        ImGui.Dummy(new(width,6));var draw=ImGui.GetWindowDrawList();
+        draw.AddRectFilled(min,min+new float2(width,6),new ImColor8(1,10,19));
+        float filled=Math.Clamp(value,0,1)*(width-2);
+        if(filled>0)draw.AddRectFilledMultiColor(min+new float2(1,1),min+new float2(1+filled,5),new ImColor8(14,132,154),new ImColor8(63,214,255),new ImColor8(63,214,255),new ImColor8(14,132,154));
+        draw.AddRect(min,min+new float2(width,6),new ImColor8(70,55,20));
+    }
+    private static void ResultPair(string label,string value,ImColor8 valueColor,float fontSize,bool bits=false)
     {
         ImGui.PushFont(NativeUiTheme.BodyFont,fontSize);
-        float x=ImGui.GetCursorPosX(),y=ImGui.GetCursorPosY(),width=ImGui.GetContentRegionAvail().X,valueWidth=ImGui.CalcTextSize(value).X;
+        float x=ImGui.GetCursorPosX(),y=ImGui.GetCursorPosY(),width=ImGui.GetContentRegionAvail().X,valueWidth=ImGui.CalcTextSize(value).X+(bits?18:0);
         float labelWidth=Math.Max(32,width-valueWidth-12);
         ImGui.PushTextWrapPos(x+labelWidth); ImGui.Text(label); ImGui.PopTextWrapPos();
         float nextY=ImGui.GetCursorPosY(); ImGui.SetCursorPos(new(x+width-valueWidth,y));
+        if(bits)
+        {
+            var center=ImGui.GetCursorScreenPos()+new float2(7,fontSize*.5f);var draw=ImGui.GetWindowDrawList();
+            draw.AddQuadFilled(center+new float2(0,-7),center+new float2(7,0),center+new float2(0,7),center+new float2(-7,0),new ImColor8(63,214,255));
+            draw.AddQuadFilled(center+new float2(0,-5),center+new float2(5,0),center,center+new float2(-5,0),new ImColor8(176,239,255));
+            ImGui.SetCursorPosX(ImGui.GetCursorPosX()+18);
+        }
         ImGui.PushStyleColor(ImGuiCol.Text,valueColor); ImGui.Text(value); ImGui.PopStyleColor();
         ImGui.SetCursorPos(new(x,Math.Max(nextY,ImGui.GetCursorPosY()))); ImGui.PopFont();
     }
@@ -307,7 +371,9 @@ internal sealed partial class MatchScreen
             if(line is null || unit.Stage<0 || unit.Stage>=line.Forms.Length)continue;
             if(rowWidth>0 && rowWidth+portraitSize+5<=width){ImGui.SameLine(0,5);rowWidth+=5;}else rowWidth=0;
             rowWidth+=portraitSize;var position=ImGui.GetCursorScreenPos(); ImGui.Dummy(new(portraitSize,portraitSize));
+            ImGui.GetWindowDrawList().AddRectFilled(position,position+new float2(portraitSize,portraitSize),NativeUiTheme.Navy1,4);
             portraits.Draw(validRules.Id,unit.Line,unit.Stage,position,portraitSize); PostgameUnitPortraits++;
+            ImGui.GetWindowDrawList().AddRect(position,position+new float2(portraitSize,portraitSize),NativeUiTheme.GoldBorder,4);
             if(ImGui.IsItemHovered())ResultTooltip(line.Forms[unit.Stage]+" "+new string('*',unit.Stage+1));
             ImGui.GetWindowDrawList().AddText(position+new float2(2,portraitSize-16),new ImColor8(255,220,128),new string('*',unit.Stage+1));
         }
@@ -356,5 +422,6 @@ internal sealed partial class MatchScreen
         history=profile is null?null:new(Session,profile); localPaused=showGameMenu=confirmLeave=false;
         viewed=localSeat=0; CompletedRounds=0; selectedUnit=selectedItem=null; backgroundTime=0;
         audio.Music("planning"); status="Select a unit, then a hex. Select an item, then its holder.";
+        BeginMatchLoading();
     }
 }

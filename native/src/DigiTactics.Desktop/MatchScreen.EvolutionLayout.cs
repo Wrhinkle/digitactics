@@ -15,12 +15,18 @@ internal sealed partial class MatchScreen
     private void EvolutionControls(string id)
     {
         EvolutionTreeNodes=0;EvolutionTreePortraits=0;
+        var headerAt=ImGui.GetCursorScreenPos();float headerWidth=ImGui.GetContentRegionAvail().X;
+        ImGui.GetWindowDrawList().AddText(NativeUiTheme.DisplayBoldFont,24,headerAt+new float2(0,18),ClientInk,"DIGIVOLVE"u8);
+        ImGui.SetCursorScreenPos(headerAt+new float2(148,0));
+        bool changed=EvolutionLegendSelector(id,Math.Max(160,headerWidth-432),66);
+        ImGui.SetCursorScreenPos(headerAt+new float2(headerWidth-272,20));
+        ImGui.PushStyleColor(ImGuiCol.Text,ClientGold);ImGui.Text($"{profile!.Progress.Bits:N0} Bits");ImGui.PopStyleColor();
+        ImGui.SetCursorScreenPos(headerAt+new float2(headerWidth-166,14));
         ImGui.BeginDisabled(EvolutionBusy);
-        bool close=Button("closeEvolution",evolutionReturnToFarm?"Back to Digi-Farm":evolutionReturnToHome?"Back to Home":"Back to collection");ImGui.EndDisabled();
+        bool close=HomeButton("closeEvolution",evolutionReturnToFarm?"Back to farm":evolutionReturnToHome?"Back to Home":"Back to collection",166,36);ImGui.EndDisabled();
+        ImGui.SetCursorScreenPos(headerAt+new float2(0,72));ImGui.Separator();
         if(close){CloseEvolution();return;}
-        ImGui.SameLine();ImGui.Text($"Digivolve / {CosmeticCollection.Item("legend",id)!.Name}");
-        ImGui.Separator();
-        if(EvolutionLegendSelector(id))return;
+        if(changed)return;
         var view=LegendEvolution.Inspect(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"),profile.Storage.GetValueOrDefault("dt.cosmetics.v1"),profile.Storage.GetValueOrDefault("dt.farm.v1"),id);
         if(showEvolutionTree)
         {
@@ -45,7 +51,6 @@ internal sealed partial class MatchScreen
             try
             {
                 EvolutionProgressCard(id,view);
-                EvolutionEquip(id);
                 EvolutionCareCard(id,care);
                 ImGui.BeginDisabled(evolutionPreview.Evolving);
                 ImGui.BeginDisabled(!view.CanDigivolve);
@@ -60,7 +65,10 @@ internal sealed partial class MatchScreen
                 ImGui.BeginDisabled(!view.CanRevert || profile.Progress.Bits<50);
                 if(Button("revertLegend","Revert / 50 Bits",162,38))Evolve(id,LegendAction.Revert);
                 ImGui.EndDisabled();
-                CollectionText("Revert keeps level, Digi-Data and care, and rolls your next branch again.");
+                ImGui.PushFont(default,15);
+                CollectionText("Duplicates add Digi-Data. Revert keeps level, data and care, and rolls your next branch again.");
+                EvolutionEquip(id);
+                ImGui.PopFont();
                 if(Button("openEvolutionTree","Expand evolution tree",330))showEvolutionTree=true;
                 ImGui.EndDisabled();
             }
@@ -98,16 +106,20 @@ internal sealed partial class MatchScreen
 
     private void EvolutionProgressCard(string id,EvolutionView view)
     {
-        ImGui.BeginChild("evolutionProgress"u8,new(0,116),ImGuiChildFlags.Borders);
+        FarmBox("evolutionProgress");
         try
         {
-            ImGui.Text($"Level {view.Level} / 10");ImGui.SameLine();
+            ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(4,3));
+            ImGui.AlignTextToFramePadding();ImGui.Text($"Lv {view.Level} / 10");ImGui.SameLine();
+            ImGui.PushStyleColor(ImGuiCol.PlotHistogram,new ImColor8(47,155,255));
+            ImGui.ProgressBar(view.Need>0?(float)view.Data/view.Need:1,new(76,9),""u8);ImGui.PopStyleColor();ImGui.SameLine();
             ImGui.BeginDisabled(evolutionPreview!.Evolving || view.Need==0 || profile!.Progress.Bits<view.LevelBits);
-            if(Button("levelLegend",view.Need==0?"Maximum level":$"Level up / {view.LevelBits} Bits"))Evolve(id,LegendAction.BuyLevel);
+            if(Button("levelLegend",view.Need==0?"Max level":$"Level up / {view.LevelBits}",124,28))Evolve(id,LegendAction.BuyLevel);
             ImGui.EndDisabled();
-            ImGui.PushStyleColor(ImGuiCol.PlotHistogram,new ImColor8(47,155,255));ImGui.ProgressBar(view.Need>0?(float)view.Data/view.Need:1,new(-1,9),""u8);ImGui.PopStyleColor();
+            ImGui.PopStyleVar();ImGui.PushFont(default,15);
             ImGui.Text(view.Need>0?$"{view.Data}/{view.Need} Digi-Data":"Maximum level");
-            ImGui.Text(view.CanDigivolve?"Ready to digivolve!":view.Next is {} next?$"Next form at level {next}":"Final form");
+            ImGui.SameLine();ImGui.Text(view.CanDigivolve?"Ready to digivolve!":view.Next is {} next?$"Next form: level {next}":"Final form");
+            ImGui.PopFont();
         }
         finally {ImGui.EndChild();}
     }
@@ -115,9 +127,10 @@ internal sealed partial class MatchScreen
     private void EvolutionCareCard(string id,EvolutionCare care)
     {
         bool bonus=care.Bonus.Values.Any(value=>value>0);
-        ImGui.BeginChild("evolutionCareStats"u8,new(0,bonus?238:212),ImGuiChildFlags.Borders);
+        FarmBox("evolutionCareStats");
         try
         {
+            ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(4,3));
             foreach(string key in new[]{"bond","battle","food"})
             {
                 ImGui.AlignTextToFramePadding();ImGui.Text(key=="bond"?"Bond":key=="battle"?"Battle":"Food");ImGui.SameLine(58);
@@ -126,10 +139,11 @@ internal sealed partial class MatchScreen
                 if(key=="food")
                 {
                     ImGui.SameLine(190);ImGui.BeginDisabled(evolutionPreview!.Evolving || profile!.Progress.Bits<30 || care.Values[key]>=20);
-                    if(Button("feedLegend",care.Values[key]>=20?"Full":"Feed / 30 Bits"))Evolve(id,LegendAction.Feed);
+                    if(Button("feedLegend",care.Values[key]>=20?"Full":"Feed / 30 Bits",110,28))Evolve(id,LegendAction.Feed);
                     ImGui.EndDisabled();
                 }
             }
+            ImGui.PopStyleVar();
             ImGui.PushFont(default,16);CollectionText("Care raises matching branch odds. Bond: games played. Battle: top 4. Food: feeding.");
             if(bonus)CollectionText("Digi-Farm: "+string.Join(", ",care.Bonus.Where(p=>p.Value>0).Select(p=>$"+{p.Value:0.#} {p.Key}"))+".");
             ImGui.PopFont();
@@ -141,29 +155,33 @@ internal sealed partial class MatchScreen
     {
         // Long branch names keep their own line, while a bounded list leaves
         // enough space for the evolution tree at the minimum window size.
-        float wantedHeight=view.Odds.Length==0?110:90+view.Odds.Length*78;
+        float wantedHeight=view.Odds.Length==0?110:82+view.Odds.Length*50;
         float height=Math.Min(wantedHeight,Math.Max(160,ImGui.GetContentRegionAvail().Y*.48f));
         ImGui.BeginChild("evolutionOdds"u8,new(0,height),ImGuiChildFlags.Borders);
         EvolutionOddsBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
         EvolutionOddsRows.Clear();
         try
         {
-            ImGui.Text("Next digivolution"u8);
+            FarmBoxHeading("NEXT DIGIVOLUTION");
             ImGui.PushFont(default,17);
             CollectionText(view.Odds.Length==0?$"{LegendEvolution.Form(view.Form).Name} is a final form. Revert to explore another branch.":$"{LegendEvolution.Form(view.Odds[0].Form).Level} at level {view.Next}"+(view.CanDigivolve?" / Ready now":$" / You are level {view.Level}"));
             var discovered=DisplayedEvolutionDiscovery(id).Dex.ToHashSet();
             foreach(var branch in view.Odds)
             {
-                var at=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;ImGui.Dummy(new(width,70));
-                EvolutionOddsRows[branch.Form]=(at,at+new float2(width,70));
-                portraits.DrawEvolution(branch.Form,at,40,discovered.Contains(branch.Form));
+                var at=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
+                string name=LegendEvolution.Form(branch.Form).Name;
+                float nameWidth=Math.Max(100,width*.35f),rowHeight=Math.Max(44,ImGui.CalcTextSize(name,false,nameWidth).Y+10);
+                ImGui.Dummy(new(width,rowHeight));
+                EvolutionOddsRows[branch.Form]=(at,at+new float2(width,rowHeight));
+                portraits.DrawEvolution(branch.Form,at,36,discovered.Contains(branch.Form));
                 var draw=ImGui.GetWindowDrawList();
-                draw.AddText(ImGui.GetFont(),17,new(at.X+48,at.Y+2),new ImColor8(230,237,248),LegendEvolution.Form(branch.Form).Name,width-52);
-                draw.AddText(ImGui.GetFont(),16,new(at.X+48,at.Y+39),new ImColor8(163,183,208),branch.Care+" care");
-                float bar=at.X+48,barWidth=width-104;
-                draw.AddRectFilled(new(bar,at.Y+60),new(bar+barWidth,at.Y+68),new ImColor8(8,15,25),4);
-                draw.AddRectFilled(new(bar,at.Y+60),new(bar+barWidth*branch.Pct/100,at.Y+68),new ImColor8(244,191,76),4);
-                draw.AddText(ImGui.GetFont(),17,new(at.X+width-44,at.Y+54),new ImColor8(244,211,135),$"{branch.Pct}%");
+                draw.AddText(ImGui.GetFont(),17,new(at.X+44,at.Y+4),ClientInk,name,nameWidth);
+                float careX=at.X+nameWidth+52,bar=careX+64,barWidth=Math.Max(12,at.X+width-52-bar);
+                var careColor=branch.Care switch { "bond"=>new ImColor8(255,139,184),"food"=>new ImColor8(255,211,106),"battle"=>new ImColor8(255,154,90),_=>new ImColor8(159,224,122) };
+                draw.AddText(ImGui.GetFont(),15,new(careX,at.Y+11),careColor,branch.Care);
+                draw.AddRectFilled(new(bar,at.Y+14),new(bar+barWidth,at.Y+25),new ImColor8(8,15,25),4);
+                draw.AddRectFilled(new(bar,at.Y+14),new(bar+barWidth*branch.Pct/100,at.Y+25),new ImColor8(100,198,236),4);
+                draw.AddText(ImGui.GetFont(),17,new(at.X+width-44,at.Y+9),ClientInk,$"{branch.Pct}%");
             }
             ImGui.PopFont();
         }

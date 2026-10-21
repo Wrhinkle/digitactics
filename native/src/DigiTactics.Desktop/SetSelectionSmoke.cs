@@ -15,7 +15,7 @@ internal sealed class SetSelectionSmoke
     private readonly GameAudio audio;
     private readonly SetSelection choices;
     private int index,verified=-1,cooldown=5;
-    private bool down,captured;
+    private bool down,captured,escapeDown;
     internal string Pending=>index<steps.Count?steps[index].Button:"verification";
     public SetSelectionSmoke(ContentCatalog catalog,MatchScreen screen,NativeProfileStore profile,GameAudio audio,string? steamLibrary)
     {
@@ -25,21 +25,21 @@ internal sealed class SetSelectionSmoke
         screen.UsePrivateLobbyForSmoke();
         void Add(string button,Action<MatchScreen>? check=null)=>steps.Add(new(button,check));
         void Leave(){Add("gameMenu");Add("requestLeave");Add("confirmLeave",s=>Require(s.Session is null,"Local leave did not return to the picker."));}
-        Add("homeRuleset",s=>Require(s.Buttons.ContainsKey("homeRuleset/chaos"),"Chaos is absent from set options."));
-        Add("homeRuleset/chaos",s=>Require(s.SelectedSet=="chaos"&&profile.Storage.GetValueOrDefault("dt.set.v1")=="chaos"&&s.HomeHeroArt=="hero-server-continent",$"Chaos selection, source artwork or persisted choice differs: {s.SelectedSet}/{profile.Storage.GetValueOrDefault("dt.set.v1")}/{s.HomeHeroArt}."));
-        Add("homePace",s=>Require(!s.Buttons.ContainsKey("homePace/chaos")&&s.Buttons.ContainsKey("homePace/hyper")&&s.Buttons.ContainsKey("homePace/normal"),"Solo picker pace options differ from original."));
-        Add("homePace/normal");Add("homeFormat");Add("homeFormat/duos");
-        Add("start",s=>CheckMatch(s,"normal",true,false));Leave();
-        Add("homePace");Add("homePace/hyper");Add("homeFormat");Add("homeFormat/solo");
-        Add("start",s=>CheckMatch(s,"hyper",false,false));Leave();
+        Add("clientModes");Add("homePlayRuleset",s=>Require(s.Buttons.ContainsKey("homePlayRuleset/chaos"),"Chaos is absent from set options."));
+        Add("homePlayRuleset/chaos",s=>Require(s.SelectedSet=="chaos"&&profile.Storage.GetValueOrDefault("dt.set.v1")=="chaos",$"Chaos selection, source artwork or persisted choice differs: {s.SelectedSet}/{profile.Storage.GetValueOrDefault("dt.set.v1")}/{s.HomeHeroArt}."));
+        Add("homePlayPace",s=>Require(!s.Buttons.ContainsKey("homePlayPace/chaos")&&s.Buttons.ContainsKey("homePlayPace/hyper")&&s.Buttons.ContainsKey("homePlayPace/normal"),"Solo picker pace options differ from original."));
+        Add("homePlayPace/normal");Add("homePlayFormat");Add("homePlayFormat/duos");
+        Add("homeOverview");Add("start",s=>CheckMatch(s,"normal",true,false));Leave();Add("clientModes");
+        Add("homePlayPace");Add("homePlayPace/hyper");Add("homePlayFormat");Add("homePlayFormat/solo");
+        Add("homeOverview");Add("start",s=>CheckMatch(s,"hyper",false,false));Leave();
         Add("multiplayer");Add("steamConnect");Add("steamPace");Add("steamPace/chaos",_=>Require(profile.Storage["dt.pace.v1"]=="hyper","Lobby Chaos pace replaced the persisted solo pace."));
         Add("steamCreate",s=>Require(s.LobbySetId=="chaos"&&s.LobbyPaceId=="chaos","Room creation lost unresolved choices."));
         Add("steamRoomSet");Add("steamRoomSet/underlords_ko",s=>Require(s.LobbySetId=="underlords_ko","Host cannot choose an explicit set excluded from Chaos."));
         Add("steamRoomPace");Add("steamRoomPace/normal",s=>Require(s.LobbyPaceId=="normal"&&profile.Storage["dt.pace.v1"]=="normal","Host pace change was not saved."));
         Add("steamRoomFormat");Add("steamRoomFormat/duos",s=>Require(s.LobbyFormatId=="duos"&&profile.Storage["dt.format.v1"]=="solo","Host format change was not shared or overwrote the local format."));
         Add("steamRoomSet");Add("steamRoomSet/chaos");Add("steamRoomPace");Add("steamRoomPace/chaos");
-        Add("steamStart",s=>CheckMatch(s,"chaos",true,true));Add("leaveOnline");Add("confirmLeave");Add("steamBack");
-        Add("homeFormat");Add("homeFormat/duos");
+        Add("steamStart",s=>CheckMatch(s,"chaos",true,true));Add("menuEscape");Add("requestLeave");Add("confirmLeave");Add("steamBack");
+        Add("clientModes");Add("homePlayFormat");Add("homePlayFormat/duos");Add("homeOverview");
     }
     private static void Require(bool value,string message){if(!value)throw new InvalidOperationException("Set selection UI: "+message);}
     private void CheckMatch(MatchScreen screen,string pace,bool duos,bool online)
@@ -58,16 +58,29 @@ internal sealed class SetSelectionSmoke
     public void Input(MatchScreen screen)
     {
         if(cooldown-->0)return;
+        if(escapeDown){ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,false);escapeDown=false;cooldown=4;return;}
         if(down){ImGui.GetIO().AddMouseButtonEvent(0,false);down=false;cooldown=4;return;}
         if(index>0&&verified<index-1){steps[index-1].Check?.Invoke(screen);verified=index-1;}
         if(index>=steps.Count)return;
+        if(screen.MatchLoadingVisible)return;
+        if(steps[index].Button=="menuEscape"){ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,true);escapeDown=true;index++;cooldown=3;return;}
+        // Finish the real opening choice before clicking the HUD behind its
+        // modal. A click on an obscured Menu must not count as navigation.
+        if(steps[index].Button is "gameMenu" or "leaveOnline" && screen.Session?.Units.Carousel is { Active:true } carousel)
+        {
+            string? choice=carousel.Done?"carouselGo":carousel.Turn?.Id==0
+                ?"carousel/"+Enumerable.Range(0,carousel.Options.Count).First(i=>carousel.Options[i].PickedBy is null):null;
+            if(choice is not null && screen.Buttons.TryGetValue(choice,out var card))
+            {ImGui.GetIO().AddMousePosEvent(card.X,card.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=true;cooldown=3;}
+            return;
+        }
         if(!screen.Buttons.TryGetValue(steps[index].Button,out var point))return;
         if(point.Y<12||point.Y>=ImGui.GetIO().DisplaySize.Y-20){ImGui.GetIO().AddMousePosEvent(point.X,ImGui.GetIO().DisplaySize.Y*.65f);ImGui.GetIO().AddMouseWheelEvent(0,point.Y<12?4:-4);cooldown=3;return;}
         ImGui.GetIO().AddMousePosEvent(point.X,point.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=true;index++;cooldown=3;
     }
     public bool Verify(MatchScreen screen,int2 size,string? capture)
     {
-        if(!captured&&screen.SelectedSet=="chaos"&&screen.Session is null&&index==2&&cooldown==1)
+        if(!captured&&screen.SelectedSet=="chaos"&&screen.Session is null&&index==3&&cooldown==1)
         {if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"chaos-home.bmp"),size.X,size.Y);captured=true;}
         if(index<steps.Count||down||cooldown>0)return false;
         Require(screen.Session is null&&!screen.InSteamRoom,"Steam leave left a running match/room.");

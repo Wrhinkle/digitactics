@@ -8,6 +8,11 @@ Inter: Copyright 2020 The Inter Project Authors
 https://github.com/rsms/inter
 License: SIL Open Font License 1.1, included at inter/OFL.txt.
 The unchanged variable font is used at its default Regular (400) instance.
+Inter-Bold.ttf is a static instance of that same pinned variable font, at
+weight 700 and optical size 14. Its original copyright/license metadata is
+preserved, and the derivative remains under the included SIL Open Font
+License 1.1. Reproduce or verify it with native/tools/export-ui-fonts.py
+(fontTools 4.60.1); provenance.json records its source, axes and SHA-256.
 
 Chakra Petch: Copyright 2018 The Chakra Petch Project Authors
 https://github.com/m4rc1e/Chakra-Petch
@@ -16,5 +21,5 @@ The unchanged SemiBold (600) and Bold (700) fonts are bundled.
 
 provenance.json identifies the exact Google Fonts repository commits,
 immutable download URLs, file sizes and SHA-256 values. The upstream font
-metadata and full original license files accompany the unmodified fonts.
+metadata and full original license files accompany the fonts.
 These files are part of the application content in full and update packages.

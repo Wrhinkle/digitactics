@@ -9,6 +9,8 @@ namespace DigiTactics.Desktop;
 internal sealed partial class CosmeticScenePreview : IDisposable
 {
     public const int Width=384, Height=240;
+    public int RenderWidth {get;}
+    public int RenderHeight {get;}
     private readonly ModelCatalog models=ModelCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/models.json"));
     private readonly CompanionCatalog companions=CompanionCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/companion-models.json"));
     private static readonly Lazy<DanceCatalog> dances=new(()=>DanceCatalog.Load(Path.Combine(AppContext.BaseDirectory,"content/dance-bindings.json")));
@@ -30,28 +32,29 @@ internal sealed partial class CosmeticScenePreview : IDisposable
     public int PedestalDrawCalls {get;private set;}
     public int Samples {get;}
     public double AnimationTime=>animator?.Time??0;
-    public CosmeticScenePreview(PedestalInteraction? interaction=null)
+    public CosmeticScenePreview(PedestalInteraction? interaction=null,int renderWidth=Width,int renderHeight=Height)
     {
         pointer=interaction??new();
+        RenderWidth=Math.Clamp(renderWidth,120,1600);RenderHeight=Math.Clamp(renderHeight,120,1600);
         try
         {
             Samples=SupportedSamples();
             Span<GlFramebuffer> frames=stackalloc GlFramebuffer[2];OpenGl.CreateFramebuffers(frames);frame=frames[0];resolveFrame=frames[1];
             Span<GlTexture> textures=stackalloc GlTexture[1];OpenGl.CreateTextures(OpenGl.GL_TEXTURE_2D,textures);color=textures[0];
-            OpenGl.TextureStorage2D(color.Id,1,OpenGl.GL_RGBA8,Width,Height);
+            OpenGl.TextureStorage2D(color.Id,1,OpenGl.GL_RGBA8,RenderWidth,RenderHeight);
             OpenGl.TextureParameterFloat(color.Id,OpenGl.GL_TEXTURE_MIN_FILTER,OpenGl.GL_LINEAR);OpenGl.TextureParameterFloat(color.Id,OpenGl.GL_TEXTURE_MAG_FILTER,OpenGl.GL_LINEAR);
             OpenGl.TextureParameterFloat(color.Id,OpenGl.GL_TEXTURE_WRAP_S,OpenGl.GL_CLAMP_TO_EDGE);OpenGl.TextureParameterFloat(color.Id,OpenGl.GL_TEXTURE_WRAP_T,OpenGl.GL_CLAMP_TO_EDGE);
             if(Samples>1)
             {
                 Span<GlTexture> multisample=stackalloc GlTexture[2];OpenGl.CreateTextures(OpenGl.GL_TEXTURE_2D_MULTISAMPLE,multisample);multisampleColor=multisample[0];depth=multisample[1];
-                OpenGl.TextureStorage2DMultisample(multisampleColor.Id,Samples,OpenGl.GL_RGBA8,Width,Height,true);
-                OpenGl.TextureStorage2DMultisample(depth.Id,Samples,OpenGl.GL_DEPTH_COMPONENT24,Width,Height,true);
+                OpenGl.TextureStorage2DMultisample(multisampleColor.Id,Samples,OpenGl.GL_RGBA8,RenderWidth,RenderHeight,true);
+                OpenGl.TextureStorage2DMultisample(depth.Id,Samples,OpenGl.GL_DEPTH_COMPONENT24,RenderWidth,RenderHeight,true);
                 OpenGl.NamedFramebufferTexture(resolveFrame,OpenGl.GL_COLOR_ATTACHMENT0,color.Id,0);OpenGl.NamedFramebufferDrawBuffer(resolveFrame,OpenGl.GL_COLOR_ATTACHMENT0);
                 if(OpenGl.CheckNamedFramebufferStatus(resolveFrame,OpenGl.GL_FRAMEBUFFER)!=OpenGl.GL_FRAMEBUFFER_COMPLETE)throw new InvalidOperationException("Cosmetic preview resolve framebuffer is incomplete.");
             }
             else
             {
-                OpenGl.CreateTextures(OpenGl.GL_TEXTURE_2D,textures);depth=textures[0];OpenGl.TextureStorage2D(depth.Id,1,OpenGl.GL_DEPTH_COMPONENT24,Width,Height);
+                OpenGl.CreateTextures(OpenGl.GL_TEXTURE_2D,textures);depth=textures[0];OpenGl.TextureStorage2D(depth.Id,1,OpenGl.GL_DEPTH_COMPONENT24,RenderWidth,RenderHeight);
             }
             OpenGl.NamedFramebufferTexture(frame,OpenGl.GL_COLOR_ATTACHMENT0,Samples>1?multisampleColor.Id:color.Id,0);OpenGl.NamedFramebufferTexture(frame,OpenGl.GL_DEPTH_ATTACHMENT,depth.Id,0);
             OpenGl.NamedFramebufferDrawBuffer(frame,OpenGl.GL_COLOR_ATTACHMENT0);
@@ -74,10 +77,10 @@ internal sealed partial class CosmeticScenePreview : IDisposable
         =>colorSamples.Intersect(depthSamples).Where(count=>count>1&&count<=4).DefaultIfEmpty(1).Max();
     private void Resolve()
     {
-        if(Samples>1)OpenGl.BlitNamedFramebuffer(frame.Id,resolveFrame.Id,0,0,Width,Height,0,0,Width,Height,OpenGl.GL_COLOR_BUFFER_BIT,OpenGl.GL_NEAREST);
-        straightAlpha.Resolve(color.Id,Width,Height);
+        if(Samples>1)OpenGl.BlitNamedFramebuffer(frame.Id,resolveFrame.Id,0,0,RenderWidth,RenderHeight,0,0,RenderWidth,RenderHeight,OpenGl.GL_COLOR_BUFFER_BIT,OpenGl.GL_NEAREST);
+        straightAlpha.Resolve(color.Id,RenderWidth,RenderHeight);
     }
-    public void Draw(string kind,string id,string legend,double time,bool motion=true)
+    public void Draw(string kind,string id,string legend,double time,bool motion=true,double? stageAspect=null)
     {
         if(kind!="legend")CancelPointer();
         DrawCalls=PedestalDrawCalls=0;
@@ -88,7 +91,7 @@ internal sealed partial class CosmeticScenePreview : IDisposable
         OpenGl.GetIntegerv(OpenGl.GL_READ_FRAMEBUFFER_BINDING,value);int previousRead=value[0];OpenGl.GetIntegerv(OpenGl.GL_VIEWPORT,viewport);
         try
         {
-            OpenGl.BindFramebuffer(OpenGl.GL_FRAMEBUFFER,frame);OpenGl.Viewport(0,0,Width,Height);
+            OpenGl.BindFramebuffer(OpenGl.GL_FRAMEBUFFER,frame);OpenGl.Viewport(0,0,RenderWidth,RenderHeight);
             OpenGl.ClearColor(new(0,0,0,0));OpenGl.Clear(GlClearBit.Color|GlClearBit.Depth);
             if(kind=="board")
             {
@@ -96,7 +99,7 @@ internal sealed partial class CosmeticScenePreview : IDisposable
                 board??=new(){Stage=4,Evolution=0,Won=false,CombatActive=false};board.Time=2;board.SetTheme(id);
                 var eye=new Vector3(0,16.5f*1.02f,1.8f+15.5f*1.02f);
                 var camera=Matrix4x4.CreateLookAt(eye,new(0,0,1.8f),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(38*MathF.PI/180,(float)Width/Height,.1f,200);
-                board.Draw(renderer,camera,eye,7,true,0,0,Width,Height,(_,_)=>{});DrawCalls=board.DrawCalls;
+                board.Draw(renderer,camera,eye,7,true,0,0,RenderWidth,RenderHeight,(_,_)=>{});DrawCalls=board.DrawCalls;
                 Resolve();return;
             }
             double height=kind=="legend"?PedestalStage.LegendHeight:1;
@@ -113,15 +116,15 @@ internal sealed partial class CosmeticScenePreview : IDisposable
             renderer.BoardLight=null;renderer.EvolutionStage=false;renderer.CosmeticStage=true;renderer.ShadowTexture=0;
             renderer.PedestalStage=kind=="legend";
             var companionEye=new Vector3(MathF.Sin(.35f)*3.3f,.75f,MathF.Cos(.35f)*3.3f);renderer.FarmEye=companionEye;
-            var companionCamera=Matrix4x4.CreateLookAt(companionEye,new(0,.55f,0),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI/6,(float)Width/Height,.05f,50);
+            var companionCamera=Matrix4x4.CreateLookAt(companionEye,new(0,.55f,0),Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI/6,(float)(stageAspect??(double)Width/Height),.05f,50);
             if(kind=="legend")
             {
-                pedestal??=new();var source=PedestalStage.Camera(Width,Height);
+                pedestal??=new();var source=PedestalStage.Camera(stageAspect??(double)Width/Height);
                 companionEye=new((float)source.Eye.X,(float)source.Eye.Y,(float)source.Eye.Z);renderer.FarmEye=companionEye;
                 var target=new Vector3((float)source.Target.X,(float)source.Target.Y,(float)source.Target.Z);
                 companionCamera=Matrix4x4.CreateLookAt(companionEye,target,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView((float)source.FovRadians,(float)source.Aspect,(float)source.Near,(float)source.Far);
             }
-            ModelRenderer.Begin(Width,Height);
+            ModelRenderer.Begin(RenderWidth,RenderHeight);
             var placement=model!.PlaceCompanion(animator,dance:root);
             if(kind=="legend")placement*=GpuModel.Transform(0,0,0,pointer.Yaw(pedestalTime,motion),1);
             try

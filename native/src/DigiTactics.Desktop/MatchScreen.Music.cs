@@ -107,4 +107,60 @@ internal sealed partial class MatchScreen
         musicPickerError=null;
         try { musicPickerGeneration=profile?.DataDirectory;musicPicker=PickMusicFiles(); } catch(Exception e) { musicPickerError=e.Message; }
     }
+    private void MusicRemovalConfirmation(CustomMusicController controller)
+    {
+        if(!clearMusic&&removeMusicId is null)return;
+        ImGui.Spacing();
+        UiText.Wrapped(clearMusic?"Remove every saved music track? Original files are unchanged.":"Remove this saved music track? Original files are unchanged.");
+        ImGui.BeginDisabled(controller.LibraryBusy||closeAfterFileOperations);
+        if(clearMusic)
+        {
+            if(HomeButton("confirmClearMusic","Remove all tracks",180,32)){controller.Clear();clearMusic=false;}
+            ImGui.SameLine();if(HomeButton("cancelClearMusic","Cancel",90,32))clearMusic=false;
+        }
+        else if(removeMusicId is {} id)
+        {
+            if(HomeButton("confirmRemoveMusic/"+id,"Remove track",150,32)){controller.Remove(id);removeMusicId=null;}
+            ImGui.SameLine();if(HomeButton("cancelRemoveMusic","Cancel",90,32))removeMusicId=null;
+        }
+        ImGui.EndDisabled();
+    }
+    private void MusicTrackRows(CustomMusicController controller,bool compact)
+    {
+        if(controller.Library is not { Tracks.Count:>0 } library)return;
+        ImGui.Spacing();
+        if(compact)ImGui.BeginChild("Sound music files"u8,new(0,Math.Min(174,library.Tracks.Count*40+8)));
+        ImGui.BeginDisabled(controller.LibraryBusy||closeAfterFileOperations);
+        foreach(var track in library.Tracks)
+        {
+            var row=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
+            const float selectWidth=166,removeWidth=32,gap=8;
+            float nameWidth=Math.Max(48,width-selectWidth-removeWidth-gap*2);
+            ImGui.Dummy(new(nameWidth,32));
+            var ink=controller.CurrentTrackId==track.Id?new ImColor8(90,223,138):ClientInk;
+            ImGui.GetWindowDrawList().AddText(ImGui.GetFont(),16,row+new float2(0,7),ink,track.Name,0,new float4(row.X,row.Y,row.X+nameWidth,row.Y+32));
+            if(ImGui.IsItemHovered())ResultTooltip($"{track.Name} ({track.Size/1048576d:F1} MB)");
+            ImGui.SameLine();ImGui.SetCursorScreenPos(row+new float2(nameWidth+gap,0));
+            ImGui.SetNextItemWidth(selectWidth);
+            string label=track.Use=="planning"?"Planning":track.Use=="combat"?"Combat":"Planning + combat";
+            bool open=ImGui.BeginCombo("##musicUse/"+track.Id,label);
+            Buttons["musicUse/"+track.Id]=(ImGui.GetItemRectMin()+ImGui.GetItemRectMax())*.5f;
+            if(open)
+            {
+                foreach(string use in new[]{"both","planning","combat"})
+                {
+                    bool selected=ImGui.Selectable(use=="both"?"Planning + combat":use=="planning"?"Planning":"Combat",track.Use==use);
+                    Buttons[$"musicUse/{track.Id}/{use}"]=(ImGui.GetItemRectMin()+ImGui.GetItemRectMax())*.5f;
+                    if(selected)controller.SetUse(track.Id,use);
+                }
+                ImGui.EndCombo();
+            }
+            ImGui.SameLine();ImGui.SetCursorScreenPos(row+new float2(width-removeWidth,0));
+            if(HomeButton("removeMusic/"+track.Id,"x",removeWidth,32)){removeMusicId=track.Id;clearMusic=false;}
+            if(ImGui.IsItemHovered())ResultTooltip("Remove this saved track. Original files are unchanged.");
+            ImGui.SetCursorScreenPos(row+new float2(0,36));ImGui.Separator();
+        }
+        ImGui.EndDisabled();
+        if(compact)ImGui.EndChild();
+    }
 }

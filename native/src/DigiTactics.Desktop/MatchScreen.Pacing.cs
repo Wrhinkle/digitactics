@@ -49,23 +49,12 @@ internal sealed partial class MatchScreen
     private void PlanningTimerControls()
     {
         if (Session!.State.Over || !Human.Alive) return;
-        if (networkRoom is not null)
-        {
-            if (NetworkPlanningRemaining is { } remaining)
-            {
-                ImGui.SameLine(); ImGui.Text($"{Math.Ceiling(remaining)}s");
-            }
-            return;
-        }
+        if(networkRoom is not null)return;
         ImGui.SameLine();
-        if (Button("planningTimer", PlanningTimerEnabled ? "Timer on" : "Timer off",104,36))
+        if(Button("planningTimer",PlanningTimerEnabled?"Timer on":"Timer off",78,34))
         {
-            PlanningTimerEnabled = !PlanningTimerEnabled;
-            PlanningRemaining = Rules.PlanningSeconds;
-        }
-        if (PlanningTimerEnabled && Session.Rounds.Phase == MatchPhase.Planning && Session.Rounds.RoundType != "carousel")
-        {
-            ImGui.SameLine(); ImGui.Text($"{Math.Max(0,Math.Ceiling(PlanningRemaining))}s");
+            PlanningTimerEnabled=!PlanningTimerEnabled;
+            PlanningRemaining=Rules.PlanningSeconds;
         }
     }
     private void UpdateResultCountdown(double delta)

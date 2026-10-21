@@ -135,6 +135,8 @@ internal sealed class CarouselUiSmoke
             var viewport=screen.CarouselChoicesBounds;
             Require(viewport.Min.X>=0&&viewport.Min.Y>=0&&viewport.Max.X<=size.X&&viewport.Max.Y<=size.Y,"Carousel choices leave the visible window.");
             foreach(var bounds in screen.CarouselCardBounds.Values)Require(bounds.Min.X>=viewport.Min.X-1&&bounds.Max.X<=viewport.Max.X+1,"Carousel columns exceed their visible width.");
+            foreach(var row in screen.CarouselCardBounds.Values.GroupBy(bounds=>Math.Round(bounds.Min.Y)))
+                Require(Math.Abs((row.Min(bounds=>bounds.Min.X)+row.Max(bounds=>bounds.Max.X))/2-(viewport.Min.X+viewport.Max.X)/2)<12,"A partial carousel row lost the source centered layout.");
             if(step==10&&screen.Buttons.TryGetValue("carouselGo",out var footer))Require(footer.Y-20>=viewport.Max.Y&&footer.Y+20<=size.Y,"Carousel Continue is clipped or overlaps its scrolling choices.");
         }
         if(captureState is {} state&&capture is not null){FrameCapture.SaveBitmap(Path.ChangeExtension(capture,state+".bmp"),size.X,size.Y);captureState=null;}

@@ -40,6 +40,7 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
     private bool evolutionInviteVerified;
     private bool holdSnapshot,pendingJoinCancelled;
     private int roomNameInput;
+    private int networkToolbarStep;
     private TaskCompletionSource<string?>? pendingBackup;
     public SteamLobbyUiSmoke(string? library=null,NativeProfileStore? profile=null)
     {
@@ -66,13 +67,13 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
             :["multiplayer","steamConnect","planningSeconds/45","steamCreate","steamInvite","steamFree/0","steamSeat/1","steamStart","leaveOnline","confirmLeave","steamBack","__joinFromInvite","steamLeave","steamBack",
               "__friends","settings","__settings","setMotion","setMotion","socialLobby","__lobby","steamBack",
               "__friends","codex","__codex","socialLobby","__lobby","steamBack",
-              "settings","__settings","__joinFromInvite","__joined","steamLeave","steamBack",
+              "settings","__settings","__joinFromInvite","__joined","settings","__settings","clientPlay","__joined","steamLeave","steamBack",
               "codex","__codex","__joinFromInvite","__joined","steamLeave","steamBack",
-              "saveData","__prepareBackup","exportSave","__inviteWithBackup","__joinedWithBackup","__backupCanceled","steamLeave","steamBack",
+              "settings","saveData","__prepareBackup","exportSave","__inviteWithBackup","__joinedWithBackup","__backupCanceled","steamLeave","steamBack",
               "__prepareSocialRoom","__friends","socialRefresh","settings","__settings","socialJoin/"+Peer,"__joined","steamLeave","steamBack",
               "__prepareSocialRoom","__friends","socialRefresh","codex","__codex","socialJoin/"+Peer,"__joined","steamLeave","steamBack",
-              "__friends","homeRuleset","homeRuleset/faction-wars","homeHeroAction","__friends","__homePlay","socialLobby","__lobby","steamBack",
-              "__prepareSocialRoom","__friends","socialRefresh","homeRuleset","homeRuleset/faction-wars","homeHeroAction","__friends","__homePlay","socialJoin/"+Peer,"__joined","steamLeave","steamBack",
+              "__friends","clientModes","homePlayRuleset","homePlayRuleset/faction-wars","homePlayConfirm","__friends","__homePlay","socialLobby","__lobby","steamBack",
+              "__prepareSocialRoom","__friends","socialRefresh","clientModes","homePlayRuleset","homePlayRuleset/faction-wars","homePlayConfirm","__friends","__homePlay","socialJoin/"+Peer,"__joined","steamLeave","steamBack",
               "farm","farmDigivolve","digivolve","__inviteDuringEvolution","__waitDeferredEvolution","__joined","steamLeave","steamBack","__evolutionCleaned",
               "__pendingInvite","__cancelPendingInvite","__pendingCancelled","steamBack"];
         if(callback is not null)
@@ -114,7 +115,9 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
         if (index >= commands.Length || cooldown-- > 0) return;
         string command=commands[index];
         if(carouselChoiceDown){ImGui.GetIO().AddMouseButtonEvent(0,false);carouselChoiceDown=false;cooldown=3;return;}
-        if(command=="homeRuleset"&&screen.Buttons.TryGetValue("closeSocial",out var closeFriends))
+        if(command.StartsWith("planningSeconds/",StringComparison.Ordinal)&&!screen.Buttons.ContainsKey(command)&&screen.Buttons.TryGetValue("steamPlanning",out var planning))
+        {ImGui.GetIO().AddMousePosEvent(planning.X,planning.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);carouselChoiceDown=true;return;}
+        if(command=="clientModes"&&screen.Buttons.TryGetValue("closeSocial",out var closeFriends))
         {ImGui.GetIO().AddMousePosEvent(closeFriends.X,closeFriends.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);carouselChoiceDown=true;return;}
         if(command=="leaveOnline"&&screen.Session?.Units.Carousel is {Active:true} carousel)
         {
@@ -125,6 +128,26 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
             if(card.Y<bounds.Min.Y+10||card.Y>bounds.Max.Y-10)
             {ImGui.GetIO().AddMousePosEvent((bounds.Min.X+bounds.Max.X)/2,(bounds.Min.Y+bounds.Max.Y)/2);ImGui.GetIO().AddMouseWheelEvent(0,card.Y<bounds.Min.Y+10?1:-1);cooldown=3;return;}
             ImGui.GetIO().AddMousePosEvent(card.X,card.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);carouselChoiceDown=true;return;
+        }
+        if(command=="leaveOnline"&&networkToolbarStep<2)
+        {
+            if(networkToolbarStep==0)
+            {
+                var viewport=ImGui.GetIO().DisplaySize;
+                var widths=new Dictionary<string,float>{{"gameMenu",50},{"codex",52},{"matchStore",62},{"matchLocker",62},{"matchLegend",100},{"emotes",58},{"soundboard",90},{"audioSettings",54},{"mute",56},{"replaySpeed",36},{"players",64},{"spectate",110},{"leaveOnline",54},{"fight",104}};
+                foreach(var (key,width) in widths)
+                {
+                    if(!screen.Buttons.TryGetValue(key,out var toolbarPoint)||toolbarPoint.X-width/2<0||toolbarPoint.X+width/2>viewport.X||toolbarPoint.Y<17||toolbarPoint.Y>104)
+                        throw new InvalidOperationException("Network toolbar control is clipped or missing: "+key);
+                    foreach(var (other,otherWidth) in widths)
+                        if(key!=other&&screen.Buttons.TryGetValue(other,out var otherPoint)&&Math.Abs(toolbarPoint.Y-otherPoint.Y)<30&&Math.Abs(toolbarPoint.X-otherPoint.X)<(width+otherWidth)/2)
+                            throw new InvalidOperationException($"Network toolbar controls overlap: {key}/{other}.");
+                }
+            }
+            string control=networkToolbarStep==0?"players":"closePlayers";
+            if(!screen.Buttons.TryGetValue(control,out var target))throw new InvalidOperationException("Network Players panel route failed: "+control);
+            ImGui.GetIO().AddMousePosEvent(target.X,target.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);
+            carouselChoiceDown=true;networkToolbarStep++;cooldown=3;return;
         }
         if(command=="steamCreate"&&roomNameInput<6)
         {
@@ -163,7 +186,7 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
                 if(!evolutionInviteVerified)throw new InvalidOperationException("The transformation ended before the deferred invite could be verified.");
                 NextCommand();return;
             case "__evolutionCleaned":
-                if(screen.CollectionVisible||screen.DisplayedEvolutionForm is not null||screen.Buttons.ContainsKey("closeFarm")||!screen.Buttons.ContainsKey("start"))throw new InvalidOperationException("Deferred invite cleanup restored a stale Farm or evolution page.");
+                if(screen.DisplayedEvolutionForm is not null||screen.Buttons.ContainsKey("closeEvolution"))throw new InvalidOperationException("Deferred invite cleanup restored an active transformation.");
                 NextCommand();return;
             case "__joinFromInvite":PrepareInvitedRoom();JoinRequest(lobby);NextCommand();return;
             case "__prepareSocialRoom":PrepareInvitedRoom();NextCommand();return;
@@ -181,6 +204,7 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
                 if(!screen.SteamRoomReady)return;
                 AssertLobbyView(screen);
                 if(screen.SteamRoomIdentity!=lobby || screen.Session is not null)throw new InvalidOperationException("Cross-screen navigation joined the wrong room.");
+                if(screen.ClientPrimaryLabel!="LOBBY"||screen.ClientPresenceLabel!="In lobby"||screen.ClientRoomLabel!="Lobby 1/8")throw new InvalidOperationException("Client shell did not reflect the active lobby's one occupied seat (two connected members).");
                 navigationChecks++;NextCommand();return;
             case "__prepareBackup":
                 if(!screen.SaveDataVisible)throw new InvalidOperationException("Navigation smoke did not open Save data through its Home control.");
@@ -206,6 +230,8 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
         if (down) { ImGui.GetIO().AddMouseButtonEvent(0, false); down = false; NextCommand(); return; }
         if(command.StartsWith("socialJoin/",StringComparison.Ordinal) && !screen.DisplayedSocialRows.Any(row=>row.Id==Peer && row.CanJoin))return;
         if (!screen.Buttons.TryGetValue(command, out var point)) return;
+        if(point.Y<12||point.Y>=ImGui.GetIO().DisplaySize.Y-20)
+        {ImGui.GetIO().AddMousePosEvent(point.X,ImGui.GetIO().DisplaySize.Y*.65f);ImGui.GetIO().AddMouseWheelEvent(0,point.Y<12?4:-4);cooldown=3;return;}
         if(command=="digivolve")
         {
             var bounds=screen.EvolutionCareBounds;
@@ -220,21 +246,25 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
             FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"pending-host.bmp"),size.X,size.Y);
         if(index==3&&!browserVerified&&screen.Buttons.ContainsKey("steamCreate"))
         {
-            foreach(string key in new[]{"steamRoomName","steamVisibility","steamSet","steamPace","steamFormat","planningSeconds/45","steamCreate","steamBack"})
+            foreach(string key in new[]{"steamRoomName","steamVisibility","steamSet","steamPace","steamFormat","steamPlanning","steamCreate","steamBack"})
                 if(!screen.Buttons.TryGetValue(key,out var point)||point.Y<96||point.Y>=size.Y-12||point.X<0||point.X>=size.X)throw new InvalidOperationException("Lobby form is clipped or missing: "+key);
-            if(screen.LobbyBodyFontSize<17||!screen.LobbyLayoutFits)throw new InvalidOperationException("Lobby form is below its supported readable size.");
-            if(screen.Buttons["steamRoomName"].X>=screen.Buttons["steamVisibility"].X||
-                screen.Buttons["steamSet"].X>=screen.Buttons["steamPace"].X||screen.Buttons["steamPace"].X>=screen.Buttons["steamFormat"].X||
-                screen.Buttons["steamFormat"].X>=screen.Buttons["planningSeconds/45"].X)
-                throw new InvalidOperationException("Lobby fields overlap instead of staying under their labels.");
+            if(screen.LobbyBodyFontSize<17||!screen.LobbyLayoutFits||!screen.LobbyArtworkVisible)throw new InvalidOperationException("Lobby form lost its artwork or supported readable size.");
+            string[] fields=["steamRoomName","steamSet","steamPace","steamFormat","steamPlanning","steamVisibility"];
+            for(int i=1;i<fields.Length;i++)
+            {
+                var previous=screen.Buttons[fields[i-1]];var next=screen.Buttons[fields[i]];
+                if(next.Y<previous.Y-2||Math.Abs(next.Y-previous.Y)<2&&next.X<=previous.X)throw new InvalidOperationException("Lobby fields overlap instead of wrapping in their original order: "+fields[i]);
+            }
             browserVerified=true;if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"browser.bmp"),size.X,size.Y);
         }
         if (index == 4 && screen.InSteamRoom && !roomVerified)
         {
             if(screen.DisplayedLobbyName!="Native UI lobby")throw new InvalidOperationException("The editable room name did not reach the created lobby: '"+screen.DisplayedLobbyName+"'.");
-            if(screen.LobbySeatCards!=8||screen.LobbyBodyFontSize<17||!screen.LobbyLayoutFits)throw new InvalidOperationException("Lobby seat grid is clipped, overlapping or below its supported readable size.");
+            if(screen.LobbySeatCards!=8||screen.LobbyBodyFontSize<17||!screen.LobbyLayoutFits||!screen.LobbyArtworkVisible)throw new InvalidOperationException("Lobby seat grid is clipped, overlapping, missing artwork or below its supported readable size.");
             foreach(string key in new[]{"steamFree/0","steamSeat/7","steamStart","steamInvite","steamLeave"})
                 if(!screen.Buttons.TryGetValue(key,out var point)||point.Y<96||point.Y>=size.Y-12||point.X<0||point.X>=size.X)throw new InvalidOperationException("Lobby room control is clipped or missing: "+key);
+            if(screen.Buttons["steamStart"].X<=screen.Buttons["steamLeave"].X||screen.Buttons["steamStart"].Y<screen.LobbyFooterBounds.Min.Y||screen.Buttons["steamInvite"].Y>=screen.Buttons["steamFree/0"].Y)
+                throw new InvalidOperationException("Lobby primary action or invite no longer occupies the source layout's footer/header position.");
             roomVerified = true;
             lobby=screen.SteamRoomIdentity;
             if(callback is not null)JoinRequest(lobby); // An invite to the current room must be a no-op.
@@ -263,10 +293,10 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
         if (index < commands.Length) return false;
         if (!browserVerified || !roomVerified || !matchVerified || screen.Session is not null || screen.InSteamRoom) throw new InvalidOperationException("Steam lobby UI did not enter and cleanly leave a native match.");
         if(callback is not null && (!inviteVerified || !rejectVerified || !rejoinVerified))throw new InvalidOperationException("Fake Steam invite, active-match guard or automatic accepted-invite join was not verified.");
-        if(callback is not null && (navigationChecks!=10||!evolutionInviteVerified))throw new InvalidOperationException("Not all Settings, Codex, match launch panel, social, invite, pending-save and deferred evolution navigation routes were verified.");
+        if(callback is not null && (navigationChecks!=11||!evolutionInviteVerified))throw new InvalidOperationException($"Not all Settings, Codex, lobby return, match launch panel, social, invite, pending-save and deferred evolution navigation routes were verified ({navigationChecks}/11).");
         if(callback is not null&&!pendingJoinCancelled)throw new InvalidOperationException("Pending host snapshot cancellation was not verified.");
         if (capture is not null) FrameCapture.SaveBitmap(capture, size.X, size.Y);
-        Console.WriteLine("Steam lobby UI smoke passed: connect, private create, free/take seat, native match start, leave and return to menu."+(callback is null?"":" Fake-only overlay, current-room no-op, active-match protection, accepted-invite join and ten cross-screen navigation/pending-save/evolution routes also passed; no invitations sent.")); return true;
+        Console.WriteLine("Steam lobby UI smoke passed: connect, private create, free/take seat, native match start, leave and return to menu."+(callback is null?"":" Fake-only overlay, current-room no-op, active-match protection, accepted-invite join and eleven cross-screen navigation/pending-save/evolution routes including lobby-aware primary navigation also passed; no invitations sent.")); return true;
     }
     public void Dispose(){capturePackets?.Invoke(0);if(module!=0)NativeLibrary.Free(module);}
 }

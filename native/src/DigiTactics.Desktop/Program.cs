@@ -11,6 +11,14 @@ try
         if (index + 1 >= args.Length || args[index + 1].StartsWith("--", StringComparison.Ordinal)) throw new ArgumentException($"Provide a path after {name}.");
         return Path.GetFullPath(args[index + 1]);
     }
+    float SmokeUiScale()
+    {
+        int index=Array.IndexOf(args,"--smoke-ui-scale");
+        if(index<0)return 1;
+        if(index+1>=args.Length||!float.TryParse(args[index+1],System.Globalization.NumberStyles.Float,System.Globalization.CultureInfo.InvariantCulture,out float value)||!float.IsFinite(value)||value<1||value>4)
+            throw new ArgumentException("--smoke-ui-scale requires a number from 1 to 4.");
+        return value;
+    }
     if(args.Contains("--ui-scale-smoke")){NativeUiScaleSmoke.Verify();return 0;}
     if (Option("--model-dance-visual") is { } danceAuditDirectory)
     {
@@ -152,12 +160,15 @@ try
                 args.Contains("--match-smoke") ||
                 args.Contains("--postgame-smoke") ||
                 args.Contains("--unit-note-ui-smoke") ||
+                args.Contains("--match-controls-ui-smoke") ||
                 args.Contains("--loot-notice-ui-smoke") ||
                 args.Contains("--match-cosmetics-smoke") ||
                 args.Contains("--legend-navigation-smoke") ||
                 args.Contains("--galaxy-intro-ui-smoke") ||
                 args.Contains("--choice-presentation-ui-smoke") ||
                 args.Contains("--carousel-ui-smoke") ||
+                args.Contains("--loading-ui-smoke") ||
+                args.Contains("--home-ui-smoke") ||
                 args.Contains("--cast-feed-ui-smoke") ||
                 args.Contains("--profile-ui-smoke") ||
                 args.Contains("--update-ui-smoke") ||
@@ -188,15 +199,22 @@ try
             MusicLibrarySmoke = args.Contains("--music-library-ui-smoke"),
             MinimumWindow = args.Contains("--minimum-window"),
             ShortWindow = args.Contains("--short-window"),
+            CompactSmokeWindow = args.Contains("--compact-smoke-window"),
+            ReferenceWindow = args.Contains("--reference-window"),
+            FullHdWindow = args.Contains("--full-hd-window"),
+            SmokeUiScale = SmokeUiScale(),
             UpdateUiSmoke = args.Contains("--update-ui-smoke"),
             ProfileUiSmoke = args.Contains("--profile-ui-smoke"),
             PostgameSmoke = args.Contains("--postgame-smoke"),
             UnitNoteUiSmoke = args.Contains("--unit-note-ui-smoke"),
+            MatchControlsUiSmoke = args.Contains("--match-controls-ui-smoke"),
             MatchCosmeticsSmoke = args.Contains("--match-cosmetics-smoke"),
             LegendNavigationSmoke = args.Contains("--legend-navigation-smoke"),
             GalaxyIntroUiSmoke = args.Contains("--galaxy-intro-ui-smoke"),
             ChoicePresentationUiSmoke = args.Contains("--choice-presentation-ui-smoke"),
             CarouselUiSmoke = args.Contains("--carousel-ui-smoke"),
+            LoadingUiSmoke = args.Contains("--loading-ui-smoke"),
+            HomeUiSmoke = args.Contains("--home-ui-smoke"),
             CastFeedUiSmoke = args.Contains("--cast-feed-ui-smoke"),
             LootNoticeUiSmoke = args.Contains("--loot-notice-ui-smoke"),
             EliminationCinematicSmoke = args.Contains("--elimination-cinematic-smoke"),

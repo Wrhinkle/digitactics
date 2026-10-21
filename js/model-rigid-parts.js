@@ -1,12 +1,27 @@
 // Reviewed original rigid pieces from DW1 rips. The virtual joints only
 // generate tracks on existing nodes: no mesh, material, skin or hierarchy edits.
+// Frigimon additionally seats its staged original pieces with exact translations.
 import * as THREE from 'three';
 
 const part = (name, parent, pivot, kind, side = 0, segment = 0) => ({ name, parent, pivot, kind, side, segment });
 const mesh = (n, parent, pivot, kind, side = 0, segment = 0) => part(`Mesh_${n}`, parent === null ? null : `Mesh_${parent}`, pivot, kind, side, segment);
 const ag = (name, parent, pivot, kind, side = 0) => part(`Agumon_${name}_${name}`, parent && `Agumon_${parent}_${parent}`, pivot, kind, side);
 const br = (name, parent, pivot, kind, side = 0, segment = 0) => part(`Brachiomon_${name}`, parent && `Brachiomon_${parent}`, pivot, kind, side, segment);
+const fr = (n, parent, pivot, kind, side = 0) => part(`TMD_object_#${n},_VRAM_page_#5`, parent === null ? null : `TMD_object_#${parent},_VRAM_page_#5`, pivot, kind, side);
 const rigs = {
+  'rip-dw1_frigimon': { family: 'frigimon', durations: { idle: 3, run: .9, attack: .75, special: 1.3, win: 2.4 },
+    // Authored repair, not recovered game transforms. Each measured joint lies
+    // inside both adjacent original cap volumes. Vertex/UV/material data stays
+    // byte-identical; only staged piece translations change before animation.
+    restOffsets: [[0,0,0],[0,-.48,0],[.65,-.10,.1],[1.15,-.08,.1],[1.75,-.05,.1],[-.45,-.15,.1],[-.95,-.13,.1],[-1.5,.05,.1],[0,.5,.1],[0,1,.1],[0,.5,.1],[0,1,.1]],
+    triangles: [88,130,20,20,46,20,20,46,36,50,36,50],
+    parts: [
+      fr(0,null,[.55133,0,.1],'body'), fr(1,0,[.55133,1.64987,-.02058],'head'),
+      fr(2,0,[-.83494,1.09074,-.13188],'arm',-1), fr(3,2,[-1.92171,1.04073,-.08063],'elbow',-1), fr(4,3,[-2.86642,1.04820,-.10063],'hand',-1),
+      fr(5,0,[1.93637,1.08013,-.13188],'arm',1), fr(6,5,[3.03803,1.08013,-.08063],'elbow',1), fr(7,6,[3.98347,1.10176,-.10063],'hand',1),
+      fr(8,0,[1.64061,-1.47254,-.14836],'leg',1), fr(9,8,[1.64061,-2.85404,-.14836],'foot',1),
+      fr(10,0,[-.52010,-1.47254,-.14836],'leg',-1), fr(11,10,[-.59010,-2.83478,-.14836],'foot',-1),
+    ] },
   'rip-dw1_agumon': { family: 'agumon', parts: [
     ag('Torso', null, [0, .86, 0], 'body'), ag('Head', 'Torso', [0, 1.80, .08], 'head'),
     ag('Left_Arm', 'Torso', [.27, 1.55, .04], 'arm', 1), ag('Right_Arm', 'Torso', [-.27, 1.55, .07], 'arm', -1),
@@ -100,6 +115,37 @@ function angles(family, p, role, u) {
     if (p.kind === 'head') x = role === 'attack' ? .22 * hit - .09 * wind : role === 'special' ? -.18 * big : .035 * s;
     if (p.kind === 'jaw') x = role === 'attack' ? .40 * hit : role === 'special' ? .48 * big : role === 'win' ? .18 * (1 - c) : 0;
     if (p.kind === 'body') x = role === 'attack' ? .09 * hit : role === 'special' ? -.06 * big : .012 * s;
+  } else if (family === 'frigimon') {
+    if (p.kind === 'arm') z = -side * .65;
+    if (p.kind === 'elbow') y = -side * .20;
+    if (role === 'idle') {
+      if (p.kind === 'head') { y = .045 * s; x = .025 * s; }
+      if (p.kind === 'arm') z += side * .025 * s;
+      if (p.kind === 'elbow') y -= side * .025 * s;
+    } else if (role === 'run') {
+      if (p.kind === 'leg') x = side * .30 * s;
+      if (p.kind === 'foot') x = -side * .22 * s + .10 * Math.max(0, side * s) ** 2;
+      if (p.kind === 'arm') x = -side * .25 * s;
+      if (p.kind === 'head') x = .035 * (1 - c);
+    } else if (role === 'attack') {
+      if (p.kind === 'body') { x = .08 * hit - .035 * wind; y = .10 * hit; }
+      if (p.kind === 'head') x = -.06 * hit;
+      if (p.kind === 'arm' && side === -1) { x = -.95 * hit + .18 * wind; z += side * .12 * hit; }
+      if (p.kind === 'elbow' && side === -1) y -= side * .35 * hit;
+      if (p.kind === 'arm' && side === 1) x = .12 * hit;
+    } else if (role === 'special') {
+      if (p.kind === 'body') x = -.055 * wind + .09 * big;
+      if (p.kind === 'head') x = -.12 * big;
+      if (p.kind === 'arm') { x = -.85 * big; z += side * .20 * big; }
+      if (p.kind === 'elbow') y -= side * .22 * big;
+    } else if (role === 'win') {
+      if (p.kind === 'body') y = .10 * s;
+      if (p.kind === 'head') { x = .065 * Math.sin(2 * cycle); z = .05 * s; }
+      if (p.kind === 'arm') { x = -.85 * (1 - c) / 2 + side * .13 * s; z += side * .10 * (1 - c); }
+      if (p.kind === 'elbow') y -= side * .15 * (1 - c);
+      if (p.kind === 'leg') x = side * .08 * s;
+      if (p.kind === 'foot') x = -side * .065 * s;
+    }
   } else if (family === 'brachiomon') {
     const gait = side * (p.segment === 0 ? 1 : -1) * s;
     if (p.kind === 'tail') y = (role === 'run' ? .065 : role === 'win' ? .095 : .035) * (Math.sin(cycle - p.segment * .45) - Math.sin(-p.segment * .45));
@@ -161,6 +207,15 @@ export function rigidPartClips(gltf, src) {
   const spec = rigs[src?.uid];
   if (!spec || gltf.animations.length) return null;
   const scene = gltf.scene, prepared = new Map();
+  if (spec.restOffsets && scene.userData.rigidAssemblyPrepared !== src.uid) {
+    // Validate the whole exact source before mutating any node. Repeated
+    // preparation of this scene must not accumulate staging corrections.
+    const nodes = spec.parts.map(p => scene.getObjectByName(p.name));
+    if (nodes.some((node, i) => !node?.isMesh || node.parent !== scene || node.isSkinnedMesh || node.geometry.index.count !== spec.triangles[i] * 3))
+      throw new Error(`DW1 staged assembly changed: ${src.uid}`);
+    nodes.forEach((node, i) => node.position.add(new THREE.Vector3(...spec.restOffsets[i])));
+    scene.userData.rigidAssemblyPrepared = src.uid;
+  }
   scene.updateMatrixWorld(true);
   for (const p of spec.parts) {
     const node = scene.getObjectByName(p.name);

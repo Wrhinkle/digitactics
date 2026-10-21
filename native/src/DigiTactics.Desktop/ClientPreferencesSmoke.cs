@@ -27,9 +27,9 @@ internal sealed class ClientPreferencesSmoke
     }
     public void Input(MatchScreen screen)
     {
-        if (cooldown-- > 0 || step >= 6) return;
+        if (cooldown-- > 0 || step >= 9) return;
         if (down) { ImGui.GetIO().AddMouseButtonEvent(0, false); down = false; step++; cooldown = 4; return; }
-        string key = step switch { 0 or 5 => "settings", 1 => "setMotion", 2 => "setUiSfx", 3 => "setSocial", 4 => "closeSettings", _ => throw new InvalidOperationException() };
+        string key = step switch { 0 or 5 => "settings", 1 => "setMotion", 2 => "setUiSfx", 3 => "setSocial", 4 => "closeSettings", 6=>"settingsMusicVolume",7=>"settingsEffectsVolume",8=>"settingsBoardVolume", _ => throw new InvalidOperationException() };
         if (!screen.Buttons.TryGetValue(key, out var point)) return;
         if (point.X < 0 || point.Y < 0 || point.X >= ImGui.GetIO().DisplaySize.X || point.Y >= ImGui.GetIO().DisplaySize.Y) throw new InvalidOperationException("Preference control outside supported window: " + key);
         ImGui.GetIO().AddMousePosEvent(point.X, point.Y); ImGui.GetIO().AddMouseButtonEvent(0, true); down = true;
@@ -45,11 +45,13 @@ internal sealed class ClientPreferencesSmoke
             if (audio.Available && audio.Played != played + 1) throw new InvalidOperationException("Menu sound preference suppressed a nonquiet action cue.");
             if (capture is not null) FrameCapture.SaveBitmap(capture, size.X, size.Y); checkedOff = true;
         }
-        if (step < 6 || cooldown > 0) return false;
+        if (step < 9 || cooldown > 0) return false;
         var restart = new ClientPreferencesStore(new NativeProfileStore(profile.DataDirectory)); restart.Refresh();
         var client = JsonNode.Parse(profile.Storage["dt.client.v1"])!;
         if (!checkedOff || !screen.SettingsVisible || restart.Settings != new ClientPreferences(false,false,false) || client["totals"]!["games"]!.GetValue<int>() != 9 || client["future"]!["keep"]!.GetValue<int>() != 7 || client["prefs"]!["future"]!.GetValue<int>() != 3)
             throw new InvalidOperationException("Interface preferences did not survive reopening/restart or preserve saved history.");
-        Console.WriteLine("Client preferences UI passed: actual checkboxes, source quiet/nonquiet audio behavior, persisted reopening and preserved history/future fields."); return true;
+        if(Math.Abs(audio.MusicVolume-.5f)>.03f||Math.Abs(audio.EffectsVolume-.5f)>.03f||Math.Abs(audio.BoardVolume-.5f)>.03f)
+            throw new InvalidOperationException("Restored volume rows did not apply their actual slider input.");
+        Console.WriteLine("Client preferences UI passed: actual checkboxes and three volume sliders, source quiet/nonquiet audio behavior, persisted reopening and preserved history/future fields."); return true;
     }
 }

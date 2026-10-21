@@ -10,6 +10,20 @@
       "repositoryCommit": "0b58fb370093f9a9f4ff785d94405710b79de67c"
     },
     {
+      "path": "inter/Inter-Bold.ttf",
+      "size": 343072,
+      "sha256": "202f240469f916722233188ec316107f6cecaf13b801e9b3939b82b9f7a816d6",
+      "derivedFrom": "inter/Inter[opsz,wght].ttf",
+      "sourceSha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+      "license": "inter/OFL.txt",
+      "generator": "native/tools/export-ui-fonts.py",
+      "fontToolsVersion": "4.60.1",
+      "axes": {
+        "opsz": 14,
+        "wght": 700
+      }
+    },
+    {
       "path": "inter/OFL.txt",
       "size": 4377,
       "sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57",

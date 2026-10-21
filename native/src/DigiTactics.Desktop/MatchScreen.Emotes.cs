@@ -82,15 +82,14 @@ internal sealed partial class MatchScreen
         if(keyboard&&Enumerable.Range(0,6).Any(SlotKeyPressed))overlayShortcutConsumed=true;
         // The original six image buttons surround a ring over the arena. Keep
         // the board visible and put the hovered name in the centre of the wheel.
-        const float radius=124,diameter=88;
+        const float radius=121,diameter=82;
         float2 center=new(Left+Width*.5f,Math.Clamp(Top+Math.Max(174,Height*.45f),190,size.Y-230));
-        float2 origin=center-new float2(198,178);
-        if(PressedOutsideSocialPanel(origin,origin+new float2(396,410),emotesToggleHovered)){showEmotes=false;return;}
+        float2 origin=center-new float2(180,178);
+        if(PressedOutsideSocialPanel(origin,origin+new float2(360,390),emotesToggleHovered)){showEmotes=false;return;}
         EmoteWheelCenter=center;EmoteSlotBounds=new (float2,float2)[6];
-        Window("Emotes",origin.X,origin.Y,396,410,ImGuiWindowFlags.NoTitleBar|ImGuiWindowFlags.NoBackground|ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
+        Window("Emotes",origin.X,origin.Y,360,390,ImGuiWindowFlags.NoTitleBar|ImGuiWindowFlags.NoBackground|ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
         var draw=ImGui.GetWindowDrawList();
-        draw.AddCircle(center,124,new ImColor8(12,16,26,225),96,54);
-        draw.AddCircle(center,153,new ImColor8(92,102,124,160),96,1);
+        draw.AddCircle(center,121,new ImColor8(12,16,26,210),96,54);
         string hoveredName="Emotes";
         try
         {
@@ -115,10 +114,10 @@ internal sealed partial class MatchScreen
                 string name=CosmeticCollection.Item("emote",id)?.Name??"Empty slot";
                 draw.AddCircleFilled(slotCenter,diameter*.5f,hover?new ImColor8(35,52,68):new ImColor8(18,28,43),64);
                 draw.AddCircle(slotCenter,diameter*.5f,hover||focused?new ImColor8(240,218,155):new ImColor8(88,106,132),64,hover||focused?3:2);
-                if(id is not null)emoteArtwork.Draw(id,now,at+new float2(9,9),70);
+                if(id is not null)emoteArtwork.Draw(id,now,at+new float2(6,6),70);
                 else {var textAt=slotCenter-new float2(25,10);draw.AddText(ImGui.GetFont(),16,textAt,new ImColor8(165,178,196),"Empty"u8);}
-                var badge=at+new float2(4,4);draw.AddCircleFilled(badge,13,new ImColor8(200,170,110),32);
-                draw.AddText(ImGui.GetFont(),16,badge-new float2(4,9),new ImColor8(15,20,29),(i+1).ToString());
+                var badge=at+new float2(7,7);draw.AddCircleFilled(badge,10,new ImColor8(255,209,82),32);
+                draw.AddText(ImGui.GetFont(),14,badge-new float2(4,8),new ImColor8(27,20,36),(i+1).ToString());
                 if(hover||focused)hoveredName=name;
                 if(hover)ResultTooltip(id is null?"Choose an emote for this slot in Collection.":name+" ("+(i+1)+")");
                 if ((pressed&&(!ImGui.IsMouseReleased(ImGuiMouseButton.Left)||circleHit)) || keyboard && !IsSpectating && SlotKeyPressed(i))
@@ -128,17 +127,20 @@ internal sealed partial class MatchScreen
                 }
                 ImGui.EndDisabled();
             }
-            ImGui.PushFont(default,18);
+            ImGui.PushFont(default,16);
             ImGui.SetCursorScreenPos(center-ImGui.CalcTextSize(hoveredName,false,140)*.5f);
             ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+140);ImGui.Text(hoveredName);ImGui.PopTextWrapPos();ImGui.PopFont();
-            ImGui.SetCursorScreenPos(center+new float2(-178,178));
-            if (HomeButton("muteEmotes",muteEmotes?"Others muted":"Mute others",230,36,muteEmotes))
+            ImGui.SetCursorScreenPos(center+new float2(-74,176));
+            if (HomeButton("muteEmotes",muteEmotes?"Others muted":"Mute others",148,32,muteEmotes))
             {
                 bool muted=!muteEmotes;
                 if (profile is null || profile.UpdateStorage(new Dictionary<string, string> { ["dt.emotes.muteOthers"] = muted ? "1" : "0" })) { muteEmotes = muted; if (muted) emotes.ClearOthers(localSeat); }
                 else status = profile.Error ?? "Mute preference could not be saved.";
             }
-            ImGui.SameLine();if(HomeButton("closeEmotes","Close (T)",118,36))showEmotes=false;
+            ImGui.SetCursorScreenPos(center+new float2(-48,27));ImGui.PushFont(default,13);
+            ImGui.PushStyleColor(ImGuiCol.Button,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.Text,new ImColor8(165,178,196));ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,0);
+            if(Button("closeEmotes","T to close",96,24))showEmotes=false;
+            ImGui.PopStyleVar();ImGui.PopStyleColor(2);ImGui.PopFont();
         }
         catch (Exception error) when (error is JsonException or InvalidDataException or InvalidOperationException or IOException or FormatException)
         { UiText.Wrapped("Emotes could not be loaded: " + error.Message); }

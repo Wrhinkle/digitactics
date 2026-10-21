@@ -24,6 +24,8 @@ internal sealed class TrainingSmoke(NativeProfileStore profile, string directory
     private bool Click(MatchScreen screen, string key)
     {
         if (!screen.Buttons.TryGetValue(key, out var point)) return false;
+        if(point.Y<12||point.Y>=ImGui.GetIO().DisplaySize.Y-20)
+        {ImGui.GetIO().AddMousePosEvent(point.X,ImGui.GetIO().DisplaySize.Y*.65f);ImGui.GetIO().AddMouseWheelEvent(0,point.Y<12?4:-4);delay=3;return false;}
         ImGui.GetIO().AddMousePosEvent(point.X, point.Y); ImGui.GetIO().AddMouseButtonEvent(0, true); mouseDown = true;
         return true;
     }

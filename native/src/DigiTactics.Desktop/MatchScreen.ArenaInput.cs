@@ -26,6 +26,13 @@ internal sealed partial class MatchScreen
     private void ArenaPointer()
     {
         DetailedCombatUnit = null;
+        for(int i=0;i<9;i++)
+        {
+            var point=planning.Bench(i,Width,Height);
+            Buttons[$"arenaBench/{i}"]=new(Left+point.X,Top+point.Y);
+            Buttons[$"bench/{i}"]=Buttons[$"arenaBench/{i}"];
+        }
+        if(showPlayers){CancelArenaDrag();return;}
         var feedback = arenaEnvironment.Feedback;
         feedback.UnitDragMoved = false; feedback.HoverCell = null; feedback.HoverBench = -1;
         bool editable = Session is not null && !IsSpectating && viewed == localSeat && !Session.State.Over && Human.Alive;
@@ -110,7 +117,7 @@ internal sealed partial class MatchScreen
         var line = Rules.Lines.Concat(Rules.ExtraLines).Single(l => l.Id == unit.Line);
         bool canSell = !unit.NoSell && !line.NoSell && (Session!.Rounds.Phase != MatchPhase.Combat || !drag.From.IsBoard);
         sellDropHovered = ImGui.IsWindowHovered();
-        Button("dropSell", canSell ? $"Drop to sell {UnitName(unit)} for {UnitValues.SellValue(line, unit.Stage)} gold" : "This unit cannot be sold", size.X - 48, 165, sellDropHovered && canSell);
+        Button("dropSell", canSell ? $"Drop to sell {UnitName(unit)} for {UnitValues.SellValue(line, unit.Stage)} gold" : "This unit cannot be sold", size.X - 24, ShopHeight - 20, sellDropHovered && canSell);
         return true;
     }
 

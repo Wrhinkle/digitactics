@@ -6,6 +6,7 @@ namespace DigiTactics.Desktop;
 internal sealed record MatchRunOptions
 {
     public bool Smoke { get; init; }
+    public float SmokeUiScale { get; init; } = 1;
     public string? Capture { get; init; }
     public bool Duos { get; init; }
     public string? ProfileDirectory { get; init; }
@@ -25,15 +26,21 @@ internal sealed record MatchRunOptions
     public bool MusicLibrarySmoke { get; init; }
     public bool MinimumWindow { get; init; }
     public bool ShortWindow { get; init; }
+    public bool CompactSmokeWindow { get; init; }
+    public bool ReferenceWindow { get; init; }
+    public bool FullHdWindow { get; init; }
     public bool UpdateUiSmoke { get; init; }
     public bool ProfileUiSmoke { get; init; }
     public bool PostgameSmoke { get; init; }
     public bool UnitNoteUiSmoke { get; init; }
+    public bool MatchControlsUiSmoke { get; init; }
     public bool MatchCosmeticsSmoke { get; init; }
     public bool LegendNavigationSmoke { get; init; }
     public bool GalaxyIntroUiSmoke { get; init; }
     public bool ChoicePresentationUiSmoke { get; init; }
     public bool CarouselUiSmoke { get; init; }
+    public bool LoadingUiSmoke { get; init; }
+    public bool HomeUiSmoke { get; init; }
     public bool CastFeedUiSmoke { get; init; }
     public bool LootNoticeUiSmoke { get; init; }
     public bool EliminationCinematicSmoke { get; init; }

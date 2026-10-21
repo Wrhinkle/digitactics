@@ -22,11 +22,15 @@ internal sealed partial class MatchScreen
             if(clearMusic||removeMusicId is not null){clearMusic=false;removeMusicId=null;}
             else showMusicLibrary=false;
         }
-        else if(showAudio)showAudio=false;
+        else if(showAudio)
+        {
+            if(clearMusic||removeMusicId is not null){clearMusic=false;removeMusicId=null;}
+            else showAudio=false;
+        }
         else if(showPlayers)showPlayers=false;
         else if(showEmotes)showEmotes=false;
         else if(showSoundboard)showSoundboard=false;
-        else if(showHomePlay)showHomePlay=false;
+        else if(showHomePlay)BackClient();
         else if(evolutionLegend is not null)CloseEvolution();
         else if(showCollection)
         {
@@ -36,14 +40,15 @@ internal sealed partial class MatchScreen
             else if(eggPurchase is not null)eggPurchase=null;
             else if(hatching is not null)hatching=null;
             else if(boughtCosmetic is not null)boughtCosmetic=null;
-            else {showCollection=false;DisposeCollectionPreview();}
+            else {if(MatchCosmeticsVisible)showCollection=false;else BackClient();DisposeCollectionPreview();}
         }
         else if(showFarm)
         {
             if(training is not null){if(trainingScore is not null&&trainingSaved)training=null;}
             else if(farmManagement)farmManagement=false;
             else if(farmActionMenu is not null)farmActionMenu=null;
-            else showFarm=false;
+            else if(MatchCosmeticsVisible)showFarm=false;
+            else BackClient();
         }
         else return;
         overlayShortcutConsumed=true;

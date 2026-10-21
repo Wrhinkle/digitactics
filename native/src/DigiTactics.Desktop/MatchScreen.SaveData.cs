@@ -56,14 +56,16 @@ internal sealed partial class MatchScreen
         ClientPageWindow("Save data",(size.X-width)/2,108,width,height);
         bool escape=ImGui.IsKeyPressed(ImGuiKey.Escape,false);
         if(escape&&confirmResetSave){confirmResetSave=false;escape=false;}
-        if (HomeButton("closeSaveData", "Back", 110, 36) || escape) { showSaveData = confirmResetSave = false; ImGui.End(); return; }
+        if (HomeButton("closeSaveData", "Back", 110, 36) || escape) {confirmResetSave = false;BackClient(); ImGui.End(); return; }
         ImGui.SameLine();ClientPageTitle("SAVE DATA",26);ImGui.Spacing();
-        SaveDataControls(); ImGui.End();
+        ProfileControls(showSaveLink:false);ImGui.Spacing();SaveDataControls(showManageLink:false); ImGui.End();
     }
-    private void SaveDataControls()
+    private void SaveDataControls(bool showManageLink=true)
     {
         if (profile is null) return;
         ClientCardHeading("DATA");
+        if(showManageLink && HomeButton("saveData","Manage save / import backup",Math.Min(280,ImGui.GetContentRegionAvail().X),38))
+        NavigateClient("savedata");
         UiText.Wrapped("Your Bits, cosmetics, Little Legend levels, Digi-Farm, match history and settings are saved on this computer."u8);
         ImGui.BeginDisabled(!CanResetSave);
         ImGui.PushStyleColor(ImGuiCol.Button,new ImColor8(72,19,29));ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(180,66,82));

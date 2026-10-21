@@ -45,30 +45,33 @@ internal sealed partial class MatchScreen
             draw.AddLine(new(max.X-1,y),new(max.X-1,Math.Min(y+5,max.Y-1)),border);
         }
         itemArtwork.Draw(Rules.Id,"wisp:"+wisp.Id,new(max.X-38,min.Y+5),30);WispArtworkDrawCalls++;
-        HudClipText(draw,min+new float2(10,8),width-52,wisp.Kind+" Wisp",new ImColor8(177,157,255));
-        HudClipText(draw,min+new float2(10,32),width-20,wisp.Name,ink,18);
-        DrawWispDescription(draw,min+new float2(10,58),width-20,wisp.Description);
+        HudClipText(draw,min+new float2(10,8),width-52,(wisp.Kind+" Wisp").ToUpperInvariant(),new ImColor8(177,157,255),12);
+        var nameLines=ChoiceLines(wisp.Name,16,width-20);int nameRows=Math.Min(2,nameLines.Length);
+        for(int row=0;row<nameRows;row++)HudClipText(draw,min+new float2(10,32+row*19),width-20,nameLines[row]+(row==1&&nameLines.Length>2?"...":""),ink,16);
+        float descriptionY=32+nameRows*19+4;
+        int effectRows=Math.Clamp((int)((ShopCardHeight-descriptionY-28)/17),1,3);
+        DrawWispDescription(draw,min+new float2(10,descriptionY),width-20,wisp.Description,effectRows);
         HudClipText(draw,new(max.X-77,max.Y-23),67,offer.Cost+" gold",affordable?HudGold:HudMuted);
         draw.PopClipRect();
         if(hovered)WispTooltip(wisp,offer.Cost,min,max);
         if(pressed)Act("wisp");
     }
 
-    private static void DrawWispDescription(ImDrawListPtr draw,float2 at,float width,string description)
+    private static void DrawWispDescription(ImDrawListPtr draw,float2 at,float width,string description,int rows)
     {
         // The original card clamps the effect to three lines; the hover shows it in full.
-        ImGui.PushFont(default,16);
+        ImGui.PushFont(default,14);
         var words=description.Split(' ');int word=0;
-        for(int row=0;row<3&&word<words.Length;row++)
+        for(int row=0;row<rows&&word<words.Length;row++)
         {
             string line=words[word++];
             while(word<words.Length&&ImGui.CalcTextSize(line+" "+words[word]).X<=width)line+=" "+words[word++];
-            if(row==2&&word<words.Length)
+            if(row==rows-1&&word<words.Length)
             {
                 while(line.Length>0&&ImGui.CalcTextSize(line+"...").X>width)line=line[..^1];
                 line+="...";
             }
-            draw.AddText(ImGui.GetFont(),16,at+new float2(0,row*17),HudMuted,line);
+            draw.AddText(ImGui.GetFont(),14,at+new float2(0,row*17),HudMuted,line);
         }
         ImGui.PopFont();
     }

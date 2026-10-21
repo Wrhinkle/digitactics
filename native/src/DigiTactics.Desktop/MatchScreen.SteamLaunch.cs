@@ -23,7 +23,7 @@ internal sealed partial class MatchScreen
     private void OpenMultiplayerView()
     {
         if(ClientNavigationBlocked)return;
-        if(PostgameClientOverlay&&!PostgameHomeVisible)DismissResults();
+        RememberClientRoute("multiplayer");
         if(evolutionLegend is not null)CloseEvolution();
         // Every entry route leaves the current client module, like the original
         // client's play-page navigation. Async save/file work keeps completing
@@ -55,6 +55,9 @@ internal sealed partial class MatchScreen
         if(steam.Room?.Authority.RoomId==lobby.ToString(System.Globalization.CultureInfo.InvariantCulture))return;
         if(Session is not null || training is not null)
         {status=lobbyMessage="Leave your current game first, then accept the invite again.";return;}
+        // Accepted external navigation may dismiss the settled evolution modal;
+        // ordinary page clicks remain blocked behind it.
+        if(evolutionLegend is not null)CloseEvolution();
         OpenMultiplayerView();
         if(steam.Room is not null)LeaveSteamRoom();
         JoinSteamRoom(lobby);

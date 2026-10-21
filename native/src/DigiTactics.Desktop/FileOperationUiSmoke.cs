@@ -77,7 +77,7 @@ internal sealed class FileOperationUiSmoke : IDisposable
         if(!screen.Buttons.ContainsKey(key))
         {
             string? route=key=="musicLibrary"&&!screen.SettingsVisible?"settings"
-                :key=="saveData"&&screen.SettingsVisible?"closeSettings":null;
+                :key=="saveData"&&!screen.SettingsVisible?"settings":null;
             if(route is null||!screen.Buttons.TryGetValue(route,out var navigation))return;
             ImGui.GetIO().AddMousePosEvent(navigation.X,navigation.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=navigationClick=true;return;
         }

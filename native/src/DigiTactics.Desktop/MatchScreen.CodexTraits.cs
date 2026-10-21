@@ -19,57 +19,109 @@ internal sealed partial class MatchScreen
             foreach(var trait in rows)CodexTraitCard(trait,true);
         }
         else CodexGrid("Codex trait grid",rows.Where(trait=>(codexKind=="all"||trait.Kind==codexKind)&&CodexMatch(trait.SearchText))
-            .OrderBy(trait=>CodexKindOrder(trait.Kind)).ThenBy(trait=>trait.Name,StringComparer.OrdinalIgnoreCase),340,trait=>CodexTraitCard(trait,false));
+            .OrderBy(trait=>CodexKindOrder(trait.Kind)).ThenBy(trait=>trait.Name,StringComparer.OrdinalIgnoreCase),290,trait=>CodexTraitCard(trait,false));
     }
     private void CodexTraitCard(CodexTrait trait,bool live)
     {
         CodexRows++;ImGui.PushID(trait.Id);var color=CodexColor(trait.Color);
         if(codexFocusTrait==trait.Id){ImGui.SetScrollHereY(.05f);codexFocusTrait=null;}
-        if(!CodexBeginCard("Trait card",color,compact:live)){CodexEndCard();ImGui.PopID();return;}
+        if(!CodexBeginCard("Trait card",color,compact:live,trait:true)){CodexEndCard();ImGui.PopID();return;}
         int count=live?codexCounts.GetValueOrDefault(trait.Id):0,next=trait.Breakpoints.FirstOrDefault(bp=>bp.Count>count)?.Count??0;
-        CodexBadge(trait,live?30:36);ImGui.SameLine();ImGui.BeginGroup();CodexHeading(trait.Name,22,color);CodexText(CodexTitle(trait.Kind),CodexMuted,16);ImGui.EndGroup();
-        if(live)CodexText(next>0?$"{count} / {next} different Digimon":$"{count} different Digimon",count>=trait.Breakpoints.FirstOrDefault()?.Count?HomeGold:HomeMute);
-        if(trait.Description.Length>0)CodexText(trait.Description);
+        int activeThreshold=live?trait.Breakpoints.LastOrDefault(bp=>bp.Count<=count)?.Count??0:0;
+        var origin=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X,y=30;
+        var draw=ImGui.GetWindowDrawList();var rgb=color.AsByte4();
+        // The source card uses a 30px header, compact breakpoint rows and 30px
+        // unit chips. Position those groups explicitly; default ImGui row gaps
+        // otherwise accumulate into a much taller card and a second count row.
+        if(activeThreshold>0)
+        {
+            var panel=ImGui.GetWindowPos();var end=panel+ImGui.GetWindowSize();var tint=new ImColor8(rgb.X,rgb.Y,rgb.Z,24);var clear=new ImColor8(rgb.X,rgb.Y,rgb.Z,0);
+            draw.AddRectFilledMultiColor(panel+new float2(4,1),end-new float2(1,1),tint,clear,clear,tint);
+        }
+        ImGui.PushFont(NativeUiTheme.BodyBoldFont,14);CodexBadge(trait,28);ImGui.PopFont();
+        string numerator=count.ToString(),denominator=next>0?"/"+next:"";
+        float countWidth=live?CodexLineMeasure(numerator,19,true).X+CodexLineMeasure(denominator,14,true).X:0;
+        float titleWidth=Math.Max(1,width-35-(live?countWidth+8:0));
+        CodexLineLabel(origin+new float2(35,0),titleWidth,trait.Name,17,color,bold:true);
+        CodexLineLabel(origin+new float2(35,17),titleWidth,trait.Kind.ToUpperInvariant(),13,CodexMuted,bold:true);
+        if(live)
+        {
+            var at=origin+new float2(width-countWidth,5);float numeratorWidth=CodexLineMeasure(numerator,19,true).X;
+            CodexLineLabel(at,numeratorWidth,numerator,19,activeThreshold>0?HomeGold:CodexMuted,bold:true);
+            if(denominator.Length>0)CodexLineLabel(at+new float2(numeratorWidth,5),countWidth-numeratorWidth,denominator,14,CodexMuted,bold:true);
+            if(ImGui.IsMouseHoveringRect(at,at+new float2(countWidth,20)))ImGui.SetTooltip("Different Digimon on your board with this trait"u8);
+        }
+        if(trait.Description.Length>0)
+        {
+            y+=5;y+=CodexDetailParagraph(origin+new float2(0,y),width,15,true,(trait.Description,CodexBody));
+        }
         foreach(string note in trait.Notes)
         {
-            var noteAt=ImGui.GetCursorScreenPos();ImGui.Indent(10);CodexText(note,CodexMuted);ImGui.Unindent(10);
-            ImGui.GetWindowDrawList().AddRectFilled(noteAt,new(noteAt.X+2,ImGui.GetItemRectMax().Y),CodexStroke);
+            y+=3;var at=origin+new float2(0,y);float height=CodexDetailParagraph(at+new float2(8,0),width-8,14,true,(note,CodexMuted));
+            draw.AddRectFilled(at,at+new float2(2,height),CodexStroke);y+=height;
         }
-        ImGui.Spacing();
+        y+=6;
         foreach(var point in trait.Breakpoints)
         {
-            bool active=live&&count>=point.Count;var at=ImGui.GetCursorScreenPos();ImGui.Dummy(new(30,26));
-            var draw=ImGui.GetWindowDrawList();draw.AddRectFilled(at,at+new float2(30,26),active?color:new ImColor8(28,39,62),2);
-            string threshold=point.Count.ToString();draw.AddText(at+new float2((30-ImGui.CalcTextSize(threshold).X)/2,4),active?CodexNavy:CodexMuted,threshold);
-            ImGui.SameLine(0,8);CodexText(point.Text,active?CodexInk:CodexMuted);
+            bool active=live&&count>=point.Count;var at=origin+new float2(0,y);
+            float height=Math.Max(15,CodexDetailParagraph(default,width-30,15,false,(point.Text,CodexMuted)))+2;
+            if(active&&point.Count==activeThreshold)draw.AddRectFilled(at,at+new float2(width,height),new ImColor8(rgb.X,rgb.Y,rgb.Z,36),4);
+            draw.AddRectFilled(at+new float2(0,1),at+new float2(20,16),active?color:new ImColor8(28,39,62),4);
+            CodexLineLabel(at+new float2(0,1.5f),20,point.Count.ToString(),14,active?CodexNavy:CodexMuted,bold:true,center:true);
+            CodexDetailParagraph(at+new float2(26,1),width-30,15,true,(point.Text,active?CodexInk:CodexMuted));
+            y+=height+2;
         }
+        if(trait.Breakpoints.Length>0)y-=2;
         var lines=trait.LineIds.Select(id=>CodexData.Lines.Single(line=>line.Id==id)).Where(line=>!live||line.Shop)
             .OrderBy(line=>!line.Shop).ThenBy(line=>line.Tier).ThenBy(line=>line.Forms[0].Name,StringComparer.OrdinalIgnoreCase).ToArray();
-        int columns=Math.Max(1,(int)((ImGui.GetContentRegionAvail().X+6)/46)),column=0;bool wild=false;
-        ImGui.Spacing();
-        for(int i=0;i<lines.Length;i++)
+        int columns=Math.Max(1,(int)((width+4)/34));
+        foreach(var group in lines.GroupBy(line=>line.Shop))
         {
-            var line=lines[i];
-            if(!line.Shop&&!wild){CodexText("WILD",CodexMuted,16);wild=true;column=0;}
-            if(column++%columns!=0)ImGui.SameLine(0,6);
-            var owned=live?codexOwned.GetValueOrDefault(line.Id):null;
-            int stage=owned?.Max(entry=>entry.Unit.Stage)??0;
-            var at=ImGui.GetCursorScreenPos();
-            if(Button("codexLine/"+trait.Id+"/"+line.Id,"##codexLine/"+line.Id,40,40)){codexUnit=line.Id;codexResetScroll=true;}
-            CodexPortrait(line,stage,at+new float2(2,2),36);
-            if(owned is not null)ImGui.GetWindowDrawList().AddCircleFilled(at+new float2(37,4),5,owned.Any(entry=>entry.Spot.IsBoard)?new ImColor8(71,206,142):new ImColor8(81,161,238));
-            if(stage>0)ImGui.GetWindowDrawList().AddText(at+new float2(4,26),HomeGold,new string('*',stage+1));
-            if(ImGui.IsItemHovered())
+            y+=6;
+            if(!group.Key){CodexLineLabel(origin+new float2(0,y),width,"WILD",13,CodexMuted);y+=19;}
+            int column=0;var clear=new ImColor8(0,0,0,0);
+            ImGui.PushStyleColor(ImGuiCol.Button,clear);ImGui.PushStyleColor(ImGuiCol.ButtonHovered,clear);ImGui.PushStyleColor(ImGuiCol.ButtonActive,clear);ImGui.PushStyleColor(ImGuiCol.Border,clear);
+            foreach(var line in group)
             {
-                ImGui.BeginTooltip();ImGui.Text(line.Forms[Math.Min(stage,line.Forms.Length-1)].Name+(line.Shop?$" / {line.Tier} gold":" / Wild")+(owned is null?"":owned.Any(entry=>entry.Spot.IsBoard)?" / On your board":" / On your bench"));ImGui.EndTooltip();
+                if(column==columns){y+=34;column=0;}
+                var owned=live?codexOwned.GetValueOrDefault(line.Id):null;int stage=owned?.Max(entry=>entry.Unit.Stage)??0;
+                var at=origin+new float2(column++*34,y);ImGui.SetCursorScreenPos(at);
+                if(Button("codexLine/"+trait.Id+"/"+line.Id,"##codexLine/"+line.Id,30,30)){codexUnit=line.Id;codexResetScroll=true;}
+                bool hovered=ImGui.IsItemHovered(),focused=ImGui.IsItemFocused();CodexPortrait(line,stage,at,30);
+                if(hovered||focused)draw.AddRect(at,at+new float2(30,30),CodexInk,5);
+                if(owned is not null)
+                {
+                    draw.AddCircleFilled(at+new float2(28,2),5,new ImColor8(14,18,27));
+                    draw.AddCircleFilled(at+new float2(28,2),3,owned.Any(entry=>entry.Spot.IsBoard)?new ImColor8(71,206,142):new ImColor8(81,161,238));
+                }
+                if(stage>0)
+                    for(int star=0;star<=stage;star++)
+                    {
+                        var center=at+new float2(15-(stage+1)*4+star*8+4,27);
+                        for(int point=0;point<10;point++)
+                        {
+                            float a=(point*36-90)*MathF.PI/180,b=((point+1)*36-90)*MathF.PI/180,r=point%2==0?3.5f:1.5f,rNext=point%2==0?1.5f:3.5f;
+                            draw.AddTriangleFilled(center,center+new float2(MathF.Cos(a),MathF.Sin(a))*r,center+new float2(MathF.Cos(b),MathF.Sin(b))*rNext,HomeGold);
+                        }
+                    }
+                if(hovered)
+                {
+                    ImGui.BeginTooltip();ImGui.Text(line.Forms[Math.Min(stage,line.Forms.Length-1)].Name+(line.Shop?$" / {line.Tier} gold":" / Wild")+(owned is null?"":owned.Any(entry=>entry.Spot.IsBoard)?" / On your board":" / On your bench"));ImGui.EndTooltip();
+                }
             }
+            ImGui.PopStyleColor(4);y+=30;
         }
         foreach(string id in trait.CrestIds)
         {
-            var item=CodexData.Items.Single(entry=>entry.Id==id);ImGui.Spacing();CodexItemIcon(item.Id,32);ImGui.SameLine();
-            string origin=item.Recipes.Length>0?string.Join(" + ",item.Recipes[0].Select(component=>CodexData.Items.Single(i=>i.Id==component).Name)):"Found in "+item.DropSource;
-            CodexText(item.Name+": "+origin,HomeMute);
+            y+=6;var item=CodexData.Items.Single(entry=>entry.Id==id);
+            string source=item.Recipes.Length>0?string.Join(" + ",item.Recipes[0].Select(component=>CodexData.Items.Single(i=>i.Id==component).Name)):"Found in "+item.DropSource;
+            string label=item.Name+": "+source;
+            float height=CodexDetailParagraph(default,width-32,14,false,(label,CodexMuted));
+            ImGui.SetCursorScreenPos(origin+new float2(0,y+Math.Max(0,(height-26)/2)));CodexItemIcon(item.Id,26);
+            CodexDetailParagraph(origin+new float2(32,y+Math.Max(0,(26-height)/2)),width-32,14,true,(label,CodexMuted));
+            y+=Math.Max(26,height);
         }
+        ImGui.SetCursorScreenPos(origin);ImGui.Dummy(new(width,y));
         CodexEndCard();ImGui.PopID();
     }
     private static void CodexBadge(CodexTrait trait,float size)
@@ -94,38 +146,6 @@ internal sealed partial class MatchScreen
         if(portraits.DrawCalls==before){string name=line.Forms[Math.Min(stage,line.Forms.Length-1)].Name;draw.AddText(at+new float2(4,4),HomeMute,name[..Math.Min(2,name.Length)]);}
         draw.AddRect(at,at+new float2(extent,extent),CodexColor(line.Color),4);CodexPortraits++;
     }
-    private void CodexLineList()
-    {
-        var lines=CodexData.Lines.Where(line=>CodexMatch(line.SearchText)&&(codexCost=="all"||(codexCost=="wild"?!line.Shop:line.Shop&&line.Tier.ToString()==codexCost))).ToArray();
-        foreach(var group in lines.GroupBy(line=>line.Shop?line.Tier:100).OrderBy(group=>group.Key))
-        {
-            CodexHeading((group.Key==100?"Wild Digimon (PvE only)":group.Key+" gold")+$" / {group.Count()}",22,CodexColor(group.First().Color));
-            CodexGrid("Codex lines/"+group.Key,group,340,CodexLineCard);ImGui.Spacing();
-        }
-    }
-    private void CodexLineCard(CodexLine line)
-    {
-        CodexRows++;ImGui.PushID(line.Id);
-        if(!CodexBeginCard("Digimon card",CodexColor(line.Color),topStripe:true)){CodexEndCard();ImGui.PopID();return;}
-        ImGui.PushFont(NativeUiTheme.DisplayFont,22);float titleWidth=ImGui.GetContentRegionAvail().X;var titleAt=ImGui.GetCursorScreenPos();
-        float titleHeight=Math.Max(36,ImGui.CalcTextSize(line.Forms[0].Name,false,titleWidth-12).Y+12);
-        ImGui.PushStyleColor(ImGuiCol.Button,new ImColor8(1,10,19,0));ImGui.PushStyleColor(ImGuiCol.ButtonHovered,new ImColor8(28,44,61));
-        if(Button("codexLine/"+line.Id,"##lineTitle",titleWidth,titleHeight))codexUnit=line.Id;
-        ImGui.GetWindowDrawList().AddText(ImGui.GetFont(),22,titleAt+new float2(6,6),CodexInk,line.Forms[0].Name,titleWidth-12);
-        ImGui.PopStyleColor(2);ImGui.PopFont();
-        CodexPill(line.Shop?$"{line.Tier} gold":"Wild",CodexColor(line.Color));ImGui.SameLine();CodexPill(line.Attribute,CodexColor(line.AttributeColor));
-        var forms=line.Forms.Select(form=>form.Name).Distinct().Count()==1?line.Forms.Take(1):line.Forms;
-        float cell=ImGui.GetContentRegionAvail().X/3;var start=ImGui.GetCursorScreenPos();int i=0;float formBottom=0;
-        foreach(var form in forms)
-        {
-            var at=start+new float2(cell*i++,0);CodexPortrait(line,form.Stage,at+new float2((cell-62)/2,0),62);
-            ImGui.SetCursorScreenPos(at+new float2(0,68));ImGui.BeginGroup();ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+cell-6);ImGui.Text(form.Name);ImGui.PushStyleColor(ImGuiCol.Text,CodexAbility);ImGui.Text(form.AbilityName);ImGui.PopStyleColor();ImGui.PopTextWrapPos();ImGui.EndGroup();formBottom=Math.Max(formBottom,ImGui.GetItemRectMax().Y-start.Y);
-        }
-        ImGui.SetCursorScreenPos(start+new float2(0,formBottom+8));
-        CodexTraitLinks(line,false);CodexText(line.Forms[0].AbilityText,CodexMuted);
-        CodexText($"HP {string.Join('/',line.Forms.Select(form=>form.Stats.MaxHp))} / AD {string.Join('/',line.Forms.Select(form=>form.Stats.Ad))} / AS {line.Forms[0].Stats.As} / Range {line.Forms[0].Stats.Range}",HomeMute);
-        CodexEndCard();ImGui.PopID();
-    }
     private void CodexTraitLinks(CodexLine line,bool interactive)
     {
         float right=ImGui.GetCursorScreenPos().X+ImGui.GetContentRegionAvail().X;bool first=true;
@@ -143,39 +163,5 @@ internal sealed partial class MatchScreen
             }
             else CodexPill(trait.Name,CodexColor(trait.Color));
         }
-    }
-    private void CodexUnitDetail(CodexLine line)
-    {
-        CodexRows++;CodexHeading(line.Forms[0].Name+" line",codexFull?28:22,CodexColor(line.Color));
-        CodexPill(line.Shop?$"{line.Tier} gold":$"Wild (tier {line.Tier})",CodexColor(line.Color));
-        if(ImGui.GetItemRectMax().X+ImGui.CalcTextSize(line.Attribute).X+24<ImGui.GetWindowPos().X+ImGui.GetWindowWidth()-16)ImGui.SameLine();
-        CodexPill(line.Attribute,CodexColor(line.AttributeColor));
-        if(Session is not null&&line.Shop)CodexText($"{Session.State.Pool.Remaining(line.Id)}/{Rules.PoolSizes[line.Tier]} left in the pool",HomeMute);
-        CodexTraitLinks(line,true);CodexText(line.Attribute+": "+line.AttributeText,HomeMute);
-        if(codexOwned.TryGetValue(line.Id,out var owned))CodexText("You have: "+string.Join(", ",owned.Select(entry=>line.Forms[entry.Unit.Stage].Name+(entry.Unit.Stage>0?" "+new string('*',entry.Unit.Stage+1):"")+(entry.Spot.IsBoard?" (board)":" (bench)"))),new ImColor8(89,211,151));
-        var stats=line.Forms[0].Stats;CodexText($"AS {stats.As} / Range {stats.Range} / Armor {stats.Armor} / MR {stats.Mr} / Mana {stats.Mana}/{stats.MaxMana}",HomeMute);
-        foreach(var form in line.Forms)
-        {
-            if(!CodexBeginCard("Form/"+form.Stage,CodexColor(line.Color),topStripe:true,compact:!codexFull)){CodexEndCard();continue;}
-            float portraitSize=codexFull?76:48;var at=ImGui.GetCursorScreenPos();ImGui.Dummy(new(portraitSize,portraitSize));CodexPortrait(line,form.Stage,at,portraitSize);
-            if(codexFull)ImGui.SameLine(0,14);
-            ImGui.BeginGroup();CodexHeading(form.Name,22);CodexText(new string('*',form.Stage+1)+" / "+form.StageName,CodexGold);ImGui.EndGroup();
-            CodexText($"HP {form.Stats.MaxHp}   /   AD {form.Stats.Ad}");CodexHeading(form.AbilityName,22,CodexAbility);CodexText(form.AbilityText);
-            CodexEndCard();
-        }
-        ImGui.Separator();CodexText(line.Shop?"Three of one form digivolve into the next. Sells for "+string.Join(" / ",line.Forms.Select(form=>form.SellValue))+" gold.":"Wild Digimon appear in PvE rounds only and never count for traits.",HomeMute);
-    }
-    private void CodexUnitModal()
-    {
-        var line=CodexData.Lines.Single(item=>item.Id==codexUnit);
-        // Modal input stays in this window; the full Codex remains available after Back or Escape.
-        float width=Math.Min(640,size.X-64),height=Math.Min(780,size.Y-ClientPageTop-48),top=ClientPageTop+(size.Y-ClientPageTop-height)/2;
-        if(codexModalLine!=codexUnit){codexModalLine=codexUnit;codexModalFrame=ImGui.GetFrameCount();}
-        ImGui.SetNextWindowFocus();CodexBeginWindow("Codex Digimon detail",new((size.X-width)/2,top),new(width,height),true);
-        if(CodexButton("codexCloseUnit","Back to Codex",160))codexUnit=null;
-        ImGui.Separator();CodexUnitDetail(line);CodexEndWindow();
-        var pointer=ImGui.GetIO().MousePos;
-        if(ImGui.GetFrameCount()>codexModalFrame&&ImGui.IsMouseClicked(ImGuiMouseButton.Left)&&
-            (pointer.X<(size.X-width)/2||pointer.X>(size.X+width)/2||pointer.Y<top||pointer.Y>top+height))codexUnit=null;
     }
 }

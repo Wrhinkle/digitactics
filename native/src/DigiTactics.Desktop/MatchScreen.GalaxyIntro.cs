@@ -25,29 +25,36 @@ internal sealed partial class MatchScreen
         if(galaxyIntroSeen||Session.Rounds.Position.Stage>1||Session.State.Galaxy is not {} id||!Rules.Id.StartsWith("galaxies/",StringComparison.Ordinal))return null;
         return GalaxyAnnouncements.Value.GetValueOrDefault(id);
     }
+    private static float GalaxyIntroCardHeight(GalaxyAnnouncement intro,float width)=>
+        Math.Max(100,ChoiceLines(intro.Title,14,width-224).Length*19+ChoiceLines(intro.Name,22,width-224).Length*27+ChoiceLines(intro.Description,16,width-224).Length*21+24);
     private void GalaxyIntroCard(GalaxyAnnouncement intro)
     {
-        var at=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
+        var at=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X,height=GalaxyIntroCardHeight(intro,width);
         uint rgb=uint.Parse(intro.Color.AsSpan(1),NumberStyles.HexNumber,CultureInfo.InvariantCulture);
         var color=new ImColor8((byte)(rgb>>16),(byte)(rgb>>8),(byte)rgb);
-        ImGui.PushStyleColor(ImGuiCol.Border,color);
-        ImGui.BeginChild("This game's Galaxy"u8,new(0,126),ImGuiChildFlags.Borders,ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
-        var image=ImGui.GetCursorScreenPos();galaxyIntroArtwork.Draw(Session!.State.Galaxy!,image,new(96,96));
-        ImGui.Dummy(new(96,96));ImGui.SameLine(0,12);
-        ImGui.BeginChild("Galaxy rule description"u8,new(Math.Max(180,width-244),106),ImGuiChildFlags.None,ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
-        HudText(intro.Title,15,HudMuted);HudText(intro.Name,22,color);HudText(intro.Description,16);
-        GalaxyIntroBodyFits=ImGui.GetScrollMaxY()<1;
-        ImGui.EndChild();
-        ImGui.SetCursorScreenPos(new(at.X+width-104,at.Y+44));
+        ImGui.Dummy(new(width,height));
+        var draw=ImGui.GetWindowDrawList();
+        draw.AddRectFilled(at,at+new float2(width,height),new ImColor8(255,255,255,10),10);
+        draw.AddRect(at,at+new float2(width,height),color,10,thickness:2);
+        galaxyIntroArtwork.Draw(Session!.State.Galaxy!,at+new float2(12,(height-72)/2),new(72,72));
+        var textAt=at+new float2(96,12);float bodyWidth=width-224;
+        ChoiceText(draw,textAt,bodyWidth,intro.Title.ToUpperInvariant(),14,19,HudMuted,false);
+        textAt.Y+=ChoiceLines(intro.Title,14,bodyWidth).Length*19;
+        ChoiceText(draw,textAt,bodyWidth,intro.Name,22,27,color,false);
+        textAt.Y+=ChoiceLines(intro.Name,22,bodyWidth).Length*27;
+        ChoiceText(draw,textAt,bodyWidth,intro.Description,16,21,HudInk,false);
+        GalaxyIntroBodyFits=textAt.Y+ChoiceLines(intro.Description,16,bodyWidth).Length*21<=at.Y+height-12;
+        ImGui.SetCursorScreenPos(new(at.X+width-104,at.Y+(height-38)/2));
         if(HudButton("galaxyIntroDismiss","Got it",88,38))galaxyIntroSeen=true;
-        ImGui.EndChild();ImGui.PopStyleColor();
+        ImGui.SetCursorScreenPos(at+new float2(0,height+12));
+        ImGui.Dummy(new(0,0));
         GalaxyIntroText=intro.Title+"\n"+intro.Name+"\n"+intro.Description;GalaxyIntroSerial++;
-        GalaxyIntroBounds=(at,at+new float2(width,126));
+        GalaxyIntroBounds=(at,at+new float2(width,height));
     }
     private void StandaloneGalaxyIntro(GalaxyAnnouncement intro)
     {
-        float width=Math.Min(920,size.X-48);
-        Window("Galaxy announcement",(size.X-width)/2,Top+12,width,166,ImGuiWindowFlags.NoTitleBar);
-        GalaxyIntroCard(intro);ImGui.End();
+        float width=Math.Min(860,size.X-48),height=GalaxyIntroCardHeight(intro,width-36)+32;
+        BeginChoicePanel("Galaxy announcement",width,height);
+        GalaxyIntroCard(intro);EndChoicePanel();
     }
 }

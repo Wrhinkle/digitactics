@@ -82,8 +82,8 @@ internal sealed class WispUiSmoke(ContentCatalog catalog)
             if(screen.WispTooltipSerial<=hoverBefore||screen.WispTooltipText!=expected||screen.WispArtworkDrawCalls!=2||screen.DisplayedWisp!=wisp.Id)
                 throw new InvalidOperationException("Original Wisp artwork/description/round limit was not rendered: "+Pending);
             var bounds=screen.WispCardBounds;var viewport=screen.ShopViewportBounds;
-            if(bounds.Min.X<viewport.Min.X||bounds.Max.X>viewport.Max.X+1||bounds.Min.Y<viewport.Min.Y||bounds.Max.Y>viewport.Max.Y||bounds.Max.X-bounds.Min.X<150||screen.ShopCardBounds.Count!=5
-                ||screen.ShopCardBounds.Any(card=>card.Value.Max.X-card.Value.Min.X<150||card.Value.Max.X>=bounds.Min.X))
+            if(bounds.Min.X<viewport.Min.X||bounds.Max.X>viewport.Max.X+1||bounds.Min.Y<viewport.Min.Y||bounds.Max.Y>viewport.Max.Y||bounds.Max.X-bounds.Min.X<120||screen.ShopCardBounds.Count!=5
+                ||screen.ShopCardBounds.Any(card=>card.Value.Max.X-card.Value.Min.X<120||card.Value.Max.X>=bounds.Min.X))
                 throw new InvalidOperationException("Sixth-slot layout clipped the Wisp or five unit cards: "+Pending);
         }
         else switch(scenario-wisps.Length)

@@ -19,6 +19,18 @@ function sourceCodex(DT) {
   return context.source;
 }
 
+// The original portrait's --fc is not the shop-tier color. Evaluate its own
+// helper so explicit line colors and each line's native set remain authoritative.
+function sourcePortraitColor(DT) {
+  const render = fs.readFileSync(path.join(ROOT, 'js/render3d.js'), 'utf8');
+  const begin = render.indexOf('export const familyColor =');
+  const end = render.indexOf('// ---------- model library', begin);
+  assert(begin >= 0 && end > begin, 'Original familyColor helper is missing');
+  const context = { DT };
+  vm.runInNewContext(render.slice(begin, end).replace('export const', 'const') + '\nthis.color = familyColor;', context);
+  return context.color;
+}
+
 const entities = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00a0', ndash: '–', mdash: '—', times: '×', middot: '·', rarr: '→' };
 function decode(text) {
   return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (all, value) => {
@@ -65,7 +77,7 @@ function rulesBlocks(html) {
 }
 
 function exportCodex() {
-  const DT = load({ strict: true }), source = sourceCodex(DT), variants = [], fixtures = [];
+  const DT = load({ strict: true }), source = sourceCodex(DT), portraitColor = sourcePortraitColor(DT), variants = [], fixtures = [];
   const hay = (...fields) => fields.flat().join(' ').toLowerCase();
   const queries = ['', '  ', 'Agumon', '3 gold', 'wild', 'family', 'role', 'damage', 'health', 'armor', 'mana', 'digi egg', 'silver', 'gold', 'prismatic', 'normal', 'hyper roll', '20%', '3-2', 'NO SUCH CODEX ENTRY'];
   for (const set of DT.Sets.pickable()) for (const pace of ['normal', 'hyper']) {
@@ -77,7 +89,7 @@ function exportCodex() {
         breakpoints: t.bp.map((count, i) => ({ count, text: source.bpText(t.T, i) })),
         lineIds: source.linesWith(id).map(l => l.id), crestIds: source.crestsFor(id).map(it => it.id), searchText: hay(source.traitHay(id)) };
     });
-    const lines = DT.LINES.map(l => ({ id: l.id, tier: l.tier, shop: !!l.shop, color: source.tierColor(l.tier), attribute: l.attr,
+    const lines = DT.LINES.map(l => ({ id: l.id, tier: l.tier, shop: !!l.shop, color: source.tierColor(l.tier), portraitColor: portraitColor(l), attribute: l.attr,
       attributeColor: (DT.ATTR[l.attr] || {}).color || '#c8c8c8', attributeText: source.attrText(l.attr), type: l.type || '', traits: l.traits || [],
       forms: [0, 1, 2].filter(stage => l.forms[stage] != null).map(stage => {
         const stats = DT.unitStats(l, stage);
@@ -131,4 +143,4 @@ function exportCodex() {
 }
 
 if (require.main === module) exportCodex();
-module.exports = { sourceCodex, rulesBlocks, exportCodex };
+module.exports = { sourceCodex, sourcePortraitColor, rulesBlocks, exportCodex };

@@ -10,7 +10,7 @@ namespace DigiTactics.Desktop;
 
 internal sealed partial class MatchScreen
 {
-    private const float SocialWidth = 280;
+    private float SocialWidth => socialWindowSize.X<=1500?210:232;
     private int2 socialWindowSize;
     private bool socialDrawer;
     private int socialDrawnModule,socialDisplayedModule;
@@ -34,7 +34,7 @@ internal sealed partial class MatchScreen
         // Capture the module being drawn, before a click can navigate to the
         // next one. Its newly created window must stay below the open drawer.
         socialDrawnModule=codexFull?1:showSettings?2:showHomePlay?9:showSaveData?3:showProfile?4:showMultiplayer?5:showFarm?6:showCollection?7:showAbout?8:0;
-        return ClientHomeVisible && SocialDocked ? new(windowSize.X - (int)SocialWidth - 12, windowSize.Y) : windowSize;
+        return ClientHomeVisible && SocialDocked ? new(windowSize.X - (int)SocialWidth, windowSize.Y) : windowSize;
     }
     private void DrawClientSocial()
     {
@@ -108,22 +108,23 @@ internal sealed partial class MatchScreen
         float top = ClientPageTop;
         if (!docked && (!wasVisible || socialDisplayedModule!=socialDrawnModule)) ImGui.SetNextWindowFocus();
         socialDisplayedModule=socialDrawnModule;
-        HomeCard("Friends", new(size.X - SocialWidth - 12, top), new(SocialWidth, size.Y - top - 24), false, bringToFront: !docked);
+        HomeCard("Friends", new(size.X - SocialWidth, top), new(SocialWidth, size.Y - top), false, bringToFront: !docked);
+        ImGui.BeginDisabled(ClientNavigationBlocked);
         ImGui.PushFont(NativeUiTheme.BodyFont,17);ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(8,8));
         SocialBodyFontSize=17;SocialPanelTop=top;
-        HomeLabel("FRIENDS", 22, HomeInk);
-        if (!docked)
-        { ImGui.SameLine(ImGui.GetWindowWidth()-94); if (HomeButton("closeSocial", "Close", 78, 36)) socialDrawer = false; }
-        HomeLabel(steam is null ? "Steam is not connected" : "Steam friends", 16, HomeMute);
-        if (steam is null)
-        { if (HomeButton("socialConnect", "Connect to Steam", ImGui.GetContentRegionAvail().X, 38)) ConnectSteam(); }
-        else if (HomeButton("socialRefresh", "Refresh", 102, 36)) { socialPollAt = 0; RefreshSocial(); }
-        ImGui.Separator();
-        ImGui.BeginChild("Social people"u8, new(0, -112));
+        HomeLabel("SOCIAL",14,HomeGold);
+        ImGui.SetCursorPos(new(SocialWidth-(docked?44:76),8));
+        if(steam is null)
+        {if(ClientTextButton("socialConnect","+",28,28,false,19))ConnectSteam();if(ImGui.IsItemHovered())ResultTooltip("Connect to Steam friends");}
+        else
+        {if(ClientTextButton("socialRefresh","R",28,28,false,14)){socialPollAt=0;RefreshSocial();}if(ImGui.IsItemHovered())ResultTooltip("Refresh friends");}
+        if(!docked){ImGui.SameLine(0,4);if(ClientTextButton("closeSocial","X",28,28,false,14))socialDrawer=false;}
+        ImGui.SetCursorPos(new(12,46));ImGui.Separator();
+        ImGui.BeginChild("Social people"u8,new(0,-92));
         foreach (var group in Enum.GetValues<SocialGroup>())
         {
             var rows = socialGroups.GetValueOrDefault(group) ?? [];
-            if (group == SocialGroup.Party && steam?.Room is null) continue;
+            if (group == SocialGroup.Party && steam?.Room is null || group==SocialGroup.Recent&&rows.Length==0) continue;
             string title = group switch { SocialGroup.InGame => "In Game", SocialGroup.Recent => "Recent players", _ => group.ToString() };
             bool open = socialOpen.Contains(group);
             ImGui.PushStyleColor(ImGuiCol.Header,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.HeaderHovered,new ImColor8(200,170,110,24));
@@ -132,11 +133,11 @@ internal sealed partial class MatchScreen
             if (toggled)
             { if (open) socialOpen.Remove(group); else socialOpen.Add(group); open = !open; }
             if (!open) continue;
-            if (rows.Length == 0) HomeLabel(group switch
+            if (rows.Length == 0) {ImGui.PushTextWrapPos(0);HomeLabel(group switch
             {
                 SocialGroup.Online => "No friends online right now.", SocialGroup.InGame => "Nobody is mid-game.",
                 SocialGroup.Offline => "No offline friends.", SocialGroup.Recent => "Players you meet appear here.", _ => "Nobody here yet."
-            }, 16, HomeMute);
+            }, 15, HomeMute);ImGui.PopTextWrapPos();}
             foreach (var row in rows) DrawSocialRow(row, top);
         }
         ImGui.EndChild(); ImGui.Separator();
@@ -146,12 +147,12 @@ internal sealed partial class MatchScreen
             HomeLabel(LobbyEllipsis(lobby["name"]?.GetValue<string>()??"Your party",ImGui.GetContentRegionAvail().X),17,HomeInk);
             HomeLabel(lobby["status"]?.GetValue<string>()=="playing"?"In game":$"{(lobby["slots"] as JsonObject)?.Count??0}/8 Tamers seated",16,HomeMute);
         }
-        else {HomeLabel("No party",17,HomeInk);HomeLabel("Play with your friends",16,HomeMute);}
+        else {HomeLabel("Not in a lobby",15,HomeInk);}
         ImGui.BeginDisabled(ClientNavigationBlocked);
         if (HomeButton("socialLobby", steam?.Room is null ? "Lobbies" : "Open party", ImGui.GetContentRegionAvail().X, 38))
-        { OpenMultiplayerView(); }
+        { NavigateClient("multiplayer"); }
         ImGui.EndDisabled();
-        ImGui.PopStyleVar();ImGui.PopFont();ImGui.End();
+        ImGui.PopStyleVar();ImGui.PopFont();ImGui.EndDisabled();ImGui.End();
     }
 
     private void DrawSocialRow(SocialRow row, float top)
@@ -177,7 +178,7 @@ internal sealed partial class MatchScreen
         {
             ImGui.SetCursorScreenPos(at+new float2(50,52));
             ImGui.BeginDisabled(!row.CanJoin || enteringRoom is not null || ClientNavigationBlocked);
-            if (HomeButton("socialJoin/" + row.Id, "Join lobby", width-50, 36)) { JoinSteamRoom(lobby); OpenMultiplayerView(); }
+            if (HomeButton("socialJoin/" + row.Id, "Join lobby", width-50, 36)) { JoinSteamRoom(lobby); NavigateClient("multiplayer"); }
             ImGui.EndDisabled();
             if (!row.CanJoin && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ResultTooltip("Leave your current party before joining another.");
         }

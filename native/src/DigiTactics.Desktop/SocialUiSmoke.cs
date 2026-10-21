@@ -51,9 +51,9 @@ internal sealed class SocialUiSmoke : IDisposable
     {
         if(step==initialStep && cooldown==1)
         {
-            if(screen.SocialBodyFontSize<17||screen.SocialPanelTop<96)throw new InvalidOperationException("Friends panel overlaps client navigation or uses unreadable body text.");
+            if(screen.SocialBodyFontSize<17||screen.SocialPanelTop<80)throw new InvalidOperationException("Friends panel overlaps client navigation or uses unreadable body text.");
             foreach(string key in new[]{"socialRefresh","socialGroup/Online","socialGroup/InGame","socialLobby"})
-                if(!screen.Buttons.TryGetValue(key,out var point)||point.Y<96||point.Y>=size.Y-12||point.X<0||point.X>=size.X)throw new InvalidOperationException("Friends control is clipped or missing: "+key);
+                if(!screen.Buttons.TryGetValue(key,out var point)||point.Y<80||point.Y>=size.Y-12||point.X<0||point.X>=size.X)throw new InvalidOperationException("Friends control is clipped or missing: "+key);
             if(!screen.SocialVisible || !screen.HomeLayoutFits || !screen.DisplayedSocialRows.Any(row=>row.Group==SocialGroup.InGame) || !screen.DisplayedSocialRows.Any(row=>row.Group==SocialGroup.Offline))
             {
                 if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"initial-failure.bmp"),size.X,size.Y);

@@ -39,10 +39,10 @@ internal sealed class MusicSoundControlsSmoke
     private void Click(string id,bool slider=false)
     {
         if(!screen.Buttons.TryGetValue(id,out var at))return;
-        if(id is not ("audioSettings" or "mute" or "closeAudio" or "closeMusicLibrary"))
+        if(id is not ("audioSettings" or "closeAudio" or "closeMusicLibrary")&&!(id.StartsWith("musicUse/",StringComparison.Ordinal)&&id.Count(c=>c=='/')==2))
         {
             var viewport=screen.MatchSoundScrollBounds;
-            float halfHeight=slider?18:14;
+            float halfHeight=slider||id=="mute"?10:14;
             if(at.Y-halfHeight<viewport.Min.Y||at.Y+halfHeight>viewport.Max.Y)
             {
                 ImGui.GetIO().AddMousePosEvent(viewport.Max.X-3,(viewport.Min.Y+viewport.Max.Y)/2);
@@ -83,7 +83,7 @@ internal sealed class MusicSoundControlsSmoke
                 Require(controller.CurrentTrackId!=previousTrack,"Actual Next track button did not advance playback.");Click("mute");break;
             case 5:
                 Require(audio.Muted&&!screen.MatchMusicNextEnabled,"Muted music enables Next track.");Require(screen.MusicStatusText=="Music is off.","Muted live Sound did not show the original status.");Click("mute");break;
-            case 6:if(controller.Playing&&screen.MatchMusicNextEnabled)Click("matchMusicOwn");break;
+            case 6:if(controller.Playing&&screen.MatchMusicNextEnabled)Click("matchMusicBuiltin");break;
             case 7:
                 Require(audio.MusicSource=="builtin"&&!screen.MatchMusicNextEnabled,"Built-in source enables custom Next track.");Require(screen.MusicStatusText=="Now playing: Tamer's Morning (planning theme)","Returning to built-in music did not restore its name/phase.");Click("matchMusicOwn");break;
             case 8:
@@ -95,11 +95,14 @@ internal sealed class MusicSoundControlsSmoke
             case 10:
                 Require(!audio.Available||audio.Played>played,"Effects slider release did not preview the original buy sound.");if(audio.Available)previews|=1;audio.EffectsVolume=0;Click("matchBoardVolume",true);break;
             case 11:
-                Require(!audio.Available||audio.Played>played,"Soundboard slider release did not preview the original Digivice clip.");if(audio.Available)previews|=2;audio.BoardVolume=0;Click("musicLibrary");break;
+                Require(!audio.Available||audio.Played>played,"Soundboard slider release did not preview the original Digivice clip.");if(audio.Available)previews|=2;audio.BoardVolume=0;
+                Require(screen.Buttons.ContainsKey("removeMusic/"+controller.Library!.Tracks[0].Id),"Live Sound is missing its inline saved-track list.");
+                Click("musicUse/"+controller.Library.Tracks[0].Id);break;
             case 12:
-                Require(!screen.MusicNextEnabled,"Single-track Next is enabled in nested music library.");captureState="sound-library";Click("closeMusicLibrary");break;
+                captureState="sound-track-phase";Click("musicUse/"+controller.Library!.Tracks[0].Id+"/planning");break;
             case 13:
-                Require(screen.Buttons.ContainsKey("matchMusicOwn")&&!screen.Buttons.ContainsKey("closeMusicLibrary"),"Music Back did not return to live Sound.");Click("closeAudio");break;
+                Require(controller.Library!.Tracks[0].Use=="planning","Inline Sound track phase did not persist its assignment.");
+                Require(screen.Buttons.ContainsKey("matchMusicOwn")&&!screen.Buttons.ContainsKey("closeMusicLibrary"),"Inline music controls left the original Sound surface.");captureState="sound-library";Click("closeAudio");break;
             case 14:
                 Require(!screen.Buttons.ContainsKey("matchMusicOwn")&&screen.Session is not null,"Closing Sound lost the match or retained popup inputs.");
                 audio.MusicSource="builtin";typeof(MatchScreen).GetMethod("LeaveMatch",Private)!.Invoke(screen,null);controller.Update();done=true;break;

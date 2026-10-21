@@ -11,6 +11,7 @@ internal static class NativeUiTheme
     internal const float SmallBodySize = 15;
     internal const float HeadingSize = 22;
     internal static ImFontPtr BodyFont { get; private set; }
+    internal static ImFontPtr BodyBoldFont { get; private set; }
     internal static ImFontPtr DisplayFont { get; private set; }
     internal static ImFontPtr DisplayBoldFont { get; private set; }
 
@@ -33,6 +34,8 @@ internal static class NativeUiTheme
     {
         BodyFont = Load("inter/Inter[opsz,wght].ttf", BodySize,
             "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031");
+        BodyBoldFont = Load("inter/Inter-Bold.ttf", BodySize,
+            "202f240469f916722233188ec316107f6cecaf13b801e9b3939b82b9f7a816d6");
         DisplayFont = Load("chakrapetch/ChakraPetch-SemiBold.ttf", HeadingSize,
             "45264de3204ddbd5fb3e14a2402acd5c630d16650ae5fc221d2c52da46a6734b");
         DisplayBoldFont = Load("chakrapetch/ChakraPetch-Bold.ttf", HeadingSize,
@@ -43,11 +46,13 @@ internal static class NativeUiTheme
         style.FontSizeBase = BodySize;
         style.FontScaleMain = 1;
         style.FontScaleDpi = 1;
-        style.WindowRounding = 4;
-        style.ChildRounding = 2;
-        style.FrameRounding = 2;
-        style.PopupRounding = 4;
-        style.TabRounding = 2;
+        // v1.0.14 theme.js uses square frames throughout the client and match
+        // overlays. Keep this at the shared layer so secondary dialogs match too.
+        style.WindowRounding = 0;
+        style.ChildRounding = 0;
+        style.FrameRounding = 0;
+        style.PopupRounding = 0;
+        style.TabRounding = 0;
         style.WindowBorderSize = 1;
         style.ChildBorderSize = 1;
         style.FrameBorderSize = 1;
@@ -57,7 +62,7 @@ internal static class NativeUiTheme
         style.ItemSpacing = new(8, 8);
         style.ItemInnerSpacing = new(6, 4);
         style.CellPadding = new(8, 6);
-        style.ScrollbarSize = 14;
+        style.ScrollbarSize = 8;
         style.GrabMinSize = 12;
         style.DisabledAlpha = .55f;
 

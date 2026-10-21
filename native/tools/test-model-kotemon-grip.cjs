@@ -1,0 +1,26 @@
+const fs=require('node:fs'),path=require('node:path'),zlib=require('node:zlib'),assert=require('node:assert/strict');
+async function main(){
+ const root=path.resolve(__dirname,'../..'),catalog=JSON.parse(fs.readFileSync(path.join(root,'native/content/models.json'))),source=catalog.sources['drg:Kotemon'];
+ assert.equal(source.metadata.uid,'rip-ts_kotemon');
+ const bytes=zlib.gunzipSync(fs.readFileSync(path.join(root,'native/artifacts/model-content',catalog.assets[source.asset].file))),n=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+n)),binary=bytes.subarray(28+n);
+ const {THREE,GLTFParser,GLTFMaterialsUnlitExtension}=await require('./three-loader.cjs')(),{modelClips}=await require('./load-model-motion.cjs')();
+ async function load(fix){const p=new GLTFParser(json,{manager:THREE.DefaultLoadingManager});p.extensions.KHR_materials_unlit=new GLTFMaterialsUnlitExtension();p.loadImageSource=async()=>new THREE.Texture();p.loadBuffer=async()=>binary.buffer.slice(binary.byteOffset,binary.byteOffset+binary.byteLength);const gltf=await new Promise((resolve,reject)=>p.parse(resolve,reject));assert.equal(gltf.animations.length,0,'Exact source is clipless; never suppress an authored weapon action');const sword=gltf.scene.getObjectByName('J_bamboo_sword'),original=sword.position.clone();const clips=modelClips(gltf,source.metadata);if(!fix)sword.position.copy(original);return {gltf,clips};}
+ const raw=await load(false),fixed=await load(true),sword=fixed.gltf.scene.getObjectByName('J_bamboo_sword'),hand=fixed.gltf.scene.getObjectByName('J_hand_r');assert.equal(sword.parent,hand);
+ const serialize=c=>{const j=THREE.AnimationClip.toJSON(c);delete j.uuid;return j;};
+ assert.deepEqual(fixed.clips.map(serialize),raw.clips.map(serialize),'All fallback animation channels remain unchanged');
+ function prepare(state){const scene=state.gltf.scene;scene.updateMatrixWorld(true);state.height=new THREE.Box3().setFromObject(scene).getSize(new THREE.Vector3()).y;state.rest=[];scene.traverse(o=>state.rest.push({o,p:o.position.clone(),q:o.quaternion.clone(),s:o.scale.clone()}));state.mixer=new THREE.AnimationMixer(scene);state.sword=scene.getObjectByName('J_bamboo_sword');state.hand=scene.getObjectByName('J_hand_r');state.mask=[];scene.traverse(m=>{if(!m.isMesh)return;assert.ok(m.isSkinnedMesh);const si=m.geometry.attributes.skinIndex,sw=m.geometry.attributes.skinWeight;for(let i=0;i<si.count;i++){let w=0;for(let k=0;k<4;k++)if(m.skeleton.bones[si.getComponent(i,k)]===state.sword)w+=sw.getComponent(i,k);assert.ok(w<1e-6||Math.abs(w-1)<1e-6,'Sword vertices must form a rigid separately weighted piece');state.mask.push(w>.5);}});}
+ prepare(raw);prepare(fixed);assert.deepEqual(raw.mask,fixed.mask);assert.equal(fixed.mask.filter(Boolean).length,470);
+ function pose(state,role,t){state.mixer.stopAllAction();for(const x of state.rest){x.o.position.copy(x.p);x.o.quaternion.copy(x.q);x.o.scale.copy(x.s);}const action=state.mixer.clipAction(state.clips.find(c=>c.name===role));action.reset();action.setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();state.mixer.setTime(t);state.gltf.scene.updateMatrixWorld(true);state.gltf.scene.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.update();});const vertices=[];state.gltf.scene.traverse(m=>{if(m.isMesh)for(let i=0;i<m.geometry.attributes.position.count;i++)vertices.push(m.getVertexPosition(i,new THREE.Vector3()).applyMatrix4(m.matrixWorld));});return vertices;}
+ let maxGrip=0,maxRawGrip=0,maxBodyError=0,maxSwordShapeError=0,samples=0;
+ for(const clip of fixed.clips)for(let i=0;i<=64;i++){
+  const a=pose(raw,clip.name,clip.duration*i/64),b=pose(fixed,clip.name,clip.duration*i/64),delta=fixed.sword.getWorldPosition(new THREE.Vector3()).sub(raw.sword.getWorldPosition(new THREE.Vector3()));
+  const grip=fixed.sword.getWorldPosition(new THREE.Vector3()).distanceTo(fixed.hand.getWorldPosition(new THREE.Vector3()))/fixed.height,rawGrip=raw.sword.getWorldPosition(new THREE.Vector3()).distanceTo(raw.hand.getWorldPosition(new THREE.Vector3()))/raw.height;
+  maxGrip=Math.max(maxGrip,grip);maxRawGrip=Math.max(maxRawGrip,rawGrip);
+  for(let v=0;v<a.length;v++){assert.ok(b[v].toArray().every(Number.isFinite));const error=b[v].clone().sub(a[v]);if(fixed.mask[v])maxSwordShapeError=Math.max(maxSwordShapeError,error.sub(delta).length()/fixed.height);else maxBodyError=Math.max(maxBodyError,error.length()/fixed.height);}
+  samples++;
+ }
+ const result={sourceKey:'drg:Kotemon',samples,swordVertices:470,maxRawGripIdleHeights:maxRawGrip,maxGripIdleHeights:maxGrip,maxBodyErrorIdleHeights:maxBodyError,maxSwordShapeErrorIdleHeights:maxSwordShapeError,scope:'Exact clipless UID; grip-origin containment, nonweapon skin unchanged and rigid sword shape preserved through all four prepared cycles. Actual visual hand contact requires rendered review.'};
+ if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
+ assert.ok(maxRawGrip>.39,'Original grip gap reproduced');assert.ok(maxGrip<.025,'Sword attachment origin must remain at the hand');assert.ok(maxBodyError<1e-8,'No body geometry changes');assert.ok(maxSwordShapeError<1e-6,'Sword cannot stretch/deform');
+}
+main().catch(e=>{console.error(e);process.exitCode=1;});

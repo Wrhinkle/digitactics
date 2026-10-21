@@ -13,7 +13,7 @@ internal sealed partial class MatchScreen
     private (string? Wallet,string? Legends,string? Farm) evolutionNavigationSave;
     private (CosmeticItem Item,EvolutionView View)[] evolutionNavigationEntries=[];
     private string? evolutionNavigationEquipped;
-    private bool EvolutionLegendSelector(string selected)
+    private bool EvolutionLegendSelector(string selected,float width=0,float height=76)
     {
         var save=(Wallet:profile!.Storage.GetValueOrDefault("dt.cosmetics.v1"),Legends:profile.Storage.GetValueOrDefault("dt.legendevo.v1"),Farm:profile.Storage.GetValueOrDefault("dt.farm.v1"));
         // Freeze the original chips during the transformation, so the new form
@@ -27,7 +27,7 @@ internal sealed partial class MatchScreen
         }
         EvolutionSelectableLegends=evolutionNavigationEntries.Select(entry=>entry.Item.Id).ToArray();
         bool changed=false;
-        ImGui.BeginChild("Owned evolution legends"u8,new(0,76),ImGuiChildFlags.None,ImGuiWindowFlags.HorizontalScrollbar);
+        ImGui.BeginChild("Owned evolution legends"u8,new(width,height),ImGuiChildFlags.None,ImGuiWindowFlags.HorizontalScrollbar);
         EvolutionSelectorBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
         ImGui.BeginDisabled(EvolutionBusy);
         for(int i=0;i<evolutionNavigationEntries.Length;i++)
@@ -47,6 +47,7 @@ internal sealed partial class MatchScreen
     {
         var collection=new CosmeticCollection(profile!.Storage.GetValueOrDefault("dt.cosmetics.v1"));
         bool equipped=collection.Equipped("legend")?.GetValue<string>()==id;
+        if(equipped){ImGui.Text("Equipped"u8);return;}
         ImGui.BeginDisabled(EvolutionBusy||equipped||!collection.Owns("legend",id));
         if(Button("equipEvolutionLegend",equipped?"Equipped":"Equip this Little Legend",-1,38)&&ChangeCollection(c=>c.Equip("legend",id),"Equipped "+CosmeticCollection.Item("legend",id)!.Name+"."))audio.PlayClient("equip",false);
         ImGui.EndDisabled();

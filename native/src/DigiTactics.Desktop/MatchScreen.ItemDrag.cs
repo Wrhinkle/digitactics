@@ -78,20 +78,12 @@ internal sealed partial class MatchScreen
         }
         if (!itemDragMoved) return;
         selectedUnit = selectedItem = null;
-        string label = Name(drag.Id);
         if (spot is { } target && Human.Roster.At(target) is { } holder)
         {
             ItemDropFeedback = ItemDropPreview(drag.Id, holder);
-            label = UnitName(holder) + ": " + ItemDropFeedback;
+            ItemInspectionDrop(drag.Id,holder,ItemDropFeedback);
         }
-        var draw = ImGui.GetForegroundDrawList();
-        float width = Math.Min(Math.Min(420, size.X - 24), ImGui.CalcTextSize(label).X + 12);
-        float height = ImGui.CalcTextSize(label, false, width - 12).Y + 12;
-        float x = Math.Clamp(mouse.X + 10, 12, size.X - width - 12);
-        float y = Math.Max(12, Math.Min(mouse.Y + 14, size.Y - height - 12));
-        draw.AddRectFilled(new(x, y), new(x + width, y + height), new ImColor8(15, 28, 40, 235));
-        draw.PushClipRect(new(x,y),new(x+width,y+height),true);
-        draw.AddText(ImGui.GetFont(), ImGui.GetFontSize(), new(x + 6, y + 6), new ImColor8(240, 220, 140), label, width - 12);
-        draw.PopClipRect();
+        else if(itemDropSlot>=0&&itemDropSlot<Human.Items.Count&&itemDropSlot!=drag.Index)ItemInspectionPair(drag.Id,Human.Items[itemDropSlot]);
+        else ItemTooltip(drag.Id);
     }
 }

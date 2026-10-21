@@ -9,6 +9,11 @@ const pair = (left,right) => [left,right];
 // safe ranges keep connected edges below twice their prepared length; the rest
 // of the gesture comes from the torso, elbows, ears, and other mapped anatomy.
 const anatomy = {
+  'rip-ts_kotemon': {body:'J_spine01',chest:'J_spine02',head:'J_head',bodyLean:.2,headRange:.7,armRange:.55,idleGain:2,
+    elbowAxis:'y',elbowSigns:[-1,1],elbowAttack:.55,elbowWin:.6,family:'biped',
+    arms:pair('J_arm_l','J_arm_r'),elbows:pair('J_elbow_l','J_elbow_r'),weaponArm:'J_arm_r',weaponElbow:'J_elbow_r',
+    neutral:[['J_arm_l','z',-.3],['J_arm_r','z',.3],['J_elbow_l','y',-.65],['J_elbow_r','y',.65]],
+    chains:[chain(['J_tail_01','J_tail_02','J_tail_03','J_tail_04','J_tail_05'],.035,.8)]},
   'rip-cat_ts_kuramon_chr629': {body:'J_center',secondary:'J_hip',family:'blob'},
   'rip-cat_ts_koromon_chr322': {body:'J_base',head:'J_ue_ago',headRange:.25,ears:pair('J_mimiL','J_mimiR'),family:'blob'},
   'rip-cat_ts_mochimon_chr388': {body:'J_center',head:'J_mune',headRange:.6,armRange:.35,jaw:'J_kuchi',arms:pair('J_ude_L','J_ude_R'),family:'blob'},
@@ -53,6 +58,18 @@ function gesture(role,u){
 export function anatomyFallbackClips(scene,source,original){
   const map=anatomy[source?.uid];if(!map)return original;
   scene.updateMatrixWorld(true);
+  const unguarded=new Map((map.neutral||[]).map(([name])=>[name,scene.getObjectByName(name)?.quaternion.clone()]));
+  // Kotemon's imported neutral is an A-pose with straight elbows. Its long
+  // sleeves hide the wrists, so use measured shoulder/elbow/hand directions:
+  // lower both upper arms and bend the forearms forward into a sword guard.
+  // This map is reached only for its clipless fallback, never authored clips.
+  for(const [name,direction,angle] of map.neutral||[]){
+    const bone=scene.getObjectByName(name);if(!bone?.isBone)continue;
+    const parent=bone.parent.getWorldQuaternion(new THREE.Quaternion()).invert();
+    const world=bone.getWorldQuaternion(new THREE.Quaternion());
+    bone.quaternion.copy(parent.multiply(new THREE.Quaternion().setFromAxisAngle(axis[direction],angle)).multiply(world));
+    scene.updateMatrixWorld(true);
+  }
   const channels=new Map();
   function add(name,direction,amount,{local=false}={}){
     const bone=name&&scene.getObjectByName(name);if(!bone?.isBone)return;
@@ -103,9 +120,19 @@ export function anatomyFallbackClips(scene,source,original){
     const times=Array.from({length:65},(_,i)=>clip.duration*i/64);
     const tracks=[...channels.values()].map(({bone,rest,turns})=>{
       const values=[];
+      const weapon=clip.name!=='idle'&&(bone.name===map.weaponArm||bone.name===map.weaponElbow);
+      const sourceTrack=weapon&&clip.tracks.find(t=>t.name===bone.name+'.quaternion');
+      const originalTurn=sourceTrack&&sourceTrack.createInterpolant();
       for(const time of times){
         const u=time/clip.duration,g=gesture(clip.name,u),rotation=rest.clone();
-        for(const turn of turns)rotation.multiply(new THREE.Quaternion().setFromAxisAngle(turn.axis,turn.amount(clip.name,u,g)));
+        if(clip.name==='idle'&&map.idleGain)for(const key of ['lean','turn','lift','wave'])g[key]*=map.idleGain;
+        if(weapon){
+          // Retain the already-reviewed clear sword lift/strike/celebration.
+          // Blend only the weapon arm out of the new neutral; the other arm
+          // stays guarded, and all clips meet at the same lowered endpoint.
+          const target=originalTurn?new THREE.Quaternion().fromArray(originalTurn.evaluate(time)):unguarded.get(bone.name);
+          if(target)rotation.slerp(target,g.envelope);
+        }else for(const turn of turns)rotation.multiply(new THREE.Quaternion().setFromAxisAngle(turn.axis,turn.amount(clip.name,u,g)));
         rotation.normalize().toArray(values,values.length);
       }
       return new THREE.QuaternionKeyframeTrack(bone.name+'.quaternion',times,values);

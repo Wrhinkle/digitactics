@@ -26,6 +26,7 @@ internal sealed partial class MatchScreen
     private void MatchShortcuts()
     {
         if(Session is null||MatchKeyboardBlocked)return;
+        if(showMatchInventory&&ImGui.IsKeyPressed(ImGuiKey.Escape,false)){showMatchInventory=false;return;}
         foreach(var (key,value) in matchKeys)
         {
             if(!ImGui.IsKeyPressed(key,false))continue;

@@ -59,6 +59,9 @@ internal static class NativeUiScaleSmoke
                     ImGui.PushFont(NativeUiTheme.DisplayFont, 24);
                     ImGui.Text("Chakra Petch / readable UI"u8);
                     ImGui.PopFont();
+                    ImGui.PushFont(NativeUiTheme.BodyBoldFont,14);
+                    ImGui.Text("Inter Bold / 30% / HP 620"u8);
+                    ImGui.PopFont();
                     ImGui.End();
                     ImGui.Render();
                     input.CompleteFrame();
@@ -83,6 +86,7 @@ internal static class NativeUiScaleSmoke
                 var draw = ImGui.GetDrawData();
                 Check(Near(draw.DisplaySize * draw.FramebufferScale, float2.Unpack(physical)), $"{scale}: render target covers exact physical framebuffer");
                 Check(NativeUiTheme.BodyFont.CurrentRasterizerDensity >= scale - .01f, $"{scale}: font rasterizes at physical density");
+                Check(NativeUiTheme.BodyBoldFont.CurrentRasterizerDensity >= scale - .01f, $"{scale}: bold font rasterizes at physical density");
 
                 io.AddMousePosEvent(400 * scale, 300 * scale);
                 io.AddMouseButtonEvent(0, true);

@@ -8,7 +8,7 @@ public sealed record CodexTrait(string Id,string Name,string Kind,string Color,s
 public sealed record CodexStats(double MaxHp,double Ad,double As,double Range,double Armor,double Mr,double Mana,double MaxMana);
 public sealed record CodexForm(int Stage,string Name,string StageName,string AbilityName,string AbilityText,CodexStats Stats,int SellValue);
 public sealed record CodexLine(string Id,int Tier,bool Shop,string Color,string Attribute,string AttributeColor,string AttributeText,
-    string Type,string[] Traits,CodexForm[] Forms,string SearchText);
+    string Type,string[] Traits,CodexForm[] Forms,string SearchText,string? PortraitColor=null);
 public sealed record CodexItem(string Id,string Name,string Description,Dictionary<string,double> Stats,string StatsText,string Kind,
     string Emblem,bool Drop,string DropSource,string[][] Recipes,string SearchText);
 public sealed record CodexAugment(string Id,string Name,string Description,int Tier,string TierName,string Color,string SearchText);

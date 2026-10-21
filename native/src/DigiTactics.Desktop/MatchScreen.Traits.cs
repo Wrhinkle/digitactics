@@ -30,11 +30,11 @@ internal sealed partial class MatchScreen
         // Solo uses the source's ID tie-break; combined counts retain their team traversal order.
         var ordered = CombinedTraits ? rows.ToArray() : rows.ThenBy(row => row.Trait.Id, StringComparer.Ordinal).ToArray();
         DisplayedTraits = ordered.ToDictionary(row => row.Trait.Id, row => row.Count);
-        HudText(CombinedTraits ? "TEAM TRAITS" : "TRAITS",22);
-        HudText($"{ordered.Count(row => row.Level > 0)} active"+(player.Id==Human.Id?"":" / "+player.Name),16,HudMuted);
+        HudText(CombinedTraits ? "TEAM TRAITS" : "TRAITS",15,HudMuted);
+        ImGui.SameLine();HudText($"{ordered.Count(row => row.Level > 0)} active",13,HudMuted);
         var board = CombinedTraits ? Session.CombatProjection.Team(Session.State.Teams[player.Team!.Value]).Units : Session.CombatProjection.Board(player);
         // Keep long trait lists from pushing combat controls out of the sidebar.
-        ImGui.BeginChild("Trait cards"u8, new(0, Math.Clamp(Height * .55f, 160, 360)));
+        ImGui.BeginChild("Trait cards"u8, new(0, Math.Max(160,ImGui.GetContentRegionAvail().Y-96)));
         TraitCardsBounds=(ImGui.GetWindowDrawList().GetClipRectMin(),ImGui.GetWindowDrawList().GetClipRectMax());
         foreach (var row in ordered)
         {
@@ -44,17 +44,37 @@ internal sealed partial class MatchScreen
             int next = row.Trait.Breakpoints.FirstOrDefault(point => point > row.Count);
             ImGui.BeginGroup();
             float width=ImGui.GetContentRegionAvail().X;
-            bool open=HudButton("trait/"+row.Trait.Id,"",width,44,row.Level>0);
-            var min = ImGui.GetItemRectMin(); var max = ImGui.GetItemRectMax();
-            var draw=ImGui.GetWindowDrawList();var badge=min+new float2(8,6);
-            draw.AddRectFilled(badge+new float2(0,7),badge+new float2(28,25),color);
-            draw.AddTriangleFilled(badge+new float2(0,7),badge+new float2(14,0),badge+new float2(28,7),color);
-            draw.AddTriangleFilled(badge+new float2(0,25),badge+new float2(28,25),badge+new float2(14,32),color);
-            HudClipText(draw,badge+new float2(7,8),22,row.Count.ToString(),new ImColor8(16,19,26));
-            HudClipText(draw,min+new float2(44,13),width-92,Name(row.Trait.Id),row.Level>0?HudInk:HudMuted);
-            HudClipText(draw,new(max.X-42,min.Y+13),36,next>0?$"/{next}":"MAX",color);
+            int columns=Math.Max(1,(int)((width-14)/27));
+            int breakpointColumns=Math.Max(1,(int)((width-52)/26));
+            int breakpointRows=(row.Trait.Breakpoints.Length+breakpointColumns-1)/breakpointColumns;
+            float effectY=34+breakpointRows*21,portraitY=effectY+20;
+            float cardHeight=row.Level>0?portraitY+MathF.Ceiling((float)contributors.Length/columns)*27+3:effectY;
+            bool open=HudButton("trait/"+row.Trait.Id,"",width,cardHeight);
+            var min=ImGui.GetItemRectMin();var max=ImGui.GetItemRectMax();
+            var draw=ImGui.GetWindowDrawList();var badge=min+new float2(7,7);
+            draw.AddRectFilled(min,max,ImGui.IsItemHovered()?new ImColor8(21,30,49):new ImColor8(15,22,37),6);
+            draw.AddRect(min,max,HudLine,6);
+            var badgeColor=row.Level>0?color:new ImColor8(42,49,66);
+            draw.AddRectFilled(badge+new float2(0,8),badge+new float2(30,27),badgeColor);
+            draw.AddTriangleFilled(badge+new float2(0,8),badge+new float2(15,0),badge+new float2(30,8),badgeColor);
+            draw.AddTriangleFilled(badge+new float2(0,27),badge+new float2(30,27),badge+new float2(15,35),badgeColor);
+            HudClipText(draw,badge+new float2(8,9),22,row.Count.ToString(),row.Level>0?new ImColor8(16,19,26):HudMuted,16);
+            HudClipText(draw,min+new float2(45,7),width-89,Name(row.Trait.Id),row.Level>0?HudInk:HudMuted,16);
+            HudClipText(draw,new(max.X-40,min.Y+8),34,next>0?$"{row.Count}/{next}":row.Count.ToString(),color,14);
+            float chipX=min.X+45;
+            for(int i=0;i<row.Trait.Breakpoints.Length;i++)
+            {
+                var chip=new float2(chipX+i%breakpointColumns*26,min.Y+31+i/breakpointColumns*21);string label=row.Trait.Breakpoints[i].ToString();
+                draw.AddRectFilled(chip,chip+new float2(22,17),i<row.Level?color:new ImColor8(34,42,59),3);
+                HudClipText(draw,chip+new float2(5,1),18,label,i<row.Level?new ImColor8(16,19,26):HudMuted,13);
+            }
+            if(row.Level>0)
+            {
+                HudClipText(draw,min+new float2(7,effectY),width-14,text.TraitBreakpoint(Rules.Id,row.Trait.Id,row.Level-1).Description,HudGold,13);
+                InlineTraitEffects++;
+            }
             if(open)OpenCodexPanel(row.Trait.Id);
-            if (ImGui.IsItemHovered())
+            if (ImGui.IsItemHovered() && (row.Level==0||ImGui.GetMousePos().Y<min.Y+portraitY))
             {
                 ImGui.SetNextWindowSize(new(340,0)); ImGui.BeginTooltip();
                 ImGui.Text(Name(row.Trait.Id));
@@ -81,32 +101,14 @@ internal sealed partial class MatchScreen
                 }
                 ImGui.EndTooltip();
             }
-            for (int i = 0; i < row.Trait.Breakpoints.Length; i++)
+            for(int i=0;row.Level>0&&i<contributors.Length;i++)
             {
-                if (i > 0) ImGui.SameLine();
-                ImGui.PushStyleColor(ImGuiCol.Text, i < row.Level ? color : new ImColor8(140,150,165));
-                ImGui.PushFont(default,16);ImGui.Text(row.Trait.Breakpoints[i].ToString());ImGui.PopFont();
-                ImGui.PopStyleColor();
-            }
-            if (row.Level > 0)
-            {
-                HudText(text.TraitBreakpoint(Rules.Id, row.Trait.Id, row.Level - 1).Description,16,HudMuted);
-                InlineTraitEffects++;
-            }
-            int columns = Math.Max(1, (int)(ImGui.GetContentRegionAvail().X / 36));
-            for (int i = 0; row.Level>0&&i < contributors.Length; i++)
-            {
-                if (i % columns != 0) ImGui.SameLine(0, 4);
-                var unit = contributors[i];
-                var position = ImGui.GetCursorScreenPos(); ImGui.Dummy(new(32,32));
-                portraits.Draw(Rules.Id, unit.Line, unit.Stage, position, 32);
-                InlineTraitPortraits++;
-                Buttons[$"traitUnit/{row.Trait.Id}/{unit.Uid}"]=position+new float2(16,16);
-                if (ImGui.IsItemHovered())
+                var unit=contributors[i];var position=min+new float2(7+i%columns*27,portraitY+i/columns*27);
+                portraits.Draw(Rules.Id,unit.Line,unit.Stage,position,23);InlineTraitPortraits++;
+                Buttons[$"traitUnit/{row.Trait.Id}/{unit.Uid}"]=position+new float2(11.5f,11.5f);
+                if(ImGui.IsWindowHovered()&&ImGui.IsMouseHoveringRect(position,position+new float2(23,23)))
                 {
-                    ImGui.SetNextWindowSize(new(340,0)); ImGui.BeginTooltip();
-                    UnitDetails(unit);
-                    ImGui.EndTooltip();
+                    ImGui.SetNextWindowSize(new(340,0));ImGui.BeginTooltip();UnitDetails(unit);ImGui.EndTooltip();
                 }
             }
             ImGui.EndGroup();ImGui.Spacing();

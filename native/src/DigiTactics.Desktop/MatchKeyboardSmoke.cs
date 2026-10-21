@@ -26,8 +26,8 @@ internal sealed class MatchKeyboardSmoke : IDisposable
         AddKey("Tab reaches Modes",ImGuiKey.Tab,s=>Require(s.KeyboardFocusedButton=="clientModes","Tab did not follow the visible Modes tab; focused="+s.KeyboardFocusedButton));
         AddKey("Tab navigation",ImGuiKey.Tab,s=>Require(s.KeyboardFocusedButton=="collection","Tab did not focus Collection; focused="+s.KeyboardFocusedButton));AddKey("Enter activates Collection",ImGuiKey.Enter,s=>Require(s.Buttons.ContainsKey("closeCollection"),"Tab/Enter did not open the focused Collection navigation button; focused="+s.KeyboardFocusedButton));
         AddKey("Collection Escape",ImGuiKey.Escape,s=>Require(!s.Buttons.ContainsKey("closeCollection"),"Collection Escape did not return Home."));
-        AddClick("collection");AddClick("collectionCategory");
-        AddKey("Combo owns Escape",ImGuiKey.Escape,s=>Require(s.Buttons.ContainsKey("closeCollection")&&!s.Buttons.ContainsKey("collectionCategory/1"),"Combo Escape also closed its Collection panel."));
+        AddClick("collection");AddClick("collectionRarity");
+        AddKey("Combo owns Escape",ImGuiKey.Escape,s=>Require(s.Buttons.ContainsKey("closeCollection")&&!s.Buttons.ContainsKey("collectionRarity/rare"),"Combo Escape also closed its Collection panel."));
         AddClick("preview/legend/bukamon");AddClick("buyCosmetic/legend/bukamon");
         AddKey("Cancel purchase",ImGuiKey.Escape,s=>Require(s.Buttons.ContainsKey("closeCollection")&&!s.Buttons.ContainsKey("confirmPurchase"),"Escape did not cancel only the purchase layer."));
         AddClick("preview/legend/tokomon");AddClick("evolution/tokomon");AddKey("Evolution Escape",ImGuiKey.Escape,s=>Require(s.Buttons.ContainsKey("closeCollection")&&!s.Buttons.ContainsKey("closeEvolution"),"Evolution Escape did not return to Collection."));
@@ -35,21 +35,25 @@ internal sealed class MatchKeyboardSmoke : IDisposable
         AddKey("Farm room Escape",ImGuiKey.Escape,s=>Require(s.Buttons.ContainsKey("farmLights"),"Escape did not return farm management to care."));
         AddClick("farmDigivolve");AddKey("Farm Digivolve Escape",ImGuiKey.Escape,s=>Require(s.Buttons.ContainsKey("closeFarm")&&!s.Buttons.ContainsKey("closeCollection"),"Farm Digivolve Escape lost its Farm origin."));
         AddClick("farmDigivolve");
+        AddKey("Dismiss evolution before Home navigation",ImGuiKey.Escape);
         steps.Add(new("Farm evolution to Home",s=>Click(s,"homeOverview"),s=>Require(!s.CollectionVisible&&!s.Buttons.ContainsKey("closeFarm")&&s.Buttons.ContainsKey("start"),"Home navigation restored the Farm origin instead of the requested Home page.")));
         AddClick("farm");AddClick("farmDigivolve");
+        AddKey("Dismiss evolution before Collection navigation",ImGuiKey.Escape);
         steps.Add(new("Farm evolution to Collection",s=>Click(s,"collection"),s=>Require(s.CollectionVisible&&!s.Buttons.ContainsKey("closeFarm")&&!s.Buttons.ContainsKey("closeEvolution"),"Collection navigation retained a hidden Farm-origin evolution.")));
         AddClick("farm");AddClick("farmDigivolve");AddClick("levelLegend");AddClick("levelLegend");AddClick("digivolve");
-        steps.Add(new("Digivolution begins below shell",s=>{Require(s.EvolutionBusy,"Digivolution fixture did not begin its transformation.");Require(s.Buttons["closeEvolution"].Y>=96&&s.Buttons["closeCollection"].Y>=96,"Evolution back controls are hidden beneath client navigation.");return true;}));
-        foreach(string blocked in new[]{"homeOverview","collection","closeEvolution","closeCollection"})
+        steps.Add(new("Digivolution owns its modal",s=>{Require(s.EvolutionBusy,"Digivolution fixture did not begin its transformation.");Require(s.Buttons["closeEvolution"].Y>=20&&!s.Buttons.ContainsKey("closeCollection"),"Evolution must own one visible Back control.");return true;}));
+        foreach(string blocked in new[]{"homeOverview","collection","closeEvolution"})
             steps.Add(new("Busy evolution blocks "+blocked,s=>Click(s,blocked),s=>Require(s.EvolutionBusy&&s.Buttons.ContainsKey("closeEvolution"),"The active transformation was bypassed by "+blocked+".")));
         AddKey("Busy evolution owns Escape",ImGuiKey.Escape,s=>Require(s.EvolutionBusy&&s.Buttons.ContainsKey("closeEvolution"),"Escape bypassed an active digivolution."));
         steps.Add(new("Wait for digivolution",s=>!s.EvolutionBusy));
         AddClick("closeEvolution");
         AddKey("Farm Escape",ImGuiKey.Escape,s=>Require(!s.Buttons.ContainsKey("closeFarm"),"Farm Escape did not return Home."));
         AddClick("settings");AddClick("musicLibrary");AddKey("Music Escape",ImGuiKey.Escape,s=>Require(!s.Buttons.ContainsKey("closeMusicLibrary"),"Music library Escape did not close."));AddClick("closeSettings");
-        AddClick("start");
+        AddClick("clientPlay");AddClick("homePlayConfirm");AddClick("homePlayStart");
         steps.Add(new("carousel",s=>
         {
+            Require(s.Session is not null,"The party Start button did not create a match.");
+            if(s.MatchLoadingVisible)return false;
             var carousel=s.Session!.Units.Carousel;
             if(!carousel.Active)return true;
             if(carousel.Turn?.Id!=0)return false;
@@ -174,7 +178,7 @@ internal sealed class MatchKeyboardSmoke : IDisposable
             var b=bounds[i];Require(b.Min.X>=0&&b.Min.Y>=0&&b.Max.X<=display.X&&b.Max.Y<=display.Y,"A social slot is outside the supported window.");
             Require(b.Max.X-b.Min.X>=80&&b.Max.Y-b.Min.Y>=80,"A social slot is too small to read or select.");
             for(int j=0;j<i;j++){var a=bounds[j];Require(b.Min.X>=a.Max.X||a.Min.X>=b.Max.X||b.Min.Y>=a.Max.Y||a.Min.Y>=b.Max.Y,"Social slot targets overlap.");}
-            if(wheel){var c=(b.Min+b.Max)*.5f-screen.EmoteWheelCenter;Require(Math.Abs(Math.Sqrt(c.X*c.X+c.Y*c.Y)-124)<.1,"Emote images are not arranged around the source wheel.");}
+            if(wheel){var c=(b.Min+b.Max)*.5f-screen.EmoteWheelCenter;Require(Math.Abs(Math.Sqrt(c.X*c.X+c.Y*c.Y)-121)<.1,"Emote images are not arranged around the source wheel.");}
         }
         if(!wheel)Require(screen.SoundboardColumns is 3 or 6,"Sound pads did not use the responsive source grid.");
     }

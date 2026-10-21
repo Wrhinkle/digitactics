@@ -15,6 +15,7 @@ internal sealed class ItemDragSmoke
     private PlacedUnit[] preservedUnits = [];
     private string[] preservedItems = [];
     private int scrollWait;
+    private bool inventoryPressed;
     public string? CaptureName => tooltipHovered && !tooltipChecked ? "item-tooltip" : step == 9 ? "unit-equipment" : step == 8 ? "item-equip" : step == 12 ? "item-partner" : step == 16 ? "item-overflow" : null;
     public bool Input(MatchScreen screen)
     {
@@ -23,6 +24,12 @@ internal sealed class ItemDragSmoke
         void Start(int index) { Move(screen.Buttons[(step <= 3 ? "shelfItem/" : "item/") + index]); io.AddMouseButtonEvent(0, true); }
         void Up() => io.AddMouseButtonEvent(0, false);
         if (scrollWait > 0) { scrollWait--; return false; }
+        if(inventoryPressed){Up();inventoryPressed=false;scrollWait=2;return false;}
+        if(step<20&&!screen.Buttons.ContainsKey("item/0"))
+        {
+            if(!screen.Buttons.TryGetValue("matchInventory",out var inventoryToggle))throw new InvalidOperationException("Match inventory drawer control is missing.");
+            Move(inventoryToggle);io.AddMouseButtonEvent(0,true);inventoryPressed=true;return false;
+        }
         if (!tooltipChecked)
         {
             if (!tooltipHovered)
@@ -107,7 +114,7 @@ internal sealed class ItemDragSmoke
             case 14:
                 var rules = session.State.Rules;
                 var glove = rules.Items.FirstOrDefault(i => ItemCapacity.Slots(i) == 3);
-                if (glove is null) return true;
+                if (glove is null) {step=20;break;}
                 var line = rules.Lines.First(l => !l.NoItems);
                 item = rules.CoreItems.First(id => ItemCapacity.Slots(rules.Items.Single(i => i.Id == id)) == 1);
                 preservedUnits = player.Roster.Entries.ToArray(); preservedItems = player.Items.ToArray();
@@ -123,11 +130,13 @@ internal sealed class ItemDragSmoke
                 slot = player.Items.Count - 1; break;
             case 15:
                 var overflowButton = screen.Buttons["item/" + slot];
-                var bounds = screen.ShopViewportBounds;
-                if (overflowButton.Y < bounds.Min.Y + 21 || overflowButton.Y > bounds.Max.Y - 21)
+                var bounds = screen.MatchInventoryBounds;
+                // The item is 38px tall; its final row can sit flush with the
+                // child clip edge at maximum scroll. Do not demand extra padding.
+                if (overflowButton.Y < bounds.Min.Y + 19 || overflowButton.Y > bounds.Max.Y - 19)
                 {
                     Move(new(bounds.Max.X - 10, (bounds.Min.Y + bounds.Max.Y) / 2));
-                    io.AddMouseWheelEvent(0, overflowButton.Y < bounds.Min.Y + 21 ? 1 : -1);
+                    io.AddMouseWheelEvent(0, overflowButton.Y < bounds.Min.Y + 19 ? 1 : -1);
                     step--; scrollWait = 3; break;
                 }
                 Move(overflowButton); break;
@@ -148,6 +157,13 @@ internal sealed class ItemDragSmoke
                 }
                 player.Items.Clear(); player.Items.AddRange(preservedItems);
                 Console.WriteLine("Item overflow UI: full-bench glove merge preserved and equipped its returned item.");
+                break;
+            case 20:
+                if(!screen.Buttons.TryGetValue("closeMatchInventory",out var close))return true;
+                Move(close);io.AddMouseButtonEvent(0,true);break;
+            case 21:Up();break;
+            case 22:
+                if(screen.Buttons.ContainsKey("closeMatchInventory"))throw new InvalidOperationException("Inventory drawer Close did not dismiss it.");
                 return true;
         }
         return false;

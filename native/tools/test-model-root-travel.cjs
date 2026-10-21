@@ -4,6 +4,10 @@ async function main(){
   const {THREE,GLTFParser,GLTFMaterialsUnlitExtension}=await require('./three-loader.cjs')();
   const {modelClips}=await require('./load-model-motion.cjs')();
   const requested=new Set(process.argv.slice(2)),visited=new Set();
+  const terminalRoles={
+    'rip-stingmon':['special'], 'rip-dinobeemon':['special','win'],
+    'rip-zubamon':['special'], 'rip-zubaeagermon':['special'],
+  };
   for(const [alias,canonical] of [['zubamon:2','extra:Durandamon'],['ac:Gumdramon','drg:Gumdramon'],...[0,1,2].map(stage=>['kimeramon:'+stage,'extra:Kimeramon'])]){
     assert.equal(catalog.sources[alias].asset,catalog.sources[canonical].asset,alias+' remains an exact asset alias');
     assert.equal(catalog.sources[alias].metadata.uid,catalog.sources[canonical].metadata.uid,alias+' retains the canonical preparation identity');
@@ -17,7 +21,9 @@ async function main(){
     ['drg:Valkyrimon','J_center','special'],
     ['extra:Durandamon','J_center','special'],['zubamon:2','J_center','special'],
     ['extra:Kimeramon','J_center','win'],['kimeramon:0','J_center','win'],['kimeramon:1','J_center','win'],['kimeramon:2','J_center','win'],
-    ['drg:Grademon','J_center','special'],['drg:Gryphonmon','J_center','win'],['drg:Gumdramon','J_center','special'],['ac:Gumdramon','J_center','special']]){
+    ['drg:Grademon','J_center','special'],['drg:Gryphonmon','J_center','win'],['drg:Gumdramon','J_center','special'],['ac:Gumdramon','J_center','special'],
+    ['wormmon:1','J_center','special'],['wormmon:2','J_center','special'],['wormmon:2','J_center','win'],
+    ['zubamon:0','J_center','special'],['zubamon:1','J_center','special']]){
     if(requested.size&&!requested.has(key))continue;
     visited.add(key);
     const source=catalog.sources[key],bytes=zlib.gunzipSync(fs.readFileSync(path.join(root,'native/artifacts/model-content',catalog.assets[source.asset].file))),length=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+length)),binary=bytes.subarray(28+length);
@@ -34,6 +40,31 @@ async function main(){
     const rawTrack=raw.tracks.find(t=>t.name===bodyName+'.position'),rawPositions=[];
     for(let i=0;i<rawTrack.values.length;i+=3)rawPositions.push(new THREE.Vector3().fromArray(rawTrack.values,i).applyMatrix4(body.parent.matrixWorld));
     const rawYs=rawPositions.map(p=>p.y);
+    if(terminalRoles[source.metadata.uid]){
+      // Independent binding evidence: this is the entire creature root, not a
+      // thrown weapon/effect. Puppetmon's partial root is deliberately excluded.
+      const descendants=new Set();body.traverse(node=>descendants.add(node));let total=0,covered=0;
+      gltf.scene.traverse(mesh=>{
+        if(!mesh.isSkinnedMesh)return;
+        const indices=mesh.geometry.attributes.skinIndex,weights=mesh.geometry.attributes.skinWeight;
+        for(let i=0;i<indices.count;i++)for(let j=0;j<4;j++){
+          const weight=weights.getComponent(i,j);total+=weight;
+          if(descendants.has(mesh.skeleton.bones[indices.getComponent(i,j)]))covered+=weight;
+        }
+      });
+      assert.ok(total>0&&Math.abs(covered/total-1)<1e-6,key+' J_center must cover the complete weighted body');
+      const excursion=Math.max(...rawPositions.map(p=>p.distanceTo(origin)))/height;
+      assert.ok(excursion>1,key+' red source must retain the original whole-body departure');
+      // Untargeted roles must keep the exact authored clip, including duration,
+      // interpolation, key times and values; no generalized action suppression.
+      for(const original of gltf.animations){
+        if(terminalRoles[source.metadata.uid].includes(original.name))continue;
+        const retained=clips.find(c=>c.name===original.name);
+        assert.ok(retained,key+' retains '+original.name);
+        assert.deepEqual(THREE.AnimationClip.toJSON(retained),THREE.AnimationClip.toJSON(original),key+' untouched role '+original.name);
+      }
+      console.log('Original complete-body departure: '+key+' '+role+' = '+excursion+' idle heights; weighted subtree='+covered/total);
+    }
     if(['rip-durandamon','rip-kimeramon'].includes(source.metadata.uid)){
       const excursion=Math.max(...rawYs.map(y=>Math.abs(y-origin.y)))/height;
       assert.ok(excursion>1,key+' regression must retain the original greater-than-one-height body-root excursion');
@@ -49,8 +80,16 @@ async function main(){
     const mixer=new THREE.AnimationMixer(gltf.scene),action=mixer.clipAction(clip);action.setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();let motion=0;
     for(let i=0;i<=64;i++){
       mixer.setTime(clip.duration*i/64);gltf.scene.updateMatrixWorld(true);const p=body.getWorldPosition(new THREE.Vector3()).sub(origin);
+      if(terminalRoles[source.metadata.uid]){
+        gltf.scene.traverse(node=>{if(node.isSkinnedMesh)node.skeleton.update();});
+        const skinned=new THREE.Box3().setFromObject(gltf.scene,true);
+        assert.ok([...skinned.min.toArray(),...skinned.max.toArray()].every(Number.isFinite)&&!skinned.isEmpty(),key+' finite complete skinned geometry at '+i/64);
+      }
       assert.ok(Math.hypot(p.x,p.z)<height*1e-5,`${key} ${role} root leaves simulated hex by ${Math.hypot(p.x,p.z)/height} body heights at ${i/64}`);
-      assert.ok(p.y<=height*.351&&p.y>=-height*.081,`${key} ${role} root leaves bounded jump envelope: ${p.y/height}`);motion=Math.max(motion,Math.abs(p.y));
+      // ZubaEagermon's preserved somersault needs posed-body floor clearance;
+      // the independent dense skin test checks that exception and its geometry.
+      const ceiling=source.metadata.uid==='rip-zubaeagermon'&&role==='special'?1.2:.351;
+      assert.ok(p.y<=height*ceiling&&p.y>=-height*.081,`${key} ${role} root leaves bounded jump envelope: ${p.y/height}`);motion=Math.max(motion,Math.abs(p.y));
       if(i===64||role==='win'&&i===0)assert.ok(p.length()<height*1e-5,key+' '+role+' must start and finish at its simulated position; drift='+p.length()/height);
     }
     if(Math.max(...rawYs)-Math.min(...rawYs)>height*.005)assert.ok(motion>height*.005,key+' must retain visible authored vertical movement');

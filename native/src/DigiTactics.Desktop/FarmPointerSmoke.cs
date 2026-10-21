@@ -13,6 +13,7 @@ internal sealed class FarmPointerSmoke : IDisposable
     private bool down;
     private FileStream? saveLock;
     private readonly string[] residents;
+    private readonly string bankResident;
     public string Pending => $"farm pointer stage {stage}";
 
     public FarmPointerSmoke(NativeProfileStore profile, string directory)
@@ -22,6 +23,8 @@ internal sealed class FarmPointerSmoke : IDisposable
         residents = new[] { "tokomon", "tsunomon" }.Concat(CosmeticCollection.Items("legend").Select(item => item.Id).Where(id => id is not ("tokomon" or "tsunomon")).Take(10)).ToArray();
         var wallet = new CosmeticCollection(null);
         foreach (string resident in residents) wallet.Grant("legend", resident);
+        bankResident = CosmeticCollection.Items("legend").First(item => !residents.Contains(item.Id)).Id;
+        wallet.Grant("legend", bankResident);
         long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         var farm = JsonNode.Parse(FarmSimulation.Advance(null, wallet.Json, null, now).Save)!;
         farm["cap"] = 12;
@@ -38,7 +41,7 @@ internal sealed class FarmPointerSmoke : IDisposable
 
     public void Input(MatchScreen screen)
     {
-        if (cooldown-- > 0 || stage >= 6) return;
+        if (cooldown-- > 0 || stage == 6 || stage >= 10) return;
         var io = ImGui.GetIO();
         if (down) { io.AddMouseButtonEvent(0, false); down = false; stage++; cooldown = 30; return; }
         if (stage == 2)
@@ -51,7 +54,24 @@ internal sealed class FarmPointerSmoke : IDisposable
             saveLock!.Dispose(); saveLock = null;
             stage++; cooldown = 3; return;
         }
-        if (stage == 0)
+        if (stage >= 7)
+        {
+            string key = stage == 7 ? "farmRoom" : stage == 8 ? "farmSelect/" + residents[^1] : "farmSwap/" + bankResident;
+            if (!screen.Buttons.TryGetValue(key, out var target)) throw new InvalidOperationException("Missing full-room bank control: " + key);
+            if (stage >= 8)
+            {
+                var bounds = screen.FarmManagementBounds;
+                if (target.Y < bounds.Min.Y + 20 || target.Y > bounds.Max.Y - 20)
+                {
+                    io.AddMousePosEvent(bounds.Max.X - 10, (bounds.Min.Y + bounds.Max.Y) / 2);
+                    io.AddMouseWheelEvent(0, target.Y < bounds.Min.Y + 20 ? 2 : -2); cooldown = 3; return;
+                }
+                if (stage == 9 && (screen.FarmSelectedResident != residents[^1] || screen.Buttons.ContainsKey("farmIn/" + bankResident)))
+                    throw new InvalidOperationException("A full farm must offer swapping the selected resident, without a Move in action.");
+            }
+            io.AddMousePosEvent(target.X, target.Y);
+        }
+        else if (stage == 0)
         {
             if (!screen.Buttons.TryGetValue("farm", out var button)) return;
             io.AddMousePosEvent(button.X, button.Y);
@@ -86,7 +106,7 @@ internal sealed class FarmPointerSmoke : IDisposable
 
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
-        if (stage != 6 || cooldown > 0) return false;
+        if (stage is not (6 or 10) || cooldown > 0) return false;
         var reloaded = new NativeProfileStore(directory);
         var farm = JsonNode.Parse(reloaded.Storage["dt.farm.v1"])!;
         if (reloaded.Error is not null || farm["pets"]!["tsunomon"]!["poop"]!.AsArray().Count != 0
@@ -94,8 +114,16 @@ internal sealed class FarmPointerSmoke : IDisposable
             || reloaded.Progress.Bits != 1 || screen.FarmSelectedResident != "tokomon"
             || screen.FarmPilePoint("tsunomon", 901) is not null || screen.FarmPilePoint("tokomon", 901) is null)
             throw new InvalidOperationException("Farm scene click did not persist only the clicked owner's pile and reward.");
-        if (capture is not null) FrameCapture.SaveBitmap(capture, size.X, size.Y);
-        Console.WriteLine("Farm pointer smoke passed: twelve-resident wrap and pointer selection, geometry click, nonselected owner, duplicate key isolation, locked-save retry, saved reward and profile reload.");
+        if (stage == 6)
+        {
+            if (capture is not null) FrameCapture.SaveBitmap(capture, size.X, size.Y);
+            stage = 7; cooldown = 3; return false;
+        }
+        var savedResidents = farm["residents"]!.AsArray().Select(id => id!.GetValue<string>()).ToArray();
+        if (savedResidents.Length != 12 || !savedResidents.Contains(bankResident) || savedResidents.Contains(residents[^1]))
+            throw new InvalidOperationException("Full-room Digi-Bank swap did not replace exactly the selected resident.");
+        if (capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture, "bank-swap.bmp"), size.X, size.Y);
+        Console.WriteLine("Farm pointer smoke passed: twelve-resident wrap and pointer selection, geometry click, nonselected owner, duplicate key isolation, locked-save retry, saved reward, full-room bank swap and profile reload.");
         return true;
     }
     public void Dispose() => saveLock?.Dispose();

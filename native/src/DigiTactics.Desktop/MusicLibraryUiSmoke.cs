@@ -95,7 +95,7 @@ internal sealed class MusicLibraryUiSmoke : IDisposable
         if(step==14 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-clear.bmp"),size.X,size.Y);
         if(step==5 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-remove.bmp"),size.X,size.Y);
         if(step==4 && capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"music-library.bmp"),size.X,size.Y);
-        if(done) Console.WriteLine("Music library UI passed: Settings navigation, empty own-source chooser, source switching, multi-file import, literal names, phase assignment persistence, cancel/confirm removal, last-track fallback, cancelled/confirmed bulk clear and saved source; live-match empty/cancel chooser, playback/Next/mute/source/single-track guards and nested return; original built-in track names, planning/combat phase and idle/playing/muted statuses; "+matchControls!.PreviewEvidence+".");
+        if(done) Console.WriteLine("Music library UI passed: Settings navigation, empty own-source chooser, source switching, multi-file import, literal names, phase assignment persistence, cancel/confirm removal, last-track fallback, cancelled/confirmed bulk clear and saved source; live-match empty/cancel chooser, playback/Next/mute/source/single-track guards and inline track phase selection; original built-in track names, planning/combat phase and idle/playing/muted statuses; "+matchControls!.PreviewEvidence+".");
         return done;
     }
     public void Dispose()

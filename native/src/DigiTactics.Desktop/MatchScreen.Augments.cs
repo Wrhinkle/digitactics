@@ -14,7 +14,6 @@ internal sealed partial class MatchScreen
         DisplayedAugments = player.Augments.ToArray();
         AugmentPortraits = 0;
         if (DisplayedAugments.Count == 0) return;
-        ImGui.SeparatorText($"Augments - {DisplayedAugments.Count}/3");
         foreach (string id in DisplayedAugments)
         {
             var description = text.Get(Rules.Id, id);
@@ -25,18 +24,22 @@ internal sealed partial class MatchScreen
                 2 => new ImColor8(255,207,74),
                 _ => new ImColor8(229,139,255)
             };
-            if (ItemArtwork.Has(Rules.Id, "aug:" + id))
+            var position=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X,bodyWidth=width-54;
+            float titleHeight=ChoiceLines(description.Name,16,bodyWidth).Length*20;
+            float bodyHeight=ChoiceLines(description.Description,14,bodyWidth).Length*18;
+            float height=Math.Max(46,titleHeight+bodyHeight+16);
+            ImGui.Dummy(new(width,height));
+            var draw=ImGui.GetWindowDrawList();
+            draw.AddRectFilled(position,position+new float2(width,height),new ImColor8(15,22,37),7);
+            draw.AddRect(position,position+new float2(width,height),new ImColor8(34,48,73),7);
+            if(ItemArtwork.Has(Rules.Id,"aug:"+id))
             {
-                var position = ImGui.GetCursorScreenPos(); ImGui.Dummy(new(30,30));
-                itemArtwork.Draw(Rules.Id, "aug:" + id, position, 30);
+                itemArtwork.Draw(Rules.Id,"aug:"+id,position+new float2(8,(height-30)/2),30);
                 AugmentPortraits++;
-                ImGui.SameLine();
             }
-            ImGui.PushStyleColor(ImGuiCol.Text, color);
-            UiText.Wrapped(description.Name);
-            ImGui.PopStyleColor();
-            UiText.Wrapped(description.Description);
-            ImGui.Separator();
+            ChoiceText(draw,position+new float2(46,8),bodyWidth,description.Name,16,20,color,false);
+            ChoiceText(draw,position+new float2(46,8+titleHeight),bodyWidth,description.Description,14,18,HudMuted,false);
         }
+        ImGui.Dummy(new(0,8));
     }
 }

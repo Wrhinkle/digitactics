@@ -22,7 +22,7 @@ internal sealed partial class MatchScreen
         void Group(string kind,string title)
         {
             var items=entries.Where(item=>item.Kind==kind).ToArray();if(items.Length==0)return;
-            CodexHeading(title+" / "+items.Length);CodexGrid("Codex items/"+kind,items,330,CodexItemCard);ImGui.Spacing();
+            CodexHeading(title.ToUpperInvariant()+" / "+items.Length,20);CodexGrid("Codex items/"+kind,items,250,CodexItemCard);ImGui.Spacing();
         }
         Group("component","Components");CodexRecipes();Group("core","Completed items");Group("crest","Crests");Group("special","Special");
     }
@@ -31,7 +31,7 @@ internal sealed partial class MatchScreen
         CodexRows++;ImGui.PushID(item.Id);
         if(codexFocusItem==item.Id){ImGui.SetScrollHereY(.1f);codexFocusItem=null;}
         if(!CodexBeginCard("Item card")){CodexEndCard();ImGui.PopID();return;}
-        CodexItemIcon(item.Id,44);ImGui.SameLine();CodexHeading(item.Name);
+        CodexItemIcon(item.Id,36);ImGui.SameLine();CodexHeading(item.Name);
         Buttons["codexItem/"+item.Id]=(ImGui.GetItemRectMin()+ImGui.GetItemRectMax())*.5f;
         if(item.StatsText.Length>0&&item.Kind!="component")CodexText(item.StatsText,HomeGold);
         CodexText(item.Description);
@@ -47,7 +47,7 @@ internal sealed partial class MatchScreen
     {
         var data=CodexData;if(data.ComponentIds.Length==0)return;
         CodexHeading("RECIPE GRID");CodexText("Two components make one item.",CodexMuted);
-        const float cell=44,icon=36;
+        const float cell=40,icon=32;
         ImGui.BeginChild("Codex recipes"u8,new(0,(data.ComponentIds.Length+1)*cell+20),ImGuiChildFlags.None,ImGuiWindowFlags.HorizontalScrollbar);
         var start=ImGui.GetCursorScreenPos();
         for(int i=0;i<data.ComponentIds.Length;i++)
@@ -58,10 +58,10 @@ internal sealed partial class MatchScreen
             {
                 string id=data.RecipeGrid[i][j];if(string.IsNullOrEmpty(id))continue;
                 var at=start+new float2((j+1)*cell,(i+1)*cell);ImGui.SetCursorScreenPos(at);
-                if(Button("codexRecipe/"+i+"/"+j,"##recipe/"+i+"/"+j,40,40))codexFocusItem=id;
-                if(ItemArtwork.Has(data.Id,id)&&ImGui.IsRectVisible(at,at+new float2(40,40)))itemArtwork.Draw(data.Id,id,at+new float2(2,2),icon);
+                if(Button("codexRecipe/"+i+"/"+j,"##recipe/"+i+"/"+j,36,36))codexFocusItem=id;
+                if(ItemArtwork.Has(data.Id,id)&&ImGui.IsRectVisible(at,at+new float2(36,36)))itemArtwork.Draw(data.Id,id,at+new float2(2,2),icon);
                 var item=data.Items.Single(entry=>entry.Id==id);
-                if(!CodexMatch(item.SearchText))ImGui.GetWindowDrawList().AddRectFilled(at,at+new float2(40,40),new ImColor8(5,15,25,195));
+                if(!CodexMatch(item.SearchText))ImGui.GetWindowDrawList().AddRectFilled(at,at+new float2(36,36),new ImColor8(5,15,25,195));
                 if(ImGui.IsItemHovered()){ImGui.SetNextWindowSize(new(380,0));ImGui.BeginTooltip();CodexHeading(item.Name);CodexText(item.StatsText,CodexGold);CodexText(item.Description);ImGui.EndTooltip();}
                 CodexRecipeCells++;
             }
@@ -73,13 +73,13 @@ internal sealed partial class MatchScreen
         foreach(var group in CodexData.Augments.Where(augment=>CodexMatch(augment.SearchText)).GroupBy(augment=>augment.Tier).OrderBy(group=>group.Key))
         {
             var first=group.First();CodexHeading(first.TierName+" / "+group.Count(),22,CodexColor(first.Color));
-            CodexGrid("Codex augments/"+group.Key,group,330,augment=>
+            CodexGrid("Codex augments/"+group.Key,group,250,augment=>
             {
                 CodexRows++;var color=CodexColor(augment.Color);
                 if(!CodexBeginCard("Augment/"+augment.Id,color)){CodexEndCard();return;}
                 var at=ImGui.GetCursorScreenPos();ImGui.Dummy(new(22,26));
                 var draw=ImGui.GetWindowDrawList();draw.AddQuadFilled(at+new float2(11,2),at+new float2(21,12),at+new float2(11,22),at+new float2(1,12),color);
-                ImGui.SameLine();CodexHeading(augment.Name,22,color);CodexText(augment.Description);CodexEndCard();
+                ImGui.SameLine();CodexHeading(augment.Name,18,color);CodexText(augment.Description);CodexEndCard();
             });ImGui.Spacing();
         }
     }
@@ -89,55 +89,23 @@ internal sealed partial class MatchScreen
         foreach(var group in CodexData.Wisps.Where(wisp=>CodexMatch(wisp.SearchText)).GroupBy(wisp=>wisp.Kind))
         {
             CodexHeading(group.Key+" / "+group.Count());
-            CodexGrid("Codex wisps/"+group.Key,group,330,wisp=>
+            CodexGrid("Codex wisps/"+group.Key,group,250,wisp=>
             {
                 CodexRows++;
                 if(!CodexBeginCard("Wisp/"+wisp.Id)){CodexEndCard();return;}
-                var at=ImGui.GetCursorScreenPos();ImGui.Dummy(new(26,26));var draw=ImGui.GetWindowDrawList();
-                draw.AddCircleFilled(at+new float2(13,13),12,new ImColor8(42,123,216));draw.AddCircleFilled(at+new float2(12,12),8,new ImColor8(127,227,255));draw.AddCircleFilled(at+new float2(9,9),4,new ImColor8(255,255,255));
-                ImGui.SameLine();CodexHeading(wisp.Name);CodexText((wisp.BasePrice>0?wisp.BasePrice+" + stage":"stage")+" gold",CodexGold);
+                var at=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
+                string price=(wisp.BasePrice>0?wisp.BasePrice+" + stage":"stage")+" gold";
+                ImGui.PushFont(NativeUiTheme.BodyFont,14);var priceSize=ImGui.CalcTextSize(price);ImGui.PopFont();
+                float nameWidth=Math.Max(40,width-priceSize.X-30);
+                ImGui.SetCursorScreenPos(at+new float2(22,0));ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+nameWidth);
+                CodexHeading(wisp.Name,18);ImGui.PopTextWrapPos();
+                float headerHeight=Math.Max(20,ImGui.GetItemRectMax().Y-at.Y);
+                var draw=ImGui.GetWindowDrawList();
+                draw.AddCircleFilled(at+new float2(7,9),7,new ImColor8(42,123,216));draw.AddCircleFilled(at+new float2(6,8),5,new ImColor8(127,227,255));draw.AddCircleFilled(at+new float2(4,6),2,new ImColor8(255,255,255));
+                draw.AddText(NativeUiTheme.BodyFont,14,at+new float2(width-priceSize.X,2),CodexGold,price);
+                ImGui.SetCursorScreenPos(at);ImGui.Dummy(new(width,headerHeight));
                 CodexText(wisp.Description);CodexText($"From stage {wisp.MinStage}. At stage {wisp.ExampleStage}: {wisp.ExampleCost} gold.",CodexMuted);CodexEndCard();
             });ImGui.Spacing();
         }
-    }
-    private void CodexRules(bool compact)
-    {
-        var entries=CodexData.Rules.Where(rule=>compact||CodexMatch(rule.SearchText)).ToArray();
-        if(compact)
-        {
-            foreach(var rule in entries)
-            {
-                CodexRows++;ImGui.SetNextItemOpen(rule==entries[0],ImGuiCond.Once);
-                if(ImGui.CollapsingHeader(rule.Title+"##codexRule/"+rule.Id))CodexRuleBody(rule);
-            }
-        }
-        else CodexGrid("Codex rules",entries,440,rule=>
-        {
-            CodexRows++;
-            if(CodexBeginCard("Rule/"+rule.Id)){CodexHeading(rule.Title,22,CodexGold);CodexRuleBody(rule);}
-            CodexEndCard();
-        });
-    }
-    private static void CodexRuleBody(CodexRule rule)
-    {
-        ImGui.PushID(rule.Id);int index=0;
-        foreach(var block in rule.Blocks)
-        {
-            if(block.Kind=="paragraph"){CodexText(block.Text);ImGui.Spacing();continue;}
-            int columns=block.Rows.Max(row=>row.Length);if(columns==0)continue;
-            ImGui.PushID(index++);ImGui.BeginChild("Rule table"u8,new(0,Math.Min(320,block.Rows.Length*34+24)),ImGuiChildFlags.None,ImGuiWindowFlags.HorizontalScrollbar);
-            ImGui.PushStyleVar(ImGuiStyleVar.CellPadding,new float2(7,6));
-            if(ImGui.BeginTable("Rule values"u8,columns,ImGuiTableFlags.Borders|ImGuiTableFlags.SizingStretchSame,new(Math.Max(columns*62,ImGui.GetContentRegionAvail().X),0)))
-            {
-                for(int row=0;row<block.Rows.Length;row++)
-                {
-                    ImGui.TableNextRow();
-                    for(int col=0;col<columns;col++){ImGui.TableSetColumnIndex(col);CodexText(block.Rows[row].ElementAtOrDefault(col)??"",row==0?CodexGold:CodexBody);}
-                }
-                ImGui.EndTable();
-            }
-            ImGui.PopStyleVar();ImGui.EndChild();ImGui.PopID();
-        }
-        ImGui.PopID();
     }
 }

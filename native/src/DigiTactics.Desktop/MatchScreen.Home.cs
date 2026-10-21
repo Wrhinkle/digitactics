@@ -29,48 +29,64 @@ internal sealed partial class MatchScreen
     }
     private bool HomeButton(string key,string label,float width=0,float height=36,bool primary=false)
     {
-        ImGui.PushStyleColor(ImGuiCol.Button,primary?new ImColor8(17,92,113):new ImColor8(17,29,42));
-        ImGui.PushStyleColor(ImGuiCol.ButtonHovered,primary?new ImColor8(28,123,145):new ImColor8(35,52,68));
-        ImGui.PushStyleColor(ImGuiCol.ButtonActive,new ImColor8(29,108,124));ImGui.PushStyleColor(ImGuiCol.Border,HomeGold);ImGui.PushStyleColor(ImGuiCol.Text,HomeInk);
-        ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,1);ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding,2);
+        bool angled=primary&&key is "start" or "clientPlay" or "homePlayStart" or "homePlayConfirm" or "steamCreate" or "steamStart";
+        ImGui.PushStyleColor(ImGuiCol.Button,angled?new ImColor8(0,0,0,0):primary?new ImColor8(17,92,113):new ImColor8(17,29,42));
+        ImGui.PushStyleColor(ImGuiCol.ButtonHovered,angled?new ImColor8(0,0,0,0):primary?new ImColor8(28,123,145):new ImColor8(35,52,68));
+        ImGui.PushStyleColor(ImGuiCol.ButtonActive,angled?new ImColor8(0,0,0,0):new ImColor8(29,108,124));ImGui.PushStyleColor(ImGuiCol.Border,angled?new ImColor8(0,0,0,0):HomeGold);ImGui.PushStyleColor(ImGuiCol.Text,HomeInk);
+        ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,1);ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding,0);
+        // Custom artwork supplies its own label. Hiding the stock text also
+        // prevents a second label showing through translucent disabled frames.
+        if(angled||key=="homeHeroAction")ImGui.PushStyleColor(ImGuiCol.Text,new ImColor8(0,0,0,0));
         bool result=Button(key,label,width,Math.Max(36,height));
-        if(primary && key is "start" or "clientPlay" or "homePlayStart" or "steamStart")
+        if(angled||key=="homeHeroAction")ImGui.PopStyleColor();
+        if(primary && key is "start" or "clientPlay" or "homePlayStart" or "homePlayConfirm" or "steamCreate" or "steamStart")
         {
-            var lo=ImGui.GetItemRectMin();var hi=ImGui.GetItemRectMax();var draw=ImGui.GetWindowDrawList();
-            var top=NativeUiTheme.PlayTop;var bottom=NativeUiTheme.Play;
-            if(ImGui.IsItemHovered()){top=new(255,226,159);bottom=NativeUiTheme.PlayMiddle;}
+            var lo=ImGui.GetItemRectMin();var hi=ImGui.GetItemRectMax();var draw=ImGui.GetWindowDrawList();bool nav=key=="clientPlay",cyan=nav||key=="homePlayConfirm";
             ImColor8 Styled(ImColor8 color)
             {
-                var rgba=color.AsByte4();
-                return new(rgba.X,rgba.Y,rgba.Z,(byte)Math.Clamp(Math.Round(rgba.W*ImGui.GetStyle().Alpha),0,255));
+                var rgba=color.AsByte4();return new(rgba.X,rgba.Y,rgba.Z,(byte)Math.Clamp(Math.Round(rgba.W*ImGui.GetStyle().Alpha),0,255));
             }
-            draw.AddRectFilledMultiColor(lo,hi,Styled(top),Styled(top),Styled(bottom),Styled(bottom));
-            draw.AddRect(lo,hi,Styled(NativeUiTheme.PlayBorder),2);
-            ImGui.PushFont(NativeUiTheme.DisplayBoldFont,20);
-            var textSize=ImGui.CalcTextSize(label);draw.AddText(lo+(hi-lo-textSize)*.5f,Styled(NativeUiTheme.PlayText),label);ImGui.PopFont();
-            if(ImGui.IsItemFocused())draw.AddRect(lo+new float2(3,3),hi-new float2(3,3),Styled(HomeInk),1);
+            float cut=nav?20:10;
+            float2[] polygon=nav?[lo,new(hi.X-cut,lo.Y),new(hi.X,(lo.Y+hi.Y)/2),new(hi.X-cut,hi.Y),new(lo.X,hi.Y)]:[new(lo.X+cut,lo.Y),new(hi.X,lo.Y),new(hi.X,hi.Y-cut),new(hi.X-cut,hi.Y),new(lo.X,hi.Y),new(lo.X,lo.Y+cut)];
+            foreach(var point in polygon)draw.PathLineTo(point);draw.PathFillConcave(Styled(cyan?HomeGold:NativeUiTheme.Play));
+            var innerLo=lo+new float2(2,2);var innerHi=hi-new float2(2,2);
+            float2[] inner=nav?[innerLo,new(innerHi.X-cut,innerLo.Y),new(innerHi.X,(innerLo.Y+innerHi.Y)/2),new(innerHi.X-cut,innerHi.Y),new(innerLo.X,innerHi.Y)]:[new(innerLo.X+cut,innerLo.Y),new(innerHi.X,innerLo.Y),new(innerHi.X,innerHi.Y-cut),new(innerHi.X-cut,innerHi.Y),new(innerLo.X,innerHi.Y),new(innerLo.X,innerLo.Y+cut)];
+            foreach(var point in inner)draw.PathLineTo(point);draw.PathFillConcave(Styled(cyan?new ImColor8(9,50,67):NativeUiTheme.PlayMiddle));
+            if(nav)homeArtwork.Draw("client-mark",lo+new float2(10,(hi.Y-lo.Y-36)/2),new(36,36),(byte)Math.Clamp(Math.Round(255*ImGui.GetStyle().Alpha),0,255));
+            ImGui.PushFont(NativeUiTheme.DisplayBoldFont,nav?24:20);var textSize=ImGui.CalcTextSize(label);
+            draw.AddText(lo+(hi-lo-textSize)*.5f+new float2(nav?8:0,0),Styled(cyan?new ImColor8(190,242,255):NativeUiTheme.PlayText),label);ImGui.PopFont();
+            if(ImGui.IsItemHovered())draw.AddLine(innerLo+new float2(cut,0),new(innerHi.X-cut,innerLo.Y),Styled(HomeInk),2);
+            if(ImGui.IsItemFocused())draw.AddRect(lo+new float2(4,4),hi-new float2(4,4),Styled(HomeInk),0);
+        }
+        else if(key=="homeHeroAction")
+        {
+            var lo=ImGui.GetItemRectMin();var hi=ImGui.GetItemRectMax();var draw=ImGui.GetWindowDrawList();
+            byte alpha=(byte)Math.Clamp(Math.Round(255*ImGui.GetStyle().Alpha),0,255);
+            draw.AddRectFilledMultiColor(lo,hi,new ImColor8(15,74,92,alpha),new ImColor8(15,74,92,alpha),new ImColor8(4,22,36,alpha),new ImColor8(4,22,36,alpha));
+            draw.AddRect(lo,hi,new ImColor8(200,170,110,alpha));draw.AddRect(lo+new float2(2,2),hi-new float2(2,2),new ImColor8(63,214,255,(byte)(alpha/3)));
+            ImGui.PushFont(NativeUiTheme.DisplayBoldFont,18);draw.AddText(lo+(hi-lo-ImGui.CalcTextSize(label))*.5f,new ImColor8(190,242,255,alpha),label);ImGui.PopFont();
         }
         ImGui.PopStyleVar(2);ImGui.PopStyleColor(5);return result;
     }
     private void HomeCard(string id,float2 at,float2 extent,bool scroll=true,bool bringToFront=false)
     {
         ImGui.PushStyleColor(ImGuiCol.WindowBg,new ImColor8(5,15,25,250));ImGui.PushStyleColor(ImGuiCol.Border,HomeLine);
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding,2);ImGui.SetNextWindowBgAlpha(1);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding,0);ImGui.SetNextWindowBgAlpha(1);
         Window(id,at.X,at.Y,extent.X,extent.Y,ImGuiWindowFlags.NoTitleBar|(bringToFront?ImGuiWindowFlags.None:ImGuiWindowFlags.NoBringToFrontOnFocus)|(scroll?ImGuiWindowFlags.None:ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse));
         ImGui.PopStyleVar();ImGui.PopStyleColor(2);
     }
     private void HomePanel()
     {
+        if(DrawPostgame())return;
         RefreshSetSelection();
-        UpdateClient?.Refresh();bool update=UpdateClient?.Status?.Phase is "checking" or "downloading" or "verifying" or "ready" or "manual";
-        float margin=16,gap=12,width=size.X-margin*2,right=280,heroWidth=width-right-gap;
-        float tabsTop=ClientPageTop,top=tabsTop+48,available=size.Y-top-margin-(update?100:0);
-        float heroHeight=Math.Min(Math.Max(350,available*.62f),available-92),bottom=top+heroHeight+gap,lowerHeight=available-heroHeight-gap;
-        HomeLayoutFits=lowerHeight>=80 && margin+width<=size.X && bottom+lowerHeight<=size.Y;
-        var background=ImGui.GetBackgroundDrawList();
-        homeArtwork.Draw("hero-datastream-sky",new(0,0),new(size.X,size.Y),70,true,drawList:background);
-        background.AddRectFilled(new(0,0),new(size.X,size.Y),new ImColor8(1,10,19,205));
-        if(showAbout){HomeAbout();UpdatePanel();return;}
+        UpdateClient?.Refresh();
+        float margin=socialWindowSize.X<=1500?16:24,gap=socialWindowSize.X<=1380?8:12,width=size.X-margin*2,right=Math.Clamp(socialWindowSize.X*.21f,240,320),heroWidth=width-right-gap;
+        float tabsTop=ClientPageTop+10,top=tabsTop+49,available=size.Y-top-16;
+        float lowerHeight=Math.Clamp(size.Y*.25f,176,250),heroHeight=Math.Max(300,available-lowerHeight-gap);
+        if(heroHeight+lowerHeight+gap>available)lowerHeight=Math.Max(130,available-heroHeight-gap);
+        float bottom=top+heroHeight+gap;
+        HomeLayoutFits=lowerHeight>=130&&margin+width<=size.X&&bottom+lowerHeight<=size.Y;
+        if(showAbout){HomeAbout();return;}
         HomeHighlights=HomeRotationSets=HomeFeaturedCount=HomeFeaturedOwned=0;
         HomeTabs(margin,tabsTop,width);
         if(homeTab=="patch")HomePatchNotes(new(margin,top),new(heroWidth,heroHeight+gap+lowerHeight));
@@ -79,27 +95,23 @@ internal sealed partial class MatchScreen
         {
             HomeHero(new(margin,top),new(heroWidth,heroHeight));
             float tileWidth=(width-gap*3)/4;
-            HomeProgress(new(margin,bottom),new(tileWidth,lowerHeight));
-            HomePatchBounds=(new(margin+tileWidth+gap,bottom),new(margin+tileWidth*2+gap,bottom+lowerHeight));
+            HomeCard("Home set news",new(margin,bottom),new(tileWidth,lowerHeight));
+            var set=HomeSets.Value[selectedSet];var artAt=ImGui.GetCursorScreenPos();float artWidth=ImGui.GetContentRegionAvail().X;
+            homeArtwork.Draw(set.Hero,artAt,new(artWidth,54),255,true);ImGui.Dummy(new(artWidth,58));HomeSetNews();ImGui.End();
+            HomeFeatured(new(margin+tileWidth+gap,bottom),new(tileWidth,lowerHeight));
+            HomeProgress(new(margin+(tileWidth+gap)*2,bottom),new(tileWidth,lowerHeight));
+            HomePatchBounds=(new(margin+(tileWidth+gap)*3,bottom),new(margin+width,bottom+lowerHeight));
             HomeCard("Home patch preview",HomePatchBounds.Min,new(tileWidth,lowerHeight));
+            artAt=ImGui.GetCursorScreenPos();artWidth=ImGui.GetContentRegionAvail().X;
+            homeArtwork.Draw("hero-digivice-energy",artAt,new(artWidth,54),255,true);ImGui.Dummy(new(artWidth,58));
             HomePatchPreview();ImGui.End();
-            HomeFeatured(new(margin+(tileWidth+gap)*2,bottom),new(tileWidth,lowerHeight));
-            HomeCard("Home farm preview",new(margin+(tileWidth+gap)*3,bottom),new(tileWidth,lowerHeight));
-            var artAt=ImGui.GetCursorScreenPos();float artWidth=ImGui.GetContentRegionAvail().X;
-            homeArtwork.Draw("hero-file-island",artAt,new(artWidth,62),255,true);ImGui.Dummy(new(artWidth,70));
-            HomeLabel("DIGI-FARM",22,HomeInk);UiText.Wrapped("Care for your Little Legends. Feed, train, and help them grow."u8);
-            if(farm is not null && HomeButton("homeFarm","Visit your farm",artWidth,36)){farm.Refresh(HomeClock().ToUnixTimeMilliseconds());showFarm=true;}
-            ImGui.End();
         }
         HomePartner(new(margin+heroWidth+gap,top),new(right,heroHeight));
-
-        UpdatePanel();
     }
     private void HomeProgress(float2 at,float2 extent)
     {
         HomeProgressBounds=(at,at+extent);
-        HomeCard("Home progress",at,extent);HomeLabel("TAMER & DAILY MISSIONS");
-        if(profile is not null){ImGui.PushTextWrapPos(0);ProfileControls();ImGui.PopTextWrapPos();}else {HomeLabel("Build your team. Digivolve.",17,HomeInk);ImGui.Separator();}
+        HomeCard("Home progress",at,extent);HomeLabel("MISSIONS",15,HomeInk);
         try
         {
             HomeMissions(HomeDaily);
@@ -112,8 +124,8 @@ internal sealed partial class MatchScreen
     private void HomeFeatured(float2 at,float2 extent)
     {
         HomeStoreBounds=(at,at+extent);
-        HomeCard("Home store",at,extent);var artAt=ImGui.GetCursorScreenPos();float imageWidth=ImGui.GetContentRegionAvail().X;
-        homeArtwork.Draw("store-hero",artAt,new(imageWidth,56),255,true);ImGui.Dummy(new(imageWidth,62));HomeLabel("FEATURED TODAY");HomeLabel("25% off / new in "+HomeCountdown,12,HomeMute);
+        HomeCard("Home store",at,extent);float imageWidth=ImGui.GetContentRegionAvail().X;
+        HomeLabel("FEATURED",15,HomeInk);
         RefreshHomeOffers();
         try
         {
@@ -130,7 +142,7 @@ internal sealed partial class MatchScreen
     {
         float width=Math.Min(720,size.X-48),height=Math.Min(430,size.Y-48);
         HomeCard("About Digi-Tactics",new((size.X-width)/2,(size.Y-height)/2),new(width,height));
-        if(HomeButton("closeAbout","Back to Home",145,32)||ImGui.IsKeyPressed(ImGuiKey.Escape))showAbout=false;
+        if(HomeButton("closeAbout","Back",145,32)||ImGui.IsKeyPressed(ImGuiKey.Escape))BackClient();
         ImGui.Spacing();HomeLabel("DIGI-TACTICS",28,HomeInk);HomeLabel("Native edition powered by BRUTAL",16,HomeMute);ImGui.Separator();
         UiText.Wrapped("Audio decoding uses FFmpeg under LGPL 2.1 or later. Source and license details are included in media/MEDIA_RUNTIME_NOTICES.txt."u8);
         ImGui.Spacing();

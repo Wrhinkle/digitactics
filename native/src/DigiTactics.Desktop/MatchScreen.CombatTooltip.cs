@@ -19,26 +19,20 @@ internal sealed partial class MatchScreen
         if(selected is null) return;
         var unit=targets.First(target=>target.Unit.Id==selected).Unit;
         DetailedCombatUnit = unit;
-        ImGui.SetNextWindowSize(new(360,0)); ImGui.BeginTooltip();
-        UiText.Wrapped(unit.Line.Forms[unit.Stage] + " " + new string('*', unit.Stage + 1));
-        UiText.Wrapped(string.Join(" / ", unit.Traits.Select(Name)));
-        UiText.Wrapped($"HP {unit.Health:0}/{unit.MaxHealth:0} / Shield {unit.Shield:0}");
-        UiText.Wrapped($"Attack {unit.AttackDamage:0.#} / Speed {unit.EffectiveAttackSpeed:0.##} / Range {unit.Range:0.#}");
-        UiText.Wrapped($"Armor {unit.Armor:0.#} / Magic resist {unit.MagicResist:0.#}");
-        UiText.Wrapped($"Mana {unit.Mana:0.#}/{unit.MaxMana:0.#} / Ability power {unit.AbilityPower:0.#}");
+        BeginInspectionTooltip(390);
+        UnitInspectionHeader(unit.Line,unit.Stage,unit.Traits);
+        UnitInspectionStats([
+            ("HP",$"{unit.Health:0}/{unit.MaxHealth:0}"),("Mana",$"{unit.Mana:0}/{unit.MaxMana:0}"),
+            ("AD",$"{unit.AttackDamage:0.#}"),("AS",$"{unit.EffectiveAttackSpeed:0.##}"),
+            ("Armor",$"{unit.Armor:0.#}"),("MR",$"{unit.MagicResist:0.#}"),
+            ("Range",$"{unit.Range:0.#}"),("AP",$"{unit.AbilityPower:0.#}")]);
+        if(unit.Shield>0)CodexText($"Shield {unit.Shield:0}",CodexGold,15);
         var ability = text.Ability(Rules.Id, unit.Line.Id, unit.Stage, unit.AbilityPower);
-        ImGui.Separator(); UiText.Wrapped(ability.Name);
-        if (ability.ScaledDescription is null) UiText.Wrapped("Ability description at base ability power:"u8);
-        UiText.Wrapped(ability.Description);
+        UnitInspectionAbility(ability.Name,ability.Description);
+        if(ability.ScaledDescription is null)CodexText("Ability values shown at base ability power.",CodexMuted,14);
+        ImGui.PushStyleColor(ImGuiCol.Text,CodexAbility);
         DrawUnitNotes(unit.Entry);
-        foreach (string id in unit.Items)
-        {
-            ImGui.Separator();
-            var position = ImGui.GetCursorScreenPos(); ImGui.Dummy(new(24,24));
-            itemArtwork.Draw(Rules.Id,id,position,24);
-            ImGui.SameLine(); UiText.Wrapped(Name(id));
-            UiText.Wrapped(text.Get(Rules.Id,id).Description);
-        }
-        ImGui.EndTooltip();
+        ImGui.PopStyleColor();UnitInspectionItems(unit.Items);
+        EndInspectionTooltip();
     }
 }

@@ -34,16 +34,16 @@ internal sealed partial class MatchScreen
     }
     private void HomeTabs(float x,float y,float width)
     {
-        HomeCard("Home tabs",new(x,y),new(width,40),false);
-        ImGui.SetCursorPos(new(6,2));
-        foreach(var tab in new[]{("overview","Overview"),("patch","Patch notes"),("events","Events")})
+        HomeCard("Home tabs",new(x,y),new(width,39),false);
+        var draw=ImGui.GetWindowDrawList();draw.AddRectFilled(new(x,y),new(x+width,y+39),new ImColor8(4,17,26));
+        float left=0;
+        foreach(var tab in new[]{("overview","OVERVIEW",110f),("patch","PATCH NOTES",146f),("events","EVENTS",98f)})
         {
-            if(tab.Item1!="overview")ImGui.SameLine();
-            if(HomeButton("homeTab/"+tab.Item1,tab.Item2,120,36,homeTab==tab.Item1))homeTab=tab.Item1;
+            ImGui.SetCursorPos(new(left,0));
+            if(ClientTextButton("homeTab/"+tab.Item1,tab.Item2,tab.Item3,39,homeTab==tab.Item1,15))homeTab=tab.Item1;
+            left+=tab.Item3;
         }
-        HomeCountdown=HomeRotation.Label(HomeRotation.UntilMidnight(HomeClock(),TimeZoneInfo.Local));
-        string reset="Daily reset in "+HomeCountdown;float resetWidth=ImGui.CalcTextSize(reset).X;
-        ImGui.SetCursorPos(new(Math.Max(384,width-resetWidth-16),12));HomeLabel(reset,13,HomeMute);ImGui.End();
+        HomeCountdown=HomeRotation.Label(HomeRotation.UntilMidnight(HomeClock(),TimeZoneInfo.Local));ImGui.End();
     }
     private void HomeHighlightsList(int count)
     {
@@ -52,24 +52,33 @@ internal sealed partial class MatchScreen
     }
     private void HomePatchPreview()
     {
-        ImGui.Separator();HomeLabel("WHAT'S NEW");HomeHighlightsList(3);
-        if(HomeButton("homeReadPatch","Read the patch notes",-1,30))homeTab="patch";
+        HomeLabel("WHAT'S NEW",14,HomeInk);
+        float width=ImGui.GetContentRegionAvail().X,bodyHeight=Math.Max(34,ImGui.GetContentRegionAvail().Y-40);
+        ImGui.BeginChild("Home patch excerpts"u8,new(width,bodyHeight),ImGuiChildFlags.None,ImGuiWindowFlags.NoScrollbar);
+        foreach(var highlight in homeContent.Value.Patch.Take(2))
+        {HomeLabel(highlight.Title,15,HomeInk);HomeTileExcerpt(highlight.Description,2);HomeHighlights++;}
+        ImGui.EndChild();
+        if(ClientTextButton("homeReadPatch","READ THE PATCH NOTES >",width,32,false,17))homeTab="patch";
     }
     private void HomeSetNews()
     {
-        var set=HomeSets.Value[selectedSet];ImGui.Separator();HomeLabel("THIS SET: "+set.Name.ToUpperInvariant());
-        if(selectedSet=="chaos")
-        {
-            HomeLabel("Any set",15,HomeInk);UiText.Wrapped("The seed picks the set. Everyone in the lobby plays the same one."u8);
-            HomeLabel("Pool",15,HomeInk);UiText.Wrapped(string.Join(", ",SetChoices.Options.Select(option=>option.Name)));
-        }
-        else
-        {
-            HomeLabel(string.IsNullOrEmpty(set.Mechanic)?"Set mechanic":set.Mechanic,15,HomeInk);
-            UiText.Wrapped(string.IsNullOrEmpty(set.MechanicDescription)?set.Description:set.MechanicDescription);
-            HomeLabel("Roster",15,HomeInk);UiText.Wrapped($"{Rules.Lines.Length} shop Digimon and {Rules.Traits.Length} traits.");
-        }
-        if(HomeButton("homeSetCodex","Open the Codex",-1,30))OpenCodexFull();
+        var set=HomeSets.Value[selectedSet];HomeLabel(LobbyEllipsis("THIS SET: "+set.Name.ToUpperInvariant(),ImGui.GetContentRegionAvail().X),13,HomeInk);
+        float width=ImGui.GetContentRegionAvail().X,bodyHeight=Math.Max(34,ImGui.GetContentRegionAvail().Y-40);
+        ImGui.BeginChild("Home set excerpt"u8,new(width,bodyHeight),ImGuiChildFlags.None,ImGuiWindowFlags.NoScrollbar);
+        HomeLabel(selectedSet=="chaos"?"Any set":string.IsNullOrEmpty(set.Mechanic)?"Set mechanic":set.Mechanic,15,HomeInk);
+        HomeTileExcerpt(selectedSet=="chaos"?"The seed picks the set. Everyone in the lobby plays the same one.":string.IsNullOrEmpty(set.MechanicDescription)?set.Description:set.MechanicDescription,2);
+        HomeLabel("Roster",15,HomeInk);HomeTileExcerpt($"{Rules.Lines.Length} shop Digimon and {Rules.Traits.Length} traits.",1);
+        ImGui.EndChild();
+        if(ClientTextButton("homeSetCodex","OPEN THE CODEX >",width,32,false,17))OpenCodexFull();
+    }
+    private void HomeTileExcerpt(string text,int lines)
+    {
+        var at=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
+        ImGui.PushFont(NativeUiTheme.BodyFont,14);float height=Math.Min(ImGui.CalcTextSize(text,false,width).Y,ImGui.GetTextLineHeight()*lines);
+        var draw=ImGui.GetWindowDrawList();draw.PushClipRect(at,at+new float2(width,height),true);
+        ImGui.PushStyleColor(ImGuiCol.Text,HomeMute);ImGui.PushTextWrapPos(0);ImGui.Text(text);ImGui.PopTextWrapPos();ImGui.PopStyleColor();draw.PopClipRect();ImGui.PopFont();
+        if(ImGui.IsWindowHovered()&&ImGui.IsMouseHoveringRect(at,at+new float2(width,height)))ResultTooltip(text);
+        ImGui.SetCursorScreenPos(at+new float2(0,height+4));ImGui.Dummy(new(width,0));
     }
     private void HomeArticleBanner(string image,string eyebrow,string title,string description,float height=150)
     {
@@ -115,7 +124,7 @@ internal sealed partial class MatchScreen
         HomeArticleBanner("store-hero","Store",copy.Store,daily.Claimed?"Four items at 25% off, new every day. Your daily bonus is claimed.":copy.StoreDescription.Replace("{bits}",daily.Bits.ToString(),StringComparison.Ordinal),130);
         if(profile is not null&&HomeButton("homeEventsStore","Open the Store",210,32))OpenHomeStore();
         ImGui.Spacing();HomeArticleBanner("hero-file-island","Digi-Farm",copy.Farm,copy.FarmDescription,130);
-        if(farm is not null&&HomeButton("homeEventsFarm","Open the Digi-Farm",210,32)){farm.Refresh(HomeClock().ToUnixTimeMilliseconds());showFarm=true;}
+        if(farm is not null&&HomeButton("homeEventsFarm","Open the Digi-Farm",210,32)){NavigateClient("farm");}
         HomeArticleScroll=ImGui.GetScrollY();ImGui.End();
     }
     private void OpenHomeStore(string? kind=null,string? id=null)
@@ -144,15 +153,14 @@ internal sealed partial class MatchScreen
     private void HomeOfferRow(string kind,CosmeticItem item,int price,CosmeticCollection collection,float width)
     {
         bool owned=collection.Owns(kind,item.Id);HomeFeaturedCount++;if(owned)HomeFeaturedOwned++;
-        var at=ImGui.GetCursorScreenPos();const float height=72;
+        var at=ImGui.GetCursorScreenPos();const float height=52;
         bool clicked=HomeButton("homeFeatured/"+kind+"/"+item.Id,"",width,height);
         var draw=ImGui.GetWindowDrawList();draw.PushClipRect(at,at+new float2(width,height),true);
         draw.AddRect(at,at+new float2(width,height),RarityColor(item.Rarity),2);
-        HomeOfferArt(kind,item,collection,at+new float2(5,12),new(62,46));
-        ImGui.SetCursorScreenPos(at+new float2(75,6));ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+width-88);HomeLabel(item.Name,14,HomeInk);ImGui.PopTextWrapPos();
-        ImGui.SetCursorScreenPos(at+new float2(75,39));HomeLabel(CollectionNames[Array.IndexOf(CosmeticCollection.Kinds,kind)],11,HomeMute);
-        ImGui.SetCursorScreenPos(at+new float2(75,54));HomeLabel(owned?"Owned":$"-{Math.Round(100-100d*price/Math.Max(1,item.Price),MidpointRounding.AwayFromZero)}% / {price} Bits",12,owned?new ImColor8(95,211,106):HomeGold);
-        draw.PopClipRect();ImGui.SetCursorScreenPos(at+new float2(0,height+7));ImGui.Dummy(new(width,1));
+        HomeOfferArt(kind,item,collection,at+new float2(4,5),new(48,40));
+        ImGui.SetCursorScreenPos(at+new float2(60,5));HomeLabel(LobbyEllipsis(item.Name,width-68),14,HomeInk);
+        ImGui.SetCursorScreenPos(at+new float2(60,27));HomeLabel(owned?"Owned":price+" Bits",13,owned?new ImColor8(95,211,106):HomeGold);
+        draw.PopClipRect();ImGui.SetCursorScreenPos(at+new float2(0,height+4));ImGui.Dummy(new(width,1));
         if(clicked)OpenHomeStore(kind,item.Id);
     }
     private void ClearHomeOfferPreviews(){foreach(var scene in homeOfferPreviews.Values)scene.Dispose();homeOfferPreviews.Clear();}

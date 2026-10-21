@@ -25,8 +25,8 @@ internal sealed class CollectionFilterSmoke
         {
             // Home's featured links intentionally remember their selected category.
             // Establish this fixture through player input before asserting Legend filters.
-            case -2:advance=Click("collectionCategory");break;
-            case -1:advance=Click("collectionCategory/0");break;
+            case -2:advance=Click("collectionTab/0");break;
+            case -1:advance=Click("collectionTab/0");break;
             case 0:advance=Click("collectionOwnership/owned");break;
             case 1:advance=Click("collectionOwnership/locked");break;
             case 2:advance=Click("collectionOwnership/all");break;
@@ -46,11 +46,11 @@ internal sealed class CollectionFilterSmoke
             case 16:advance=Click("collectionSearch");break;
             case 17:io.AddInputCharactersUTF8("no-such-cosmetic-xyz"u8);cooldown=4;break;
             case 18:key=ImGuiKey.Escape;io.AddKeyEvent(key,true);down=true;break;
-            case 19:advance=Click("collectionCategory");break;
-            case 20:advance=Click("collectionCategory/1");break;
+            case 19:advance=Click("collectionTab/0");break;
+            case 20:advance=Click("collectionTab/1");break;
             case 21:advance=Click("collectionRetro");break;
-            case 22:advance=Click("collectionCategory");break;
-            case 23:advance=Click("collectionCategory/0");break;
+            case 22:advance=Click("collectionTab/1");break;
+            case 23:advance=Click("collectionTab/0");break;
             case 24:advance=Click("collectionSort");break;
             case 25:advance=Click("collectionSort/rarity");break;
             default:

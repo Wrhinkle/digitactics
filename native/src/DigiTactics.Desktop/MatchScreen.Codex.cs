@@ -27,19 +27,27 @@ internal sealed partial class MatchScreen
     internal int CodexRecipeCells {get;private set;}
     internal float2 CodexBodyMin {get;private set;}
     internal float2 CodexBodyMax {get;private set;}
+    internal float CodexBodyScrollY {get;private set;}
+    internal float CodexBodyScrollMaxY {get;private set;}
     internal IReadOnlyDictionary<string,int> CodexBoardCounts=>codexCounts;
     private CodexVariant CodexData=>codexCatalog.Value.Variant(Session is not null?Rules.Id:codexVariant??Rules.Id);
     private void ToggleCodex()
     {
-        if(codexFull){codexFull=false;codexUnit=null;return;}
+        if(codexFull){CloseCodexFull();return;}
         if(ClientHomeVisible)OpenCodexFull();else if(codexSide){codexSide=false;codexUnit=null;}else OpenCodexPanel();
     }
     private void OpenCodexFull(string? tab=null)
     {
+        if(ClientHomeVisible)RememberClientRoute("codex");
         if(!codexFull)codexVariant=Rules.Id;
         if(tab is not null)codexTab=tab;
         codexFull=true;codexUnit=null;codexResetScroll=true;
         CancelArenaDrag();cameraDrag=null;
+    }
+    private void CloseCodexFull()
+    {
+        if(ClientHomeVisible)BackClient();else codexFull=false;
+        codexUnit=null;
     }
     private void OpenCodexPanel(string? trait=null)
     {
@@ -69,7 +77,7 @@ internal sealed partial class MatchScreen
             codexConsumedShortcut=true;
             if(codexUnit is not null)codexUnit=null;
             else if(codexFull&&codexSearchFocused&&codexSearch.ToString().Length>0)codexResetScroll=true;
-            else if(codexFull)codexFull=false;
+            else if(codexFull)CloseCodexFull();
             else codexSide=false;
         }
         else if(!io.WantTextInput&&!io.KeyCtrl&&!io.KeyAlt&&!io.KeySuper&&ImGui.IsKeyPressed(ImGuiKey.C,false))
@@ -88,7 +96,7 @@ internal sealed partial class MatchScreen
     }
     private static int CodexKindOrder(string kind)=>kind=="family"?0:kind=="role"?1:2;
     private static string CodexTitle(string text)=>text.Length==0?text:char.ToUpperInvariant(text[0])+text[1..];
-    private static void CodexText(string value,ImColor8? color=null,float font=17)
+    private static void CodexText(string value,ImColor8? color=null,float font=16)
     {
         ImGui.PushFont(default,font);ImGui.PushStyleColor(ImGuiCol.Text,color??CodexBody);
         UiText.Wrapped(value);
@@ -106,27 +114,35 @@ internal sealed partial class MatchScreen
         CodexContext();var data=CodexData;
         if(codexUnit is null)codexModalLine=null;
         if(!data.Tabs.Contains(codexTab))codexTab="traits";
-        float pageTop=ClientPageTop+12,width=Math.Min(1720,size.X-48),left=(size.X-width)/2;
+        float pageTop=ClientHomeVisible?ClientPageTop+12:16,width=Math.Min(1720,size.X-48),left=(size.X-width)/2;
         CodexBeginWindow("Codex",new(left,pageTop),new(width,size.Y-pageTop-16));
         ImGui.BeginDisabled(codexUnit is not null);
-        var headerAt=ImGui.GetCursorScreenPos();float searchWidth=Math.Clamp(width*.25f,180,260);
-        CodexHeading("CODEX",28);CodexText(data.Name,CodexGold);
-        float headerBottom=ImGui.GetCursorScreenPos().Y;
-        ImGui.SetCursorScreenPos(new(left+width-searchWidth-120,headerAt.Y+7));ImGui.SetNextItemWidth(searchWidth);
+        // v1.0.14 keeps the title, category tabs and search together. At narrow
+        // widths only the tabs wrap; search never covers a title or category.
+        var headerAt=ImGui.GetCursorScreenPos();float available=ImGui.GetContentRegionAvail().X;
+        float searchWidth=available>=1200?200:170,closeWidth=94;
+        string title="CODEX · "+data.Name.ToUpperInvariant();
+        ImGui.PushFont(NativeUiTheme.DisplayFont,22);float titleWidth=ImGui.CalcTextSize(title).X;ImGui.PopFont();
+        var tabs=data.Tabs.Select(tab=>(Id:tab,Label:(tab=="wisps"?"Data Wisps":CodexTitle(tab))+(tab=="rules"?"":$" {CodexCount(tab)}"))).ToArray();
+        ImGui.PushFont(default,15);float tabsWidth=tabs.Sum(tab=>ImGui.CalcTextSize(tab.Label).X+22)+Math.Max(0,tabs.Length-1)*4;ImGui.PopFont();
+        bool oneRow=titleWidth+tabsWidth+searchWidth+closeWidth+40<=available;
+        CodexHeading(title,22);
+        ImGui.SetCursorScreenPos(new(headerAt.X+available-searchWidth-closeWidth,headerAt.Y));ImGui.SetNextItemWidth(searchWidth);
         ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,1);ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding,0);
+        ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(10,7));
         if(ImGui.InputTextWithHint("##codexSearch"u8,"Search the Codex"u8,codexSearch,ImGuiInputTextFlags.EscapeClearsAll))codexResetScroll=true;
-        ImGui.PopStyleVar(2);codexSearch.EvaluateLength();
+        ImGui.PopStyleVar(3);codexSearch.EvaluateLength();
         codexSearchFocused=ImGui.IsItemActive();Buttons["codexSearch"]=(ImGui.GetItemRectMin()+ImGui.GetItemRectMax())*.5f;
-        ImGui.SameLine(0,12);if(CodexButton("closeCodex","Close",88)){codexFull=false;codexUnit=null;}
-        ImGui.SetCursorScreenPos(new(headerAt.X,headerBottom+3));
-        float tabRight=left+width-16;bool firstTab=true;
-        foreach(string tab in data.Tabs)
+        ImGui.SameLine(0,8);if(CodexButton("closeCodex",ClientHomeVisible?"Back":"Close",86,32,font:15))CloseCodexFull();
+        ImGui.SetCursorScreenPos(headerAt+new float2(oneRow?titleWidth+14:0,oneRow?0:40));
+        float tabRight=oneRow?headerAt.X+available-searchWidth-closeWidth-12:headerAt.X+available;bool firstTab=true;
+        foreach(var tab in tabs)
         {
-            string label=tab=="wisps"?"Data Wisps":CodexTitle(tab);
-            label+=tab=="rules"?"":$" {CodexCount(tab)}";float tabWidth=ImGui.CalcTextSize(label).X+26;
-            if(!firstTab)CodexFlowNext(tabWidth,tabRight);firstTab=false;
-            if(CodexButton("codexTab/"+tab,label,tabWidth,38,codexTab==tab)){codexTab=tab;codexResetScroll=true;}
+            ImGui.PushFont(default,15);float tabWidth=ImGui.CalcTextSize(tab.Label).X+22;ImGui.PopFont();
+            if(!firstTab&&ImGui.GetItemRectMax().X+4+tabWidth<=tabRight)ImGui.SameLine(0,4);firstTab=false;
+            if(CodexButton("codexTab/"+tab.Id,tab.Label,tabWidth,32,codexTab==tab.Id,font:15)){codexTab=tab.Id;codexResetScroll=true;}
         }
+        ImGui.SetCursorScreenPos(new(headerAt.X,Math.Max(ImGui.GetItemRectMax().Y,headerAt.Y+32)+9));
         ImGui.Separator();
         CodexSets();CodexFilters();
         ImGui.BeginChild("Codex body"u8,new(0,0));
@@ -142,6 +158,7 @@ internal sealed partial class MatchScreen
             case "rules":CodexRules(false);break;
         }
         if(CodexRows==0){ImGui.Spacing();CodexHeading("Nothing matches these filters.");CodexText("Search: \""+codexSearch.ToString()+"\"",CodexMuted);}
+        CodexBodyScrollY=ImGui.GetScrollY();CodexBodyScrollMaxY=ImGui.GetScrollMaxY();
         ImGui.EndChild();ImGui.EndDisabled();
         if(codexUnit is not null)ImGui.GetWindowDrawList().AddRectFilled(new(left,pageTop),new(left+width,size.Y-16),new ImColor8(5,7,12,175));
         CodexEndWindow();
@@ -150,19 +167,21 @@ internal sealed partial class MatchScreen
     private void CodexSets()
     {
         var data=CodexData;
-        ImGui.BeginChild("Codex sets"u8,new(0,82),ImGuiChildFlags.None,ImGuiWindowFlags.HorizontalScrollbar);
+        ImGui.BeginChild("Codex sets"u8,new(0,76),ImGuiChildFlags.None,ImGuiWindowFlags.HorizontalScrollbar);
         bool first=true;
         foreach(var set in codexCatalog.Value.Variants.GroupBy(v=>v.SetId).Select(group=>group.FirstOrDefault(v=>v.Pace==data.Pace)??group.First()))
         {
             if(!first)ImGui.SameLine();first=false;
             bool locked=Session is not null&&set.SetId!=data.SetId;ImGui.BeginDisabled(locked);
-            const float setWidth=198,setHeight=62;var at=ImGui.GetCursorScreenPos();bool chosen=Button("codexSet/"+set.SetId,"##codexSet/"+set.SetId,setWidth,setHeight);
+            const float setWidth=170,setHeight=58;var at=ImGui.GetCursorScreenPos();bool chosen=Button("codexSet/"+set.SetId,"##codexSet/"+set.SetId,setWidth,setHeight);
             string art=set.SetId switch{"faction-wars"=>"mode-faction-wars","dragonlands"=>"mode-dragonlands","autochess"=>"mode-autochess",_=>"mode-multiplayer"};
             homeArtwork.Draw(art,at,new(setWidth,setHeight),locked?(byte)55:(byte)210,true);
             var draw=ImGui.GetWindowDrawList();draw.AddRectFilledMultiColor(at,at+new float2(setWidth,setHeight),new ImColor8(1,10,19,75),new ImColor8(1,10,19,75),new ImColor8(1,10,19,245),new ImColor8(1,10,19,245));
             draw.AddRect(at,at+new float2(setWidth,setHeight),data.SetId==set.SetId?CodexInk:new ImColor8(120,90,40));
-            draw.AddText(at+new float2(9,12),locked?CodexMuted:CodexInk,set.Name);
-            draw.AddText(at+new float2(9,37),CodexMuted,$"{set.Traits.Length} traits"+(Session is not null&&set.SetId==data.SetId?" / In game":""));
+            draw.PushClipRect(at+new float2(8,1),at+new float2(setWidth-8,setHeight-1),true);
+            ImGui.PushFont(NativeUiTheme.DisplayFont,16);draw.AddText(at+new float2(9,21),locked?CodexMuted:CodexInk,set.Name.ToUpperInvariant());ImGui.PopFont();
+            ImGui.PushFont(default,13);draw.AddText(at+new float2(9,39),CodexMuted,$"{set.Traits.Length} traits · {CodexTitle(set.Pace)}"+(Session is not null&&set.SetId==data.SetId?" · In game":""));ImGui.PopFont();
+            draw.PopClipRect();
             if(data.SetId==set.SetId)draw.AddRectFilled(at+new float2(1,setHeight-3),at+new float2(setWidth-1,setHeight-1),CodexGold);
             ImGui.EndDisabled();
             if(chosen&&Session is null){codexVariant=set.Id;codexKind=codexCost="all";codexResetScroll=true;}
@@ -178,7 +197,7 @@ internal sealed partial class MatchScreen
         {
             string label=value switch{"family"=>"Families","role"=>"Roles",_=>int.TryParse(value,out _)?value+" gold":CodexTitle(value)};
             float width=ImGui.CalcTextSize(label).X+26;if(!first)CodexFlowNext(width,right);first=false;
-            if(CodexButton("codexFilter/"+value,label,width,36,(codexTab=="traits"?codexKind:codexCost)==value))
+            if(CodexButton("codexFilter/"+value,label,width,30,(codexTab=="traits"?codexKind:codexCost)==value,font:15))
             {if(codexTab=="traits")codexKind=value;else codexCost=value;codexResetScroll=true;}
         }
         ImGui.Separator();
@@ -212,11 +231,13 @@ internal sealed partial class MatchScreen
     }
     private void CodexGrid<T>(string id,IEnumerable<T> entries,int minWidth,Action<T> draw)
     {
-        int columns=Math.Clamp((int)(ImGui.GetContentRegionAvail().X/minWidth),1,4);
-        ImGui.PushStyleVar(ImGuiStyleVar.CellPadding,new float2(6,6));
+        // CSS auto-fill uses the minimum card width plus its ten-pixel gap.
+        // Do not cap wide windows to four columns or add a second row spacer.
+        int columns=Math.Max(1,(int)((ImGui.GetContentRegionAvail().X+10)/(minWidth+10)));
+        ImGui.PushStyleVar(ImGuiStyleVar.CellPadding,new float2(5,5));
         if(ImGui.BeginTable(id,columns,ImGuiTableFlags.SizingStretchSame))
         {
-            foreach(var entry in entries){ImGui.TableNextColumn();draw(entry);ImGui.Spacing();}
+            foreach(var entry in entries){ImGui.TableNextColumn();draw(entry);}
             ImGui.EndTable();
         }
         ImGui.PopStyleVar();

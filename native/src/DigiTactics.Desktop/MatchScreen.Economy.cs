@@ -7,7 +7,7 @@ internal sealed partial class MatchScreen
     private void IncomeDisplay()
     {
         var income = Session!.Rounds.PreviewIncome(Human);
-        ImGui.SameLine(); HudText($"+{income.Total} next round",16,HudGold);
+        HudText($"+{income.Total} next round",14,HudMuted);
         if (!ImGui.IsItemHovered()) return;
         ImGui.BeginTooltip();
         HudText("ROUND INCOME",22,HudGold);

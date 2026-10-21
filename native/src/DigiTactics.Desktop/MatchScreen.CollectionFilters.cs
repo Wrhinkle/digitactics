@@ -24,7 +24,7 @@ internal sealed partial class MatchScreen
     private void CollectionCategoryChanged(int next)
     {
         if(previewCosmetic is not null)collectionSelections[CosmeticCollection.Kinds[collectionKind]]=previewCosmetic;
-        collectionKind=next;collectionSlot=0;collectionSearch.SetValue("");collectionResetScroll=true;
+        collectionKind=next;collectionSlot=0;collectionSearch.SetValue("");collectionResetScroll=true;collectionStoreEggs=false;
         previewCosmetic=collectionSelections.GetValueOrDefault(CosmeticCollection.Kinds[next]);
     }
     private CosmeticItem[] CollectionFilters(CosmeticCollection collection,string kind)
@@ -32,18 +32,22 @@ internal sealed partial class MatchScreen
         if(!MatchLockerVisible&&kind=="emote"&&Button("collectionRetro","Digimon World 1"))
         {collectionSearch.SetValue("Digimon World 1");collectionOwnership=collectionRarity="all";previewCosmetic="retro_hug";}
         float available=ImGui.GetContentRegionAvail().X;
-        ImGui.SetNextItemWidth(Math.Max(160,available-80));
+        bool singleRow=available>=850;
+        ImGui.SetNextItemWidth(singleRow?available-626:available-56);
         ImGui.InputTextWithHint("##collectionSearch"u8,"Search name, description, rarity or tag"u8,collectionSearch,ImGuiInputTextFlags.EscapeClearsAll);
         collectionSearch.EvaluateLength();collectionSearchFocused=ImGui.IsItemActive();CollectionFilterAnchor("collectionSearch");
-        ImGui.SameLine();if(Button("clearCollectionSearch","Clear",72,36))collectionSearch.SetValue("");
+        ImGui.SameLine();if(Button("clearCollectionSearch","X",48,36))collectionSearch.SetValue("");
+        if(ImGui.IsItemHovered())ImGui.SetTooltip("Clear search"u8);
+        if(singleRow)ImGui.SameLine();
         int optionIndex=0;
         if(MatchLockerVisible){collectionOwnership="owned";ImGui.Text("Owned cosmetics"u8);}
-        else foreach(var option in new[]{(Id:"all",Label:"All",Width:56),(Id:"owned",Label:"Owned",Width:80),(Id:"locked",Label:"Not owned",Width:112)})
+        else foreach(var option in new[]{(Id:"all",Label:"All",Width:48),(Id:"owned",Label:"Owned",Width:72),(Id:"locked",Label:"Not owned",Width:104)})
         {
-            if(optionIndex++>0)ImGui.SameLine();if(Button("collectionOwnership/"+option.Id,option.Label,option.Width,36,active:collectionOwnership==option.Id))collectionOwnership=option.Id;
+            if(optionIndex++>0)ImGui.SameLine(0,0);if(Button("collectionOwnership/"+option.Id,option.Label,option.Width,36,active:collectionOwnership==option.Id))collectionOwnership=option.Id;
         }
-        ImGui.SameLine();CollectionFilterCombo("collectionRarity","Rarity",ref collectionRarity,new[]{("all","All rarities")}.Concat(CosmeticBrowser.Rarities.Select(value=>(value,char.ToUpperInvariant(value[0])+value[1..]))).ToArray(),148);
-        ImGui.SameLine();CollectionFilterCombo("collectionSort","Sort",ref collectionSort,[("rarity","Rarity: high first"),("rarity-asc","Rarity: low first"),("name","Name"),("owned","Owned first")],Math.Max(170,available-428));
+        ImGui.SameLine();CollectionFilterCombo("collectionRarity","Rarity",ref collectionRarity,new[]{("all","All rarities")}.Concat(CosmeticBrowser.Rarities.Select(value=>(value,char.ToUpperInvariant(value[0])+value[1..]))).ToArray(),available<580?available-232:148);
+        if(available>=580)ImGui.SameLine();
+        CollectionFilterCombo("collectionSort","Sort",ref collectionSort,[("rarity","Rarity: high first"),("rarity-asc","Rarity: low first"),("name","Name"),("owned","Owned first")],singleRow?174:available<580?available:available-388);
         var items=CosmeticBrowser.Items(collection,kind,collectionSearch.ToString(),collectionOwnership,collectionRarity,collectionSort);
         CollectionFilterIds=items.Select(item=>item.Id).ToArray();
 

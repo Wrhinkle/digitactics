@@ -23,9 +23,9 @@ internal sealed class LegendNavigationSmoke
         steps.Add(new("Home partner actions",s=>true,s=>
         {
             var b=s.HomePartnerBounds;
-            foreach(string id in new[]{"homeLegendChange","homeLegendEvolution","homeLegendFarm","homeRuleset","homePace","homeFormat","start"})
+            foreach(string id in new[]{"homeLegendChange","homeLegendEvolution","homeLegendFarm","start","multiplayer"})
                 Require(s.Buttons.TryGetValue(id,out var p)&&p.X>b.Min.X+8&&p.X<b.Max.X-8&&p.Y>b.Min.Y+8&&p.Y<b.Max.Y-8,"Home partner control is clipped: "+id);
-            Require(s.Buttons["homeLegendFarm"].Y+36<s.Buttons["homeRuleset"].Y,"Partner actions overlap the launch selectors.");
+            Require(s.Buttons["homeLegendFarm"].Y+20<s.Buttons["start"].Y,"Partner actions overlap quick play.");
         },"home"));
         Click("homeLegendChange",s=>Require(s.CollectionVisible&&s.CollectionFilterKind=="legend"&&s.CollectionSelectedId=="tokomon","Home Change did not select the current legend in Collection."));
         Key("Change returns Home",ImGuiKey.Escape,s=>Require(!s.CollectionVisible&&s.Buttons.ContainsKey("homeLegendChange"),"Change Escape lost Home."));
@@ -50,7 +50,7 @@ internal sealed class LegendNavigationSmoke
             var all=Wallet();foreach(var item in CosmeticCollection.Items("legend"))all.Grant("legend",item.Id);
             var result=LegendRewards.Duplicate(profile.Storage.GetValueOrDefault("dt.legendevo.v1"),longest.Legend);
             var save=JsonNode.Parse(result.Save!)!;var legend=save["legends"]![longest.Legend]!;
-            legend["form"]=longest.Parent;legend["xp"]=1800;legend["dex"]=new JsonArray(longest.Legend,longest.Parent);legend["path"]=new JsonArray(longest.Legend);
+            legend["form"]=longest.Parent;legend["xp"]=1800;legend["dex"]=new JsonArray(longest.Legend,longest.Parent,longest.Child);legend["path"]=new JsonArray(longest.Legend);
             Save(new(){{"dt.cosmetics.v1",all.Json},{"dt.legendevo.v1",save.ToJsonString()}});return true;
         }));
         Click("homeLegendEvolution");Click("evolutionLegend/"+last,s=>Require(s.EvolutionSelectedLegend==last,"Horizontal owned-selector overflow cannot reach its final legend."),"selector-scrolled");

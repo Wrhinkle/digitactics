@@ -12,11 +12,11 @@ internal sealed partial class MatchScreen
     private readonly record struct CarouselCardLayout(float TraitsY,float ItemY,float StatusY,float StatusHeight,float Height);
     private static CarouselCardLayout MeasureCarouselCard(CarouselCardText text,float width)
     {
-        var font=ImGui.GetFont();float bodyWidth=width-18;
-        float traitsY=119+font.CalcTextSizeA(18,float.MaxValue,bodyWidth,text.Name).Y+4;
-        float itemY=traitsY+font.CalcTextSizeA(16,float.MaxValue,bodyWidth,text.Traits).Y+4;
-        float statusY=itemY+font.CalcTextSizeA(16,float.MaxValue,bodyWidth,text.Item).Y+8;
-        float statusHeight=font.CalcTextSizeA(16,float.MaxValue,bodyWidth,text.Status).Y;
+        float bodyWidth=width-18;
+        float traitsY=119+ChoiceLines(text.Name,18,bodyWidth).Length*22+4;
+        float itemY=traitsY+ChoiceLines(text.Traits,16,bodyWidth).Length*20+4;
+        float statusY=itemY+ChoiceLines(text.Item,16,bodyWidth).Length*20+(text.Status.Length>0?8:0);
+        float statusHeight=ChoiceLines(text.Status,16,bodyWidth).Length*20;
         return new(traitsY,itemY,statusY,statusHeight,statusY+statusHeight+12);
     }
 }

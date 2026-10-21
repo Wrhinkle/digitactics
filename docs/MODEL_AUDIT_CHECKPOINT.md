@@ -2,6 +2,8 @@
 
 This is a wrap-up checkpoint, not an all-model acceptance certificate. See `NATIVE_MODEL_AUDIT.md` for the evidence gates.
 
+The [October 20 continuation](MODEL_AUDIT_RESUME_2026-10-20.md) completes the last direct-image reviews and historical alias ledger, and records subsequent narrow root repairs. The counts below remain the original October 18 checkpoint.
+
 ## Coverage at wrap-up
 
 - All 937 catalog source keys were captured in the frozen main v3 audit. There are 854 actual image records and 83 explicit aliases, covering 835 exact context signatures; extra priority captures account for repeated signatures. No capture record, required image or capture-error entry was missing at the last completed inventory.

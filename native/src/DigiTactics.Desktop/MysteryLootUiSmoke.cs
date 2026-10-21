@@ -12,6 +12,7 @@ internal sealed class MysteryLootUiSmoke
     private int step, cooldown = 5;
     private bool down, earned, blocked, discovered;
     private MysteryReward? reward;
+    private readonly CarouselFlowSmoke carousel = new();
     internal int Step => step;
     public MysteryLootUiSmoke(MatchScreen screen, NativeProfileStore profile)
     {
@@ -24,6 +25,8 @@ internal sealed class MysteryLootUiSmoke
     {
         if (cooldown-- > 0) return;
         if (down) { ImGui.GetIO().AddMouseButtonEvent(0, false); down = false; if(step!=1)step++; cooldown = 5; return; }
+        if(screen.MatchLoadingVisible)return;
+        if(step==1&&screen.Session?.Units.Carousel.Active==true){carousel.Input(screen);cooldown=3;return;}
         if (step == 1 && screen.MysteryInventory is { Daily: 1 } && screen.Session?.Rounds.Phase == MatchPhase.Result) { step=3; cooldown=5; return; }
         if (step >= 12) return;
         string key = step switch

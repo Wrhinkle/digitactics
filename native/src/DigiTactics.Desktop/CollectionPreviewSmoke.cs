@@ -56,7 +56,7 @@ internal sealed class CollectionPreviewSmoke
             if(screen.CollectionPreviewKind!="legend")throw new InvalidOperationException("Collection category did not restore after previews.");
             Done=true;Console.WriteLine("Collection previews passed: live legend, emote, board, kill theme, dance and both audio categories.");return true;
         }
-        Click(step is 0 or 4?"collectionCategory":"collectionCategory/"+category);return false;
+        Click("collectionTab/"+category);return false;
         void Click(string key)
         {
             if(!screen.Buttons.TryGetValue(key,out var target))return;

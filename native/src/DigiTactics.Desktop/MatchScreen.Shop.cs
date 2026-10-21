@@ -40,7 +40,14 @@ internal sealed partial class MatchScreen
         for(int i=0;i<traits.Length;i++)
         {
             int count=(line.Traits.Contains(traits[i])?1:0)+(bonus?.GetValueOrDefault(traits[i])??0);
-            if(i<3)Text(9,9+i*19,width-18,Name(traits[i])+(count>1?$" x{count}":""),ink);
+            if(i<3)
+            {
+                var trait=codexCatalog.Value.Variant(Rules.Id).Traits.FirstOrDefault(value=>value.Id==traits[i]);
+                var marker=min+new float2(12,17+i*19);var tint=trait is null?HudMuted:CodexColor(trait.Color);
+                draw.AddTriangleFilled(marker+new float2(0,-5),marker+new float2(5,0),marker+new float2(0,5),tint);
+                draw.AddTriangleFilled(marker+new float2(0,-5),marker+new float2(-5,0),marker+new float2(0,5),tint);
+                HudClipText(draw,min+new float2(22,9+i*19),width-29,Name(traits[i])+(count>1?$" x{count}":""),ink,14);
+            }
         }
         int owned=Human.Roster.Entries.Count(e=>e.Unit.Line==id&&e.Unit.Stage==stage);
         string progress=stage<2&&owned>0?(owned>=line.Copies-1?"Digivolve":$"{owned}/{line.Copies}"):"";
@@ -55,13 +62,13 @@ internal sealed partial class MatchScreen
         draw.PopClipRect();
         if(hovered)
         {
-            ImGui.SetNextWindowSize(new(380,0));ImGui.BeginTooltip();
+            BeginInspectionTooltip(290);
             UnitDetails(id,stage,null,meta?.Unit?.BonusTraits,meta?.Unit?.Mods);
             string offer=string.IsNullOrEmpty(meta?.Tag)?"":meta.Tag+" offer"+(string.IsNullOrEmpty(meta.Note)?"":": "+meta.Note);
             string pool=$"{Session!.State.Pool.Remaining(id)} more in the shared pool (of {Rules.PoolSizes[line.Tier]})";
             ImGui.Separator();if(offer.Length>0)HudText(offer,16,new ImColor8(229,139,255));HudText(pool,16,HudMuted);
             ShopTooltipFooter=offer.Length>0?offer+"\n"+pool:pool;ShopTooltipSerial++;
-            ImGui.EndTooltip();
+            EndInspectionTooltip();
         }
         if(buy)Act("buy",new {slot});
     }

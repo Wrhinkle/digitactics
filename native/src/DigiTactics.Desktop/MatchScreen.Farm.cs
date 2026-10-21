@@ -18,10 +18,11 @@ internal sealed partial class MatchScreen
     private GpuTexture? farmMoodTexture;
     private GpuTexture? farmSymbolTexture;
     private double farmMoodTime;
-    private int FarmSceneX => 16;
-    private int FarmSceneTop => (int)ClientPageTop + 104;
-    private int FarmCardWidth => Math.Clamp((int)(size.X * .30f), 350, 400);
-    private int FarmSceneWidth => Math.Max(250, size.X - FarmCardWidth - 44);
+    private int FarmSceneX => 24;
+    private int FarmHeaderHeight => size.X >= 1280 ? 52 : 90;
+    private int FarmSceneTop => (int)ClientPageTop + 12 + FarmHeaderHeight;
+    private int FarmCardWidth => Math.Clamp((int)(size.X * .30f), 350, 390);
+    private int FarmSceneWidth => Math.Max(250, size.X - FarmCardWidth - 48);
     private int FarmSceneHeight => Math.Max(200, size.Y - FarmSceneTop - 16);
     public int FarmDrawCalls => farmView?.DrawCalls ?? 0;
     public string? FarmTheme => farmView?.Theme;

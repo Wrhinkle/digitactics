@@ -28,23 +28,42 @@ internal sealed partial class MatchScreen
     private void FarmEvolutionDetails(string id,FarmResidentDetails details)
     {
         FarmEvolutionBranches=0;
-        ImGui.SeparatorText("Next digivolution"u8);
         var evolution=details.Evolution;
-        UiText.Wrapped(evolution.CanDigivolve?"Ready to digivolve!":evolution.Next is {} next?$"Next form at level {next} / current level {evolution.Level}":"Final form. Revert in Digivolve to explore other branches.");
+        FarmBox("Farm digivolution");
+        FarmBoxHeading("NEXT DIGIVOLUTION", evolution.CanDigivolve?"ready now":evolution.Next is {} next?$"at level {next}":null);
         var known=LegendEvolution.Discovery(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"),id).Dex.ToHashSet();
         foreach(var branch in evolution.Odds)
         {
-            var at=ImGui.GetCursorScreenPos();ImGui.Dummy(new(46,46));portraits.DrawEvolution(branch.Form,at,46,known.Contains(branch.Form));
-            ImGui.SameLine();ImGui.BeginGroup();
-            ImGui.Text(known.Contains(branch.Form)?LegendEvolution.Form(branch.Form).Name:"???");
-            ImGui.Text($"{branch.Care} / {branch.Pct}%");ImGui.EndGroup();FarmEvolutionBranches++;
+            var at=ImGui.GetCursorScreenPos(); float width=ImGui.GetContentRegionAvail().X;
+            var draw=ImGui.GetWindowDrawList(); string name=known.Contains(branch.Form)?LegendEvolution.Form(branch.Form).Name:"???";
+            ImGui.PushFont(default,15);
+            float nameWidth=Math.Max(80,width-148),rowHeight=Math.Max(32,ImGui.CalcTextSize(name,false,nameWidth).Y+10);
+            ImGui.Dummy(new(width,rowHeight)); portraits.DrawEvolution(branch.Form,at,30,known.Contains(branch.Form));
+            draw.AddText(ImGui.GetFont(),15,at+new float2(38,6),ClientInk,name,nameWidth);
+            var careColor=branch.Care switch { "bond"=>new ImColor8(255,139,184),"food"=>new ImColor8(255,211,106),"battle"=>new ImColor8(255,154,90),_=>new ImColor8(159,224,122) };
+            draw.AddText(ImGui.GetFont(),15,new(at.X+width-104,at.Y+6),careColor,branch.Care);
+            string chance=$"{branch.Pct}%";
+            draw.AddText(ImGui.GetFont(),15,new(at.X+width-ImGui.CalcTextSize(chance).X,at.Y+6),ClientInk,chance);
+            ImGui.PopFont(); FarmEvolutionBranches++;
         }
-        ImGui.SeparatorText("Farm care pushes branches"u8);
+        if(evolution.Odds.Length==0)UiText.Wrapped("Final form. Revert in Digivolve to explore other branches."u8);
+        if(Button("farmDigivolve",evolution.CanDigivolve?"Open Digivolve · ready now":"Open Digivolve",ImGui.GetContentRegionAvail().X,32))OpenFarmEvolution(id);
+        ImGui.EndChild();
+        FarmBox("Farm evolution care"); FarmBoxHeading("FARM CARE PUSHES BRANCHES");
         var bonus=details.Care.Bonus;
-        UiText.Wrapped($"Bond +{bonus["bond"]:0}: praise, play and petting");
-        UiText.Wrapped($"Battle +{bonus["battle"]:0}: training stats (every 25 points)");
-        UiText.Wrapped($"Food +{bonus["food"]:0}: meals when hungry; carrots count more");
-        UiText.Wrapped($"Wild +{bonus["wild"]:0}: {details.Mistakes} mistakes x3, {details.PoopNeglect} neglected piles x2"+
-            (details.Fat?", chubby +6":"")+(details.Sick?", sick +3":"")+(details.Overfeed>=5?", frequent overfeeding +2":""));
+        foreach(var (key,name,description,color) in new[] {
+            ("bond","Bond","Praise, play and petting",new ImColor8(255,139,184)),
+            ("battle","Battle","Training stats (every 25 points)",new ImColor8(255,154,90)),
+            ("food","Food","Meals when hungry; carrots count more",new ImColor8(255,211,106)),
+            ("wild","Wild",$"{details.Mistakes} mistakes x3, {details.PoopNeglect} neglected piles x2",new ImColor8(159,224,122)) })
+        {
+            var at=ImGui.GetCursorScreenPos(); float width=ImGui.GetContentRegionAvail().X;
+            ImGui.GetWindowDrawList().AddText(at,color,name);
+            string value=$"+{bonus[key]:0}";
+            ImGui.GetWindowDrawList().AddText(new(at.X+width-ImGui.CalcTextSize(value).X,at.Y),ClientMuted,value);
+            ImGui.Dummy(new(width,18));
+            ImGui.PushFont(default,14);ImGui.PushStyleColor(ImGuiCol.Text,ClientMuted);UiText.Wrapped(description);ImGui.PopStyleColor();ImGui.PopFont();
+        }
+        ImGui.EndChild();
     }
 }
