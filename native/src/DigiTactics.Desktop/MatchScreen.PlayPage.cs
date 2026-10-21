@@ -133,7 +133,7 @@ internal sealed partial class MatchScreen
         float artHeight=Math.Clamp(viewHeight-410,250,555),titlePx=Math.Clamp(viewWidth*.02f,22,30),textWidth=cardWidth-2-36;
         string Description(string id)=>id=="chaos"?ChaosDescription:HomeSets.Value[id].Description;
         string Title(string id)=>id=="chaos"?"Chaos":HomeSets.Value[id].Name;
-        float textHeight=ids.Max(id=>18+14+8+ParagraphHeight(Face.DisplayBold,titlePx,textWidth,titlePx*1.12f,Title(id),titlePx*.02f)+8+ParagraphHeight(Face.BodyBold,12.5f,textWidth,18.75f,Description(id))+18);
+        float textHeight=ids.Max(id=>18+14+8+ParagraphHeight(Face.DisplayBold,titlePx,textWidth,titlePx*1.12f,Title(id),titlePx*.02f)+8+ParagraphHeight(Face.BodySemi,12.5f,textWidth,18.75f,Description(id))+18);
         float cardHeight=2+artHeight+textHeight;
         float headTop=padTop,navTop=headTop+60+12,rowTop=navTop+42.4f+10,rowHeight=4+cardHeight+16;
         bool stacked=viewWidth<=700;
@@ -218,7 +218,7 @@ internal sealed partial class MatchScreen
             bool chosen=CssHit(key,cardAt,new(cardWidth,cardHeight),out bool hover);
             HomeModeCardCount++;
             if(cardMax.X<rowAt.X-4||cardAt.X>rowMax.X+4){if(chosen&&!homeModeDragged)SelectHomeHeroSet(id);continue;}
-            if(on)draw.AddRect(cardAt-new float2(1.5f),cardMax+new float2(1.5f),Gold1,7,ImDrawFlags.None,2);
+            if(on)draw.AddRect(Snap(cardAt)-new float2(1.5f),Snap(cardMax)+new float2(1.5f),Gold1,7,ImDrawFlags.None,2);
             else if(hover)Glow(draw,cardAt,cardMax,new ImColor8(200,164,98,48),18,6);
             draw.AddRectFilled(cardAt,cardMax,new ImColor8(7,19,32),6);
             var artAt=cardAt+new float2(1,1);float artWidth=Math.Min(cardWidth-2,artHeight*2/3),drawnHeight=artWidth*1.5f;
@@ -230,7 +230,7 @@ internal sealed partial class MatchScreen
             var text=textAt+new float2(18,18);
             Text(draw,Face.DisplayBold,11,text,SetAccent.GetValueOrDefault(id,new ImColor8(63,214,255)),SetModeName(SetChoices.Options.FirstOrDefault(o=>o.Id==id)?.Mode).ToUpperInvariant(),1.54f,14);
             float titleHeight=Paragraph(draw,Face.DisplayBold,titlePx,text+new float2(0,22),textWidth,titlePx*1.12f,Gold1,Title(id),titlePx*.02f);
-            Paragraph(draw,Face.BodyBold,12.5f,text+new float2(0,22+titleHeight+8),textWidth,18.75f,Text2,Description(id));
+            Paragraph(draw,Face.BodySemi,12.5f,text+new float2(0,22+titleHeight+8),textWidth,18.75f,Text2,Description(id));
             if(on)
             {
                 var check=cardAt+new float2(cardWidth-1-12-14,1+12+14);
@@ -303,10 +303,10 @@ internal sealed partial class MatchScreen
     // .btn.btn-ghost
     private bool GhostButton(string key,string label,float2 at,float px=14)
     {
-        float width=Width(Face.BodyBold,px,label)+34,height=px*1.2f+18;
+        float width=Width(Face.BodySemi,px,label)+34,height=px*1.2f+18;
         bool pressed=CssHit(key,at,new(width,height),out bool hover);var draw=ImGui.GetWindowDrawList();
         if(hover){draw.AddRectFilled(at,at+new float2(width,height),new ImColor8(200,170,110,20),2);Border(draw,at,at+new float2(width,height),Gold5,1,2);}
-        Text(draw,Face.BodyBold,px,at+new float2(17,9),hover?Gold1:LcMute,label,0,px*1.2f);
+        Text(draw,Face.BodySemi,px,at+new float2(17,9),hover?Gold1:LcMute,label,0,px*1.2f);
         return pressed;
     }
 
@@ -373,7 +373,7 @@ internal sealed partial class MatchScreen
 
         // .party-head
         if(GhostButton("homePlayModes","‹ Modes",content+new float2(0,2)))homePlayParty=false;
-        float headLeft=Width(Face.BodyBold,14,"‹ Modes")+34+12,headWidth=Math.Min(760,contentWidth-headLeft);
+        float headLeft=Width(Face.BodySemi,14,"‹ Modes")+34+12,headWidth=Math.Min(760,contentWidth-headLeft);
         var head=content+new float2(headLeft,0);
         Text(draw,Face.DisplayBold,11,head,Gold2,"SOLO VS AI · PARTY",1.76f,14.85f);
         Text(draw,Face.DisplayBold,26,head+new float2(0,16.8f),Gold1,setName.ToUpperInvariant(),1.04f,28.6f);

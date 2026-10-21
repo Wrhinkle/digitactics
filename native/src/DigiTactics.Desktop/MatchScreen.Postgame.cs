@@ -240,7 +240,7 @@ internal sealed partial class MatchScreen
         // .res-btns: Match history (ghost), Home/Leave (secondary) and the hextech CTA, right-aligned.
         string secondary=outNow?"LEAVE":"HOME",cta=outNow?"SPECTATE":networkRoom is null?"PLAY AGAIN":"BACK TO LOBBIES";
         float ctaWidth=Math.Max(200,ClientCss.Width(ClientCss.Face.DisplayBold,14,cta,1.68f)+52+4);
-        float secondaryWidth=ClientCss.Width(ClientCss.Face.Display,14,secondary,1.12f)+32+2,historyWidth=ClientCss.Width(ClientCss.Face.BodyBold,14,"Match history")+32+2;
+        float secondaryWidth=ClientCss.Width(ClientCss.Face.Display,14,secondary,1.12f)+32+2,historyWidth=ClientCss.Width(ClientCss.Face.BodySemi,14,"Match history")+32+2;
         var buttonsAt=new float2(max.X-1-padX,origin.Y+buttonsTop);
         var ctaAt=buttonsAt-new float2(ctaWidth,0);var secondaryAt=ctaAt-new float2(8+secondaryWidth,0);var historyAt=secondaryAt-new float2(8+historyWidth,0);
         postgameControls["resultHistory"]=(historyAt,historyAt+new float2(historyWidth,40.8f));
@@ -299,7 +299,7 @@ internal sealed partial class MatchScreen
     {
         bool pressed=CssHit(key,at,extent,out bool hover);var draw=ImGui.GetWindowDrawList();var max=at+extent;float alpha=ImGui.GetStyle().Alpha;
         if(hover){draw.AddRectFilled(at,max,new ImColor8(200,170,110,20),2);ClientCss.Border(draw,at,max,ClientCss.Gold5,1,2);}
-        ClientCss.TextCentered(draw,ClientCss.Face.BodyBold,14,at+new float2(0,(extent.Y-16.8f)/2),extent.X,ClientCss.Alpha(hover?ClientCss.Gold1:ClientCss.LcMute,alpha),label,0,16.8f);
+        ClientCss.TextCentered(draw,ClientCss.Face.BodySemi,14,at+new float2(0,(extent.Y-16.8f)/2),extent.X,ClientCss.Alpha(hover?ClientCss.Gold1:ClientCss.LcMute,alpha),label,0,16.8f);
         return pressed;
     }
     // .btn.btn-secondary
@@ -383,7 +383,7 @@ internal sealed partial class MatchScreen
             float statusWidth=ClientCss.Width(ClientCss.Face.Body,11,status);
             ClientCss.Text(draw,ClientCss.Face.Body,11,at+new float2(rowWidth-6-statusWidth,7.6f),ClientCss.Muted,status,0,14.85f);
             float nameLeft=8+30+8+28+8;
-            ClientCss.Text(draw,ClientCss.Face.BodyBold,12.5f,at+new float2(nameLeft,6.6f),me?ClientCss.Gold1:ClientCss.Text1,ClientCss.Ellipsis(ClientCss.Face.BodyBold,12.5f,name,Math.Max(20,rowWidth-6-statusWidth-8-nameLeft)),0,16.875f);
+            ClientCss.Text(draw,ClientCss.Face.BodySemi,12.5f,at+new float2(nameLeft,6.6f),me?ClientCss.Gold1:ClientCss.Text1,ClientCss.Ellipsis(ClientCss.Face.BodySemi,12.5f,name,Math.Max(20,rowWidth-6-statusWidth-8-nameLeft)),0,16.875f);
             ImGui.Dummy(new(rowWidth,30)); if (ImGui.IsItemHovered()) ResultTooltip(name);
             if(++PostgameStandings<Session.State.Players.Count)ResultAdvance(2);
         }
@@ -425,7 +425,7 @@ internal sealed partial class MatchScreen
                 float x=ClientCss.Text(draw,ClientCss.Face.Body,13,at+new float2(0,3.3f),ClientCss.Muted,"Wallet:",0,17.55f);
                 BitIcon(draw,at+new float2(x+4+5.5f,3.3f+9.5f));
                 ClientCss.Text(draw,ClientCss.Face.BodyBold,13,at+new float2(x+4+15,3.3f),ClientCss.Muted,(profile?.Progress.Bits ?? 0).ToString(),0,17.55f);
-                float storeWidth=ClientCss.Width(ClientCss.Face.BodyBold,12,"Store")+22+2;var storeAt=at+new float2(width-storeWidth,0);
+                float storeWidth=ClientCss.Width(ClientCss.Face.BodySemi,12,"Store")+22+2;var storeAt=at+new float2(width-storeWidth,0);
                 postgameControls["resultStore"]=(storeAt,storeAt+new float2(storeWidth,24.2f));
                 if(SmallButton("resultStore","Store",storeAt,new(storeWidth,24.2f)))
                 {
@@ -447,7 +447,7 @@ internal sealed partial class MatchScreen
         bool pressed=CssHit(key,at,extent,out bool hover);var draw=ImGui.GetWindowDrawList();var max=at+extent;
         ClientCss.Gradient(draw,at+new float2(1),max-new float2(1),hover?new ImColor8(38,45,54):new ImColor8(30,35,40),hover?new ImColor8(26,33,43):new ImColor8(20,26,34));
         ClientCss.Border(draw,at,max,hover?ClientCss.Gold2:ClientCss.Gold4,1,2);
-        ClientCss.TextCentered(draw,ClientCss.Face.BodyBold,12,at+new float2(0,(extent.Y-16.2f)/2),extent.X,hover?ClientCss.Gold1:ClientCss.LcText,label,0,16.2f);
+        ClientCss.TextCentered(draw,ClientCss.Face.BodySemi,12,at+new float2(0,(extent.Y-16.2f)/2),extent.X,hover?ClientCss.Gold1:ClientCss.LcText,label,0,16.2f);
         return pressed;
     }
 
@@ -474,7 +474,7 @@ internal sealed partial class MatchScreen
                 // .mission: padding 3 0 6; the name/bits row sits 4px above its bar.
                 ResultAdvance(3);var at=ResultCursor;float width=ResultWidth;string bits=mission.Bits.ToString();
                 float bitsWidth=ClientCss.Width(ClientCss.Face.BodyBold,12.5f,bits);
-                ClientCss.Text(draw,ClientCss.Face.BodyBold,12.5f,at,mission.Done?ClientCss.Text2:ClientCss.Text1,ClientCss.Ellipsis(ClientCss.Face.BodyBold,12.5f,mission.Name,width-bitsWidth-30),0,16.875f);
+                ClientCss.Text(draw,ClientCss.Face.BodySemi,12.5f,at,mission.Done?ClientCss.Text2:ClientCss.Text1,ClientCss.Ellipsis(ClientCss.Face.BodySemi,12.5f,mission.Name,width-bitsWidth-30),0,16.875f);
                 BitIcon(draw,at+new float2(width-bitsWidth-4-5.5f,8.6f));
                 ClientCss.Text(draw,ClientCss.Face.BodyBold,12.5f,at+new float2(width-bitsWidth,0),ClientCss.Gold1,bits,0,16.875f);
                 ResultAdvance(16.9f+4);

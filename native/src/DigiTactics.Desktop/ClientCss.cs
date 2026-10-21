@@ -11,7 +11,9 @@ namespace DigiTactics.Desktop;
 /// </summary>
 internal static class ClientCss
 {
-    internal enum Face { Body, BodyBold, Display, DisplayBold }
+    // BodySemi stands in for Inter 600: drawn with the bold face, measured halfway between regular and
+    // bold so text wraps where the original does.
+    internal enum Face { Body, BodyBold, BodySemi, Display, DisplayBold }
 
     internal static readonly ImColor8 Gold1=new(240,230,210),Gold2=new(200,170,110),Gold3=new(200,155,60),Gold4=new(120,90,40),Gold5=new(70,55,20);
     internal static readonly ImColor8 Text1=new(238,242,250),Text2=new(167,178,199),Text3=new(116,129,154),LcText=new(205,190,145),LcMute=new(160,155,140),Muted=new(143,154,176);
@@ -21,6 +23,7 @@ internal static class ClientCss
     {
         Face.Body => NativeUiTheme.BodyFont,
         Face.BodyBold => NativeUiTheme.BodyBoldFont,
+        Face.BodySemi => NativeUiTheme.BodyBoldFont,
         Face.Display => NativeUiTheme.DisplayFont,
         _ => NativeUiTheme.DisplayBoldFont,
     };
@@ -36,6 +39,7 @@ internal static class ClientCss
     internal static float Width(Face face, float px, string text, float tracking = 0)
     {
         if (text.Length == 0) return 0;
+        if (face == Face.BodySemi) return (Width(Face.Body, px, text, tracking) + Width(Face.BodyBold, px, text, tracking)) * .5f;
         // ImFont.CalcTextSizeA is unrounded (ImGui.CalcTextSize rounds up to whole pixels).
         return Font(face).CalcTextSizeA(Size(face, px), float.MaxValue, 0, text).X + tracking * text.Length;
     }
@@ -190,6 +194,7 @@ internal static class ClientCss
     /// <summary>Dashed 1px border, like CSS border-style: dashed.</summary>
     internal static void Dashed(ImDrawListPtr draw, float2 at, float2 extent, ImColor8 color, float dash = 3, float gap = 3)
     {
+        var end = Snap(at + extent); at = Snap(at); extent = end - at;
         for (float x = 0; x < extent.X; x += dash + gap)
         {
             draw.AddLine(at + new float2(x, 0), at + new float2(Math.Min(x + dash, extent.X), 0), color);
@@ -204,6 +209,9 @@ internal static class ClientCss
 
     /// <summary>1px border drawn inside the box edge, as a CSS border-box border.</summary>
     internal static void Border(ImDrawListPtr draw, float2 min, float2 max, ImColor8 color, float width = 1, float rounding = 0)
-        // ImDrawList.AddRect already strokes 0.5px inside its corners, which is pixel-exact for 1px.
-        => draw.AddRect(min + new float2((width - 1) * .5f), max - new float2((width - 1) * .5f), color, rounding, ImDrawFlags.None, width);
+        // Browsers paint borders on whole pixels; ImDrawList.AddRect already strokes 0.5px inside its
+        // corners, which is pixel-exact for 1px once the box is snapped.
+        => draw.AddRect(Snap(min) + new float2((width - 1) * .5f), Snap(max) - new float2((width - 1) * .5f), color, rounding, ImDrawFlags.None, width);
+
+    internal static float2 Snap(float2 point) => new(MathF.Round(point.X), MathF.Round(point.Y));
 }
