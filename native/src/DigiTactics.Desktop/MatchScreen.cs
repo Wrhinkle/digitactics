@@ -51,6 +51,9 @@ internal sealed partial class MatchScreen : IDisposable
     private int ShopHeight => HudCardHeight + (HudNarrow ? 13 : 17);
     private int Width => Math.Max(300, size.X - Left - RightRail);
     private int Height => Math.Max(120, size.Y - Top - ShopHeight);
+    // The original fits its canvas while the shop bar holds only the economy column (measured 87 px, 77 px compact,
+    // plus bar padding), so the canvas overhangs the arena by the later card height difference.
+    private int ArenaCanvasOverhang => Math.Max(0, ShopHeight - ((HudCompact ? 77 : 87) + (HudNarrow ? 13 : 17)));
     private const ImGuiWindowFlags Fixed = ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
     public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { planning=new(arenaEnvironment); this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; farm = profile is null ? null : new(profile); InitializeSetSelection(duos); }
     private void Window(string name, float x, float y, float width, float height, ImGuiWindowFlags flags = 0)
@@ -285,6 +288,7 @@ internal sealed partial class MatchScreen : IDisposable
         PreparePostgameClient();
         size = ClientContentSize(windowSize); Buttons.Clear(); emoteArtwork.BeginFrame();
         UpdateTopBarLayout();
+        arenaEnvironment.Camera.CanvasStretch = (double)(Height + ArenaCanvasOverhang) / Height;
         CastFeedDraws=0;
         KeyboardFocusedButton=null;
         try

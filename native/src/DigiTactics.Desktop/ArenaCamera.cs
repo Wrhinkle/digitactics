@@ -9,14 +9,25 @@ internal sealed class ArenaCamera
     public double Zoom { get; private set; } = 1;
     public double Yaw { get; private set; }
     public double Pitch { get; private set; } = Math.Atan2(16.5, 15.5);
+    /// <summary>Original canvas height over the visible arena height (1 = same). The original sizes its canvas once,
+    /// before any shop card exists, so the canvas keeps a taller boot-time height and the shop bar clips its bottom.
+    /// Projection uses that taller canvas, anchored to the arena top.</summary>
+    public double CanvasStretch { get; set; } = 1;
     public void Reset() { Target = new(0, 0, 1.8f); Zoom = 1; Yaw = 0; Pitch = Math.Atan2(16.5, 15.5); }
     public Vector3 Eye(int width, int height, int columns)
     {
-        double distance = Math.Sqrt(16.5 * 16.5 + 15.5 * 15.5) * Math.Max(1, 1.35 * height / width) * Zoom * (columns > 7 ? 1.65 : 1);
+        double canvasHeight = height * CanvasStretch;
+        double distance = Math.Sqrt(16.5 * 16.5 + 15.5 * 15.5) * Math.Max(1, 1.35 * canvasHeight / width) * Zoom * (columns > 7 ? 1.65 : 1);
         return Target + new Vector3((float)(Math.Sin(Yaw) * Math.Cos(Pitch) * distance), (float)(Math.Sin(Pitch) * distance), (float)(Math.Cos(Yaw) * Math.Cos(Pitch) * distance));
     }
-    public Matrix4x4 Matrix(int width, int height, int columns) => Matrix4x4.CreateLookAt(Eye(width, height, columns), Target, Vector3.UnitY)
-        * Matrix4x4.CreatePerspectiveFieldOfView(38 * MathF.PI / 180, (float)width / height, .1f, 200);
+    public Matrix4x4 Matrix(int width, int height, int columns)
+    {
+        float stretch = (float)CanvasStretch;
+        // Crop the taller canvas to the arena: its top rows map to the arena, clip y' = k*y + (1 - k)*w.
+        var crop = Matrix4x4.Identity; crop.M22 = stretch; crop.M42 = 1 - stretch;
+        return Matrix4x4.CreateLookAt(Eye(width, height, columns), Target, Vector3.UnitY)
+            * Matrix4x4.CreatePerspectiveFieldOfView(38 * MathF.PI / 180, width / (height * stretch), .1f, 200) * crop;
+    }
     private void Translate(double x, double z) => Target = new((float)Math.Clamp(Target.X + x, -8, 8), 0, (float)Math.Clamp(Target.Z + z, -8, 9));
     public void Orbit(float dx, float dy) { Yaw -= dx * .008; Pitch = Math.Clamp(Pitch + dy * .006, .35, 1.45); }
     public void Pan(float x0, float y0, float x1, float y1, int width, int height, int columns)
