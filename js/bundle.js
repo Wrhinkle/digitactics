@@ -42564,9 +42564,17 @@ void main() {
       elbows: pair("J_elbow_l", "J_elbow_r"),
       chains: ["l", "r"].map((side) => chain([1, 2, 3, 4].map((i) => `J_ear0${i}_${side}`), 0.12, 0.6, "x"))
     },
-    "rip-cat_rd_beelzemon_main": { body: "chest", head: "head", family: "biped", arms: pair("arm_L", "arm_R"), elbows: pair("forearm_L", "forearm_R"), elbowAxis: "y", elbowSigns: [1, -1] },
-    "rip-cat_rd_wargrowlmon_main": { body: "chest", head: "head", family: "biped", arms: pair("arm_L", "arm_R"), elbows: pair("forearm_L", "forearm_R"), elbowAxis: "y", elbowSigns: [1, -1] }
+    // Its Noesis reel is unrelated (anim:false). The visible creature is the
+    // core sphere and its eight-link chain arms, which generic fallback never
+    // reaches; rock the core and send traveling waves along each chain.
+    "rip-cat_l_apocalymon_chr328": {
+      body: "J_root_core",
+      head: "J_head",
+      family: "tentacle",
+      chains: [["top", "s_l"], ["top", "s_r"], ["under", "b_r"], ["under", "f"], ["under", "s_l"]].map(([row, side]) => chain(Array.from({ length: 8 }, (_, i) => `J_${row}chain0${i + 1}${side === "f" ? "_f" : "_" + side}`), 0.07, 0.6))
+    }
   };
+  var generatedBiped = { body: "chest", head: "head", family: "biped", elbowAxis: "y", elbowSigns: [1, -1] };
   var pulse = (u, start, end) => u <= start || u >= end ? 0 : Math.sin(Math.PI * (u - start) / (end - start)) ** 2;
   function gesture(role, u) {
     const envelope = Math.sin(Math.PI * u) ** 2, wave = Math.sin(2 * Math.PI * u);
@@ -42575,8 +42583,7 @@ void main() {
     if (role === "special") return { lean: -0.55 * pulse(u, 0, 0.55) + 0.8 * pulse(u, 0.38, 0.92), turn: Math.sin(2 * Math.PI * u) * envelope, lift: pulse(u, 0.12, 0.92), wave: wave * envelope, envelope };
     return { lean: 0.3 * wave * envelope, turn: Math.sin(4 * Math.PI * u) * envelope, lift: envelope, wave: Math.sin(4 * Math.PI * u) * envelope, envelope };
   }
-  function anatomyFallbackClips(scene2, source, original) {
-    const map = anatomy[source?.uid];
+  function anatomyFallbackClips(scene2, source, original, map = anatomy[source?.uid]) {
     if (!map) return original;
     scene2.updateMatrixWorld(true);
     const unguarded = new Map((map.neutral || []).map(([name2]) => [name2, scene2.getObjectByName(name2)?.quaternion.clone()]));
@@ -42652,14 +42659,34 @@ void main() {
     });
   }
   function generatedBipedClips(gltf, source, clips) {
-    if (!["rip-cat_rd_beelzemon_main", "rip-cat_rd_wargrowlmon_main"].includes(source?.uid)) return clips;
-    if (gltf.scene.getObjectByName("DT_Rig")?.userData.digitacticsRig !== 1) return clips;
+    const rig = gltf.scene.getObjectByName("DT_Rig");
+    if (rig?.userData.digitacticsRig !== 1) return clips;
+    if (rig.userData.body !== "biped") return generatedBodyClips(gltf, clips);
+    if (!["chest", "head", "arm_L", "arm_R", "forearm_L", "forearm_R"].every((name2) => gltf.scene.getObjectByName(name2)?.isBone)) return clips;
     const idle = clips.find((c) => c.name === "idle");
     if (!idle) return clips;
+    const rest = [];
+    gltf.scene.traverse((node) => rest.push([node, node.position.clone(), node.quaternion.clone(), node.scale.clone()]));
     const mixer = new AnimationMixer(gltf.scene);
     mixer.clipAction(idle).play();
     mixer.update(0);
     gltf.scene.updateMatrixWorld(true);
+    const sides = [["arm_L", "forearm_L"], ["arm_R", "forearm_R"]].map(([arm, elbow]) => {
+      const shoulder = gltf.scene.getObjectByName(arm).getWorldPosition(new Vector3());
+      return { arm, elbow, shoulder, direction: gltf.scene.getObjectByName(elbow).getWorldPosition(new Vector3()).sub(shoulder).normalize() };
+    }).sort((a, b) => a.direction.x - b.direction.x);
+    if (sides.some((side) => Math.abs(side.direction.z) > 0.5)) {
+      mixer.stopAllAction();
+      mixer.uncacheRoot(gltf.scene);
+      for (const [node, position, quaternion, scale] of rest) {
+        node.position.copy(position);
+        node.quaternion.copy(quaternion);
+        node.scale.copy(scale);
+      }
+      gltf.scene.updateMatrixWorld(true);
+      return clips;
+    }
+    const box3 = new Box3().setFromObject(gltf.scene), height = Math.max(1e-9, box3.max.y - box3.min.y);
     function turn(name2, direction, angle) {
       const bone = gltf.scene.getObjectByName(name2);
       if (!bone) return;
@@ -42668,17 +42695,71 @@ void main() {
       bone.quaternion.copy(parent.multiply(new Quaternion().setFromAxisAngle(axis[direction], angle)).multiply(world));
       gltf.scene.updateMatrixWorld(true);
     }
-    turn("arm_L", "z", 0.3);
-    turn("arm_R", "z", -0.3);
-    turn("forearm_L", "y", 0.55);
-    turn("forearm_R", "y", -0.55);
-    const result = anatomyFallbackClips(gltf.scene, source, clips).map((clip2) => {
+    for (const [index2, { arm, shoulder, direction }] of sides.entries()) {
+      const droop = Math.min(1.2, 0.95 + Math.asin(Math.max(-1, Math.min(1, direction.y))));
+      if (droop > 0 && shoulder.y > box3.min.y + height * 0.4) turn(arm, "z", (index2 === 0 ? 1 : -1) * droop);
+    }
+    turn(sides[0].elbow, "y", 0.55);
+    turn(sides[1].elbow, "y", -0.55);
+    const map = { ...generatedBiped, arms: pair(sides[0].arm, sides[1].arm), elbows: pair(sides[0].elbow, sides[1].elbow) };
+    const result = anatomyFallbackClips(gltf.scene, source, clips, map).map((clip2) => {
       const original = clips.find((c) => c.name === clip2.name), bindings = new Set(clip2.tracks.map((t) => t.name));
       return new AnimationClip(clip2.name, clip2.duration, [...original.tracks.filter((t) => !bindings.has(t.name)).map((t) => t.clone()), ...clip2.tracks]);
     });
     mixer.stopAllAction();
     mixer.uncacheRoot(gltf.scene);
     return generatedBodyClips(gltf, result);
+  }
+  function generatedBodyClips(gltf, clips) {
+    const root4 = gltf.scene.getObjectByName("root"), rig = gltf.scene.getObjectByName("DT_Rig");
+    if (!root4?.isBone || root4.parent !== rig) return clips;
+    const baby = rig.userData.body === "baby", base = root4.quaternion.clone(), origin = root4.position.clone();
+    const rest = /* @__PURE__ */ new Map();
+    gltf.scene.traverse((node) => {
+      if (node.isBone) rest.set(node.name, node.quaternion.clone());
+    });
+    const gain = (track2) => {
+      const dot = track2.name.lastIndexOf("."), bind = rest.get(track2.name.slice(0, dot));
+      if (!baby || !bind || track2.name.slice(dot + 1) !== "quaternion") return track2.clone();
+      const inverse = bind.clone().invert(), values = new Float32Array(track2.values.length), q = new Quaternion();
+      for (let i = 0; i < values.length; i += 4) {
+        const delta = inverse.clone().multiply(q.fromArray(track2.values, i)).normalize();
+        if (delta.w < 0) delta.set(-delta.x, -delta.y, -delta.z, -delta.w);
+        const length = Math.hypot(delta.x, delta.y, delta.z), angle = 2 * Math.atan2(length, delta.w);
+        const scaled = length > 1e-9 ? new Quaternion().setFromAxisAngle(new Vector3(delta.x / length, delta.y / length, delta.z / length), Math.min(0.6, angle * 2)) : new Quaternion();
+        bind.clone().multiply(scaled).toArray(values, i);
+      }
+      return new QuaternionKeyframeTrack(track2.name, Array.from(track2.times), Array.from(values));
+    };
+    return clips.map((clip2) => {
+      const role = clip2.name;
+      if (!["idle", "attack", "special", "win"].includes(role)) return clip2;
+      const times = Array.from({ length: 65 }, (_, i) => clip2.duration * i / 64), positions = [], rotations = [];
+      for (const time of times) {
+        const u = time / clip2.duration, wave = Math.sin(2 * Math.PI * u), pulse3 = Math.sin(Math.PI * u) ** 2;
+        let lean = 0, sway = 0, turn = 0, hop2 = 0;
+        if (role === "idle") {
+          lean = 0.02 * wave;
+          sway = 0.015 * Math.sin(4 * Math.PI * u);
+          hop2 = 0.012 * (1 - Math.cos(2 * Math.PI * u)) / 2;
+        } else if (role === "attack") {
+          lean = 0.14 * pulse3;
+          hop2 = 0.04 * pulse3;
+        } else if (role === "special") {
+          lean = 0.2 * pulse3;
+          turn = 0.12 * wave * pulse3;
+          hop2 = 0.07 * pulse3;
+        } else {
+          sway = 0.08 * wave * pulse3;
+          hop2 = 0.09 * Math.abs(Math.sin(2 * Math.PI * u)) * pulse3;
+        }
+        origin.clone().add(new Vector3(0, hop2, 0)).toArray(positions, positions.length);
+        base.clone().multiply(new Quaternion().setFromEuler(new Euler(lean, turn, sway, "YXZ"))).toArray(rotations, rotations.length);
+      }
+      const tracks = clip2.tracks.filter((t) => !/^root\.(?:position|quaternion)$/.test(t.name)).map(gain);
+      tracks.push(new VectorKeyframeTrack("root.position", times, positions), new QuaternionKeyframeTrack("root.quaternion", times, rotations));
+      return new AnimationClip(role, clip2.duration, tracks);
+    });
   }
 
   // js/model-rigid-parts.js
@@ -43509,7 +43590,10 @@ void main() {
         b.quaternion.copy(parent.clone().invert().multiply(delta).multiply(b.getWorldQuaternion(Q())));
         scene2.updateMatrixWorld(true);
       }
-      arms.push({ bone: b, side: origin.x >= box3.getCenter(V()).x ? 1 : -1 });
+      const side = origin.x >= box3.getCenter(V()).x ? 1 : -1;
+      const current = child.getWorldPosition(V()).sub(b.getWorldPosition(V()));
+      const elevation = Math.atan2(current.y, Math.abs(current.x));
+      arms.push({ bone: b, side, raise: Number.isFinite(elevation) ? Math.min(2.4, Math.max(0.25, 0.96 - elevation)) : 1.6 });
     }
     const flapName = /(?:^|_)(?:ear|mimi|wing)/i, center = box3.getCenter(V());
     const isFlap = (b) => flapName.test(b.name) && !flapName.test(b.parent?.name || "") && !arms.some((a) => a.bone === b);
@@ -43555,7 +43639,7 @@ void main() {
             if (r.flap) turn(Z, r.flap * (role === "special" ? 0.3 : 0.2) * pulse3);
           } else {
             if (r.arm) {
-              turn(Z, r.arm.side * 1.6 * pulse3);
+              turn(Z, r.arm.side * r.arm.raise * pulse3);
               turn(X, 0.2 * wave);
             }
             if (r.head) turn(Y, 0.12 * wave);
