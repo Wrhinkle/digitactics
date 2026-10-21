@@ -22,6 +22,7 @@ public static partial class LegendEvolution
         return JsonSerializer.Deserialize<Catalog>(stream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }
     public static EvolutionForm Form(string id) => Content.Forms[id];
+    public static EvolutionForm? FindForm(string id) => Content.Forms.GetValueOrDefault(id);
     public static string? AiForm(string? id, string seed)
     {
         if (id is null || CosmeticCollection.Item("legend", id) is null) return null;

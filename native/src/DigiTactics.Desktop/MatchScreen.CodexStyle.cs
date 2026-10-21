@@ -46,7 +46,7 @@ internal sealed partial class MatchScreen
     }
     private static bool CodexBeginCard(string id,ImColor8? accent=null,bool topStripe=false,bool compact=false,bool trait=false)
     {
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(compact?9:10,9));
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,trait&&!compact?new float2(11,8):new float2(compact?9:10,9));
         ImGui.PushStyleVar(ImGuiStyleVar.ChildRounding,trait?7:0);ImGui.PushStyleVar(ImGuiStyleVar.ChildBorderSize,1);
         ImGui.PushStyleColor(ImGuiCol.ChildBg,trait?new ImColor8(16,22,36):CodexNavy);ImGui.PushStyleColor(ImGuiCol.Border,CodexStroke);
         bool visible=ImGui.BeginChild(id,new(0,0),ImGuiChildFlags.Borders|ImGuiChildFlags.AutoResizeY|ImGuiChildFlags.AlwaysUseWindowPadding,
@@ -55,7 +55,15 @@ internal sealed partial class MatchScreen
         if(!visible)return false;
         var at=ImGui.GetWindowPos();var end=at+ImGui.GetWindowSize();var draw=ImGui.GetWindowDrawList();
         if(!trait)draw.AddRectFilledMultiColor(at+new float2(1,1),end-new float2(1,1),CodexCardTop,CodexCardTop,CodexNavy,CodexNavy);
-        if(accent is {} tint)draw.AddRectFilled(at+new float2(1,1),topStripe?new(end.X-1,at.Y+4):new(at.X+4,end.Y-1),tint);
+        if(accent is {} tint&&trait)
+        {
+            // border-left: 3px on a rounded box: the colour runs around both left corners, tapering into the 1px top and bottom borders.
+            draw.PushClipRect(at,new(at.X+9,end.Y),true);
+            draw.AddRect(at+new float2(1.5f,.5f),end-new float2(-6,.5f),tint,7,ImDrawFlags.None,3);
+            draw.PopClipRect();
+            draw.PushClipRect(at,new(at.X+3,end.Y),true);draw.AddRectFilled(at+new float2(0,7),new(at.X+3,end.Y-7),tint);draw.PopClipRect();
+        }
+        else if(accent is {} stripe)draw.AddRectFilled(at+new float2(1,1),topStripe?new(end.X-1,at.Y+4):new(at.X+4,end.Y-1),stripe);
         return true;
     }
     private static void CodexEndCard()=>ImGui.EndChild();

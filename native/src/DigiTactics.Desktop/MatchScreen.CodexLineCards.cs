@@ -98,7 +98,8 @@ internal sealed partial class MatchScreen
     {
         ImGui.PushFont(bold?NativeUiTheme.BodyBoldFont:NativeUiTheme.BodyFont,font);var size=ImGui.CalcTextSize(text);ImGui.PopFont();return size;
     }
-    private void CodexLinePortrait(CodexLine line,int stage,float2 at,float extent)
+    /// <summary><paramref name="chip"/>: a trait card's .cx-u chip (img at .88 opacity unless owned, Wild chips framed by a dashed #6a7488 border).</summary>
+    private void CodexLinePortrait(CodexLine line,int stage,float2 at,float extent,bool chip=false,bool owned=false)
     {
         if(!ImGui.IsRectVisible(at,at+new float2(extent,extent)))return;
         var draw=ImGui.GetWindowDrawList();var family=CodexColor(line.PortraitColor??"#888888").AsByte4();
@@ -130,13 +131,32 @@ internal sealed partial class MatchScreen
             draw.PrimVtx(innerA,uv,colorA);draw.PrimVtx(edgeA,uv,colorA);draw.PrimVtx(edgeB,uv,colorB);
             draw.PrimVtx(innerA,uv,colorA);draw.PrimVtx(edgeB,uv,colorB);draw.PrimVtx(innerB,uv,colorB);
         }
-        int before=portraits.DrawCalls;portraits.Draw(CodexData.Id,line.Id,stage,at,extent);
+        int before=portraits.DrawCalls;portraits.Draw(CodexData.Id,line.Id,stage,at,extent,chip&&!owned?(byte)224:(byte)255);
         if(portraits.DrawCalls==before)
         {
             string name=line.Forms[Math.Min(stage,line.Forms.Length-1)].Name;
             CodexLineLabel(at+new float2(4,18),extent-8,name[..Math.Min(2,name.Length)],CodexLineBodyFont,CodexLineStrong,bold:true,center:true);
         }
-        draw.AddRect(at,at+new float2(extent,extent),CodexColor(line.Color),radius,thickness:2);CodexPortraits++;
+        if(chip&&!line.Shop)CodexDashedFrame(draw,at,extent,radius,new ImColor8(106,116,136));
+        else draw.AddRect(at,at+new float2(extent,extent),CodexColor(line.Color),radius,thickness:2);
+        CodexPortraits++;
+    }
+    /// <summary>border: 2px dashed with rounded corners, as Chromium draws it (dashes about twice the width, square caps).</summary>
+    private static void CodexDashedFrame(ImDrawListPtr draw,float2 at,float extent,float radius,ImColor8 color)
+    {
+        float inset=1,lo=inset+radius,hi=extent-inset-radius;
+        draw.PathClear();
+        draw.PathArcTo(at+new float2(lo,lo),radius,MathF.PI,MathF.PI*1.5f,6);draw.PathStroke(color,ImDrawFlags.None,2);
+        draw.PathArcTo(at+new float2(hi,lo),radius,MathF.PI*1.5f,MathF.Tau,6);draw.PathStroke(color,ImDrawFlags.None,2);
+        draw.PathArcTo(at+new float2(hi,hi),radius,0,MathF.PI*.5f,6);draw.PathStroke(color,ImDrawFlags.None,2);
+        draw.PathArcTo(at+new float2(lo,hi),radius,MathF.PI*.5f,MathF.PI,6);draw.PathStroke(color,ImDrawFlags.None,2);
+        float span=hi-lo;int dashes=Math.Max(1,(int)MathF.Round(span/8));float step=span/dashes;
+        for(int i=0;i<dashes;i++)
+        {
+            float a=lo+i*step+step*.25f,b=a+step*.5f;
+            draw.AddLine(at+new float2(a,inset),at+new float2(b,inset),color,2);draw.AddLine(at+new float2(a,extent-inset),at+new float2(b,extent-inset),color,2);
+            draw.AddLine(at+new float2(inset,a),at+new float2(inset,b),color,2);draw.AddLine(at+new float2(extent-inset,a),at+new float2(extent-inset,b),color,2);
+        }
     }
     private static float CodexLineParagraph(string text,float2 at,float width,bool draw)
     {

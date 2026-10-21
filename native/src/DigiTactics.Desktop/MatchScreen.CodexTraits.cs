@@ -64,11 +64,11 @@ internal sealed partial class MatchScreen
         foreach(var point in trait.Breakpoints)
         {
             bool active=live&&count>=point.Count;var at=origin+new float2(0,y);
-            float height=Math.Max(15,CodexDetailParagraph(default,width-30,15,false,(point.Text,CodexMuted)))+2;
+            float height=Math.Max(16.2f,CodexDetailParagraph(default,width-30,15,16.2f,false,(point.Text,CodexMuted)))+2;
             if(active&&point.Count==activeThreshold)draw.AddRectFilled(at,at+new float2(width,height),new ImColor8(rgb.X,rgb.Y,rgb.Z,36),4);
-            draw.AddRectFilled(at+new float2(0,1),at+new float2(20,16),active?color:new ImColor8(28,39,62),4);
-            CodexLineLabel(at+new float2(0,1.5f),20,point.Count.ToString(),14,active?CodexNavy:CodexMuted,bold:true,center:true);
-            CodexDetailParagraph(at+new float2(26,1),width-30,15,true,(point.Text,active?CodexInk:CodexMuted));
+            draw.AddRectFilled(at+new float2(0,2),at+new float2(20,17),active?color:new ImColor8(28,39,62),4);
+            CodexLineLabel(at+new float2(0,2.5f),20,point.Count.ToString(),14,active?CodexNavy:CodexMuted,bold:true,center:true);
+            CodexDetailParagraph(at+new float2(26,1),width-30,15,16.2f,true,(point.Text,active?CodexInk:CodexMuted));
             y+=height+2;
         }
         if(trait.Breakpoints.Length>0)y-=2;
@@ -87,7 +87,7 @@ internal sealed partial class MatchScreen
                 var owned=live?codexOwned.GetValueOrDefault(line.Id):null;int stage=owned?.Max(entry=>entry.Unit.Stage)??0;
                 var at=origin+new float2(column++*34,y);ImGui.SetCursorScreenPos(at);
                 if(Button("codexLine/"+trait.Id+"/"+line.Id,"##codexLine/"+line.Id,30,30)){codexUnit=line.Id;codexResetScroll=true;}
-                bool hovered=ImGui.IsItemHovered(),focused=ImGui.IsItemFocused();CodexPortrait(line,stage,at,30);
+                bool hovered=ImGui.IsItemHovered(),focused=ImGui.IsItemFocused();codexOwnedChip=owned is not null;CodexPortrait(line,stage,at,30,true);
                 if(hovered||focused)draw.AddRect(at,at+new float2(30,30),CodexInk,5);
                 if(owned is not null)
                 {
@@ -114,11 +114,12 @@ internal sealed partial class MatchScreen
         foreach(string id in trait.CrestIds)
         {
             y+=6;var item=CodexData.Items.Single(entry=>entry.Id==id);
-            string source=item.Recipes.Length>0?string.Join(" + ",item.Recipes[0].Select(component=>CodexData.Items.Single(i=>i.Id==component).Name)):"Found in "+item.DropSource;
+            string source=item.Recipes.Length>0?string.Join(" + ",item.Recipes[0].Select(component=>CodexData.Items.Single(i=>i.Id==component).Name)):"found in "+item.DropSource;
             string label=item.Name+": "+source;
-            float height=CodexDetailParagraph(default,width-32,14,false,(label,CodexMuted));
+            // .cx-crest: 11px text on the body's 1.35 line.
+            float height=CodexDetailParagraph(default,width-32,13.3f,14.85f,false,(label,CodexMuted));
             ImGui.SetCursorScreenPos(origin+new float2(0,y+Math.Max(0,(height-26)/2)));CodexItemIcon(item.Id,26);
-            CodexDetailParagraph(origin+new float2(32,y+Math.Max(0,(26-height)/2)),width-32,14,true,(label,CodexMuted));
+            CodexDetailParagraph(origin+new float2(32,y+Math.Max(0,(26-height)/2)),width-32,13.3f,14.85f,true,(label,CodexMuted));
             y+=Math.Max(26,height);
         }
         ImGui.SetCursorScreenPos(origin);ImGui.Dummy(new(width,y));
@@ -136,11 +137,12 @@ internal sealed partial class MatchScreen
         {icon=new string(trait.Name.Where(char.IsUpper).Take(2).ToArray());if(icon.Length==0)icon=trait.Name[..Math.Min(2,trait.Name.Length)];}
         var textSize=ImGui.CalcTextSize(icon);draw.AddText(center-textSize*.5f,new ImColor8(16,19,26),icon);
     }
-    private void CodexPortrait(CodexLine line,int stage,float2 at,float extent)
+    private bool codexOwnedChip;
+    private void CodexPortrait(CodexLine line,int stage,float2 at,float extent,bool chip=false)
     {
         if(!ImGui.IsRectVisible(at,at+new float2(extent,extent)))return;
         // style.css .pt: the family-coloured radial tile behind the portrait, framed in the tier colour.
-        CodexLinePortrait(line,stage,at,extent);
+        CodexLinePortrait(line,stage,at,extent,chip,owned:codexOwnedChip);
     }
     private void CodexTraitLinks(CodexLine line,bool interactive)
     {

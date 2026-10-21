@@ -145,7 +145,7 @@ internal static class ClientCss
             draw.AddRect(min - new float2(i + 1), max + new float2(i + 1), new ImColor8(rgba.X, rgba.Y, rgba.Z, alpha), rounding > 0 ? rounding + d : 0, ImDrawFlags.None, 1);
         }
     }
-    private static float Erfc(float x)
+    internal static float Erfc(float x)
     {
         // Abramowitz and Stegun 7.1.26, |error| < 1.5e-7 for x >= 0.
         float t = 1 / (1 + .3275911f * x);

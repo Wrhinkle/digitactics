@@ -119,7 +119,8 @@ internal sealed partial class MatchScreen
         ImGui.BeginDisabled(codexUnit is not null);
         CodexHead(data,new(left,pageTop),width);
         // Like the collection grid, the scrollbar overlays the right padding instead of narrowing the cards.
-        ImGui.BeginChild("Codex body"u8,new(0,0),ImGuiChildFlags.None,ImGuiWindowFlags.NoScrollbar);
+        ImGui.SetCursorScreenPos(ImGui.GetCursorScreenPos()+new float2(2,0));
+        ImGui.BeginChild("Codex body"u8,new(-2,0),ImGuiChildFlags.None,ImGuiWindowFlags.NoScrollbar);
         CodexBodyMin=ImGui.GetWindowDrawList().GetClipRectMin();CodexBodyMax=ImGui.GetWindowDrawList().GetClipRectMax();
         if(codexResetScroll){ImGui.SetScrollY(0);codexResetScroll=false;}
         switch(codexTab)

@@ -206,8 +206,12 @@ internal sealed partial class MatchScreen
     }
 
     private float CodexDetailParagraph(float2 at,float width,float font,bool draw,params (string Text,ImColor8 Color)[] runs)
+        =>CodexDetailParagraph(at,width,font,0,draw,runs);
+    /// <summary>Wrapped runs; <paramref name="lineHeight"/> (0 = the font size) sets a CSS line box with the text centred in it.</summary>
+    private float CodexDetailParagraph(float2 at,float width,float font,float lineHeight,bool draw,params (string Text,ImColor8 Color)[] runs)
     {
-        ImGui.PushFont(NativeUiTheme.BodyFont,font);float line=ImGui.GetTextLineHeight(),x=0,y=0;
+        ImGui.PushFont(NativeUiTheme.BodyFont,font);float line=lineHeight>0?lineHeight:ImGui.GetTextLineHeight(),x=0,y=0;
+        if(lineHeight>0)at.Y+=MathF.Round((lineHeight-ImGui.GetTextLineHeight())*.5f);
         var painter=draw?ImGui.GetWindowDrawList():default;
         foreach(var run in runs)
             foreach(System.Text.RegularExpressions.Match token in System.Text.RegularExpressions.Regex.Matches(run.Text,@"\S+|\s+"))

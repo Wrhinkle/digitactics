@@ -320,7 +320,7 @@ internal sealed partial class MatchScreen
     /// </summary>
     private static Rgb FarmFormColor(string form)
     {
-        if(LegendEvolution.Form(form).Line is not {} line)return HudHex("8a6d1f");
+        if(LegendEvolution.FindForm(form)?.Line is not {} line)return HudHex("8a6d1f");
         foreach(var variant in codexCatalog.Value.Variants)
             if(variant.Lines.FirstOrDefault(l=>l.Id==line) is {PortraitColor:{} color})return HudCss(color);
         return HudHex("5b6b8c");

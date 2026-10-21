@@ -175,8 +175,10 @@ internal sealed partial class MatchScreen
         float y=14.8f+6;
         // text-shadow: 0 0 30px accent/40%, 0 3px 0 #000
         string upperTitle=title.ToUpperInvariant();float titleWidth=ClientCss.Width(ClientCss.Face.DisplayBold,titlePx,upperTitle,titlePx*.06f);
-        ClientCss.Glow(draw,body+new float2(titleWidth*.1f,y+titlePx*.3f),body+new float2(titleWidth*.9f,y+titlePx*.7f),ClientCss.Alpha(accent,.22f),30,titlePx*.2f);
-        ClientCss.Text(draw,ClientCss.Face.DisplayBold,titlePx,body+new float2(0,y+3),new ImColor8(0,0,0),upperTitle,titlePx*.06f,titlePx);
+        // Chromium blurs the 30px glow over the glyph shapes, not a box, so it reads fainter than a box glow; the hard
+        // shadow sits under grayscale anti-aliased edges here, so a little transparency keeps it from haloing the letters.
+        ClientCss.Glow(draw,body+new float2(titleWidth*.1f,y+titlePx*.3f),body+new float2(titleWidth*.9f,y+titlePx*.7f),ClientCss.Alpha(accent,.12f),30,titlePx*.2f);
+        ClientCss.Text(draw,ClientCss.Face.DisplayBold,titlePx,body+new float2(0,y+3),new ImColor8(0,0,0,205),upperTitle,titlePx*.06f,titlePx);
         ClientCss.Text(draw,ClientCss.Face.DisplayBold,titlePx,body+new float2(0,y),ClientCss.Gold1,upperTitle,titlePx*.06f,titlePx);
         y+=titlePx+6;
         ClientCss.Paragraph(draw,ClientCss.Face.Body,13,body+new float2(0,y),heroWidth,17.55f,ClientCss.Muted,summary);y+=summaryHeight;
@@ -337,13 +339,18 @@ internal sealed partial class MatchScreen
     private static void ResultNote(string value)
         =>ResultAdvance(ClientCss.Paragraph(ImGui.GetWindowDrawList(),ClientCss.Face.Body,12.5f,ResultCursor,ResultWidth,16.875f,ClientCss.Text2,value));
     /// <summary>The rotated Bits diamond (.bit): 11px square, light at the top, deep blue at the bottom.</summary>
+    /// <summary>.bit: an 11px square turned 45 degrees with the cyan gradient and box-shadow 0 0 6px rgba(79,200,255,.7).</summary>
     private static void BitIcon(ImDrawListPtr draw,float2 center)
     {
-        const float r=7.8f;
-        ClientCss.Glow(draw,center-new float2(4),center+new float2(4),new ImColor8(79,200,255,120),8,4);
-        draw.AddTriangleFilled(center+new float2(0,-r),center+new float2(r,0),center+new float2(-r,0),new ImColor8(140,226,255));
-        draw.AddTriangleFilled(center+new float2(-r,0),center+new float2(r,0),center+new float2(0,r),new ImColor8(53,147,231));
-        draw.AddTriangleFilled(center+new float2(0,-r),center+new float2(-r*.45f,-r*.55f),center+new float2(r*.45f,-r*.55f),new ImColor8(200,253,255));
+        const float r=11*.7071f;
+        // The shadow follows the turned square: erfc falloff rings (sigma 3px) as diamonds outside its edges.
+        for(int i=0;i<8;i++)
+        {
+            float d=i+.5f,intensity=.5f*ClientCss.Erfc(d/(3*1.41421356f));byte alpha=(byte)Math.Round(178*intensity);
+            if(alpha==0)continue;float v=r+d*1.41421356f;
+            draw.AddQuad(center+new float2(0,-v),center+new float2(v,0),center+new float2(0,v),center+new float2(-v,0),new ImColor8(79,200,255,alpha),1.2f);
+        }
+        CosmeticStyle.BitsGem(draw,center,11);
     }
     /// <summary>.progress: 8px track with the cyan fill and glow.</summary>
     private static void ResultProgress(float value,bool done=false)
@@ -375,9 +382,12 @@ internal sealed partial class MatchScreen
             }
             ClientCss.Text(draw,ClientCss.Face.DisplayBold,12.5f,at+new float2(8,7),ClientCss.Gold2,player.Placement > 0 ? $"#{player.Placement}" : "-",0,16);
             var avatarAt=at+new float2(8+30+8,2);var avatarCenter=avatarAt+new float2(13);
+            // .st-av: a 26px circle (overflow hidden, 1px gold-5 border) filled by the legend's .pt radial tile.
+            string? companion=ResultCompanion(player);
             draw.AddCircleFilled(avatarCenter,13,new ImColor8(10,20,40),32);
-            if(portraits.DrawCompanion(ResultCompanion(player),avatarAt+new float2(1),24))PostgameAvatarCount++;
-            draw.AddCircle(avatarCenter,13.6f,new ImColor8(1,10,19),32,2.2f);draw.AddCircle(avatarCenter,12.5f,ClientCss.Gold5,32,1);
+            if(companion is not null)HudPortraitTile(draw,avatarAt,26,FarmFormColor(companion.Split('@')[^1]),13);
+            if(portraits.DrawCompanion(companion,avatarAt+new float2(1),24))PostgameAvatarCount++;
+            draw.AddCircle(avatarCenter,12.5f,ClientCss.Gold5,32,1);
             string name = (Session.State.Duos ? $"Team {player.Team+1} · " : "") + player.Name;
             string status=player.Placement == 1 ? "Winner" : player.Placement > 0 ? "Eliminated" : $"{Math.Max(0,player.Health)} HP";
             float statusWidth=ClientCss.Width(ClientCss.Face.Body,11,status);
