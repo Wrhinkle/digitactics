@@ -114,11 +114,11 @@ internal sealed partial class MatchScreen
         draw.ChannelsMerge();
         y+=gridHeight+16;
         // .set-about
-        float aboutTop=y;y+=17;
+        float aboutTop=y;y+=BoxPadding.Y;
         float cardHeading=NativeUiTheme.TextLine(14);
-        float aboutHeight=2+16+cardHeading+12+NativeUiTheme.TextLine(12.5f)+6+NativeUiTheme.TextLine(12.5f)+6+16;
+        float aboutHeight=BoxPadding.Y*2+cardHeading+CardHeadingGap+NativeUiTheme.TextLine(12.5f)+6+NativeUiTheme.TextLine(12.5f)+6;
         PaintTile(draw,new(left,aboutTop),new(left+width,aboutTop+aboutHeight),box:true);
-        TileHeading(draw,new(left+17,y),width-34,"About",null,14);y+=cardHeading+12;
+        TileHeading(draw,new(left+17,y),width-34,"About",null,14);y+=cardHeading+CardHeadingGap;
         NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,12.5f,new(left+17,y),NativeUiTheme.TextLine(12.5f),NativeUiTheme.MutedNote,"Digi-Tactics is an unofficial, non-commercial fan project. See Credits for asset sources and acknowledgements.");
         y+=NativeUiTheme.TextLine(12.5f)+6;
         if(SettingsLink("settingsCredits","Credits & acknowledgements",new(left+17,y)))NavigateClient("about");
@@ -129,6 +129,9 @@ internal sealed partial class MatchScreen
         DrawResetSaveModal();
         ImGui.End();MusicLibraryPanel();
     }
+    // .box: 16px padding (12px 16px in windows 820 px tall or less) inside its 1px border; .card-h: 12px below (8px).
+    private float2 BoxPadding=>socialWindowSize.Y<=820?new(17,13):new(17,17);
+    private float CardHeadingGap=>socialWindowSize.Y<=820?8:12;
     /// <summary>A plain link (a, color --c-accent, underline on hover).</summary>
     private bool SettingsLink(string key,string label,float2 at,float px=12.5f)
     {
@@ -199,9 +202,9 @@ internal sealed partial class MatchScreen
     }
     private float SettingsSoundCard(float2 at,float width,bool measure)
     {
-        var draw=ImGui.GetWindowDrawList();float inner=width-34,x=at.X+17,y=at.Y+17;
+        var draw=ImGui.GetWindowDrawList();var pad=BoxPadding;float inner=width-pad.X*2,x=at.X+pad.X,y=at.Y+pad.Y;
         if(!measure)TileHeading(draw,new(x,y),inner,"Sound",null,14);
-        y+=NativeUiTheme.TextLine(14)+12;
+        y+=NativeUiTheme.TextLine(14)+CardHeadingGap;
         bool muted=audio.Muted,musicOn=!audio.MusicOff,others=audio.MuteOthers;
         y+=SettingsToggle("settingsMute","Mute all",null,ref muted,new(x,y),inner,measure);if(!measure&&muted!=audio.Muted)audio.Muted=muted;
         y+=SettingsToggle("settingsMusicOn","Music",null,ref musicOn,new(x,y),inner,measure);if(!measure&&musicOn==audio.MusicOff)audio.MusicOff=!musicOn;
@@ -230,13 +233,13 @@ internal sealed partial class MatchScreen
             y+=34;
         }
         if(audio.SettingsError is{} settingsError){y+=12;y+=SettingsNote(draw,new(x,y),inner,settingsError,measure,NativeUiTheme.Danger);}
-        return y+17-at.Y;
+        return y+pad.Y-at.Y;
     }
     private float SettingsInterfaceCard(float2 at,float width,bool measure)
     {
-        var draw=ImGui.GetWindowDrawList();float inner=width-34,x=at.X+17,y=at.Y+17,heading=NativeUiTheme.TextLine(14);
+        var draw=ImGui.GetWindowDrawList();var pad=BoxPadding;float inner=width-pad.X*2,x=at.X+pad.X,y=at.Y+pad.Y,heading=NativeUiTheme.TextLine(14);
         if(!measure)TileHeading(draw,new(x,y),inner,"Interface",null,14);
-        y+=heading+12;
+        y+=heading+CardHeadingGap;
         bool motion=clientPreferences.Motion,sound=clientPreferences.UiSfx,social=clientPreferences.Social;
         y+=SettingsToggle("setMotion","Animations","Page transitions and the turning pedestal",ref motion,new(x,y),inner,measure);
         if(!measure&&motion!=clientPreferences.Motion)SaveClientPreferences(clientPreferences with{Motion=motion});
@@ -282,7 +285,7 @@ internal sealed partial class MatchScreen
             y+=4;y+=SettingsNote(draw,new(x,y),inner,ClientUpdateDisplay.Status(true, UpdateClient.Status),measure);
             y+=12.5f;
         }
-        return y+17-at.Y;
+        return y+pad.Y-at.Y;
     }
     // client.js KEYS, verbatim.
     private static readonly (string Key, string Action)[] ClientKeys =
@@ -294,9 +297,9 @@ internal sealed partial class MatchScreen
     /// <summary>.keytable: 12.5px rows (6px 4px cells, c-border-1 rules); keys as kbd chips in a shrink-to-fit first column.</summary>
     private float SettingsKeysCard(float2 at,float width,bool measure)
     {
-        var draw=ImGui.GetWindowDrawList();float inner=width-34,x=at.X+17,y=at.Y+17;
+        var draw=ImGui.GetWindowDrawList();var pad=BoxPadding;float inner=width-pad.X*2,x=at.X+pad.X,y=at.Y+pad.Y;
         if(!measure)TileHeading(draw,new(x,y),inner,"Keys",null,14);
-        y+=NativeUiTheme.TextLine(14)+12;
+        y+=NativeUiTheme.TextLine(14)+CardHeadingGap;
         float Kbd(string key)=>NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,11,key,0)+12+2;
         float CellWidth(string keys)=>keys.Split(", ").Sum(Kbd)+(keys.Split(", ").Length-1)*NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,12.5f," ",0);
         float keyColumn=ClientKeys.Max(k=>CellWidth(k.Key))+4+12;
@@ -322,6 +325,6 @@ internal sealed partial class MatchScreen
             }
             y+=rowHeight;
         }
-        return y+17-at.Y;
+        return y+pad.Y-at.Y;
     }
 }

@@ -1,5 +1,6 @@
 using Brutal.ImGuiApi;
 using Brutal.Numerics;
+using Brutal.OpenGlApi;
 using DigiTactics.Assets;
 
 namespace DigiTactics.Desktop;
@@ -23,7 +24,7 @@ internal sealed class PostgameArtwork(string folder="postgame") : IDisposable
                 }
             }
             // Mipmapped like a browser's downscale: emblems and mode art are drawn far below their source size.
-            item = (new(image, new(MinFilter:9987,WrapS:33071,WrapT:33071), false), image.Width, image.Height);
+            item = (Sharpen(new(image, new(MinFilter:9987,WrapS:33071,WrapT:33071), false)), image.Width, image.Height);
             textures.Add(key, item);
         }
         float2 uv0 = new(0,0), uv1 = new(1,1);
@@ -43,7 +44,7 @@ internal sealed class PostgameArtwork(string folder="postgame") : IDisposable
         if (!textures.TryGetValue((name, false), out var item))
         {
             var image = PngImage.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "content", folder, name + ".png")));
-            item = (new(image, new(MinFilter:9729,WrapS:33071,WrapT:33071), false), image.Width, image.Height);
+            item = (Sharpen(new(image, new(MinFilter:9987,WrapS:33071,WrapT:33071), false)), image.Width, image.Height);
             textures.Add((name, false), item);
         }
         return new(item.Width, item.Height);
@@ -55,7 +56,7 @@ internal sealed class PostgameArtwork(string folder="postgame") : IDisposable
         if (!textures.TryGetValue(key, out var item))
         {
             var image = PngImage.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "content", folder, name + ".png")));
-            item = (new(image, new(MinFilter:9729,WrapS:10497,WrapT:10497), false), image.Width, image.Height);
+            item = (Sharpen(new(image, new(MinFilter:9987,WrapS:10497,WrapT:10497), false)), image.Width, image.Height);
             textures.Add(key, item);
         }
         const float cell = 32;
@@ -74,6 +75,16 @@ internal sealed class PostgameArtwork(string folder="postgame") : IDisposable
             drawList.PrimVtx(a, Uv(a), ca); drawList.PrimVtx(b, Uv(b), cc); drawList.PrimVtx(new(a.X, b.Y), Uv(new(a.X, b.Y)), cd);
         }
         drawList.PopTexture();
+    }
+    /// <summary>
+    /// UI paintings are mipmapped for downscaled draws; a -0.5 LOD bias keeps them as crisp as Chromium's
+    /// high-quality image downscaling instead of trilinear blur.
+    /// </summary>
+    internal static GpuTexture Sharpen(GpuTexture texture)
+    {
+        const int TextureLodBias = 0x8501;
+        OpenGl.TextureParameterFloat(texture.Id, TextureLodBias, -.5f);
+        return texture;
     }
     public void Dispose() { foreach (var item in textures.Values) item.Texture.Dispose(); textures.Clear(); }
 }

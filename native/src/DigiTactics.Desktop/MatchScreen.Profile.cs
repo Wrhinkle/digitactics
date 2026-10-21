@@ -66,13 +66,14 @@ internal sealed partial class MatchScreen
             // .prof-right: match history (1fr) above Bits history (auto, at most 200px).
             float heading=NativeUiTheme.TextLine(14),chipHeight=12+NativeUiTheme.TextLine(14);
             float bitsRows=summary.BitsHistory.Length==0?ProfileEmptyHeight(true):Math.Min(14,summary.BitsHistory.Length)*ProfileBitsRowHeight;
-            float bitsHeight=MathF.Round(Math.Min(200,2+16+Math.Max(heading,chipHeight)+12+bitsRows+16)),historyHeight=colsHeight-12-bitsHeight;
+            var pad=BoxPadding;
+            float bitsHeight=MathF.Round(Math.Min(200,pad.Y*2+Math.Max(heading,chipHeight)+CardHeadingGap+bitsRows)),historyHeight=colsHeight-12-bitsHeight;
             var historyAt=new float2(rightLeft,colsTop);
             PaintTile(draw,historyAt,historyAt+new float2(rightWidth,historyHeight),box:true);
-            TileHeading(draw,historyAt+new float2(17,17),rightWidth-34,"Match history",summary.Matches.Length>0?$"last {summary.Matches.Length}":null,14);
-            float listTop=17+heading+12;
+            TileHeading(draw,historyAt+pad,rightWidth-34,"Match history",summary.Matches.Length>0?$"last {summary.Matches.Length}":null,14);
+            float listTop=pad.Y+heading+CardHeadingGap;
             ImGui.SetCursorScreenPos(historyAt+new float2(17,listTop));
-            ImGui.BeginChild("Profile history"u8,new(rightWidth-34+4,Math.Max(1,historyHeight-listTop-17)),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
+            ImGui.BeginChild("Profile history"u8,new(rightWidth-34+4,Math.Max(1,historyHeight-listTop-pad.Y)),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
             ProfileHistoryCenter=ImGui.GetWindowPos()+new float2(rightWidth/2,Math.Min(90,historyHeight/2));
             if(summary.Matches.Length==0)ProfileEmpty(ImGui.GetWindowDrawList(),ImGui.GetCursorScreenPos(),rightWidth-34-4,"No games yet. Your last 30 games show up here with placement, traits and Digimon.",false);
             else ProfileHistory(summary);
@@ -101,7 +102,8 @@ internal sealed partial class MatchScreen
         draw.PopClipRect();
         draw.AddRect(at,hi,NativeUiPaint.Fade(NativeUiTheme.GoldBorder));
         // Content box: 16px 24px padding inside the border, items aligned to its bottom edge.
-        float contentLeft=at.X+25,contentRight=hi.X-25,bottom=hi.Y-17,avatarSize=shortWindow?92:112;
+        // 12px 16px padding in windows 820 px tall or less.
+        float padX=shortWindow?17:25,contentLeft=at.X+padX,contentRight=hi.X-padX,bottom=hi.Y-(shortWindow?13:17),avatarSize=shortWindow?92:112;
         // .prof-rank on the right.
         float emblem=shortWindow?50:64;
         string rankLabel=summary.Rank.Label.ToUpperInvariant();
@@ -163,8 +165,8 @@ internal sealed partial class MatchScreen
         ImGui.InputText("##profileName"u8,profileName,persona?ImGuiInputTextFlags.ReadOnly:ImGuiInputTextFlags.None);
         ImGui.PopStyleColor(5);ImGui.PopStyleVar(2);ImGui.PopFont();
         bool focused=ImGui.IsItemActive();
-        // ::placeholder: Chromium's darkGray, not bold.
-        if(profileName.ToString().Length==0)NativeUiPaint.TrackedIn(draw,NativeUiTheme.DisplayFont,20,inputLo+new float2(11,6),inputHeight-12,new ImColor8(169,169,169),"Your Tamer name");
+        // ::placeholder: Chromium's #757575, not bold.
+        if(profileName.ToString().Length==0)NativeUiPaint.TrackedIn(draw,NativeUiTheme.DisplayFont,20,inputLo+new float2(11,6),inputHeight-12,new ImColor8(117,117,117),"Your Tamer name");
         Buttons["profileName"]=(ImGui.GetItemRectMin()+ImGui.GetItemRectMax())*.5f;
         if(focused)NativeUiPaint.BoxGlow(draw,inputLo,inputHi,new ImColor8(200,170,110,46),3);
         draw.AddRect(inputLo,inputHi,NativeUiPaint.Fade(focused?NativeUiTheme.Gold:NativeUiTheme.GoldDim));
@@ -447,12 +449,13 @@ internal sealed partial class MatchScreen
         string balance=$"{profile!.Progress.Bits??0:N0}";
         float balanceWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,14,balance,.1f);
         float chipWidth=1+10+15+6+balanceWidth+12+1,chipHeight=12+NativeUiTheme.TextLine(14),rowHeight=Math.Max(heading,chipHeight);
-        TileHeading(draw,at+new float2(17,17+(rowHeight-heading)/2),extent.X-34-chipWidth-8,"Bits history",null,14);
-        var chipLo=new float2(at.X+extent.X-17-chipWidth,at.Y+17+(rowHeight-chipHeight)/2);var chipHi=chipLo+new float2(chipWidth,chipHeight);
+        var pad=BoxPadding;
+        TileHeading(draw,at+new float2(17,pad.Y+(rowHeight-heading)/2),extent.X-34-chipWidth-8,"Bits history",null,14);
+        var chipLo=new float2(at.X+extent.X-17-chipWidth,at.Y+pad.Y+(rowHeight-chipHeight)/2);var chipHi=chipLo+new float2(chipWidth,chipHeight);
         draw.AddRectFilled(chipLo,chipHi,NativeUiPaint.Fade(new ImColor8(1,10,19,179)));draw.AddRect(chipLo,chipHi,NativeUiPaint.Fade(NativeUiTheme.GoldDim));
         NativeUiPaint.Bit(draw,new(chipLo.X+1+10+1+5.5f,(chipLo.Y+chipHi.Y)/2),11);
         NativeUiPaint.TrackedIn(draw,NativeUiTheme.DisplayBoldFont,14,new(chipLo.X+1+10+15+6,chipLo.Y+6),NativeUiTheme.TextLine(14),NativeUiTheme.GoldBright,balance,.1f);
-        var listAt=at+new float2(17,17+rowHeight+12);float listWidth=extent.X-34,listHeight=extent.Y-(17+rowHeight+12)-17;
+        var listAt=at+new float2(17,pad.Y+rowHeight+CardHeadingGap);float listWidth=extent.X-34,listHeight=extent.Y-(pad.Y+rowHeight+CardHeadingGap)-pad.Y;
         if(summary.BitsHistory.Length==0){ImGui.SetCursorScreenPos(listAt);ProfileEmpty(draw,listAt,listWidth,"No Bits earned yet. Finish a game to earn some.",true);return;}
         ImGui.SetCursorScreenPos(listAt);ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));
         ImGui.BeginChild("Profile Bits"u8,new(listWidth,Math.Max(1,listHeight)),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);ImGui.PopStyleVar();

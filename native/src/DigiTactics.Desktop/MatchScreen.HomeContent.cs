@@ -71,7 +71,8 @@ internal sealed partial class MatchScreen
         foreach(var entry in entries)
         {
             float titleHeight=NativeUiTheme.TextLine(12.5f);
-            if(y+titleHeight>bottom)break;
+            // .tile-b clips with overflow: hidden, so a partly visible entry still shows.
+            if(y>=bottom)break;
             float start=y;
             NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyBoldFont,12.5f,new(at.X+12,y),titleHeight,NativeUiTheme.GoldBright,SocialEllipsis(entry.Title,NativeUiTheme.BodyBoldFont,12.5f,width-12));
             y+=titleHeight+1;

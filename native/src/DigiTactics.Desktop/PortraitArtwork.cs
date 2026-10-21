@@ -50,7 +50,7 @@ internal sealed class PortraitArtwork : IDisposable
                     for(int c=0;c<3;c++)image.Rgba[pixel+c]=(byte)Math.Round(image.Rgba[pixel+c]+(gray-image.Rgba[pixel+c])*grayscale);
                 }
             // Trilinear mipmaps: portraits are drawn well below their source size.
-            entry=(new(image,new(MinFilter:9987,WrapS:33071,WrapT:33071),false),frame);
+            entry=(PostgameArtwork.Sharpen(new(image,new(MinFilter:9987,WrapS:33071,WrapT:33071),false)),frame);
         }
         cache[key]=(entry.Texture,frame);
         ImGui.GetWindowDrawList().AddImage(new ImTextureRef {_TexID=new((nint)entry.Texture.Id)},position,new(position.X+size,position.Y+size),new(0,0),new(1,1),tint);

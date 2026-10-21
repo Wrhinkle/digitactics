@@ -61,9 +61,16 @@ internal sealed partial class MatchScreen
             string line="";
             foreach(var word in paragraph.Split(' ',StringSplitOptions.RemoveEmptyEntries))
             {
-                string next=line.Length==0?word:line+" "+word;
-                if(line.Length>0&&NativeUiPaint.TrackedWidth(font,px,next,tracking)>width){lines.Add(line);line=word;}
-                else line=next;
+                // Break opportunities: before each word, and after each hyphen inside a word.
+                var parts=new List<string>();int start=0;
+                for(int i=0;i<word.Length-1;i++)if(word[i]=='-'&&i>0){parts.Add(word[start..(i+1)]);start=i+1;}
+                parts.Add(word[start..]);
+                for(int p=0;p<parts.Count;p++)
+                {
+                    string next=line.Length==0?parts[p]:p==0?line+" "+parts[p]:line+parts[p];
+                    if(line.Length>0&&NativeUiPaint.TrackedWidth(font,px,next,tracking)>width){lines.Add(line);line=parts[p];}
+                    else line=next;
+                }
             }
             lines.Add(line);
         }
