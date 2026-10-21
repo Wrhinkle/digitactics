@@ -1545,10 +1545,10 @@
     part(d, f, o = {}) {
       const { s, r, m } = this.cur;
       const ow = (o.ow ?? 6) / s;
-      const fr2 = o.eo ? ' fill-rule="evenodd"' : "";
+      const fr3 = o.eo ? ' fill-rule="evenodd"' : "";
       let g2 = "";
-      if (ow > 0) g2 += `<path d="${d}"${fr2} fill="${INK}" stroke="${INK}" stroke-width="${n2(ow)}" stroke-linejoin="round"/>`;
-      g2 += `<path d="${d}"${fr2} fill="${this.paint(f)}"/>`;
+      if (ow > 0) g2 += `<path d="${d}"${fr3} fill="${INK}" stroke="${INK}" stroke-width="${n2(ow)}" stroke-linejoin="round"/>`;
+      g2 += `<path d="${d}"${fr3} fill="${this.paint(f)}"/>`;
       if (o.hi !== false) {
         const c = this.uid("c");
         this.defs.push(`<clipPath id="${c}"><path d="${d}"${o.eo ? ' clip-rule="evenodd"' : ""}/></clipPath>`);
@@ -42408,6 +42408,26 @@ void main() {
   var chain = (names, amplitude = 0.08, phase = 0.7, direction = "y") => ({ names, amplitude, phase, direction });
   var pair = (left2, right) => [left2, right];
   var anatomy = {
+    "rip-ts_kotemon": {
+      body: "J_spine01",
+      chest: "J_spine02",
+      head: "J_head",
+      bodyLean: 0.2,
+      headRange: 0.7,
+      armRange: 0.55,
+      idleGain: 2,
+      elbowAxis: "y",
+      elbowSigns: [-1, 1],
+      elbowAttack: 0.55,
+      elbowWin: 0.6,
+      family: "biped",
+      arms: pair("J_arm_l", "J_arm_r"),
+      elbows: pair("J_elbow_l", "J_elbow_r"),
+      weaponArm: "J_arm_r",
+      weaponElbow: "J_elbow_r",
+      neutral: [["J_arm_l", "z", -0.3], ["J_arm_r", "z", 0.3], ["J_elbow_l", "y", -0.65], ["J_elbow_r", "y", 0.65]],
+      chains: [chain(["J_tail_01", "J_tail_02", "J_tail_03", "J_tail_04", "J_tail_05"], 0.035, 0.8)]
+    },
     "rip-cat_ts_kuramon_chr629": { body: "J_center", secondary: "J_hip", family: "blob" },
     "rip-cat_ts_koromon_chr322": { body: "J_base", head: "J_ue_ago", headRange: 0.25, ears: pair("J_mimiL", "J_mimiR"), family: "blob" },
     "rip-cat_ts_mochimon_chr388": { body: "J_center", head: "J_mune", headRange: 0.6, armRange: 0.35, jaw: "J_kuchi", arms: pair("J_ude_L", "J_ude_R"), family: "blob" },
@@ -42510,6 +42530,15 @@ void main() {
     const map = anatomy[source?.uid];
     if (!map) return original;
     scene2.updateMatrixWorld(true);
+    const unguarded = new Map((map.neutral || []).map(([name2]) => [name2, scene2.getObjectByName(name2)?.quaternion.clone()]));
+    for (const [name2, direction, angle] of map.neutral || []) {
+      const bone = scene2.getObjectByName(name2);
+      if (!bone?.isBone) continue;
+      const parent = bone.parent.getWorldQuaternion(new Quaternion()).invert();
+      const world = bone.getWorldQuaternion(new Quaternion());
+      bone.quaternion.copy(parent.multiply(new Quaternion().setFromAxisAngle(axis[direction], angle)).multiply(world));
+      scene2.updateMatrixWorld(true);
+    }
     const channels = /* @__PURE__ */ new Map();
     function add2(name2, direction, amount, { local = false } = {}) {
       const bone = name2 && scene2.getObjectByName(name2);
@@ -42556,9 +42585,16 @@ void main() {
       const times = Array.from({ length: 65 }, (_, i) => clip2.duration * i / 64);
       const tracks = [...channels.values()].map(({ bone, rest, turns }) => {
         const values = [];
+        const weapon = clip2.name !== "idle" && (bone.name === map.weaponArm || bone.name === map.weaponElbow);
+        const sourceTrack = weapon && clip2.tracks.find((t) => t.name === bone.name + ".quaternion");
+        const originalTurn = sourceTrack && sourceTrack.createInterpolant();
         for (const time of times) {
           const u = time / clip2.duration, g2 = gesture(clip2.name, u), rotation = rest.clone();
-          for (const turn of turns) rotation.multiply(new Quaternion().setFromAxisAngle(turn.axis, turn.amount(clip2.name, u, g2)));
+          if (clip2.name === "idle" && map.idleGain) for (const key2 of ["lean", "turn", "lift", "wave"]) g2[key2] *= map.idleGain;
+          if (weapon) {
+            const target = originalTurn ? new Quaternion().fromArray(originalTurn.evaluate(time)) : unguarded.get(bone.name);
+            if (target) rotation.slerp(target, g2.envelope);
+          } else for (const turn of turns) rotation.multiply(new Quaternion().setFromAxisAngle(turn.axis, turn.amount(clip2.name, u, g2)));
           rotation.normalize().toArray(values, values.length);
         }
         return new QuaternionKeyframeTrack(bone.name + ".quaternion", times, values);
@@ -42601,7 +42637,31 @@ void main() {
   var mesh = (n4, parent, pivot, kind2, side = 0, segment = 0) => part(`Mesh_${n4}`, parent === null ? null : `Mesh_${parent}`, pivot, kind2, side, segment);
   var ag = (name2, parent, pivot, kind2, side = 0) => part(`Agumon_${name2}_${name2}`, parent && `Agumon_${parent}_${parent}`, pivot, kind2, side);
   var br = (name2, parent, pivot, kind2, side = 0, segment = 0) => part(`Brachiomon_${name2}`, parent && `Brachiomon_${parent}`, pivot, kind2, side, segment);
+  var fr = (n4, parent, pivot, kind2, side = 0) => part(`TMD_object_#${n4},_VRAM_page_#5`, parent === null ? null : `TMD_object_#${parent},_VRAM_page_#5`, pivot, kind2, side);
   var rigs = {
+    "rip-dw1_frigimon": {
+      family: "frigimon",
+      durations: { idle: 3, run: 0.9, attack: 0.75, special: 1.3, win: 2.4 },
+      // Authored repair, not recovered game transforms. Each measured joint lies
+      // inside both adjacent original cap volumes. Vertex/UV/material data stays
+      // byte-identical; only staged piece translations change before animation.
+      restOffsets: [[0, 0, 0], [0, -0.48, 0], [0.65, -0.1, 0.1], [1.15, -0.08, 0.1], [1.75, -0.05, 0.1], [-0.45, -0.15, 0.1], [-0.95, -0.13, 0.1], [-1.5, 0.05, 0.1], [0, 0.5, 0.1], [0, 1, 0.1], [0, 0.5, 0.1], [0, 1, 0.1]],
+      triangles: [88, 130, 20, 20, 46, 20, 20, 46, 36, 50, 36, 50],
+      parts: [
+        fr(0, null, [0.55133, 0, 0.1], "body"),
+        fr(1, 0, [0.55133, 1.64987, -0.02058], "head"),
+        fr(2, 0, [-0.83494, 1.09074, -0.13188], "arm", -1),
+        fr(3, 2, [-1.92171, 1.04073, -0.08063], "elbow", -1),
+        fr(4, 3, [-2.86642, 1.0482, -0.10063], "hand", -1),
+        fr(5, 0, [1.93637, 1.08013, -0.13188], "arm", 1),
+        fr(6, 5, [3.03803, 1.08013, -0.08063], "elbow", 1),
+        fr(7, 6, [3.98347, 1.10176, -0.10063], "hand", 1),
+        fr(8, 0, [1.64061, -1.47254, -0.14836], "leg", 1),
+        fr(9, 8, [1.64061, -2.85404, -0.14836], "foot", 1),
+        fr(10, 0, [-0.5201, -1.47254, -0.14836], "leg", -1),
+        fr(11, 10, [-0.5901, -2.83478, -0.14836], "foot", -1)
+      ]
+    },
     "rip-dw1_agumon": { family: "agumon", parts: [
       ag("Torso", null, [0, 0.86, 0], "body"),
       ag("Head", "Torso", [0, 1.8, 0.08], "head"),
@@ -42740,6 +42800,55 @@ void main() {
       if (p.kind === "head") x = role === "attack" ? 0.22 * hit - 0.09 * wind : role === "special" ? -0.18 * big : 0.035 * s;
       if (p.kind === "jaw") x = role === "attack" ? 0.4 * hit : role === "special" ? 0.48 * big : role === "win" ? 0.18 * (1 - c) : 0;
       if (p.kind === "body") x = role === "attack" ? 0.09 * hit : role === "special" ? -0.06 * big : 0.012 * s;
+    } else if (family === "frigimon") {
+      if (p.kind === "arm") z = -side * 0.65;
+      if (p.kind === "elbow") y = -side * 0.2;
+      if (role === "idle") {
+        if (p.kind === "head") {
+          y = 0.045 * s;
+          x = 0.025 * s;
+        }
+        if (p.kind === "arm") z += side * 0.025 * s;
+        if (p.kind === "elbow") y -= side * 0.025 * s;
+      } else if (role === "run") {
+        if (p.kind === "leg") x = side * 0.3 * s;
+        if (p.kind === "foot") x = -side * 0.22 * s + 0.1 * Math.max(0, side * s) ** 2;
+        if (p.kind === "arm") x = -side * 0.25 * s;
+        if (p.kind === "head") x = 0.035 * (1 - c);
+      } else if (role === "attack") {
+        if (p.kind === "body") {
+          x = 0.08 * hit - 0.035 * wind;
+          y = 0.1 * hit;
+        }
+        if (p.kind === "head") x = -0.06 * hit;
+        if (p.kind === "arm" && side === -1) {
+          x = -0.95 * hit + 0.18 * wind;
+          z += side * 0.12 * hit;
+        }
+        if (p.kind === "elbow" && side === -1) y -= side * 0.35 * hit;
+        if (p.kind === "arm" && side === 1) x = 0.12 * hit;
+      } else if (role === "special") {
+        if (p.kind === "body") x = -0.055 * wind + 0.09 * big;
+        if (p.kind === "head") x = -0.12 * big;
+        if (p.kind === "arm") {
+          x = -0.85 * big;
+          z += side * 0.2 * big;
+        }
+        if (p.kind === "elbow") y -= side * 0.22 * big;
+      } else if (role === "win") {
+        if (p.kind === "body") y = 0.1 * s;
+        if (p.kind === "head") {
+          x = 0.065 * Math.sin(2 * cycle2);
+          z = 0.05 * s;
+        }
+        if (p.kind === "arm") {
+          x = -0.85 * (1 - c) / 2 + side * 0.13 * s;
+          z += side * 0.1 * (1 - c);
+        }
+        if (p.kind === "elbow") y -= side * 0.15 * (1 - c);
+        if (p.kind === "leg") x = side * 0.08 * s;
+        if (p.kind === "foot") x = -side * 0.065 * s;
+      }
     } else if (family === "brachiomon") {
       const gait = side * (p.segment === 0 ? 1 : -1) * s;
       if (p.kind === "tail") y = (role === "run" ? 0.065 : role === "win" ? 0.095 : 0.035) * (Math.sin(cycle2 - p.segment * 0.45) - Math.sin(-p.segment * 0.45));
@@ -42812,6 +42921,13 @@ void main() {
     const spec = rigs[src?.uid];
     if (!spec || gltf.animations.length) return null;
     const scene2 = gltf.scene, prepared = /* @__PURE__ */ new Map();
+    if (spec.restOffsets && scene2.userData.rigidAssemblyPrepared !== src.uid) {
+      const nodes = spec.parts.map((p) => scene2.getObjectByName(p.name));
+      if (nodes.some((node, i) => !node?.isMesh || node.parent !== scene2 || node.isSkinnedMesh || node.geometry.index.count !== spec.triangles[i] * 3))
+        throw new Error(`DW1 staged assembly changed: ${src.uid}`);
+      nodes.forEach((node, i) => node.position.add(new Vector3(...spec.restOffsets[i])));
+      scene2.userData.rigidAssemblyPrepared = src.uid;
+    }
     scene2.updateMatrixWorld(true);
     for (const p of spec.parts) {
       const node = scene2.getObjectByName(p.name);
@@ -42890,7 +43006,12 @@ void main() {
       pose.clipAction(authored[0]).play();
       pose.update(0);
     }
-    return anatomyFallbackClips(gltf.scene, src, fallbackClips(gltf.scene));
+    const fallback = fallbackClips(gltf.scene);
+    if (src?.uid === "rip-ts_kotemon" && !gltf.animations.length) {
+      const sword = gltf.scene.getObjectByName("J_bamboo_sword");
+      if (sword?.parent?.name === "J_hand_r") sword.position.set(0, 0, 0);
+    }
+    return anatomyFallbackClips(gltf.scene, src, fallback);
   }
   function blobBodyClips(gltf, src, clips) {
     if (src?.uid !== "rip-cat_cs_pabumon_chr387") return clips;
@@ -43062,7 +43183,12 @@ void main() {
       "rip-kimeramon": ["J_center", "win"],
       "rip-cs_grademon": ["J_center", "special"],
       "rip-cs_gryphonmon": ["J_center", "win"],
-      "rip-l_gumdramon": ["J_center", "special"]
+      "rip-l_gumdramon": ["J_center", "special"],
+      "rip-stingmon": ["J_center", "special"],
+      "rip-dinobeemon": ["J_center", "special", "win"],
+      "rip-zubamon": ["J_center", "special"],
+      "rip-zubaeagermon": ["J_center", "special"],
+      "rip-puppetmon": ["J_center", "special"]
     }[src?.uid];
     if (!policy) return clips;
     const [body2, ...roles] = policy, idle = clips.find((c) => c.name === "idle"), name2 = body2 + ".position", node = gltf.scene.getObjectByName(body2);
@@ -43073,27 +43199,79 @@ void main() {
     gltf.scene.updateMatrixWorld(true);
     const origin = node.getWorldPosition(V()), parent = node.parent.matrixWorld.clone(), inverse = parent.clone().invert();
     const box3 = new Box3().setFromObject(gltf.scene), height = Math.max(1e-9, box3.max.y - box3.min.y);
+    const shared = src.uid === "rip-puppetmon" ? node.parent : null;
+    const sharedInverse = shared ? new Matrix3().setFromMatrix4(shared.parent.matrixWorld.clone().invert()) : null;
     const result = clips.map((action2) => {
       const role = action2.name, track2 = action2.tracks.find((t) => t.name === name2);
       if (!roles.includes(role) || !track2) return action2;
-      const resample = role === "win" || track2.times[track2.times.length - 1] < action2.duration;
+      const resample = !!shared || role === "win" || track2.times[track2.times.length - 1] < action2.duration;
       const times = resample ? [.../* @__PURE__ */ new Set([...track2.times, ...Array.from({ length: 65 }, (_, i) => action2.duration * i / 64)])].sort((a, b) => a - b) : Array.from(track2.times);
       const interpolant = track2.createInterpolant(), displacements = times.map((time) => new Vector3().fromArray(interpolant.evaluate(time)).applyMatrix4(parent).y - origin.y);
       const up = Math.min(1, height * 0.35 / Math.max(...displacements, 1e-9)), down = Math.min(1, height * 0.08 / Math.max(...displacements.map((y) => -y), 1e-9));
-      const corrected = action2.clone(), out = corrected.tracks.find((t) => t.name === name2);
+      const corrected = action2.clone(), out = shared ? new VectorKeyframeTrack(shared.name + ".position", times, new Array(times.length * 3).fill(0)) : corrected.tracks.find((t) => t.name === name2);
+      if (shared) corrected.tracks.push(out);
       out.times = new Float32Array(times);
       out.values = new Float32Array(times.length * 3);
       for (let i = 0; i < displacements.length; i++) {
         const u = times[i] / action2.duration, end = Math.min(1, Math.max(0, (1 - u) / 0.2)), start = role === "win" ? Math.min(1, u / 0.15) : 1;
         const settle2 = end * end * (3 - 2 * end) * start * start * (3 - 2 * start);
         const y = displacements[i] * (displacements[i] < 0 ? down : up) * settle2;
-        origin.clone().add(new Vector3(0, y, 0)).applyMatrix4(inverse).toArray(out.values, i * 3);
+        const desired = origin.clone().add(new Vector3(0, y, 0));
+        if (shared) {
+          const authored = new Vector3().fromArray(interpolant.evaluate(times[i])).applyMatrix4(parent);
+          desired.sub(authored).applyMatrix3(sharedInverse).add(shared.position).toArray(out.values, i * 3);
+        } else desired.applyMatrix4(inverse).toArray(out.values, i * 3);
       }
       return corrected;
     });
     mixer.stopAllAction();
     mixer.uncacheRoot(gltf.scene);
-    return result;
+    return src.uid === "rip-zubaeagermon" ? somersaultClearance(gltf, result) : result;
+  }
+  function somersaultClearance(gltf, clips) {
+    const scene2 = gltf.scene, idle = clips.find((c) => c.name === "idle"), clip2 = clips.find((c) => c.name === "special");
+    const node = scene2.getObjectByName("J_center"), track2 = clip2?.tracks.find((t) => t.name === "J_center.position");
+    if (!idle || !node || !track2) return clips;
+    const mixer = new AnimationMixer(scene2);
+    mixer.clipAction(idle).play();
+    mixer.update(0);
+    scene2.updateMatrixWorld(true);
+    const base = new Box3().setFromObject(scene2, true), height = Math.max(1e-9, base.max.y - base.min.y), meshes = [];
+    scene2.traverse((mesh3) => {
+      if (!mesh3.isSkinnedMesh) return;
+      const indices = [], joints = mesh3.geometry.attributes.skinIndex, weights = mesh3.geometry.attributes.skinWeight;
+      for (let i = 0; i < joints.count; i++) {
+        let tail = 0;
+        for (let k = 0; k < 4; k++) if (/^J_tail/.test(mesh3.skeleton.bones[joints.getComponent(i, k)].name)) tail += weights.getComponent(i, k);
+        if (tail < 0.5) indices.push(i);
+      }
+      meshes.push({ mesh: mesh3, indices });
+    });
+    mixer.stopAllAction();
+    const action2 = mixer.clipAction(clip2);
+    action2.setLoop(LoopOnce, 1);
+    action2.clampWhenFinished = true;
+    action2.play();
+    const times = [.../* @__PURE__ */ new Set([...track2.times, ...Array.from({ length: 257 }, (_, i) => clip2.duration * i / 256)])].sort((a, b) => a - b), values = [];
+    for (const time of times) {
+      mixer.setTime(time);
+      scene2.updateMatrixWorld(true);
+      let floor = Infinity;
+      for (const { mesh: mesh3, indices } of meshes) {
+        mesh3.skeleton.update();
+        for (const index2 of indices) floor = Math.min(floor, mesh3.getVertexPosition(index2, V()).applyMatrix4(mesh3.matrixWorld).y);
+      }
+      const margin = height * 0.01 * Math.sin(Math.PI * time / clip2.duration) ** 2;
+      const lift = Math.max(0, base.min.y + margin - floor);
+      const delta = new Vector3(0, lift, 0).applyMatrix3(new Matrix3().setFromMatrix4(node.parent.matrixWorld.clone().invert()));
+      node.position.clone().add(delta).toArray(values, values.length);
+    }
+    mixer.stopAllAction();
+    mixer.uncacheRoot(scene2);
+    const corrected = clip2.clone(), out = corrected.tracks.find((t) => t.name === track2.name);
+    out.times = new Float32Array(times);
+    out.values = new Float32Array(values);
+    return clips.map((c) => c === clip2 ? corrected : c);
   }
   function fallbackClips(scene2, adjustRest = true) {
     const bones = /* @__PURE__ */ new Set();
@@ -47512,16 +47690,16 @@ void main() {
   };
   var mix2 = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
   var mixN = (a, b, k) => a + (b - a) * k;
-  var fr = (b, n4 = 1) => (b / n4 % 1 + 1) % 1;
-  var osc2 = (b, n4 = 2) => Math.sin(fr(b, n4) * TAU2);
-  var onBeat = (b, sharp = 6) => Math.exp(-fr(b) * sharp);
+  var fr2 = (b, n4 = 1) => (b / n4 % 1 + 1) % 1;
+  var osc2 = (b, n4 = 2) => Math.sin(fr2(b, n4) * TAU2);
+  var onBeat = (b, sharp = 6) => Math.exp(-fr2(b) * sharp);
   var hop = (b, n4 = 1) => Math.abs(Math.sin(Math.PI * b / n4));
   var smooth = (k) => k * k * (3 - 2 * k);
   var snap = (k) => k < 0.22 ? smooth(k / 0.22) : 1;
   var sq = (x, k = 2.5) => Math.tanh(k * x) / Math.tanh(k);
   function keys(b, list, step2 = 1, ease2 = smooth) {
     const n4 = list.length;
-    const pos = fr(b, n4 * step2) * n4;
+    const pos = fr2(b, n4 * step2) * n4;
     const i = Math.floor(pos), k = ease2(pos - i);
     const a = list[i], c = list[(i + 1) % n4];
     const o = {};
@@ -47592,7 +47770,7 @@ void main() {
       icon: "\u{1F3C3}",
       desc: "Knee up, slide back, switch legs, arms pumping. Running on the spot.",
       pose(b) {
-        const k = fr(b, 2), l = k < 0.5 ? smooth(k * 2) : 1 - smooth((k - 0.5) * 2);
+        const k = fr2(b, 2), l = k < 0.5 ? smooth(k * 2) : 1 - smooth((k - 0.5) * 2);
         const r = 1 - l;
         return {
           lL: mix2(L("lBack"), L("kneeUp"), l),
@@ -47619,7 +47797,7 @@ void main() {
       desc: "Point to the sky, then down across to the floor, other hand on the hip.",
       pose(b) {
         const side = Math.floor(b / 8) % 2 ? -1 : 1;
-        const k = fr(b, 4);
+        const k = fr2(b, 4);
         const upK = k < 0.5 ? snap(k * 2) : 1 - snap((k - 0.5) * 2);
         const point2 = mix2([0.45, -0.75, 0.45], L("point"), upK);
         const hipArm = L("hip"), hipFore = L("toHip");
@@ -47652,8 +47830,8 @@ void main() {
       icon: "\u{1F483}",
       desc: "Arms out, palms, shoulders, head, hips, a hip circle and a quarter turn. 16 counts.",
       pose(b) {
-        const n4 = Math.floor(fr(b, 16) * 16);
-        const k = snap(fr(b));
+        const n4 = Math.floor(fr2(b, 16) * 16);
+        const k = snap(fr2(b));
         const st3 = [
           // what each arm does after count i
           ["fwd", null, null, null],
@@ -47688,9 +47866,9 @@ void main() {
         const cr = n4, pv3 = n4 - 1;
         const rA = mix2(right(pv3)[0], right(cr)[0], k), rF = mix2(right(pv3)[1], right(cr)[1], k);
         const lA = mix2(left2(pv3)[0], left2(cr)[0], k), lF = mix2(left2(pv3)[1], left2(cr)[1], k);
-        const circle = n4 >= 12 && n4 < 15 ? fr(b, 1) * TAU2 : 0;
-        const jump = n4 === 15 ? Math.sin(Math.PI * fr(b)) : 0;
-        const turn = Math.floor(b / 16) * (Math.PI / 2) + (n4 === 15 ? smooth(fr(b)) * (Math.PI / 2) : 0);
+        const circle = n4 >= 12 && n4 < 15 ? fr2(b, 1) * TAU2 : 0;
+        const jump = n4 === 15 ? Math.sin(Math.PI * fr2(b)) : 0;
+        const turn = Math.floor(b / 16) * (Math.PI / 2) + (n4 === 15 ? smooth(fr2(b)) * (Math.PI / 2) : 0);
         return {
           aR: rA,
           fR: rF,
@@ -47711,7 +47889,7 @@ void main() {
       icon: "\u{1F300}",
       desc: "Toprock, drop to the floor, spin on the back with legs flying, then freeze.",
       pose(b) {
-        const c = fr(b, 16) * 16;
+        const c = fr2(b, 16) * 16;
         if (c < 4) {
           const s = Math.sin(Math.PI * c);
           return {
@@ -47758,8 +47936,8 @@ void main() {
       icon: "\u{1F40E}",
       desc: "Wrists crossed on the reins, a skipping gallop, then the lasso. Gangnam style.",
       pose(b) {
-        const k = fr(b, 2);
-        const lUp = k < 0.5 ? Math.sin(Math.PI * fr(b * 2)) : 0, rUp = k >= 0.5 ? Math.sin(Math.PI * fr(b * 2)) : 0;
+        const k = fr2(b, 2);
+        const lUp = k < 0.5 ? Math.sin(Math.PI * fr2(b * 2)) : 0, rUp = k >= 0.5 ? Math.sin(Math.PI * fr2(b * 2)) : 0;
         const lasso = Math.floor(b / 8) % 2 === 1;
         const o = {
           lL: mix2([0.3, -0.9, 0.2], [0.3, -0.45, 0.85], lUp),
@@ -47777,7 +47955,7 @@ void main() {
           rt: { y: 0.05 * hop(b * 2), x: 0.02 * Math.sin(Math.PI * b) }
         };
         if (lasso) {
-          const a = fr(b, 1) * TAU2;
+          const a = fr2(b, 1) * TAU2;
           o.aR = [-0.2, 1, 0.1];
           o.fR = [0.75 * Math.cos(a), 0.45, 0.75 * Math.sin(a)];
           o.hd = [-12, -15, 0];
@@ -47794,9 +47972,9 @@ void main() {
       icon: "\u{1F389}",
       desc: "Hop, kick, hop, kick, fists up and a spin to finish.",
       pose(b) {
-        const c = fr(b, 8) * 8;
+        const c = fr2(b, 8) * 8;
         const left2 = Math.floor(b) % 2 === 0;
-        const kick3 = Math.sin(Math.PI * fr(b));
+        const kick3 = Math.sin(Math.PI * fr2(b));
         const pump2 = c >= 6 ? 1 : 0;
         const spin = c >= 6 ? smooth((c - 6) / 2) * TAU2 : 0;
         return {
@@ -47826,7 +48004,7 @@ void main() {
       pose(b) {
         const s = Math.sin(Math.PI * b);
         const out = (s + 1) / 2;
-        const lift = Math.floor(b) % 2 ? 0 : Math.sin(Math.PI * fr(b));
+        const lift = Math.floor(b) % 2 ? 0 : Math.sin(Math.PI * fr2(b));
         return {
           lL: mix2(L("lIn"), L("lOut"), out),
           lR: mix2(Rt("lIn"), Rt("lOut"), 1 - out),
@@ -47877,7 +48055,7 @@ void main() {
       desc: "Big head nods on every beat with air guitar, horns up every other bar.",
       pose(b) {
         const hit = onBeat(b, 5);
-        const horns = Math.floor(b / 8) % 2 === 1 && fr(b, 8) > 0.5;
+        const horns = Math.floor(b / 8) % 2 === 1 && fr2(b, 8) > 0.5;
         const strum = 0.5 + 0.5 * Math.cos(TAU2 * b * 2);
         return {
           hd: [-10 + 42 * hit, 0, 0],
@@ -55264,10 +55442,10 @@ void main() {
         const run2 = async () => {
           if (stop) return;
           try {
-            const [fr2, pub] = await Promise.all([S4.friendLobbies().catch(() => []), S4.listLobbies({ dt_game: GAME_KEY, dt_ver: PROTO_VERSION }).catch(() => [])]);
+            const [fr3, pub] = await Promise.all([S4.friendLobbies().catch(() => []), S4.listLobbies({ dt_game: GAME_KEY, dt_ver: PROTO_VERSION }).catch(() => [])]);
             const rows = [];
             const seen = /* @__PURE__ */ new Set();
-            for (const l of fr2 || []) if (ours(l.data) && !seen.has(String(l.id))) {
+            for (const l of fr3 || []) if (ours(l.data) && !seen.has(String(l.id))) {
               seen.add(String(l.id));
               rows.push(row(l, l.friendName || "Friend"));
             }

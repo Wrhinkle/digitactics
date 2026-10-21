@@ -1,5 +1,5 @@
 {
-  "sourceHash": "795238a887560621eda741296a02808c21e1e6996917cbe0c2c7cf32b0acaa5d",
+  "sourceHash": "652f525ea82e7f9e36945af5c314d08b191c63a67c9f21f623f6cad33edd6d58",
   "tile": 160,
   "columns": 8,
   "frames": 52,
@@ -1345,11 +1345,11 @@
         "mood": "any",
         "role": "taunt"
       },
-      "sha256": "eb1509ed28ca5232428b52ae58ebdffbe5ff7f3c3b8688d8e0ba4a420d9eb9ba",
+      "sha256": "e5c3725c484d307b0b3c9d37ed37483a0c1be12371f57af443596d199fdc903f",
       "preview": [
         {
           "file": "mystery_daily_emote_19.preview-0.png",
-          "sha256": "02d539a694e74920457a912356669efd716fda73639528f14ebb87b253416d28",
+          "sha256": "1fcd443013b395e4f81d091939f122663e2ed7d42de778437d646113d803a37d",
           "frames": 120,
           "frameMs": 50,
           "loopMs": 6000,
@@ -1440,11 +1440,11 @@
         "mood": "any",
         "role": "dance"
       },
-      "sha256": "db63af865990382935c6fc9472e52098ccb938b3e7504b6665a149b5e8dcd37b",
+      "sha256": "8f1b0adf8d3efb1e043d087371c53f71e17d9febe51824baeaa696cd5899c69a",
       "preview": [
         {
           "file": "mystery_vault_emote_4.preview-0.png",
-          "sha256": "23b950347d4485e7efb9cd831f78ad3014a4d87983a8d286538678014d2c405c",
+          "sha256": "647cc4d8c97e3a78bb484f395f76dcce8ee816daff2c1b4cd8d5123a91527b72",
           "frames": 18,
           "frameMs": 50,
           "loopMs": 900,
