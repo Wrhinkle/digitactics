@@ -65,7 +65,7 @@ internal sealed partial class MatchScreen
     private void StoreHeader(CosmeticCollection collection,float width)
     {
         var at=ImGui.GetCursorScreenPos();var draw=ImGui.GetWindowDrawList();const float height=63;
-        var daily=MatchRewards.LiveProgress(profile!.Storage.GetValueOrDefault("dt.shop.v1"),null,DateOnly.FromDateTime(DateTime.Now));
+        var daily=MatchRewards.LiveProgress(profile!.Storage.GetValueOrDefault("dt.shop.v1"),null,HomeDay);
         CollectionMissions=daily.Missions;CollectionBitsHistoryRows=0;
         collectionArtwork.Draw("store-hero",at,new(width,height),255,true,.55f);
         float split=width*.55f;
@@ -160,7 +160,7 @@ internal sealed partial class MatchScreen
     /// <summary>.dts-feat: art-backed strip with the "Featured today" heading and the day's discounted cards.</summary>
     private float StoreFeatured(CosmeticCollection collection,float2 at,float width)
     {
-        var draw=ImGui.GetWindowDrawList();var day=DateOnly.FromDateTime(DateTime.Now);
+        var draw=ImGui.GetWindowDrawList();var day=HomeDay;
         var offers=CosmeticCollection.Featured(day);
         if(offers.Length==0)return at.Y;
         float inner=width-2-24;int columns=Math.Max(1,(int)((inner+12)/188));float cardWidth=(inner-(columns-1)*12)/columns;
@@ -355,7 +355,7 @@ internal sealed partial class MatchScreen
         }
         else
         {
-            var day=DateOnly.FromDateTime(DateTime.Now);int price=CosmeticCollection.Price(kind,item,day);bool poor=price>collection.Bits;
+            var day=HomeDay;int price=CosmeticCollection.Price(kind,item,day);bool poor=price>collection.Bits;
             ImGui.BeginDisabled(poor);
             bool pressed=CosmeticHit(buyKey,at,extent,out bool hover);
             ImGui.EndDisabled();

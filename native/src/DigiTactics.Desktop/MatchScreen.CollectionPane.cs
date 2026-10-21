@@ -215,7 +215,7 @@ internal sealed partial class MatchScreen
         else if(item.Linked is {Length:2} link)
         {
             var source=CosmeticCollection.Item(link[0],link[1]);
-            int price=source is null?0:CosmeticCollection.Price(link[0],source,DateOnly.FromDateTime(DateTime.Now));
+            int price=source is null?0:CosmeticCollection.Price(link[0],source,HomeDay);
             if(!measure&&CollectionPriceButton("linkedCosmeticStore",new(at.X,y),width,"GET THE "+CollectionKindName(link[0]).ToUpperInvariant()+" CLIP ·",price))
                 OpenCollectionPage(store:true,kind:link[0],item:link[1]);
             y+=41+8;Note("Owning it on the soundboard unlocks it here too.");
@@ -227,7 +227,7 @@ internal sealed partial class MatchScreen
         }
         else
         {
-            DateOnly day=DateOnly.FromDateTime(DateTime.Now);int price=CosmeticCollection.Price(kind,item,day);
+            DateOnly day=HomeDay;int price=CosmeticCollection.Price(kind,item,day);
             ImGui.BeginDisabled(price>collection.Bits);
             if(!measure&&CollectionPriceButton("buyCosmetic/"+kind+"/"+item.Id,new(at.X,y),width,"BUY ·",price,price>collection.Bits))purchase=(kind,item.Id,day);
             ImGui.EndDisabled();

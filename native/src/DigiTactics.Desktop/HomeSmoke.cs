@@ -107,7 +107,7 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
             steps.Add(new("event-farm",s=>Click(s,"homeEventsFarm",s.HomeArticleBounds),s=>Check(s.Buttons.ContainsKey("closeFarm"),"Events Digi-Farm link failed.")));
             AddClick("closeFarm");
         }
-        AddClick("homeTab/overview",s=>{Check(s.HomeTab=="overview"&&s.HomeFeaturedCount==4,"Overview must show all four daily offers.");originalOffers=s.HomeFeaturedKeys.ToArray();});
+        AddClick("homeTab/overview",s=>{Check(s.HomeTab=="overview"&&s.HomeFeaturedCount==3,"Overview must show the first three daily offers (client.js renderFeatured).");originalOffers=s.HomeFeaturedKeys.ToArray();});
         steps.Add(new("midnight-rotation",s=>{clock=clock.AddDays(1);return true;},s=>
         {
             var expected=CosmeticCollection.Featured(DateOnly.FromDateTime(clock.LocalDateTime)).Select(o=>o.Kind+"/"+o.Item.Id).ToArray();
@@ -116,9 +116,10 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         steps.Add(new("restore-day",s=>{clock=DateTimeOffset.Now;return true;},s=>
         {
             var collection=new CosmeticCollection(profile?.Storage.GetValueOrDefault("dt.cosmetics.v1"));var expected=CosmeticCollection.Featured(DateOnly.FromDateTime(clock.LocalDateTime));
-            Check(s.HomeFeaturedCount==4&&s.HomeFeaturedOwned==expected.Count(o=>collection.Owns(o.Kind,o.Item.Id)),"Featured ownership badges diverged from the collection.");
+            Check(s.HomeFeaturedCount==3&&s.HomeFeaturedOwned==expected.Take(3).Count(o=>collection.Owns(o.Kind,o.Item.Id)),"Featured ownership badges diverged from the collection.");
         }));
-        if(profile is not null)for(int i=0;i<4;i++)
+        // The Home tile lists the first three of the four featured offers.
+        if(profile is not null)for(int i=0;i<3;i++)
         {
             int offer=i;
             steps.Add(new("featured-link-"+i,s=>Click(s,"homeFeatured/"+s.HomeFeaturedKeys[offer],s.HomeStoreBounds),s=>

@@ -311,7 +311,8 @@ internal sealed partial class MatchScreen : IDisposable
         {
             if (showMultiplayer) { MultiplayerMenu(); PlayersPanel(); }
             else if (showFarm) FarmPanel();
-            else { Menu(); if (showCollection) Collection(); MusicLibraryPanel(); }
+            // Collection, Loot and Store cover Home entirely; Home only keeps drawing under them for a retained result.
+            else { if (!showCollection || PostgamePending) Menu(); if (showCollection) Collection(); MusicLibraryPanel(); }
             if(Session is not null)DrawEliminationCinematic();
             return;
         }
