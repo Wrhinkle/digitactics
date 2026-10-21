@@ -82,7 +82,7 @@ internal sealed class FileOperationUiSmoke : IDisposable
             ImGui.GetIO().AddMousePosEvent(navigation.X,navigation.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=navigationClick=true;return;
         }
         var point=screen.Buttons[key];
-        if(key=="musicLibrary"&&(point.Y<screen.SettingsScrollMin.Y+8||point.Y>screen.SettingsScrollMax.Y-18))
+        if(key is "musicLibrary" or "saveData"&&screen.SettingsVisible&&(point.Y<screen.SettingsScrollMin.Y+8||point.Y>screen.SettingsScrollMax.Y-18))
         {
             var hover=screen.SettingsScrollMin+new float2(100,100);
             ImGui.GetIO().AddMousePosEvent(hover.X,hover.Y);ImGui.GetIO().AddMouseWheelEvent(0,point.Y<screen.SettingsScrollMin.Y+8?3:-3);cooldown=3;return;

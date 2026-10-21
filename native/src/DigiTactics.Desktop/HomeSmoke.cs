@@ -55,7 +55,8 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
             AddClick("profile",s=>Check(s.ProfileVisible&&!s.CollectionVisible,"Profile route failed to replace Collection."));
             steps.Add(new("profile-back",_=>Escape(),s=>Check(!s.ProfileVisible&&s.CollectionVisible,"Profile Escape lost the preceding Collection page.")));
             steps.Add(new("collection-history-back",_=>Escape(),s=>Check(!s.CollectionVisible&&!s.ProfileVisible&&s.Buttons.ContainsKey("start"),"Collection Back did not return Home.")));
-            AddClick("settings");AddClick("settingsCredits",s=>Check(s.AboutVisible&&!s.SettingsVisible,"About did not replace Settings."));
+            AddClick("settings");// The About box can sit below the fold; Click scrolls the Settings page to reach it.
+            steps.Add(new("settingsCredits",s=>Click(s,"settingsCredits",(s.SettingsScrollMin,s.SettingsScrollMax)),s=>Check(s.AboutVisible&&!s.SettingsVisible,"About did not replace Settings.")));
             AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.SettingsVisible,"About Back lost Settings."));
             steps.Add(new("settings-back",_=>Escape(),s=>Check(!s.SettingsVisible&&s.Buttons.ContainsKey("start"),"Settings Escape did not return Home.")));
         }
@@ -94,7 +95,7 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         AddClick("homePlayConfirm",s=>Check(s.HomePlayPartyVisible&&s.HomePlayLayoutFits&&s.HomePartySeatCount==8&&s.Buttons.ContainsKey("homePlayStart"),"Mode confirmation did not reach the party/start screen."));
         AddClick("homePlayModes",s=>Check(s.HomePlayVisible&&!s.HomePlayPartyVisible,"Party Modes button did not return to mode select."));
         AddClick("clientModes");steps.Add(new("mode-card-initial",s=>ModeCard(s,initialSet),s=>Check(s.SelectedSet==initialSet&&s.HomeHeroId=="set-"+initialSet,"Ruleset card did not preserve its selection and reveal the matching hero.")));AddClick("homeOverview");
-        AddClick("settings");AddClick("settingsCredits",s=>Check(s.AboutVisible,"About did not open."));AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.SettingsVisible,"About did not return to Settings."));
+        AddClick("settings");steps.Add(new("settingsCredits",s=>Click(s,"settingsCredits",(s.SettingsScrollMin,s.SettingsScrollMax)),s=>Check(s.AboutVisible,"About did not open.")));AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.SettingsVisible,"About did not return to Settings."));
         AddClick("homeOverview",s=>Check(!s.SettingsVisible&&s.Buttons.ContainsKey("start"),"Home tab did not leave Settings."));
         AddClick("homeTab/patch",s=>Check(s.HomeTab=="patch"&&s.HomeHighlights==7&&s.HomeRotationSets==11,"Patch notes omitted source highlights or rotation sets."));
         steps.Add(new("patch-scroll",s=>{var b=s.HomeArticleBounds;ImGui.GetIO().AddMousePosEvent((b.Min.X+b.Max.X)/2,(b.Min.Y+b.Max.Y)/2);ImGui.GetIO().AddMouseWheelEvent(0,-24);return true;},s=>Check(s.HomeArticleScroll>0,"Full patch notes cannot scroll through the set rotation.")));

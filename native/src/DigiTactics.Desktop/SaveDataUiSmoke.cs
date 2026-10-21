@@ -34,6 +34,12 @@ internal sealed class SaveDataUiSmoke : IDisposable
         if (step >= 13) {operations??=new(screen,profile,audio);operations.Input(screen);return;}
         string key = step switch { -1 => "settings", 0 => "saveData", 1 or 7 => "exportSave", 2 or 8 => "resetSave", 3 or 9 => "resetSaveText", 5 or 11 => "confirmResetSave", 6 => "cancelResetSave", 12 => "closeSaveData", _ => throw new InvalidOperationException("Unexpected save data step.") };
         if (!screen.Buttons.TryGetValue(key, out var point)) return;
+        // The save management link sits in the Settings About box, which can be below the fold: scroll the page to it.
+        if (key == "saveData" && screen.SettingsVisible && point.Y >= screen.SettingsScrollMax.Y - 12)
+        {
+            var center = (screen.SettingsScrollMin + screen.SettingsScrollMax) * .5f;
+            ImGui.GetIO().AddMousePosEvent(center.X, center.Y); ImGui.GetIO().AddMouseWheelEvent(0, -.5f); cooldown = 4; return;
+        }
         if (point.X < 0 || point.Y < 0 || point.X >= ImGui.GetIO().DisplaySize.X || point.Y >= ImGui.GetIO().DisplaySize.Y) throw new InvalidOperationException("Save data control outside window: " + key);
         ImGui.GetIO().AddMousePosEvent(point.X, point.Y); ImGui.GetIO().AddMouseButtonEvent(0, true); down = true;
     }
