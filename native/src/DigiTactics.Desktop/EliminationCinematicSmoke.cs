@@ -27,7 +27,7 @@ internal sealed class EliminationCinematicSmoke
         if(step==1&&screen.Session is { } session)
         {
             // The source default now starts with an opening carousel. Finish it
-            // through the real controls before exercising the header pause button.
+            // through the real controls before exercising the game menu pause.
             var carousel=session.Units.Carousel;
             if(carousel.Active)
             {
@@ -58,7 +58,10 @@ internal sealed class EliminationCinematicSmoke
         {
             if(playback.Event.Victim.Id==2)
             {
-                if(pauseStep==0&&playback.Time>.55&&screen.Buttons.TryGetValue("pause",out var pause))
+                // The original top bar has no Pause button: pause through the game menu.
+                if(pauseStep==0&&playback.Time>.55&&screen.Buttons.TryGetValue("gameMenu",out var menu))
+                {Click(menu);pauseStep=3;return;}
+                if(pauseStep==3&&screen.Buttons.TryGetValue("menuPause",out var pause))
                 {Click(pause);pauseStep=1;return;}
                 if(pauseStep==1&&screen.IsPaused)
                 {

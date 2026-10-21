@@ -20,11 +20,11 @@ internal sealed class PortraitArtwork : IDisposable
         frame++; DrawCalls=0;
         foreach(var file in cache.Where(p=>p.Value.Used<frame-1).Select(p=>p.Key).ToArray()) {cache[file].Texture.Dispose();cache.Remove(file);}
     }
-    public void Draw(string variant,string line,int stage,float2 position,float size,byte alpha=255)
+    public void Draw(string variant,string line,int stage,float2 position,float size,byte alpha=255,ImColor8? tint=null)
     {
         if (!models.Variants.TryGetValue(variant,out var lines) || !lines.TryGetValue(line,out var forms) || forms[stage] is not { } key) return;
         if (!files.TryGetValue(key,out var file)) throw new InvalidDataException($"Missing portrait for {key}.");
-        DrawFile(Path.Combine(folder,file),position,size,new ImColor8(255,255,255,alpha));
+        DrawFile(Path.Combine(folder,file),position,size,tint??new ImColor8(255,255,255,alpha));
     }
     public void DrawEvolution(string form,float2 position,float size,bool discovered)
     {

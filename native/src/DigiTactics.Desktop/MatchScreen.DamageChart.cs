@@ -11,58 +11,64 @@ internal sealed partial class MatchScreen
     internal CombatSimulation? ChartCombat => battle?.Combat;
     internal IReadOnlyList<int> ChartUnits { get; private set; } = [];
     private static readonly string[] chartLabels = ["Dealt", "Taken", "Healed"];
-    private static readonly ImColor8[] chartColors = [new(255,179,90), new(138,151,180), new(90,223,138)];
+    private static readonly Rgb[] chartColors = [HudHex("ffb35a"), HudHex("8a97b4"), HudHex("5adf8a")];
 
+    // #dmgChart: a panel card with the .ph heading, three tabs and one row per unit (22px portrait, name, bar, value).
     private void DamageChart()
     {
         ChartUnits = [];
         if (battle is null) return;
-        ImGui.PushStyleColor(ImGuiCol.ChildBg,new ImColor8(15,22,37));
-        ImGui.PushStyleColor(ImGuiCol.Border,HudLine);
-        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(3,4));
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(8,8));
-        ImGui.PushStyleVar(ImGuiStyleVar.ChildRounding,8);
-        ImGui.BeginChild("Damage chart"u8,new(0,0),ImGuiChildFlags.Borders|ImGuiChildFlags.AutoResizeY);
-        ImGui.PopStyleColor(2);ImGui.PopStyleVar(2);
-        HudText("DAMAGE",15,HudMuted);ImGui.SameLine();HudText("this fight",13,HudMuted);
-        for (int i = 0; i < chartLabels.Length; i++)
-        {
-            if (i > 0) ImGui.SameLine();
-            ImGui.PushFont(default,14);
-            ImGui.PushStyleColor(ImGuiCol.Button,new ImColor8(24,37,56));
-            ImGui.PushStyleColor(ImGuiCol.Border,chartMetric==i?new ImColor8(63,214,255):HudLine);
-            ImGui.PushStyleColor(ImGuiCol.Text,HudInk);
-            ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,1);ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding,4);
-            if (Button("chart/" + i, chartLabels[i],(ImGui.GetContentRegionAvail().X-(2-i)*3)/(3-i),22)) chartMetric = i;
-            ImGui.PopStyleVar(2);ImGui.PopStyleColor(3);ImGui.PopFont();
-        }
         double Value(CombatUnit unit) => chartMetric switch { 1 => unit.Taken, 2 => unit.Healed, _ => unit.Dealt };
         var units = battle.Combat.Units.Where(u => u.Team == (battle.Mirrored ? 1 : 0)).OrderByDescending(Value).ToArray();
         ChartUnits = units.Select(u => u.Id).ToArray();
         double maximum = Math.Max(1, units.Select(Value).DefaultIfEmpty().Max());
-        float width = ImGui.GetContentRegionAvail().X;
+        ImGui.Dummy(new(0,10-ImGui.GetStyle().ItemSpacing.Y));
+        var min=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;
+        float header=2+11*1.35f+6,tabs=11*1.35f+4+2,rowsHeight=units.Length*(22+4);
+        float height=1+8+header+tabs+6+rowsHeight-(units.Length>0?4:0)+8+1;
+        var max=min+new float2(width,height);
+        var draw=ImGui.GetWindowDrawList();
+        draw.AddRectFilled(min,max,CssPanel,8);draw.AddRect(min,max,CssLine,8);
+        float x=min.X+9,inner=width-18,y=min.Y+9;
+        y+=HudSectionHeader(draw,x,y,inner,"Damage","this fight");
+        float tabWidth=(inner-6)/3;
+        for (int i = 0; i < chartLabels.Length; i++)
+        {
+            var tabMin=new float2(x+i*(tabWidth+3),y);var tabMax=tabMin+new float2(tabWidth,tabs);
+            ImGui.SetCursorScreenPos(tabMin);
+            if(ImGui.InvisibleButton("chart/"+i,tabMax-tabMin))chartMetric=i;
+            Buttons["chart/"+i]=(tabMin+tabMax)*.5f;
+            bool on=chartMetric==i,hovered=ImGui.IsItemHovered();
+            draw.AddRectFilled(tabMin,tabMax,on||hovered?CssPanel3:CssPanel2,4);
+            draw.AddRect(tabMin,tabMax,on||hovered?HudHex("3fd6ff"):CssLine2,4);
+            HudRunCentered(draw,HudWeight(400),11,(tabMin.X+tabMax.X)/2,tabMin.Y+3,11*1.35f,chartLabels[i],on?HudHex("ffffff"):CssText);
+        }
+        y+=tabs+6;
         foreach (var unit in units)
         {
-            var min = ImGui.GetCursorScreenPos();
-            ImGui.Dummy(new(width, 24));
+            var row=new float2(x,y);
+            ImGui.SetCursorScreenPos(row);ImGui.Dummy(new(inner,22));
             bool hovered = ImGui.IsItemHovered();
-            var draw = ImGui.GetWindowDrawList();
-            var ink = unit.Alive ? new ImColor8(235,240,248) : new ImColor8(135,145,160);
-            portraits.Draw(Rules.Id, unit.Line.Id, unit.Stage, min, 22, unit.Alive ? (byte)255 : (byte)100);
+            float alpha=unit.Alive?1:.5f;
+            HudPortraitTile(draw,row,22,HudOver(FamilyColor(unit.Line.Id),CssPanel,alpha),4);
+            portraits.Draw(Rules.Id, unit.Line.Id, unit.Stage, row, 22, unit.Alive ? (byte)255 : (byte)128);
             string value = UnitValues.Round(Value(unit)).ToString(System.Globalization.CultureInfo.InvariantCulture);
-            ImGui.PushFont(default,14);float valueWidth = ImGui.CalcTextSize(value).X;ImGui.PopFont();
-            HudClipText(draw,min+new float2(28,0),width-valueWidth-36,unit.Line.Forms[unit.Stage],ink,14);
-            HudClipText(draw,min+new float2(width-valueWidth,4),valueWidth+1,value,ink,14);
-            float barWidth = Math.Max(1,width-28-valueWidth-8);
-            draw.AddRectFilled(new(min.X+28,min.Y+15),new(min.X+28+barWidth,min.Y+22),new ImColor8(40,50,65),3);
-            draw.AddRectFilled(new(min.X+28,min.Y+15),new(min.X+28+barWidth*(float)(Value(unit)/maximum),min.Y+22),chartColors[chartMetric],3);
+            HudRunRight(draw,HudWeight(700),12,row.X+inner,row.Y,22,value,HudOver(CssText,CssPanel,alpha));
+            float middle=row.X+22+6,middleWidth=inner-22-6-6-38;
+            float textTop=row.Y+(22-11*1.35f-1-7)/2;
+            HudRun(draw,HudWeight(400),11,middle,textTop,11*1.35f,unit.Line.Forms[unit.Stage],HudOver(CssMuted,CssPanel,alpha),middleWidth);
+            var bar=new float2(middle,textTop+11*1.35f+1);
+            draw.AddRectFilled(bar,bar+new float2(middleWidth,7),HudOver(HudHex("262e40"),CssPanel,alpha),3);
+            float fraction=(float)(Value(unit)/maximum);
+            if(fraction>0)draw.AddRectFilled(bar,bar+new float2(middleWidth*fraction,7),HudOver(chartColors[chartMetric],CssPanel,alpha),3);
             if (hovered)
             {
                 ImGui.BeginTooltip(); ImGui.Text(unit.Line.Forms[unit.Stage]);
                 ImGui.Text($"Dealt {UnitValues.Round(unit.Dealt)} / Taken {UnitValues.Round(unit.Taken)} / Healed {UnitValues.Round(unit.Healed)}");
                 ImGui.EndTooltip();
             }
+            y+=22+4;
         }
-        ImGui.EndChild();ImGui.PopStyleVar();
+        ImGui.SetCursorScreenPos(min);ImGui.Dummy(new(width,height));
     }
 }

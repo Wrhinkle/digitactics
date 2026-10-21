@@ -73,7 +73,7 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
         return deadline.Check(phase.Item1,phase.Item2,frame,phase.Item3);
     }
     private readonly string[] commands = ["start", "carousel", "fight", "next", "buy", "arenaBench/0", "hex/3/4", "bench/1", "hex/2/4", "fight", "finish", "next",
-        "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "closeAudio", "mute", "mute"];
+        "fight", "finish", "next", "fight", "finish", "next", "fight", "opponent", "finish", "next", "audioSettings", "closeAudio", "audioSettings", "audioSettings"];
     private int index, cooldown = 3, battleFrames, pvpFrames;
     private bool down, planningCaptured, battleCaptured, pvpCaptured;
     private long emoteTime;

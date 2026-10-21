@@ -7,7 +7,6 @@ internal sealed partial class MatchScreen
 {
     // Original match palette: style.css .card, .trait, #econ and #modal.
     private static readonly ImColor8 HudGold=new(255,207,74),HudInk=new(238,242,250),HudMuted=new(143,154,176),HudSurface=new(22,28,42),HudLine=new(34,48,73);
-    private const float ShopCardHeight=140;
 
     private string? hudLastStatus;
     private long hudStatusUntil;

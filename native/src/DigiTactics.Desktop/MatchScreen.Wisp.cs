@@ -14,66 +14,67 @@ internal sealed partial class MatchScreen
     internal string? DisplayedWisp { get; private set; }
     internal int WispArtworkDrawCalls { get; private set; }
 
-    /// <summary>Original sixth shop slot: source category, effect, artwork and current offer price.</summary>
-    private void WispShopCard(float width)
+    /// <summary>Original sixth shop slot (.card.wisp): kind, name, three-line effect, artwork and price.</summary>
+    private void WispShopCard(float2 at,float width,bool wispsInSet)
     {
-        var offer=Human.Wisp;
+        var offer=Human.Wisp;float height=HudCardHeight;
         WispTooltipText=null;DisplayedWisp=offer?.Id;WispArtworkDrawCalls=0;
-        bool pressed=HudButton("wisp","",width,ShopCardHeight);
-        var min=ImGui.GetItemRectMin();var max=ImGui.GetItemRectMax();WispCardBounds=(min,max);
+        if(!wispsInSet&&offer is null){WispCardBounds=(at,at);return;}
+        ImGui.SetCursorScreenPos(at);
+        bool pressed=ImGui.InvisibleButton("wisp"u8,new(width,height));
+        Buttons["wisp"]=at+new float2(width,height)*.5f;
         bool hovered=ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled);
+        var draw=ImGui.GetWindowDrawList();
         if(offer is null)
         {
-            if(hovered)WispTooltip(null,0,min,max);
+            WispCardBounds=(at,at+new float2(width,height));
+            EmptyShopCard(draw,at,new(width,height));
+            if(hovered)WispTooltip(null,0,at,at+new float2(width,height));
             return;
         }
         var wisp=codexCatalog.Value.Variant(Rules.Id).Wisps.Single(w=>w.Id==offer.Id);
         bool affordable=Human.Economy.Gold>=offer.Cost;
-        var ink=affordable?new ImColor8(214,201,255):HudMuted;
-        var draw=ImGui.GetWindowDrawList();
-        draw.PushClipRect(min,max,true);
-        draw.AddRectFilledMultiColor(min,max,new ImColor8(29,34,64),new ImColor8(29,34,64),new ImColor8(37,29,58),new ImColor8(37,29,58));
-        var border=hovered?new ImColor8(183,164,255):new ImColor8(138,120,255);
-        for(float x=min.X+1;x<max.X-1;x+=9)
+        if(hovered&&affordable)at.Y-=2;
+        var min=at;var max=at+new float2(width,height);WispCardBounds=(min,max);
+        Rgb Paint(Rgb color)=>!affordable?HudPoor(color):hovered?HudBright(color):color;
+        draw.AddRectFilled(min+new float2(-1,1),max+new float2(1,4),new ImColor8(0,0,0,40),10);
+        // linear-gradient(160deg, #1d2240, #251d3a) under a 2px dashed #8a78ff border.
+        draw.AddRectFilledMultiColor(min+new float2(1,1),max-new float2(1,1),(ImColor8)Paint(HudHex("1d2240")),(ImColor8)Paint(HudHex("1f2140")),(ImColor8)Paint(HudHex("251d3a")),(ImColor8)Paint(HudHex("231e3c")));
+        HudDashedRect(draw,min,max,Paint(HudHex("8a78ff")),2);
+        draw.PushClipRect(min+new float2(2,2),max-new float2(2,2),true);
+        itemArtwork.Draw(Rules.Id,"wisp:"+wisp.Id,new(max.X-2-6-30,min.Y+2+5),30);WispArtworkDrawCalls++;
+        float x=min.X+2+9,y=min.Y+2+7,inner=width-4-18;
+        HudRun(draw,HudWeight(800),10,x,y,13.5f,(wisp.Kind+" Wisp").ToUpperInvariant(),Paint(HudHex("9f8cff")),inner-30,.5f);
+        y+=13.5f+3;
+        var nameLines=WrapHud(HudWeight(800),14,wisp.Name,inner);
+        foreach(var nameLine in nameLines.Take(2)){HudRun(draw,HudWeight(800),14,x,y,18.9f,nameLine,Paint(HudHex("d6c9ff")));y+=18.9f;}
+        y+=3;
+        var effect=WrapHud(HudWeight(400),11,wisp.Description,inner);
+        for(int row=0;row<Math.Min(3,effect.Length);row++)
         {
-            draw.AddLine(new(x,min.Y+1),new(Math.Min(x+5,max.X-1),min.Y+1),border);
-            draw.AddLine(new(x,max.Y-1),new(Math.Min(x+5,max.X-1),max.Y-1),border);
+            string text=effect[row];
+            if(row==2&&effect.Length>3)text+="…";
+            HudRun(draw,HudWeight(400),11,x,y,14.85f,text,Paint(CssMuted),inner);y+=14.85f;
         }
-        for(float y=min.Y+1;y<max.Y-1;y+=9)
-        {
-            draw.AddLine(new(min.X+1,y),new(min.X+1,Math.Min(y+5,max.Y-1)),border);
-            draw.AddLine(new(max.X-1,y),new(max.X-1,Math.Min(y+5,max.Y-1)),border);
-        }
-        itemArtwork.Draw(Rules.Id,"wisp:"+wisp.Id,new(max.X-38,min.Y+5),30);WispArtworkDrawCalls++;
-        HudClipText(draw,min+new float2(10,8),width-52,(wisp.Kind+" Wisp").ToUpperInvariant(),new ImColor8(177,157,255),12);
-        var nameLines=ChoiceLines(wisp.Name,16,width-20);int nameRows=Math.Min(2,nameLines.Length);
-        for(int row=0;row<nameRows;row++)HudClipText(draw,min+new float2(10,32+row*19),width-20,nameLines[row]+(row==1&&nameLines.Length>2?"...":""),ink,16);
-        float descriptionY=32+nameRows*19+4;
-        int effectRows=Math.Clamp((int)((ShopCardHeight-descriptionY-28)/17),1,3);
-        DrawWispDescription(draw,min+new float2(10,descriptionY),width-20,wisp.Description,effectRows);
-        HudClipText(draw,new(max.X-77,max.Y-23),67,offer.Cost+" gold",affordable?HudGold:HudMuted);
+        string price=offer.Cost.ToString();float priceWidth=11+3+HudWidth(HudWeight(900),14,price);
+        var priceAt=new float2(max.X-2-8-priceWidth,max.Y-2-6-18.9f);
+        HudCoin(draw,priceAt+new float2(5.5f,10),11);
+        HudRun(draw,HudWeight(900),14,priceAt.X+14,priceAt.Y,18.9f,price,Paint(CssGold));
         draw.PopClipRect();
         if(hovered)WispTooltip(wisp,offer.Cost,min,max);
         if(pressed)Act("wisp");
     }
-
-    private static void DrawWispDescription(ImDrawListPtr draw,float2 at,float width,string description,int rows)
+    private static string[] WrapHud(HudFace face,float css,string value,float width)
     {
-        // The original card clamps the effect to three lines; the hover shows it in full.
-        ImGui.PushFont(default,14);
-        var words=description.Split(' ');int word=0;
-        for(int row=0;row<rows&&word<words.Length;row++)
+        var lines=new List<string>();string line="";
+        foreach(string word in value.Split(' ',StringSplitOptions.RemoveEmptyEntries))
         {
-            string line=words[word++];
-            while(word<words.Length&&ImGui.CalcTextSize(line+" "+words[word]).X<=width)line+=" "+words[word++];
-            if(row==rows-1&&word<words.Length)
-            {
-                while(line.Length>0&&ImGui.CalcTextSize(line+"...").X>width)line=line[..^1];
-                line+="...";
-            }
-            draw.AddText(ImGui.GetFont(),14,at+new float2(0,row*17),HudMuted,line);
+            string next=line.Length==0?word:line+" "+word;
+            if(line.Length>0&&HudWidth(face,css,next)>width){lines.Add(line);line=word;}
+            else line=next;
         }
-        ImGui.PopFont();
+        if(line.Length>0)lines.Add(line);
+        return lines.ToArray();
     }
 
     private void WispTooltip(CodexWisp? wisp,int cost,float2 min,float2 max)

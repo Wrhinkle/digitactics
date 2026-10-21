@@ -46,17 +46,6 @@ internal sealed partial class MatchScreen
         if (CountdownCue.Select(previous, PlanningRemaining) is { } cue) audio.Play(cue);
         if (PlanningRemaining <= 0) Fight(autoResolveOffers:true);
     }
-    private void PlanningTimerControls()
-    {
-        if (Session!.State.Over || !Human.Alive) return;
-        if(networkRoom is not null)return;
-        ImGui.SameLine();
-        if(Button("planningTimer",PlanningTimerEnabled?"Timer on":"Timer off",78,34))
-        {
-            PlanningTimerEnabled=!PlanningTimerEnabled;
-            PlanningRemaining=Rules.PlanningSeconds;
-        }
-    }
     private void UpdateResultCountdown(double delta)
     {
         if (networkRoom is not null || Session is null || Session.State.Over || (!Human.Alive && !WatchingAfterElimination) ||

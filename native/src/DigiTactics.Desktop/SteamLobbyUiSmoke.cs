@@ -134,7 +134,7 @@ internal sealed class SteamLobbyUiSmoke : IDisposable
             if(networkToolbarStep==0)
             {
                 var viewport=ImGui.GetIO().DisplaySize;
-                var widths=new Dictionary<string,float>{{"gameMenu",50},{"codex",52},{"matchStore",62},{"matchLocker",62},{"matchLegend",100},{"emotes",58},{"soundboard",90},{"audioSettings",54},{"mute",56},{"replaySpeed",36},{"players",64},{"spectate",110},{"leaveOnline",54},{"fight",104}};
+                var widths=new Dictionary<string,float>{{"gameMenu",48},{"codex",50},{"matchStore",48},{"matchLocker",54},{"matchLegend",54},{"emotes",50},{"soundboard",84},{"audioSettings",64},{"replaySpeed",26},{"players",56},{"spectate",64},{"leaveOnline",48},{"fight",92}};
                 foreach(var (key,width) in widths)
                 {
                     if(!screen.Buttons.TryGetValue(key,out var toolbarPoint)||toolbarPoint.X-width/2<0||toolbarPoint.X+width/2>viewport.X||toolbarPoint.Y<17||toolbarPoint.Y>104)

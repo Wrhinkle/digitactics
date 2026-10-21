@@ -4,10 +4,14 @@ namespace DigiTactics.Desktop;
 
 internal sealed partial class MatchScreen
 {
-    private void IncomeDisplay()
+    // #income: 12px/600 muted beside the gold, centered in the 26px #goldBox line.
+    private void IncomeDisplay(float x,float lineTop)
     {
         var income = Session!.Rounds.PreviewIncome(Human);
-        HudText($"+{income.Total} next round",14,HudMuted);
+        string label=$"+{income.Total} next round";
+        var face=HudWeight(600);
+        float width=HudRun(ImGui.GetWindowDrawList(),face,12,x,lineTop,26,label,CssMuted);
+        ImGui.SetCursorScreenPos(new(x,lineTop+5));ImGui.InvisibleButton("income"u8,new(Math.Max(1,width),16));
         if (!ImGui.IsItemHovered()) return;
         ImGui.BeginTooltip();
         HudText("ROUND INCOME",22,HudGold);

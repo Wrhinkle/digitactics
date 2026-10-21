@@ -16,18 +16,6 @@ internal sealed partial class MatchScreen
     internal DailyMissionProgress[] CollectionMissions {get;private set;}=[];
     internal int CollectionBitsHistoryRows {get;private set;}
 
-    private void MatchCosmeticsControl()
-    {
-        if(profile is null)return;
-        if(MatchStoreEntryAvailable)
-        {
-            if(Button("matchStore","Store",62,34))OpenMatchCosmetics(true);
-            ImGui.SameLine();
-        }
-        if(Button("matchLocker","Locker",62,34))OpenMatchCosmetics(false);
-        ImGui.SameLine();
-        if(Button("matchLegend","Little Legend",100,34))OpenMatchCosmetics(false,"legend");
-    }
     private void OpenMatchCosmetics(bool store,string? kind=null)
     {
         if(profile is null||Session is null)return;

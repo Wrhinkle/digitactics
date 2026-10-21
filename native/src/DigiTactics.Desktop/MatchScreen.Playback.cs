@@ -1,14 +1,7 @@
-using Brutal.ImGuiApi;
-
 namespace DigiTactics.Desktop;
 
 internal sealed partial class MatchScreen
 {
+    // The top bar's "1x" control cycles this (MatchScreen.TopBar.cs).
     internal int ReplaySpeed { get; private set; } = 1;
-    private void PlaybackSpeedControl()
-    {
-        ImGui.SameLine();
-        if (Button("replaySpeed", $"{ReplaySpeed}x",36,34)) ReplaySpeed = ReplaySpeed == 1 ? 2 : ReplaySpeed == 2 ? 4 : 1;
-        if (ImGui.IsItemHovered()) { ImGui.BeginTooltip(); ImGui.Text("Battle playback speed"u8); ImGui.EndTooltip(); }
-    }
 }

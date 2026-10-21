@@ -74,17 +74,6 @@ internal sealed partial class MatchScreen
         if (FindNetworkSeat() != localSeat) AttachNetworkMatch(networkRoom, networkClock);
         networkHost!.Pump(networkClock());
     }
-    private void NetworkSeatControls()
-    {
-        if (networkRoom is null || Session is null || Session.State.Over) return;
-        if (IsSpectating)
-        {
-            var slots = networkRoom.Authority.Lobby?["slots"];
-            int available = Enumerable.Range(0, 8).FirstOrDefault(i => slots?[i.ToString()] is null && Session.State.Players[i].Alive, -1);
-            if (available >= 0 && HomeButton("joinSeat", $"Take seat {available + 1}",110,36)) networkRoom.ClaimSeat(available, SteamName, networkClock());
-        }
-        else if (HomeButton("spectate", "Spectate",110,36)) networkRoom.FreeSeat(localSeat);
-    }
     public void DetachNetworkMatch()
     {
         if (networkRoom is not null) networkRoom.Effect -= NetworkEffect;

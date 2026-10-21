@@ -61,6 +61,7 @@ internal static class MatchApplication
                 NativeUiTheme.Initialize();
                 MatchScreen.LoadEvolutionFont();
                 MatchScreen.LoadEliminationFonts();
+                MatchScreen.LoadHudFonts();
                 using var platform = new NativeUiPlatform(window, options.Smoke ? options.SmokeUiScale : null);
                 using var audio = new GameAudio();
                 audio.EffectsVolume = options.Smoke ? 0 : .8f; audio.MusicVolume = options.Smoke ? 0 : .6f; audio.BoardVolume = options.Smoke ? 0 : .8f;

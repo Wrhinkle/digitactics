@@ -156,7 +156,8 @@ internal sealed class ParityCaptureDriver
         bool carousel = rounds.RoundType == "carousel" || session.Units.Carousel.Active;
         phase = $"{rounds.Position.Label} {rounds.RoundType}/{rounds.Phase}";
         if (state == "match-carousel" && carousel) { ready = true; return; }
-        if (state == "match-augment" && player.Offer is { Kind: "augment" } && screen.Buttons.ContainsKey("offer/0")) { ready = true; return; }
+        // Like capture-electron.cjs, stop at the first offer of any kind (2-1 Armory in the default set).
+        if (state == "match-augment" && player.Offer is not null && screen.Buttons.ContainsKey("offer/0")) { ready = true; return; }
         if (carousel)
         {
             var options = session.Units.Carousel.Options;
@@ -170,7 +171,7 @@ internal sealed class ParityCaptureDriver
         }
         if (player.Offer is { } offer)
         {
-            // Non-augment offers (and augments when they are not the target) take the first visible card.
+            // Offers before the target state take the first visible card.
             if (screen.Buttons.ContainsKey("offer/0")) Click(screen, "offer/0");
             return;
         }

@@ -11,54 +11,167 @@ internal sealed partial class MatchScreen
     private bool showMatchInventory;
     internal (float2 Min,float2 Max) MatchInventoryBounds {get;private set;}
 
-    // The source #shopbar has an economy block, vertical action buttons and one
-    // uninterrupted row of offers. The physical bench remains on the board.
-    private void ShopControls()
+    private float ShopPadding=>HudNarrow?6:10;
+    private float ShopGap=>HudNarrow?6:10;
+    private float EconWidth=>HudNarrow?140:HudCompact?178:200;
+    private float ShopButtonsWidth=>HudNarrow?84:HudCompact?98:112;
+
+    // #shopbar: padding 8px 10px, the #econ grid, the #shopBtns column and one row of offers.
+    private void Roster()
     {
-        var economy=Human.Economy;var origin=ImGui.GetCursorScreenPos();
-        float economyWidth=Math.Clamp(size.X*.125f,150,200),controlsWidth=size.X<1250?90:110;
+        ShopPortraitDrawCalls=0;
+        float top=size.Y-ShopHeight;
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));
+        ImGui.PushStyleColor(ImGuiCol.WindowBg,CssPanel);ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(0,0,0,0));
+        Window("Shop and bench",0,top,size.X,ShopHeight,ImGuiWindowFlags.NoTitleBar|ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
+        ImGui.PopStyleColor(2);ImGui.PopStyleVar();
         var draw=ImGui.GetWindowDrawList();
+        draw.PushClipRect(new(0,top),new(size.X,size.Y));
+        draw.AddRectFilledMultiColor(new(0,top),new(size.X,size.Y),(ImColor8)CssPanel,(ImColor8)CssPanel,(ImColor8)HudHex("10151f"),(ImColor8)HudHex("10151f"));
+        draw.AddLine(new(0,top+.5f),new(size.X,top+.5f),CssLine);
+        draw.PopClipRect();
+        float contentTop=top+1+(HudNarrow?6:8);
+        ImGui.SetCursorScreenPos(new(ShopPadding,contentTop));
+        if(IsSpectating){HudRun(draw,HudWeight(400),14,ShopPadding,contentTop,18.9f,"Spectating. Take an available seat to control a team.",CssMuted);ImGui.End();return;}
+        if(SellDropZone()){ImGui.End();return;}
+        ImGui.BeginDisabled(Session!.State.Over||!Human.Alive);
+        ShopControls(contentTop);
+        float shopX=ShopPadding+EconWidth+ShopGap+ShopButtonsWidth+ShopGap,shopWidth=size.X-ShopPadding-shopX;
+        ShopCardBounds.Clear();ShopViewportBounds=(new(shopX,contentTop),new(size.X-ShopPadding,contentTop+HudCardHeight));
+        // grid-template-columns: repeat(5, 1fr) 0.85fr; the last column is the Data Wisp slot.
+        int slots=Human.Shop.Slots.Count;float gap=HudNarrow?4:8;
+        float unit=(shopWidth-gap*slots)/(slots+.85f);
+        for(int i=0;i<slots;i++)ShopCard(i,new(shopX+i*(unit+gap),contentTop),unit);
+        WispShopCard(new(shopX+slots*(unit+gap),contentTop),unit*.85f,Rules.Wisps is {Length:>0});
+        ImGui.EndDisabled();ImGui.End();
+        DrawMatchInventory();
+    }
+
+    private void ShopControls(float contentTop)
+    {
+        var economy=Human.Economy;var draw=ImGui.GetWindowDrawList();
+        float x=ShopPadding,width=EconWidth,cardHeight=HudCardHeight;
         int capacity=new MatchPlacement(Session!.State).Capacity(Human,Session.Rounds.Position.Stage);
-        HudClipText(draw,origin,economyWidth-52,$"Level {economy.Level}",HudInk,19);
-        HudClipText(draw,origin+new float2(economyWidth-49,0),49,$"{Human.Roster.BoardCount}/{capacity}",Human.Roster.BoardCount<capacity?HudGold:HudInk,18);
-        HudClipText(draw,origin+new float2(economyWidth-66,22),66,"on board",HudMuted,13);
-        if(Rules.Economy!.Xp is {} xp)
+        var xp=Rules.Economy!.Xp;
+        var income=Session.Rounds.PreviewIncome(Human);
+        bool econLine=Rules.Economy.Interest is not null||Rules.Economy.Streak.Length>0;
+        // #econ rows: level/board (+ XP bar), gold, interest/streak, bench and items.
+        float row1=17*1.15f+11*1.15f+(xp is null?0:7),row2=26,row3=econLine?11*1.2f:0,row4=11*1.35f;
+        float total=row1+4+row2+4+(econLine?row3+4:0)+row4;
+        float y=contentTop+(cardHeight-total)/2;
+        HudRun(draw,HudWeight(800),17,x,y,17*1.15f,$"Level {economy.Level}",CssText);
+        string levelNote;
+        if(xp is not null)levelNote=economy.Level>=xp.MaxLevel?"Max level":$"{economy.Xp}/{xp.Table[economy.Level]} XP";
+        else levelNote=NextLevelNote();
+        HudRun(draw,HudWeight(400),11,x,y+17*1.15f,11*1.15f,levelNote,CssMuted);
+        if(xp is not null)
         {
             bool maxed=economy.Level>=xp.MaxLevel;int need=maxed?0:xp.Table[economy.Level];
-            HudClipText(draw,origin+new float2(0,24),economyWidth-72,maxed?"MAX":$"{economy.Xp}/{need} XP",HudMuted,14);
-            float fraction=maxed?1:Math.Clamp((float)economy.Xp/Math.Max(1,need),0,1);
-            draw.AddRectFilled(origin+new float2(0,45),origin+new float2(economyWidth,49),new ImColor8(34,42,59),2);
-            draw.AddRectFilled(origin+new float2(0,45),origin+new float2(economyWidth*fraction,49),new ImColor8(63,214,255),2);
+            float fraction=maxed?1:Math.Clamp((float)economy.Xp/Math.Max(1,need),0,1),barWidth=(width-10)/2;
+            var bar=new float2(x,y+17*1.15f+11*1.15f+3);
+            draw.AddRectFilled(bar,bar+new float2(barWidth,4),new ImColor8(255,255,255,31),2);
+            if(fraction>0)draw.AddRectFilledMultiColor(bar,bar+new float2(barWidth*fraction,4),(ImColor8)HudHex("3fd6ff"),(ImColor8)HudHex("7fb8ff"),(ImColor8)HudHex("7fb8ff"),(ImColor8)HudHex("3fd6ff"));
         }
-        HudClipText(draw,origin+new float2(23,54),economyWidth-23,economy.Gold.ToString(),HudGold,26);
-        draw.AddCircleFilled(origin+new float2(9,68),8,HudGold);draw.AddCircle(origin+new float2(9,68),8,new ImColor8(138,95,8));
-        ImGui.PushFont(default,26);float goldWidth=ImGui.CalcTextSize(economy.Gold.ToString()).X;ImGui.PopFont();
-        ImGui.SetCursorScreenPos(origin+new float2(Math.Min(economyWidth-82,29+goldWidth),61));IncomeDisplay();
-        var income=Session.Rounds.PreviewIncome(Human);
-        if(Rules.Economy.Interest is {} interest)
-            HudClipText(draw,origin+new float2(0,86),economyWidth,$"Interest +{income.Interest}"+(income.Interest<interest.Max?$" ({interest.Per*(income.Interest+1)-Math.Max(0,economy.Gold)} to +{income.Interest+1})":" (max)"),HudMuted,13);
-        if(Rules.Economy.Streak.Length>0)
-            HudClipText(draw,origin+new float2(0,102),economyWidth,(Math.Abs(economy.Streak)>1?$"{(economy.Streak>0?"Win":"Loss")} streak {Math.Abs(economy.Streak)}":"No streak")+$" +{income.Streak}",HudMuted,13);
-        ImGui.SetCursorScreenPos(origin+new float2(0,118));
-        if(HudButton("matchInventory",$"Bench {Human.Roster.Bench.Count(unit=>unit is not null)}/9  Items {Human.Items.Count}/{Rules.Loot!.ItemCap}",economyWidth,22,showMatchInventory,13))showMatchInventory=!showMatchInventory;
-        var actions=origin+new float2(economyWidth+10,0);
-        ImGui.SetCursorScreenPos(actions+new float2(0,Rules.Economy.Xp is null?0:40));
-        RefreshEnabled=Human.Shop.FreeRolls>0||economy.Gold>=Rules.RerollCost;
-        ImGui.BeginDisabled(!RefreshEnabled);
-        if(HudButton("reroll","Reroll [D]\n"+(Human.Shop.FreeRolls>0?"Free x"+Human.Shop.FreeRolls:Rules.RerollCost+" gold"),controlsWidth,52,font:14))Act("reroll");
-        ImGui.EndDisabled();
-        ImGui.SetCursorScreenPos(actions+new float2(0,Rules.Economy.Xp is null?58:98));
-        if(HudButton("lock",Human.Shop.Locked?"Locked":"Lock shop",controlsWidth,30,Human.Shop.Locked,14))Act("lock");
-        BuyXpEnabled=false;
-        if(Rules.Economy.Xp is {} levelXp)
+        bool under=Human.Roster.BoardCount<capacity&&Human.Roster.Bench.Any(unit=>unit is not null)&&Session.Rounds.Phase==MatchPhase.Planning;
+        var boardInk=under?CssGold:CssText;
+        HudRunRight(draw,HudWeight(700),17,x+width,y,17*1.15f,$"{Human.Roster.BoardCount}/{capacity}",boardInk);
+        HudRunRight(draw,HudWeight(400),11,x+width,y+17*1.15f,11*1.15f,"on board",under?CssGold:CssMuted);
+        y+=row1+4;
+        HudCoin(draw,new(x+9,y+13),18);
+        float goldWidth=HudRun(draw,HudWeight(900),26,x+24,y,26,economy.Gold.ToString(),CssGold);
+        ImGui.SetCursorScreenPos(new(x+24+goldWidth+6,y+6));IncomeDisplay(x+24+goldWidth+6,y);
+        y+=row2+4;
+        if(econLine)
         {
-            BuyXpEnabled=economy.Gold>=levelXp.BuyCost&&economy.Level<levelXp.MaxLevel;
-            ImGui.SetCursorScreenPos(actions);ImGui.BeginDisabled(!BuyXpEnabled);
-            if(HudButton("xp",$"Buy XP / {levelXp.BuyCost}",controlsWidth,34,font:14))Act("buyXp");
-            ImGui.EndDisabled();
-            if(ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))ResultTooltip(economy.Level>=levelXp.MaxLevel?"Max level":$"Buy {levelXp.BuyXp} XP for {levelXp.BuyCost} gold. +{levelXp.PerRound} XP each round.");
+            float ex=x;
+            if(Rules.Economy.Interest is {} interest)
+            {
+                string next=income.Interest<interest.Max?$" ({interest.Per*(income.Interest+1)-Math.Max(0,economy.Gold)} to +{income.Interest+1})":" (max)";
+                ex+=HudRun(draw,HudWeight(400),11,ex,y,row3,"Interest ",CssMuted);
+                ex+=HudRun(draw,HudWeight(700),11,ex,y,row3,$"+{income.Interest}",CssGold);
+                ex+=HudRun(draw,HudWeight(400),11,ex,y,row3,next,CssMuted)+8;
+            }
+            if(Rules.Economy.Streak.Length>0)
+            {
+                int streak=economy.Streak;var ink=streak>1?HudHex("6fe08a"):streak<-1?HudHex("ff8a7a"):CssMuted;
+                ex+=HudRun(draw,HudWeight(400),11,ex,y,row3,(Math.Abs(streak)>1?$"{(streak>0?"Win":"Loss")} streak {Math.Abs(streak)}":"No streak")+" ",ink);
+                HudRun(draw,HudWeight(700),11,ex,y,row3,$"+{income.Streak}",streak>1||streak<-1?ink:CssGold);
+            }
+            y+=row3+4;
         }
-        ImGui.SetCursorScreenPos(actions+new float2(controlsWidth+10,0));
+        // #capLabel. The native item drawer opens from it; returned overflow items live there.
+        int bench=Human.Roster.Bench.Count(unit=>unit is not null);
+        float cx=x;
+        cx+=HudRun(draw,HudWeight(400),11,cx,y,row4,"Bench ",CssMuted);
+        cx+=HudRun(draw,HudWeight(700),11,cx,y,row4,$"{bench}/9",bench>=9?CssBad:CssText);
+        cx+=HudRun(draw,HudWeight(400),11,cx,y,row4," · Items ",CssMuted);
+        cx+=HudRun(draw,HudWeight(700),11,cx,y,row4,$"{Human.Items.Count}/{Rules.Loot!.ItemCap}",Human.Items.Count>=Rules.Loot.ItemCap?CssBad:CssText);
+        ImGui.SetCursorScreenPos(new(x,y));
+        if(ImGui.InvisibleButton("matchInventory"u8,new(Math.Max(1,cx-x),row4)))showMatchInventory=!showMatchInventory;
+        Buttons["matchInventory"]=new(x+(cx-x)/2,y+row4/2);
+        if(ImGui.IsItemHovered())ResultTooltip("Show your item inventory");
+
+        // #shopBtns: optional Buy XP, Reroll (two lines) and Lock shop, centered in the card height.
+        float bx=x+width+ShopGap,bw=ShopButtonsWidth;
+        float xpHeight=xp is null?0:33,rollHeight=MathF.Round(15*1.1f+1+12*1.1f+20+2),lockHeight=MathF.Round(12*1.35f+10+2);
+        float stack=(xp is null?0:xpHeight+6)+rollHeight+6+lockHeight;
+        float by=contentTop+(cardHeight-stack)/2;
+        BuyXpEnabled=false;
+        if(xp is not null)
+        {
+            BuyXpEnabled=economy.Gold>=xp.BuyCost&&economy.Level<xp.MaxLevel;
+            if(ShopButton("xp",new(bx,by),new(bw,xpHeight),BuyXpEnabled,false,(draw,min,max,ink)=>
+            {
+                float labelWidth=HudWidth(HudWeight(400),14,"Buy XP ")+11+4+HudWidth(HudWeight(400),12,xp.BuyCost.ToString());
+                float lx=(min.X+max.X-labelWidth)/2,ly=min.Y+(xpHeight-18.9f)/2;
+                lx+=HudRun(draw,HudWeight(400),14,lx,ly,18.9f,"Buy XP ",ink);
+                HudCoin(draw,new(lx+5.5f,ly+10),11);
+                HudRun(draw,HudWeight(400),12,lx+15,ly+1,18.9f,xp.BuyCost.ToString(),CssGold);
+            }))Act("buyXp");
+            if(ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))ResultTooltip(economy.Level>=xp.MaxLevel?"Max level":$"Buy {xp.BuyXp} XP for {xp.BuyCost} gold. +{xp.PerRound} XP each round.");
+            by+=xpHeight+6;
+        }
+        RefreshEnabled=Human.Shop.FreeRolls>0||economy.Gold>=Rules.RerollCost;
+        if(ShopButton("reroll",new(bx,by),new(bw,rollHeight),RefreshEnabled,false,(draw,min,max,ink)=>
+        {
+            float cxm=(min.X+max.X)/2,ly=min.Y+11;
+            HudRunCentered(draw,HudWeight(800),15,cxm,ly,15*1.1f,"Reroll",ink);
+            ly+=15*1.1f+1;
+            if(Human.Shop.FreeRolls>0)HudRunCentered(draw,HudWeight(700),12,cxm,ly,12*1.1f,"free x"+Human.Shop.FreeRolls,CssGold);
+            else
+            {
+                string cost=Rules.RerollCost.ToString();float costWidth=11+4+HudWidth(HudWeight(700),12,cost),cx0=cxm-costWidth/2;
+                HudCoin(draw,new(cx0+5.5f,ly+12*1.1f/2+.5f),11);
+                HudRun(draw,HudWeight(700),12,cx0+15,ly,12*1.1f,cost,CssGold);
+            }
+        }))Act("reroll");
+        by+=rollHeight+6;
+        bool locked=Human.Shop.Locked;
+        if(ShopButton("lock",new(bx,by),new(bw,lockHeight),true,locked,(draw,min,max,ink)=>
+            HudRunCentered(draw,HudWeight(400),12,(min.X+max.X)/2,min.Y+6,12*1.35f,locked?"Shop locked":"Lock shop",locked?CssGold:ink)))Act("lock");
+    }
+    // game.nextLevelAt(): Hyper Roll levels by stage.
+    private string NextLevelNote()
+    {
+        int stage=Session!.Rounds.Position.Stage;var levels=Rules.Economy!.LevelByStage;
+        return levels is not null&&stage+1<levels.Length?$"Lv {levels[stage+1]} at stage {stage+1}":"Max level";
+    }
+    /// <summary>A style.css button (panel2 fill, line2 border, 6px radius) drawn at a fixed rectangle.</summary>
+    private bool ShopButton(string key,float2 at,float2 extent,bool enabled,bool on,Action<ImDrawListPtr,float2,float2,Rgb> content)
+    {
+        var draw=ImGui.GetWindowDrawList();var max=at+extent;
+        ImGui.SetCursorScreenPos(at);
+        ImGui.BeginDisabled(!enabled);
+        bool pressed=ImGui.InvisibleButton(key,extent);
+        bool hovered=enabled&&ImGui.IsItemHovered();
+        ImGui.EndDisabled();
+        Buttons[key]=(at+max)*.5f;
+        if(ImGui.IsItemFocused())KeyboardFocusedButton=key;
+        var fill=on?HudHex("2a2516"):hovered?CssPanel3:CssPanel2;var border=on?CssGold:hovered?HudHex("3fd6ff"):CssLine2;var ink=CssText;
+        if(!enabled){fill=HudOver(fill,CssPanel,.45f);border=HudOver(border,CssPanel,.45f);ink=HudOver(ink,CssPanel,.45f);}
+        draw.AddRectFilled(at,max,fill,6);draw.AddRect(at,max,border,6);
+        content(draw,at,max,ink);
+        return pressed&&enabled;
     }
 
     private void DrawMatchInventory()
