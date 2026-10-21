@@ -16,7 +16,7 @@ internal sealed partial class MatchScreen
     private void CodexHead(CodexVariant data,float2 window,float width)
     {
         var draw=ImGui.GetWindowDrawList();
-        var title=S.Display(22,.08f);var tabType=S.Body(13.33f,true);var countType=S.Body(12);
+        var title=S.Display(22,.08f);var tabType=S.Body(14,true);var countType=S.Body(12);
         string heading="CODEX · "+data.Name.ToUpperInvariant();
         float titleWidth=title.Width(heading);
         var tabs=data.Tabs.Select(tab=>(Id:tab,Label:tab=="wisps"?"Data Wisps":CodexTitle(tab),Count:tab=="rules"?null:CodexCount(tab).ToString())).ToArray();
@@ -63,15 +63,15 @@ internal sealed partial class MatchScreen
                 }
                 else S.Secondary(draw,at,at+new float2(w,rowHeight),hover);
                 // Label and the smaller count share a baseline.
-                float baseline=at.Y+(rowHeight-tabType.Size)*.5f+.969f*13.33f;
-                float tw=S.Text(draw,new(at.X+11,baseline-.969f*13.33f),on||hover?S.Gold1:S.LcText,tab.Label,tabType);
+                float baseline=at.Y+(rowHeight-tabType.Size)*.5f+.969f*14;
+                float tw=S.Text(draw,new(at.X+11,baseline-.969f*14),on||hover?S.Gold1:S.LcText,tab.Label,tabType);
                 if(tab.Count is not null)S.Text(draw,new(at.X+11+tw+4,baseline-.969f*12),CodexSegMuted,tab.Count,countType);
                 if(pressed){codexTab=tab.Id;codexResetScroll=true;}
                 x+=w+4;
             }
             y+=rowHeight+4;
         }
-        ImGui.SetCursorScreenPos(new(window.X+16,top.Y+headHeight+10));
+        ImGui.SetCursorScreenPos(new(window.X+16,top.Y+headHeight+14));
         CodexSetStrip(data,width-32);
         CodexFilterSegment(window,width);
     }
@@ -124,7 +124,7 @@ internal sealed partial class MatchScreen
             ImGui.SetCursorScreenPos(new(window.X+14,at.Y+4));ImGui.Dummy(new(0,0));return;
         }
         var filters=codexTab=="traits"?new[]{"all"}.Concat(CodexData.TraitKinds).ToArray():new[]{"all"}.Concat(CodexData.Lines.Where(l=>l.Shop).Select(l=>l.Tier).Distinct().Order().Select(t=>t.ToString())).Concat(CodexData.Lines.Any(l=>!l.Shop)?["wild"]:[]).ToArray();
-        var type=S.Body(12);const float buttonHeight=22.2f;
+        var type=S.Body(12);const float buttonHeight=24.2f;
         string Label(string value)=>value switch{"family"=>"Families","role"=>"Roles","all"=>"All",_=>int.TryParse(value,out _)?value+" gold":CodexTitle(value)};
         float segWidth=4+filters.Sum(f=>type.Width(Label(f))+20)+2*(filters.Length-1);
         draw.AddRectFilled(at,at+new float2(segWidth,buttonHeight+6),CodexBg,7);draw.AddRect(at,at+new float2(segWidth,buttonHeight+6),CodexLine,7);
@@ -142,7 +142,7 @@ internal sealed partial class MatchScreen
         }
         float bottom=at.Y+buttonHeight+6+8;
         draw.AddLine(new(window.X+1,bottom+.5f),new(window.X+width-1,bottom+.5f),CodexLine);
-        ImGui.SetCursorScreenPos(new(window.X+14,bottom+14));ImGui.Dummy(new(0,0));
+        ImGui.SetCursorScreenPos(new(window.X+14,bottom+5));ImGui.Dummy(new(0,0));
     }
     private static ImColor8 CodexTierColor(int tier)=>tier switch{1=>new(154,166,187),2=>new(95,211,106),3=>new(79,179,255),4=>new(199,125,255),_=>new(255,179,71)};
 }
