@@ -35,7 +35,13 @@ async function main(){
     ['unique:CS_Alphamon_NX','J_center','special'],['unique:CS_Alphamon_Ouryuken','J_center','special'],
     ['unique:CS_Arcadiamon_In_Training','J_center','special'],['unique:CS_Arcadiamon_In_Training','J_center','win'],['unique:CS_Omnimon_NX','J_center','special'],
     ['unique:L_CresGarurumon','J_center','special'],['unique:L_Minervamon','J_center','special'],['unique:L_Omnimon_Zwart_D','J_center','special'],
-    ['unique:L_Pandamon','J_mass','special'],['vorvomon:0','chr120J_center','win']]){
+    ['unique:L_Pandamon','J_mass','special'],['vorvomon:0','chr120J_center','win'],
+    ['ac:Merukimon','J_center','special'],['ac:SaviorHuckmon','J_center','special'],['ac:Slayerdramon','J_center','special'],['ac:Triceramon','J_center','special'],
+    ['ac:Whamon','J_center','attack'],['ac:Whamon','J_center','special'],['armadillomon:0','J_center','special'],['catalog:CS_Armadillomon:chr707','J_center','special'],
+    ['catalog:CS_Wanyamon:chr321','J_center','special'],['catalog:CS_Zubamon:chr697','J_center','special'],
+    ['catalog:CS_ZubaEagermon:chr698','J_center','special'],['catalog:CS_ZubaEagermon:chr698','J_center','win'],['catalog:L_Aquilamon:chr015','mass','special'],
+    ['catalog:L_Gaomon:chr055','J_root','special'],['catalog:CS_Ginryumon:chr191','J_center','special'],['catalog:CS_Ginryumon:chr191','J_center','win'],
+    ['catalog:CS_Imperialdramon_Paladin_Mode:chr420','J_center','special']]){
     if(requested.size&&!requested.has(key))continue;
     visited.add(key);
     const source=catalog.sources[key],bytes=zlib.gunzipSync(fs.readFileSync(path.join(root,'native/artifacts/model-content',catalog.assets[source.asset].file))),length=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+length)),binary=bytes.subarray(28+length);

@@ -43357,7 +43357,7 @@ void main() {
       "rip-l_omnimon_x": ["J_center", "special"],
       "rip-nc_jupitermon": ["Bip001", "special"],
       "rip-cs_skullsatamon": ["J_center", "win"],
-      "rip-cs_merukimon": ["J_center", "win"],
+      "rip-cs_merukimon": ["J_center", "special", "win"],
       bbeb1da28aca459da86b46cba6d57ca8: ["J_root_04", "attack"],
       "rip-cat_cs_betamon_chr389": ["J_root", "attack"],
       "rip-cat_cs_alphamon_chr416": ["J_center", "special"],
@@ -43409,7 +43409,21 @@ void main() {
       "rip-vorvomon": ["chr120J_center", "win"],
       // The body root covers 97-98%; the thrown weapon / held lance is a sibling.
       "rip-ryudamon": ["J_center", "special"],
-      "rip-ginryumon": ["J_center", "special", "win"]
+      "rip-ginryumon": ["J_center", "special", "win"],
+      // Sweep range 0-312: whole-body roots that dash 2-15 idle heights away.
+      "rip-cs_saviorhuckmon": ["J_center", "special"],
+      "rip-l_slayerdramon": ["J_center", "special"],
+      "rip-cs_triceramon": ["J_center", "special"],
+      "rip-l_whamon": ["J_center", "attack", "special"],
+      "rip-armadillomon": ["J_center", "special"],
+      "rip-cat_cs_armadillomon_chr707": ["J_center", "special"],
+      "rip-cat_cs_wanyamon_chr321": ["J_center", "special"],
+      "rip-cat_cs_zubamon_chr697": ["J_center", "special"],
+      "rip-cat_cs_zubaeagermon_chr698": ["J_center", "special", "win"],
+      "rip-cat_l_aquilamon_chr015": ["mass", "special"],
+      "rip-cat_l_gaomon_chr055": ["J_root", "special"],
+      "rip-cat_cs_ginryumon_chr191": ["J_center", "special", "win"],
+      "rip-cat_cs_imperialdramon_paladin_mode_chr420": ["J_center", "special"]
     }[src?.uid];
     if (!policy) return clips;
     const [body2, ...roles] = policy, idle = clips.find((c) => c.name === "idle"), name2 = body2 + ".position", node = gltf.scene.getObjectByName(body2);
