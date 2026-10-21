@@ -77,7 +77,8 @@ internal readonly record struct NativeUiMonitorArea(int2 Origin, int2 Size, floa
 
 internal readonly record struct NativeUiMetrics(float Scale, int2 LogicalSize, float2 FramebufferScale)
 {
-    internal static readonly int2 MinimumLogicalSize = new(1100, 760);
+    // The original client stays usable at 720 px tall (its short-window rules start at 820).
+    internal static readonly int2 MinimumLogicalSize = new(1100, 720);
 
     internal static NativeUiMetrics Calculate(int2 physical, int2 framebuffer, float requestedScale)
     {

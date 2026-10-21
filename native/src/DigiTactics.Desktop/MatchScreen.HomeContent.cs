@@ -52,7 +52,6 @@ internal sealed partial class MatchScreen
             {
                 // ::after: left/right 12px, bottom -1px, 2px gold-2 with a 10px gold-3 glow.
                 var lo=new float2(left+12,y+height-2);var hi=new float2(left+tabWidth-12,y+height);
-                NativeUiPaint.BoxGlow(draw,lo,hi,new ImColor8(200,155,60,40),6);
                 draw.AddRectFilled(lo,hi,NativeUiPaint.Fade(NativeUiTheme.Gold));
             }
             left+=tabWidth+4;

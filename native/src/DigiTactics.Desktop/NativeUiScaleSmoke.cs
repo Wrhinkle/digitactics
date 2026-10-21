@@ -27,7 +27,7 @@ internal static class NativeUiScaleSmoke
         Check(NativeUiMetrics.MonitorIndex(new(4000,100),new(1800,950),monitorWork)==1,"window moves to1080p monitor by greatest overlap");
         Check(NativeUiMetrics.MonitorIndex(new(-9000,100),new(1440,900),monitorWork)==0,"off-screen window chooses primary fallback");
         var lowered=NativeUiMetrics.MinimumWindowSize(new(1920,1040),1,startupFrame,new(1800,950));
-        Check(lowered==new int2(1100,760),"moving from200% to100% releases old oversized minimum");
+        Check(lowered==NativeUiMetrics.MinimumLogicalSize,"moving from200% to100% releases old oversized minimum");
         var raised=NativeUiMetrics.MinimumWindowSize(new(3840,2080),2,startupFrame,new(1440,900));
         Check(raised==new int2(1440,900),"higher DPI minimum never forces an unsolicited resize");
         foreach (float scale in new[] { 1.25f, 1.5f, 2f })

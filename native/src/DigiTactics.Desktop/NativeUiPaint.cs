@@ -157,7 +157,7 @@ internal static class NativeUiPaint
     /// <summary>The original .bit: a rotated rounded square with a cyan gradient and soft glow.</summary>
     internal static void Bit(ImDrawListPtr draw, float2 center, float size)
     {
-        float half = size * 0.72f;
+        float half = size * 0.66f;
         // box-shadow: 0 0 6px rgba(79,200,255,.7) around the 11px square.
         Radial(draw, center, new(half * 1.45f), new ImColor8(79, 200, 255, 80), new ImColor8(79, 200, 255, 0), 24);
         var top = center + new float2(0, -half);
@@ -172,8 +172,6 @@ internal static class NativeUiPaint
         draw.PrimReserve(6, 6);
         draw.PrimVtx(left, uv, light); draw.PrimVtx(top, uv, light); draw.PrimVtx(right, uv, middle);
         draw.PrimVtx(left, uv, middle); draw.PrimVtx(right, uv, middle); draw.PrimVtx(bottom, uv, dark);
-        // border-radius: 2px and antialiasing: a soft outline instead of hard vertex edges.
-        draw.AddQuad(top, right, bottom, left, Fade(new ImColor8(120, 215, 255, 150)), 1);
     }
 
     /// <summary>A single right-pointing (or, when open, downward) caret as drawn by .cs-car.</summary>

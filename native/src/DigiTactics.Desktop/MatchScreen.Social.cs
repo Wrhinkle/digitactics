@@ -139,7 +139,7 @@ internal sealed partial class MatchScreen
             draw.AddTriangleFilled(c+new float2(5.6f,-5.2f),c+new float2(5.6f,.4f),c+new float2(.6f,-2.2f),ink);},()=>{socialPollAt=0;RefreshSocial();});
         // .cs-foot: 10px 12px, gold-5 top rule, rgba(1,10,19,.85).
         // .cs-foot: 10px padding around a 12.5px/11px two-line block, plus its 1px rule.
-        float footHeight=20+1+NativeUiTheme.TextLine(12.5f)+NativeUiTheme.TextLine(11);
+        float footHeight=MathF.Ceiling(20+1+NativeUiTheme.TextLine(12.5f)+NativeUiTheme.TextLine(11));
         ImGui.SetCursorScreenPos(at+new float2(0,headHeight));
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
         ImGui.BeginChild("Social people"u8,new(extent.X,extent.Y-headHeight-footHeight),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
@@ -200,7 +200,7 @@ internal sealed partial class MatchScreen
         // .cs-fbtn: 5px 10px, Chakra 700 11px .1em uppercase, default button frame.
         string actionText=action.ToUpperInvariant();
         float actionWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,11,actionText,.1f)+20+2;
-        float actionHeight=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,11)+10+2;
+        float actionHeight=MathF.Round(11*1.3f)+10+2;
         float textRight=extent.X-12-actionWidth-8;
         var titleSize=new float2(0,NativeUiTheme.TextLine(12.5f));var noteSize=new float2(0,NativeUiTheme.TextLine(11));
         float textTop=MathF.Round(footAt.Y+(footHeight-titleSize.Y-noteSize.Y)/2);
