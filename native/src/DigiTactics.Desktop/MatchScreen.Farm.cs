@@ -19,7 +19,7 @@ internal sealed partial class MatchScreen
     private GpuTexture? farmSymbolTexture;
     private double farmMoodTime;
     private int FarmSceneX => 24;
-    private int FarmHeaderHeight => size.X >= 1280 ? 52 : 90;
+    private int FarmHeaderHeight => size.X >= 1280 ? 45 : 84;
     private int FarmSceneTop => (int)ClientPageTop + 12 + FarmHeaderHeight;
     private int FarmCardWidth => Math.Clamp((int)(size.X * .30f), 350, 390);
     private int FarmSceneWidth => Math.Max(250, size.X - FarmCardWidth - 48);

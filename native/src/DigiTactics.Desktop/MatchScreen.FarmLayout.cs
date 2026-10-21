@@ -110,56 +110,11 @@ internal sealed partial class MatchScreen
         TrainingPanel(); ImGui.End();
     }
 
-    private void FarmHeader(JsonNode state, string[] residents)
-    {
-        float top = ClientPageTop + 12, width = size.X - 48;
-        FarmWindow("Digi-Farm header", 24, top, width, FarmHeaderHeight, ImGuiWindowFlags.NoScrollbar);
-        var draw = ImGui.GetWindowDrawList();
-        draw.AddRectFilledMultiColor(new(25, top + 1), new(24 + width - 1, top + FarmHeaderHeight - 1), new ImColor8(10, 32, 38), new ImColor8(10, 32, 38), new ImColor8(1, 10, 19), new ImColor8(1, 10, 19));
-        ImGui.SetCursorScreenPos(new(38, top + 16)); FarmHeading("DIGI-FARM", 22);
-        ImGui.SetCursorScreenPos(new(188, top + 19));
-        ImGui.PushFont(default, 16); ImGui.PushStyleColor(ImGuiCol.Text, ClientMuted);
-        ImGui.Text(FarmCare.Themes.FirstOrDefault(t => t.Id == state["theme"]!.GetValue<string>())?.Name ?? "Room");
-        ImGui.PopStyleColor(); ImGui.PopFont();
-        float controlsX = 24 + width - 406;
-        ImGui.SetCursorScreenPos(new(controlsX, top + 10));
-        ImGui.BeginDisabled(farmManagement || training is not null);
-        if (Button("farmRoom", "Digi-Bank", 104, 32)) { farmManagement = true; farmManagementPage = "bank"; farmActionMenu = null; }
-        ImGui.SameLine(0, 6);
-        if (Button("farmThemes", "Themes", 88, 32)) { farmManagement = true; farmManagementPage = "themes"; farmActionMenu = null; }
-        ImGui.SameLine(0, 6);
-        if (Button("farmCaretakers", "Care staff", 106, 32, FarmCaretaker.Current(state, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) is not null)) { farmManagement = true; farmManagementPage = "caretakers"; farmActionMenu = null; }
-        ImGui.SameLine(0, 6);
-        if (Button("closeFarm", "Close", 72, 32)) BackClient();
-        ImGui.EndDisabled();
-        bool narrow = FarmHeaderHeight > 52;
-        float pillsX = narrow ? 38 : Math.Max(360, controlsX - 458);
-        ImGui.SetCursorScreenPos(new(pillsX, top + (narrow ? 54 : 16)));
-        ImGui.PushFont(default, 15);
-        string[] supplies = [$"ROOM {residents.Length}/{state["cap"]}", $"MEAT {state["meat"]!["n"]}/3", $"HEAL {state["bandage"]!["n"]}/2", $"BITS {state["daily"]!["bits"]}/60", $"DATA {state["daily"]!["data"]}/100"];
-        foreach (string supply in supplies)
-        {
-            var at = ImGui.GetCursorScreenPos(); var extent = ImGui.CalcTextSize(supply) + new float2(12, 8);
-            draw.AddRectFilled(at, at + extent, new ImColor8(1, 10, 19)); draw.AddRect(at, at + extent, ClientBorder);
-            draw.AddText(at + new float2(6, 4), ClientInk, supply); ImGui.Dummy(extent); ImGui.SameLine(0, 5);
-        }
-        ImGui.PopFont(); ImGui.End();
-    }
-
     private void FarmRoomScene(JsonNode state, string[] residents)
     {
         FarmWindow("Digi-Farm room", FarmSceneX, FarmSceneTop, FarmSceneWidth, FarmSceneHeight, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoScrollbar);
         ImGui.BeginDisabled(farmManagement || farmActionMenu is not null || training is not null);
-        int residentColumns = Math.Max(1, (int)((ImGui.GetContentRegionAvail().X + 8) / 56));
-        for (int index = 0; index < residents.Length; index++)
-        {
-            string id = residents[index];
-            if (index % residentColumns != 0) ImGui.SameLine(0, 8);
-            var at = ImGui.GetCursorScreenPos();
-            if (Button("farmResident/" + id, "##resident-" + id, 48, 48, id == farmPet)) { farmPet = id; FarmAct(FarmCareAction.Pet); }
-            portraits.DrawEvolution(FarmDetails(id).Evolution.Form, at + new float2(4, 4), 40, true);
-            if (ImGui.IsItemHovered()) { ImGui.BeginTooltip(); ImGui.Text(CosmeticCollection.Item("legend", id)!.Name); ImGui.EndTooltip(); }
-        }
+        FarmResidentChips(residents);
         float residentBottom = ImGui.GetCursorScreenPos().Y;
         if (farmViewError is not null) CollectionText(farmViewError);
         if (farmView is not null)
@@ -182,33 +137,7 @@ internal sealed partial class MatchScreen
         }
         DrawFarmPops();
         ImGui.EndDisabled();
-        float buttonWidth = Math.Min(74, (FarmSceneWidth - 40 - 7 * 6) / 8f);
-        float dockWidth = buttonWidth * 8 + 7 * 6 + 16;
-        var dockAt = new float2(FarmSceneX + (FarmSceneWidth - dockWidth) / 2, FarmSceneTop + FarmSceneHeight - 76);
-        var dockDraw = ImGui.GetWindowDrawList();
-        dockDraw.AddRectFilled(dockAt, dockAt + new float2(dockWidth, 66), new ImColor8(9, 20, 30, 242), 12);
-        dockDraw.AddRect(dockAt, dockAt + new float2(dockWidth, 66), ClientBorder, 12);
-        ImGui.SetCursorScreenPos(dockAt + new float2(8, 7));
-        ImGui.BeginDisabled(farmManagement || training is not null);
-        void CareButton(string key, string text, FarmSymbol? symbol, Action action, bool active = false)
-        {
-            var at = ImGui.GetCursorScreenPos();
-            if (Button(key, "##" + key, buttonWidth, 52, active)) action();
-            DrawFarmActionIcon(symbol, text, at + new float2(buttonWidth / 2, 17));
-            ImGui.PushFont(default, 14);
-            float labelWidth = ImGui.CalcTextSize(text).X;
-            dockDraw.AddText(ImGui.GetFont(), 14, at + new float2((buttonWidth - labelWidth) / 2, 32), ClientGold, text);
-            ImGui.PopFont(); ImGui.SameLine(0, 6);
-        }
-        CareButton("farmAction/feed", "Feed", FarmSymbol.Meat, () => farmActionMenu = farmActionMenu == "feed" ? null : "feed", farmActionMenu == "feed");
-        CareButton("farmClean", "Clean", null, () => FarmAct(FarmCareAction.Clean));
-        CareButton("farmAction/cure", "Medicine", FarmSymbol.Medicine, () => farmActionMenu = farmActionMenu == "cure" ? null : "cure", farmActionMenu == "cure");
-        CareButton("farmLights", state["lights"]!.GetValue<bool>() ? "Lights off" : "Lights on", FarmSymbol.Sleep, () => FarmAct(FarmCareAction.Lights), !state["lights"]!.GetValue<bool>());
-        CareButton("farmPraise", "Praise", FarmSymbol.Heart, () => FarmAct(FarmCareAction.Praise));
-        CareButton("farmScold", "Scold", FarmSymbol.Exclaim, () => FarmAct(FarmCareAction.Scold));
-        CareButton("farmAction/train", "Train", null, () => farmActionMenu = farmActionMenu == "train" ? null : "train", farmActionMenu == "train");
-        CareButton("farmPlay", "Play", FarmSymbol.Music, () => FarmAct(FarmCareAction.Play));
-        ImGui.NewLine(); ImGui.EndDisabled();
+        FarmActionBar(state);
         string? notice = farmNotices.LastOrDefault().Text ?? farm!.Message;
         if (!string.IsNullOrWhiteSpace(notice))
         {
@@ -239,62 +168,6 @@ internal sealed partial class MatchScreen
             draw.AddLine(center + new float2(6, -12), center + new float2(-3, 3), new ImColor8(190, 130, 70), 3);
             draw.AddTriangleFilled(center + new float2(-4, 0), center + new float2(-12, 10), center + new float2(6, 10), ClientGold);
         }
-    }
-
-    private void FarmResidentCard(JsonNode state, string[] residents, string id)
-    {
-        var pet = state["pets"]![id]!; var details = FarmDetails(id); DisplayedFarmDetails = details;
-        var form = LegendEvolution.Form(details.Evolution.Form);
-        ImGui.PushFont(default, 16); ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new float2(6, 6));
-        var at = ImGui.GetCursorScreenPos(); ImGui.Dummy(new(58, 58)); portraits.DrawEvolution(form.Id, at, 58, true);
-        ImGui.SameLine(); ImGui.BeginGroup(); FarmHeading(form.Name, 22);
-        ImGui.Text($"{form.Level} · Lv {details.Evolution.Level}");
-        if (farmView?.Mood(id) is { } mood) { ImGui.PushStyleColor(ImGuiCol.Text, ClientMuted); ImGui.Text(mood.Text); ImGui.PopStyleColor(); }
-        ImGui.EndGroup();
-        FarmBox("Farm needs");
-        FarmMeter("Hunger", pet["hunger"]!.GetValue<double>(), new(255, 178, 95));
-        FarmMeter("Energy", pet["energy"]!.GetValue<double>(), new(108, 204, 255));
-        FarmMeter("Happiness", pet["happy"]!.GetValue<double>(), new(255, 139, 184));
-        FarmMeter("Discipline", pet["disc"]!.GetValue<double>(), new(173, 153, 246));
-        ImGui.EndChild();
-        ImGui.PushStyleColor(ImGuiCol.Text, details.Sick ? new ImColor8(255, 140, 120) : new ImColor8(173, 208, 139));
-        UiText.Wrapped($"{pet["weight"]} G  ·  {details.AgeDays} days  ·  {details.Mistakes} care mistakes");
-        ImGui.PopStyleColor();
-        if (details.Sick || details.Fat || details.Thin || pet["flags"]?["asleep"]?.GetValue<bool>() == true)
-            UiText.Wrapped((details.Sick ? "Sick: " + pet["sickWhy"] : "Healthy") + (details.Fat ? " · Chubby" : details.Thin ? " · Thin" : "") + (pet["flags"]?["asleep"]?.GetValue<bool>() == true ? " · Sleeping" : ""));
-        FarmBox("Farm training stats"); FarmBoxHeading("TRAINING", "cap 300");
-        if (ImGui.BeginTable("farm-stats"u8, 2, ImGuiTableFlags.SizingStretchSame))
-        {
-            foreach (var (key, name) in new[] { ("str", "Strength"), ("spd", "Speed"), ("wis", "Wisdom"), ("sta", "Stamina") })
-            {
-                ImGui.TableNextColumn(); ImGui.Text($"{name}  {pet[key]}");
-                ImGui.PushStyleColor(ImGuiCol.PlotHistogram, new ImColor8(175, 218, 126)); ImGui.ProgressBar((float)(pet[key]!.GetValue<double>() / 300), new(-1, 5), ""u8); ImGui.PopStyleColor();
-            }
-            ImGui.EndTable();
-        }
-        if (details.TrainingRefusal is { } refusal) UiText.Wrapped(refusal);
-        ImGui.EndChild();
-        FarmEvolutionDetails(id, details);
-        if (ImGui.CollapsingHeader("More care actions"u8))
-        {
-            if (Button("farmPet", "Pet " + CosmeticCollection.Item("legend", id)!.Name, ImGui.GetContentRegionAvail().X, 32)) FarmAct(FarmCareAction.Pet);
-            foreach (string other in residents.Where(x => x != id))
-                if (Button("farmPlay/" + other, "Play with " + CosmeticCollection.Item("legend", other)!.Name, 0, 34)) FarmAct(FarmCareAction.Play, other);
-            foreach (var pile in pet["poop"]!.AsArray())
-                if (Button("farmPile/" + pile!["k"], "Clean pile " + pile["k"], 0, 34)) FarmAct(FarmCareAction.CleanPile, pile: pile["k"]!.GetValue<int>());
-        }
-        ImGui.PopStyleVar(); ImGui.PopFont();
-    }
-
-    private static void FarmMeter(string label, double value, ImColor8 color)
-    {
-        var at = ImGui.GetCursorScreenPos(); float width = ImGui.GetContentRegionAvail().X;
-        var draw = ImGui.GetWindowDrawList(); float barX = at.X + 96, barWidth = Math.Max(24, width - 130);
-        draw.AddText(at, ClientInk, label);
-        draw.AddRectFilled(new(barX, at.Y + 5), new(barX + barWidth, at.Y + 13), new ImColor8(6, 14, 26), 4);
-        draw.AddRectFilled(new(barX, at.Y + 5), new(barX + barWidth * (float)Math.Clamp(value / 100, 0, 1), at.Y + 13), color, 4);
-        string number = $"{value:0}"; draw.AddText(new(at.X + width - ImGui.CalcTextSize(number).X, at.Y), ClientMuted, number);
-        ImGui.Dummy(new(width, 19));
     }
 
     private bool FarmChoiceButton(string key,string title,string caption,string price,FarmSymbol? icon=null)
