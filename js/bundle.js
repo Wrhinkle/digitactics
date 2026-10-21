@@ -11480,8 +11480,8 @@
     let isAnimating = false;
     let animationLoop = null;
     let requestId = null;
-    function onAnimationFrame(time, frame4) {
-      animationLoop(time, frame4);
+    function onAnimationFrame(time, frame5) {
+      animationLoop(time, frame5);
       requestId = context.requestAnimationFrame(onAnimationFrame);
     }
     return {
@@ -14284,30 +14284,30 @@
   function WebGLObjects(gl2, geometries, attributes, info2) {
     let updateMap = /* @__PURE__ */ new WeakMap();
     function update(object) {
-      const frame4 = info2.render.frame;
+      const frame5 = info2.render.frame;
       const geometry = object.geometry;
       const buffergeometry = geometries.get(object, geometry);
-      if (updateMap.get(buffergeometry) !== frame4) {
+      if (updateMap.get(buffergeometry) !== frame5) {
         geometries.update(buffergeometry);
-        updateMap.set(buffergeometry, frame4);
+        updateMap.set(buffergeometry, frame5);
       }
       if (object.isInstancedMesh) {
         if (object.hasEventListener("dispose", onInstancedMeshDispose) === false) {
           object.addEventListener("dispose", onInstancedMeshDispose);
         }
-        if (updateMap.get(object) !== frame4) {
+        if (updateMap.get(object) !== frame5) {
           attributes.update(object.instanceMatrix, gl2.ARRAY_BUFFER);
           if (object.instanceColor !== null) {
             attributes.update(object.instanceColor, gl2.ARRAY_BUFFER);
           }
-          updateMap.set(object, frame4);
+          updateMap.set(object, frame5);
         }
       }
       if (object.isSkinnedMesh) {
         const skeleton = object.skeleton;
-        if (updateMap.get(skeleton) !== frame4) {
+        if (updateMap.get(skeleton) !== frame5) {
           skeleton.update();
-          updateMap.set(skeleton, frame4);
+          updateMap.set(skeleton, frame5);
         }
       }
       return buffergeometry;
@@ -19046,9 +19046,9 @@
       return renderTarget.samples > 0 && extensions.has("WEBGL_multisampled_render_to_texture") === true && renderTargetProperties.__useRenderToTexture !== false;
     }
     function updateVideoTexture(texture) {
-      const frame4 = info2.render.frame;
-      if (_videoTextures.get(texture) !== frame4) {
-        _videoTextures.set(texture, frame4);
+      const frame5 = info2.render.frame;
+      if (_videoTextures.get(texture) !== frame5) {
+        _videoTextures.set(texture, frame5);
         texture.update();
       }
     }
@@ -19304,18 +19304,18 @@
       }
       return this;
     }
-    update(inputSource, frame4, referenceSpace) {
+    update(inputSource, frame5, referenceSpace) {
       let inputPose = null;
       let gripPose = null;
       let handPose = null;
       const targetRay = this._targetRay;
       const grip = this._grip;
       const hand = this._hand;
-      if (inputSource && frame4.session.visibilityState !== "visible-blurred") {
+      if (inputSource && frame5.session.visibilityState !== "visible-blurred") {
         if (hand && inputSource.hand) {
           handPose = true;
           for (const inputjoint of inputSource.hand.values()) {
-            const jointPose = frame4.getJointPose(inputjoint, referenceSpace);
+            const jointPose = frame5.getJointPose(inputjoint, referenceSpace);
             const joint = this._getHandJoint(hand, inputjoint);
             if (jointPose !== null) {
               joint.matrix.fromArray(jointPose.transform.matrix);
@@ -19347,7 +19347,7 @@
           }
         } else {
           if (grip !== null && inputSource.gripSpace) {
-            gripPose = frame4.getPose(inputSource.gripSpace, referenceSpace);
+            gripPose = frame5.getPose(inputSource.gripSpace, referenceSpace);
             if (gripPose !== null) {
               grip.matrix.fromArray(gripPose.transform.matrix);
               grip.matrix.decompose(grip.position, grip.rotation, grip.scale);
@@ -19368,7 +19368,7 @@
           }
         }
         if (targetRay !== null) {
-          inputPose = frame4.getPose(inputSource.targetRaySpace, referenceSpace);
+          inputPose = frame5.getPose(inputSource.targetRaySpace, referenceSpace);
           if (inputPose === null && gripPose !== null) {
             inputPose = gripPose;
           }
@@ -19858,9 +19858,9 @@ void main() {
         return depthSensing.getMesh(cameraXR);
       };
       let onAnimationFrameCallback = null;
-      function onAnimationFrame(time, frame4) {
-        pose = frame4.getViewerPose(customReferenceSpace || referenceSpace);
-        xrFrame = frame4;
+      function onAnimationFrame(time, frame5) {
+        pose = frame5.getViewerPose(customReferenceSpace || referenceSpace);
+        xrFrame = frame5;
         if (pose !== null) {
           const views = pose.views;
           if (glBaseLayer !== null) {
@@ -19921,12 +19921,12 @@ void main() {
           const inputSource = controllerInputSources[i];
           const controller = controllers[i];
           if (inputSource !== null && controller !== void 0) {
-            controller.update(inputSource, frame4, customReferenceSpace || referenceSpace);
+            controller.update(inputSource, frame5, customReferenceSpace || referenceSpace);
           }
         }
-        if (onAnimationFrameCallback) onAnimationFrameCallback(time, frame4);
-        if (frame4.detectedPlanes) {
-          scope.dispatchEvent({ type: "planesdetected", data: frame4 });
+        if (onAnimationFrameCallback) onAnimationFrameCallback(time, frame5);
+        if (frame5.detectedPlanes) {
+          scope.dispatchEvent({ type: "planesdetected", data: frame5 });
         }
         xrFrame = null;
       }
@@ -20269,10 +20269,10 @@ void main() {
       }
       const webglProgram = program.program;
       state2.updateUBOMapping(uniformsGroup, webglProgram);
-      const frame4 = info2.render.frame;
-      if (updateList[uniformsGroup.id] !== frame4) {
+      const frame5 = info2.render.frame;
+      if (updateList[uniformsGroup.id] !== frame5) {
         updateBufferData(uniformsGroup);
-        updateList[uniformsGroup.id] = frame4;
+        updateList[uniformsGroup.id] = frame5;
       }
     }
     function createBuffer(uniformsGroup) {
@@ -28209,8 +28209,8 @@ void main() {
       const times = [];
       const values = [];
       for (let j = 0; j < track2.times.length; ++j) {
-        const frame4 = track2.times[j] * fps;
-        if (frame4 < startFrame || frame4 >= endFrame) continue;
+        const frame5 = track2.times[j] * fps;
+        if (frame5 < startFrame || frame5 >= endFrame) continue;
         times.push(track2.times[j]);
         for (let k = 0; k < valueSize; ++k) {
           values.push(track2.values[j * valueSize + k]);
@@ -39000,8 +39000,8 @@ void main() {
       this.alpha.update(dt, this.vp, cam.aspect);
     }
     // advance a paused timeline (tests take screenshots of exact moments this way)
-    advance(sec, frame4 = 1 / 60) {
-      for (let t = 0; t < sec - 1e-6; t += frame4) this.step(frame4);
+    advance(sec, frame5 = 1 / 60) {
+      for (let t = 0; t < sec - 1e-6; t += frame5) this.step(frame5);
     }
     clear() {
       for (const t of this.tasks) {
@@ -42515,6 +42515,55 @@ void main() {
       elbows: pair("J_elbow_l", "J_elbow_r"),
       chains: [chain(["J_tail01", "J_tail02", "J_tail03", "J_tail04"], 0.08, 0.8), ...["l", "r"].map((side) => chain([`J_wing01_${side}`, `J_wing02_${side}`], 0.1, 0.7, "x"))]
     },
+    // Clipless imports whose shoulder-only generic victory swung both straight
+    // arms up into a sideways T. Keep the readable generic swing on the gun/sword
+    // arm (as Kotemon does), guard the other arm, and add torso/head/elbow motion.
+    "rip-cs_rapidmon_armor": {
+      body: "J_spine01",
+      chest: "J_spine02",
+      head: "J_head",
+      bodyLean: 0.2,
+      armRange: 0.6,
+      elbowAttack: 0.55,
+      elbowWin: 0.6,
+      family: "biped",
+      arms: pair("J_arm_l", "J_arm_r"),
+      elbows: pair("J_elbow_l", "J_elbow_r"),
+      weaponArm: "J_arm_r",
+      weaponBlend: 0.85,
+      chains: [chain(["J_tail"], 0.08, 0.8)]
+    },
+    "rip-l_omnimon_merciful_mode": {
+      body: "J_spine01",
+      chest: "J_spine02",
+      head: "J_head",
+      bodyLean: 0.2,
+      armRange: 0.6,
+      elbowAttack: 0.55,
+      elbowWin: 0.6,
+      family: "biped",
+      arms: pair("J_arm_l", "J_arm_r"),
+      elbows: pair("J_elbow_l", "J_elbow_r"),
+      weaponArm: "J_arm_r",
+      chains: ["l", "r"].map((side) => chain(Array.from({ length: 4 }, (_, i) => `J_wing0${i + 1}_${side}`), 0.04, 0.6, "x"))
+    },
+    // Its long ears and lab coat hide the arms, so the generic shoulder-only
+    // clips rendered four identical frames. Move the visible ears, head and torso.
+    "rip-ts_terriermon_assistant": {
+      body: "J_spine01",
+      chest: "J_spine02",
+      head: "J_neck",
+      headRange: 0.6,
+      jaw: "J_mouth",
+      bodyLean: 0.3,
+      armRange: 0.25,
+      elbowAttack: 0.7,
+      elbowWin: 0.7,
+      family: "biped",
+      arms: pair("J_arm_l", "J_arm_r"),
+      elbows: pair("J_elbow_l", "J_elbow_r"),
+      chains: ["l", "r"].map((side) => chain([1, 2, 3, 4].map((i) => `J_ear0${i}_${side}`), 0.12, 0.6, "x"))
+    },
     "rip-cat_rd_beelzemon_main": { body: "chest", head: "head", family: "biped", arms: pair("arm_L", "arm_R"), elbows: pair("forearm_L", "forearm_R"), elbowAxis: "y", elbowSigns: [1, -1] },
     "rip-cat_rd_wargrowlmon_main": { body: "chest", head: "head", family: "biped", arms: pair("arm_L", "arm_R"), elbows: pair("forearm_L", "forearm_R"), elbowAxis: "y", elbowSigns: [1, -1] }
   };
@@ -42593,7 +42642,7 @@ void main() {
           if (clip2.name === "idle" && map.idleGain) for (const key2 of ["lean", "turn", "lift", "wave"]) g2[key2] *= map.idleGain;
           if (weapon) {
             const target = originalTurn ? new Quaternion().fromArray(originalTurn.evaluate(time)) : unguarded.get(bone.name);
-            if (target) rotation.slerp(target, g2.envelope);
+            if (target) rotation.slerp(target, g2.envelope * (map.weaponBlend ?? 1));
           } else for (const turn of turns) rotation.multiply(new Quaternion().setFromAxisAngle(turn.axis, turn.amount(clip2.name, u, g2)));
           rotation.normalize().toArray(values, values.length);
         }
@@ -42943,8 +42992,8 @@ void main() {
     const height = Math.max(...all.flatMap((p) => p.vertices.map((v) => v.y))) - floor;
     return Object.entries(spec.durations || durations).map(([role, duration]) => {
       const count2 = Math.ceil(duration * 120), times = [], positions = all.map(() => []), rotations = all.map(() => []);
-      for (let frame4 = 0; frame4 <= count2; frame4++) {
-        const u = frame4 / count2, delta = /* @__PURE__ */ new Map(), poses2 = [];
+      for (let frame5 = 0; frame5 <= count2; frame5++) {
+        const u = frame5 / count2, delta = /* @__PURE__ */ new Map(), poses2 = [];
         times.push(u * duration);
         for (const p of all) {
           const rotation = angles(spec.family, p, role, u), local = new Matrix4().makeRotationFromQuaternion(rotation);
@@ -42987,7 +43036,7 @@ void main() {
     const rigid = rigidPartClips(gltf, src);
     if (rigid) return rigid;
     if (src?.uid === "rip-l_garurumon_greymon_statue") return statueClips(gltf.scene);
-    const authored = generatedBipedClips(gltf, src, blobBodyClips(gltf, src, heldWeaponOrigin(gltf, src, boardRootTravel(gltf, src, boardBodyScale(gltf, src))))).filter((c) => !src?.fallbackRoles?.includes(c.name));
+    const authored = livelyIdle(src, generatedBipedClips(gltf, src, blobBodyClips(gltf, src, heldWeaponOrigin(gltf, src, sampledRootAnchor(gltf, src, boardRootTravel(gltf, src, boardBodyScale(gltf, src))))))).filter((c) => !src?.fallbackRoles?.includes(c.name));
     if (authored.length && src?.anim !== false) {
       const staticIdle = src?.uid === "rip-cat_cs_seadramon_chr347";
       const missing = ["idle", "attack", "special", "win"].filter((role) => staticIdle && role === "idle" || !authored.some((c) => c.name === role));
@@ -43012,6 +43061,29 @@ void main() {
       if (sword?.parent?.name === "J_hand_r") sword.position.set(0, 0, 0);
     }
     return anatomyFallbackClips(gltf.scene, src, fallback);
+  }
+  function livelyIdle(src, clips) {
+    const gain = { "rip-durandamon": 4, "rip-tankdramon": 3 }[src?.uid];
+    if (!gain) return clips;
+    return clips.map((clip2) => {
+      if (clip2.name !== "idle") return clip2;
+      const corrected = clip2.clone(), opening = new Quaternion(), key2 = new Quaternion();
+      for (const track2 of corrected.tracks) {
+        if (!track2.name.endsWith(".quaternion")) continue;
+        opening.fromArray(track2.values, 0);
+        const inverse = opening.clone().invert();
+        for (let i = 0; i < track2.values.length; i += 4) {
+          key2.fromArray(track2.values, i);
+          const delta = inverse.clone().multiply(key2);
+          if (delta.w < 0) delta.set(-delta.x, -delta.y, -delta.z, -delta.w);
+          const angle = 2 * Math.acos(Math.min(1, delta.w)), s = Math.sqrt(Math.max(0, 1 - delta.w * delta.w));
+          if (s < 1e-9) continue;
+          const axis2 = new Vector3(delta.x / s, delta.y / s, delta.z / s);
+          opening.clone().multiply(new Quaternion().setFromAxisAngle(axis2, angle * gain)).normalize().toArray(track2.values, i);
+        }
+      }
+      return corrected;
+    });
   }
   function blobBodyClips(gltf, src, clips) {
     if (src?.uid !== "rip-cat_cs_pabumon_chr387") return clips;
@@ -43219,7 +43291,44 @@ void main() {
       "rip-dinobeemon": ["J_center", "special", "win"],
       "rip-zubamon": ["J_center", "special"],
       "rip-zubaeagermon": ["J_center", "special"],
-      "rip-puppetmon": ["J_center", "special"]
+      "rip-puppetmon": ["J_center", "special"],
+      // Whole-body roots (100% of the weighted skin) that travel 2.5-19 idle
+      // heights in these actions, so the creature leaves its hex and the frame.
+      "rip-fanbeemon": ["J_center", "special", "win"],
+      "rip-cs_gaomon": ["J_root", "special"],
+      "rip-cs_sistermon_blanc_awakened": ["J_center", "special"],
+      "rip-cs_tyrantkabuterimon": ["J_center", "win"],
+      "rip-cs_coelamon": ["J_center", "special"],
+      "rip-hackmon": ["J_center", "special"],
+      "rip-baohuckmon": ["J_center", "special"],
+      "6ccfdb5317e14d39b899181ffef0860b": ["J_root_03", "attack"],
+      "rip-cs_aquilamon": ["mass", "special"],
+      "rip-jazamon": ["J_center", "win"],
+      "rip-jazardmon": ["J_center", "special", "win"],
+      "rip-jazarichmon": ["J_center", "special", "win"],
+      "rip-chirinmon": ["J_center", "special"],
+      "rip-kuwagamon": ["J_center", "special"],
+      "rip-kendogarurumon": ["J_center", "special", "win"],
+      "rip-magnagarurumon": ["J_center", "special", "win"],
+      "rip-lekismon": ["J_center", "special", "win"],
+      "rip-princemamemon": ["J_center", "special"],
+      "rip-meicoomon": ["chr999J_center", "special"],
+      "rip-meicrackmon_vicious_mode": ["J_center", "special"],
+      "rip-raguelmon": ["J_center", "special"],
+      "rip-monodramon": ["J_center", "special"],
+      "rip-strikedramon": ["J_center", "special"],
+      "rip-cs_alphamon_nx": ["J_center", "special"],
+      "rip-cs_alphamon_ouryuken": ["J_center", "special"],
+      "rip-cs_arcadiamon_in_training": ["J_center", "special", "win"],
+      "rip-cs_omnimon_nx": ["J_center", "special"],
+      "rip-l_cresgarurumon": ["J_center", "special"],
+      "rip-l_minervamon": ["J_center", "special"],
+      "rip-l_omnimon_zwart_d": ["J_center", "special"],
+      "rip-l_pandamon": ["J_mass", "special"],
+      "rip-vorvomon": ["chr120J_center", "win"],
+      // The body root covers 97-98%; the thrown weapon / held lance is a sibling.
+      "rip-ryudamon": ["J_center", "special"],
+      "rip-ginryumon": ["J_center", "special", "win"]
     }[src?.uid];
     if (!policy) return clips;
     const [body2, ...roles] = policy, idle = clips.find((c) => c.name === "idle"), name2 = body2 + ".position", node = gltf.scene.getObjectByName(body2);
@@ -43230,7 +43339,7 @@ void main() {
     gltf.scene.updateMatrixWorld(true);
     const origin = node.getWorldPosition(V()), parent = node.parent.matrixWorld.clone(), inverse = parent.clone().invert();
     const box3 = new Box3().setFromObject(gltf.scene), height = Math.max(1e-9, box3.max.y - box3.min.y);
-    const shared = src.uid === "rip-puppetmon" ? node.parent : null;
+    const shared = ["rip-puppetmon", "rip-ryudamon", "rip-ginryumon"].includes(src.uid) ? node.parent : null;
     const sharedInverse = shared ? new Matrix3().setFromMatrix4(shared.parent.matrixWorld.clone().invert()) : null;
     const result = clips.map((action2) => {
       const role = action2.name, track2 = action2.tracks.find((t) => t.name === name2);
@@ -43258,6 +43367,46 @@ void main() {
     mixer.stopAllAction();
     mixer.uncacheRoot(gltf.scene);
     return src.uid === "rip-zubaeagermon" ? somersaultClearance(gltf, result) : result;
+  }
+  function sampledRootAnchor(gltf, src, clips) {
+    const policy = { "rip-cs_turuiemon": ["J_center", "J_root", "special"] }[src?.uid];
+    if (!policy) return clips;
+    const [bodyName, moverName, ...roles] = policy, scene2 = gltf.scene, body2 = scene2.getObjectByName(bodyName), mover = scene2.getObjectByName(moverName), idle = clips.find((c) => c.name === "idle");
+    if (!body2 || !mover || !idle) return clips;
+    const mixer = new AnimationMixer(scene2);
+    mixer.clipAction(idle).play();
+    mixer.update(0);
+    scene2.updateMatrixWorld(true);
+    const origin = body2.getWorldPosition(V()), box3 = new Box3().setFromObject(scene2), height = Math.max(1e-9, box3.max.y - box3.min.y);
+    const toParent = new Matrix3().setFromMatrix4(mover.parent.matrixWorld.clone().invert());
+    mixer.stopAllAction();
+    const result = clips.map((clip2) => {
+      if (!roles.includes(clip2.name)) return clip2;
+      const times = Array.from({ length: Math.ceil(clip2.duration * 240) + 1 }, (_, i) => Math.min(clip2.duration, i / 240));
+      const action2 = mixer.clipAction(clip2);
+      action2.setLoop(LoopOnce, 1);
+      action2.clampWhenFinished = true;
+      action2.play();
+      const samples = times.map((time) => {
+        mixer.setTime(time);
+        scene2.updateMatrixWorld(true);
+        return { world: body2.getWorldPosition(V()), local: mover.position.clone() };
+      });
+      mixer.stopAllAction();
+      const lifts = samples.map((sample) => sample.world.y - origin.y);
+      const up = Math.min(1, height * 0.35 / Math.max(...lifts, 1e-9)), down = Math.min(1, height * 0.08 / Math.max(...lifts.map((y) => -y), 1e-9)), values = [];
+      samples.forEach((sample, i) => {
+        const end = Math.min(1, Math.max(0, (1 - times[i] / clip2.duration) / 0.2)), settle2 = end * end * (3 - 2 * end);
+        const desired = origin.clone().add(V().set(0, lifts[i] * (lifts[i] < 0 ? down : up) * settle2, 0));
+        sample.local.clone().add(desired.sub(sample.world).applyMatrix3(toParent)).toArray(values, values.length);
+      });
+      const corrected = clip2.clone();
+      corrected.tracks = corrected.tracks.filter((track2) => track2.name !== moverName + ".position");
+      corrected.tracks.push(new VectorKeyframeTrack(moverName + ".position", times, values));
+      return corrected;
+    });
+    mixer.uncacheRoot(scene2);
+    return result;
   }
   function somersaultClearance(gltf, clips) {
     const scene2 = gltf.scene, idle = clips.find((c) => c.name === "idle"), clip2 = clips.find((c) => c.name === "special");
@@ -54579,11 +54728,11 @@ void main() {
       ui2.hoverCombatId = null;
       renderChart(true);
     }
-    function frame4(now3) {
+    function frame5(now3) {
       const dt = Math.min(0.1, (now3 - last2) / 1e3);
       last2 = now3;
       if (paused) {
-        requestAnimationFrame(frame4);
+        requestAnimationFrame(frame5);
         return;
       }
       if (game7) {
@@ -54637,7 +54786,7 @@ void main() {
           renderer2.drawPlanning(game7, ui2);
         }
       }
-      requestAnimationFrame(frame4);
+      requestAnimationFrame(frame5);
     }
     DT32.UI = {
       startNetGame,
@@ -54671,7 +54820,7 @@ void main() {
       return combat;
     } };
     fit();
-    requestAnimationFrame(frame4);
+    requestAnimationFrame(frame5);
   })();
 
   // js/net-firebase.js
@@ -62102,8 +62251,8 @@ void main() {
       cleanup();
       resolve3(clamp3(score, 0, 1));
     };
-    const frame4 = (ms) => {
-      raf = requestAnimationFrame(frame4);
+    const frame5 = (ms) => {
+      raf = requestAnimationFrame(frame5);
       const dt = Math.min(0.05, (ms - (last2 || ms)) / 1e3) * speed;
       last2 = ms;
       if (t < 0) {
@@ -62117,7 +62266,7 @@ void main() {
       if (opts.auto && game7.auto) game7.auto(t);
       if (r != null) finish2(r);
     };
-    raf = requestAnimationFrame(frame4);
+    raf = requestAnimationFrame(frame5);
     const onKey = (e) => {
       if (over) return;
       if (e.key === "Escape") return;
@@ -65971,7 +66120,7 @@ void main() {
   var queue3 = createLootNoticeQueue();
   DT26.LootNotices = { earned: (award2) => queue3.earned(award2), clear: () => queue3.clear() };
   if (typeof document !== "undefined") {
-    let frame4 = function(now3) {
+    let frame5 = function(now3) {
       const blocked = document.hidden || !!DT26.KillScreens?.active || !!document.querySelector("dialog[open]");
       queue3.advance(Math.max(0, Math.min(0.25, (now3 - last2) / 1e3)), blocked || panel3.matches(":hover") || panel3.contains(document.activeElement));
       last2 = now3;
@@ -65992,9 +66141,9 @@ void main() {
         }
       }
       panel3.style.setProperty("--remaining", `${100 * (1 - queue3.elapsed / 10)}%`);
-      requestAnimationFrame(frame4);
+      requestAnimationFrame(frame5);
     };
-    frame5 = frame4;
+    frame3 = frame5;
     const css12 = document.createElement("style");
     css12.textContent = `
   #lootAwardNotice{position:fixed;left:50%;bottom:24px;z-index:1500;transform:translateX(-50%);width:min(780px,calc(100vw - 48px));box-sizing:border-box;padding:18px 22px;background:rgba(5,15,26,.98);border:2px solid #c8aa6e;box-shadow:0 14px 60px #000b;font-family:var(--font-body,sans-serif);color:#edf3fa;border-radius:10px;animation:lootNoticeIn .22s ease-out}
@@ -66022,12 +66171,12 @@ void main() {
     });
     const icon2 = (id2) => `<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round">${id2 === "key" ? '<circle cx="16" cy="16" r="9"/><path d="M22 22L40 40M31 31L36 26M36 36L41 31"/>' : '<path d="M7 21V12Q7 7 13 7H35Q41 7 41 12V21M7 21H41V40H7Z"/><path d="M5 21H43M21 21V29H27V21"/>'}</svg>`;
     let shown3 = 0, last2 = performance.now();
-    requestAnimationFrame(frame4);
+    requestAnimationFrame(frame5);
     window.addEventListener("storage", (event) => {
       if (event.key === "dt.mysteryLoot.v1" && event.newValue === null) queue3.clear();
     });
   }
-  var frame5;
+  var frame3;
 
   // js/mystery-loot.js
   var DT27 = window.DT;
@@ -66838,7 +66987,7 @@ void main() {
   var lastT = performance.now();
   var barAt = 0;
   var lastPhase = null;
-  function frame3(now3) {
+  function frame4(now3) {
     const dt = Math.min(0.1, (now3 - lastT) / 1e3);
     lastT = now3;
     const g2 = game5();
@@ -66869,9 +67018,9 @@ void main() {
       }
     }
     step(dt);
-    requestAnimationFrame(frame3);
+    requestAnimationFrame(frame4);
   }
-  requestAnimationFrame(frame3);
+  requestAnimationFrame(frame4);
   var r0 = renderer();
   if (r0) r0.scoutTick = sceneTick;
   DT29.Scout = { view: view2, home, cycle, render: render6, viewing: viewingId, snapshot, fight, follow, verify, stats: stats5, busy: () => !!trans, replays: () => round ? round.replays : null };

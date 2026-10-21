@@ -38,6 +38,19 @@ const anatomy = {
     elbowAxis:'y',elbowSigns:[-1,1],elbowAttack:.55,elbowWin:.6,family:'biped',
     arms:pair('J_arm_l','J_arm_r'),elbows:pair('J_elbow_l','J_elbow_r'),
     chains:[chain(['J_tail01','J_tail02','J_tail03','J_tail04'],.08,.8),...['l','r'].map(side=>chain([`J_wing01_${side}`,`J_wing02_${side}`],.1,.7,'x'))]},
+  // Clipless imports whose shoulder-only generic victory swung both straight
+  // arms up into a sideways T. Keep the readable generic swing on the gun/sword
+  // arm (as Kotemon does), guard the other arm, and add torso/head/elbow motion.
+  'rip-cs_rapidmon_armor': {body:'J_spine01',chest:'J_spine02',head:'J_head',bodyLean:.2,armRange:.6,elbowAttack:.55,elbowWin:.6,family:'biped',
+    arms:pair('J_arm_l','J_arm_r'),elbows:pair('J_elbow_l','J_elbow_r'),weaponArm:'J_arm_r',weaponBlend:.85,chains:[chain(['J_tail'],.08,.8)]},
+  'rip-l_omnimon_merciful_mode': {body:'J_spine01',chest:'J_spine02',head:'J_head',bodyLean:.2,armRange:.6,elbowAttack:.55,elbowWin:.6,family:'biped',
+    arms:pair('J_arm_l','J_arm_r'),elbows:pair('J_elbow_l','J_elbow_r'),weaponArm:'J_arm_r',
+    chains:['l','r'].map(side=>chain(Array.from({length:4},(_,i)=>`J_wing0${i+1}_${side}`),.04,.6,'x'))},
+  // Its long ears and lab coat hide the arms, so the generic shoulder-only
+  // clips rendered four identical frames. Move the visible ears, head and torso.
+  'rip-ts_terriermon_assistant': {body:'J_spine01',chest:'J_spine02',head:'J_neck',headRange:.6,jaw:'J_mouth',bodyLean:.3,armRange:.25,
+    elbowAttack:.7,elbowWin:.7,family:'biped',arms:pair('J_arm_l','J_arm_r'),elbows:pair('J_elbow_l','J_elbow_r'),
+    chains:['l','r'].map(side=>chain([1,2,3,4].map(i=>`J_ear0${i}_${side}`),.12,.6,'x'))},
   'rip-cat_rd_beelzemon_main': {body:'chest',head:'head',family:'biped',arms:pair('arm_L','arm_R'),elbows:pair('forearm_L','forearm_R'),elbowAxis:'y',elbowSigns:[1,-1]},
   'rip-cat_rd_wargrowlmon_main': {body:'chest',head:'head',family:'biped',arms:pair('arm_L','arm_R'),elbows:pair('forearm_L','forearm_R'),elbowAxis:'y',elbowSigns:[1,-1]},
 };
@@ -131,7 +144,7 @@ export function anatomyFallbackClips(scene,source,original){
           // Blend only the weapon arm out of the new neutral; the other arm
           // stays guarded, and all clips meet at the same lowered endpoint.
           const target=originalTurn?new THREE.Quaternion().fromArray(originalTurn.evaluate(time)):unguarded.get(bone.name);
-          if(target)rotation.slerp(target,g.envelope);
+          if(target)rotation.slerp(target,g.envelope*(map.weaponBlend??1));
         }else for(const turn of turns)rotation.multiply(new THREE.Quaternion().setFromAxisAngle(turn.axis,turn.amount(clip.name,u,g)));
         rotation.normalize().toArray(values,values.length);
       }

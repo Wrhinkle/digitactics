@@ -23,7 +23,19 @@ async function main(){
     ['extra:Kimeramon','J_center','win'],['kimeramon:0','J_center','win'],['kimeramon:1','J_center','win'],['kimeramon:2','J_center','win'],
     ['drg:Grademon','J_center','special'],['drg:Gryphonmon','J_center','win'],['drg:Gumdramon','J_center','special'],['ac:Gumdramon','J_center','special'],
     ['wormmon:1','J_center','special'],['wormmon:2','J_center','special'],['wormmon:2','J_center','win'],
-    ['zubamon:0','J_center','special'],['zubamon:1','J_center','special']]){
+    ['zubamon:0','J_center','special'],['zubamon:1','J_center','special'],
+    ['fanbeemon:0','J_center','special'],['fanbeemon:0','J_center','win'],['gaomon:0','J_root','special'],
+    ['giz:SistermonBlancAwakened','J_center','special'],['giz:TyrantKabuterimon','J_center','win'],['gizamon:1','J_center','special'],
+    ['hackmon:0','J_center','special'],['hackmon:1','J_center','special'],['hagurumon:2','J_root_03','attack'],['hawkmon:1','mass','special'],
+    ['jazamon:0','J_center','win'],['jazamon:1','J_center','special'],['jazamon:1','J_center','win'],['jazamon:2','J_center','special'],['jazamon:2','J_center','win'],
+    ['kudamon:2','J_center','special'],['kuwagamon:0','J_center','special'],['lobomon:1','J_center','special'],['lobomon:1','J_center','win'],
+    ['lobomon:2','J_center','special'],['lobomon:2','J_center','win'],['lopmon:1','J_center','special'],['lunamon:1','J_center','special'],['lunamon:1','J_center','win'],
+    ['mamemon:2','J_center','special'],['meicoomon:0','chr999J_center','special'],['meicoomon:1','J_center','special'],['meicoomon:2','J_center','special'],
+    ['monodramon:0','J_center','special'],['monodramon:1','J_center','special'],['ryudamon:0','J_center','special'],['ryudamon:1','J_center','special'],['ryudamon:1','J_center','win'],
+    ['unique:CS_Alphamon_NX','J_center','special'],['unique:CS_Alphamon_Ouryuken','J_center','special'],
+    ['unique:CS_Arcadiamon_In_Training','J_center','special'],['unique:CS_Arcadiamon_In_Training','J_center','win'],['unique:CS_Omnimon_NX','J_center','special'],
+    ['unique:L_CresGarurumon','J_center','special'],['unique:L_Minervamon','J_center','special'],['unique:L_Omnimon_Zwart_D','J_center','special'],
+    ['unique:L_Pandamon','J_mass','special'],['vorvomon:0','chr120J_center','win']]){
     if(requested.size&&!requested.has(key))continue;
     visited.add(key);
     const source=catalog.sources[key],bytes=zlib.gunzipSync(fs.readFileSync(path.join(root,'native/artifacts/model-content',catalog.assets[source.asset].file))),length=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+length)),binary=bytes.subarray(28+length);
@@ -94,7 +106,8 @@ async function main(){
     }
     if(Math.max(...rawYs)-Math.min(...rawYs)>height*.005)assert.ok(motion>height*.005,key+' must retain visible authored vertical movement');
     // Wizardmon also has the separately tested 1/15x body-scale repair.
-    for(const track of raw.tracks){if(track.name===bodyName+'.position'||key==='candlemon:1'&&track.name==='GRP_joint_03.scale')continue;const retained=clip.tracks.find(t=>t.name===track.name);assert.deepEqual(Array.from(retained.times),Array.from(track.times));assert.deepEqual(Array.from(retained.values),Array.from(track.values));}
+    // Turuiemon's traveling J_root parent is held at idle in the anchored special.
+    for(const track of raw.tracks){if(track.name===bodyName+'.position'||key==='candlemon:1'&&track.name==='GRP_joint_03.scale'||key==='lopmon:1'&&track.name==='J_root.position')continue;const retained=clip.tracks.find(t=>t.name===track.name);assert.deepEqual(Array.from(retained.times),Array.from(track.times));assert.deepEqual(Array.from(retained.values),Array.from(track.values));}
     console.log('Root-travel regression passed: '+key+'; 65 whole-cycle samples, vertical action retained, other authored tracks preserved.');
   }
   for(const key of requested)assert.ok(visited.has(key),'Unknown root-travel regression source: '+key);
