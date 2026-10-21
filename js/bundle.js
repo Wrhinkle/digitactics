@@ -42678,7 +42678,7 @@ void main() {
     });
     mixer.stopAllAction();
     mixer.uncacheRoot(gltf.scene);
-    return result;
+    return generatedBodyClips(gltf, result);
   }
 
   // js/model-rigid-parts.js

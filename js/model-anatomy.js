@@ -208,11 +208,13 @@ export function generatedBipedClips(gltf,source,clips){
     const original=clips.find(c=>c.name===clip.name),bindings=new Set(clip.tracks.map(t=>t.name));
     return new THREE.AnimationClip(clip.name,clip.duration,[...original.tracks.filter(t=>!bindings.has(t.name)).map(t=>t.clone()),...clip.tracks]);
   });
-  mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);return result;
+  // The same whole-body root motion as the other generated plans adds weight
+  // shifts that read at board scale, without touching the skin.
+  mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);return generatedBodyClips(gltf,result);
 }
 
-// The other project-generated body plans (quadruped, insect, ghost, baby,
-// spider, mecha, tank) carry the same generator's clips at 0.01-0.16 rad, so
+// Every project-generated rig gets this root motion. The other body plans
+// (quadruped, insect, ghost, baby, spider, mecha, tank) carry the same generator's clips at 0.01-0.16 rad, so
 // every role reads as the frozen static mesh. Their generated weights are hard
 // per-part islands, so larger joint angles open seams. Move the unweighted
 // rig root instead: the whole creature bobs, leans into actions and hops in
