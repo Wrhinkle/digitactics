@@ -58,7 +58,10 @@ async function main(){
   // retain every authored clip, independent of which algorithm repairs Pabumon.
   const control=await load(),controlClips=modelClips(control,{...entry.metadata,uid:uid+'-control'});
   check(JSON.stringify(controlClips.map(clipHash))===JSON.stringify(rawHashes),'exact UID scope: nonmatching metadata unchanged');
-  const audit=JSON.parse(fs.readFileSync(path.join(root,'native/artifacts/model-visual-audit-v3/0206.json')));
+  // The historical capture's sample times are local evidence (native/artifacts is not in Git); without it,
+  // the 121 uniform samples and every authored key time still run.
+  const auditPath=path.join(root,'native/artifacts/model-visual-audit-v3/0206.json');
+  const audit=fs.existsSync(auditPath)?JSON.parse(fs.readFileSync(auditPath)):(console.log('Soft-body: local audit 0206.json absent; using uniform and key-time samples only.'),{Samples:[]});
   const aliases=Object.entries(catalog.sources).filter(([,s])=>s.asset===entry.asset),results=[];
   for(const [alias,metadata] of aliases){
     const gltf=await load(),inputHashes=gltf.animations.map(clipHash),clips=modelClips(gltf,metadata.metadata),actual=prepare(gltf,clips);

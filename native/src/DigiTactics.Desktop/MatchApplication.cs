@@ -20,7 +20,7 @@ internal static class MatchApplication
         {
             Glfw.WindowHint(GlfwWindowHint.ContextVersionMajor, 4); Glfw.WindowHint(GlfwWindowHint.ContextVersionMinor, 5);
             Glfw.WindowHint(GlfwWindowHint.Visible, options.Smoke && !options.AudioVisibilitySmoke ? 0 : 1);
-            var desiredLogical = options.Smoke && options.CompactSmokeWindow ? new int2(1100,600) : options.Smoke && options.FullHdWindow ? new int2(1920,1080) : options.Smoke && options.ReferenceWindow ? new int2(1600,900) : options.Smoke && options.ShortWindow ? new int2(1342,670) : options.MinimumWindow ? NativeUiMetrics.MinimumLogicalSize : options.FarmPointerSmoke ? new int2(1200,800) : new int2(1440, 900);
+            var desiredLogical = options.Smoke && options.CaptureSize is { } requestedCapture ? requestedCapture : options.Smoke && options.CompactSmokeWindow ? new int2(1100,600) : options.Smoke && options.FullHdWindow ? new int2(1920,1080) : options.Smoke && options.ReferenceWindow ? new int2(1600,900) : options.Smoke && options.ShortWindow ? new int2(1342,670) : options.MinimumWindow ? NativeUiMetrics.MinimumLogicalSize : options.FarmPointerSmoke ? new int2(1200,800) : new int2(1440, 900);
             // Diagnostic windows keep the requested logical layout while the
             // hidden framebuffer grows to exercise real high-density rendering.
             var initialSize = options.Smoke ? new int2((int)MathF.Round(desiredLogical.X*options.SmokeUiScale),(int)MathF.Round(desiredLogical.Y*options.SmokeUiScale)) : desiredLogical;
@@ -96,7 +96,8 @@ internal static class MatchApplication
                 screen.SteamLibraryPath = options.SteamLibrary;if(!options.UpdateUiSmoke)screen.UpdateClient=updateClient;
                 if(earlySteam is not null)screen.AdoptSteam(earlySteam,borrowed:true);
                 screen.SteamStartupError(steamStartupError);
-                var driver = options.Smoke && !options.MatchControlsUiSmoke && !options.HomeUiSmoke && !options.LoadingUiSmoke && !options.CarouselUiSmoke && !options.ChoicePresentationUiSmoke && !options.GalaxyIntroUiSmoke && !options.LegendNavigationSmoke && !options.LootNoticeUiSmoke && !options.MatchCosmeticsSmoke && !options.CastFeedUiSmoke && !options.UnitNoteUiSmoke && !options.MysteryLootUiSmoke && !options.SetSelectionSmoke && !options.MatchKeyboardSmoke && !options.ClientPreferencesSmoke && !options.SocialUiSmoke && !options.SaveDataUiSmoke && !options.EliminationCinematicSmoke && !options.PostgameSmoke && !options.ProfileUiSmoke && !options.UpdateUiSmoke && !options.MusicLibrarySmoke && !options.AudioVisibilitySmoke && !options.ModeBonusSmoke && !options.TrainingSmoke && !options.FarmPointerSmoke && !options.FarmCaretakerSmoke && !options.NetworkMatchSmoke && !options.SteamLobbyUiSmoke ? new MatchScreenSmoke(options.CollectionSmoke ? profile : null, options.EvolutionSmoke, options.CollectionLayoutSmoke) : null;
+                var parityDriver = options.ParityState is { } parityState ? new ParityCaptureDriver(parityState, catalog, profile, options.ParitySettleFrames, options.ParityCombatSeconds) : null;
+                var driver = options.Smoke && parityDriver is null && !options.MatchControlsUiSmoke && !options.HomeUiSmoke && !options.LoadingUiSmoke && !options.CarouselUiSmoke && !options.ChoicePresentationUiSmoke && !options.GalaxyIntroUiSmoke && !options.LegendNavigationSmoke && !options.LootNoticeUiSmoke && !options.MatchCosmeticsSmoke && !options.CastFeedUiSmoke && !options.UnitNoteUiSmoke && !options.MysteryLootUiSmoke && !options.SetSelectionSmoke && !options.MatchKeyboardSmoke && !options.ClientPreferencesSmoke && !options.SocialUiSmoke && !options.SaveDataUiSmoke && !options.EliminationCinematicSmoke && !options.PostgameSmoke && !options.ProfileUiSmoke && !options.UpdateUiSmoke && !options.MusicLibrarySmoke && !options.AudioVisibilitySmoke && !options.ModeBonusSmoke && !options.TrainingSmoke && !options.FarmPointerSmoke && !options.FarmCaretakerSmoke && !options.NetworkMatchSmoke && !options.SteamLobbyUiSmoke ? new MatchScreenSmoke(options.CollectionSmoke ? profile : null, options.EvolutionSmoke, options.CollectionLayoutSmoke) : null;
                 var visibilityDriver = options.AudioVisibilitySmoke ? new AudioVisibilitySmoke() : null;
                 var modeDriver = options.ModeBonusSmoke ? new ModeBonusSmoke(catalog) : null;
                 using var lobbyDriver = options.SteamLobbyUiSmoke ? new SteamLobbyUiSmoke(options.SteamLibrary,profile) : null;
@@ -114,7 +115,7 @@ internal static class MatchApplication
                     choicePresentationDriver?.Input(screen);
                     carouselDriver?.Input(screen); loadingDriver?.Input(screen); homeDriver?.Input(screen);
                     saveDataDriver?.Input(screen); keyboardDriver?.Input(screen);socialDriver?.Input(screen);
-                    clientPreferencesDriver?.Input(screen); selectionDriver?.Input(screen); mysteryDriver?.Input(screen);
+                    clientPreferencesDriver?.Input(screen); selectionDriver?.Input(screen); mysteryDriver?.Input(screen); parityDriver?.Input(screen);
                     ImGui.NewFrame(); double now = clock.Elapsed.TotalSeconds;
                     double delta = options.Smoke ? CombatSimulation.Tick : Math.Clamp(now - last, 0, .1);
                     screen.Update(delta, options.Smoke ? delta : now - last); last = now;
@@ -160,14 +161,15 @@ internal static class MatchApplication
                     if (caretakerDriver is not null && caretakerDriver.Verify(screen, size, options.Capture)) break;
                     if (networkDriver is not null && networkDriver.Verify(screen, size, options.Capture)) break;
                     if (lobbyDriver is not null && lobbyDriver.Verify(screen, size, options.Capture)) break;
+                    if (parityDriver is not null && parityDriver.Verify(screen, size, options.Capture)) break;
                     if(screen.ExitAfterFileOperationsReady)break;
                     window.SwapBuffers();
                     if(frame==0 && startupSignal is not null)_=startupSignal.ReportReady();
-                    string? phaseTimeout=driver?.Timeout(frame);
-                    if (options.Smoke && (phaseTimeout is not null || driver is null && frame > (options.TrainingSmoke || options.CarouselUiSmoke ? 6000 : options.PostgameSmoke ? 1800 : 1400)))
+                    string? phaseTimeout=driver?.Timeout(frame) ?? parityDriver?.Timeout(20000);
+                    if (options.Smoke && (phaseTimeout is not null || driver is null && parityDriver is null && frame > (options.TrainingSmoke || options.CarouselUiSmoke ? 6000 : options.PostgameSmoke ? 1800 : 1400)))
                     {
                         if (options.Capture is not null) FrameCapture.SaveBitmap(Path.ChangeExtension(options.Capture, "failure.bmp"), size.X, size.Y);
-                        throw new InvalidOperationException("Match UI smoke did not complete: " + (updateDriver?.Pending ?? matchControlsDriver?.Pending ?? homeDriver?.Pending ?? loadingDriver?.Pending ?? carouselDriver?.Pending ?? choicePresentationDriver?.Pending ?? galaxyIntroDriver?.Pending ?? lootNoticeDriver?.Pending ?? mysteryDriver?.Step.ToString() ?? legendNavigationDriver?.Pending ?? matchCosmeticsDriver?.Pending ?? unitNoteDriver?.Pending ?? castFeedDriver?.Pending ?? postgameDriver?.Pending ?? selectionDriver?.Pending ?? keyboardDriver?.Pending ?? socialDriver?.Pending ?? lobbyDriver?.Pending ?? networkDriver?.Pending ?? farmPointer?.Pending ?? caretakerDriver?.Pending ?? trainer?.Pending ?? driver?.Pending)+(phaseTimeout is null?"":"; "+phaseTimeout));
+                        throw new InvalidOperationException("Match UI smoke did not complete: " + (updateDriver?.Pending ?? matchControlsDriver?.Pending ?? homeDriver?.Pending ?? loadingDriver?.Pending ?? carouselDriver?.Pending ?? choicePresentationDriver?.Pending ?? galaxyIntroDriver?.Pending ?? lootNoticeDriver?.Pending ?? mysteryDriver?.Step.ToString() ?? legendNavigationDriver?.Pending ?? matchCosmeticsDriver?.Pending ?? unitNoteDriver?.Pending ?? castFeedDriver?.Pending ?? postgameDriver?.Pending ?? selectionDriver?.Pending ?? keyboardDriver?.Pending ?? socialDriver?.Pending ?? lobbyDriver?.Pending ?? networkDriver?.Pending ?? farmPointer?.Pending ?? caretakerDriver?.Pending ?? trainer?.Pending ?? parityDriver?.Pending ?? driver?.Pending)+(phaseTimeout is null?"":"; "+phaseTimeout));
                     }
                 }
             }

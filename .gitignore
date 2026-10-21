@@ -24,3 +24,6 @@ native/**/bin/
 native/**/obj/
 native/artifacts/
 native/**/__pycache__/
+
+# Parity screenshot captures (tools/parity)
+/parity/

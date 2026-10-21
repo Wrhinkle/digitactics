@@ -1,7 +1,8 @@
 // Independent earning/exclusivity contracts; execute the source implementation with local entropy.
-const fs=require('fs'),vm=require('vm'),assert=require('assert');
-const catalog=JSON.parse(fs.readFileSync('native/src/DigiTactics.Storage/cosmetics.json','utf8'));
-const code=fs.readFileSync('js/mystery-loot.js','utf8'),cosmetics=fs.readFileSync('js/cosmetics.js','utf8');
+const fs=require('fs'),vm=require('vm'),assert=require('assert'),path=require('path');
+const root=path.join(__dirname,'..');
+const catalog=JSON.parse(fs.readFileSync(path.join(root,'native/src/DigiTactics.Storage/cosmetics.json'),'utf8'));
+const code=fs.readFileSync(path.join(root,'js/mystery-loot.js'),'utf8'),cosmetics=fs.readFileSync(path.join(root,'js/cosmetics.js'),'utf8');
 let checks=0;function check(value,label){checks++;assert.ok(value,label);}
 function harness(initial={}){
  const storage={'dt.mysteryLoot.v1':JSON.stringify(initial)},NativeDate=Date;let day='2026-10-18',random=[],used=0;

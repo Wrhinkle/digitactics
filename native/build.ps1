@@ -1,4 +1,9 @@
-param([switch]$Publish,[string]$NativeVersion="0.0.0")
+# Default: full release gate. Development switches (all off by default):
+#   -Configuration Debug  build configuration for the test/desktop/launcher builds
+#   -SkipMedia            skip the pinned FFmpeg runtime (needs the qualified MSVC toolchain); music decoding is unavailable
+#   -SkipExport           skip the Node content/fixture exporters (reuse existing native/content and native/artifacts)
+#   -BuildOnly            build Tests, Desktop and Launcher only; skip the CPU suite, Steam ABI, launcher and GPU/UI smoke gates
+param([switch]$Publish,[string]$NativeVersion="0.0.0",[ValidateSet('Debug','Release')][string]$Configuration='Release',[switch]$SkipMedia,[switch]$SkipExport,[switch]$BuildOnly)
 $ErrorActionPreference = 'Stop'
 $nativeRoot = $PSScriptRoot
 $repoRoot = Split-Path -Parent $nativeRoot
@@ -12,7 +17,7 @@ $env:MSBUILDDISABLENODEREUSE='1'
 Push-Location $nativeRoot
 try {
     $steamRuntime = & (Join-Path $nativeRoot 'tools/setup-steam.ps1')
-    $mediaRuntime = & (Join-Path $nativeRoot 'tools/setup-media.ps1')
+    $mediaRuntime = if ($SkipMedia) { $null } else { & (Join-Path $nativeRoot 'tools/setup-media.ps1') }
     $crtRuntime = & (Join-Path $nativeRoot 'tools/setup-crt.ps1')
     $audioTools = Join-Path $nativeRoot 'artifacts/audio-tools'
     if (-not (Test-Path (Join-Path $audioTools 'node_modules/playwright/package.json'))) {
@@ -21,6 +26,7 @@ try {
     if (-not (Test-Path (Join-Path $audioTools 'node_modules/esbuild/package.json'))) {
         Invoke-Checked 'npm.cmd' @('install', '--prefix', $audioTools, 'esbuild@0.25.11', '--no-audit', '--no-fund')
     }
+  if (-not $SkipExport) {
     Invoke-Checked 'node' @('../tools/build.cjs', (Join-Path $audioTools 'node_modules/esbuild'))
     Invoke-Checked 'node' @('tools/export-audio.cjs')
     Invoke-Checked 'node' @('tools/test-audio-metadata.cjs')
@@ -199,47 +205,52 @@ try {
     Invoke-Checked 'node' @('tools/export-scene-fixtures.cjs')
     Invoke-Checked 'node' @('tools/export-choreography.cjs')
     Invoke-Checked 'node' @('tools/export-audio-cues.cjs')
+  }
     Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Desktop', '--locked-mode')
     Invoke-Checked $dotnet @('restore', 'src/DigiTactics.Launcher', '--locked-mode')
     Invoke-Checked $dotnet @('restore', 'tests/DigiTactics.Tests', '--locked-mode')
-    Invoke-Checked $dotnet @('build', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
-    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot)
+    Invoke-Checked $dotnet @('build', 'tests/DigiTactics.Tests', '-c', $Configuration, '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
+  if ($BuildOnly) {
+    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
+    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Launcher', '-c', $Configuration, '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
+  } else {
+    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', $Configuration, '--no-build', '--', $nativeRoot)
     & (Join-Path $nativeRoot 'test-steam.ps1')
-    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
-    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Launcher', '-c', 'Release', '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
-    & (Join-Path $nativeRoot 'tools/test-launcher.ps1') -Launcher (Join-Path $nativeRoot 'src/DigiTactics.Launcher/bin/Release/net10.0/win-x64/DigiTactics.Launcher.exe') -TestsDirectory (Join-Path $nativeRoot 'tests/DigiTactics.Tests/bin/Release/net10.0/win-x64')
-    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--native-diagnostic-launch-only', '--launcher', (Join-Path $nativeRoot 'src/DigiTactics.Launcher/bin/Release/net10.0/win-x64/DigiTactics.Launcher.exe'))
-    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--desktop-profile-cli-only', '--desktop', (Join-Path $nativeRoot 'src/DigiTactics.Desktop/bin/Release/net10.0/win-x64/DigiTactics.Desktop.exe'))
-    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--startup-desktop-only', '--desktop', (Join-Path $nativeRoot 'src/DigiTactics.Desktop/bin/Release/net10.0/win-x64/DigiTactics.Desktop.exe'))
-    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', 'Release', '--no-build', '--', $nativeRoot, '--music-decoder-only', '--ffmpeg', (Join-Path $mediaRuntime 'ffmpeg.exe'))
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--ui-frame-lifetime-smoke')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--ui-scale-smoke')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--emote-preview-smoke', 'artifacts/emote-preview-reference')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--unit-note-ui-smoke', '--minimum-window')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--cast-feed-ui-smoke', '--minimum-window')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--custom-music-smoke')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-routing-smoke')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--elimination-audio-smoke')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--elimination-theme-smoke', '--capture', 'artifacts/elimination-themes-native.bmp')
+    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
+    Invoke-Checked $dotnet @('build', 'src/DigiTactics.Launcher', '-c', $Configuration, '--no-restore', '-m:1', '-nr:false', '-p:UseSharedCompilation=false')
+    & (Join-Path $nativeRoot 'tools/test-launcher.ps1') -Launcher (Join-Path $nativeRoot "src/DigiTactics.Launcher/bin/$Configuration/net10.0/win-x64/DigiTactics.Launcher.exe") -TestsDirectory (Join-Path $nativeRoot "tests/DigiTactics.Tests/bin/$Configuration/net10.0/win-x64")
+    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', $Configuration, '--no-build', '--', $nativeRoot, '--native-diagnostic-launch-only', '--launcher', (Join-Path $nativeRoot "src/DigiTactics.Launcher/bin/$Configuration/net10.0/win-x64/DigiTactics.Launcher.exe"))
+    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', $Configuration, '--no-build', '--', $nativeRoot, '--desktop-profile-cli-only', '--desktop', (Join-Path $nativeRoot "src/DigiTactics.Desktop/bin/$Configuration/net10.0/win-x64/DigiTactics.Desktop.exe"))
+    Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', $Configuration, '--no-build', '--', $nativeRoot, '--startup-desktop-only', '--desktop', (Join-Path $nativeRoot "src/DigiTactics.Desktop/bin/$Configuration/net10.0/win-x64/DigiTactics.Desktop.exe"))
+    if ($mediaRuntime) { Invoke-Checked $dotnet @('run', '--project', 'tests/DigiTactics.Tests', '-c', $Configuration, '--no-build', '--', $nativeRoot, '--music-decoder-only', '--ffmpeg', (Join-Path $mediaRuntime 'ffmpeg.exe')) }
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--ui-frame-lifetime-smoke')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--ui-scale-smoke')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--emote-preview-smoke', 'artifacts/emote-preview-reference')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--unit-note-ui-smoke', '--minimum-window')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--cast-feed-ui-smoke', '--minimum-window')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--custom-music-smoke')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--music-routing-smoke')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--elimination-audio-smoke')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--elimination-theme-smoke', '--capture', 'artifacts/elimination-themes-native.bmp')
     Invoke-Checked 'node' @('tools/render-elimination-theme-reference.cjs',(Join-Path $audioTools 'node_modules/playwright'),'artifacts/elimination-themes-original.png','artifacts/elimination-themes-native.bmp')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--elimination-composite-smoke', '--capture', 'artifacts/elimination-composite-native.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--elimination-composite-smoke', '--capture', 'artifacts/elimination-composite-native.bmp')
     Invoke-Checked 'node' @('tools/render-elimination-composite-reference.cjs',(Join-Path $audioTools 'node_modules/playwright'),'artifacts/elimination-composite-original.png','artifacts/elimination-composite-native.bmp')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--move-effect-smoke', '--capture', 'artifacts/move-effects.bmp')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--board-mesh-smoke', '--capture', 'artifacts/board-meshes.bmp')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--mystery-board-visual', 'artifacts/mystery-board-visual-build')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--smoke', '--capture', 'artifacts/native-smoke.bmp')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--capture', 'artifacts/match-ui.bmp')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--match-smoke', '--duos', '--capture', 'artifacts/match-duos.bmp')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--mode-bonus-smoke', '--capture', 'artifacts/mode-bonuses.bmp')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-library-ui-smoke', '--capture', 'artifacts/music-library.bmp')
-    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', '--music-library-ui-smoke', '--short-window', '--capture', 'artifacts/music-library-short.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--move-effect-smoke', '--capture', 'artifacts/move-effects.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--board-mesh-smoke', '--capture', 'artifacts/board-meshes.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--mystery-board-visual', 'artifacts/mystery-board-visual-build')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--smoke', '--capture', 'artifacts/native-smoke.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--match-smoke', '--capture', 'artifacts/match-ui.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--match-smoke', '--duos', '--capture', 'artifacts/match-duos.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--mode-bonus-smoke', '--capture', 'artifacts/mode-bonuses.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--music-library-ui-smoke', '--capture', 'artifacts/music-library.bmp')
+    Invoke-Checked $dotnet @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', '--music-library-ui-smoke', '--short-window', '--capture', 'artifacts/music-library-short.bmp')
     foreach($screen in @('postgame','profile-ui','collection','evolution','elimination-cinematic','training','farm-pointer','farm-caretaker','match-cosmetics','legend-navigation','galaxy-intro-ui','choice-presentation-ui','loot-notice-ui','network-match','spectator','save-data-ui','client-preferences','social-ui','match-keyboard','set-selection','mystery-loot-ui')) {
         foreach($minimum in @($false,$true)) {
             $profile=Join-Path $env:TEMP ('digitactics-'+$screen+'-'+[Guid]::NewGuid().ToString('N'))
             if($screen -in @('collection','evolution')) {
-                Invoke-Checked $dotnet @('run','--project','src/DigiTactics.Desktop','-c','Release','--no-build','--','--import-profile','tests/fixtures/collection-profile.json','--profile-directory',$profile)
+                Invoke-Checked $dotnet @('run','--project','src/DigiTactics.Desktop','-c',$Configuration,'--no-build','--','--import-profile','tests/fixtures/collection-profile.json','--profile-directory',$profile)
             }
-            $screenArguments=@('run','--project','src/DigiTactics.Desktop','-c','Release','--no-build','--',('--'+$screen+'-smoke'),'--profile-directory',$profile,'--capture',('artifacts/'+$screen+'-'+$minimum+'.bmp'))
+            $screenArguments=@('run','--project','src/DigiTactics.Desktop','-c',$Configuration,'--no-build','--',('--'+$screen+'-smoke'),'--profile-directory',$profile,'--capture',('artifacts/'+$screen+'-'+$minimum+'.bmp'))
             if($screen -in @('social-ui','set-selection')) {$screenArguments+=@('--steam-api',(Join-Path $nativeRoot 'artifacts/steam-native/fake_steam_api.dll'))}
             if($minimum) {$screenArguments+='--minimum-window'}
             Invoke-Checked $dotnet $screenArguments
@@ -253,10 +264,11 @@ try {
         @{ Flag = '--music-library-ui-smoke'; Name = 'minimum-music'; Duos = $false },
         @{ Flag = '--update-ui-smoke'; Name = 'minimum-update'; Duos = $false }
     )) {
-        $smokeArguments = @('run', '--project', 'src/DigiTactics.Desktop', '-c', 'Release', '--no-build', '--', $scenario.Flag, '--minimum-window', '--capture', ('artifacts/' + $scenario.Name + '.bmp'))
+        $smokeArguments = @('run', '--project', 'src/DigiTactics.Desktop', '-c', $Configuration, '--no-build', '--', $scenario.Flag, '--minimum-window', '--capture', ('artifacts/' + $scenario.Name + '.bmp'))
         if ($scenario.Duos) { $smokeArguments += '--duos' }
         Invoke-Checked $dotnet $smokeArguments
     }
+  }
     if ($Publish) {
         $destination=Join-Path $env:LOCALAPPDATA ('DigiTacticsBuild/releases/'+$NativeVersion+'-'+[Guid]::NewGuid().ToString('N'))
         & (Join-Path $nativeRoot 'tools/publish-native.ps1') -Destination $destination -Version $NativeVersion

@@ -31,7 +31,7 @@ public sealed class NativeGameInstance : IDisposable
     public static string DefaultProfileDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DigiTactics", "native");
 
     public static bool IsInteractiveLaunch(IReadOnlyList<string> arguments) => !arguments.Any(argument =>
-        argument is "--workbench" or "--smoke" or "--import-profile" or "--stage-profile" || argument.EndsWith("-smoke", StringComparison.Ordinal));
+        argument is "--workbench" or "--smoke" or "--import-profile" or "--stage-profile" or "--parity-capture" or "--model-sweep" || argument.EndsWith("-smoke", StringComparison.Ordinal));
 
     public static string ProfileDirectory(IReadOnlyList<string> arguments)
     {

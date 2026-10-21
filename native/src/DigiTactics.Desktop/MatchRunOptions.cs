@@ -51,4 +51,9 @@ internal sealed record MatchRunOptions
     public bool MysteryLootUiSmoke { get; init; }
     public bool SetSelectionSmoke { get; init; }
     public bool MatchKeyboardSmoke { get; init; }
+    /// <summary>Diagnostic parity capture state (see ParityCaptureDriver); null in normal play.</summary>
+    public string? ParityState { get; init; }
+    public Brutal.Numerics.int2? CaptureSize { get; init; }
+    public int ParitySettleFrames { get; init; } = 45;
+    public double ParityCombatSeconds { get; init; } = 2;
 }

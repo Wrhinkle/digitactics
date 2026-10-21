@@ -30,6 +30,13 @@ try
         int AuditNumber(string name, int fallback) { int index = Array.IndexOf(args, name); return index < 0 ? fallback : int.Parse(args[index + 1], System.Globalization.CultureInfo.InvariantCulture); }
         ModelVisualAudit.Run(modelAuditDirectory, AuditNumber("--audit-start", 0), AuditNumber("--audit-count", int.MaxValue)); return 0;
     }
+    if (Option("--model-sweep") is { } sweepDirectory)
+    {
+        string? SweepValue(string name) { int index = Array.IndexOf(args, name); return index >= 0 && index + 1 < args.Length ? args[index + 1] : null; }
+        ModelSweep.Run(sweepDirectory, SweepValue("--sweep-start") is { } first ? int.Parse(first, System.Globalization.CultureInfo.InvariantCulture) : 0,
+            SweepValue("--sweep-count") is { } total ? int.Parse(total, System.Globalization.CultureInfo.InvariantCulture) : int.MaxValue, SweepValue("--sweep-filter"),
+            SweepValue("--sweep-times")?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(pair => pair.Split('=')).ToDictionary(pair => pair[0], pair => double.Parse(pair[1], System.Globalization.CultureInfo.InvariantCulture))); return 0;
+    }
     if (Option("--model-board-audit") is { } modelBoardDirectory)
     {
         string AuditValue(string name) { int index = Array.IndexOf(args, name); return index >= 0 && index + 1 < args.Length ? args[index + 1] : throw new ArgumentException("Missing " + name); }
@@ -150,6 +157,16 @@ try
         bool audioVisibilitySmoke = args.Contains("--audio-visibility-smoke");
         bool modeBonusSmoke = args.Contains("--mode-bonus-smoke");
         bool steamLobbyUiSmoke = args.Contains("--steam-lobby-ui-smoke");
+        string? ParityValue(string name) { int index = Array.IndexOf(args, name); return index >= 0 && index + 1 < args.Length ? args[index + 1] : null; }
+        string? parityState = ParityValue("--parity-capture");
+        Brutal.Numerics.int2? captureSize = null;
+        if (ParityValue("--capture-size") is { } sizeText)
+        {
+            var parts = sizeText.Split('x', 'X');
+            if (parts.Length != 2 || !int.TryParse(parts[0], out int captureWidth) || !int.TryParse(parts[1], out int captureHeight) || captureWidth < 640 || captureHeight < 360)
+                throw new ArgumentException("--capture-size requires WIDTHxHEIGHT, for example 1600x900.");
+            captureSize = new(captureWidth, captureHeight);
+        }
         MatchApplication.Run(catalog, new MatchRunOptions
         {
             Smoke = args.Contains("--mystery-loot-ui-smoke") || args.Contains("--set-selection-smoke") || args.Contains("--match-keyboard-smoke") ||
@@ -179,6 +196,7 @@ try
                 networkMatchSmoke ||
                 steamLobbyUiSmoke ||
                 modeBonusSmoke ||
+                parityState is not null ||
                 audioVisibilitySmoke,
             Capture = capture,
             Duos = args.Contains("--duos"),
@@ -225,6 +243,10 @@ try
             MysteryLootUiSmoke = args.Contains("--mystery-loot-ui-smoke"),
             SetSelectionSmoke = args.Contains("--set-selection-smoke"),
             MatchKeyboardSmoke = args.Contains("--match-keyboard-smoke"),
+            ParityState = parityState,
+            CaptureSize = captureSize,
+            ParitySettleFrames = ParityValue("--parity-settle-frames") is { } settle ? int.Parse(settle, System.Globalization.CultureInfo.InvariantCulture) : 45,
+            ParityCombatSeconds = ParityValue("--parity-combat-seconds") is { } seconds ? double.Parse(seconds, System.Globalization.CultureInfo.InvariantCulture) : 2,
         });
     }
     return 0;

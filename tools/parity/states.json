@@ -1,0 +1,28 @@
+{
+  "sizes": ["1280x720", "1600x900", "1920x1080"],
+  "states": [
+    {"id": "home", "group": "client"},
+    {"id": "play", "group": "client", "note": "MODES tab / ruleset selection"},
+    {"id": "party", "group": "client", "note": "mode confirmed: party/start screen with 8 seats"},
+    {"id": "lobby", "group": "client", "note": "multiplayer lobby discovery (no Steam room)"},
+    {"id": "collection-legends", "group": "client", "tab": 0},
+    {"id": "collection-emotes", "group": "client", "tab": 1},
+    {"id": "collection-boards", "group": "client", "tab": 2},
+    {"id": "collection-killscreens", "group": "client", "tab": 3},
+    {"id": "collection-dances", "group": "client", "tab": 4},
+    {"id": "collection-soundboard", "group": "client", "tab": 5},
+    {"id": "collection-elimsounds", "group": "client", "tab": 6},
+    {"id": "store", "group": "client"},
+    {"id": "loot", "group": "client"},
+    {"id": "farm", "group": "client"},
+    {"id": "codex", "group": "client"},
+    {"id": "profile", "group": "client"},
+    {"id": "settings", "group": "client"},
+    {"id": "postgame", "group": "client", "note": "victory/result screen after a solo match"},
+    {"id": "match-carousel", "group": "match", "note": "opening carousel round"},
+    {"id": "match-planning", "group": "match", "note": "first planning phase after the carousel"},
+    {"id": "match-combat", "group": "match", "note": "about 2 s into the first combat"},
+    {"id": "match-augment", "group": "match", "note": "first augment/offer choice visible"}
+  ],
+  "modelStates": ["portrait", "idle", "attack", "special", "win"]
+}
