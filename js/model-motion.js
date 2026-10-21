@@ -148,12 +148,45 @@ function statueClips(scene){
   });
 }
 
+// Some exports key an action's armature group (GRP_joint_03 and similar) at one
+// constant scale that differs from idle's: Dorugamon 1.5x, Angemon 1.19x and
+// Beelzemon 0.28x for the whole attack. That is a different export scale, not
+// motion, so hold it at idle's value. Only constant tracks on a node that holds
+// at least 80% of the skeleton's bones are held; animated squash, shown/hidden
+// weapons and other partial-subtree scales stay.
+function heldArmatureScale(gltf,clips){
+  const idle=clips.find(c=>c.name==='idle');
+  let total=0;gltf.scene.traverse(o=>{if(o.isBone)total++;});
+  if(!total)return clips;
+  return clips.map(clip=>{
+    if(!['attack','special','win'].includes(clip.name))return clip;
+    let corrected=null;
+    clip.tracks.forEach((track,index)=>{
+      if(!track.name.endsWith('.scale'))return;
+      const node=gltf.scene.getObjectByName(track.name.slice(0,-6));
+      if(!node)return;
+      let bones=0;node.traverse(o=>{if(o.isBone)bones++;});
+      if(bones<total*.8)return;
+      const v=track.values,first=[v[0],v[1],v[2]];
+      for(let i=3;i<v.length;i++)if(Math.abs(v[i]-first[i%3])>1e-6)return;
+      const own=idle?.tracks.find(t=>t.name===track.name);
+      const neutral=own?Array.from(own.createInterpolant().evaluate(0)):node.scale.toArray();
+      if(first.every((x,i)=>Math.abs(x-neutral[i])<=.02*Math.max(Math.abs(neutral[i]),1e-6)))return;
+      corrected??=clip.clone();
+      const out=corrected.tracks[index];
+      for(let i=0;i<out.values.length;i++)out.values[i]=neutral[i%3];
+    });
+    return corrected||clip;
+  });
+}
+
 // These imported attacks contain whole-body enlargement (14x, 13.5x, 4.79x)
 // or shrinkage (1/15x), rather than an independently animated attack effect.
 // Links Syakomon also compounds spine/antenna scales into 11x height and 91x
 // ordinary mesh edges. Keep those body scales at idle while retaining its shell
 // hinge, mouth, teeth, joint rotations and root trajectory. Match exact asset UID.
 function boardBodyScale(gltf,src) {
+  const clips=heldArmatureScale(gltf,gltf.animations||[]);
   const bodies = {
     db64891d559b4d0cbcb5633d90779ee3: ['GRP_joint_02'],
     'rip-cat_cs_renamon_chr391': ['J_root'],
@@ -161,7 +194,6 @@ function boardBodyScale(gltf,src) {
     bbeb1da28aca459da86b46cba6d57ca8: ['GRP_joint_03'],
     'rip-cat_l_syakomon_chr709': ['J_spine01','J_ear01_l','J_ear02_l','J_ear01_r','J_ear02_r'],
   }[src?.uid];
-  const clips=gltf.animations||[];
   if(!bodies)return clips;
   const idle=clips.find(c=>c.name==='idle'),neutral=new Map();
   for(const body of bodies){

@@ -43131,7 +43131,39 @@ void main() {
       return new AnimationClip(role, duration, [new VectorKeyframeTrack(root4.name + ".position", times, positions), new QuaternionKeyframeTrack(root4.name + ".quaternion", times, rotations)]);
     });
   }
+  function heldArmatureScale(gltf, clips) {
+    const idle = clips.find((c) => c.name === "idle");
+    let total = 0;
+    gltf.scene.traverse((o) => {
+      if (o.isBone) total++;
+    });
+    if (!total) return clips;
+    return clips.map((clip2) => {
+      if (!["attack", "special", "win"].includes(clip2.name)) return clip2;
+      let corrected = null;
+      clip2.tracks.forEach((track2, index2) => {
+        if (!track2.name.endsWith(".scale")) return;
+        const node = gltf.scene.getObjectByName(track2.name.slice(0, -6));
+        if (!node) return;
+        let bones = 0;
+        node.traverse((o) => {
+          if (o.isBone) bones++;
+        });
+        if (bones < total * 0.8) return;
+        const v = track2.values, first = [v[0], v[1], v[2]];
+        for (let i = 3; i < v.length; i++) if (Math.abs(v[i] - first[i % 3]) > 1e-6) return;
+        const own2 = idle?.tracks.find((t) => t.name === track2.name);
+        const neutral = own2 ? Array.from(own2.createInterpolant().evaluate(0)) : node.scale.toArray();
+        if (first.every((x, i) => Math.abs(x - neutral[i]) <= 0.02 * Math.max(Math.abs(neutral[i]), 1e-6))) return;
+        corrected ??= clip2.clone();
+        const out = corrected.tracks[index2];
+        for (let i = 0; i < out.values.length; i++) out.values[i] = neutral[i % 3];
+      });
+      return corrected || clip2;
+    });
+  }
   function boardBodyScale(gltf, src) {
+    const clips = heldArmatureScale(gltf, gltf.animations || []);
     const bodies = {
       db64891d559b4d0cbcb5633d90779ee3: ["GRP_joint_02"],
       "rip-cat_cs_renamon_chr391": ["J_root"],
@@ -43139,7 +43171,6 @@ void main() {
       bbeb1da28aca459da86b46cba6d57ca8: ["GRP_joint_03"],
       "rip-cat_l_syakomon_chr709": ["J_spine01", "J_ear01_l", "J_ear02_l", "J_ear01_r", "J_ear02_r"]
     }[src?.uid];
-    const clips = gltf.animations || [];
     if (!bodies) return clips;
     const idle = clips.find((c) => c.name === "idle"), neutral = /* @__PURE__ */ new Map();
     for (const body2 of bodies) {
