@@ -327,7 +327,7 @@ internal sealed partial class MatchScreen : IDisposable
         {
             Window("Arena", Left, Top, Width, Height, ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             ArenaPointer();
-            battle.Labels(Width, Height, size.Y, Left, size.Y - Top - Height,ImGui.GetWindowDrawList());
+            CombatLabels();
             ImGui.End();
             DrawCastFeed();
         }
@@ -382,6 +382,7 @@ internal sealed partial class MatchScreen : IDisposable
             Buttons[$"arenaBench/{i}"] = new(Left + point.X, Top + point.Y);
             Buttons[$"bench/{i}"] = Buttons[$"arenaBench/{i}"];
         }
+        PlanningLabels();
         ImGui.End();
     }
     private void ProfileControls(bool showSaveLink=true)

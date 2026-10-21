@@ -10,13 +10,15 @@ internal sealed partial class MatchScreen
     internal int? CarouselHoveredOption {get;private set;}
     private readonly record struct CarouselCardText(string Name,string Traits,string Item,string Status);
     private readonly record struct CarouselCardLayout(float TraitsY,float ItemY,float StatusY,float StatusHeight,float Height);
+    // .choice.small: 140px wide, 8px padding, 96px portrait, 14px name, 11px lines, 4px gaps.
+    private const float CarouselCardWidth=140;
     private static CarouselCardLayout MeasureCarouselCard(CarouselCardText text,float width)
     {
-        float bodyWidth=width-18;
-        float traitsY=119+ChoiceLines(text.Name,18,bodyWidth).Length*22+4;
-        float itemY=traitsY+ChoiceLines(text.Traits,16,bodyWidth).Length*20+4;
-        float statusY=itemY+ChoiceLines(text.Item,16,bodyWidth).Length*20+(text.Status.Length>0?8:0);
-        float statusHeight=ChoiceLines(text.Status,16,bodyWidth).Length*20;
-        return new(traitsY,itemY,statusY,statusHeight,statusY+statusHeight+12);
+        float inner=width-4-16,y=2+8+96+4;
+        y+=ModalTextHeight(ModalWeight(700),14,text.Name,inner)+4;
+        float traitsY=y;y+=ModalTextHeight(ModalWeight(400),11,text.Traits,inner)+4;
+        float itemY=y;y+=ModalTextHeight(ModalWeight(400),11,text.Item,inner);
+        float statusY=y+(text.Status.Length>0?4:0),statusHeight=ModalTextHeight(ModalWeight(400),11,text.Status,inner);
+        return new(traitsY,itemY,statusY,statusHeight,statusY+statusHeight+8+2);
     }
 }

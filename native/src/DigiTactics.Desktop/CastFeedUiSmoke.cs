@@ -70,10 +70,11 @@ internal sealed class CastFeedUiSmoke(ContentCatalog catalog)
     {
         if(step is 2 or 6 or 9&&frames>=8)
         {
-            int expected=Math.Min(5,Math.Max(0,(size.Y-506-16)/46));
+            var arena=screen.ArenaBounds;
+            int expected=Math.Min(5,Math.Max(0,(int)((arena.Max.Y-arena.Min.Y-20+5)/43)));
             if(screen.CastFeedRows.Count!=5||screen.CastFeedDraws!=expected)throw new InvalidOperationException("The bounded cast feed did not render all available rows.");
             var bounds=screen.CastFeedBounds;
-            if(bounds.Min.X<266||bounds.Min.Y<144||bounds.Max.X>size.X-266||bounds.Max.Y>size.Y-362)throw new InvalidOperationException("Cast feed escaped the arena or overlapped match/shop controls.");
+            if(bounds.Min.X<arena.Min.X||bounds.Min.Y<arena.Min.Y||bounds.Max.X>arena.Max.X||bounds.Max.Y>arena.Max.Y)throw new InvalidOperationException("Cast feed escaped the arena or overlapped match/shop controls.");
             foreach(var row in screen.CastFeedRows)
             {
                 var unit=match!.Combat.Units[row.Unit];int team=screen.WatchingMirrored?1-unit.Team:unit.Team;

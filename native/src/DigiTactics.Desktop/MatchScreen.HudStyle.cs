@@ -194,6 +194,16 @@ internal sealed partial class MatchScreen
         var draw=ImGui.GetWindowDrawList();var min=ImGui.GetWindowPos();
         draw.PushClipRect(min,min+ImGui.GetWindowSize());draw.AddLine(from,to,CssLine);draw.PopClipRect();
     }
+    /// <summary>A top-to-bottom linear-gradient inside a rounded rectangle.</summary>
+    private static void HudVerticalGradient(ImDrawListPtr draw,float2 min,float2 max,Rgb top,Rgb bottom,float rounding,float alpha=1)
+    {
+        float height=Math.Max(1,max.Y-min.Y),cap=Math.Min(rounding,height/2);
+        Rgb At(float y)=>HudMix(bottom,top,(y-min.Y)/height);
+        draw.AddRectFilled(min,new(max.X,min.Y+cap),HudAlpha(At(min.Y+cap/2),alpha),rounding,ImDrawFlags.RoundCornersTop);
+        draw.AddRectFilled(new(min.X,max.Y-cap),max,HudAlpha(At(max.Y-cap/2),alpha),rounding,ImDrawFlags.RoundCornersBottom);
+        // The caps' anti-aliased edges would show the colour underneath, so the middle overlaps them by 1px.
+        if(height>2*cap)draw.AddRectFilledMultiColor(new(min.X,min.Y+cap-1),new(max.X,max.Y-cap+1),(ImColor8)HudAlpha(At(min.Y+cap),alpha),(ImColor8)HudAlpha(At(min.Y+cap),alpha),(ImColor8)HudAlpha(At(max.Y-cap),alpha),(ImColor8)HudAlpha(At(max.Y-cap),alpha));
+    }
     /// <summary>clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%).</summary>
     private static void HudHexagon(ImDrawListPtr draw,float2 min,float2 extent,ImColor8 color)
     {

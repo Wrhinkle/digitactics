@@ -30,6 +30,12 @@ internal sealed class PlanningView : IDisposable
         => Project(CombatLayout.Cell(new(column, row), 7, false), width, height);
     public Brutal.Numerics.float2 Bench(int index, int width, int height)
         => Project(CombatLayout.Bench(index), width, height);
+    /// <summary>Screen point of a world position at height <paramref name="y"/>, for unit labels.</summary>
+    internal Brutal.Numerics.float2 Point(WorldPosition position, double y, int width, int height)
+    {
+        var point = Vector4.Transform(new Vector4((float)position.X, (float)y, (float)position.Z, 1), board.Camera.Matrix(width, height, 7));
+        return new((point.X / point.W * .5f + .5f) * width, (1 - (point.Y / point.W * .5f + .5f)) * height);
+    }
     private Brutal.Numerics.float2 Project(WorldPosition position, int width, int height)
     {
         var point = Vector4.Transform(new Vector4((float)position.X, .14f, (float)position.Z, 1), board.Camera.Matrix(width, height, 7));
