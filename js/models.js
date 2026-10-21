@@ -3317,12 +3317,12 @@
     },
     "ac:Aegiomon": {
       "form": "Aegiomon",
-      "uid": "rip-ts_aegiomon",
+      "uid": "rip-ts_aegiomon_chr183a",
       "rip": true,
-      "name": "Aegiomon (Digimon Story: Time Stranger)",
-      "author": "The Models Resource",
+      "name": "Aegiomon (Digimon Story: Time Stranger, chr183a)",
+      "author": "nuffle.me (dsts-extractor)",
       "license": "Game rip",
-      "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604898/"
+      "url": "https://nuffle.me/dsts-viewer?m=aegiomon"
     },
     "ac:Volcanicdramon": {
       "form": "Volcanicdramon",

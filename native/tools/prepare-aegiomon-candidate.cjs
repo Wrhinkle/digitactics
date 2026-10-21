@@ -24,6 +24,15 @@ async function main(){
  const omitted=[];
  for(const node of json.nodes)if(node.mesh!==undefined&&/outline|ouline/i.test(json.meshes[node.mesh].name)){omitted.push(json.meshes[node.mesh].name);delete node.mesh;delete node.skin;}
  for(const material of json.materials){const p=material.pbrMetallicRoughness||={};delete p.metallicRoughnessTexture;p.metallicFactor=0;p.roughnessFactor=1;delete material.normalTexture;}
+ // Eye overlays: eye_s is the source's untextured upper-eye shading shell, drawn
+ // as uDiffuseAlpha x white at that alpha (the extractor's dsts_render notes BLEND).
+ // eye_h is the highlight sprite; its bound E01r texture carries the sprite alpha.
+ // Both were OPAQUE white shells over the iris in the first candidate.
+ for(const material of json.materials){
+  const uniforms=material.extras?.dsts?.uniforms;
+  if(material.name==='eye_s'&&uniforms?.DiffuseAlpha?.length===4){material.alphaMode='BLEND';material.pbrMetallicRoughness.baseColorFactor=uniforms.DiffuseAlpha;}
+  if(material.name==='eye_h'&&material.pbrMetallicRoughness.baseColorTexture)material.alphaMode='BLEND';
+ }
  const encoded=Buffer.from(JSON.stringify(json)),jp=(4-encoded.length%4)%4,bp=(4-bin.length%4)%4;
  const packed=Buffer.alloc(28+encoded.length+jp+bin.length+bp);packed.writeUInt32LE(0x46546c67,0);packed.writeUInt32LE(2,4);packed.writeUInt32LE(packed.length,8);
  packed.writeUInt32LE(encoded.length+jp,12);packed.writeUInt32LE(0x4e4f534a,16);encoded.copy(packed,20);packed.fill(32,20+encoded.length,20+encoded.length+jp);
