@@ -162,10 +162,10 @@ internal sealed partial class MatchScreen
         var at=ImGui.GetWindowPos();var extent=ImGui.GetWindowSize();var draw=ImGui.GetWindowDrawList();
         IncubatorInventoryBounds=(at,at+extent);
         CollectionOverlayScrollbar();
-        var lo=at+new float2(0,ImGui.GetScrollY());
+        var lo=at;var content=at-new float2(0,ImGui.GetScrollY());
         draw.AddRectFilledMultiColor(lo,lo+extent,new ImColor8(10,20,40,235),new ImColor8(10,20,40,235),new ImColor8(1,10,19,245),new ImColor8(1,10,19,245));
         draw.AddRect(lo,lo+extent,S.Gold5);
-        float x=at.X+13,inner=width-26,y=at.Y+13;
+        float x=content.X+13,inner=width-26,y=content.Y+13;
         y=MysteryLootControls(collection,new(x,y),inner);
         var tile=S.Display(12.5f,.1f);var count=S.Body(11);
         void Heading(string text,int n)
@@ -196,7 +196,7 @@ internal sealed partial class MatchScreen
         }
         if(incubator.Legends.Length==0){S.TextIn(draw,new(x,y),18,S.Text3,"Owned Little Legends appear here.",S.Body(12.5f));y+=18;}
         else y+=(incubator.Legends.Length+columns-1)/columns*(tileHeight+6)-6;
-        ImGui.SetCursorScreenPos(at);ImGui.Dummy(new(width,y-at.Y+13));
+        ImGui.SetCursorScreenPos(content);ImGui.Dummy(new(width,y-content.Y+13));
     }
     /// <summary>.loot-item: 44px art, bold name, small value (with a Bits gem for eggs); selected and ready frames.</summary>
     private bool LootTile(string key,string label,string sub,float2 at,float2 extent,bool selected,bool ready,bool bits)

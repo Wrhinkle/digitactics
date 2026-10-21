@@ -171,20 +171,25 @@ internal sealed partial class MatchScreen
         var label=S.Display(14,.1f,false);var counter=S.Body(11);const float height=38;
         float space=label.Font.CalcTextSizeA(label.Size,float.MaxValue,0," "u8).X+label.Tracking;
         draw.AddLine(new(origin.X,origin.Y+height+.5f),new(origin.X+available,origin.Y+height+.5f),S.Gold5);
+        // The original clips overflowing tabs but can scroll them; never leave a tab wholly unreachable:
+        // when the last tab would start past the edge, use the compact (<=1380px) tab style instead.
+        (string Name,string? Count) Tab(int i)
+        {
+            if(i==7)return("DIGI-EGGS",null);
+            string kind=CosmeticCollection.Kinds[i];
+            var items=CosmeticCollection.Items(kind).Where(item=>collectionStore?!item.Secret&&item.Linked is null:!item.Secret||collection.Owns(kind,item.Id)).ToArray();
+            int owned=items.Count(item=>collection.Owns(kind,item.Id));
+            return(CollectionTabs[i].ToUpperInvariant(),collectionStore?items.Length.ToString():MatchLockerVisible?owned.ToString():owned+"/"+items.Length);
+        }
+        var tabs=order.Select(Tab).ToArray();
+        bool compact=S.Narrow||tabs.SkipLast(1).Sum(t=>28+label.Width(t.Name)+(t.Count is null?0:space+3+counter.Width(t.Count))+4)>=available-8;
         float x=0;
         for(int n=0;n<order.Length;n++)
         {
             int i=order[n];bool eggs=i==7,selected=eggs?collectionStoreEggs:!collectionStoreEggs&&collectionKind==i;
-            string name=eggs?"DIGI-EGGS":CollectionTabs[i].ToUpperInvariant();string? count=null;
-            if(!eggs)
-            {
-                string kind=CosmeticCollection.Kinds[i];
-                var items=CosmeticCollection.Items(kind).Where(item=>collectionStore?!item.Secret&&item.Linked is null:!item.Secret||collection.Owns(kind,item.Id)).ToArray();
-                int owned=items.Count(item=>collection.Owns(kind,item.Id));
-                count=collectionStore?items.Length.ToString():MatchLockerVisible?owned.ToString():owned+"/"+items.Length;
-            }
-            if(S.Narrow)count=null;
-            float pad=S.Narrow?9:14;
+            var (name,count)=tabs[n];
+            if(compact)count=null;
+            float pad=compact?9:14;
             float nameWidth=label.Width(name),width=pad*2+nameWidth+(count is null?0:space+3+counter.Width(count));
             if(x>=available)break;
             float visibleWidth=Math.Min(width,available-x);
@@ -344,12 +349,17 @@ internal sealed partial class MatchScreen
     {
         var extent=new float2(width,CollectionCardHeight);
         string key="collectionCard/"+kind+"/"+item.Id;
-        bool sound=kind is "sound" or "elimsound";
-        bool clicked=CosmeticHit(key,at,extent,out bool hovered,overlap:sound,sound:false);
-        Buttons["preview/"+kind+"/"+item.Id]=at+extent*.5f;
-        if(clicked){previewCosmetic=item.Id;ClientItemSound("preview/"+kind+"/"+item.Id,true);}
-        else ClientItemSound("preview/"+kind+"/"+item.Id,false);
-        if(!ImGui.IsRectVisible(at-new float2(20,20),at+extent+new float2(20,20)))return;
+        var cardAt=at;
+        void Hit()
+        {
+            // Submitted after the card's inner play control so that control keeps hover priority.
+            bool clicked=CosmeticHit(key,cardAt,extent,out _,sound:false);
+            Buttons["preview/"+kind+"/"+item.Id]=cardAt+extent*.5f;
+            if(clicked){previewCosmetic=item.Id;ClientItemSound("preview/"+kind+"/"+item.Id,true);}
+            else ClientItemSound("preview/"+kind+"/"+item.Id,false);
+        }
+        if(!ImGui.IsRectVisible(at-new float2(20,20),at+extent+new float2(20,20))){Hit();return;}
+        bool hovered=ImGui.IsWindowHovered()&&ImGui.IsMouseHoveringRect(at,at+extent);
         bool selected=previewCosmetic==item.Id,owned=collection.Owns(kind,item.Id);
         if(hovered)at.Y-=2;
         var end=at+extent;var draw=ImGui.GetWindowDrawList();var rarity=S.Rarity(item.Rarity);
@@ -380,6 +390,7 @@ internal sealed partial class MatchScreen
         var border=selected?S.Gold1:hovered?S.Gold2:S.Mix(rarity,.25f,S.Gold5);
         draw.AddRect(at,end,border);
         if(selected)draw.AddRect(at-new float2(1,1),end+new float2(1,1),S.Gold2);
+        Hit();
         if(hovered)ImGui.SetTooltip(item.Name);
     }
     /// <summary>radial-gradient(circle at cx cy, inner, outer stop) sized to the farthest corner, drawn as a fan clipped to the box.</summary>

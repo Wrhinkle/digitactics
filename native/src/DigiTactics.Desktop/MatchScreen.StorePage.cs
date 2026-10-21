@@ -124,6 +124,8 @@ internal sealed partial class MatchScreen
         float space=label.Font.CalcTextSizeA(label.Size,float.MaxValue,0," "u8).X+label.Tracking;
         draw.AddRectFilled(origin,origin+new float2(width,height),new ImColor8(1,10,19,153));
         draw.AddLine(new(origin.X,origin.Y+height+.5f),new(origin.X+width,origin.Y+height+.5f),S.Gold5);
+        string? Count(int i)=>i==7?null:(collectionStore?CosmeticCollection.Items(CosmeticCollection.Kinds[i]).Count(item=>!item.Secret&&item.Linked is null):CosmeticCollection.Items(CosmeticCollection.Kinds[i]).Count(item=>collection.Owns(CosmeticCollection.Kinds[i],item.Id))).ToString();
+        bool compact=S.Narrow||16+order.SkipLast(1).Sum(i=>28+label.Width(i==7?"DIGI-EGGS":CollectionTabs[i].ToUpperInvariant())+(Count(i) is {} c?space+counter.Width(c):0)+2)>=width-8;
         float x=16;
         foreach(int i in order)
         {
@@ -134,14 +136,14 @@ internal sealed partial class MatchScreen
                 string kind=CosmeticCollection.Kinds[i];
                 count=(collectionStore?CosmeticCollection.Items(kind).Count(item=>!item.Secret&&item.Linked is null):CosmeticCollection.Items(kind).Count(item=>collection.Owns(kind,item.Id))).ToString();
             }
-            if(S.Narrow)count=null;
-            float pad=S.Narrow?9:14;
+            if(compact)count=null;
+            float pad=compact?9:14;
             float nameWidth=label.Width(name),tabWidth=pad*2+nameWidth+(count is null?0:space+counter.Width(count));
             if(x>=width)break;
             var at=origin+new float2(x,0);
             bool clicked=CosmeticHit("collectionTab/"+i,at,new(Math.Min(tabWidth,width-x),height),out bool hover);
             draw.PushClipRect(origin,origin+new float2(width,height+1),true);
-            float baseline=at.Y+(S.Narrow?9:11)+(18.9f-label.Size)*.5f+.992f*14;
+            float baseline=at.Y+(compact?9:11)+(18.9f-label.Size)*.5f+.992f*14;
             S.Text(draw,new(at.X+pad,baseline-.992f*14),selected||hover?S.Gold1:S.LcMute,name,label);
             if(count is not null)S.Text(draw,new(at.X+pad+nameWidth+space,baseline-.969f*12),StoreMuted,count,counter);
             if(selected)
@@ -241,13 +243,8 @@ internal sealed partial class MatchScreen
         bool equipped=owned&&CollectionWorn(collection,kind,item.Id,locker&&CosmeticCollection.Multi(kind));
         float inner=extent.X-22;
         string key=(featured?"collectionOffer/":"storeCard/")+kind+"/"+item.Id;
-        bool clicked=CosmeticHit(key,at,extent,out bool hovered,overlap:true,sound:false);
-        if(clicked)
-        {
-            previewCosmetic=item.Id;ClientItemSound("preview/"+kind+"/"+item.Id,true);
-            if(featured)CollectionCategoryChanged(Array.IndexOf(CosmeticCollection.Kinds,kind));previewCosmetic=item.Id;
-        }
-        if(featured)CollectionFilterAnchor(key);
+        // Hover is geometric; the card's own hit target is submitted after its inner controls so they keep priority.
+        bool hovered=ImGui.IsWindowHovered()&&ImGui.IsMouseHoveringRect(at,at+extent);
         if(hovered)at.Y-=2;
         var end=at+extent;
         if(hovered){for(int i=1;i<=7;i++)draw.AddRect(at-new float2(i,i),end+new float2(i,i),S.Alpha(rarity,.1f*(1-i/8f)),thickness:2);draw.AddRectFilled(at+new float2(0,10),end+new float2(0,14),new ImColor8(0,0,0,70));}
@@ -267,6 +264,11 @@ internal sealed partial class MatchScreen
         }
         else if(visible)StoreCardArt(collection,kind,item,prevAt,prevSize);
         draw.PopClipRect();
+        if(CosmeticHit(key,prevAt,prevSize,out _,sound:false))
+        {
+            if(featured)CollectionCategoryChanged(Array.IndexOf(CosmeticCollection.Kinds,kind));
+            previewCosmetic=item.Id;ClientItemSound("preview/"+kind+"/"+item.Id,true);
+        }
         Buttons["preview/"+kind+"/"+item.Id]=prevAt+prevSize*.5f;
         if(kind is "sound" or "elimsound")Buttons["previewSound/"+kind+"/"+item.Id]=prevAt+prevSize*.5f;
         if(featured)
