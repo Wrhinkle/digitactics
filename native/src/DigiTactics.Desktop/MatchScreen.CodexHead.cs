@@ -127,7 +127,7 @@ internal sealed partial class MatchScreen
         var type=S.Body(12);const float buttonHeight=22.2f;
         string Label(string value)=>value switch{"family"=>"Families","role"=>"Roles","all"=>"All",_=>int.TryParse(value,out _)?value+" gold":CodexTitle(value)};
         float segWidth=4+filters.Sum(f=>type.Width(Label(f))+20)+2*(filters.Length-1);
-        draw.AddRectFilled(at,at+new float2(segWidth,buttonHeight+6),CodexBg);draw.AddRect(at,at+new float2(segWidth,buttonHeight+6),CodexLine);
+        draw.AddRectFilled(at,at+new float2(segWidth,buttonHeight+6),CodexBg,7);draw.AddRect(at,at+new float2(segWidth,buttonHeight+6),CodexLine,7);
         float x=at.X+3;
         foreach(string value in filters)
         {

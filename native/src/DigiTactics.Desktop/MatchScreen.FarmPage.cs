@@ -109,6 +109,7 @@ internal sealed partial class MatchScreen
         }
     }
     /// <summary>.df-chip resident buttons over the scene: 42px, translucent navy, gold ring when selected, mood icon badge.</summary>
+    internal (float2 Min,float2 Max) FarmSceneBounds=>(new(FarmSceneX,FarmSceneTop),new(FarmSceneX+FarmSceneWidth,FarmSceneTop+FarmSceneHeight));
     private void FarmResidentChips(string[] residents)
     {
         var draw=ImGui.GetWindowDrawList();float x=FarmSceneX+8,y=FarmSceneTop+8;

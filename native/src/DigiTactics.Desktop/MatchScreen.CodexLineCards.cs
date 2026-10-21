@@ -106,7 +106,7 @@ internal sealed partial class MatchScreen
         // (70% family + white) and (40% family + #0b0e15) at 80% of farthest corner.
         var light=new float3(family.X*.7f+76.5f,family.Y*.7f+76.5f,family.Z*.7f+76.5f);
         var dark=new float3(family.X*.4f+6.6f,family.Y*.4f+8.4f,family.Z*.4f+12.6f);
-        var center=at+new float2(extent*.5f,extent*.3f);float stop=extent*MathF.Sqrt(.25f+.49f)*.8f,radius=8;
+        var center=at+new float2(extent*.5f,extent*.3f);float stop=extent*MathF.Sqrt(.25f+.49f)*.8f,radius=Math.Min(8,extent*.2f);
         var uv=ImGui.GetFontTexUvWhitePixel();
         float2 Edge(int index)
         {

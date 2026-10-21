@@ -84,6 +84,11 @@ internal sealed partial class MatchScreen
         float right=S.Narrow?270:Math.Clamp(ImGui.GetIO().DisplaySize.X*.24f,270,360),left=full.X-right-12;
         ImGui.PushStyleColor(ImGuiCol.ChildBg,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.Border,new ImColor8(0,0,0,0));
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
+        try{CollectionPageColumns(collection,origin,full,left,right);}
+        finally{ImGui.PopStyleVar(2);ImGui.PopStyleColor(2);}
+    }
+    private void CollectionPageColumns(CosmeticCollection collection,float2 origin,float2 full,float left,float right)
+    {
         ImGui.BeginChild("collectionBrowser"u8,new(left,full.Y),ImGuiChildFlags.None,ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse|ImGuiWindowFlags.NoBackground);
         try
         {
@@ -107,7 +112,7 @@ internal sealed partial class MatchScreen
         ImGui.BeginChild("collectionPreview"u8,new(right,full.Y),ImGuiChildFlags.None,ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse|ImGuiWindowFlags.NoBackground);
         CollectionDetailBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
         try{SelectedCosmetic(collection,CosmeticCollection.Kinds[collectionKind],true);}
-        finally{ImGui.EndChild();ImGui.PopStyleVar(2);ImGui.PopStyleColor(2);}
+        finally{ImGui.EndChild();}
     }
     /// <summary>The 8px ::-webkit-scrollbar thumb drawn over the grid's right padding, so it never narrows the columns.</summary>
     private static void CollectionOverlayScrollbar()

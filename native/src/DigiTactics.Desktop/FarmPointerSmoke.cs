@@ -84,7 +84,11 @@ internal sealed class FarmPointerSmoke : IDisposable
                     throw new InvalidOperationException("The twelve-resident farm did not render every portrait control.");
                 var first = screen.Buttons["farmResident/" + residents[0]];
                 var last = screen.Buttons["farmResident/" + residents[^1]];
-                if (Math.Abs(ImGui.GetIO().DisplaySize.X - 1200) < 1 && last.Y <= first.Y + 24) throw new InvalidOperationException("Twelve farm portraits did not wrap at the dock threshold.");
+                // farmstyle.js .df-chips: 42px chips with 5px gaps flex-wrap inside the scene (8px insets).
+                var scene = screen.FarmSceneBounds;
+                bool overflow = residents.Length * 47 - 5 > scene.Max.X - scene.Min.X - 16;
+                if (overflow != (last.Y > first.Y + 24)) throw new InvalidOperationException("Twelve farm portraits did not wrap exactly when the chip row overflows the scene.");
+                if (residents.Any(id => screen.Buttons["farmResident/" + id].X + 21 > scene.Max.X - 8)) throw new InvalidOperationException("A farm portrait chip extends past the scene.");
                 io.AddMousePosEvent(last.X, last.Y);
             }
             else
