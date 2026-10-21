@@ -24,15 +24,15 @@ internal sealed partial class MatchScreen
     {
         string system=Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
         string bundled=Path.Combine(AppContext.BaseDirectory,"content","fonts");
-        modalRegular=Face(NativeUiTheme.BodyFont,Path.Combine(bundled,"inter","Inter[opsz,wght].ttf"));
-        modalBold=Face(NativeUiTheme.BodyBoldFont,Path.Combine(bundled,"inter","Inter-Bold.ttf"));
-        modalDisplay=Face(NativeUiTheme.DisplayBoldFont,Path.Combine(bundled,"chakrapetch","ChakraPetch-Bold.ttf"));
+        modalRegular=LoadedFace(NativeUiTheme.BodyFont,Path.Combine(bundled,"inter","Inter[opsz,wght].ttf"));
+        modalBold=LoadedFace(NativeUiTheme.BodyBoldFont,Path.Combine(bundled,"inter","Inter-Bold.ttf"));
+        modalDisplay=LoadedFace(NativeUiTheme.DisplayBoldFont,Path.Combine(bundled,"chakrapetch","ChakraPetch-Bold.ttf"));
         HudFace System(string file,HudFace fallback)
         {
             string path=Path.Combine(system,file);
             if(!File.Exists(path))return fallback;
             var font=AddHudFont(path);
-            return font.IsNull()?fallback:Face(font,path);
+            return font.IsNull()?fallback:LoadedFace(font,path);
         }
         // Chromium resolves CSS weight 800 to Segoe UI Black, the next heavier installed face.
         hudRegular=System("segoeui.ttf",modalRegular);
@@ -49,7 +49,7 @@ internal sealed partial class MatchScreen
         return ImGui.GetIO().Fonts.AddFontFromFileTTF(path,NativeUiTheme.BodySize,new ImFontConfigPtr(&config),default);
     }
     // hhea ascender and descender over unitsPerEm: stb_truetype sizes a face by their sum.
-    private static HudFace Face(ImFontPtr font,string path)
+    private static HudFace LoadedFace(ImFontPtr font,string path)
     {
         try
         {
