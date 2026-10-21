@@ -30,7 +30,7 @@ internal sealed partial class MatchScreen
         float subHeight=4+13*ModalLine*Math.Max(1,MathF.Ceiling(subWidth/contentWidth))+12;
         float footerHeight=carousel.Done?12+(networkRoom is not null?13*ModalLine:MathF.Round(14*ModalLine+14)):0;
         float introHeight=intro is null?0:GalaxyIntroCardHeight(intro,contentWidth)+12;
-        float cardsOffset=1+ModalPadY+introHeight+headHeight+subHeight;
+        float cardsOffset=MathF.Round(1+ModalPadY+introHeight+headHeight+subHeight);
         float height=Math.Min(Height-20,cardsOffset+cardsHeight+footerHeight+ModalPadY+1);
         float viewportHeight=Math.Max(1,height-cardsOffset-footerHeight-ModalPadY-1);
         bool scrolls=cardsHeight>viewportHeight+.5f;
@@ -69,9 +69,9 @@ internal sealed partial class MatchScreen
             ImGui.EndDisabled();
             Buttons["carousel/"+i]=at+new float2(cardWidth,cardHeight)*.5f;
             bool lift=hovered&&!taken;
+            CarouselCardBounds[i]=(at,at+new float2(cardWidth,cardHeight));
             if(lift)at.Y-=2;
             var min=at;var max=at+new float2(cardWidth,cardHeight);
-            CarouselCardBounds[i]=(min,max);
             // .choice.taken: opacity .4 for the whole card.
             float alpha=taken?.4f:1;var under=HudHex("0b1626");
             Rgb Paint(Rgb c)=>HudOver(lift?HudBright(c):c,under,alpha);

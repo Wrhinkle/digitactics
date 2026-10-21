@@ -19,6 +19,6 @@ internal sealed partial class MatchScreen
         float traitsY=y;y+=ModalTextHeight(ModalWeight(400),11,text.Traits,inner)+4;
         float itemY=y;y+=ModalTextHeight(ModalWeight(400),11,text.Item,inner);
         float statusY=y+(text.Status.Length>0?4:0),statusHeight=ModalTextHeight(ModalWeight(400),11,text.Status,inner);
-        return new(traitsY,itemY,statusY,statusHeight,statusY+statusHeight+8+2);
+        return new(traitsY,itemY,statusY,statusHeight,MathF.Ceiling(statusY+statusHeight+8+2));
     }
 }

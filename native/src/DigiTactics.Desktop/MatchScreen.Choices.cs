@@ -24,7 +24,7 @@ internal sealed partial class MatchScreen
         y+=descriptionHeight;
         float recipeY=y+6;
         if(recipe is not null)y=recipeY+ModalTextHeight(ModalWeight(400),12,recipe,inner);
-        return new(artY,artSize,titleY,descriptionY,descriptionHeight,recipeY,y+12+2);
+        return new(artY,artSize,titleY,descriptionY,descriptionHeight,recipeY,MathF.Ceiling(y+12+2));
     }
 
     private void Choices()
@@ -61,7 +61,7 @@ internal sealed partial class MatchScreen
         float introHeight=intro is null?0:GalaxyIntroCardHeight(intro,contentWidth)+12;
         float subHeight=4+ModalTextHeight(ModalWeight(400),13,heading.Description,contentWidth)+12;
         float footerHeight=offer.Rerolls>0?12+headHeight:0;
-        float cardsOffset=1+ModalPadY+introHeight+headHeight+subHeight;
+        float cardsOffset=MathF.Round(1+ModalPadY+introHeight+headHeight+subHeight);
         float naturalHeight=cardsOffset+cardsHeight+footerHeight+ModalPadY+1;
         float height=peekChoices?2+2*ModalPadY+headHeight:Math.Min(Height-20,naturalHeight);
         float viewportHeight=Math.Max(1,height-cardsOffset-footerHeight-ModalPadY-1);
@@ -103,9 +103,9 @@ internal sealed partial class MatchScreen
             bool pick=ImGui.InvisibleButton("offer/"+i,new(cardWidth,cardHeight));
             bool hovered=ImGui.IsItemHovered();
             Buttons["offer/"+i]=at+new float2(cardWidth,cardHeight)*.5f;
+            ChoiceCardBounds[i]=(at,at+new float2(cardWidth,cardHeight));
             if(hovered)at.Y-=2;
             var min=at;var max=at+new float2(cardWidth,cardHeight);
-            ChoiceCardBounds[i]=(min,max);
             ChoiceCardSurface(cardsDraw,min,max,border,hovered);
             float inner=cardWidth-4-24,textX=min.X+2+12;
             if(item is not null){itemArtwork.Draw(Rules.Id,id,new(min.X+(cardWidth-layout.ArtSize)/2,min.Y+layout.ArtY),layout.ArtSize);OfferArtworkCount++;}

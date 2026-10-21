@@ -98,7 +98,9 @@ internal sealed class ChoicePresentationUiSmoke(ContentCatalog catalog)
             // These ordinary three-card offers fit comfortably even at the
             // minimum window. Their borders must be visible without scrolling;
             // text fitting inside an offscreen card is not sufficient.
-            if(offered.Length<=3&&screen.ChoiceCardBounds.Values.All(card=>card.Max.Y-card.Min.Y<=320))
+            // The original modal lives in the arena (max-width min(860px, 100% - 24px)), so a narrow
+            // arena wraps wide cards onto a second row; only a single-row offer must avoid scrolling.
+            if(offered.Length<=3&&screen.ChoiceCardBounds.Values.All(card=>card.Max.Y-card.Min.Y<=320)&&screen.ChoiceCardBounds.Values.Select(card=>card.Min.Y).Distinct().Count()==1)
             {
                 var viewport=screen.ChoiceViewportBounds;
                 Require(screen.ChoiceCardBounds.Values.All(card=>card.Min.X>=viewport.Min.X&&card.Max.X<=viewport.Max.X&&card.Min.Y>=viewport.Min.Y&&card.Max.Y<=viewport.Max.Y),

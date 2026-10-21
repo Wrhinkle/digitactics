@@ -45,9 +45,9 @@ internal sealed partial class MatchScreen
         int owned=stage<2?Human.Roster.Entries.Count(e=>e.Unit.Line==id&&e.Unit.Stage==stage):0;
         bool evolves=owned>0&&owned>=line.Copies-1;bool tagged=meta?.Tag is {Length:>0};
         // .card:hover lifts 2px and brightens; .card.poor greys and darkens the whole card.
+        ShopCardBounds[slot]=(at,at+new float2(width,height));
         if(hovered)at.Y-=2;
         var min=at;var max=at+new float2(width,height);
-        ShopCardBounds[slot]=(min,max);
         Rgb Paint(Rgb color)=>!affordable?HudPoor(color):hovered?HudBright(color):color;
         var tier=tierColors[Math.Clamp(line.Tier,0,5)];
         var border=Paint(tagged?HudHex("e58bff"):tier);

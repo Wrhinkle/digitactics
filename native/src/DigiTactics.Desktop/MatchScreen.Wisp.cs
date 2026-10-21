@@ -34,8 +34,9 @@ internal sealed partial class MatchScreen
         }
         var wisp=codexCatalog.Value.Variant(Rules.Id).Wisps.Single(w=>w.Id==offer.Id);
         bool affordable=Human.Economy.Gold>=offer.Cost;
+        WispCardBounds=(at,at+new float2(width,height));
         if(hovered&&affordable)at.Y-=2;
-        var min=at;var max=at+new float2(width,height);WispCardBounds=(min,max);
+        var min=at;var max=at+new float2(width,height);
         Rgb Paint(Rgb color)=>!affordable?HudPoor(color):hovered?HudBright(color):color;
         draw.AddRectFilled(min+new float2(-1,1),max+new float2(1,4),new ImColor8(0,0,0,40),10);
         // linear-gradient(160deg, #1d2240, #251d3a) under a 2px dashed #8a78ff border.

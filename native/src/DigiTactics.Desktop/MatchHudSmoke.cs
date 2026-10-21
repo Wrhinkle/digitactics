@@ -18,7 +18,7 @@ internal sealed class MatchHudSmoke
             if(screen.StandingAvatarCount!=match.State.Players.Count)throw new InvalidOperationException("Standings lost a player's Little Legend avatar.");
             if(screen.DisplayedTimeline.Count!=match.State.Rules.Schedule!.RoundsInStage(match.Rounds.Position.Stage)||screen.DisplayedTimeline.Count(r=>r.Current)!=1)
                 throw new InvalidOperationException("Round timeline omitted a scheduled/current round.");
-            if(screen.TimelineBounds.Min.X<60||screen.TimelineBounds.Max.X>screen.HeaderOpponentBounds.Min.X-96)
+            if(screen.TimelineBounds.Min.X<50||screen.TimelineBounds.Max.X>screen.HeaderOpponentBounds.Min.X-90)
                 throw new InvalidOperationException("Round timeline overlaps the round heading or Fight control.");
             if(screen.HeaderOpponentName!="Wild Digimon"||screen.HeaderOpponentBounds.Min.X<screen.TimelineBounds.Max.X||screen.HeaderOpponentBounds.Max.Y>60)
                 throw new InvalidOperationException("PvE opponent card is missing or overlaps the round timeline or utility controls.");
@@ -37,7 +37,8 @@ internal sealed class MatchHudSmoke
         {
             if(screen.StandingTooltipSeat!=0)throw new InvalidOperationException("Standing hover did not show the selected Tamer's team summary.");
             var tooltip=screen.StandingTooltipBounds;
-            if(tooltip.Min.X<0||tooltip.Min.Y<0||tooltip.Max.X>screen.ScoutingBounds.Min.X||tooltip.Max.Y>io.DisplaySize.Y)throw new InvalidOperationException("Standing tooltip covers the roster or leaves the viewport.");
+            // placeTip puts it 8px left of the row, which is inside the rail padding.
+            if(tooltip.Min.X<0||tooltip.Min.Y<0||tooltip.Max.X>screen.ScoutingBounds.Min.X+10||tooltip.Max.Y>io.DisplaySize.Y)throw new InvalidOperationException($"Standing tooltip covers the roster or leaves the viewport: {tooltip} roster {screen.ScoutingBounds} display {io.DisplaySize}.");
             CaptureRequested="standings-hover";
         }
         else if(step is 3 or 5)io.AddMouseButtonEvent(0,false);

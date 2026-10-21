@@ -344,8 +344,10 @@ internal sealed class MatchScreenSmoke(NativeProfileStore? collectionProfile = n
                 if (automaticAdvanceWait > 2.3) throw new InvalidOperationException("Solo results did not advance automatically after the source delay.");
                 return;
             }
-            if (screen.Session.Rounds.Phase != MatchPhase.Planning || automaticAdvanceWait < 1.5)
-                throw new InvalidOperationException("Automatic result advance skipped the result presentation delay.");
+            // Pausing takes two clicks (Menu, then Pause game) as in the original, and the 2.2 s delay
+            // keeps running while the menu opens, so less of it remains after the pause check.
+            if (screen.Session.Rounds.Phase != MatchPhase.Planning || automaticAdvanceWait < 1.2)
+                throw new InvalidOperationException($"Automatic result advance skipped the result presentation delay: waited {automaticAdvanceWait:0.00}s, phase {screen.Session.Rounds.Phase} {screen.Session.Rounds.Position.Label}.");
             index++; cooldown = 3; return;
         }
         if (index == 12) { if (planningTimer.Input(screen)) index++; cooldown = 3; return; }
