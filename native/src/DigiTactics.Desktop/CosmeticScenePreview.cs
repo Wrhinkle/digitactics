@@ -62,7 +62,7 @@ internal sealed partial class CosmeticScenePreview : IDisposable
         }
         catch {Dispose();throw;}
     }
-    private static int SupportedSamples()
+    internal static int SupportedSamples()
     {
         static int[] Counts(uint format)
         {

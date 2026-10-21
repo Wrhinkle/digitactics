@@ -53,6 +53,7 @@ internal sealed partial class MatchScreen : IDisposable
     private int Height => Math.Max(120, size.Y - Top - ShopHeight);
     // The original fits its canvas while the shop bar holds only the economy column (measured 87 px, 77 px compact,
     // plus bar padding), so the canvas overhangs the arena by the later card height difference.
+    private readonly ArenaFrameTarget arenaFrame = new();
     private int ArenaCanvasOverhang => Math.Max(0, ShopHeight - ((HudCompact ? 77 : 87) + (HudNarrow ? 13 : 17)));
     private const ImGuiWindowFlags Fixed = ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
     public MatchScreen(ContentCatalog catalog, GameAudio audio, uint? seed = null, bool duos = false, NativeProfileStore? profile = null) { planning=new(arenaEnvironment); this.catalog = catalog; this.audio = audio; this.seed = seed; this.duos = duos; this.profile = profile; farm = profile is null ? null : new(profile); InitializeSetSelection(duos); }
@@ -506,7 +507,10 @@ internal sealed partial class MatchScreen : IDisposable
         arenaCompanion?.PrepareScene(sceneCamera, sceneEye); opponentCompanion?.PrepareScene(sceneCamera, sceneEye);
         lootOrbs.Sync(Human.Orbs,boardSceneTime,!IsSpectating && viewed == localSeat);
         arenaEnvironment.Actors = (renderer,camera,transparent) => { DrawCompanions(renderer,camera,transparent); lootOrbs.Draw(renderer,camera,transparent); };
-        if (battle is not null) battle.Draw(w, h, x, y); else planning.Draw(Rules, Session.State.Players[viewed], x, y, w, h);
+        bool multisampled = arenaFrame.Begin(w, h);
+        int left = multisampled ? 0 : x, bottom = multisampled ? 0 : y;
+        try { if (battle is not null) battle.Draw(w, h, left, bottom); else planning.Draw(Rules, Session.State.Players[viewed], left, bottom, w, h); }
+        finally { if (multisampled) arenaFrame.End(x, y); }
     }
-    public void Dispose() { DisposeHome(); galaxyIntroArtwork.Dispose(); choiceArtwork.Dispose(); ClearEliminationCinematics(); DisposeCollectionPreview(); ReleaseRetiredCollectionPreviews(); eggArtwork.Dispose(); collectionArtwork.Dispose(); postgameArtwork.Dispose(); ClearEvolutionPreview(); lootOrbs.Dispose(); itemArtwork.Dispose(); portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); DisposeSteamConnection(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); }
+    public void Dispose() { DisposeHome(); galaxyIntroArtwork.Dispose(); choiceArtwork.Dispose(); ClearEliminationCinematics(); DisposeCollectionPreview(); ReleaseRetiredCollectionPreviews(); eggArtwork.Dispose(); collectionArtwork.Dispose(); postgameArtwork.Dispose(); ClearEvolutionPreview(); lootOrbs.Dispose(); itemArtwork.Dispose(); portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); DisposeSteamConnection(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); arenaFrame.Dispose(); }
 }
