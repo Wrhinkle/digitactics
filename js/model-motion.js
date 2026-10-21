@@ -450,7 +450,11 @@ export function fallbackClips(scene, adjustRest = true) {
     const elevation = Math.atan2(current.y, Math.abs(current.x));
     arms.push({ bone: b, side, raise: Number.isFinite(elevation) ? Math.min(2.4, Math.max(.25, .96 - elevation)) : 1.6 });
   }
-  const selected = [...bones].filter(b => valid(b) && (arms.some(a => a.bone === b) || isHead(b) || isChest(b) || tailName.test(b.name)));
+  // Ears and wings are often the largest moving shapes on small or blob-like
+  // rigs (Lopmon's ears, PlatinumNumemon's wings). Flap the root of each chain.
+  const flapName = /(?:^|_)(?:ear|mimi|wing)/i, center = box.getCenter(V());
+  const isFlap = b => flapName.test(b.name) && !flapName.test(b.parent?.name || '') && !arms.some(a => a.bone === b);
+  const selected = [...bones].filter(b => valid(b) && (arms.some(a => a.bone === b) || isHead(b) || isChest(b) || tailName.test(b.name) || isFlap(b)));
   if (!selected.length) return [];
   scene.updateMatrixWorld(true);
   // Box3 otherwise reuses the bounds it cached before the arms were posed.
@@ -458,6 +462,7 @@ export function fallbackClips(scene, adjustRest = true) {
   const rest = selected.map(b => ({
     bone: b, world: b.getWorldQuaternion(Q()), parent: b.parent.getWorldQuaternion(Q()).invert(),
     arm: arms.find(a => a.bone === b), head: isHead(b), chest: isChest(b), tail: tailName.test(b.name),
+    flap: isFlap(b) && (b.getWorldPosition(V()).x >= center.x ? 1 : -1),
   })).filter(r=>[...r.world.toArray(),...r.parent.toArray()].every(Number.isFinite));
   const make = (role, duration) => {
     const count = 25, times = Array.from({ length: count }, (_, i) => duration * i / (count - 1));
@@ -474,16 +479,20 @@ export function fallbackClips(scene, adjustRest = true) {
           if (r.head) turn(X, .025 * wave);
           if (r.chest) turn(X, .018 * wave);
           if (r.tail) turn(Y, .08 * wave);
+          if (r.flap) turn(Z, r.flap * .06 * wave);
         } else if (role === 'attack' || role === 'special') {
           if (r.arm) turn(X, -(role === 'special' ? 1.25 : .8) * pulse);
           if (r.head) turn(X, .12 * pulse);
-          if (r.chest) turn(Y, (role === 'special' ? .15 : .1) * Math.sin(u * Math.PI * 2) * pulse);
+          // The torso leans into the action so arm-poor bodies still read as striking.
+          if (r.chest) { turn(X, (role === 'special' ? .14 : .1) * pulse); turn(Y, (role === 'special' ? .15 : .1) * Math.sin(u * Math.PI * 2) * pulse); }
           if (r.tail) turn(Y, .25 * wave * pulse);
+          if (r.flap) turn(Z, r.flap * (role === 'special' ? .3 : .2) * pulse);
         } else {
           if (r.arm) { turn(Z, r.arm.side * r.arm.raise * pulse); turn(X, .2 * wave); }
           if (r.head) turn(Y, .12 * wave);
           if (r.chest) turn(Z, .055 * wave);
           if (r.tail) turn(Y, .22 * wave);
+          if (r.flap) turn(Z, r.flap * .25 * Math.sin(u * Math.PI * 4) * pulse);
         }
         const q = r.parent.clone().multiply(delta).multiply(r.world).normalize();
         values.push(q.x, q.y, q.z, q.w);

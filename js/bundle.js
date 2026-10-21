@@ -43511,7 +43511,9 @@ void main() {
       }
       arms.push({ bone: b, side: origin.x >= box3.getCenter(V()).x ? 1 : -1 });
     }
-    const selected2 = [...bones].filter((b) => valid(b) && (arms.some((a) => a.bone === b) || isHead(b) || isChest(b) || tailName.test(b.name)));
+    const flapName = /(?:^|_)(?:ear|mimi|wing)/i, center = box3.getCenter(V());
+    const isFlap = (b) => flapName.test(b.name) && !flapName.test(b.parent?.name || "") && !arms.some((a) => a.bone === b);
+    const selected2 = [...bones].filter((b) => valid(b) && (arms.some((a) => a.bone === b) || isHead(b) || isChest(b) || tailName.test(b.name) || isFlap(b)));
     if (!selected2.length) return [];
     scene2.updateMatrixWorld(true);
     scene2.traverse((o) => {
@@ -43524,7 +43526,8 @@ void main() {
       arm: arms.find((a) => a.bone === b),
       head: isHead(b),
       chest: isChest(b),
-      tail: tailName.test(b.name)
+      tail: tailName.test(b.name),
+      flap: isFlap(b) && (b.getWorldPosition(V()).x >= center.x ? 1 : -1)
     })).filter((r) => [...r.world.toArray(), ...r.parent.toArray()].every(Number.isFinite));
     const make = (role, duration) => {
       const count2 = 25, times = Array.from({ length: count2 }, (_, i) => duration * i / (count2 - 1));
@@ -43540,11 +43543,16 @@ void main() {
             if (r.head) turn(X, 0.025 * wave);
             if (r.chest) turn(X, 0.018 * wave);
             if (r.tail) turn(Y, 0.08 * wave);
+            if (r.flap) turn(Z, r.flap * 0.06 * wave);
           } else if (role === "attack" || role === "special") {
             if (r.arm) turn(X, -(role === "special" ? 1.25 : 0.8) * pulse3);
             if (r.head) turn(X, 0.12 * pulse3);
-            if (r.chest) turn(Y, (role === "special" ? 0.15 : 0.1) * Math.sin(u * Math.PI * 2) * pulse3);
+            if (r.chest) {
+              turn(X, (role === "special" ? 0.14 : 0.1) * pulse3);
+              turn(Y, (role === "special" ? 0.15 : 0.1) * Math.sin(u * Math.PI * 2) * pulse3);
+            }
             if (r.tail) turn(Y, 0.25 * wave * pulse3);
+            if (r.flap) turn(Z, r.flap * (role === "special" ? 0.3 : 0.2) * pulse3);
           } else {
             if (r.arm) {
               turn(Z, r.arm.side * 1.6 * pulse3);
@@ -43553,6 +43561,7 @@ void main() {
             if (r.head) turn(Y, 0.12 * wave);
             if (r.chest) turn(Z, 0.055 * wave);
             if (r.tail) turn(Y, 0.22 * wave);
+            if (r.flap) turn(Z, r.flap * 0.25 * Math.sin(u * Math.PI * 4) * pulse3);
           }
           const q = r.parent.clone().multiply(delta).multiply(r.world).normalize();
           values.push(q.x, q.y, q.z, q.w);
