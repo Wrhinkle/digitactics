@@ -6,11 +6,20 @@ const root=path.resolve(__dirname,'../..'),roles=['idle','attack','special','win
 const cases=[
   ['Impmon','081'],['Keramon','626'],['Koromon','322'],['Kudamon','053'],['Kuramon','629'],
   ['Lalamon','056'],['Lucemon','390'],['Lunamon','002'],['Mochimon','388'],['Monodramon','458'],
-].map(([name,code])=>({name,key:`catalog:TS_${name}:chr${code}`,uid:`rip-cat_ts_${name.toLowerCase()}_chr${code}`}));
+].map(([name,code])=>({name,key:`catalog:TS_${name}:chr${code}`,uid:`rip-cat_ts_${name.toLowerCase()}_chr${code}`})).concat([
+  // Clipless imports whose generic victory raised both straight arms into a T.
+  ['RapidmonArmor','giz:RapidmonArmor','rip-cs_rapidmon_armor'],
+  ['OmnimonMerciful','unique:L_Omnimon_Merciful_Mode','rip-l_omnimon_merciful_mode'],
+  // Ears and coat hide its arms: the generic clips rendered four identical frames.
+  ['TerriermonAssistant','unique:TS_Terriermon_Assistant','rip-ts_terriermon_assistant'],
+].map(([name,key,uid])=>({name,key,uid})));
 // These three still failed the native action review despite nonzero quaternion
 // tracks. Measure the imported shoulder/elbow/wrist landmarks: an axial twist
 // can change a forearm quaternion without producing an actual elbow bend.
 const actionLandmarks={
+  'rip-cs_rapidmon_armor': {base:'J_center',arms:[['J_arm_l','J_elbow_l','J_weapon_l'],['J_arm_r','J_elbow_r','J_weapon_r']]},
+  'rip-l_omnimon_merciful_mode': {base:'J_center',arms:[['J_arm_l','J_elbow_l','J_hand_l'],['J_arm_r','J_elbow_r','J_hand_r']]},
+  'rip-ts_terriermon_assistant': {base:'J_center',arms:[['J_arm_l','J_elbow_l','J_hand_l'],['J_arm_r','J_elbow_r','J_hand_r']]},
   'rip-cat_ts_impmon_chr081': {base:'J_center',arms:[['J_arm_l','J_ancon_l','J_hand_l'],['J_arm_r','J_ancon_r','J_hand_r']]},
   'rip-cat_ts_lucemon_chr390': {base:'J_center',arms:[['J_shoulderL','J_elbowL','J_wristL'],['J_shoulderR','J_elbowR','J_wristR']]},
   'rip-cat_ts_monodramon_chr458': {base:'J_center',arms:[['J_arm_l','J_elbow_l','J_hand_l'],['J_arm_r','J_elbow_r','J_hand_r']]},
@@ -291,6 +300,24 @@ const controlHashes={
     "00b1252b9b4c90688b8fd5b15195afe14d0caf51d48bbd8d15743a17b2ca9d94",
     "4d767cf97ef8828fd08cbea6295f120141fd5c82d80fba0d7542868dd5d31a26",
     "411e3504c266464e26e92469b4d2a700dc03ca9fa8da3cfbad1fa4b24d8e8039"
+  ],
+  "TerriermonAssistant": [
+    "f4349356b9dcb8779e0d5ef0c10c9c6e7defa9c6b33c822fa4f0aaab5a8e3fc1",
+    "ea46f39337a2a56887fa5e6da836b9aff461f1fa7fee9a9de9da0759096416bc",
+    "9324ae25cee48540a5af8c1e19a3686ff4810ae8520cc2b68305d575dfd55212",
+    "f7a0c601ef41dcba6bc409e7326d56282da6f3fedc042c5ee1fab33227c87ac2"
+  ],
+  "RapidmonArmor": [
+    "824fb2c5382ce46fc0436962a878bcbdef83eb7a9e8995202bec5655eb4d4011",
+    "a05a01c304a1c57327b84592a0de1e568b6b45785300616d66ef89136e05f9b2",
+    "ea8f7fc74430f31778cd0d87dc26282964036731ca49a387cbdd6dda328316d3",
+    "a331fcb95acf35be04aca68990d5e75e0a8a892446c1190d7a0bcbc1e71cb8c0"
+  ],
+  "OmnimonMerciful": [
+    "0f15c5689bcc04884783bf26115411b500255af26182717296e9d2ccb730658c",
+    "9048863a811c41c2f62a68f9548dd8b43fe91a77dcb50ee74b1d1f2d75460474",
+    "a697c63120acf83bf5c71c7c22173ea1acfd1b86a7bf212dc53eff94aafdb1a8",
+    "cb8994eb03132b2116fb102aa11471a6c0ea7d2e6cb12463e24754b7c7c90a8c"
   ]
 };
 main().catch(error=>{console.error(error);process.exitCode=1;});

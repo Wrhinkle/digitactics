@@ -42515,6 +42515,55 @@ void main() {
       elbows: pair("J_elbow_l", "J_elbow_r"),
       chains: [chain(["J_tail01", "J_tail02", "J_tail03", "J_tail04"], 0.08, 0.8), ...["l", "r"].map((side) => chain([`J_wing01_${side}`, `J_wing02_${side}`], 0.1, 0.7, "x"))]
     },
+    // Clipless imports whose shoulder-only generic victory swung both straight
+    // arms up into a sideways T. Keep the readable generic swing on the gun/sword
+    // arm (as Kotemon does), guard the other arm, and add torso/head/elbow motion.
+    "rip-cs_rapidmon_armor": {
+      body: "J_spine01",
+      chest: "J_spine02",
+      head: "J_head",
+      bodyLean: 0.2,
+      armRange: 0.6,
+      elbowAttack: 0.55,
+      elbowWin: 0.6,
+      family: "biped",
+      arms: pair("J_arm_l", "J_arm_r"),
+      elbows: pair("J_elbow_l", "J_elbow_r"),
+      weaponArm: "J_arm_r",
+      weaponBlend: 0.85,
+      chains: [chain(["J_tail"], 0.08, 0.8)]
+    },
+    "rip-l_omnimon_merciful_mode": {
+      body: "J_spine01",
+      chest: "J_spine02",
+      head: "J_head",
+      bodyLean: 0.2,
+      armRange: 0.6,
+      elbowAttack: 0.55,
+      elbowWin: 0.6,
+      family: "biped",
+      arms: pair("J_arm_l", "J_arm_r"),
+      elbows: pair("J_elbow_l", "J_elbow_r"),
+      weaponArm: "J_arm_r",
+      chains: ["l", "r"].map((side) => chain(Array.from({ length: 4 }, (_, i) => `J_wing0${i + 1}_${side}`), 0.04, 0.6, "x"))
+    },
+    // Its long ears and lab coat hide the arms, so the generic shoulder-only
+    // clips rendered four identical frames. Move the visible ears, head and torso.
+    "rip-ts_terriermon_assistant": {
+      body: "J_spine01",
+      chest: "J_spine02",
+      head: "J_neck",
+      headRange: 0.6,
+      jaw: "J_mouth",
+      bodyLean: 0.3,
+      armRange: 0.25,
+      elbowAttack: 0.7,
+      elbowWin: 0.7,
+      family: "biped",
+      arms: pair("J_arm_l", "J_arm_r"),
+      elbows: pair("J_elbow_l", "J_elbow_r"),
+      chains: ["l", "r"].map((side) => chain([1, 2, 3, 4].map((i) => `J_ear0${i}_${side}`), 0.12, 0.6, "x"))
+    },
     "rip-cat_rd_beelzemon_main": { body: "chest", head: "head", family: "biped", arms: pair("arm_L", "arm_R"), elbows: pair("forearm_L", "forearm_R"), elbowAxis: "y", elbowSigns: [1, -1] },
     "rip-cat_rd_wargrowlmon_main": { body: "chest", head: "head", family: "biped", arms: pair("arm_L", "arm_R"), elbows: pair("forearm_L", "forearm_R"), elbowAxis: "y", elbowSigns: [1, -1] }
   };
@@ -42593,7 +42642,7 @@ void main() {
           if (clip2.name === "idle" && map.idleGain) for (const key2 of ["lean", "turn", "lift", "wave"]) g2[key2] *= map.idleGain;
           if (weapon) {
             const target = originalTurn ? new Quaternion().fromArray(originalTurn.evaluate(time)) : unguarded.get(bone.name);
-            if (target) rotation.slerp(target, g2.envelope);
+            if (target) rotation.slerp(target, g2.envelope * (map.weaponBlend ?? 1));
           } else for (const turn of turns) rotation.multiply(new Quaternion().setFromAxisAngle(turn.axis, turn.amount(clip2.name, u, g2)));
           rotation.normalize().toArray(values, values.length);
         }
@@ -42987,7 +43036,7 @@ void main() {
     const rigid = rigidPartClips(gltf, src);
     if (rigid) return rigid;
     if (src?.uid === "rip-l_garurumon_greymon_statue") return statueClips(gltf.scene);
-    const authored = generatedBipedClips(gltf, src, blobBodyClips(gltf, src, heldWeaponOrigin(gltf, src, boardRootTravel(gltf, src, boardBodyScale(gltf, src))))).filter((c) => !src?.fallbackRoles?.includes(c.name));
+    const authored = livelyIdle(src, generatedBipedClips(gltf, src, blobBodyClips(gltf, src, heldWeaponOrigin(gltf, src, boardRootTravel(gltf, src, boardBodyScale(gltf, src)))))).filter((c) => !src?.fallbackRoles?.includes(c.name));
     if (authored.length && src?.anim !== false) {
       const staticIdle = src?.uid === "rip-cat_cs_seadramon_chr347";
       const missing = ["idle", "attack", "special", "win"].filter((role) => staticIdle && role === "idle" || !authored.some((c) => c.name === role));
@@ -43012,6 +43061,29 @@ void main() {
       if (sword?.parent?.name === "J_hand_r") sword.position.set(0, 0, 0);
     }
     return anatomyFallbackClips(gltf.scene, src, fallback);
+  }
+  function livelyIdle(src, clips) {
+    const gain = { "rip-durandamon": 4, "rip-tankdramon": 3 }[src?.uid];
+    if (!gain) return clips;
+    return clips.map((clip2) => {
+      if (clip2.name !== "idle") return clip2;
+      const corrected = clip2.clone(), opening = new Quaternion(), key2 = new Quaternion();
+      for (const track2 of corrected.tracks) {
+        if (!track2.name.endsWith(".quaternion")) continue;
+        opening.fromArray(track2.values, 0);
+        const inverse = opening.clone().invert();
+        for (let i = 0; i < track2.values.length; i += 4) {
+          key2.fromArray(track2.values, i);
+          const delta = inverse.clone().multiply(key2);
+          if (delta.w < 0) delta.set(-delta.x, -delta.y, -delta.z, -delta.w);
+          const angle = 2 * Math.acos(Math.min(1, delta.w)), s = Math.sqrt(Math.max(0, 1 - delta.w * delta.w));
+          if (s < 1e-9) continue;
+          const axis2 = new Vector3(delta.x / s, delta.y / s, delta.z / s);
+          opening.clone().multiply(new Quaternion().setFromAxisAngle(axis2, angle * gain)).normalize().toArray(track2.values, i);
+        }
+      }
+      return corrected;
+    });
   }
   function blobBodyClips(gltf, src, clips) {
     if (src?.uid !== "rip-cat_cs_pabumon_chr387") return clips;

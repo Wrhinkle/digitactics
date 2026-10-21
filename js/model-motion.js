@@ -18,7 +18,7 @@ export function modelClips(gltf, src) {
   const rigid = rigidPartClips(gltf, src);
   if (rigid) return rigid;
   if(src?.uid==='rip-l_garurumon_greymon_statue')return statueClips(gltf.scene);
-  const authored = generatedBipedClips(gltf,src,blobBodyClips(gltf,src,heldWeaponOrigin(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src))))).filter(c=>!src?.fallbackRoles?.includes(c.name));
+  const authored = livelyIdle(src,generatedBipedClips(gltf,src,blobBodyClips(gltf,src,heldWeaponOrigin(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src)))))).filter(c=>!src?.fallbackRoles?.includes(c.name));
   if (authored.length && src?.anim !== false) {
     // This Seadramon export labels a single unchanging pose "idle". Build a
     // gentle skeletal loop from that assembled pose, retaining other actions.
@@ -50,6 +50,33 @@ export function modelClips(gltf, src) {
     if(sword?.parent?.name==='J_hand_r')sword.position.set(0,0,0);
   }
   return anatomyFallbackClips(gltf.scene,src,fallback);
+}
+
+// These authored idles breathe at a fifth of a normal loop (largest vertex
+// movement 1.1-1.7% of body height), so boards show a frozen statue. Scale
+// each rotation key's offset from its opening key: the authored rhythm, opening
+// pose, loop endpoints, translations, scales and every other clip stay exact.
+function livelyIdle(src,clips){
+  const gain={'rip-durandamon':4,'rip-tankdramon':3}[src?.uid];
+  if(!gain)return clips;
+  return clips.map(clip=>{
+    if(clip.name!=='idle')return clip;
+    const corrected=clip.clone(),opening=new THREE.Quaternion(),key=new THREE.Quaternion();
+    for(const track of corrected.tracks){
+      if(!track.name.endsWith('.quaternion'))continue;
+      opening.fromArray(track.values,0);
+      const inverse=opening.clone().invert();
+      for(let i=0;i<track.values.length;i+=4){
+        key.fromArray(track.values,i);
+        const delta=inverse.clone().multiply(key);if(delta.w<0)delta.set(-delta.x,-delta.y,-delta.z,-delta.w);
+        const angle=2*Math.acos(Math.min(1,delta.w)),s=Math.sqrt(Math.max(0,1-delta.w*delta.w));
+        if(s<1e-9)continue;
+        const axis=new THREE.Vector3(delta.x/s,delta.y/s,delta.z/s);
+        opening.clone().multiply(new THREE.Quaternion().setFromAxisAngle(axis,angle*gain)).normalize().toArray(track.values,i);
+      }
+    }
+    return corrected;
+  });
 }
 
 // Pabumon's disconnected body roots are animated independently in two imported
