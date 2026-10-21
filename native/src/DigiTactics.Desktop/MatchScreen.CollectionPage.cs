@@ -94,26 +94,26 @@ internal sealed partial class MatchScreen
     private static readonly Dictionary<string,(float Scroll,double Time)> overlayScrollSeen=[];
     /// <summary>
     /// The 8px ::-webkit-scrollbar thumb drawn over the grid's right padding, so it never narrows the columns.
-    /// The original's reference renders show no scrollbar, so the thumb appears only while the pointer is over the
-    /// list or for a moment after it scrolls.
+    /// The original's reference renders show no scrollbar, so the thumb appears only while the pointer is near it
+    /// (the list's right 24px) or for a moment after the list scrolls.
     /// </summary>
     private static void CollectionOverlayScrollbar()
     {
         float max=ImGui.GetScrollMaxY();if(max<=0)return;
         var lo=ImGui.GetWindowPos();var extent=ImGui.GetWindowSize();float scroll=ImGui.GetScrollY();
-        if(!OverlayScrollbarVisible($"{lo.X:0},{lo.Y:0}",scroll))return;
+        if(!OverlayScrollbarVisible($"{lo.X:0},{lo.Y:0}",scroll,new(lo.X+extent.X-24,lo.Y),lo+extent))return;
         float thumb=Math.Max(24,extent.Y*extent.Y/(extent.Y+max)),top=lo.Y+(extent.Y-thumb)*scroll/max;
         var draw=ImGui.GetWindowDrawList();
         draw.PushClipRect(lo,lo+extent,false);
         draw.AddRectFilled(new(lo.X+extent.X-6,top+2),new(lo.X+extent.X-2,top+thumb-2),S.Gold5);
         draw.PopClipRect();
     }
-    private static bool OverlayScrollbarVisible(string key,float scroll)
+    private static bool OverlayScrollbarVisible(string key,float scroll,float2 gutterMin,float2 gutterMax)
     {
         double now=ImGui.GetTime();
         if(!overlayScrollSeen.TryGetValue(key,out var seen)){overlayScrollSeen[key]=(scroll,double.NegativeInfinity);seen=overlayScrollSeen[key];}
         else if(seen.Scroll!=scroll)overlayScrollSeen[key]=seen=(scroll,now);
-        return ImGui.IsWindowHovered(ImGuiHoveredFlags.ChildWindows)||now-seen.Time<.8;
+        return ImGui.IsWindowHovered(ImGuiHoveredFlags.ChildWindows)&&ImGui.IsMouseHoveringRect(gutterMin,gutterMax,false)||now-seen.Time<.8;
     }
     /// <summary>.empty: centred muted text in a dashed gold-5 frame spanning the grid.</summary>
     private static void CollectionEmpty(string text)
