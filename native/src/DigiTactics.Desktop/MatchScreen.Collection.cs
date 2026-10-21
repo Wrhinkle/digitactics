@@ -102,9 +102,15 @@ internal sealed partial class MatchScreen
             // The original client gives each page its own composition. The shell
             // already supplies navigation and the wallet; do not repeat them in
             // a second toolbar above every collection/loot surface.
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));
-            HomeCard("Collection page",new(24,ClientPageTop+12),new(size.X-48,size.Y-ClientPageTop-28),false,true);
-            ImGui.PopStyleVar();
+            // .coll/.loot/#dtStore sit directly on the client backdrop (no page frame).
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize,0);
+            // .coll/.loot padding: 12px 24px 16px; 16px sides at <=1500px wide, 8px/10px at <=820px tall.
+            // #dtStore keeps 12px 24px 16px at every size.
+            bool page=!(collectionStore&&!showEggs);
+            float padX=page&&CosmeticStyle.Medium?16:24,padTop=page&&CosmeticStyle.Short?8:12,padBottom=page&&CosmeticStyle.Short?10:16;
+            Window("Collection page",padX,ClientPageTop+padTop,size.X-padX*2,size.Y-ClientPageTop-padTop-padBottom,ImGuiWindowFlags.NoTitleBar|ImGuiWindowFlags.NoBackground|ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoScrollWithMouse);
+            ImGui.PopStyleVar(2);
+            CollectionPageBackdrop();
         }
         bool nested=CollectionModalVisible;
         if(nested)

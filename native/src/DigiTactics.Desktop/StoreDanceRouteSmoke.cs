@@ -98,7 +98,10 @@ internal sealed class StoreDanceRouteSmoke
             case Phase.Cleanup:
                 if(ImGui.GetFrameCount()<settleFrame)return;
                 Require(screen.CollectionVisible&&!screen.CollectionStoreVisible&&!screen.CollectionLootVisible,"Dance Store navigation did not reach Collection.");
-                Require(screen.StoreDancePreviewCacheCount==0&&screen.StoreDancePreviewRendererCount==0&&screen.StoreDancePreviewIds.Length==0,"Store dance textures or renderer survived navigation cleanup.");
+                // Collection dance cards share the snapshot cache (client.js fills them with the same dancing preview);
+                // only the cards the Collection itself shows may remain.
+                bool collectionDances=screen.CollectionFilterKind=="dance";
+                Require(screen.StoreDancePreviewCacheCount==screen.StoreDancePreviewIds.Length&&(collectionDances||screen.StoreDancePreviewCacheCount==0&&screen.StoreDancePreviewRendererCount==0),"Store dance textures or renderer survived navigation cleanup.");
                 Console.WriteLine($"Store dance route passed: animated pixels, one bounded shared renderer, {offscreenChecks} offscreen stock checks, purchase/cancel and cleanup after two frames.");phase=Phase.Done;break;
         }
         void Save(string name){if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"collection-route-"+name+".bmp"),size.X,size.Y);}

@@ -7,7 +7,7 @@ internal sealed partial class MatchScreen
 {
     // js/codexstyle.js structure with the navy/gold overrides from js/theme.js.
     private static readonly ImColor8 CodexNavy=new(1,10,19),CodexPanel=new(10,20,40),CodexCardTop=new(11,26,44),
-        CodexStroke=new(49,66,95),CodexBody=new(198,205,219),CodexMuted=new(165,174,184),CodexGold=new(200,170,110),
+        CodexStroke=new(49,66,95),CodexBody=new(198,205,219),CodexMuted=new(143,154,176),CodexGold=new(200,170,110),
         CodexInk=new(240,230,210),CodexAbility=new(217,184,255);
 
     private void CodexBeginWindow(string id,float2 at,float2 extent,bool scroll=false,bool compact=false,float2? padding=null)

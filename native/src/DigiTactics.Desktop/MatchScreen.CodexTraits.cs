@@ -128,11 +128,9 @@ internal sealed partial class MatchScreen
     {
         var at=ImGui.GetCursorScreenPos();ImGui.Dummy(new(size,size+2));var draw=ImGui.GetWindowDrawList();var color=CodexColor(trait.Color);
         float2 center=at+new float2(size/2,(size+2)/2);
-        for(int i=0;i<6;i++)
-        {
-            float a=(i*60-90)*MathF.PI/180,b=((i+1)*60-90)*MathF.PI/180;
-            draw.AddTriangleFilled(center,center+new float2(MathF.Cos(a)*size/2,MathF.Sin(a)*(size+2)/2),center+new float2(MathF.Cos(b)*size/2,MathF.Sin(b)*(size+2)/2),color);
-        }
+        // One convex hexagon: separate triangles left anti-aliased seams through the badge.
+        for(int i=0;i<6;i++){float a=(i*60-90)*MathF.PI/180;draw.PathLineTo(center+new float2(MathF.Cos(a)*size/2,MathF.Sin(a)*(size+2)/2));}
+        draw.PathFillConvex(color);
         string icon=trait.Icon;
         if(icon.Length==0||icon.Contains('/')||icon.Contains('.'))
         {icon=new string(trait.Name.Where(char.IsUpper).Take(2).ToArray());if(icon.Length==0)icon=trait.Name[..Math.Min(2,trait.Name.Length)];}
@@ -141,10 +139,8 @@ internal sealed partial class MatchScreen
     private void CodexPortrait(CodexLine line,int stage,float2 at,float extent)
     {
         if(!ImGui.IsRectVisible(at,at+new float2(extent,extent)))return;
-        var draw=ImGui.GetWindowDrawList();draw.AddRectFilled(at,at+new float2(extent,extent),new ImColor8(22,32,48),4);
-        int before=portraits.DrawCalls;portraits.Draw(CodexData.Id,line.Id,stage,at,extent);
-        if(portraits.DrawCalls==before){string name=line.Forms[Math.Min(stage,line.Forms.Length-1)].Name;draw.AddText(at+new float2(4,4),HomeMute,name[..Math.Min(2,name.Length)]);}
-        draw.AddRect(at,at+new float2(extent,extent),CodexColor(line.Color),4);CodexPortraits++;
+        // style.css .pt: the family-coloured radial tile behind the portrait, framed in the tier colour.
+        CodexLinePortrait(line,stage,at,extent);
     }
     private void CodexTraitLinks(CodexLine line,bool interactive)
     {

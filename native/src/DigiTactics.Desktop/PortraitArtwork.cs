@@ -31,15 +31,28 @@ internal sealed class PortraitArtwork : IDisposable
         if(!evolutionFiles.TryGetValue(form,out var file)) throw new InvalidDataException($"Missing evolution portrait for {form}.");
         DrawFile(Path.Combine(evolutionFolder,file),position,size,discovered?new ImColor8(255,255,255):new ImColor8(0,0,0));
     }
-    public bool DrawCompanion(string? key,float2 position,float size,byte alpha=255)
+    /// <summary>Draws a legend portrait; <paramref name="grayscale"/> applies CSS grayscale(amount) to the texture (locked cards).</summary>
+    public bool DrawCompanion(string? key,float2 position,float size,byte alpha=255,float grayscale=0)
     {
         if(key is null || !evolutionFiles.TryGetValue(key.Split('@')[^1],out var file))return false;
-        DrawFile(Path.Combine(evolutionFolder,file),position,size,new ImColor8(255,255,255,alpha)); return true;
+        DrawFile(Path.Combine(evolutionFolder,file),position,size,new ImColor8(255,255,255,alpha),grayscale); return true;
     }
-    private void DrawFile(string path,float2 position,float size,ImColor8 tint)
+    private void DrawFile(string path,float2 position,float size,ImColor8 tint,float grayscale=0)
     {
-        if (!cache.TryGetValue(path,out var entry)) entry=(new(PngImage.Decode(File.ReadAllBytes(path)),new(MinFilter:9729,WrapS:33071,WrapT:33071),false),frame);
-        cache[path]=(entry.Texture,frame);
+        string key=grayscale>0?path+"|gray"+grayscale.ToString(System.Globalization.CultureInfo.InvariantCulture):path;
+        if (!cache.TryGetValue(key,out var entry))
+        {
+            var image=PngImage.Decode(File.ReadAllBytes(path));
+            if(grayscale>0)
+                for(int pixel=0;pixel<image.Rgba.Length;pixel+=4)
+                {
+                    double gray=image.Rgba[pixel]*.2126+image.Rgba[pixel+1]*.7152+image.Rgba[pixel+2]*.0722;
+                    for(int c=0;c<3;c++)image.Rgba[pixel+c]=(byte)Math.Round(image.Rgba[pixel+c]+(gray-image.Rgba[pixel+c])*grayscale);
+                }
+            // Trilinear mipmaps: portraits are drawn well below their source size.
+            entry=(new(image,new(MinFilter:9987,WrapS:33071,WrapT:33071),false),frame);
+        }
+        cache[key]=(entry.Texture,frame);
         ImGui.GetWindowDrawList().AddImage(new ImTextureRef {_TexID=new((nint)entry.Texture.Id)},position,new(position.X+size,position.Y+size),new(0,0),new(1,1),tint);
         DrawCalls++;
     }
