@@ -7,7 +7,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { Fx, elemColor } from './fx.js';
 import { Moves } from './moveprims.js';
 import { itemCanvas } from './icons.js';
-import { modelClips } from './model-motion.js';
+import { modelClips, borrowedClips } from './model-motion.js';
 
 const DT = window.DT;
 const sfx = (name, opts) => DT.Sfx && DT.Sfx.play(name, opts);
@@ -80,9 +80,9 @@ function pickIdle(clips) {
 // optimize.mjs keeps one clip per role and names it after the role
 const ACTION_ROLES = ['attack', 'special', 'win'];
 
-export function prepareTemplate(gltf, src) {
+export function prepareTemplate(gltf, src, borrowed = null) {
   const scene = gltf.scene;
-  const clips = modelClips(gltf, src);
+  const clips = modelClips(gltf, src, borrowed);
   const idle = pickIdle(clips);
   // Measure in the idle pose: rest poses of game rips are often scaled or offset differently.
   if (idle) {
@@ -139,7 +139,13 @@ export function modelTemplate(key) {
   if (!lib.loading.has(file)) {
     lib.loading.add(file);
     loader.load(file,
-      (g) => lib.templates.set(file, prepareTemplate(g, DT.MODEL_SOURCES && DT.MODEL_SOURCES[key])),
+      (g) => {
+        // A clipless rip may borrow the authored clips of a rip with the same skeleton.
+        const src = DT.MODEL_SOURCES && DT.MODEL_SOURCES[key], from = src && src.clipsFrom && lib.index[src.clipsFrom];
+        if (!from) { lib.templates.set(file, prepareTemplate(g, src)); return; }
+        loader.load(from, (s) => lib.templates.set(file, prepareTemplate(g, src, borrowedClips(s, DT.MODEL_SOURCES[src.clipsFrom]))),
+          undefined, () => lib.templates.set(file, prepareTemplate(g, src)));
+      },
       undefined,
       (e) => { console.warn('Model failed to load', file, e); lib.templates.set(file, null); });
   }

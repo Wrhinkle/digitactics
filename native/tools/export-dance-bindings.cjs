@@ -5,7 +5,7 @@ async function main(){
  const {THREE,GLTFParser,GLTFMaterialsUnlitExtension}=await require('./three-loader.cjs')();
  const models=JSON.parse(fs.readFileSync(path.join(root,'native/content/models.json')));
  const companions=JSON.parse(fs.readFileSync(path.join(root,'native/content/companion-models.json')));
- const {modelClips}=await require('./load-model-motion.cjs')();
+ const {modelClips}=await require('./load-model-motion.cjs')(),borrowed=await require('./load-borrowed-clips.cjs')();
  const ctx={THREE,modelClips,DT:{Cosmetics:{register(){}}},C:{equipped:()=> 'floss'}};vm.createContext(ctx);
  const mystery=read('mystery-content.js'),source=read('dances.js'),render=read('render3d.js');
  vm.runInContext(mystery.slice(0,mystery.indexOf('export const killThemes')).replace(/export /g,'')+';const mysteryDances=dances;const TAU=Math.PI*2,DEG=Math.PI/180;',ctx);
@@ -20,7 +20,7 @@ async function main(){
   parser.extensions.KHR_materials_unlit=new GLTFMaterialsUnlitExtension();
   const gltf=await new Promise((resolve,reject)=>parser.parse(resolve,reject));
   const nodes=await Promise.all(json.nodes.map((_,i)=>parser.getDependency('node',i)));
-  const template=ctx.prepareTemplate(gltf,source.metadata.companion?null:source.metadata);
+  const template=ctx.prepareTemplate(gltf,source.metadata.companion?null:source.metadata,source.metadata.companion?null:await borrowed(source.metadata));
   const dancer=new ctx.Dancer(template.root);
   // Several authored rigs hide attachments by zeroing an ancestor scale. Three's matrix
   // decomposition yields NaN rotations for those invisible bones; retain their idle pose

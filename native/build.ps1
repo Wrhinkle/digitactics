@@ -183,6 +183,8 @@ try {
     Invoke-Checked 'node' @('tools/test-model-body-scale.cjs', 'candlemon:1')
     Invoke-Checked 'node' @('tools/test-model-clam-scale.cjs')
     Invoke-Checked 'node' @('tools/test-model-rigid-parts.cjs')
+    Invoke-Checked 'node' @('tools/test-model-auto-rigid.cjs')
+    Invoke-Checked 'node' @('tools/test-model-borrowed-clips.cjs')
     Invoke-Checked 'node' @('tools/test-model-living-motion.cjs')
     Invoke-Checked 'node' @('tools/test-model-softbody.cjs')
     Invoke-Checked 'node' @('tools/test-model-fallback-anatomy.cjs')

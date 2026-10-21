@@ -14,7 +14,53 @@ const chestName = /(?:^|_)(?:chest|mune|spine0[12])(?:_|$)/i;
 const tailName = /(?:^|_)(?:tail|sippo|shippo)(?:0?1)?(?:_|$)/i;
 const valid = b => !/end|nub|twist|helper/i.test(b.name);
 
-export function modelClips(gltf, src) {
+// Several clipless rips carry the exact skeleton of another rip with authored
+// game clips (Time Stranger and Cyber Sleuth export the same chr rig; recolors
+// share their base rig). src.clipsFrom names that source; its prepared clips,
+// with its own repairs applied, are captured here with its rest transforms.
+export function borrowedClips(gltf, src) {
+  const rest = new Map();
+  gltf.scene.traverse(o => { if (o.name && !rest.has(o.name)) rest.set(o.name, { p: o.position.clone(), q: o.quaternion.clone(), s: o.scale.clone() }); });
+  return { clips: modelClips(gltf, src), rest };
+}
+
+// Skin joints below the skeleton root take the source's local rotations
+// directly: its inverse binds agree, so the same local pose deforms this mesh
+// the same way. Roots and import containers keep this rig's own rest rotation:
+// rest * (sourceRest^-1 * value). Scales are ratios to each rig's rest, and
+// translations offsets from it scaled to the rig's units, so this rig keeps its
+// own unit scale and joint lengths.
+// Tracks for nodes this rig lacks are dropped; mesh, skin and hierarchy stay.
+function retargetClips(borrowed, scene) {
+  const own = new Map(), joints = new Set();
+  scene.traverse(o => {
+    if (o.name && !own.has(o.name)) own.set(o.name, o);
+    if (o.isSkinnedMesh) for (const bone of o.skeleton.bones) joints.add(bone);
+  });
+  // Skeleton roots (GRP_joint) often carry the import's unit/axis transform.
+  for (const bone of [...joints].filter(bone => !joints.has(bone.parent))) joints.delete(bone);
+  let ownLength = 0, fromLength = 0;
+  for (const [name, node] of own) { const from = borrowed.rest.get(name); if (from && joints.has(node)) { ownLength += node.position.length(); fromLength += from.p.length(); } }
+  const ratio = ownLength > 0 && fromLength > 0 ? ownLength / fromLength : 1;
+  return borrowed.clips.map(clip => new THREE.AnimationClip(clip.name, clip.duration, clip.tracks.flatMap(track => {
+    const dot = track.name.lastIndexOf('.'), node = own.get(track.name.slice(0, dot)), from = borrowed.rest.get(track.name.slice(0, dot));
+    if (!node || !from) return [];
+    const out = track.clone(), values = out.values, path = track.name.slice(dot + 1), joint = joints.has(node);
+    if (path === 'quaternion' && !joint) {
+      const inverse = from.q.clone().invert(), q = Q();
+      for (let i = 0; i < values.length; i += 4) q.fromArray(values, i).premultiply(inverse).premultiply(node.quaternion).normalize().toArray(values, i);
+    } else if (path === 'position') {
+      for (let i = 0; i < values.length; i += 3) for (let k = 0; k < 3; k++)
+        values[i + k] = node.position.getComponent(k) + (values[i + k] - from.p.getComponent(k)) * ratio;
+    } else if (path === 'scale') {
+      for (let i = 0; i < values.length; i += 3) for (let k = 0; k < 3; k++) if (from.s.getComponent(k)) values[i + k] *= node.scale.getComponent(k) / from.s.getComponent(k);
+    }
+    return [out];
+  })));
+}
+
+export function modelClips(gltf, src, borrowed = null) {
+  if (borrowed && !gltf.animations.length) return retargetClips(borrowed, gltf.scene);
   const rigid = rigidPartClips(gltf, src);
   if (rigid) return rigid;
   if(src?.uid==='rip-l_garurumon_greymon_statue')return statueClips(gltf.scene);

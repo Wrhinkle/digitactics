@@ -43113,7 +43113,47 @@ void main() {
   var chestName = /(?:^|_)(?:chest|mune|spine0[12])(?:_|$)/i;
   var tailName = /(?:^|_)(?:tail|sippo|shippo)(?:0?1)?(?:_|$)/i;
   var valid = (b) => !/end|nub|twist|helper/i.test(b.name);
-  function modelClips(gltf, src) {
+  function borrowedClips(gltf, src) {
+    const rest = /* @__PURE__ */ new Map();
+    gltf.scene.traverse((o) => {
+      if (o.name && !rest.has(o.name)) rest.set(o.name, { p: o.position.clone(), q: o.quaternion.clone(), s: o.scale.clone() });
+    });
+    return { clips: modelClips(gltf, src), rest };
+  }
+  function retargetClips(borrowed, scene2) {
+    const own2 = /* @__PURE__ */ new Map(), joints = /* @__PURE__ */ new Set();
+    scene2.traverse((o) => {
+      if (o.name && !own2.has(o.name)) own2.set(o.name, o);
+      if (o.isSkinnedMesh) for (const bone of o.skeleton.bones) joints.add(bone);
+    });
+    for (const bone of [...joints].filter((bone2) => !joints.has(bone2.parent))) joints.delete(bone);
+    let ownLength = 0, fromLength = 0;
+    for (const [name2, node] of own2) {
+      const from = borrowed.rest.get(name2);
+      if (from && joints.has(node)) {
+        ownLength += node.position.length();
+        fromLength += from.p.length();
+      }
+    }
+    const ratio = ownLength > 0 && fromLength > 0 ? ownLength / fromLength : 1;
+    return borrowed.clips.map((clip2) => new AnimationClip(clip2.name, clip2.duration, clip2.tracks.flatMap((track2) => {
+      const dot = track2.name.lastIndexOf("."), node = own2.get(track2.name.slice(0, dot)), from = borrowed.rest.get(track2.name.slice(0, dot));
+      if (!node || !from) return [];
+      const out = track2.clone(), values = out.values, path = track2.name.slice(dot + 1), joint = joints.has(node);
+      if (path === "quaternion" && !joint) {
+        const inverse = from.q.clone().invert(), q = Q();
+        for (let i = 0; i < values.length; i += 4) q.fromArray(values, i).premultiply(inverse).premultiply(node.quaternion).normalize().toArray(values, i);
+      } else if (path === "position") {
+        for (let i = 0; i < values.length; i += 3) for (let k = 0; k < 3; k++)
+          values[i + k] = node.position.getComponent(k) + (values[i + k] - from.p.getComponent(k)) * ratio;
+      } else if (path === "scale") {
+        for (let i = 0; i < values.length; i += 3) for (let k = 0; k < 3; k++) if (from.s.getComponent(k)) values[i + k] *= node.scale.getComponent(k) / from.s.getComponent(k);
+      }
+      return [out];
+    })));
+  }
+  function modelClips(gltf, src, borrowed = null) {
+    if (borrowed && !gltf.animations.length) return retargetClips(borrowed, gltf.scene);
     const rigid = rigidPartClips(gltf, src);
     if (rigid) return rigid;
     if (src?.uid === "rip-l_garurumon_greymon_statue") return statueClips(gltf.scene);
@@ -43729,9 +43769,9 @@ void main() {
     return clips[0] || null;
   }
   var ACTION_ROLES = ["attack", "special", "win"];
-  function prepareTemplate(gltf, src) {
+  function prepareTemplate(gltf, src, borrowed = null) {
     const scene2 = gltf.scene;
-    const clips = modelClips(gltf, src);
+    const clips = modelClips(gltf, src, borrowed);
     const idle = pickIdle(clips);
     if (idle) {
       const m = new AnimationMixer(scene2);
@@ -43789,7 +43829,19 @@ void main() {
       lib.loading.add(file);
       loader.load(
         file,
-        (g2) => lib.templates.set(file, prepareTemplate(g2, DT7.MODEL_SOURCES && DT7.MODEL_SOURCES[key2])),
+        (g2) => {
+          const src = DT7.MODEL_SOURCES && DT7.MODEL_SOURCES[key2], from = src && src.clipsFrom && lib.index[src.clipsFrom];
+          if (!from) {
+            lib.templates.set(file, prepareTemplate(g2, src));
+            return;
+          }
+          loader.load(
+            from,
+            (s) => lib.templates.set(file, prepareTemplate(g2, src, borrowedClips(s, DT7.MODEL_SOURCES[src.clipsFrom]))),
+            void 0,
+            () => lib.templates.set(file, prepareTemplate(g2, src))
+          );
+        },
         void 0,
         (e) => {
           console.warn("Model failed to load", file, e);

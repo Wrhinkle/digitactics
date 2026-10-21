@@ -2804,6 +2804,7 @@
     "ac:BlackAgumon": {
       "form": "BlackAgumon",
       "uid": "rip-ts_blackagumon",
+      "clipsFrom": "catalog:CS_Agumon:chr050",
       "rip": true,
       "name": "BlackAgumon (Digimon Story: Time Stranger)",
       "author": "The Models Resource",
@@ -3947,6 +3948,7 @@
     "drg:BlackAgumon": {
       "form": "BlackAgumon",
       "uid": "rip-ts_blackagumon",
+      "clipsFrom": "catalog:CS_Agumon:chr050",
       "rip": true,
       "name": "BlackAgumon (Digimon Story: Time Stranger)",
       "author": "The Models Resource",
@@ -4208,6 +4210,7 @@
     "drg:BlackGabumon": {
       "form": "BlackGabumon",
       "uid": "rip-ts_blackgabumon",
+      "clipsFrom": "catalog:CS_Gabumon:chr151",
       "rip": true,
       "name": "BlackGabumon (Digimon Story: Time Stranger)",
       "author": "The Models Resource",
@@ -5315,6 +5318,7 @@
     "giz:RapidmonArmor": {
       "form": "Rapidmon (Armor)",
       "uid": "rip-cs_rapidmon_armor",
+      "clipsFrom": "catalog:CS_Rapidmon:chr722",
       "rip": true,
       "name": "Rapidmon (Armor) (Digimon Story Cyber Sleuth: Complete Edition)",
       "author": "The Models Resource",
@@ -6363,6 +6367,7 @@
   "catalog:CS_Lopmon:chr750": {
     "form": "Lopmon",
     "uid": "rip-cat_cs_lopmon_chr750",
+    "clipsFrom": "terriermon:0",
     "rip": true,
     "name": "Lopmon (Digimon Story Cyber Sleuth: Complete Edition)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324612/",
@@ -7287,6 +7292,7 @@
   "catalog:TS_Botamon:chr317": {
     "form": "Botamon",
     "uid": "rip-cat_ts_botamon_chr317",
+    "clipsFrom": "catalog:CS_Botamon:chr317",
     "rip": true,
     "name": "Botamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598275/",
@@ -7297,6 +7303,7 @@
   "catalog:TS_Bubbmon:chr387": {
     "form": "Pabumon",
     "uid": "rip-cat_ts_bubbmon_chr387",
+    "clipsFrom": "catalog:CS_Pabumon:chr387",
     "rip": true,
     "name": "Pabumon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598273/",
@@ -7327,6 +7334,7 @@
   "catalog:TS_Kuramon:chr629": {
     "form": "Kuramon",
     "uid": "rip-cat_ts_kuramon_chr629",
+    "clipsFrom": "drg:Void Larva",
     "rip": true,
     "name": "Kuramon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598270/",
@@ -7337,6 +7345,7 @@
   "catalog:TS_Poyomon:chr320": {
     "form": "Poyomon",
     "uid": "rip-cat_ts_poyomon_chr320",
+    "clipsFrom": "catalog:CS_Poyomon:chr320",
     "rip": true,
     "name": "Poyomon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598276/",
@@ -7347,6 +7356,7 @@
   "catalog:TS_Punimon:chr437": {
     "form": "Punimon",
     "uid": "rip-cat_ts_punimon_chr437",
+    "clipsFrom": "catalog:CS_Punimon:chr437",
     "rip": true,
     "name": "Punimon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/598274/",
@@ -7377,6 +7387,7 @@
   "catalog:TS_Koromon:chr322": {
     "form": "Koromon",
     "uid": "rip-cat_ts_koromon_chr322",
+    "clipsFrom": "extra:Koromon",
     "rip": true,
     "name": "Koromon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601661/",
@@ -7387,6 +7398,7 @@
   "catalog:TS_Mochimon:chr388": {
     "form": "Motimon",
     "uid": "rip-cat_ts_mochimon_chr388",
+    "clipsFrom": "catalog:CS_Motimon:chr388",
     "rip": true,
     "name": "Motimon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601682/",
@@ -7397,6 +7409,7 @@
   "catalog:TS_Nyaromon:chr515": {
     "form": "Nyaromon",
     "uid": "rip-cat_ts_nyaromon_chr515",
+    "clipsFrom": "catalog:CS_Nyaromon:chr515",
     "rip": true,
     "name": "Nyaromon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601677/",
@@ -7407,6 +7420,7 @@
   "catalog:TS_Pagumon:chr567": {
     "form": "Pagumon",
     "uid": "rip-cat_ts_pagumon_chr567",
+    "clipsFrom": "catalog:CS_Pagumon:chr567",
     "rip": true,
     "name": "Pagumon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601679/",
@@ -7427,6 +7441,7 @@
   "catalog:TS_Pyocomon:chr510": {
     "form": "Yokomon",
     "uid": "rip-cat_ts_pyocomon_chr510",
+    "clipsFrom": "catalog:CS_Yokomon:chr510",
     "rip": true,
     "name": "Yokomon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601680/",
@@ -7437,6 +7452,7 @@
   "catalog:TS_Tanemon:chr512": {
     "form": "Tanemon",
     "uid": "rip-cat_ts_tanemon_chr512",
+    "clipsFrom": "ac:Tanemon",
     "rip": true,
     "name": "Tanemon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601664/",
@@ -7447,6 +7463,7 @@
   "catalog:TS_Tokomon:chr325": {
     "form": "Tokomon",
     "uid": "rip-cat_ts_tokomon_chr325",
+    "clipsFrom": "catalog:CS_Tokomon:chr325",
     "rip": true,
     "name": "Tokomon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601675/",
@@ -7457,6 +7474,7 @@
   "catalog:TS_Tsumemon:chr631": {
     "form": "Tsumemon",
     "uid": "rip-cat_ts_tsumemon_chr631",
+    "clipsFrom": "catalog:CS_Tsumemon:chr631",
     "rip": true,
     "name": "Tsumemon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601670/",
@@ -7467,6 +7485,7 @@
   "catalog:TS_Tunomon:chr438": {
     "form": "Tsunomon",
     "uid": "rip-cat_ts_tunomon_chr438",
+    "clipsFrom": "catalog:CS_Tsunomon:chr438",
     "rip": true,
     "name": "Tsunomon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/601668/",
@@ -7487,6 +7506,7 @@
   "catalog:TS_Armadimon:chr707": {
     "form": "Armadimon",
     "uid": "rip-cat_ts_armadimon_chr707",
+    "clipsFrom": "catalog:CS_Armadillomon:chr707",
     "rip": true,
     "name": "Armadimon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608284/",
@@ -7507,6 +7527,7 @@
   "catalog:TS_Dorumon:chr112": {
     "form": "Dorumon",
     "uid": "rip-cat_ts_dorumon_chr112",
+    "clipsFrom": "catalog:CS_Dorumon:chr112",
     "rip": true,
     "name": "Dorumon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/605583/",
@@ -7517,6 +7538,7 @@
   "catalog:TS_Dracomon:chr208": {
     "form": "Dracomon",
     "uid": "rip-cat_ts_dracomon_chr208",
+    "clipsFrom": "catalog:CS_Dracomon:chr208",
     "rip": true,
     "name": "Dracomon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/605576/",
@@ -7527,6 +7549,7 @@
   "catalog:TS_Dracumon:chr457": {
     "form": "Dracumon",
     "uid": "rip-cat_ts_dracumon_chr457",
+    "clipsFrom": "dracmon:0",
     "rip": true,
     "name": "Dracumon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608077/",
@@ -7537,6 +7560,7 @@
   "catalog:TS_Elecmon_Elecmon_Aegiomon:chr564": {
     "form": "Elecmon",
     "uid": "rip-cat_ts_elecmon_elecmon_aegiomon_chr564",
+    "clipsFrom": "elecmon:0",
     "rip": true,
     "name": "Elecmon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604898/",
@@ -7547,6 +7571,7 @@
   "catalog:TS_Falcomon:chr705": {
     "form": "Falcomon",
     "uid": "rip-cat_ts_falcomon_chr705",
+    "clipsFrom": "catalog:CS_Falcomon:chr705",
     "rip": true,
     "name": "Falcomon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603627/",
@@ -7557,6 +7582,7 @@
   "catalog:TS_Funbeemon:chr042": {
     "form": "FanBeemon",
     "uid": "rip-cat_ts_funbeemon_chr042",
+    "clipsFrom": "fanbeemon:0",
     "rip": true,
     "name": "FanBeemon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608107/",
@@ -7577,6 +7603,7 @@
   "catalog:TS_Gazimon:chr569": {
     "form": "Gazimon",
     "uid": "rip-cat_ts_gazimon_chr569",
+    "clipsFrom": "ac:Gazimon",
     "rip": true,
     "name": "Gazimon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/607069/",
@@ -7607,6 +7634,7 @@
   "catalog:TS_Gomamon:chr343": {
     "form": "Gomamon",
     "uid": "rip-cat_ts_gomamon_chr343",
+    "clipsFrom": "catalog:CS_Gomamon:chr343",
     "rip": true,
     "name": "Gomamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/602600/",
@@ -7627,6 +7655,7 @@
   "catalog:TS_Guilmon:chr090": {
     "form": "Guilmon",
     "uid": "rip-cat_ts_guilmon_chr090",
+    "clipsFrom": "guilmon:0",
     "rip": true,
     "name": "Guilmon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/607376/",
@@ -7637,6 +7666,7 @@
   "catalog:TS_Hawkmon:chr706": {
     "form": "Hawkmon",
     "uid": "rip-cat_ts_hawkmon_chr706",
+    "clipsFrom": "hawkmon:0",
     "rip": true,
     "name": "Hawkmon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608447/",
@@ -7647,6 +7677,7 @@
   "catalog:TS_Huckmon:chr687": {
     "form": "Huckmon",
     "uid": "rip-cat_ts_huckmon_chr687",
+    "clipsFrom": "hackmon:0",
     "rip": true,
     "name": "Huckmon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606184/",
@@ -7677,6 +7708,7 @@
   "catalog:TS_Kudamon:chr053": {
     "form": "Kudamon",
     "uid": "rip-cat_ts_kudamon_chr053",
+    "clipsFrom": "catalog:CS_Kudamon:chr053",
     "rip": true,
     "name": "Kudamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/602596/",
@@ -7687,6 +7719,7 @@
   "catalog:TS_Lalamon:chr056": {
     "form": "Lalamon",
     "uid": "rip-cat_ts_lalamon_chr056",
+    "clipsFrom": "catalog:CS_Lalamon:chr056",
     "rip": true,
     "name": "Lalamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606514/",
@@ -7707,6 +7740,7 @@
   "catalog:TS_Lunamon:chr002": {
     "form": "Lunamon",
     "uid": "rip-cat_ts_lunamon_chr002",
+    "clipsFrom": "lunamon:0",
     "rip": true,
     "name": "Lunamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606525/",
@@ -7717,6 +7751,7 @@
   "catalog:TS_Monodramon:chr458": {
     "form": "Monodramon",
     "uid": "rip-cat_ts_monodramon_chr458",
+    "clipsFrom": "monodramon:0",
     "rip": true,
     "name": "Monodramon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603905/",
@@ -7727,6 +7762,7 @@
   "catalog:TS_Mushmon:chr607": {
     "form": "Mushmon",
     "uid": "rip-cat_ts_mushmon_chr607",
+    "clipsFrom": "ac:Mushroomon",
     "rip": true,
     "name": "Mushmon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608230/",
@@ -7737,6 +7773,7 @@
   "catalog:TS_Otamamon:chr582": {
     "form": "Otamamon",
     "uid": "rip-cat_ts_otamamon_chr582",
+    "clipsFrom": "otamamon:0",
     "rip": true,
     "name": "Otamamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606868/",
@@ -7747,6 +7784,7 @@
   "catalog:TS_Palmon:chr348": {
     "form": "Palmon",
     "uid": "rip-cat_ts_palmon_chr348",
+    "clipsFrom": "catalog:CS_Palmon:chr348",
     "rip": true,
     "name": "Palmon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606444/",
@@ -7757,6 +7795,7 @@
   "catalog:TS_Patamon:chr096": {
     "form": "Patamon",
     "uid": "rip-cat_ts_patamon_chr096",
+    "clipsFrom": "patamon:0",
     "rip": true,
     "name": "Patamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606167/",
@@ -7767,6 +7806,7 @@
   "catalog:TS_PicoDevimon:chr097": {
     "form": "DemiDevimon",
     "uid": "rip-cat_ts_picodevimon_chr097",
+    "clipsFrom": "catalog:CS_DemiDevimon:chr097",
     "rip": true,
     "name": "DemiDevimon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608094/",
@@ -7777,6 +7817,7 @@
   "catalog:TS_Piyomon:chr307": {
     "form": "Biyomon",
     "uid": "rip-cat_ts_piyomon_chr307",
+    "clipsFrom": "catalog:CS_Biyomon:chr307",
     "rip": true,
     "name": "Biyomon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603472/",
@@ -7787,6 +7828,7 @@
   "catalog:TS_Plotmon:chr361": {
     "form": "Salamon",
     "uid": "rip-cat_ts_plotmon_chr361",
+    "clipsFrom": "catalog:CS_Salamon:chr361",
     "rip": true,
     "name": "Salamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603644/",
@@ -7797,6 +7839,7 @@
   "catalog:TS_Renamon:chr391": {
     "form": "Renamon",
     "uid": "rip-cat_ts_renamon_chr391",
+    "clipsFrom": "catalog:CS_Renamon:chr391",
     "rip": true,
     "name": "Renamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/606695/",
@@ -7807,6 +7850,7 @@
   "catalog:TS_Ryudamon:chr190": {
     "form": "Ryudamon",
     "uid": "rip-cat_ts_ryudamon_chr190",
+    "clipsFrom": "catalog:CS_Ryudamon:chr190",
     "rip": true,
     "name": "Ryudamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/604001/",
@@ -7817,6 +7861,7 @@
   "catalog:TS_Shakomon:chr709": {
     "form": "Syakomon",
     "uid": "rip-cat_ts_shakomon_chr709",
+    "clipsFrom": "ac:Syakomon",
     "rip": true,
     "name": "Syakomon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/607520/",
@@ -7827,6 +7872,7 @@
   "catalog:TS_Shoutmon:chr682": {
     "form": "Shoutmon",
     "uid": "rip-cat_ts_shoutmon_chr682",
+    "clipsFrom": "catalog:CS_Shoutmon:chr682",
     "rip": true,
     "name": "Shoutmon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/605346/",
@@ -7857,6 +7903,7 @@
   "catalog:TS_Tentomon:chr303": {
     "form": "Tentomon",
     "uid": "rip-cat_ts_tentomon_chr303",
+    "clipsFrom": "drg:Tentomon",
     "rip": true,
     "name": "Tentomon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603374/",
@@ -7887,6 +7934,7 @@
   "catalog:TS_ToyAgumon:chr708": {
     "form": "ToyAgumon",
     "uid": "rip-cat_ts_toyagumon_chr708",
+    "clipsFrom": "commandramon:0",
     "rip": true,
     "name": "ToyAgumon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/603392/",
@@ -7907,6 +7955,7 @@
   "catalog:TS_V_mon:chr114": {
     "form": "Veemon",
     "uid": "rip-cat_ts_v_mon_chr114",
+    "clipsFrom": "ac:Veemon",
     "rip": true,
     "name": "Veemon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608297/",
@@ -7917,6 +7966,7 @@
   "catalog:TS_Wormmon:chr392": {
     "form": "Wormmon",
     "uid": "rip-cat_ts_wormmon_chr392",
+    "clipsFrom": "catalog:CS_Wormmon:chr392",
     "rip": true,
     "name": "Wormmon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/608453/",
@@ -7927,6 +7977,7 @@
   "catalog:TS_Zubamon:chr697": {
     "form": "Zubamon",
     "uid": "rip-cat_ts_zubamon_chr697",
+    "clipsFrom": "catalog:CS_Zubamon:chr697",
     "rip": true,
     "name": "Zubamon (Digimon Story Time Stranger)",
     "url": "https://models.spriters-resource.com/pc_computer/digimonstorytimestranger/asset/602660/",

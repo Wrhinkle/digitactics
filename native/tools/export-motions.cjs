@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const root=path.resolve(__dirname,'../..'), content=path.join(root,'native/artifacts/model-content');
 async function main(){
   const {THREE,GLTFParser,GLTFMaterialsUnlitExtension}=await require('./three-loader.cjs')();
-  const {modelClips}=await require('./load-model-motion.cjs')();
+  const {modelClips}=await require('./load-model-motion.cjs')(),borrowed=await require('./load-borrowed-clips.cjs')();
   const manifest=path.join(root,'native/content/models.json'), catalog=JSON.parse(fs.readFileSync(manifest));
   fs.mkdirSync(path.join(content,'motions'),{recursive:true});
   const fixtures=[],actionFixtures=[]; let generated=0,reparented=0;
@@ -24,7 +24,7 @@ async function main(){
     const nodes=await Promise.all(json.nodes.map((_,i)=>parser.getDependency('node',i)));
     const ids=new Map(nodes.map((n,i)=>[n,i]));
     const before=nodes.map(n=>n.parent);
-    const clips=source.metadata.companion?gltf.animations:modelClips(gltf,source.metadata);
+    const clips=source.metadata.companion?gltf.animations:modelClips(gltf,source.metadata,await borrowed(source.metadata));
     const transforms=nodes.map((n,i)=>{
       let parent=n.parent;while(parent&&!ids.has(parent))parent=parent.parent;
       if(n.parent!==before[i])reparented++;

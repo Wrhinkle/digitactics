@@ -5,7 +5,7 @@ async function main(){
  const source=fs.readFileSync(path.join(root,'js/legends.js'),'utf8');
  const catalog=JSON.parse(fs.readFileSync(path.join(root,'native/content/companion-models.json')));
  const models=JSON.parse(fs.readFileSync(path.join(root,'native/content/models.json')));
- const {modelClips}=await require('./load-model-motion.cjs')();
+ const {modelClips}=await require('./load-model-motion.cjs')(),borrowed=await require('./load-borrowed-clips.cjs')();
  const locomotionSource=fs.readFileSync(path.join(root,'js/companion-locomotion.js'),'utf8').replace("from 'three'",`from '${require('url').pathToFileURL(path.join(root,'vendor/three/build/three.module.js')).href}'`);
  const {CompanionLocomotion}=await import('data:text/javascript;base64,'+Buffer.from(locomotionSource).toString('base64'));
  const policy=source.slice(source.indexOf('const clipOf ='),source.indexOf('// ---------- view ----------'));
@@ -25,7 +25,7 @@ async function main(){
   parser.extensions.KHR_materials_unlit=new GLTFMaterialsUnlitExtension();
   const gltf=await new Promise((resolve,reject)=>parser.parse(resolve,reject));
   const nodes=await Promise.all(json.nodes.map((_,i)=>parser.getDependency('node',i)));
-  const clips=model.metadata.companion?gltf.animations:modelClips(gltf,model.metadata);
+  const clips=model.metadata.companion?gltf.animations:modelClips(gltf,model.metadata,await borrowed(model.metadata));
   const idle=clips.find(x=>x.name==='idle')||clips.find(x=>/idle|wait|stand/i.test(x.name))||clips.find(x=>/_bn01/i.test(x.name))||clips[0];
   // Template normalization starts from the authored idle pose.
   if(idle){const mixer=new THREE.AnimationMixer(gltf.scene);mixer.clipAction(idle).play();mixer.update(0);}
