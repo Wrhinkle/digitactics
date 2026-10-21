@@ -36,10 +36,8 @@ internal static class ClientCss
     internal static float Width(Face face, float px, string text, float tracking = 0)
     {
         if (text.Length == 0) return 0;
-        ImGui.PushFont(Font(face), Size(face, px));
-        float width = ImGui.CalcTextSize(text).X;
-        ImGui.PopFont();
-        return width + tracking * text.Length;
+        // ImFont.CalcTextSizeA is unrounded (ImGui.CalcTextSize rounds up to whole pixels).
+        return Font(face).CalcTextSizeA(Size(face, px), float.MaxValue, 0, text).X + tracking * text.Length;
     }
 
     /// <summary>Draws one line whose CSS box starts at <paramref name="at"/>; lineHeight 0 means "normal".</summary>
@@ -53,19 +51,16 @@ internal static class ClientCss
             draw.AddText(font, size, at, color, text);
             return Width(face, px, text);
         }
-        // CalcTextSize rounds each measurement up to a whole pixel, so place every glyph by the width of
-        // the whole prefix before it (one rounding) rather than summing rounded single-glyph widths.
-        ImGui.PushFont(font, size);
+        // Place every glyph by the exact width of the text before it, plus the spacing so far.
         float advance = 0;
         for (int i = 0, count = 0; i < text.Length; count++)
         {
             int length = char.IsHighSurrogate(text[i]) && i + 1 < text.Length ? 2 : 1;
-            float prefix = i == 0 ? 0 : ImGui.CalcTextSize(text[..i]).X;
+            float prefix = i == 0 ? 0 : font.CalcTextSizeA(size, float.MaxValue, 0, text[..i]).X;
             draw.AddText(font, size, new(at.X + prefix + count * tracking, at.Y), color, text.Substring(i, length));
             i += length;
-            if (i >= text.Length) advance = ImGui.CalcTextSize(text).X + (count + 1) * tracking;
+            if (i >= text.Length) advance = font.CalcTextSizeA(size, float.MaxValue, 0, text).X + (count + 1) * tracking;
         }
-        ImGui.PopFont();
         return advance;
     }
 
@@ -136,7 +131,7 @@ internal static class ClientCss
     internal static void Glow(ImDrawListPtr draw, float2 min, float2 max, ImColor8 color, float blur, float rounding = 0, bool filled = false)
     {
         // A filled shadow also darkens its own box (an offset drop shadow shows below the element).
-        if (filled) { var c = color.AsByte4(); draw.AddRectFilled(min, max, new ImColor8(c.X, c.Y, c.Z, (byte)(c.W * .7f)), rounding); }
+        if (filled) { var c = color.AsByte4(); draw.AddRectFilled(min, max, new ImColor8(c.X, c.Y, c.Z, (byte)(c.W * .5f)), rounding); }
         // A CSS blur radius is twice the Gaussian sigma; outside a straight edge the shadow falls off as
         // 0.5 * erfc(d / (sigma * sqrt 2)). Paint that profile as adjacent 1px rings.
         var rgba = color.AsByte4();float sigma = Math.Max(.5f, blur / 2);int rings = (int)Math.Ceiling(blur * 1.2f);
@@ -145,7 +140,8 @@ internal static class ClientCss
             float d = i + .5f, intensity = .5f * Erfc(d / (sigma * 1.41421356f));
             byte alpha = (byte)Math.Clamp(Math.Round(rgba.W * intensity), 0, 255);
             if (alpha == 0) continue;
-            draw.AddRect(min - new float2(d), max + new float2(d), new ImColor8(rgba.X, rgba.Y, rgba.Z, alpha), rounding > 0 ? rounding + d : 0, ImDrawFlags.None, 1);
+            // Ring i covers the pixels i..i+1 outside the edge (AddRect strokes 0.5px inside its corners).
+            draw.AddRect(min - new float2(i + 1), max + new float2(i + 1), new ImColor8(rgba.X, rgba.Y, rgba.Z, alpha), rounding > 0 ? rounding + d : 0, ImDrawFlags.None, 1);
         }
     }
     private static float Erfc(float x)
@@ -165,7 +161,7 @@ internal static class ClientCss
             float d = i + .5f, intensity = .5f * Erfc(d / (sigma * 1.41421356f));
             byte alpha = (byte)Math.Clamp(Math.Round(rgba.W * intensity), 0, 255);
             if (alpha == 0) continue;
-            draw.AddRect(min + new float2(d), max - new float2(d), new ImColor8(rgba.X, rgba.Y, rgba.Z, alpha), 0, ImDrawFlags.None, 1);
+            draw.AddRect(min + new float2(i), max - new float2(i), new ImColor8(rgba.X, rgba.Y, rgba.Z, alpha), 0, ImDrawFlags.None, 1);
         }
     }
     /// <summary>
@@ -196,17 +192,18 @@ internal static class ClientCss
     {
         for (float x = 0; x < extent.X; x += dash + gap)
         {
-            draw.AddLine(at + new float2(x, .5f), at + new float2(Math.Min(x + dash, extent.X), .5f), color);
-            draw.AddLine(at + new float2(x, extent.Y - .5f), at + new float2(Math.Min(x + dash, extent.X), extent.Y - .5f), color);
+            draw.AddLine(at + new float2(x, 0), at + new float2(Math.Min(x + dash, extent.X), 0), color);
+            draw.AddLine(at + new float2(x, extent.Y - 1), at + new float2(Math.Min(x + dash, extent.X), extent.Y - 1), color);
         }
         for (float y = 0; y < extent.Y; y += dash + gap)
         {
-            draw.AddLine(at + new float2(.5f, y), at + new float2(.5f, Math.Min(y + dash, extent.Y)), color);
-            draw.AddLine(at + new float2(extent.X - .5f, y), at + new float2(extent.X - .5f, Math.Min(y + dash, extent.Y)), color);
+            draw.AddLine(at + new float2(0, y), at + new float2(0, Math.Min(y + dash, extent.Y)), color);
+            draw.AddLine(at + new float2(extent.X - 1, y), at + new float2(extent.X - 1, Math.Min(y + dash, extent.Y)), color);
         }
     }
 
     /// <summary>1px border drawn inside the box edge, as a CSS border-box border.</summary>
     internal static void Border(ImDrawListPtr draw, float2 min, float2 max, ImColor8 color, float width = 1, float rounding = 0)
-        => draw.AddRect(min + new float2(width * .5f), max - new float2(width * .5f), color, rounding, ImDrawFlags.None, width);
+        // ImDrawList.AddRect already strokes 0.5px inside its corners, which is pixel-exact for 1px.
+        => draw.AddRect(min + new float2((width - 1) * .5f), max - new float2((width - 1) * .5f), color, rounding, ImDrawFlags.None, width);
 }

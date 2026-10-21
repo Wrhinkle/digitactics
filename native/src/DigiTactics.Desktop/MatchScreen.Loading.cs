@@ -117,7 +117,7 @@ internal sealed partial class MatchScreen
             else ClientCss.TextCentered(draw, ClientCss.Face.DisplayBold, 28, portraitAt + new float2(0, portraitSize * .5f - 18), portraitSize, ClientCss.Gold1, LoadingInitials(player.Name), 0, 36.4f);
             var nameAt = new float2(at.X + 1, max.Y - 1 - nameHeight);
             ClientCss.Gradient(draw, nameAt, max - new float2(1), new ImColor8(1, 10, 19, 153), NativeUiTheme.Navy0);
-            draw.AddLine(nameAt + new float2(0, .5f), new(max.X - 1, nameAt.Y + .5f), ClientCss.Gold5);
+            draw.AddLine(nameAt, new(max.X - 1, nameAt.Y), ClientCss.Gold5);
             string name = ClientCss.Ellipsis(ClientCss.Face.DisplayBold, 14, player.Name.ToUpperInvariant(), cardWidth - 14, .56f);
             ClientCss.TextCentered(draw, ClientCss.Face.DisplayBold, 14, nameAt + new float2(0, 9), cardWidth - 2, ClientCss.Gold1, name, .56f, 18);
             ClientCss.TextCentered(draw, ClientCss.Face.Body, 11, nameAt + new float2(0, 27), cardWidth - 2, ClientCss.LcMute, local ? "You" : player.IsHuman ? "Tamer" : "AI Tamer", 0, 14.85f);

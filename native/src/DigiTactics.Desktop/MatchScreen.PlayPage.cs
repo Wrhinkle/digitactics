@@ -71,7 +71,7 @@ internal sealed partial class MatchScreen
         bool pressed=CssHit(key,at,new(width,30),out bool hover);var draw=ImGui.GetWindowDrawList();var max=at+new float2(width,30);
         if(on)Glow(draw,at,max,new ImColor8(240,210,140,64),14,2);
         draw.AddRectFilled(at,max,new ImColor8(1,10,19,179),2);
-        Border(draw,at,max,on?Gold1:hover?Gold2:Gold4,1,2);if(on)draw.AddRect(at-new float2(.5f),max+new float2(.5f),Gold1,2);
+        Border(draw,at,max,on?Gold1:hover?Gold2:Gold4,1,2);if(on)draw.AddRect(at-new float2(1),max+new float2(1),Gold1,2);
         Text(draw,Face.DisplayBold,12.5f,at+new float2(15,0),on||hover?Gold1:Text2,text,.75f,30);
         return pressed;
     }
@@ -171,7 +171,10 @@ internal sealed partial class MatchScreen
             if(hover)Glow(draw,at,max,new ImColor8(200,170,110,46),10,2);
             Gradient(draw,at+new float2(1),max-new float2(1),hover?new ImColor8(38,45,54):new ImColor8(30,35,40),hover?new ImColor8(26,33,43):new ImColor8(20,26,34));
             Border(draw,at,max,hover?Gold2:Gold4,1,2);
-            float glyphWidth=Width(Face.Body,24,glyph);Text(draw,Face.Body,24,at+new float2((arrowWidth-glyphWidth)/2,5),hover?Gold1:LcText,glyph,0,32.4f);
+            // The original arrows fall back to a system face: a long thin shaft with a small head.
+            var color=hover?Gold1:LcText;var center=at+new float2(arrowWidth/2,arrowHeight/2);float direction=glyph=="←"?-1:1;
+            draw.AddLine(center-new float2(8*direction,0),center+new float2(7*direction,0),color,2);
+            draw.AddLine(center+new float2(8*direction,0),center+new float2(4.5f*direction,-3.5f),color,1.6f);draw.AddLine(center+new float2(8*direction,0),center+new float2(4.5f*direction,3.5f),color,1.6f);
             return pressed;
         }
         if(Arrow("homeModePrevious","←",controlsLeft))homeModeScrollRequest=(selected+ids.Length-1)%ids.Length;
@@ -215,7 +218,7 @@ internal sealed partial class MatchScreen
             bool chosen=CssHit(key,cardAt,new(cardWidth,cardHeight),out bool hover);
             HomeModeCardCount++;
             if(cardMax.X<rowAt.X-4||cardAt.X>rowMax.X+4){if(chosen&&!homeModeDragged)SelectHomeHeroSet(id);continue;}
-            if(on)draw.AddRect(cardAt-new float2(1),cardMax+new float2(1),Gold1,7,ImDrawFlags.None,2);
+            if(on)draw.AddRect(cardAt-new float2(1.5f),cardMax+new float2(1.5f),Gold1,7,ImDrawFlags.None,2);
             else if(hover)Glow(draw,cardAt,cardMax,new ImColor8(200,164,98,48),18,6);
             draw.AddRectFilled(cardAt,cardMax,new ImColor8(7,19,32),6);
             var artAt=cardAt+new float2(1,1);float artWidth=Math.Min(cardWidth-2,artHeight*2/3),drawnHeight=artWidth*1.5f;
@@ -245,7 +248,7 @@ internal sealed partial class MatchScreen
 
         // .ps-foot: queue cards and the hextech Confirm.
         footTop=optionsTop+optionsHeight+12;var footAt=origin+new float2(pad,footTop);
-        draw.AddLine(footAt+new float2(0,.5f),footAt+new float2(inner,.5f),Gold5);
+        draw.AddLine(footAt,footAt+new float2(inner,0),Gold5);
         var modeAt=footAt+new float2(0,13);float modeX=0;
         for(int i=0;i<2;i++)
         {
@@ -327,7 +330,7 @@ internal sealed partial class MatchScreen
         draw.AddRectFilledMultiColor(new(at.X+1,max.Y-cut),new(max.X-cut,max.Y-1),Alpha(Mix(middle,bottom,(max.Y-cut-split)/(max.Y-1-split)),alpha),Alpha(Mix(middle,bottom,(max.Y-cut-split)/(max.Y-1-split)),alpha),Alpha(bottom,alpha),Alpha(bottom,alpha));
         draw.AddTriangleFilled(new(max.X-cut-.6f,max.Y-cut),new(max.X-1,max.Y-cut),new(max.X-cut-.6f,max.Y-1),Alpha(Mix(middle,bottom,(max.Y-cut-split)/(max.Y-1-split)),alpha));
         // inset 0 1px rgba(255,255,255,.55), inset 0 -3px rgba(120,50,0,.25)
-        draw.AddLine(new(at.X+cut,at.Y+1.5f),new(max.X-1,at.Y+1.5f),Alpha(new ImColor8(255,255,255,140),alpha));
+        draw.AddLine(new(at.X+cut,at.Y+1),new(max.X-1,at.Y+1),Alpha(new ImColor8(255,255,255,140),alpha));
         draw.AddRectFilled(new(at.X+1,max.Y-4),new(max.X-cut,max.Y-1),Alpha(new ImColor8(120,50,0,64),alpha));
         draw.PopClipRect();
         if(hover)Glow(draw,at,max,new ImColor8(255,138,61,90),24);
@@ -384,7 +387,7 @@ internal sealed partial class MatchScreen
         int helpColumns=viewWidth<=1700?3:4;
         string[] help=["Buy Digimon from the shop and drag them onto your half of the board. Your level is how many Digimon you can field.","\u0001Three copies digivolve.\u0001 3 Agumon become a Greymon, 3 Greymon become a MetalGreymon.","Items sit on the pedestals left of the board. Drag one onto a Digimon. Two components make a completed item.","Your Little Legend walks where you right-click. Walk it into loot orbs to open them."];
         float helpWidth=(contentWidth-8*(helpColumns-1))/helpColumns;
-        float helpHeight=showHelp?help.Take(helpColumns).Max(h=>ParagraphHeight(Face.Body,11,helpWidth-22,15.95f,h.Replace("\u0001","")))+18:0;
+        float helpHeight=showHelp?help.Take(helpColumns).Max(h=>HelpParagraphHeight(helpWidth-22,h))+18:0;
         float slotsTop=headHeight+14,slotsHeight=Math.Clamp(bodyHeight-padY*2-headHeight-14-(showHelp?14+helpHeight:0),220,470);
         float gap=viewWidth<=1500?6:8,lead=viewWidth<=1500?1.5f:1.6f;
         for(int seat=0;seat<8;seat++)
@@ -415,12 +418,13 @@ internal sealed partial class MatchScreen
 
         // .play-foot: key reminders and Start.
         var footAt=new float2(body.X,body.Y+bodyHeight);var footMax=new float2(max.X-1,max.Y-1);
-        draw.AddRectFilled(footAt,footMax,new ImColor8(1,10,19,230));draw.AddLine(footAt+new float2(0,.5f),new(footMax.X,footAt.Y+.5f),Gold4);
+        draw.AddRectFilled(footAt,footMax,new ImColor8(1,10,19,230));draw.AddLine(footAt,new(footMax.X,footAt.Y),Gold4);
         float keysY=footAt.Y+1+footPadY+(startHeight-17.8f)/2,x=footAt.X+footPadX;
         foreach(var (key,action) in new[]{("D","reroll"),("E","sell"),("Space","fight"),("T","emotes"),("C","codex")})
         {
             x+=6;Keycap(draw,new(x,keysY),key,out float capWidth);x+=capWidth+6;
-            // .play-keys: gap 6 between items plus each kbd
+            // .play-keys: gap 6 between items plus each kbd's 6px left margin.
+            x+=Text(draw,Face.Body,12.5f,new(x,keysY+.5f),Text3,action,0,16.875f)+6;
         }
         float startWidth=Width(Face.DisplayBold,startPx,"START",startPx*.14f)+startPadX*2+2;
         bool inRoom=networkRoom is not null||steam?.Room is not null;ImGui.BeginDisabled(inRoom);
@@ -431,20 +435,33 @@ internal sealed partial class MatchScreen
     // .howto li: muted text with an optional bold lead sentence (marked with \u0001).
     private static void HelpParagraph(ImDrawListPtr draw,float2 at,float width,string text)
     {
-        string plain=text.Replace("\u0001","");int boldEnd=text.StartsWith('\u0001')?text.IndexOf('\u0001',1)-1:0;
-        var lines=Wrap(Face.Body,11,plain,width);int offset=0;
-        for(int line=0;line<lines.Count;line++)
+        // Words before the second marker are bold (b in the original li); wrap with each word's own face.
+        string[] parts=text.Split('\u0001');
+        var words=new List<(string Word,bool Bold)>();
+        for(int part=0;part<parts.Length;part++)foreach(string word in parts[part].Split(' ',StringSplitOptions.RemoveEmptyEntries))words.Add((word,part==1));
+        float space=Width(Face.Body,11,"a a")-Width(Face.Body,11,"aa");
+        float WordWidth((string Word,bool Bold) w)=>Width(w.Bold?Face.BodyBold:Face.Body,11,w.Word);
+        float x=0,y=0;
+        foreach(var word in words)
         {
-            string value=lines[line];float x=0;var lineAt=at+new float2(0,line*15.95f);
-            int boldCount=Math.Clamp(boldEnd-offset,0,value.Length);
-            if(boldCount>0)x+=Text(draw,Face.BodyBold,11,lineAt,Gold1,value[..boldCount],0,15.95f);
-            string rest=value[boldCount..];
-            if(rest.StartsWith(' ')){x+=Width(Face.Body,11,"a a")-Width(Face.Body,11,"aa");rest=rest.TrimStart();}
-            Text(draw,Face.Body,11,lineAt+new float2(x,0),Text2,rest,0,15.95f);
-            offset+=value.Length+1;
+            float wordWidth=WordWidth(word);
+            if(x>0&&x+space+wordWidth>width){x=0;y+=15.95f;}
+            else if(x>0)x+=space;
+            Text(draw,word.Bold?Face.BodyBold:Face.Body,11,at+new float2(x,y),word.Bold?Gold1:Text2,word.Word,0,15.95f);
+            x+=wordWidth;
         }
     }
-    private static uint PartyHash(string text){uint h=2166136261;foreach(char c in text)h=unchecked((h^c)*16777619);return h;}
+    private static float HelpParagraphHeight(float width,string text)
+    {
+        string[] parts=text.Split('\u0001');float space=Width(Face.Body,11,"a a")-Width(Face.Body,11,"aa"),x=0;int lines=1;
+        for(int part=0;part<parts.Length;part++)foreach(string word in parts[part].Split(' ',StringSplitOptions.RemoveEmptyEntries))
+        {
+            float wordWidth=Width(part==1?Face.BodyBold:Face.Body,11,word);
+            if(x>0&&x+space+wordWidth>width){x=0;lines++;}else if(x>0)x+=space;
+            x+=wordWidth;
+        }
+        return lines*15.95f;
+    }    private static uint PartyHash(string text){uint h=2166136261;foreach(char c in text)h=unchecked((h^c)*16777619);return h;}
     private void DrawSoloPartySeat(int seat,float2 at,float2 extent)
     {
         bool yours=seat==0;string name=yours?profile?.Progress.Name is {Length:>0} own?own:"You":LobbyAiNames[seat-1];var draw=ImGui.GetWindowDrawList();var max=at+extent;
@@ -480,7 +497,7 @@ internal sealed partial class MatchScreen
             for(int ring=8;ring>=1;ring--)draw.AddEllipseFilled(glow,new float2(extent.X*.36f*ring/8,8*ring/8f),new ImColor8(63,214,255,(byte)(89f/8*(1-(ring-1)/8f)*1.2f)));
             portraits.DrawCompanion(key,portraitAt,portrait,230);
         }
-        var plateAt=at+new float2(1,1+stageHeight);var plateMax=max-new float2(1);draw.AddRectFilled(plateAt,plateMax,new ImColor8(1,10,19,217));draw.AddLine(plateAt+new float2(0,.5f),new(plateMax.X,plateAt.Y+.5f),Gold5);
+        var plateAt=at+new float2(1,1+stageHeight);var plateMax=max-new float2(1);draw.AddRectFilled(plateAt,plateMax,new ImColor8(1,10,19,217));draw.AddLine(plateAt,new(plateMax.X,plateAt.Y),Gold5);
         string label=Ellipsis(Face.DisplayBold,12.5f,name.ToUpperInvariant(),extent.X-10,.5f);
         TextCentered(draw,Face.DisplayBold,12.5f,plateAt+new float2(0,7),extent.X-2,yours?new ImColor8(255,255,255):Gold1,label,.5f,16);
         string sub=ownForm is not null?ownForm+" · Lv "+ownLevel:duos&&seat==1?"AI Partner":"AI Tamer";
@@ -496,7 +513,7 @@ internal sealed partial class MatchScreen
         {
             GradientX(draw,at,max,new ImColor8(11,58,74,179),new ImColor8(1,10,19,204));
             draw.PushClipRect(at,max,true);InsetGlow(draw,at,max,new ImColor8(63,214,255,31),22);draw.PopClipRect();
-            draw.AddRect(at-new float2(.5f),max+new float2(.5f),Gold2,2);Border(draw,at,max,Gold1,1,2);
+            draw.AddRect(at-new float2(1),max+new float2(1),Gold2,2);Border(draw,at,max,Gold1,1,2);
         }
         else{draw.AddRectFilled(at,max,new ImColor8(1,10,19,191),2);Border(draw,at,max,hover?Gold3:Gold5,1,2);}
         var artCenter=at+new float2(1+8+23,extent.Y/2);

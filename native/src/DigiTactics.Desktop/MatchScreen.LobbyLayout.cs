@@ -117,7 +117,7 @@ internal sealed partial class MatchScreen
         if(hover){top=new ImColor8(255,227,132);middle=new ImColor8(255,209,80);bottom=new ImColor8(255,149,66);}
         ClientCss.Gradient(draw,at+new float2(1),new(max.X-1,split),ClientCss.Alpha(top,alpha),ClientCss.Alpha(middle,alpha));
         ClientCss.Gradient(draw,new(at.X+1,split),max-new float2(1),ClientCss.Alpha(middle,alpha),ClientCss.Alpha(bottom,alpha));
-        draw.AddLine(at+new float2(1,1.5f),new(max.X-1,at.Y+1.5f),ClientCss.Alpha(new ImColor8(255,255,255,89),alpha));
+        draw.AddLine(at+new float2(1,1),new(max.X-1,at.Y+1),ClientCss.Alpha(new ImColor8(255,255,255,89),alpha));
         ClientCss.Border(draw,at,max,ClientCss.Alpha(new ImColor8(240,210,140),alpha),1,2);
         ClientCss.Text(draw,ClientCss.Face.BodyBold,14,at+new float2(17,9),ClientCss.Alpha(new ImColor8(20,13,5),alpha),label,0,16.8f);
         return pressed;
@@ -134,7 +134,7 @@ internal sealed partial class MatchScreen
     private static void LobbyFieldFrame(float2 at,float width,bool focused)
     {
         var draw=ImGui.GetWindowDrawList();var max=at+new float2(width,36.9f);
-        if(focused)draw.AddRect(at-new float2(2),max+new float2(2),new ImColor8(200,170,110,46),0,ImDrawFlags.None,2);
+        if(focused)draw.AddRect(at-new float2(1.5f),max+new float2(1.5f),new ImColor8(200,170,110,46),0,ImDrawFlags.None,2);
         draw.AddRectFilled(at,max,new ImColor8(1,10,19,217));ClientCss.Border(draw,at,max,focused?ClientCss.Gold2:ClientCss.Gold5);
     }
     private static void LobbyChevron(float2 at,float width)

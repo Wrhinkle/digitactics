@@ -353,8 +353,7 @@ internal sealed partial class MatchScreen
         float filled=Math.Clamp(value,0,1)*(width-2);
         if(filled>0)
         {
-            // .mission.done turns the fill green.
-            ClientCss.Glow(draw,at+new float2(1,1),at+new float2(1+filled,7),done?new ImColor8(79,224,143,128):new ImColor8(63,214,255,128),10);
+            // .mission.done turns the fill green; the fill's glow is clipped by the track (overflow: hidden).
             ClientCss.GradientX(draw,at+new float2(1,1),at+new float2(1+filled,7),done?new ImColor8(47,184,108):new ImColor8(10,111,143),done?new ImColor8(79,224,143):new ImColor8(63,214,255));
         }
         ClientCss.Border(draw,at,at+new float2(width,8),ClientCss.Gold5);
@@ -413,7 +412,7 @@ internal sealed partial class MatchScreen
             {
                 // .dts-aline.tot: rule, then Total and the Bits count in white.
                 ResultAdvance(4);var at=ResultCursor;float width=ResultWidth;
-                draw.AddLine(at+new float2(0,.5f),at+new float2(width,.5f),new ImColor8(34,48,73));
+                draw.AddLine(at,at+new float2(width,0),new ImColor8(34,48,73));
                 string total=PostgameDisplayedBits.Value.ToString();float totalWidth=ClientCss.Width(ClientCss.Face.BodyBold,16,total);
                 ClientCss.Text(draw,ClientCss.Face.BodyBold,16,at+new float2(0,7),ClientCss.Text1,"Total",0,21.6f);
                 BitIcon(draw,at+new float2(width-totalWidth-4-5.5f,7+11));
@@ -486,7 +485,7 @@ internal sealed partial class MatchScreen
             {
                 // .daily: rule, orange hexagon with "+", label and the bonus.
                 ResultAdvance(2);var at=ResultCursor;float width=ResultWidth;
-                draw.AddLine(at+new float2(0,.5f),at+new float2(width,.5f),ClientCss.Gold5);
+                draw.AddLine(at,at+new float2(width,0),ClientCss.Gold5);
                 var hex=at+new float2(13,7+13);
                 var hexTop=daily.Claimed?new ImColor8(111,240,168):new ImColor8(255,194,74);var hexBottom=daily.Claimed?new ImColor8(47,184,108):new ImColor8(255,138,61);
                 draw.AddQuadFilled(hex+new float2(0,-13),hex+new float2(13,-6.5f),hex+new float2(13,0),hex+new float2(-13,0),hexTop);
