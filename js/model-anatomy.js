@@ -51,9 +51,9 @@ const anatomy = {
   'rip-ts_terriermon_assistant': {body:'J_spine01',chest:'J_spine02',head:'J_neck',headRange:.6,jaw:'J_mouth',bodyLean:.3,armRange:.25,
     elbowAttack:.7,elbowWin:.7,family:'biped',arms:pair('J_arm_l','J_arm_r'),elbows:pair('J_elbow_l','J_elbow_r'),
     chains:['l','r'].map(side=>chain([1,2,3,4].map(i=>`J_ear0${i}_${side}`),.12,.6,'x'))},
-  'rip-cat_rd_beelzemon_main': {body:'chest',head:'head',family:'biped',arms:pair('arm_L','arm_R'),elbows:pair('forearm_L','forearm_R'),elbowAxis:'y',elbowSigns:[1,-1]},
-  'rip-cat_rd_wargrowlmon_main': {body:'chest',head:'head',family:'biped',arms:pair('arm_L','arm_R'),elbows:pair('forearm_L','forearm_R'),elbowAxis:'y',elbowSigns:[1,-1]},
 };
+// Every project-generated biped rig (tools/convert/rig-static.mjs) shares these bone names.
+const generatedBiped={body:'chest',head:'head',family:'biped',elbowAxis:'y',elbowSigns:[1,-1]};
 
 const pulse = (u,start,end) => u<=start||u>=end?0:Math.sin(Math.PI*(u-start)/(end-start))**2;
 function gesture(role,u){
@@ -68,8 +68,8 @@ function gesture(role,u){
 // Each channel is relative to that prepared pose, with identical loop endpoints.
 // Whole-body roots are explicit: name matching alone selected an unweighted leaf
 // on Kuramon and missed Koromon's separately weighted upper-body branch.
-export function anatomyFallbackClips(scene,source,original){
-  const map=anatomy[source?.uid];if(!map)return original;
+export function anatomyFallbackClips(scene,source,original,map=anatomy[source?.uid]){
+  if(!map)return original;
   scene.updateMatrixWorld(true);
   const unguarded=new Map((map.neutral||[]).map(([name])=>[name,scene.getObjectByName(name)?.quaternion.clone()]));
   // Kotemon's imported neutral is an A-pose with straight elbows. Its long
@@ -154,16 +154,36 @@ export function anatomyFallbackClips(scene,source,original){
   });
 }
 
-// These two OBJ conversions contain project-generated clips, not original game
-// animation. The old victory canceled the lowered shoulders into a literal T,
-// and its X-axis forearm tracks twisted along the bone instead of bending it.
-// Keep the original root/tail/leg tracks and replace only reviewed upper-body
-// channels with a lowered, bent-elbow neutral and the shared action builder.
+// Project-generated biped rigs (static OBJ/mesh conversions) carry generated
+// clips, not original game animation. Their idle barely moves the T/A-pose mesh,
+// the old victory canceled the lowered shoulders into a literal T, and the
+// X-axis forearm tracks twisted along the bone instead of bending it. Keep the
+// original root/tail/leg tracks and replace only the upper-body channels with a
+// lowered, bent-elbow neutral and the shared action builder. Upper arms are
+// lowered to the reviewed RD neutral (0.95 rad below horizontal: the generated
+// 0.65 rest plus 0.3). Arms already that low, or set low on the body (Gesomon's
+// tentacles at hip height), keep their direction so limbs never reach the floor.
 export function generatedBipedClips(gltf,source,clips){
-  if(!['rip-cat_rd_beelzemon_main','rip-cat_rd_wargrowlmon_main'].includes(source?.uid))return clips;
-  if(gltf.scene.getObjectByName('DT_Rig')?.userData.digitacticsRig!==1)return clips;
+  const rig=gltf.scene.getObjectByName('DT_Rig');
+  if(rig?.userData.digitacticsRig!==1||rig.userData.body!=='biped')return clips;
+  if(!['chest','head','arm_L','arm_R','forearm_L','forearm_R'].every(name=>gltf.scene.getObjectByName(name)?.isBone))return clips;
   const idle=clips.find(c=>c.name==='idle');if(!idle)return clips;
+  const rest=[];gltf.scene.traverse(node=>rest.push([node,node.position.clone(),node.quaternion.clone(),node.scale.clone()]));
   const mixer=new THREE.AnimationMixer(gltf.scene);mixer.clipAction(idle).play();mixer.update(0);gltf.scene.updateMatrixWorld(true);
+  // Catalog presets put arm_L on -X, the legacy static presets on +X. Order the
+  // arms by side so lowering, elbow bends and the action builder agree.
+  const sides=[['arm_L','forearm_L'],['arm_R','forearm_R']].map(([arm,elbow])=>{
+    const shoulder=gltf.scene.getObjectByName(arm).getWorldPosition(new THREE.Vector3());
+    return {arm,elbow,shoulder,direction:gltf.scene.getObjectByName(elbow).getWorldPosition(new THREE.Vector3()).sub(shoulder).normalize()};
+  }).sort((a,b)=>a.direction.x-b.direction.x);
+  // Arms already reaching forward (Ballistamon's short claws) are posed, and
+  // their generated weights tear under the shared shoulder/elbow gestures.
+  if(sides.some(side=>Math.abs(side.direction.z)>.5)){
+    mixer.stopAllAction();mixer.uncacheRoot(gltf.scene);
+    for(const [node,position,quaternion,scale] of rest){node.position.copy(position);node.quaternion.copy(quaternion);node.scale.copy(scale);}
+    gltf.scene.updateMatrixWorld(true);return clips;
+  }
+  const box=new THREE.Box3().setFromObject(gltf.scene),height=Math.max(1e-9,box.max.y-box.min.y);
   function turn(name,direction,angle){
     const bone=gltf.scene.getObjectByName(name);if(!bone)return;
     const parent=bone.parent.getWorldQuaternion(new THREE.Quaternion()).invert();
@@ -171,9 +191,13 @@ export function generatedBipedClips(gltf,source,clips){
     bone.quaternion.copy(parent.multiply(new THREE.Quaternion().setFromAxisAngle(axis[direction],angle)).multiply(world));
     gltf.scene.updateMatrixWorld(true);
   }
-  turn('arm_L','z',.3);turn('arm_R','z',-.3);
-  turn('forearm_L','y',.55);turn('forearm_R','y',-.55);
-  const result=anatomyFallbackClips(gltf.scene,source,clips).map(clip=>{
+  for(const [index,{arm,shoulder,direction}] of sides.entries()){
+    const droop=Math.min(1.2,.95+Math.asin(Math.max(-1,Math.min(1,direction.y))));
+    if(droop>0&&shoulder.y>box.min.y+height*.4)turn(arm,'z',(index===0?1:-1)*droop);
+  }
+  turn(sides[0].elbow,'y',.55);turn(sides[1].elbow,'y',-.55);
+  const map={...generatedBiped,arms:pair(sides[0].arm,sides[1].arm),elbows:pair(sides[0].elbow,sides[1].elbow)};
+  const result=anatomyFallbackClips(gltf.scene,source,clips,map).map(clip=>{
     const original=clips.find(c=>c.name===clip.name),bindings=new Set(clip.tracks.map(t=>t.name));
     return new THREE.AnimationClip(clip.name,clip.duration,[...original.tracks.filter(t=>!bindings.has(t.name)).map(t=>t.clone()),...clip.tracks]);
   });

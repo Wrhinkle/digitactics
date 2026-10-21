@@ -443,7 +443,12 @@ export function fallbackClips(scene, adjustRest = true) {
       b.quaternion.copy(parent.clone().invert().multiply(delta).multiply(b.getWorldQuaternion(Q())));
       scene.updateMatrixWorld(true);
     }
-    arms.push({ bone: b, side: origin.x >= box.getCenter(V()).x ? 1 : -1 });
+    // Victory raises each limb to about 55 degrees above horizontal in the side
+    // plane. A fixed 1.6 rad lift left lowered arms near horizontal: a T-pose.
+    const side = origin.x >= box.getCenter(V()).x ? 1 : -1;
+    const current = child.getWorldPosition(V()).sub(b.getWorldPosition(V()));
+    const elevation = Math.atan2(current.y, Math.abs(current.x));
+    arms.push({ bone: b, side, raise: Number.isFinite(elevation) ? Math.min(2.4, Math.max(.25, .96 - elevation)) : 1.6 });
   }
   const selected = [...bones].filter(b => valid(b) && (arms.some(a => a.bone === b) || isHead(b) || isChest(b) || tailName.test(b.name)));
   if (!selected.length) return [];
@@ -475,7 +480,7 @@ export function fallbackClips(scene, adjustRest = true) {
           if (r.chest) turn(Y, (role === 'special' ? .15 : .1) * Math.sin(u * Math.PI * 2) * pulse);
           if (r.tail) turn(Y, .25 * wave * pulse);
         } else {
-          if (r.arm) { turn(Z, r.arm.side * 1.6 * pulse); turn(X, .2 * wave); }
+          if (r.arm) { turn(Z, r.arm.side * r.arm.raise * pulse); turn(X, .2 * wave); }
           if (r.head) turn(Y, .12 * wave);
           if (r.chest) turn(Z, .055 * wave);
           if (r.tail) turn(Y, .22 * wave);

@@ -2,7 +2,15 @@
 // anatomical directions come from rig landmarks, never replacement clip math.
 const fs=require('node:fs'),path=require('node:path'),zlib=require('node:zlib'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'../..'),roles=['idle','attack','special','win'];
-const cases=[['RD_Beelzemon','rip-cat_rd_beelzemon_main'],['RD_WarGrowlmon','rip-cat_rd_wargrowlmon_main']].map(([name,uid])=>({key:`catalog:${name}:main`,uid}));
+// The first two are the reviewed RD repairs with frozen raw-source baselines. The
+// rest are every other project-generated biped (catalog and legacy static rig
+// presets); they share the class repair and are bounded by their source weights.
+const cases=[['catalog:RD_Beelzemon:main','rip-cat_rd_beelzemon_main',true],['catalog:RD_WarGrowlmon:main','rip-cat_rd_wargrowlmon_main',true],
+  ['catalog:RD_VictoryGreymon:main','rip-cat_rd_victorygreymon_main'],['catalog:RD_Wargreymon_X:main','rip-cat_rd_wargreymon_x_main'],['catalog:Panjyamon:main','rip-cat_panjyamon_main'],
+  ['catalog:MarineDevimon:main','rip-cat_marinedevimon_main'],['catalog:Mistymon:main','rip-cat_mistymon_main'],['catalog:NeoDevimon:main','rip-cat_neodevimon_main'],['catalog:Gesomon:main','rip-cat_gesomon_main'],
+  ['ac:Commandramon','rip-commandramon'],['ac:Darkdramon','rip-m_darkdramon'],['ac:Sealsdramon','rip-sealsdramon'],['ac:DexDorugoramon','rip-m_dexdorugoramon'],
+  ['beetlemon:0','rip-beetlemon'],['shoutmon:1','rip-shoutmon_x3']]
+  .map(([key,uid,reviewed])=>({key,uid,reviewed:!!reviewed}));
 const failures=[];let checks=0;
 const check=(ok,label,detail)=>{checks++;if(!ok)failures.push({label,detail});};
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex'),bytes=a=>Buffer.from(a.buffer,a.byteOffset,a.byteLength);
@@ -12,7 +20,7 @@ function immutable(gltf){
   return sha(JSON.stringify({meshes,clips:gltf.animations.map(clipHash)}));
 }
 async function main(){
-  const catalog=JSON.parse(fs.readFileSync(path.join(root,'native/content/models.json'))),presets=JSON.parse(fs.readFileSync(path.join(root,'tools/convert/catalog-rigs.json')));
+  const catalog=JSON.parse(fs.readFileSync(path.join(root,'native/content/models.json'))),presets={...JSON.parse(fs.readFileSync(path.join(root,'tools/convert/static-rigs.json'))),...JSON.parse(fs.readFileSync(path.join(root,'tools/convert/catalog-rigs.json')))};
   const {THREE,GLTFParser,GLTFMaterialsUnlitExtension}=await require('./three-loader.cjs')(),{modelClips}=await require('./load-model-motion.cjs')();
   const load=async key=>{
     const entry=catalog.sources[key],packed=zlib.gunzipSync(fs.readFileSync(path.join(root,'native/artifacts/model-content',catalog.assets[entry.asset].file)));
@@ -63,9 +71,9 @@ async function main(){
     const before=immutable(gltf),rest=[];gltf.scene.traverse(o=>rest.push({o,p:o.position.clone(),s:o.scale.clone(),parent:o.parent}));
     const raw=await load(key),rawRig=prepare(raw.gltf,raw.gltf.animations,spec),rawIdle=rawRig.sample(raw.gltf.animations.find(c=>c.name==='idle'),0),rawWin=rawRig.sample(raw.gltf.animations.find(c=>c.name==='win'),raw.gltf.animations.find(c=>c.name==='win').duration/2);
     const baseline={neutralArms:rawIdle.arms,winMidpointArms:rawWin.arms,midpointBilateralT:rawWin.arms.every(tArm),neutralShoulderZ:rawIdle.arms.map(a=>a.shoulderEuler[2]),midpointShoulderZ:rawWin.arms.map(a=>a.shoulderEuler[2])};
-    check(baseline.midpointBilateralT,key+': frozen raw source reproduces the horizontal T silhouette',baseline);
+    if(config.reviewed)check(baseline.midpointBilateralT,key+': frozen raw source reproduces the horizontal T silhouette',baseline);
     // Packed quaternion quantization shifts .65 by about2e-5 radians.
-    check(baseline.neutralShoulderZ.every(z=>Math.abs(Math.abs(z)-.65)<1e-4)&&baseline.midpointShoulderZ.every(z=>Math.abs(z)<1e-5),key+': raw win cancels neutral shoulder lowering',baseline);
+    if(config.reviewed)check(baseline.neutralShoulderZ.every(z=>Math.abs(Math.abs(z)-.65)<1e-4)&&baseline.midpointShoulderZ.every(z=>Math.abs(z)<1e-5),key+': raw win cancels neutral shoulder lowering',baseline);
     const clips=modelClips(gltf,entry.metadata);
     check(immutable(gltf)===before,key+': source mesh, weights, inverse binds and authored clips immutable');
     check(rest.every(r=>r.o.position.equals(r.p)&&r.o.scale.equals(r.s)&&r.o.parent===r.parent),key+': imported bone offsets/scales/hierarchy unchanged');
@@ -88,11 +96,16 @@ async function main(){
       retainedTrackEvidence.push({role:clip.name,protectedTracks:retained.map(t=>t.name),changed});
     }
     const rig=prepare(gltf,clips,spec),idle=clips.find(c=>c.name==='idle'),neutral=rig.sample(idle,0),size=new THREE.Box3().setFromPoints(neutral.points).getSize(new THREE.Vector3()),span=Math.max(size.x,size.y,size.z),diameter=size.length();
-    const edges=[],seen=new Set();for(const ids of rig.indices)for(let i=0;i<3;i++){const a=Math.min(ids[i],ids[(i+1)%3]),b=Math.max(ids[i],ids[(i+1)%3]),id=a+':'+b;if(seen.has(id))continue;seen.add(id);edges.push({a,b,length:neutral.points[a].distanceTo(neutral.points[b])});}
-    const triangles=rig.indices.map(ids=>({ids,area:area(neutral.points,ids)})).filter(t=>t.area>span*span*1e-8),roleResults=[],posesByRole=new Map();
-    check(neutral.arms.every(a=>a.upper[1]<-.25),key+': neutral upper arms are visibly lowered',neutral.arms);
+    const roleResults=[],posesByRole=new Map();
+    if(config.reviewed)check(neutral.arms.every(a=>a.upper[1]<-.25),key+': neutral upper arms are visibly lowered',neutral.arms);
+    else check(!neutral.arms.every(tArm),key+': neutral arms leave the straight horizontal T',neutral.arms);
     check(neutral.arms.every(a=>a.elbowFlex>=.15),key+': neutral elbows have a readable bend',neutral.arms);
-    for(const role of roles){
+    // Measure one clip set on its own prepared rig, against that rig's neutral.
+    function measure(rig,clips,neutral,posesByRole){
+      const results=new Map(),edges=[],seen=new Set();
+      for(const ids of rig.indices)for(let i=0;i<3;i++){const a=Math.min(ids[i],ids[(i+1)%3]),b=Math.max(ids[i],ids[(i+1)%3]),id=a+':'+b;if(seen.has(id))continue;seen.add(id);edges.push({a,b,length:neutral.points[a].distanceTo(neutral.points[b])});}
+      const triangles=rig.indices.map(ids=>({ids,area:area(neutral.points,ids)})).filter(t=>t.area>span*span*1e-8);
+      for(const role of roles){
       const clip=clips.find(c=>c.name===role),keys=[...new Set([0,clip.duration,...clip.tracks.flatMap(t=>Array.from(t.times)),...Array.from({length:65},(_,i)=>clip.duration*i/64)])].filter(t=>t<=clip.duration).sort((a,b)=>a-b);
       const times=[...new Set([...keys,...keys.slice(1).map((t,i)=>(t+keys[i])/2)])].sort((a,b)=>a-b),opening=rig.sample(clip,0),areaMax=new Float64Array(triangles.length),stats={role,samples:times.length,finite:true,offsetsAndScalesExact:true,peakRmsSpan:0,armRmsSpan:0,torsoSwing:0,upperArmSwing:[0,0],elbowFlexMax:[0,0],bilateralTFrames:0,tFractions:[],rootTravelSpan:0,maxBoundsRatio:0,ordinaryEdgeMaxStretch:1,edgeGrowthSpan:0,triangleAreaP99:0,startToIdleSpan:0,startArmsToIdleSpan:0,endpointSpan:0};
       for(let i=0;i<opening.points.length;i++)stats.startToIdleSpan=Math.max(stats.startToIdleSpan,opening.points[i].distanceTo(neutral.points[i])/span);
@@ -108,15 +121,33 @@ async function main(){
         if(time===clip.duration)for(let i=0;i<pose.points.length;i++)stats.endpointSpan=Math.max(stats.endpointSpan,pose.points[i].distanceTo(opening.points[i])/span);
       }
       areaMax.sort();stats.triangleAreaP99=areaMax[Math.floor((areaMax.length-1)*.99)];
-      posesByRole.set(role,[.25,.5,.75].map(u=>rig.sample(clip,clip.duration*u).points));
+      posesByRole?.set(role,[.25,.5,.75].map(u=>rig.sample(clip,clip.duration*u).points));
+      results.set(role,stats);
+      }
+      return results;
+    }
+    // Class cases compare against the frozen raw generated clips on the same mesh:
+    // the repair may not add skin stretch beyond the source weighting's own.
+    let rawStats=null;
+    if(!config.reviewed){
+      const source=await load(key),sourceClips=source.gltf.animations,sourceRig=prepare(source.gltf,sourceClips,spec);
+      rawStats=measure(sourceRig,sourceClips,sourceRig.sample(sourceClips.find(c=>c.name==='idle'),0));
+    }
+    const measured=measure(rig,clips,neutral,posesByRole);
+    for(const role of roles){
+      // Skin bounds compare with the worst deformation of any generated source role.
+      const stats=measured.get(role),source=rawStats&&{...rawStats.get(role),...Object.fromEntries(['ordinaryEdgeMaxStretch','edgeGrowthSpan','triangleAreaP99'].map(name=>[name,Math.max(...[...rawStats.values()].map(s=>s[name]))]))};
       check(stats.finite,key+': finite skinned geometry',role);check(stats.offsetsAndScalesExact,key+': bone offsets/scales remain unchanged during motion',role);
       check(stats.rootTravelSpan<=.15&&stats.maxBoundsRatio<=1.5,key+': bounded root motion and overall silhouette',stats);
-      check(stats.ordinaryEdgeMaxStretch<=2&&stats.edgeGrowthSpan<=.15&&stats.triangleAreaP99<=3,key+': connected skin remains bounded without spikes',stats);
+      if(!source)check(stats.ordinaryEdgeMaxStretch<=2&&stats.edgeGrowthSpan<=.15&&stats.triangleAreaP99<=3,key+': connected skin remains bounded without spikes',stats);
+      else check(stats.ordinaryEdgeMaxStretch<=Math.max(2,source.ordinaryEdgeMaxStretch*1.1)&&stats.edgeGrowthSpan<=Math.max(.15,source.edgeGrowthSpan*1.1)&&stats.triangleAreaP99<=Math.max(3,source.triangleAreaP99*1.1),key+': connected skin stays within its source weighting bounds',{stats,source});
       // WarGrowlmon's existing tail loop starts at a different phase per role;
       // require a shared arm stance without broadening this repair to its tail.
       check(stats.startArmsToIdleSpan<1e-4&&stats.endpointSpan<1e-4,key+': common neutral arm pose and closed endpoints',stats);
-      check(stats.peakRmsSpan>(role==='idle'?.001:.015),key+': readable effective skin movement',stats);
-      if(role!=='idle'){
+      check(stats.peakRmsSpan>(role==='idle'?.001:source?.01:.015),key+': readable effective skin movement',stats);
+      if(source)check(stats.peakRmsSpan>=(role==='idle'?source.peakRmsSpan:Math.min(.04,source.peakRmsSpan*.5)),key+': movement not weaker than the generated source',{stats,source});
+      if(source)check(stats.bilateralTFrames===0,key+': no bilateral horizontal straight-arm frame in any role',{stats,source});
+      if(role!=='idle'&&!source){
         check(stats.armRmsSpan>.025&&stats.upperArmSwing.every(a=>a>.12),key+': actions change arm silhouette rather than only axial twist',stats);
         check(stats.elbowFlexMax.every(a=>a>.35),key+': both elbows bend during the action',stats);
         check(stats.torsoSwing>.08,key+': readable torso participation',stats);
@@ -124,18 +155,23 @@ async function main(){
       if(role==='win')check(stats.bilateralTFrames===0,key+': celebration avoids bilateral horizontal straight-arm silhouette for entire cycle',stats);
       roleResults.push(stats);
     }
-    const differences=[];for(const [a,b] of [['attack','special'],['attack','win'],['special','win']]){const value=Math.max(...posesByRole.get(a).map((p,i)=>rms(p,posesByRole.get(b)[i],span,rig.armVertices)));check(value>.01,key+': action silhouettes are distinct',{a,b,armRmsSpan:value});differences.push({a,b,armRmsSpan:value});}
+    // Some generated weights give no vertex a majority arm weight; compare the whole mesh there.
+    const differences=[];for(const [a,b] of [['attack','special'],['attack','win'],['special','win']]){const value=Math.max(...posesByRole.get(a).map((p,i)=>rms(p,posesByRole.get(b)[i],span,rig.armVertices.length?rig.armVertices:undefined)));check(value>(rig.armVertices.length?.01:.005),key+': action silhouettes are distinct',{a,b,armRmsSpan:value});differences.push({a,b,armRmsSpan:value});}
     check(immutable(gltf)===before,key+': sampling preserves mesh, skin weights and source clips');
-    const control=await load(key),authoredHashes=control.gltf.animations.map(clipHash),controlClips=modelClips(control.gltf,{...entry.metadata,uid:uid+'-unrelated-control'});
-    check(JSON.stringify(controlClips.map(clipHash))===JSON.stringify(authoredHashes),key+': nonmatching UID retains authored generated clips byte-for-byte');
     results.push({key,uid,asset:entry.asset,baseline,neutralArms:neutral.arms,span,roles:roleResults,differences,retainedTrackEvidence});
   }
   check(results.some(result=>result.retainedTrackEvidence.some(role=>role.protectedTracks.length>0)),'reviewed assets exercise preservation of authored tracks outside repaired anatomy');
+  // Project-generated rigs of other body plans, and bipeds whose arms already
+  // reach forward (Ballistamon), keep their generated clips byte-for-byte.
+  const forward=await load('extra:Ballistamon'),forwardHashes=forward.gltf.animations.map(clipHash),forwardClips=modelClips(forward.gltf,forward.entry.metadata);
+  check(JSON.stringify(forwardClips.map(clipHash))===JSON.stringify(forwardHashes),'generated biped with forward-reaching arms retains its generated clips');
+  const quadruped=await load('ac:Labramon'),quadrupedHashes=quadruped.gltf.animations.map(clipHash),quadrupedClips=modelClips(quadruped.gltf,quadruped.entry.metadata);
+  check(quadruped.gltf.scene.getObjectByName('DT_Rig')?.userData.body==='quadruped'&&JSON.stringify(quadrupedClips.map(clipHash))===JSON.stringify(quadrupedHashes),'generated quadruped rig retains its generated clips');
   const other=await load('agumon:0'),otherBefore=immutable(other.gltf),otherHashes=other.gltf.animations.map(clipHash),otherClips=modelClips(other.gltf,other.entry.metadata);
   check(JSON.stringify(otherClips.map(clipHash))===JSON.stringify(otherHashes),'unrelated authored model clips unchanged');check(immutable(other.gltf)===otherBefore,'unrelated authored model geometry unchanged');
   const report={sourceSha256:sha(fs.readFileSync(path.join(root,'js/model-motion.js'))),anatomySha256:sha(fs.readFileSync(path.join(root,'js/model-anatomy.js'))),rigBuilderSha256:sha(fs.readFileSync(path.join(root,'tools/convert/rig-static.mjs'))),checks,results,failures};
   const output=path.join(root,'native/artifacts/model-generated-biped-regression.json');fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');
-  console.log(`${cases.length} RD generated-biped regressions: ${checks} checks, ${failures.length} failures; report ${path.relative(root,output)}`);
+  console.log(`${cases.length} generated-biped regressions: ${checks} checks, ${failures.length} failures; report ${path.relative(root,output)}`);
   for(const failure of failures)console.log('FAIL '+failure.label+' '+JSON.stringify(failure.detail??''));
   if(failures.length)process.exitCode=1;
 }
