@@ -36,6 +36,17 @@ they are deterministic, so a rebuild without source changes leaves `git status` 
 
 Executable: `native/src/DigiTactics.Desktop/bin/Debug/net10.0/win-x64/DigiTactics.Desktop.exe`.
 
+After merging a branch that changed models or motions, refresh the git-ignored model assets in
+`native/artifacts/model-content` before the C#-only build. A committed `native/content/models.json`
+can name asset files that this checkout has not exported, and the model sweep then reports
+"Could not find file …glb.gz". Run the two exporters in this order (`export-models` alone drops the
+motion references, and `export-motions` restores them):
+
+```powershell
+node native/tools/export-models.cjs
+node native/tools/export-motions.cjs
+```
+
 ## Run the game
 
 ```powershell
