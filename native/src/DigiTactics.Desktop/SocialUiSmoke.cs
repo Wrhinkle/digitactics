@@ -33,7 +33,7 @@ internal sealed class SocialUiSmoke : IDisposable
         catch { NativeLibrary.Free(module); throw new InvalidOperationException("Social UI smoke requires the fake Steam API, never a live library."); }
         this.profile=profile;
         if(!profile.UpdateStorage(new Dictionary<string,string>{{"dt.name","Social smoke"},{"dt.client.v1","{\"prefs\":{\"social\":true},\"recent\":[{\"name\":\"Recent tamer\",\"at\":0}]}"}}))throw new InvalidOperationException(profile.Error);
-        commands = (minimum ? new[]{"socialToggle"} : []).Concat(new[]{"socialConnect","socialGroup/Offline","socialRefresh","settings","setSocial","closeSettings","settings","setSocial","closeSettings"}).Concat(minimum ? new[]{"socialToggle"} : []).ToArray();
+        commands = (minimum ? new[]{"socialToggle"} : []).Concat(new[]{"socialConnect","socialGroup/Offline","socialRefresh","settings","setSocial","homeOverview","settings","setSocial","homeOverview"}).Concat(minimum ? new[]{"socialToggle"} : []).ToArray();
         initialStep=Array.IndexOf(commands,"socialConnect")+1;refreshedStep=Array.IndexOf(commands,"socialRefresh")+1;hiddenStep=Array.IndexOf(commands,"setSocial")+1;
     }
     public string Pending=>commands.ElementAtOrDefault(step)??"verification";

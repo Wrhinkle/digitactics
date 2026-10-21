@@ -65,6 +65,10 @@ internal static class NativeUiPaint
         }
     }
 
+    /// <summary>Text in a CSS line box of <paramref name="lineHeight"/> px whose top is <paramref name="lineTop"/> (half-leading applied).</summary>
+    internal static void TrackedIn(ImDrawListPtr draw, ImFontPtr font, float size, float2 lineTop, float lineHeight, ImColor8 color, string text, float tracking = 0)
+        => Tracked(draw, font, size, new(lineTop.X, lineTop.Y + (lineHeight - NativeUiTheme.LineHeight(font, size)) / 2), color, text, tracking);
+
     /// <summary>CSS text-shadow: 0 0 radius color, approximated with faint offset copies under the text.</summary>
     internal static void TextGlow(ImDrawListPtr draw, ImFontPtr font, float size, float2 at, string text, float tracking, ImColor8 glow, float radius)
     {

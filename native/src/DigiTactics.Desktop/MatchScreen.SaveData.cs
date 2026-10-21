@@ -83,6 +83,12 @@ internal sealed partial class MatchScreen
         ImGui.EndDisabled();
         UiText.Wrapped("Includes progress, settings and your music files. Keep this backup private."u8);
         if (SaveDataBusy) ImGui.Text(backupSelection is not null ? "Choose where to save the backup..."u8 : "Preparing backup..."u8);
+        DrawResetSaveModal();
+        if (saveDataMessage is not null) { ImGui.Separator(); UiText.Wrapped(saveDataMessage); }
+    }
+    private void DrawResetSaveModal()
+    {
+        if (profile is null) return;
         if (confirmResetSave||ImGui.IsPopupOpen("Reset confirmation"u8))
         {
             float width=Math.Min(540,size.X-48),height=Math.Min(410,size.Y-128);
@@ -119,6 +125,5 @@ internal sealed partial class MatchScreen
             ImGui.EndPopup();
             }
         }
-        if (saveDataMessage is not null) { ImGui.Separator(); UiText.Wrapped(saveDataMessage); }
     }
 }

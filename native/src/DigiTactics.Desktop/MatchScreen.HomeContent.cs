@@ -52,7 +52,7 @@ internal sealed partial class MatchScreen
             {
                 // ::after: left/right 12px, bottom -1px, 2px gold-2 with a 10px gold-3 glow.
                 var lo=new float2(left+12,y+height-2);var hi=new float2(left+tabWidth-12,y+height);
-                NativeUiPaint.BoxGlow(draw,lo,hi,new ImColor8(200,155,60,70),8);
+                NativeUiPaint.BoxGlow(draw,lo,hi,new ImColor8(200,155,60,40),6);
                 draw.AddRectFilled(lo,hi,NativeUiPaint.Fade(NativeUiTheme.Gold));
             }
             left+=tabWidth+4;
@@ -70,10 +70,10 @@ internal sealed partial class MatchScreen
         float y=at.Y;
         foreach(var entry in entries)
         {
-            float titleHeight=NativeUiTheme.LineHeight(NativeUiTheme.BodyBoldFont,12.5f);
+            float titleHeight=NativeUiTheme.TextLine(12.5f);
             if(y+titleHeight>bottom)break;
             float start=y;
-            NativeUiPaint.Tracked(draw,NativeUiTheme.BodyBoldFont,12.5f,new(at.X+12,y),NativeUiTheme.GoldBright,SocialEllipsis(entry.Title,NativeUiTheme.BodyBoldFont,12.5f,width-12));
+            NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyBoldFont,12.5f,new(at.X+12,y),titleHeight,NativeUiTheme.GoldBright,SocialEllipsis(entry.Title,NativeUiTheme.BodyBoldFont,12.5f,width-12));
             y+=titleHeight+1;
             y+=Paragraph(draw,NativeUiTheme.BodyFont,11,new(at.X+12,y),width-12,NativeUiTheme.Muted,entry.Text,1.4f,2);
             draw.AddRectFilled(new(at.X,start),new(at.X+2,y),NativeUiPaint.Fade(NativeUiTheme.GoldBorder));
@@ -115,7 +115,7 @@ internal sealed partial class MatchScreen
         HomeTileArt(draw,at+new float2(1,1),extent.X-2,"hero-datastream-sky","Patch notes",BadgeStyle.New);
         float y=at.Y+HomeTileArtHeight+8;
         TileHeading(draw,new(at.X+pad.X,y),inner,"What's new");
-        y+=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,12.5f)+6;
+        y+=NativeUiTheme.TextLine(12.5f)+6;
         float linkY=at.Y+extent.Y-pad.Y-NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,11);
         draw.PushClipRect(at,new(at.X+extent.X,linkY-2),true);
         // A short window shows two patch entries; otherwise three, clipped by the tile.
@@ -134,7 +134,7 @@ internal sealed partial class MatchScreen
         HomeTileArt(draw,at+new float2(1,1),extent.X-2,set.Hero,set.Tag,BadgeStyle.Plain,set.Render);
         float y=at.Y+HomeTileArtHeight+8;
         TileHeading(draw,new(at.X+pad.X,y),inner,"This set: "+set.Name);
-        y+=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,12.5f)+6;
+        y+=NativeUiTheme.TextLine(12.5f)+6;
         float linkY=at.Y+extent.Y-pad.Y-NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,11);
         (string,string)[] bullets=selectedSet=="chaos"
             ?[("Any set","The seed picks the set. Everyone in the lobby plays the same one."),("Pool",string.Join(", ",SetChoices.Options.Where(o=>o.Id!="chaos").Select(o=>HomeSets.Value[o.Id].Name)))]
@@ -243,18 +243,18 @@ internal sealed partial class MatchScreen
     private void HomeMissions(DailyRewardProgress daily,float2 at,float width)
     {
         var draw=ImGui.GetWindowDrawList();float y=at.Y;
-        float nameHeight=NativeUiTheme.LineHeight(NativeUiTheme.BodySemiBoldFont,12.5f),noteHeight=NativeUiTheme.LineHeight(NativeUiTheme.BodyFont,11);
+        float nameHeight=NativeUiTheme.TextLine(12.5f),noteHeight=NativeUiTheme.TextLine(11);
         foreach(var mission in daily.Missions)
         {
             y+=3;
             int current=mission.Done?mission.Goal:mission.Current;
-            float bits=BitsAmount(draw,new(at.X+width,y),mission.Bits);
-            NativeUiPaint.Tracked(draw,NativeUiTheme.BodySemiBoldFont,12.5f,new(at.X,y),mission.Done?NativeUiTheme.Muted:NativeUiTheme.Text1,SocialEllipsis(mission.Name,NativeUiTheme.BodySemiBoldFont,12.5f,width-bits-8));
+            float bits=BitsAmount(draw,new(at.X+width,y+(nameHeight-NativeUiTheme.LineHeight(NativeUiTheme.BodyExtraBoldFont,12.5f))/2),mission.Bits);
+            NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodySemiBoldFont,12.5f,new(at.X,y),nameHeight,mission.Done?NativeUiTheme.Muted:NativeUiTheme.Text1,SocialEllipsis(mission.Name,NativeUiTheme.BodySemiBoldFont,12.5f,width-bits-8));
             y+=nameHeight+4;
             Progress(draw,new(at.X,y),new(at.X+width,y+8),(float)current/Math.Max(1,mission.Goal),mission.Done);
             y+=8+3;
             string note=mission.Done?"Complete":mission.Goal>1?$"Best today {current}/{mission.Goal} · in one game":"Complete it in one game";
-            NativeUiPaint.Tracked(draw,NativeUiTheme.BodyFont,11,new(at.X,y),NativeUiTheme.Text3,SocialEllipsis(note,NativeUiTheme.BodyFont,11,width));
+            NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,11,new(at.X,y),noteHeight,NativeUiTheme.Text3,SocialEllipsis(note,NativeUiTheme.BodyFont,11,width));
             y+=noteHeight+6;
         }
         // .daily: 26px hexagon icon | text | Bits, above a gold-5 rule.
@@ -269,8 +269,8 @@ internal sealed partial class MatchScreen
         else NativeUiPaint.Tracked(draw,NativeUiTheme.BodyExtraBoldFont,14,icon-markSize*.5f,NativeUiTheme.PlayText,mark);
         float dailyBits=BitsAmount(draw,new(at.X+width,y+(rowHeight-nameHeight)/2),daily.Bits);
         float textLeft=at.X+26+10,textWidth=width-36-dailyBits-10,textTop=y+(rowHeight-nameHeight-3-noteHeight)/2;
-        NativeUiPaint.Tracked(draw,NativeUiTheme.BodyBoldFont,12.5f,new(textLeft,textTop),NativeUiTheme.Text1,"Daily bonus");
-        NativeUiPaint.Tracked(draw,NativeUiTheme.BodyFont,11,new(textLeft,textTop+nameHeight+3),NativeUiTheme.Text3,
+        NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyBoldFont,12.5f,new(textLeft,textTop),nameHeight,NativeUiTheme.Text1,"Daily bonus");
+        NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,11,new(textLeft,textTop+nameHeight+3),noteHeight,NativeUiTheme.Text3,
             SocialEllipsis(daily.Claimed?"Claimed. Back tomorrow.":$"First game today pays {daily.Bits} extra Bits.",NativeUiTheme.BodyFont,11,textWidth));
     }
     private const float HomeOfferHeight=50;

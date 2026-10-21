@@ -139,7 +139,7 @@ internal sealed partial class MatchScreen
             draw.AddTriangleFilled(c+new float2(5.6f,-5.2f),c+new float2(5.6f,.4f),c+new float2(.6f,-2.2f),ink);},()=>{socialPollAt=0;RefreshSocial();});
         // .cs-foot: 10px 12px, gold-5 top rule, rgba(1,10,19,.85).
         // .cs-foot: 10px padding around a 12.5px/11px two-line block, plus its 1px rule.
-        float footHeight=20+1+NativeUiTheme.LineHeight(NativeUiTheme.BodyBoldFont,12.5f)+NativeUiTheme.LineHeight(NativeUiTheme.BodyFont,11);
+        float footHeight=20+1+NativeUiTheme.TextLine(12.5f)+NativeUiTheme.TextLine(11);
         ImGui.SetCursorScreenPos(at+new float2(0,headHeight));
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
         ImGui.BeginChild("Social people"u8,new(extent.X,extent.Y-headHeight-footHeight),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
@@ -202,7 +202,7 @@ internal sealed partial class MatchScreen
         float actionWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,11,actionText,.1f)+20+2;
         float actionHeight=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,11)+10+2;
         float textRight=extent.X-12-actionWidth-8;
-        var titleSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyBoldFont,12.5f,"T",0);var noteSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyFont,11,"T",0);
+        var titleSize=new float2(0,NativeUiTheme.TextLine(12.5f));var noteSize=new float2(0,NativeUiTheme.TextLine(11));
         float textTop=MathF.Round(footAt.Y+(footHeight-titleSize.Y-noteSize.Y)/2);
         NativeUiPaint.Tracked(draw,NativeUiTheme.BodyBoldFont,12.5f,new(footAt.X+12,textTop),NativeUiTheme.GoldBright,SocialEllipsis(roomTitle,NativeUiTheme.BodyBoldFont,12.5f,textRight-12));
         NativeUiPaint.Tracked(draw,NativeUiTheme.BodyFont,11,new(footAt.X+12,textTop+titleSize.Y),NativeUiTheme.Text3,SocialEllipsis(roomNote,NativeUiTheme.BodyFont,11,textRight-12));
@@ -265,7 +265,7 @@ internal sealed partial class MatchScreen
         }
         float textLeft=at.X+14+34+9,actionWidth=row.JoinLobby is null?0:NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,10.5f,"JOIN",.08f)+18;
         float textWidth=width-(textLeft-at.X)-10-(actionWidth>0?actionWidth+9:0);
-        var nameSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyBoldFont,12.5f,"T",0);var noteSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyFont,11,"T",0);
+        var nameSize=new float2(0,NativeUiTheme.TextLine(12.5f));var noteSize=new float2(0,NativeUiTheme.TextLine(11));
         float textTop=MathF.Round(at.Y+(height-nameSize.Y-noteSize.Y)/2);
         var nameColor=row.Id!=0&&row.Id==steam?.SteamId?NativeUiTheme.Accent:NativeUiTheme.GoldBright;
         NativeUiPaint.Tracked(draw,NativeUiTheme.BodyBoldFont,12.5f,new(textLeft,textTop),NativeUiPaint.Alpha(nameColor,(byte)(255*alpha)),SocialEllipsis(row.Name,NativeUiTheme.BodyBoldFont,12.5f,textWidth));

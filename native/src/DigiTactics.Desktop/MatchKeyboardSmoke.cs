@@ -48,7 +48,7 @@ internal sealed class MatchKeyboardSmoke : IDisposable
         steps.Add(new("Wait for digivolution",s=>!s.EvolutionBusy));
         AddClick("closeEvolution");
         AddKey("Farm Escape",ImGuiKey.Escape,s=>Require(!s.Buttons.ContainsKey("closeFarm"),"Farm Escape did not return Home."));
-        AddClick("settings");AddClick("musicLibrary");AddKey("Music Escape",ImGuiKey.Escape,s=>Require(!s.Buttons.ContainsKey("closeMusicLibrary"),"Music library Escape did not close."));AddClick("closeSettings");
+        AddClick("settings");AddClick("musicLibrary");AddKey("Music Escape",ImGuiKey.Escape,s=>Require(!s.Buttons.ContainsKey("closeMusicLibrary"),"Music library Escape did not close."));AddKey("Settings Escape",ImGuiKey.Escape,s=>Require(!s.SettingsVisible,"Settings Escape did not close."));
         AddClick("clientPlay");AddClick("homePlayConfirm");AddClick("homePlayStart");
         steps.Add(new("carousel",s=>
         {

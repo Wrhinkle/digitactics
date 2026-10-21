@@ -111,8 +111,8 @@ internal sealed partial class MatchScreen
         }
         HomePartner(new(left+heroWidth+gap,top),new(right,heroHeight));
     }
-    // .tile-card padding (8px 10px at 1380 px and below) and .tile-art height (48px; 40px when short).
-    private float2 HomeTilePadding=>socialWindowSize.X<=1380?new(10,8):new(12,10);
+    // .tile-card padding (8px 10px at 1380 px and below) inside its 1px border, and .tile-art height (48px; 40px when short).
+    private float2 HomeTilePadding=>socialWindowSize.X<=1380?new(11,9):new(13,11);
     private float HomeTileArtHeight=>socialWindowSize.Y<=820?40:socialWindowSize.X<=1380?48:62;
     private void HomeProgress(float2 at,float2 extent)
     {
@@ -122,7 +122,7 @@ internal sealed partial class MatchScreen
         PaintTile(draw,at,at+extent,hovered);
         var pad=HomeTilePadding;float inner=extent.X-pad.X*2;
         TileHeading(draw,at+pad,inner,"Missions","Reset at midnight");
-        float y=at.Y+pad.Y+NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,12.5f)+6;
+        float y=at.Y+pad.Y+NativeUiTheme.TextLine(12.5f)+6;
         draw.PushClipRect(at+new float2(pad.X,0),at+extent-new float2(pad.X,pad.Y),true);
         try
         {
@@ -143,7 +143,7 @@ internal sealed partial class MatchScreen
         var pad=HomeTilePadding;float inner=extent.X-pad.X*2;
         TileHeading(draw,at+pad,inner,"Featured","Today only");
         RefreshHomeOffers();
-        float y=at.Y+pad.Y+NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,12.5f)+6;
+        float y=at.Y+pad.Y+NativeUiTheme.TextLine(12.5f)+6;
         draw.PushClipRect(at+new float2(pad.X,0),at+extent-new float2(pad.X,pad.Y),true);
         try
         {

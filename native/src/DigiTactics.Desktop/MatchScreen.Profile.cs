@@ -14,7 +14,6 @@ internal sealed partial class MatchScreen
     internal ProfileSummary? DisplayedProfile {get;private set;}
     internal int ProfileHistoryRows {get;private set;}
     internal int ProfilePortraits {get;private set;}
-    internal int ProfileMissions {get;private set;}
     internal float ProfileHistoryScroll {get;private set;}
     internal float ProfileStatsScroll {get;private set;}
     internal float2 ProfileStatsCenter {get;private set;}
@@ -35,88 +34,190 @@ internal sealed partial class MatchScreen
         profileEditMessage=profile.UpdateStorage(new Dictionary<string,string>{{"dt.client.v1",saved}})?null:profile.Error;
         if(profileEditMessage is null)audio.PlayClient("equip",false);
     }
+    internal bool ProfileStatsOverflow {get;private set;}
+    // RENDER.profile: .prof (12px 24px 16px, 12px gaps) = .prof-banner over .prof-cols (clamp(300px, 27vw, 400px) | 1fr).
     private void ProfilePanel()
     {
-        ProfileHistoryRows=ProfilePortraits=ProfileMissions=0;ProfileHistoryOverflow=0;DisplayedProfile=null;
-        float width=size.X-48,height=size.Y-ClientPageTop-28;
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));
-        ClientPageWindow("Tamer profile",24,ClientPageTop+12,width,height);ImGui.PopStyleVar();
+        ProfileHistoryRows=ProfilePortraits=0;ProfileHistoryOverflow=0;DisplayedProfile=null;
+        if(!chooseProfileAvatar&&!KeyboardPopup&&ImGui.IsKeyPressed(ImGuiKey.Escape)){BackClient();return;}
+        bool narrow=socialWindowSize.X<=1500,shortWindow=socialWindowSize.Y<=820;
+        float margin=narrow?16:24,top=ClientPageTop+(shortWindow?8:12),width=Math.Min(size.X-margin*2,1720),left=MathF.Round((size.X-width)/2);
+        float height=size.Y-top-(shortWindow?10:16);
+        ClientLayer("Tamer profile",new(left,top),new(width,height));
+        var draw=ImGui.GetWindowDrawList();
         try
         {
             string? client=profile!.Storage.GetValueOrDefault("dt.client.v1"),wallet=profile.Storage.GetValueOrDefault("dt.cosmetics.v1");
             var summary=ProfileSummary.Read(client,wallet);DisplayedProfile=summary;
             var collection=new CosmeticCollection(wallet);var level=TamerProgress.Read(client);
-            var bannerPosition=ImGui.GetCursorScreenPos();float bannerWidth=ImGui.GetContentRegionAvail().X,bannerHeight=Math.Clamp(size.Y*.24f,180,216);
-            ImGui.Dummy(new(bannerWidth,bannerHeight));postgameArtwork.Draw(summary.Banner,bannerPosition,new(bannerWidth,bannerHeight),255,true,.4f);
-            var bannerDraw=ImGui.GetWindowDrawList();
-            for(int strip=0;strip<20;strip++)bannerDraw.AddRectFilled(bannerPosition+new float2(0,bannerHeight*strip/20),bannerPosition+new float2(bannerWidth,bannerHeight*(strip+1)/20),new ImColor8(1,10,19,(byte)(40+strip*10)));
-            bannerDraw.AddRect(bannerPosition,bannerPosition+new float2(bannerWidth,bannerHeight),ClientGold);
-            ImGui.SetCursorScreenPos(bannerPosition+new float2(10,8));
-            if(HomeButton("closeProfile","Back",90,36)||!chooseProfileAvatar&&!KeyboardPopup&&ImGui.IsKeyPressed(ImGuiKey.Escape)) {BackClient();ImGui.End();return;}
-            string? avatar=summary.Avatar is { } owned && collection.Owns("legend",owned)?owned:collection.Equipped("legend")?.GetValue<string>();
-            var avatarAt=bannerPosition+new float2(20,bannerHeight-126);ImGui.SetCursorScreenPos(avatarAt);
-            ImGui.PushStyleColor(ImGuiCol.Button,new ImColor8(0,0,0,0));if(Button("profileAvatar","##profileAvatar",112,112)){chooseProfileAvatar=true;ImGui.OpenPopup("Choose your icon"u8);}ImGui.PopStyleColor();
-            if(ImGui.IsItemHovered())ResultTooltip("Change avatar");
-            var center=avatarAt+new float2(56,56);bannerDraw.AddCircleFilled(center,52,new ImColor8(10,20,40));bannerDraw.AddCircle(center,54,ClientBorder,64,4);
-            for(int arc=0,count=(int)(64d*level.Xp/level.Need);arc<count;arc++)
-            {double a=-Math.PI/2+arc*Math.Tau/64,b=-Math.PI/2+(arc+1)*Math.Tau/64;bannerDraw.AddLine(center+new float2((float)Math.Cos(a)*54,(float)Math.Sin(a)*54),center+new float2((float)Math.Cos(b)*54,(float)Math.Sin(b)*54),ClientGold,4);}
-            if(avatar is not null)DrawProfileAvatar(avatar,avatarAt+new float2(14,14),84);
-            bannerDraw.AddRectFilled(avatarAt+new float2(38,98),avatarAt+new float2(76,121),new ImColor8(1,10,19));bannerDraw.AddRect(avatarAt+new float2(38,98),avatarAt+new float2(76,121),ClientGold);
-            bannerDraw.AddText(avatarAt+new float2(49,101),ClientInk,level.Level.ToString());
-            float identityWidth=Math.Clamp(bannerWidth-460,220,420);
-            ImGui.SetCursorScreenPos(bannerPosition+new float2(150,bannerHeight-114));ImGui.BeginGroup();
-            ClientPageTitle($"TAMER / LEVEL {level.Level}",17);ImGui.SetNextItemWidth(identityWidth);
-            bool persona=steam is not null;
-            ImGui.PushFont(NativeUiTheme.DisplayBoldFont,25);ImGui.PushStyleColor(ImGuiCol.Text,ClientInk);
-            ImGui.InputTextWithHint("##profileName"u8,"Your Tamer name"u8,profileName,persona?ImGuiInputTextFlags.ReadOnly:ImGuiInputTextFlags.None);
-            ImGui.PopStyleColor();ImGui.PopFont();
-            Buttons["profileName"]=(ImGui.GetItemRectMin()+ImGui.GetItemRectMax())*.5f;
-            if(!persona && ImGui.IsItemDeactivatedAfterEdit())
-            {
-                string cleaned=ProfileSummary.CleanName(profileName.ToString());
-                if(profile.UpdateStorage(new Dictionary<string,string>{{"dt.name",cleaned}})) {profileName.SetValue(cleaned.AsSpan());profileEditMessage=cleaned.Length>0?"Name saved: "+cleaned:"Name cleared";}
-                else profileEditMessage=profile.Error;
-            }
-            if(persona && ImGui.IsItemHovered())ResultTooltip("Your Steam name");
-            ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+identityWidth);ImGui.PushStyleColor(ImGuiCol.Text,ClientMuted);ImGui.Text($"{level.Xp} / {level.Need} XP to level {level.Level+1}. Other players see your name in lobbies.");ImGui.PopStyleColor();ImGui.PopTextWrapPos();
-            ImGui.EndGroup();
-            var rankPosition=bannerPosition+new float2(bannerWidth-280,bannerHeight-96);
-            bannerDraw.AddRectFilled(rankPosition-new float2(6,4),rankPosition+new float2(268,78),new ImColor8(1,10,19,210));bannerDraw.AddRect(rankPosition-new float2(6,4),rankPosition+new float2(268,78),ClientBorder);
-            postgameArtwork.Draw("emblem-"+summary.Rank.Id,rankPosition,new(64,64),summary.Rank.Unranked?(byte)120:(byte)255);
-            ImGui.SetCursorScreenPos(rankPosition+new float2(74,4));ImGui.BeginGroup();ClientPageTitle(summary.Rank.Label.ToUpperInvariant(),19);
-            ImGui.PushTextWrapPos(ImGui.GetCursorPosX()+182);ImGui.Text(summary.Rank.Detail);ImGui.PopTextWrapPos();ImGui.EndGroup();
-            ImGui.SetCursorScreenPos(bannerPosition+new float2(bannerWidth-224,8));
-            foreach(string banner in ProfileSummary.Banners)
-            {
-                if(banner!="profile-1")ImGui.SameLine();var position=ImGui.GetCursorScreenPos();
-                if(Button("profileBanner/"+banner,"##"+banner,48,36,summary.Banner==banner))ChangeProfile("banner",banner);
-                postgameArtwork.Draw(banner,position+new float2(2,2),new(44,32),255,true);
-                if(summary.Banner==banner)bannerDraw.AddRect(position,position+new float2(48,36),ClientGold,0,ImDrawFlags.None,2);
-                if(ImGui.IsItemHovered())ResultTooltip("Use this banner");
-            }
-            ImGui.SetCursorScreenPos(bannerPosition+new float2(0,bannerHeight+12));
-            if(profileEditMessage is not null) {UiText.Wrapped(profileEditMessage);}
-            float bodyHeight=Math.Max(150,height-ImGui.GetCursorPosY()-14);
-            {
-                float leftWidth=Math.Clamp(bannerWidth*.30f,300,400);
-                ImGui.BeginChild("Profile statistics"u8,new(leftWidth,bodyHeight));ProfileStatsCenter=ImGui.GetWindowPos()+new float2(leftWidth/2,bodyHeight/2);
-                ProfileStats(summary,leftWidth-24);ProfileDailyMissions();ProfileStatsScroll=ImGui.GetScrollY();ImGui.EndChild();ImGui.SameLine();
-                ImGui.BeginGroup();float rightWidth=ImGui.GetContentRegionAvail().X;
-                float bitsHeight=Math.Min(148,bodyHeight*.4f),historyHeight=Math.Max(1,bodyHeight-bitsHeight-ImGui.GetStyle().ItemSpacing.Y);
-                ClientCardBegin("Profile history",new(rightWidth,historyHeight));ProfileHistoryCenter=ImGui.GetWindowPos()+new float2(rightWidth/2,Math.Min(90,historyHeight/2));
-                ProfileHistory(summary);ProfileHistoryScroll=ImGui.GetScrollY();ImGui.EndChild();
-                ClientCardBegin("Profile Bits",new(rightWidth,bitsHeight));ProfileBits(summary);ProfileContentBottom=ImGui.GetWindowPos().Y+ImGui.GetWindowSize().Y;ImGui.EndChild();ImGui.EndGroup();
-            }
-            if(chooseProfileAvatar||ImGui.IsPopupOpen("Choose your icon"u8))ProfileAvatarChoices(collection,bodyHeight);
+            float bannerHeight=MathF.Round(shortWindow?140:Math.Clamp(socialWindowSize.Y*.24f,150,220));
+            ProfileBanner(draw,summary,collection,level,new(left,top),new(width,bannerHeight),shortWindow);
+            float colsTop=top+bannerHeight+12,colsHeight=top+height-colsTop;
+            float leftWidth=socialWindowSize.X<=1380?300:Math.Clamp(socialWindowSize.X*.27f,300,400),rightLeft=left+leftWidth+12,rightWidth=width-leftWidth-12;
+            // .prof-left scrolls on its own.
+            ImGui.SetCursorScreenPos(new(left,colsTop));
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));
+            ImGui.BeginChild("Profile statistics"u8,new(leftWidth,colsHeight),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
+            ProfileStatsCenter=ImGui.GetWindowPos()+new float2(leftWidth/2,colsHeight/2);
+            var statsAt=ImGui.GetCursorScreenPos();float statsHeight=ProfileStats(summary,statsAt,leftWidth-2-(ImGui.GetScrollMaxY()>0?ImGui.GetStyle().ScrollbarSize:0));
+            ImGui.SetCursorScreenPos(statsAt);ImGui.Dummy(new(1,statsHeight));
+            ProfileStatsScroll=ImGui.GetScrollY();ProfileStatsOverflow=ImGui.GetScrollMaxY()>0;
+            ImGui.EndChild();ImGui.PopStyleVar();
+            // .prof-right: match history (1fr) above Bits history (auto, at most 200px).
+            float heading=NativeUiTheme.TextLine(14),chipHeight=12+NativeUiTheme.LineHeight(NativeUiTheme.BodyExtraBoldFont,13.333f);
+            float bitsRows=summary.BitsHistory.Length==0?ProfileEmptyHeight(true):Math.Min(14,summary.BitsHistory.Length)*ProfileBitsRowHeight;
+            float bitsHeight=MathF.Round(Math.Min(200,2+16+Math.Max(heading,chipHeight)+12+bitsRows+16)),historyHeight=colsHeight-12-bitsHeight;
+            var historyAt=new float2(rightLeft,colsTop);
+            PaintTile(draw,historyAt,historyAt+new float2(rightWidth,historyHeight),box:true);
+            TileHeading(draw,historyAt+new float2(17,17),rightWidth-34,"Match history",summary.Matches.Length>0?$"last {summary.Matches.Length}":null,14);
+            float listTop=17+heading+12;
+            ImGui.SetCursorScreenPos(historyAt+new float2(17,listTop));
+            ImGui.BeginChild("Profile history"u8,new(rightWidth-34+4,Math.Max(1,historyHeight-listTop-17)),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
+            ProfileHistoryCenter=ImGui.GetWindowPos()+new float2(rightWidth/2,Math.Min(90,historyHeight/2));
+            if(summary.Matches.Length==0)ProfileEmpty(ImGui.GetWindowDrawList(),ImGui.GetCursorScreenPos(),rightWidth-34,"No games yet. Your last 30 games show up here with placement, traits and Digimon.",false);
+            else ProfileHistory(summary);
+            ProfileHistoryScroll=ImGui.GetScrollY();ImGui.EndChild();
+            var bitsAt=new float2(rightLeft,colsTop+historyHeight+12);
+            PaintTile(draw,bitsAt,bitsAt+new float2(rightWidth,bitsHeight),box:true);
+            ProfileBits(summary,bitsAt,new(rightWidth,bitsHeight));
+            ProfileContentBottom=bitsAt.Y+bitsHeight;
+            if(profileEditMessage is not null)NativeUiPaint.Tracked(draw,NativeUiTheme.BodySemiBoldFont,12.5f,new(left+25,top+bannerHeight-17-18),NativeUiTheme.Text1,profileEditMessage);
+            if(chooseProfileAvatar||ImGui.IsPopupOpen("Choose your icon"u8))ProfileAvatarChoices(collection,colsHeight);
         }
         catch(Exception error) when(error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or FormatException or OverflowException or ArgumentOutOfRangeException)
-        {UiText.Wrapped("Profile could not be read. Your saved data has been preserved."u8);}
+        {Paragraph(draw,NativeUiTheme.BodyFont,14,new(left+24,top+24),width-48,NativeUiTheme.Muted,"Profile could not be read. Your saved data has been preserved.");}
         ImGui.End();
+    }
+    private void ProfileBanner(ImDrawListPtr draw,ProfileSummary summary,CosmeticCollection collection,TamerLevel level,float2 at,float2 extent,bool shortWindow)
+    {
+        var hi=at+extent;
+        draw.PushClipRect(at,hi,true);
+        postgameArtwork.Draw(summary.Banner,at,extent,255,true,.4f,draw);
+        // ::before: linear-gradient(0deg, rgba(1,10,19,.92), rgba(1,10,19,.15) 70%), linear-gradient(90deg, rgba(1,10,19,.6), transparent 50%).
+        float y70=hi.Y-extent.Y*.7f;
+        draw.AddRectFilled(at,new(hi.X,y70),NativeUiPaint.Fade(new ImColor8(1,10,19,38)));
+        NativeUiPaint.VerticalGradient(draw,new(at.X,y70),hi,new ImColor8(1,10,19,38),new ImColor8(1,10,19,235));
+        NativeUiPaint.HorizontalGradient(draw,at,new(at.X+extent.X*.5f,hi.Y),new ImColor8(1,10,19,153),new ImColor8(1,10,19,0));
+        draw.PopClipRect();
+        draw.AddRect(at,hi,NativeUiPaint.Fade(NativeUiTheme.GoldBorder));
+        // Content box: 16px 24px padding inside the border, items aligned to its bottom edge.
+        float contentLeft=at.X+25,contentRight=hi.X-25,bottom=hi.Y-17,avatarSize=shortWindow?92:112;
+        // .prof-rank on the right.
+        float emblem=shortWindow?50:64;
+        string rankLabel=summary.Rank.Label.ToUpperInvariant();
+        float rankText=Math.Max(NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,16,rankLabel,.08f),NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,11,summary.Rank.Detail,0));
+        float rankWidth=6+emblem+10+rankText+14+2,rankHeight=6+emblem+6+2;
+        var rankLo=new float2(contentRight-rankWidth,bottom-rankHeight);
+        draw.AddRectFilled(rankLo,rankLo+new float2(rankWidth,rankHeight),NativeUiPaint.Fade(new ImColor8(1,10,19,191)));
+        draw.AddRect(rankLo,rankLo+new float2(rankWidth,rankHeight),NativeUiPaint.Fade(NativeUiTheme.GoldBorder));
+        postgameArtwork.Draw("emblem-"+summary.Rank.Id,rankLo+new float2(7,7),new(emblem,emblem),255,false,.5f,draw,summary.Rank.Unranked,(byte)(summary.Rank.Unranked?153:255));
+        float rankTextTop=rankLo.Y+(rankHeight-NativeUiTheme.TextLine(16)-NativeUiTheme.TextLine(11))/2;
+        NativeUiPaint.TrackedIn(draw,NativeUiTheme.DisplayBoldFont,16,new(rankLo.X+7+emblem+10,rankTextTop),NativeUiTheme.TextLine(16),NativeUiTheme.GoldBright,rankLabel,.08f);
+        NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,11,new(rankLo.X+7+emblem+10,rankTextTop+NativeUiTheme.TextLine(16)),NativeUiTheme.TextLine(11),NativeUiTheme.Muted,summary.Rank.Detail);
+        // .prof-av: ring (r 58 of 128, 4px stroke), avatar inset 10px, level badge 6px below.
+        var avatarAt=new float2(contentLeft,bottom-avatarSize);var center=avatarAt+new float2(avatarSize/2);float scale=avatarSize/128;
+        ImGui.SetCursorScreenPos(avatarAt);
+        if(ClientHitButton("profileAvatar",avatarSize,avatarSize)){chooseProfileAvatar=true;ImGui.OpenPopup("Choose your icon"u8);}
+        bool avatarHot=ImGui.IsItemHovered();
+        if(avatarHot)ResultTooltip("Change avatar");
+        float inner=avatarSize/2-10;
+        draw.AddCircleFilled(center,inner,NativeUiPaint.Fade(NativeUiTheme.Navy1),48);
+        NativeUiPaint.Radial(draw,center-new float2(0,inner*.4f),new(inner*1.4f),new ImColor8(42,58,92),new ImColor8(10,20,40,0),48);
+        string? avatar=summary.Avatar is { } owned && collection.Owns("legend",owned)?owned:collection.Equipped("legend")?.GetValue<string>();
+        if(avatar is not null)DrawProfileAvatar(avatar,center-new float2(inner),inner*2);
+        float ring=58*scale;draw.AddCircle(center,ring,NativeUiPaint.Fade(NativeUiTheme.GoldDim),64,4*scale);
+        float progress=level.Need>0?Math.Clamp((float)level.Xp/level.Need,0,1):0;
+        if(progress>0)
+        {
+            draw.PathArcTo(center,ring,-MathF.PI/2,-MathF.PI/2+progress*MathF.Tau,64);draw.PathStroke(NativeUiPaint.Fade(new ImColor8(240,210,140,70)),ImDrawFlags.None,4*scale+3);
+            draw.PathArcTo(center,ring,-MathF.PI/2,-MathF.PI/2+progress*MathF.Tau,64);draw.PathStroke(NativeUiPaint.Fade(NativeUiTheme.Gold),ImDrawFlags.None,4*scale);
+        }
+        if(avatarHot)
+        {
+            // .pav-l: "Change" strip 30px above the bottom, shown on hover.
+            float stripHeight=NativeUiTheme.TextLine(10)+6;var stripLo=new float2(avatarAt.X+10,avatarAt.Y+avatarSize-30-stripHeight);
+            draw.AddRectFilled(stripLo,stripLo+new float2(avatarSize-20,stripHeight),NativeUiPaint.Fade(new ImColor8(1,10,19,217)));
+            float changeWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.BodyExtraBoldFont,10,"CHANGE",.08f);
+            NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyExtraBoldFont,10,new(center.X-changeWidth/2,stripLo.Y+3),NativeUiTheme.TextLine(10),NativeUiTheme.Text1,"CHANGE",.08f);
+        }
+        string levelText=level.Level.ToString();float badgeLine=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,12.5f);
+        float badgeWidth=Math.Max(30,NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,12.5f,levelText,0)+16+2),badgeHeight=badgeLine+2+2;
+        var badgeLo=new float2(MathF.Round(center.X-badgeWidth/2),avatarAt.Y+avatarSize+6-badgeHeight);
+        draw.AddRectFilled(badgeLo,badgeLo+new float2(badgeWidth,badgeHeight),NativeUiPaint.Fade(NativeUiTheme.Navy0));
+        draw.AddRect(badgeLo,badgeLo+new float2(badgeWidth,badgeHeight),NativeUiPaint.Fade(NativeUiTheme.Gold));
+        float levelWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,12.5f,levelText,0);
+        NativeUiPaint.Tracked(draw,NativeUiTheme.DisplayBoldFont,12.5f,new(MathF.Round(center.X-levelWidth/2),badgeLo.Y+2),NativeUiTheme.GoldBright,levelText);
+        // .prof-id: eyebrow, name input, XP note; centred on the avatar.
+        float idLeft=avatarAt.X+avatarSize+16,idWidth=Math.Min(420,rankLo.X-16-idLeft);
+        float inputHeight=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,20)+10+2;
+        float idHeight=NativeUiTheme.TextLine(11)+4+inputHeight+4+NativeUiTheme.TextLine(12.5f),y=MathF.Round(center.Y-idHeight/2);
+        Eyebrow(draw,new(idLeft,y),$"Tamer · level {level.Level}");y+=NativeUiTheme.TextLine(11)+4;
+        bool persona=steam is not null;
+        var inputLo=new float2(idLeft,y);var inputHi=inputLo+new float2(idWidth,inputHeight);
+        draw.AddRectFilled(inputLo,inputHi,NativeUiPaint.Fade(new ImColor8(1,10,19,153)));
+        ImGui.SetCursorScreenPos(inputLo+new float2(1,1));ImGui.SetNextItemWidth(idWidth-2);
+        ImGui.PushFont(NativeUiTheme.DisplayBoldFont,NativeUiTheme.Css(NativeUiTheme.DisplayBoldFont,20));
+        ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(9,(inputHeight-2-NativeUiTheme.Css(NativeUiTheme.DisplayBoldFont,20))/2));ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,0);
+        ImGui.PushStyleColor(ImGuiCol.FrameBg,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.FrameBgHovered,new ImColor8(0,0,0,0));ImGui.PushStyleColor(ImGuiCol.FrameBgActive,new ImColor8(0,0,0,0));
+        ImGui.PushStyleColor(ImGuiCol.Text,NativeUiTheme.GoldBright);ImGui.PushStyleColor(ImGuiCol.TextDisabled,new ImColor8(169,169,169));
+        ImGui.InputTextWithHint("##profileName"u8,"Your Tamer name"u8,profileName,persona?ImGuiInputTextFlags.ReadOnly:ImGuiInputTextFlags.None);
+        ImGui.PopStyleColor(5);ImGui.PopStyleVar(2);ImGui.PopFont();
+        bool focused=ImGui.IsItemActive();
+        Buttons["profileName"]=(ImGui.GetItemRectMin()+ImGui.GetItemRectMax())*.5f;
+        if(focused)NativeUiPaint.BoxGlow(draw,inputLo,inputHi,new ImColor8(200,170,110,46),3);
+        draw.AddRect(inputLo,inputHi,NativeUiPaint.Fade(focused?NativeUiTheme.Gold:NativeUiTheme.GoldDim));
+        if(!persona && ImGui.IsItemDeactivatedAfterEdit())
+        {
+            string cleaned=ProfileSummary.CleanName(profileName.ToString());
+            if(profile!.UpdateStorage(new Dictionary<string,string>{{"dt.name",cleaned}})) {profileName.SetValue(cleaned.AsSpan());profileEditMessage=cleaned.Length>0?"Name saved: "+cleaned:"Name cleared";}
+            else profileEditMessage=profile.Error;
+        }
+        if(persona && ImGui.IsItemHovered())ResultTooltip("Your Steam name");
+        y+=inputHeight+4;
+        NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,12.5f,new(idLeft,y),NativeUiTheme.TextLine(12.5f),NativeUiTheme.MutedNote,
+            SocialEllipsis($"{level.Xp} / {level.Need} XP to level {level.Level+1}. Other players see your name in lobbies.",NativeUiTheme.BodyFont,12.5f,Math.Max(idWidth,rankLo.X-16-idLeft)));
+        // .prof-banners: top 10px, right 10px, 46x26 thumbnails 4px apart.
+        float x=hi.X-1-10-(ProfileSummary.Banners.Length*46+(ProfileSummary.Banners.Length-1)*4);
+        foreach(string banner in ProfileSummary.Banners)
+        {
+            var lo=new float2(x,at.Y+1+10);var bhi=lo+new float2(46,26);
+            ImGui.SetCursorScreenPos(lo);
+            if(ClientHitButton("profileBanner/"+banner,46,26))ChangeProfile("banner",banner);
+            bool on=summary.Banner==banner,hot=ImGui.IsItemHovered();
+            if(on)NativeUiPaint.BoxGlow(draw,lo,bhi,new ImColor8(240,210,140,102),8);
+            postgameArtwork.Draw(banner,lo,new(46,26),(byte)(on||hot?255:179),true,.5f,draw);
+            draw.AddRect(lo,bhi,NativeUiPaint.Fade(on?NativeUiTheme.GoldBright:hot?NativeUiTheme.GoldDeep:NativeUiTheme.GoldDim,on||hot?1:.7f));
+            if(hot)ResultTooltip("Use this banner");
+            x+=46+4;
+        }
     }
     private void DrawProfileAvatar(string id,float2 position,float pixels)
     {
         var discovered=LegendEvolution.Discovery(profile!.Storage.GetValueOrDefault("dt.legendevo.v1"),id);
         portraits.DrawEvolution(discovered.Current,position,pixels,true);ProfilePortraits++;
+    }
+    /// <summary>.empty (24px padding, 14px) or .empty.small (12px padding, 12.5px): centred c-text-3 text in a dashed gold-5 frame.</summary>
+    private static float ProfileEmptyHeight(bool small)=>small?12*2+NativeUiTheme.TextLine(12.5f)+2:24*2+NativeUiTheme.TextLine(14)+2;
+    private static float ProfileEmpty(ImDrawListPtr draw,float2 at,float width,string text,bool small)
+    {
+        float pad=small?12:24,px=small?12.5f:14,line=NativeUiTheme.TextLine(px);
+        var lines=WrapText(NativeUiTheme.BodyFont,px,text,width-pad*2-2);
+        float height=pad*2+lines.Count*line+2;var hi=at+new float2(width,height);
+        DashedRect(draw,at,hi,NativeUiTheme.GoldDim);
+        for(int i=0;i<lines.Count;i++)
+        {
+            float lineWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,px,lines[i],0);
+            NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,px,new(MathF.Round(at.X+(width-lineWidth)/2),at.Y+1+pad+i*line),line,NativeUiTheme.Text3,lines[i]);
+        }
+        ImGui.SetCursorScreenPos(at);ImGui.Dummy(new(width,height));
+        return height;
+    }
+    /// <summary>A 1px dashed border (Chromium draws 3px dashes with 3px gaps at this width).</summary>
+    private static void DashedRect(ImDrawListPtr draw,float2 lo,float2 hi,ImColor8 color)
+    {
+        var c=NativeUiPaint.Fade(color);
+        for(float x=lo.X;x<hi.X;x+=6){float e=Math.Min(x+3,hi.X);draw.AddRectFilled(new(x,lo.Y),new(e,lo.Y+1),c);draw.AddRectFilled(new(x,hi.Y-1),new(e,hi.Y),c);}
+        for(float y=lo.Y;y<hi.Y;y+=6){float e=Math.Min(y+3,hi.Y);draw.AddRectFilled(new(lo.X,y),new(lo.X+1,e),c);draw.AddRectFilled(new(hi.X-1,y),new(hi.X,e),c);}
     }
     private void ProfileAvatarChoices(CosmeticCollection collection,float height)
     {
@@ -139,53 +240,87 @@ internal sealed partial class MatchScreen
         if(ImGui.IsKeyPressed(ImGuiKey.Escape,false))chooseProfileAvatar=false;
         if(!chooseProfileAvatar)ImGui.CloseCurrentPopup();ImGui.EndPopup();
     }
-    private void ProfileStats(ProfileSummary summary,float width)
+    /// <summary>.prof-left: four stat tiles then the Placements, Trend, Favorite traits and Favorite Digimon boxes (10px 12px padding).</summary>
+    private float ProfileStats(ProfileSummary summary,float2 at,float width)
     {
+        var draw=ImGui.GetWindowDrawList();float y=at.Y;
         string[] values=[summary.Games.ToString(),summary.Wins.ToString(),summary.TopFour.ToString(),summary.Games>0?summary.Average.ToString("F2"):"-"];
         string[] labels=["GAMES","WINS","TOP FINISHES","AVG PLACE"];
-        float tile=(ImGui.GetContentRegionAvail().X-18)/4;
-        var rowAt=ImGui.GetCursorScreenPos();var draw=ImGui.GetWindowDrawList();
+        float tile=(width-18)/4,tileHeight=2+8+20*1.1f+2+NativeUiTheme.TextLine(10)+8;
         for(int i=0;i<4;i++)
         {
-            var at=rowAt+new float2(i*(tile+6),0);
-            draw.AddRectFilled(at,at+new float2(tile,60),new ImColor8(1,10,19));draw.AddRect(at,at+new float2(tile,60),ClientBorder);
-            ImGui.PushFont(NativeUiTheme.DisplayBoldFont,23);float valueWidth=ImGui.CalcTextSize(values[i]).X;
-            draw.AddText(ImGui.GetFont(),23,at+new float2((tile-valueWidth)/2,9),ClientInk,values[i]);ImGui.PopFont();
-            string label=i==2&&tile<92?"TOP 4":labels[i];
-            ImGui.PushFont(NativeUiTheme.DisplayFont,14);float labelWidth=ImGui.CalcTextSize(label).X;
-            draw.AddText(ImGui.GetFont(),ImGui.GetFontSize(),at+new float2((tile-labelWidth)/2,38),ClientMuted,label);ImGui.PopFont();
+            var lo=new float2(MathF.Round(at.X+i*(tile+6)),y);var hi=new float2(MathF.Round(at.X+i*(tile+6)+tile),y+tileHeight);
+            draw.AddRectFilled(lo,hi,NativeUiPaint.Fade(new ImColor8(1,10,19,204)));draw.AddRect(lo,hi,NativeUiPaint.Fade(NativeUiTheme.GoldDim));
+            float valueWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,20,values[i],0);
+            NativeUiPaint.TrackedIn(draw,NativeUiTheme.DisplayBoldFont,20,new(MathF.Round((lo.X+hi.X-valueWidth)/2),y+1+8),20*1.1f,NativeUiTheme.GoldBright,values[i]);
+            float labelWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.BodyBoldFont,10,labels[i],.06f);
+            NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyBoldFont,10,new(MathF.Round((lo.X+hi.X-labelWidth)/2),y+1+8+20*1.1f+2),NativeUiTheme.TextLine(10),NativeUiTheme.Text3,labels[i],.06f);
         }
-        ImGui.Dummy(new(ImGui.GetContentRegionAvail().X,60));
-        ImGui.Spacing();
-        ProfileStatCard("Profile placements card","PLACEMENTS",$"last {summary.Matches.Length}");
-        if(summary.Matches.Length==0)UiText.Wrapped("No games yet."u8);else DrawPlacementChart(summary,ImGui.GetContentRegionAvail().X);ImGui.EndChild();
-        ProfileStatCard("Profile trend card","TREND","oldest to newest");
-        if(summary.Trend.Length<2)UiText.Wrapped("Play two games to see your trend."u8);else DrawPlacementTrend(summary,ImGui.GetContentRegionAvail().X);ImGui.EndChild();
-        ProfileStatCard("Profile favorite traits card","FAVORITE TRAITS");
-        int traits=0;
-        foreach(var favorite in summary.Traits.Where(f=>Rules.Traits.Any(t=>t.Id==f.Id))) {UiText.Wrapped($"{text.Get(Rules.Id,favorite.Id).Name} / {favorite.Games} game{(favorite.Games>1?"s":"")}");traits++;}
-        if(traits==0)UiText.Wrapped("Play a game to see your favorite traits."u8);ImGui.EndChild();
-        ProfileStatCard("Profile favorite units card","FAVORITE DIGIMON");
-        int units=0;
-        foreach(var favorite in summary.Units)
+        y+=tileHeight+10;
+        float heading=NativeUiTheme.TextLine(14);
+        float Box(string title,string? note,Func<float2,float,float> content)
         {
-            var line=Rules.Lines.FirstOrDefault(l=>l.Id==favorite.Id);if(line is null)continue;
-            var position=ImGui.GetCursorScreenPos();ImGui.Dummy(new(42,42));portraits.Draw(Rules.Id,line.Id,0,position,42);ProfilePortraits++;
-            ImGui.SameLine();ImGui.BeginGroup();ImGui.Text(line.Forms[0]);ImGui.Text($"{favorite.Games} game{(favorite.Games>1?"s":"")}");ImGui.EndGroup();units++;
+            float top=y,inner=width-26;
+            var contentAt=new float2(at.X+13,top+11+heading+6);
+            // Paint the frame behind the content once the content height is known.
+            draw.ChannelsSplit(2);draw.ChannelsSetCurrent(1);
+            TileHeading(draw,new(at.X+13,top+11),inner,title,note,14);
+            float contentHeight=content(contentAt,inner);
+            draw.ChannelsSetCurrent(0);
+            float boxHeight=11+heading+6+contentHeight+11;
+            PaintTile(draw,new(at.X,top),new(at.X+width,top+boxHeight),box:true);
+            draw.ChannelsMerge();
+            y+=boxHeight+10;return boxHeight;
         }
-        if(units==0)UiText.Wrapped("Play a game to see the Digimon you field most."u8);ImGui.EndChild();
-    }
-    private static void ProfileStatCard(string id,string heading,string? subtitle=null)
-    {
-        ClientCardBegin(id,new(0,0));
-        var at=ImGui.GetCursorScreenPos();var draw=ImGui.GetWindowDrawList();
-        draw.AddText(NativeUiTheme.DisplayBoldFont,18,at,ClientInk,heading);
-        if(subtitle is not null)
+        Box("Placements",$"last {summary.Matches.Length}",(p,w)=>
         {
-            ImGui.PushFont(default,14);float width=ImGui.CalcTextSize(subtitle).X;
-            draw.AddText(ImGui.GetFont(),14,new(at.X+ImGui.GetContentRegionAvail().X-width,at.Y+3),ClientMuted,subtitle);ImGui.PopFont();
-        }
-        ImGui.Dummy(new(1,26));
+            if(summary.Matches.Length==0)return ProfileEmpty(draw,p,w,"No games yet.",true);
+            ImGui.SetCursorScreenPos(p);DrawPlacementChart(summary,w);return 128;
+        });
+        Box("Trend","oldest to newest",(p,w)=>
+        {
+            if(summary.Trend.Length<2)return ProfileEmpty(draw,p,w,"Play two games to see your trend.",true);
+            ImGui.SetCursorScreenPos(p);DrawPlacementTrend(summary,w);return 120;
+        });
+        Box("Favorite traits",null,(p,w)=>
+        {
+            var favorites=summary.Traits.Where(f=>Rules.Traits.Any(t=>t.Id==f.Id)).ToArray();
+            if(favorites.Length==0)return ProfileEmpty(draw,p,w,"Play a game to see your favorite traits.",true);
+            float rowY=p.Y;
+            foreach(var favorite in favorites)
+            {
+                // .fav: a trait chip and the muted game count, 4px vertical padding.
+                string name=text.Get(Rules.Id,favorite.Id).Name;float chipHeight=NativeUiTheme.TextLine(11)+4+2,rowHeight=8+chipHeight;
+                var tint=ResultTraitTint(resultTraitColors.GetValueOrDefault(Rules.Id)?.GetValueOrDefault(favorite.Id,"#9aa4b1")??"#9aa4b1");
+                var traitColor=new ImColor8((byte)tint.R,(byte)tint.G,(byte)tint.B);
+                float chipWidth=4+12+5+NativeUiPaint.TrackedWidth(NativeUiTheme.BodyBoldFont,11,name,0)+8+2;var chipLo=new float2(p.X,rowY+4);var chipHi=chipLo+new float2(chipWidth,chipHeight);
+                draw.AddRectFilled(chipLo,chipHi,NativeUiPaint.Fade(Mix(new ImColor8(1,10,19,204),traitColor,.14f)));draw.AddRect(chipLo,chipHi,NativeUiPaint.Fade(NativeUiPaint.Alpha(traitColor,115)));
+                draw.AddNgonFilled(chipLo+new float2(1+4+6,chipHeight/2),6.5f,NativeUiPaint.Fade(new ImColor8(200,210,224)),6);
+                NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyBoldFont,11,chipLo+new float2(1+4+12+5,2),NativeUiTheme.TextLine(11),NativeUiTheme.Text1,name);
+                string games=$"{favorite.Games} game{(favorite.Games>1?"s":"")}";float gamesWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,13,games,0);
+                NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,13,new(p.X+w-gamesWidth,rowY+(rowHeight-NativeUiTheme.TextLine(13))/2),NativeUiTheme.TextLine(13),NativeUiTheme.MutedNote,games);
+                rowY+=rowHeight;
+            }
+            return rowY-p.Y;
+        });
+        Box("Favorite Digimon",null,(p,w)=>
+        {
+            var favorites=summary.Units.Select(f=>(Favorite:f,Line:Rules.Lines.FirstOrDefault(l=>l.Id==f.Id))).Where(f=>f.Line is not null).ToArray();
+            if(favorites.Length==0)return ProfileEmpty(draw,p,w,"Play a game to see the Digimon you field most.",true);
+            // .favs-u: auto-fill columns of at least 140px, 8px gaps; 38px portrait, name and game count.
+            int columns=Math.Max(1,(int)((w+8)/(140+8)));float cell=(w-(columns-1)*8)/columns,rowHeight=38;
+            for(int i=0;i<favorites.Length;i++)
+            {
+                var (favorite,line)=favorites[i];var cellAt=p+new float2(i%columns*(cell+8),i/columns*(rowHeight+8));
+                draw.AddRectFilled(cellAt,cellAt+new float2(38,38),NativeUiPaint.Fade(NativeUiTheme.Navy1));portraits.Draw(Rules.Id,line!.Id,0,cellAt,38);ProfilePortraits++;
+                draw.AddRect(cellAt,cellAt+new float2(38,38),NativeUiPaint.Fade(NativeUiTheme.GoldBorder));
+                float textTop=cellAt.Y+(38-NativeUiTheme.TextLine(12.5f)-NativeUiTheme.TextLine(11))/2;
+                NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,12.5f,new(cellAt.X+38+8,textTop),NativeUiTheme.TextLine(12.5f),NativeUiTheme.Text1,SocialEllipsis(line.Forms[0],NativeUiTheme.BodyFont,12.5f,cell-46));
+                NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,11,new(cellAt.X+38+8,textTop+NativeUiTheme.TextLine(12.5f)),NativeUiTheme.TextLine(11),NativeUiTheme.MutedNote,$"{favorite.Games} game{(favorite.Games>1?"s":"")}");
+            }
+            return (favorites.Length+columns-1)/columns*(rowHeight+8)-8;
+        });
+        return y-10-at.Y;
     }
     private void DrawPlacementChart(ProfileSummary summary,float width)
     {
@@ -218,34 +353,6 @@ internal sealed partial class MatchScreen
         }
         ImGui.Dummy(new(width,120));
     }
-    private void ProfileDailyMissions()
-    {
-        ImGui.SeparatorText("Missions / reset at midnight"u8);
-        var daily=MatchRewards.Progress(profile!.Storage.GetValueOrDefault("dt.shop.v1"),profile.Storage.GetValueOrDefault("dt.client.v1"),DateOnly.FromDateTime(DateTime.Now));
-        foreach(var mission in daily.Missions)
-        {
-            UiText.Wrapped($"{mission.Name} / {mission.Bits} Bits");ImGui.ProgressBar((float)mission.Current/mission.Goal,new(-1,8),""u8);
-            UiText.Wrapped(mission.Done?"Complete":mission.Goal>1?$"Best today {mission.Current}/{mission.Goal} / in one game":"Complete it in one game");ProfileMissions++;
-        }
-        ImGui.SeparatorText("Daily bonus"u8);UiText.Wrapped(daily.Claimed?"Claimed. Back tomorrow.":$"First game today pays {daily.Bits} extra Bits.");
-    }
-    private static void ProfileSectionHeading(string heading,string? subtitle=null,string? wallet=null)
-    {
-        var at=ImGui.GetCursorScreenPos();var draw=ImGui.GetWindowDrawList();float width=ImGui.GetContentRegionAvail().X,height=wallet is null?20:30;
-        draw.AddText(NativeUiTheme.DisplayBoldFont,18,at+new float2(0,(height-18)/2),ClientInk,heading);
-        if(subtitle is not null)
-        {
-            ImGui.PushFont(NativeUiTheme.BodyFont,14);float subtitleWidth=ImGui.CalcTextSize(subtitle).X;
-            draw.AddText(ImGui.GetFont(),14,at+new float2(width-subtitleWidth,(height-14)/2),ClientMuted,subtitle);ImGui.PopFont();
-        }
-        if(wallet is not null)
-        {
-            ImGui.PushFont(NativeUiTheme.DisplayBoldFont,17);float badgeWidth=ImGui.CalcTextSize(wallet).X+40;var badge=at+new float2(width-badgeWidth,0);
-            draw.AddRectFilled(badge,badge+new float2(badgeWidth,30),new ImColor8(1,10,19));draw.AddRect(badge,badge+new float2(badgeWidth,30),ClientBorder);
-            ProfileBitsDiamond(badge+new float2(15,15));draw.AddText(ImGui.GetFont(),17,badge+new float2(28,6),ClientInk,wallet);ImGui.PopFont();
-        }
-        ImGui.Dummy(new(width,height+6));
-    }
     private static void ProfileBitsDiamond(float2 center)
     {
         var draw=ImGui.GetWindowDrawList();
@@ -254,8 +361,6 @@ internal sealed partial class MatchScreen
     }
     private void ProfileHistory(ProfileSummary summary)
     {
-        ProfileSectionHeading("MATCH HISTORY",summary.Matches.Length>0?$"last {summary.Matches.Length}":null);
-        if(summary.Matches.Length==0)UiText.Wrapped("No games yet. Your last 30 games show up here with placement, traits and Digimon."u8);
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(ImGui.GetStyle().ItemSpacing.X,0));
         foreach(var match in summary.Matches)
         {
@@ -331,24 +436,38 @@ internal sealed partial class MatchScreen
         }
         ImGui.PopStyleVar();
     }
-    private void ProfileBits(ProfileSummary summary)
+    private static float ProfileBitsRowHeight=>8+NativeUiTheme.TextLine(12.5f)+1;
+    /// <summary>.bits-card: heading with the static Bits chip, then .bh-row lines (reason | +n | date) or the empty note.</summary>
+    private void ProfileBits(ProfileSummary summary,float2 at,float2 extent)
     {
-        ProfileSectionHeading("BITS HISTORY",wallet:$"{profile!.Progress.Bits??0:N0}");
-        if(summary.BitsHistory.Length==0)UiText.Wrapped("No Bits earned yet. Finish a game to earn some."u8);
-        ImGui.PushFont(NativeUiTheme.BodyFont,16);float amountWidth=Math.Max(40,summary.BitsHistory.Select(entry=>ImGui.CalcTextSize($"+{entry.N}").X).DefaultIfEmpty(0).Max());ImGui.PopFont();
-        ImGui.PushFont(NativeUiTheme.BodyFont,14);float dateWidth=Math.Max(86,summary.BitsHistory.Select(entry=>ImGui.CalcTextSize(DateTimeOffset.FromUnixTimeMilliseconds(entry.At).LocalDateTime.ToString("d")).X).DefaultIfEmpty(0).Max());ImGui.PopFont();
-        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(ImGui.GetStyle().ItemSpacing.X,0));
-        foreach(var entry in summary.BitsHistory)
+        var draw=ImGui.GetWindowDrawList();float heading=NativeUiTheme.TextLine(14);
+        string balance=$"{profile!.Progress.Bits??0:N0}";const float bitsFont=13.333f;
+        var balanceSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyExtraBoldFont,bitsFont,balance,0);
+        float chipWidth=1+10+15+6+balanceSize.X+12+1,chipHeight=12+balanceSize.Y,rowHeight=Math.Max(heading,chipHeight);
+        TileHeading(draw,at+new float2(17,17+(rowHeight-heading)/2),extent.X-34-chipWidth-8,"Bits history",null,14);
+        var chipLo=new float2(at.X+extent.X-17-chipWidth,at.Y+17+(rowHeight-chipHeight)/2);var chipHi=chipLo+new float2(chipWidth,chipHeight);
+        draw.AddRectFilled(chipLo,chipHi,NativeUiPaint.Fade(new ImColor8(1,10,19,179)));draw.AddRect(chipLo,chipHi,NativeUiPaint.Fade(NativeUiTheme.GoldDim));
+        NativeUiPaint.Bit(draw,new(chipLo.X+1+10+1+5.5f,(chipLo.Y+chipHi.Y)/2),11);
+        NativeUiPaint.Tracked(draw,NativeUiTheme.BodyExtraBoldFont,bitsFont,new(chipLo.X+1+10+15+6,chipLo.Y+6),NativeUiTheme.GoldBright,balance);
+        var listAt=at+new float2(17,17+rowHeight+12);float listWidth=extent.X-34,listHeight=extent.Y-(17+rowHeight+12)-17;
+        if(summary.BitsHistory.Length==0){ImGui.SetCursorScreenPos(listAt);ProfileEmpty(draw,listAt,listWidth,"No Bits earned yet. Finish a game to earn some.",true);return;}
+        ImGui.SetCursorScreenPos(listAt);ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));
+        ImGui.BeginChild("Profile Bits"u8,new(listWidth,Math.Max(1,listHeight)),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);ImGui.PopStyleVar();
+        var list=ImGui.GetWindowDrawList();var origin=ImGui.GetCursorScreenPos();float width=listWidth-(ImGui.GetScrollMaxY()>0?ImGui.GetStyle().ScrollbarSize:0);
+        float line=NativeUiTheme.TextLine(12.5f);
+        for(int i=0;i<Math.Min(14,summary.BitsHistory.Length);i++)
         {
-            var at=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X;var draw=ImGui.GetWindowDrawList();ImGui.Dummy(new(width,28));
-            ImGui.PushFont(NativeUiTheme.BodyFont,16);string reason=ResultTrim(entry.Reason,Math.Max(20,width-dateWidth-amountWidth-24));
-            draw.AddText(ImGui.GetFont(),16,at+new float2(0,4),ClientInk,reason);
-            string amount=$"+{entry.N}";draw.AddText(ImGui.GetFont(),16,at+new float2(width-dateWidth-12-ImGui.CalcTextSize(amount).X,4),new ImColor8(63,214,255),amount);ImGui.PopFont();
-            ImGui.PushFont(NativeUiTheme.BodyFont,14);string when=DateTimeOffset.FromUnixTimeMilliseconds(entry.At).LocalDateTime.ToString("d");
-            draw.AddText(ImGui.GetFont(),14,at+new float2(width-ImGui.CalcTextSize(when).X,5),ClientMuted,when);ImGui.PopFont();
-            draw.AddLine(at+new float2(0,27),at+new float2(width,27),new ImColor8(41,55,68));
-            if(reason!=entry.Reason&&ImGui.IsItemHovered())ResultTooltip(entry.Reason);
+            var entry=summary.BitsHistory[i];var rowAt=origin+new float2(0,i*ProfileBitsRowHeight);
+            string amount=$"+{entry.N}",when=DateTimeOffset.FromUnixTimeMilliseconds(entry.At).LocalDateTime.ToString("d");
+            float amountWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.BodyBoldFont,12.5f,amount,0),whenWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,11,when,0);
+            float reasonWidth=width-86-12-amountWidth-12;string reason=SocialEllipsis(entry.Reason,NativeUiTheme.BodyFont,12.5f,reasonWidth);
+            NativeUiPaint.TrackedIn(list,NativeUiTheme.BodyFont,12.5f,rowAt+new float2(0,4),line,NativeUiTheme.Muted,reason);
+            NativeUiPaint.TrackedIn(list,NativeUiTheme.BodyBoldFont,12.5f,rowAt+new float2(width-86-12-amountWidth,4),line,NativeUiTheme.Bits,amount);
+            NativeUiPaint.TrackedIn(list,NativeUiTheme.BodyFont,11,rowAt+new float2(width-whenWidth,4+(line-NativeUiTheme.TextLine(11))/2),NativeUiTheme.TextLine(11),NativeUiTheme.Text3,when);
+            list.AddLine(rowAt+new float2(0,ProfileBitsRowHeight-.5f),rowAt+new float2(width,ProfileBitsRowHeight-.5f),NativeUiPaint.Fade(new ImColor8(34,48,73)));
+            if(reason!=entry.Reason&&ImGui.IsMouseHoveringRect(rowAt,rowAt+new float2(reasonWidth,ProfileBitsRowHeight)))ResultTooltip(entry.Reason);
         }
-        ImGui.PopStyleVar();
+        ImGui.SetCursorScreenPos(origin);ImGui.Dummy(new(1,Math.Min(14,summary.BitsHistory.Length)*ProfileBitsRowHeight));
+        ImGui.EndChild();
     }
 }

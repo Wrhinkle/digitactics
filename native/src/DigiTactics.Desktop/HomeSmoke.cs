@@ -53,11 +53,11 @@ internal sealed class HomeSmoke(NativeProfileStore? profile=null)
         {
             AddClick("collection",s=>Check(s.CollectionVisible,"Navigation history fixture did not enter Collection."));
             AddClick("profile",s=>Check(s.ProfileVisible&&!s.CollectionVisible,"Profile route failed to replace Collection."));
-            AddClick("closeProfile",s=>Check(!s.ProfileVisible&&s.CollectionVisible,"Profile Back lost the preceding Collection page."));
+            steps.Add(new("profile-back",_=>Escape(),s=>Check(!s.ProfileVisible&&s.CollectionVisible,"Profile Escape lost the preceding Collection page.")));
             steps.Add(new("collection-history-back",_=>Escape(),s=>Check(!s.CollectionVisible&&!s.ProfileVisible&&s.Buttons.ContainsKey("start"),"Collection Back did not return Home.")));
             AddClick("settings");AddClick("settingsCredits",s=>Check(s.AboutVisible&&!s.SettingsVisible,"About did not replace Settings."));
             AddClick("closeAbout",s=>Check(!s.AboutVisible&&s.SettingsVisible,"About Back lost Settings."));
-            AddClick("closeSettings",s=>Check(!s.SettingsVisible&&s.Buttons.ContainsKey("start"),"Settings Back did not return Home."));
+            steps.Add(new("settings-back",_=>Escape(),s=>Check(!s.SettingsVisible&&s.Buttons.ContainsKey("start"),"Settings Escape did not return Home.")));
         }
         steps.Add(new("hero-initial",s=>HeroThumb(s,"set-faction-wars"),s=>Check(s.HomeHeroId=="set-faction-wars"&&s.HomeHeroCount==14&&s.SelectedSet==initialSet,"Carousel thumbnails changed the selected ruleset or omitted source slides.")));
         steps.Add(new("hero-hover-timeout",s=>{var b=s.HomeHeroBounds;ImGui.GetIO().AddMousePosEvent((b.Min.X+b.Max.X)/2,b.Min.Y+18);heroTimeOffset+=8.01;return true;},s=>Check(s.HomeHeroId=="set-faction-wars","Carousel advanced while hovered.")));

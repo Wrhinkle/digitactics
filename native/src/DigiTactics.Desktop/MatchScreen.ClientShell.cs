@@ -207,6 +207,9 @@ internal sealed partial class MatchScreen
         ImColor8 Lift(ImColor8 c){var v=c.AsByte4();return new((byte)Math.Min(255,v.X*bright),(byte)Math.Min(255,v.Y*bright),(byte)Math.Min(255,v.Z*bright),v.W);}
         // ::after: inset 2px 3px 2px 2px, its tip 1px inside that box (calc(100% - 1px) 50%).
         Chevron(innerLo,new(hi.X-4,innerHi.Y),20,Lift(new(15,74,92)),Lift(new(6,32,51)),Lift(new(4,22,36)),.6f);
+        // The gradient fills have hard edges; antialias the diagonal tip edges like a clip-path edge.
+        draw.AddLine(new(hi.X-22,lo.Y+.5f),new(hi.X-.5f,middle),NativeUiPaint.Fade(Mix(NativeUiTheme.GoldBright,NativeUiTheme.GoldDeep,.7f)),1.2f);
+        draw.AddLine(new(hi.X-.5f,middle),new(hi.X-22,hi.Y-.5f),NativeUiPaint.Fade(Mix(NativeUiTheme.GoldDeep,NativeUiTheme.GoldBorder,.6f)),1.2f);
         // inset 0 0 18px rgba(63,214,255,.35) within the plate's rectangular body.
         draw.PushClipRect(innerLo,new(innerHi.X-18,innerHi.Y),true);
         NativeUiPaint.InsetGlow(draw,innerLo,new(innerHi.X+20,innerHi.Y),new ImColor8(63,214,255,(byte)Math.Min(255,89*bright)),18);
@@ -216,7 +219,7 @@ internal sealed partial class MatchScreen
         homeArtwork.Draw("client-mark",markAt,new(nav.Mark,nav.Mark),(byte)Math.Clamp(Math.Round(255*ImGui.GetStyle().Alpha),0,255));
         var label=ClientPrimaryLabel;var size=NativeUiPaint.TrackedSize(NativeUiTheme.DisplayBoldFont,nav.PlayFont,label,.16f);
         var textAt=new float2(markAt.X+nav.Mark+10,MathF.Round(middle-size.Y/2));
-        NativeUiPaint.TextGlow(draw,NativeUiTheme.DisplayBoldFont,nav.PlayFont,textAt,label,.16f,new ImColor8(63,214,255,90),12);
+        NativeUiPaint.TextGlow(draw,NativeUiTheme.DisplayBoldFont,nav.PlayFont,textAt,label,.16f,new ImColor8(63,214,255,60),12);
         NativeUiPaint.Tracked(draw,NativeUiTheme.DisplayBoldFont,nav.PlayFont,textAt,hovered?new ImColor8(255,255,255):NativeUiTheme.AccentInk,label,.16f);
         if(ImGui.IsItemFocused())draw.AddRect(lo-new float2(2,2),hi+new float2(2,2),NativeUiPaint.Fade(NativeUiTheme.Accent),0,ImDrawFlags.None,2);
     }

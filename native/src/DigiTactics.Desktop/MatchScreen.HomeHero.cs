@@ -120,11 +120,12 @@ internal sealed partial class MatchScreen
         var titleLines=WrapText(NativeUiTheme.DisplayBoldFont,titlePx,title.ToUpperInvariant(),textWidth,int.MaxValue,.03f);
         float descriptionWidth=Math.Min(textWidth,NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,14,"0",0)*52);
         var descriptionLines=description.Length>0?WrapText(NativeUiTheme.BodyFont,14,description,descriptionWidth,shortWindow?2:3):[];
-        float eyebrowHeight=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,11),metaHeight=meta.Length>0||offerMeta is not null?Math.Max(NativeUiTheme.LineHeight(NativeUiTheme.BodySemiBoldFont,12.5f),offerMeta is null?0:19):0;
+        float eyebrowHeight=NativeUiTheme.TextLine(11),metaHeight=meta.Length>0||offerMeta is not null?Math.Max(NativeUiTheme.TextLine(12.5f),offerMeta is null?0:19):0;
         float ctaHeight=MathF.Round(14*1.2f+20+4),ctaWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.DisplayBoldFont,14,slide.Cta.ToUpperInvariant(),.12f)+52+4;
         // .hero-txt is a bottom-anchored column (70px above the hero's bottom; 62px when short) with 8px gaps.
         float blockHeight=eyebrowHeight+8+titleLines.Count*titleLine+(metaHeight>0?8+metaHeight:0)+(descriptionLines.Count>0?8+descriptionLines.Count*14*1.45f:0)+8+6+ctaHeight;
-        float y=hi.Y-(shortWindow?62:70)-blockHeight,left=at.X+padX;
+        // .hero-txt and .hero-thumbs are positioned inside the hero's 1px border.
+        float y=hi.Y-1-(shortWindow?62:70)-blockHeight,left=at.X+1+padX;
         float Rise(int child,out float alpha){alpha=(float)HomeCarousel.TextProgress(now-homeCarousel.RenderedAt,child,ClientMotion);return 14*(1-alpha);}
         int index=0;float lift,alpha;
         lift=Rise(index++,out alpha);ImGui.PushStyleVar(ImGuiStyleVar.Alpha,alpha);
@@ -144,7 +145,7 @@ internal sealed partial class MatchScreen
         {
             y+=8;lift=Rise(index++,out alpha);ImGui.PushStyleVar(ImGuiStyleVar.Alpha,alpha);
             if(offerMeta is {} m)HomeHeroOfferMeta(draw,new(left,y+lift),metaHeight,m);
-            else NativeUiPaint.Tracked(draw,NativeUiTheme.BodySemiBoldFont,12.5f,new(left,y+lift),NativeUiTheme.LcText,meta);
+            else NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodySemiBoldFont,12.5f,new(left,y+lift),metaHeight,NativeUiTheme.LcText,meta);
             ImGui.PopStyleVar();y+=metaHeight;
         }
         if(descriptionLines.Count>0)
@@ -158,7 +159,7 @@ internal sealed partial class MatchScreen
         if(ClientButton("homeHeroAction",slide.Cta,ctaWidth,ctaHeight,ClientButtonKind.Cta,14))HomeHeroAction(slide,offerKind,offerId);
         ImGui.PopStyleVar();
         // .hero-thumbs: left 32px (24px), right 16px, bottom 14px, 42px tall, 6px gaps, right-aligned.
-        DrawHomeHeroThumbnails(new(at.X+padX,hi.Y-14-42),new(extent.X-padX-16,42));
+        DrawHomeHeroThumbnails(new(at.X+1+padX,hi.Y-1-14-42),new(extent.X-2-padX-16,42));
         ImGui.End();
     }
     private void HomeHeroOfferMeta(ImDrawListPtr draw,float2 at,float height,(string Rarity,string Kind,int Price,int Full,bool Owned) offer)

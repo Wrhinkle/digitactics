@@ -64,6 +64,13 @@ internal static class NativeUiTheme
     internal static float LineHeight(ImFontPtr font, float pixels)
         => MathF.Ceiling(Ascent(font) * pixels - .01f) + MathF.Ceiling(Descent(font) * pixels - .01f);
 
+    /// <summary>
+    /// style.css sets body { font: 14px/1.35 }: every non-control element inherits line-height 1.35 unless a rule
+    /// overrides it. Buttons and inputs reset to normal (LineHeight).
+    /// </summary>
+    internal const float BodyLineHeight = 1.35f;
+    internal static float TextLine(float pixels) => pixels * BodyLineHeight;
+
     private static readonly Dictionary<uint, (float UnitsPerEm, Dictionary<int, short> Pairs)> kerning = [];
 
     /// <summary>GPOS pair kerning in em for two characters of <paramref name="font"/> (content/fonts/kerning.json).</summary>

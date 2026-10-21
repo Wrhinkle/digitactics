@@ -30,12 +30,14 @@ internal sealed class ProfileUiSmoke : IDisposable
     public void Input(MatchScreen screen)
     {
         if(cooldown-->0)return;
-        if(down) {ImGui.GetIO().AddMouseButtonEvent(0,false);down=false;step++;cooldown=5;return;}
+        if(down) {ImGui.GetIO().AddMouseButtonEvent(0,false);ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,false);down=false;step++;cooldown=5;return;}
+        // The original profile has no Back button; Escape returns to the previous page.
+        if(step==9) {ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,true);down=true;return;}
         if(step==5) {ImGui.GetIO().AddInputCharactersUTF8("Profile% Tamer!"u8);step++;cooldown=5;return;}
         if(step==6) {ImGui.GetIO().AddMousePosEvent(screen.ProfileHistoryCenter.X,screen.ProfileHistoryCenter.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=true;return;}
         if(step is 7 or 8) {var center=step==7?screen.ProfileStatsCenter:screen.ProfileHistoryCenter;ImGui.GetIO().AddMousePosEvent(center.X,center.Y);ImGui.GetIO().AddMouseWheelEvent(0,step==7?-35:-100);step++;cooldown=10;return;}
         if(step>=11)return;
-        string key=step switch {0=>"profile",1=>"profileBanner/profile-3",2=>"profileAvatar",3=>"profileAvatar/"+avatar,4=>"profileName",9=>"closeProfile",10=>"profile",_=>throw new InvalidOperationException("Unexpected profile smoke step.")};
+        string key=step switch {0=>"profile",1=>"profileBanner/profile-3",2=>"profileAvatar",3=>"profileAvatar/"+avatar,4=>"profileName",10=>"profile",_=>throw new InvalidOperationException("Unexpected profile smoke step.")};
         if(!screen.Buttons.TryGetValue(key,out var point))return;
         if(step==1)Console.WriteLine($"Profile banner target {point.X},{point.Y}; window {ImGui.GetIO().DisplaySize.X}x{ImGui.GetIO().DisplaySize.Y}.");
         if(point.X<0 || point.Y<0 || point.X>=ImGui.GetIO().DisplaySize.X || point.Y>=ImGui.GetIO().DisplaySize.Y)throw new InvalidOperationException("Profile control outside window: "+key);
@@ -46,7 +48,7 @@ internal sealed class ProfileUiSmoke : IDisposable
         if(step==2 && cooldown<3 && !overview)
         {
             if(capture is not null)FrameCapture.SaveBitmap(capture,size.X,size.Y);
-            if(!screen.ProfileVisible || screen.ProfileHistoryRows!=8 || screen.ProfilePortraits<9 || screen.ProfileMissions!=2 || screen.DisplayedProfile?.Banner!="profile-3")throw new InvalidOperationException($"Profile overview did not render saved content: visible={screen.ProfileVisible}, history={screen.ProfileHistoryRows}, portraits={screen.ProfilePortraits}, missions={screen.ProfileMissions}, banner={screen.DisplayedProfile?.Banner}");
+            if(!screen.ProfileVisible || screen.ProfileHistoryRows!=8 || screen.ProfilePortraits<9 || screen.DisplayedProfile?.Banner!="profile-3")throw new InvalidOperationException($"Profile overview did not render saved content: visible={screen.ProfileVisible}, history={screen.ProfileHistoryRows}, portraits={screen.ProfilePortraits}, banner={screen.DisplayedProfile?.Banner}");
             if(screen.ProfileContentBottom>ImGui.GetIO().DisplaySize.Y-16)throw new InvalidOperationException("Profile panels extend below the available window.");
             if(screen.ProfileHistoryOverflow>0)throw new InvalidOperationException("Wrapped traits or full composition overflow the match history row.");
             overview=true;
@@ -54,7 +56,7 @@ internal sealed class ProfileUiSmoke : IDisposable
         if(step==3&&cooldown==1&&capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"avatar.bmp"),size.X,size.Y);
         if(step==9 && cooldown<2 && !scrolled)
         {
-            if(screen.ProfileStatsScroll<=0 || screen.ProfileHistoryScroll<=0)throw new InvalidOperationException("Profile statistics/history did not scroll through real mouse input.");
+            if(screen.ProfileStatsOverflow&&screen.ProfileStatsScroll<=0 || screen.ProfileHistoryScroll<=0)throw new InvalidOperationException("Profile statistics/history did not scroll through real mouse input.");
             if(screen.ProfileContentBottom>ImGui.GetIO().DisplaySize.Y-16)throw new InvalidOperationException("Edited profile panels extend below the available window.");
             if(screen.ProfileHistoryOverflow>0)throw new InvalidOperationException("Scrolled match history row contents overflow.");
             if(capture is not null)FrameCapture.SaveBitmap(Path.ChangeExtension(capture,"scrolled.bmp"),size.X,size.Y);scrolled=true;

@@ -28,8 +28,8 @@ internal sealed partial class MatchScreen
     private static float Eyebrow(ImDrawListPtr draw,float2 at,string text,ImColor8? color=null,float px=11)
     {
         string upper=text.ToUpperInvariant();
-        NativeUiPaint.Tracked(draw,NativeUiTheme.DisplayBoldFont,px,at,color??NativeUiTheme.Gold,upper,.16f);
-        return NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,px);
+        NativeUiPaint.TrackedIn(draw,NativeUiTheme.DisplayBoldFont,px,at,NativeUiTheme.TextLine(px),color??NativeUiTheme.Gold,upper,.16f);
+        return NativeUiTheme.TextLine(px);
     }
 
     internal enum BadgeStyle { Plain, New, Owned, Equipped }
@@ -126,12 +126,9 @@ internal sealed partial class MatchScreen
     {
         string upper=title.ToUpperInvariant();
         float noteWidth=note is null?0:NativeUiPaint.TrackedWidth(NativeUiTheme.BodyFont,11,note,0);
-        var size=NativeUiPaint.TrackedSize(NativeUiTheme.DisplayBoldFont,px,upper,.1f);
-        NativeUiPaint.Tracked(draw,NativeUiTheme.DisplayBoldFont,px,at,NativeUiTheme.GoldBright,SocialEllipsis(upper,NativeUiTheme.DisplayBoldFont,px,width-noteWidth-8),.1f);
-        if(note is not null)
-        {
-            var noteSize=NativeUiPaint.TrackedSize(NativeUiTheme.BodyFont,11,note,0);
-            NativeUiPaint.Tracked(draw,NativeUiTheme.BodyFont,11,new(at.X+width-noteWidth,MathF.Round(at.Y+(size.Y-noteSize.Y)/2)),NativeUiTheme.LcMute,note);
-        }
+        float line=NativeUiTheme.TextLine(px);
+        NativeUiPaint.TrackedIn(draw,NativeUiTheme.DisplayBoldFont,px,at,line,NativeUiTheme.GoldBright,SocialEllipsis(upper,NativeUiTheme.DisplayBoldFont,px,width-noteWidth-8),.1f);
+        // align-items: center puts the 11px note's line box in the middle of the heading's.
+        if(note is not null)NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,11,new(at.X+width-noteWidth,at.Y+(line-NativeUiTheme.TextLine(11))/2),NativeUiTheme.TextLine(11),NativeUiTheme.LcMute,note);
     }
 }

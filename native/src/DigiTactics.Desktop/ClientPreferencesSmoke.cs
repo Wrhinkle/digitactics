@@ -29,7 +29,7 @@ internal sealed class ClientPreferencesSmoke
     {
         if (cooldown-- > 0 || step >= 9) return;
         if (down) { ImGui.GetIO().AddMouseButtonEvent(0, false); down = false; step++; cooldown = 4; return; }
-        string key = step switch { 0 or 5 => "settings", 1 => "setMotion", 2 => "setUiSfx", 3 => "setSocial", 4 => "closeSettings", 6=>"settingsMusicVolume",7=>"settingsEffectsVolume",8=>"settingsBoardVolume", _ => throw new InvalidOperationException() };
+        string key = step switch { 0 or 5 => "settings", 1 => "setMotion", 2 => "setUiSfx", 3 => "setSocial", 4 => "homeOverview", 6=>"settingsMusicVolume",7=>"settingsEffectsVolume",8=>"settingsBoardVolume", _ => throw new InvalidOperationException() };
         if (!screen.Buttons.TryGetValue(key, out var point)) return;
         if (point.X < 0 || point.Y < 0 || point.X >= ImGui.GetIO().DisplaySize.X || point.Y >= ImGui.GetIO().DisplaySize.Y) throw new InvalidOperationException("Preference control outside supported window: " + key);
         ImGui.GetIO().AddMousePosEvent(point.X, point.Y); ImGui.GetIO().AddMouseButtonEvent(0, true); down = true;

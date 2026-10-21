@@ -13,8 +13,8 @@ internal sealed partial class MatchScreen
     {
         HomePartnerBounds=(at,at+extent);
         ClientLayer("Home Little Legend",at,extent);var draw=ImGui.GetWindowDrawList();var hi=at+extent;
-        float nameHeight=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,16),eyebrowHeight=NativeUiTheme.LineHeight(NativeUiTheme.DisplayBoldFont,11);
-        float ghostHeight=MathF.Round(12.5f*1.2f+10+2),barHeight=MathF.Round(NativeUiTheme.LineHeight(NativeUiTheme.BodyFont,13));
+        float nameHeight=NativeUiTheme.TextLine(16),eyebrowHeight=NativeUiTheme.TextLine(11);
+        float ghostHeight=MathF.Round(12.5f*1.2f+10+2),barHeight=NativeUiTheme.TextLine(13);
         float playHeight=MathF.Round(16*1.2f+22+2),secondaryHeight=MathF.Round(14*1.2f+14+2);
         float buttonsHeight=8+playHeight+6+secondaryHeight+12,infoHeight=1+8+eyebrowHeight+nameHeight+6+barHeight+6+ghostHeight+8;
         float stageHeight=MathF.Round(Math.Max(110,extent.Y-2-buttonsHeight-infoHeight));
@@ -52,13 +52,13 @@ internal sealed partial class MatchScreen
             draw.AddRectFilled(levelLo,levelLo+new float2(levelWidth,levelHeight),NativeUiPaint.Fade(NativeUiTheme.Navy0));
             draw.AddRect(levelLo,levelLo+new float2(levelWidth,levelHeight),NativeUiPaint.Fade(NativeUiTheme.GoldDeep));
             NativeUiPaint.Tracked(draw,NativeUiTheme.DisplayBoldFont,11,levelLo+new float2(8,2),NativeUiTheme.GoldBright,level);
-            NativeUiPaint.Tracked(draw,NativeUiTheme.DisplayBoldFont,16,new(left,y+eyebrowHeight),NativeUiTheme.GoldBright,SocialEllipsis(LegendEvolution.Form(view.Form).Name,NativeUiTheme.DisplayBoldFont,16,inner-levelWidth-8));
+            NativeUiPaint.TrackedIn(draw,NativeUiTheme.DisplayBoldFont,16,new(left,y+eyebrowHeight),nameHeight,NativeUiTheme.GoldBright,SocialEllipsis(LegendEvolution.Form(view.Form).Name,NativeUiTheme.DisplayBoldFont,16,inner-levelWidth-8));
             y+=eyebrowHeight+nameHeight+6;
             // .li-bar: thin progress | 13px muted count (or the green "Ready to digivolve").
             string count=view.CanDigivolve?"Ready to digivolve":view.Need>0?$"{view.Data}/{view.Need} Digi-Data":"Max level";
             var countFont=view.CanDigivolve?NativeUiTheme.BodyBoldFont:NativeUiTheme.BodyFont;
             float countWidth=NativeUiPaint.TrackedWidth(countFont,13,count,0);
-            NativeUiPaint.Tracked(draw,countFont,13,new(hi.X-13-countWidth,y),view.CanDigivolve?NativeUiTheme.Success:NativeUiTheme.MutedNote,count);
+            NativeUiPaint.TrackedIn(draw,countFont,13,new(hi.X-13-countWidth,y),barHeight,view.CanDigivolve?NativeUiTheme.Success:NativeUiTheme.MutedNote,count);
             Progress(draw,new(left,MathF.Round(y+barHeight/2-3)),new(hi.X-13-countWidth-12,MathF.Round(y+barHeight/2+3)),view.Need>0?(float)view.Data/view.Need:1);
             y+=barHeight+6;
             // .li-btns: small ghost buttons, 4px apart.

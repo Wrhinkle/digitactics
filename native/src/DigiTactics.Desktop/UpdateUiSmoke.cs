@@ -32,7 +32,7 @@ internal sealed class UpdateUiSmoke : IDisposable
         if(step==1&&!screen.Buttons.ContainsKey("restartUpdate"))return; // Wait for the client's real 500ms status polling interval.
         if(step==6 && screen.MatchLoadingVisible)return;
         if(step==6 && screen.Session?.Units.Carousel.Active==true){carousel.Input(screen);cooldown=3;return;}
-        string key=step switch {0=>"deferUpdate",1=>"settings",2=>"closeSettings",3=>"clientPlay",4=>"homePlayConfirm",5=>"homePlayStart",6=>"gameMenu",7=>"requestLeave",8=>"confirmLeave",9=>"restartUpdate",_=>throw new InvalidOperationException("Update UI restart did not close the game.")};
+        string key=step switch {0=>"deferUpdate",1=>"settings",2=>"homeOverview",3=>"clientPlay",4=>"homePlayConfirm",5=>"homePlayStart",6=>"gameMenu",7=>"requestLeave",8=>"confirmLeave",9=>"restartUpdate",_=>throw new InvalidOperationException("Update UI restart did not close the game.")};
         if(!screen.Buttons.TryGetValue(key,out var point)||!screen.RevealHomePlayControl(key))return;
         ImGui.GetIO().AddMousePosEvent(point.X,point.Y);ImGui.GetIO().AddMouseButtonEvent(0,true);down=true;
     }

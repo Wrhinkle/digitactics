@@ -69,7 +69,7 @@ internal sealed class MusicLibraryUiSmoke : IDisposable
             if(new AudioSettingsStore(Path.Combine(directory,"audio-settings.json")).Settings.Source!="builtin") throw new InvalidOperationException("Music source was not saved.");
             matchControls=new(screen,audio,controller,paths.Where(path=>path.EndsWith(".wav",StringComparison.Ordinal)).ToArray());return;
         }
-        string key=step switch {0=>"musicLibrary",1=>"musicOwn",2=>$"musicUse/{first}/planning",3=>$"musicUse/{second}/combat",4 when sourceStep<2=>sourceStep==0?"musicBuiltin":"musicOwn",4=>$"removeMusic/{first}",5=>"cancelRemoveMusic",6=>$"removeMusic/{first}",7=>$"confirmRemoveMusic/{first}",8=>$"removeMusic/{second}",9=>$"confirmRemoveMusic/{second}",10=>"addMusic",11=>"clearMusic",12=>"cancelClearMusic",13=>"clearMusic",14=>"confirmClearMusic",15=>"closeMusicLibrary",16=>"closeSettings",_=>throw new InvalidOperationException()};
+        string key=step switch {0=>"musicLibrary",1=>"musicOwn",2=>$"musicUse/{first}/planning",3=>$"musicUse/{second}/combat",4 when sourceStep<2=>sourceStep==0?"musicBuiltin":"musicOwn",4=>$"removeMusic/{first}",5=>"cancelRemoveMusic",6=>$"removeMusic/{first}",7=>$"confirmRemoveMusic/{first}",8=>$"removeMusic/{second}",9=>$"confirmRemoveMusic/{second}",10=>"addMusic",11=>"clearMusic",12=>"cancelClearMusic",13=>"clearMusic",14=>"confirmClearMusic",15=>"closeMusicLibrary",16=>"homeOverview",_=>throw new InvalidOperationException()};
         if(!screen.Buttons.TryGetValue(key,out var point))
         {
             if(step!=0||screen.SettingsVisible||!screen.Buttons.TryGetValue("settings",out point))return;

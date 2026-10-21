@@ -70,15 +70,15 @@ internal sealed class PostgameSmoke(ContentCatalog catalog,NativeProfileStore pr
                 if(scenario==11)Click("settings");
                 else if(!screen.SocialVisible)Click("socialToggle");
             }
-            if(step==100||step==104||step==108||step==112)ImGui.GetIO().AddMouseButtonEvent(0,false);
-            if(step==103)Click(scenario==11?"closeSettings":"socialLobby");
+            if(step==100||step==104||step==108||step==112){ImGui.GetIO().AddMouseButtonEvent(0,false);ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,false);}
+            if(step==103){if(scenario==11)ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,true);else Click("socialLobby");}
             if(step==107)Click(scenario==11?"homeOverview":"steamBack");
             if(scenario==12&&step==111)Click("homeOverview");
             step++;return;
         }
         if(step==95&&!Click("resultHistory"))return;
-        if(step==96 || step==100 || step==106 || step==110 || step==115)ImGui.GetIO().AddMouseButtonEvent(0,false);
-        if(step==99)Click("closeProfile");
+        if(step==96 || step==100 || step==106 || step==110 || step==115){ImGui.GetIO().AddMouseButtonEvent(0,false);ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,false);}
+        if(step==99)ImGui.GetIO().AddKeyEvent(ImGuiKey.Escape,true);
         if(step==103 && !screen.PostgameStoreButtonVisible)
         {
             var center=(screen.PostgameRewardsMin+screen.PostgameRewardsMax)*.5f;
