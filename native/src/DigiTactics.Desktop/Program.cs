@@ -37,6 +37,14 @@ try
             SweepValue("--sweep-count") is { } total ? int.Parse(total, System.Globalization.CultureInfo.InvariantCulture) : int.MaxValue, SweepValue("--sweep-filter"),
             SweepValue("--sweep-times")?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(pair => pair.Split('=')).ToDictionary(pair => pair[0], pair => double.Parse(pair[1], System.Globalization.CultureInfo.InvariantCulture))); return 0;
     }
+    if (Option("--animation-stability") is { } stabilityDirectory)
+    {
+        string? StabilityValue(string name) { int index = Array.IndexOf(args, name); return index >= 0 && index + 1 < args.Length ? args[index + 1] : null; }
+        if (StabilityValue("--stability-dump") is { } dump) { foreach (string key in dump.Split(',')) AnimationStability.DumpScales(stabilityDirectory, key); return 0; }
+        return AnimationStability.Run(stabilityDirectory, StabilityValue("--stability-filter"),
+            StabilityValue("--stability-start") is { } first ? int.Parse(first, System.Globalization.CultureInfo.InvariantCulture) : 0,
+            StabilityValue("--stability-count") is { } total ? int.Parse(total, System.Globalization.CultureInfo.InvariantCulture) : int.MaxValue);
+    }
     if (Option("--model-board-audit") is { } modelBoardDirectory)
     {
         string AuditValue(string name) { int index = Array.IndexOf(args, name); return index >= 0 && index + 1 < args.Length ? args[index + 1] : throw new ArgumentException("Missing " + name); }

@@ -31,11 +31,27 @@ internal sealed class ParityCaptureDriver
     private bool mouseDown, keyDown, ready, postgameReady;
     private double combatElapsed;
     private string phase = "start";
+    // combat-sequence:<line>:<stage>:<frames>[:<start seconds>] puts the line on the first combat board and saves
+    // one PNG per frame (capture_000.png ...) for animation review.
+    private readonly string? sequenceLine;
+    private readonly int sequenceStage, sequenceFrames;
+    private readonly double sequenceStart;
+    private bool sequencePlaced;
+    private int sequenceSaved;
     public string Pending => $"parity {state}: {phase}";
 
     public ParityCaptureDriver(string state, ContentCatalog catalog, NativeProfileStore? profile, int settleFrames, double combatSeconds)
     {
-        if (!States.Contains(state)) throw new ArgumentException($"Unknown parity state '{state}'. Choose: {string.Join(", ", States)}");
+        if (state.StartsWith("combat-sequence:", StringComparison.Ordinal))
+        {
+            var parts = state.Split(':');
+            if (parts.Length is < 4 or > 5) throw new ArgumentException("Use combat-sequence:<line>:<stage>:<frames>[:<start seconds>].");
+            sequenceLine = parts[1]; sequenceStage = int.Parse(parts[2], System.Globalization.CultureInfo.InvariantCulture);
+            sequenceFrames = int.Parse(parts[3], System.Globalization.CultureInfo.InvariantCulture);
+            sequenceStart = parts.Length == 5 ? double.Parse(parts[4], System.Globalization.CultureInfo.InvariantCulture) : 0;
+            state = "match-combat"; settleFrames = 0; combatSeconds = sequenceStart;
+        }
+        if (!States.Contains(state) && !state.StartsWith("combat-sequence:", StringComparison.Ordinal)) throw new ArgumentException($"Unknown parity state '{state}'. Choose: {string.Join(", ", States)}");
         if (profile is null && state is "collection-legends" or "collection-emotes" or "collection-boards" or "collection-killscreens" or "collection-dances" or "collection-soundboard" or "collection-elimsounds" or "store" or "loot" or "farm" or "profile" or "postgame")
             throw new ArgumentException($"Parity state '{state}' requires an isolated --profile-directory.");
         this.state = state; this.catalog = catalog; this.profile = profile; this.settleFrames = settleFrames; this.combatSeconds = combatSeconds;
@@ -152,6 +168,7 @@ internal sealed class ParityCaptureDriver
         {
             case MatchPhase.Planning:
                 if (state == "match-planning") { ready = true; return; }
+                if (sequenceLine is not null && !sequencePlaced) { PlaceSequence(session); sequencePlaced = true; cooldown = 10; return; }
                 Press(ImGuiKey.Space); combatElapsed = 0; return;
             case MatchPhase.Combat:
                 if (state == "match-combat")
@@ -166,12 +183,35 @@ internal sealed class ParityCaptureDriver
         }
     }
 
+    private void PlaceSequence(MatchPlanningSession session)
+    {
+        var state = session.State; var player = state.Players[0];
+        var line = state.Rules.Lines.Concat(state.Rules.ExtraLines).FirstOrDefault(l => l.Id == sequenceLine)
+            ?? state.Rules.Lines.Concat(state.Rules.ExtraLines).FirstOrDefault(l => l.Id.Contains(sequenceLine!, StringComparison.OrdinalIgnoreCase))
+            ?? throw new ArgumentException($"No line '{sequenceLine}' in {state.Rules.Id}.");
+        foreach (var old in player.Roster.Entries.ToArray()) player.Roster.Remove(old.Unit.Id, false);
+        foreach (int column in new[] { 2, 4 })
+        {
+            var unit = state.CreateUnit(line.Id, sequenceStage);
+            player.Roster.AddToBench(unit); player.Roster.Move(UnitSpot.Bench(0), UnitSpot.Board(column, 4), false, () => 9);
+        }
+        phase = $"placed {line.Id} stage {sequenceStage}";
+    }
+
     public bool Verify(MatchScreen screen, int2 size, string? capture)
     {
         if (!ready) return false;
         if (settled < 0) settled = frame;
         if (frame - settled < settleFrames) return false;
         string path = capture ?? throw new ArgumentException("--parity-capture requires --capture <file.png>.");
+        if (sequenceLine is not null)
+        {
+            string numbered = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, $"{Path.GetFileNameWithoutExtension(path)}_{sequenceSaved:D3}.png");
+            FrameCapture.SavePng(numbered, size.X, size.Y);
+            if (++sequenceSaved < sequenceFrames) return false;
+            Console.WriteLine($"Parity sequence {sequenceLine}: {sequenceSaved} frames at {size.X}x{size.Y} ({phase})");
+            return true;
+        }
         if (string.Equals(Path.GetExtension(path), ".bmp", StringComparison.OrdinalIgnoreCase)) FrameCapture.SaveBitmap(path, size.X, size.Y);
         else FrameCapture.SavePng(path, size.X, size.Y);
         Console.WriteLine($"Parity capture {state}: {size.X}x{size.Y} after {frame} frames ({phase}) -> {Path.GetFullPath(path)}");
