@@ -6,13 +6,13 @@
 
 A free, unofficial Digimon autobattler made for fun. Buy Digimon, combine copies to evolve them, build trait synergies, equip items and position your team before automatic battles.
 
-**Digi-Tactics 2.0.1 is the current native Windows build.** The native edition uses [BRUTAL](https://github.com/ahwootech/BRUTAL) for its Windows desktop foundation, with C# gameplay and native graphics, audio and UI. No Electron or browser runs inside the native game. Existing Electron 1.x releases and their download instructions remain separate below.
+**Digi-Tactics 2.0.2 is the current native Windows build.** The native edition uses [BRUTAL](https://github.com/ahwootech/BRUTAL) for its Windows desktop foundation, with C# gameplay and native graphics, audio and UI. No Electron or browser runs inside the native game. Existing Electron 1.x releases and their download instructions remain separate below.
 
 **[Release downloads](https://github.com/Wrhinkle/digitactics/releases)** | [Watch the trailer](media/digi-tactics-trailer.mp4) | [Full credits](CREDITS.md) | [Report a bug](https://github.com/Wrhinkle/digitactics/issues)
 
 ## Start the native edition
 
-Use the full **[DigiTactics-native-2.0.1-win-x64.zip](https://github.com/Wrhinkle/digitactics/releases/download/native-v2.0.1/DigiTactics-native-2.0.1-win-x64.zip)** (or the matching newer version on the release page). GitHub's automatic **Source code** archives and the `native-update` ZIP are not full installations.
+Use the full **[DigiTactics-native-2.0.2-win-x64.zip](https://github.com/Wrhinkle/digitactics/releases/download/native-v2.0.2/DigiTactics-native-2.0.2-win-x64.zip)** (or the matching newer version on the release page). GitHub's automatic **Source code** archives and the `native-update` ZIP are not full installations.
 
 1. Extract the entire ZIP to a local folder. Keep **`DigiTactics.Launcher.exe`**, its accompanying files and the **`app`** and **`launcher`** folders together. Start **`DigiTactics.Launcher.exe`** after extraction.
 2. To bring over an existing save, follow the import steps below **before starting a match or changing settings**.
