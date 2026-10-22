@@ -195,7 +195,13 @@ internal sealed partial class MatchScreen
     // CalcTextSize rounds each call to whole pixels. Raw font advances keep a
     // label's measured width equal to the sum of its words and spaces, so tight
     // pills cannot gain an accidental extra line from repeated rounding.
-    private static float CodexDetailTextWidth(string value,float font)=>NativeUiTheme.BodyFont.CalcTextSizeA(font,float.MaxValue,0,value).X;
+    /// <summary>Advance width with the GPOS pair kerning Chromium applies, so runs wrap where the original's do.</summary>
+    private static float CodexDetailTextWidth(string value,float font)
+    {
+        float width=NativeUiTheme.BodyFont.CalcTextSizeA(font,float.MaxValue,0,value).X,em=font*2048f/2478;
+        for(int i=1;i<value.Length;i++)width+=NativeUiTheme.Kerning(NativeUiTheme.BodyFont,value[i-1],value[i])*em;
+        return width;
+    }
 
     private void CodexRecordDetailText(float2 at,float width,float height)
     {

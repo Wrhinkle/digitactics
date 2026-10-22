@@ -73,14 +73,14 @@ internal sealed partial class MatchScreen
             CollectionCategoryTabs(collection);
             string kind=CosmeticCollection.Kinds[collectionKind];
             var filtered=CollectionFilters(collection,kind);
-            ImGui.BeginChild("collectionItems"u8,new(0,0),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground|ImGuiWindowFlags.NoScrollbar);
-            CollectionOverlayScrollbar();
+            ImGui.BeginChild("collectionItems"u8,new(0,0),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
             if(collectionResetScroll){ImGui.SetScrollY(0);collectionResetScroll=false;}
             CollectionListBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());
             try
             {
                 if(filtered.Length==0)CollectionEmpty("Nothing matches these filters.");
                 else CollectionCardGrid(collection,kind,filtered);
+                CssScrollbar();
             }
             finally{ImGui.EndChild();}
         }
@@ -91,29 +91,23 @@ internal sealed partial class MatchScreen
         try{SelectedCosmetic(collection,CosmeticCollection.Kinds[collectionKind],true);}
         finally{ImGui.EndChild();}
     }
-    private static readonly Dictionary<string,(float Scroll,double Time)> overlayScrollSeen=[];
     /// <summary>
-    /// The 8px ::-webkit-scrollbar thumb drawn over the grid's right padding, so it never narrows the columns.
-    /// The original's reference renders show no scrollbar, so the thumb appears only while the pointer is near it
-    /// (the list's right 24px) or for a moment after the list scrolls.
+    /// theme.js ::-webkit-scrollbar over the list's own scrollbar gutter: an 8px rgba(1,10,19,.5) track and a square
+    /// --lc-gold-5 thumb inset by its 2px transparent border. Electron on Windows shows classic scrollbars, which take
+    /// layout width, so the list keeps ImGui's scrollbar (it reserves the gutter and handles dragging); this repaints
+    /// it last so list backgrounds drawn after Begin cannot cover it.
     /// </summary>
-    private static void CollectionOverlayScrollbar()
+    private static void CssScrollbar()
     {
         float max=ImGui.GetScrollMaxY();if(max<=0)return;
         var lo=ImGui.GetWindowPos();var extent=ImGui.GetWindowSize();float scroll=ImGui.GetScrollY();
-        if(!OverlayScrollbarVisible($"{lo.X:0},{lo.Y:0}",scroll,new(lo.X+extent.X-24,lo.Y),lo+extent))return;
-        float thumb=Math.Max(24,extent.Y*extent.Y/(extent.Y+max)),top=lo.Y+(extent.Y-thumb)*scroll/max;
+        float gutter=ImGui.GetStyle().ScrollbarSize,thumb=Math.Max(ImGui.GetStyle().GrabMinSize,extent.Y*extent.Y/(extent.Y+max)),top=lo.Y+(extent.Y-thumb)*scroll/max;
         var draw=ImGui.GetWindowDrawList();
         draw.PushClipRect(lo,lo+extent,false);
-        draw.AddRectFilled(new(lo.X+extent.X-6,top+2),new(lo.X+extent.X-2,top+thumb-2),S.Gold5);
+        draw.AddRectFilled(new(lo.X+extent.X-gutter,lo.Y),lo+extent,new ImColor8(1,10,19,128));
+        bool hot=ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem)&&ImGui.IsMouseHoveringRect(new(lo.X+extent.X-gutter,lo.Y),lo+extent,false);
+        draw.AddRectFilled(new(lo.X+extent.X-gutter+2,top+2),new(lo.X+extent.X-2,top+thumb-2),hot?S.Gold4:S.Gold5);
         draw.PopClipRect();
-    }
-    private static bool OverlayScrollbarVisible(string key,float scroll,float2 gutterMin,float2 gutterMax)
-    {
-        double now=ImGui.GetTime();
-        if(!overlayScrollSeen.TryGetValue(key,out var seen)){overlayScrollSeen[key]=(scroll,double.NegativeInfinity);seen=overlayScrollSeen[key];}
-        else if(seen.Scroll!=scroll)overlayScrollSeen[key]=seen=(scroll,now);
-        return ImGui.IsWindowHovered(ImGuiHoveredFlags.ChildWindows)&&ImGui.IsMouseHoveringRect(gutterMin,gutterMax,false)||now-seen.Time<.8;
     }
     /// <summary>.empty: centred muted text in a dashed gold-5 frame spanning the grid.</summary>
     private static void CollectionEmpty(string text)

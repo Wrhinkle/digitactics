@@ -394,7 +394,9 @@ async function modelPoses(run, unit, size, results) {
   const server = await startServer();
   let browser;
   try {
-    browser = await chromium.launch({ headless: true, args: ['--use-gl=angle', '--use-angle=swiftshader', '--mute-audio', '--autoplay-policy=no-user-gesture-required'] });
+    // Playwright adds --hide-scrollbars to headless Chromium; the Electron app shows theme.js's styled scrollbars, which
+    // also take layout width, so keep them.
+    browser = await chromium.launch({ headless: true, ignoreDefaultArgs: ['--hide-scrollbars'], args: ['--use-gl=angle', '--use-angle=swiftshader', '--mute-audio', '--autoplay-policy=no-user-gesture-required'] });
     const shotPath = (size) => (id) => path.join(OUT, id, size.id, 'electron.png');
     for (const size of SIZES) {
       const isolated = async (fn, opts) => {

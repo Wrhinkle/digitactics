@@ -55,13 +55,14 @@ internal sealed partial class MatchScreen
         if(!visible)return false;
         var at=ImGui.GetWindowPos();var end=at+ImGui.GetWindowSize();var draw=ImGui.GetWindowDrawList();
         if(!trait)draw.AddRectFilledMultiColor(at+new float2(1,1),end-new float2(1,1),CodexCardTop,CodexCardTop,CodexNavy,CodexNavy);
-        if(accent is {} tint&&trait)
+        if(accent is {} solid&&trait)
         {
+            // color-mix(in srgb, var(--tc) 70%, transparent)
+            var tint=new ImColor8(solid.AsByte4().X,solid.AsByte4().Y,solid.AsByte4().Z,(byte)Math.Round(solid.AsByte4().W*.7f));
             // border-left: 3px on a rounded box: the colour runs around both left corners, tapering into the 1px top and bottom borders.
             draw.PushClipRect(at,new(at.X+9,end.Y),true);
             draw.AddRect(at+new float2(1.5f,.5f),end-new float2(-6,.5f),tint,7,ImDrawFlags.None,3);
             draw.PopClipRect();
-            draw.PushClipRect(at,new(at.X+3,end.Y),true);draw.AddRectFilled(at+new float2(0,7),new(at.X+3,end.Y-7),tint);draw.PopClipRect();
         }
         else if(accent is {} stripe)draw.AddRectFilled(at+new float2(1,1),topStripe?new(end.X-1,at.Y+4):new(at.X+4,end.Y-1),stripe);
         return true;

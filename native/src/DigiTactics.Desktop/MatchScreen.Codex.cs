@@ -115,12 +115,16 @@ internal sealed partial class MatchScreen
         if(codexUnit is null)codexModalLine=null;
         if(!data.Tabs.Contains(codexTab))codexTab="traits";
         float pageTop=ClientHomeVisible?ClientPageTop+12:16,width=Math.Min(1720,size.X-48),left=(size.X-width)/2;
-        CodexBeginWindow("Codex",new(left,pageTop),new(width,size.Y-pageTop-16));
+        // No window padding: the head is placed explicitly and .cx-body spans the window inside its 1px border.
+        CodexBeginWindow("Codex",new(left,pageTop),new(width,size.Y-pageTop-16),padding:new float2(0,0));
         ImGui.BeginDisabled(codexUnit is not null);
         CodexHead(data,new(left,pageTop),width);
-        // Like the collection grid, the scrollbar overlays the right padding instead of narrowing the cards.
-        ImGui.SetCursorScreenPos(ImGui.GetCursorScreenPos()+new float2(2,0));
-        ImGui.BeginChild("Codex body"u8,new(-2,0),ImGuiChildFlags.None,ImGuiWindowFlags.NoScrollbar);
+        // .cx-body: overflow-y auto with padding 14px 16px 24px; the scrollbar sits at the window's right border and the
+        // bottom padding is inside the scrolled content.
+        ImGui.SetCursorScreenPos(new(left+1,ImGui.GetCursorScreenPos().Y));
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(16,0));
+        ImGui.BeginChild("Codex body"u8,new(width-2,size.Y-16-1-ImGui.GetCursorScreenPos().Y),ImGuiChildFlags.AlwaysUseWindowPadding);
+        ImGui.PopStyleVar();
         CodexBodyMin=ImGui.GetWindowDrawList().GetClipRectMin();CodexBodyMax=ImGui.GetWindowDrawList().GetClipRectMax();
         if(codexResetScroll){ImGui.SetScrollY(0);codexResetScroll=false;}
         switch(codexTab)
@@ -134,7 +138,7 @@ internal sealed partial class MatchScreen
         }
         if(CodexRows==0){ImGui.Spacing();CodexHeading("Nothing matches these filters.");CodexText("Search: \""+codexSearch.ToString()+"\"",CodexMuted);}
         CodexBodyScrollY=ImGui.GetScrollY();CodexBodyScrollMaxY=ImGui.GetScrollMaxY();
-        CollectionOverlayScrollbar();
+        CssScrollbar();
         ImGui.EndChild();ImGui.EndDisabled();
         if(codexUnit is not null)ImGui.GetWindowDrawList().AddRectFilled(new(left,pageTop),new(left+width,size.Y-16),new ImColor8(5,7,12,175));
         CodexEndWindow();

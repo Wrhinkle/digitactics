@@ -28,7 +28,8 @@ internal sealed partial class MatchScreen
         if(!CodexBeginCard("Trait card",color,compact:live,trait:true)){CodexEndCard();ImGui.PopID();return;}
         int count=live?codexCounts.GetValueOrDefault(trait.Id):0,next=trait.Breakpoints.FirstOrDefault(bp=>bp.Count>count)?.Count??0;
         int activeThreshold=live?trait.Breakpoints.LastOrDefault(bp=>bp.Count<=count)?.Count??0:0;
-        var origin=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X,y=30;
+        // .cx-trait padding is 8px beside a 3px left border and a 1px right one: 2px more room on the right than the left inset.
+        var origin=ImGui.GetCursorScreenPos();float width=ImGui.GetContentRegionAvail().X+(live?0:2),y=30;
         var draw=ImGui.GetWindowDrawList();var rgb=color.AsByte4();
         // The source card uses a 30px header, compact breakpoint rows and 30px
         // unit chips. Position those groups explicitly; default ImGui row gaps
@@ -42,8 +43,9 @@ internal sealed partial class MatchScreen
         string numerator=count.ToString(),denominator=next>0?"/"+next:"";
         float countWidth=live?CodexLineMeasure(numerator,19,true).X+CodexLineMeasure(denominator,14,true).X:0;
         float titleWidth=Math.Max(1,width-35-(live?countWidth+8:0));
-        CodexLineLabel(origin+new float2(35,0),titleWidth,trait.Name,17,color,bold:true);
-        CodexLineLabel(origin+new float2(35,17),titleWidth,trait.Kind.ToUpperInvariant(),13,CodexMuted,bold:true);
+        // .cx-tn b 13px, .cx-kind 10px bold (ImGui sizes are CSS px x 1.21 for Inter).
+        CodexLineLabel(origin+new float2(35,0),titleWidth,trait.Name,15.73f,color,bold:true);
+        CodexLineLabel(origin+new float2(35,17),titleWidth,trait.Kind.ToUpperInvariant(),12.1f,CodexMuted,bold:true);
         if(live)
         {
             var at=origin+new float2(width-countWidth,5);float numeratorWidth=CodexLineMeasure(numerator,19,true).X;
@@ -53,7 +55,8 @@ internal sealed partial class MatchScreen
         }
         if(trait.Description.Length>0)
         {
-            y+=5;y+=CodexDetailParagraph(origin+new float2(0,y),width,15,true,(trait.Description,CodexBody));
+            // .cx-desc: 12px on a 1.3 line.
+            y+=5;y+=CodexDetailParagraph(origin+new float2(0,y),width,14.52f,15.6f,true,(trait.Description,CodexBody));
         }
         foreach(string note in trait.Notes)
         {
@@ -64,11 +67,11 @@ internal sealed partial class MatchScreen
         foreach(var point in trait.Breakpoints)
         {
             bool active=live&&count>=point.Count;var at=origin+new float2(0,y);
-            float height=Math.Max(16.2f,CodexDetailParagraph(default,width-30,15,16.2f,false,(point.Text,CodexMuted)))+2;
+            float height=Math.Max(16.2f,CodexDetailParagraph(default,width-30,14.52f,16.2f,false,(point.Text,CodexMuted)))+2;
             if(active&&point.Count==activeThreshold)draw.AddRectFilled(at,at+new float2(width,height),new ImColor8(rgb.X,rgb.Y,rgb.Z,36),4);
             draw.AddRectFilled(at+new float2(0,2),at+new float2(20,17),active?color:new ImColor8(28,39,62),4);
-            CodexLineLabel(at+new float2(0,2.5f),20,point.Count.ToString(),14,active?CodexNavy:CodexMuted,bold:true,center:true);
-            CodexDetailParagraph(at+new float2(26,1),width-30,15,16.2f,true,(point.Text,active?CodexInk:CodexMuted));
+            CodexLineLabel(at+new float2(0,2.5f),20,point.Count.ToString(),13.3f,active?CodexNavy:CodexMuted,bold:true,center:true);
+            CodexDetailParagraph(at+new float2(26,1),width-30,14.52f,16.2f,true,(point.Text,active?CodexInk:CodexMuted));
             y+=height+2;
         }
         if(trait.Breakpoints.Length>0)y-=2;

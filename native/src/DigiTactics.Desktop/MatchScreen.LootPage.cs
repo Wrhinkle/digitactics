@@ -36,8 +36,8 @@ internal sealed partial class MatchScreen
             try{LootStage(collection,stageWidth,full.Y);}
             finally{ImGui.EndChild();}
             ImGui.SetCursorScreenPos(origin+new float2(stageWidth+12,0));
-            ImGui.BeginChild("Incubator inventory"u8,new(inventoryWidth,full.Y),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground|ImGuiWindowFlags.NoScrollbar);
-            try{LootInventory(collection,inventoryWidth);}
+            ImGui.BeginChild("Incubator inventory"u8,new(inventoryWidth,full.Y),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
+            try{LootInventory(collection,inventoryWidth);CssScrollbar();}
             finally{ImGui.EndChild();}
         }
         finally{ImGui.PopStyleVar(2);ImGui.PopStyleColor(2);}
@@ -164,11 +164,11 @@ internal sealed partial class MatchScreen
     {
         var at=ImGui.GetWindowPos();var extent=ImGui.GetWindowSize();var draw=ImGui.GetWindowDrawList();
         IncubatorInventoryBounds=(at,at+extent);
-        CollectionOverlayScrollbar();
         var lo=at;var content=at-new float2(0,ImGui.GetScrollY());
         draw.AddRectFilledMultiColor(lo,lo+extent,new ImColor8(10,20,40,235),new ImColor8(10,20,40,235),new ImColor8(1,10,19,245),new ImColor8(1,10,19,245));
         draw.AddRect(lo,lo+extent,S.Gold5);
-        float x=content.X+13,inner=width-26,y=content.Y+13;
+        // The scrollbar gutter narrows the panel's content, as the classic scrollbar does in the original.
+        float x=content.X+13,inner=width-26-(ImGui.GetScrollMaxY()>0?ImGui.GetStyle().ScrollbarSize:0),y=content.Y+13;
         y=MysteryLootControls(collection,new(x,y),inner);
         var tile=S.Display(12.5f,.1f);var count=S.Body(11);
         void Heading(string text,int n)

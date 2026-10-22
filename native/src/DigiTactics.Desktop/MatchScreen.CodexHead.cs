@@ -21,8 +21,11 @@ internal sealed partial class MatchScreen
         float titleWidth=title.Width(heading);
         var tabs=data.Tabs.Select(tab=>(Id:tab,Label:tab=="wisps"?"Data Wisps":CodexTitle(tab),Count:tab=="rules"?null:CodexCount(tab).ToString())).ToArray();
         float TabWidth((string Id,string Label,string? Count) t)=>22+tabType.Width(t.Label)+(t.Count is null?0:4+countType.Width(t.Count));
-        const float searchWidth=200,closeWidth=70,rowHeight=30;
-        float tabsLeft=14+titleWidth+12,tabsRight=width-14-searchWidth-8-closeWidth-12;
+        // Tab buttons and .cx-search are 31px: 14px text on the 1.35 line (18.9) or line-height normal, 12px padding, 2px border.
+        const float searchWidth=200,closeWidth=70,rowHeight=31;
+        // theme.js hides .cx-close while the Codex is docked as a client page (the top nav leaves it); a match keeps Close.
+        float closeSpace=ClientHomeVisible?0:closeWidth+8;
+        float tabsLeft=14+titleWidth+12,tabsRight=width-14-searchWidth-closeSpace-12;
         // Tabs sit beside the title; when they do not fit they wrap onto rows below it.
         bool below=tabs.Sum(TabWidth)+4*(tabs.Length-1)>tabsRight-tabsLeft;
         if(below){tabsLeft=14;tabsRight=width-14;}
@@ -33,8 +36,8 @@ internal sealed partial class MatchScreen
         draw.AddRectFilledMultiColor(top,top+new float2(width-2,headHeight),new ImColor8(10,20,40,242),new ImColor8(10,20,40,242),new ImColor8(1,10,19,179),new ImColor8(1,10,19,179));
         draw.AddLine(new(top.X,top.Y+headHeight-.5f),new(top.X+width-2,top.Y+headHeight-.5f),S.Gold5);
         S.TextIn(draw,new(window.X+14,top.Y+10),rowHeight,S.Gold1,heading,title);
-        // .cx-search, then the native Back/Close control
-        var searchAt=new float2(window.X+width-14-closeWidth-8-searchWidth,top.Y+10);
+        // .cx-search, then .cx-close
+        var searchAt=new float2(window.X+width-14-closeSpace-searchWidth,top.Y+10);
         ImGui.SetCursorScreenPos(searchAt);ImGui.SetNextItemWidth(searchWidth);
         var body=S.Body(14);ImGui.PushFont(body.Font,body.Size);
         ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize,0);ImGui.PushStyleVar(ImGuiStyleVar.FramePadding,new float2(10,(rowHeight-body.Size)*.5f));
@@ -46,7 +49,7 @@ internal sealed partial class MatchScreen
         codexSearchFocused=active;Buttons["codexSearch"]=(ImGui.GetItemRectMin()+ImGui.GetItemRectMax())*.5f;
         draw.AddRect(searchAt,searchAt+new float2(searchWidth,rowHeight),active?S.Gold2:S.Gold5);
         if(active)draw.AddRect(searchAt-new float2(2,2),searchAt+new float2(searchWidth+2,rowHeight+2),new ImColor8(200,170,110,46),thickness:2);
-        if(CosmeticButton("closeCodex",new(searchAt.X+searchWidth+8,searchAt.Y),new(closeWidth,rowHeight),ClientHomeVisible?"Back":"Close",tabType))CloseCodexFull();
+        if(!ClientHomeVisible&&CosmeticButton("closeCodex",new(searchAt.X+searchWidth+8,searchAt.Y),new(closeWidth,rowHeight),"Close",tabType))CloseCodexFull();
         // .cx-tabs
         float y=top.Y+10+(below?rowHeight+4:0);
         foreach(var row in rows)
@@ -72,7 +75,8 @@ internal sealed partial class MatchScreen
             y+=rowHeight+4;
         }
         ImGui.SetCursorScreenPos(new(window.X+16,top.Y+headHeight+14));
-        CodexSetStrip(data,width-32);
+        // .cx-sets scrolls under its right padding, so the strip is visible up to the window border.
+        CodexSetStrip(data,width-17);
         CodexFilterSegment(window,width);
     }
     /// <summary>.cx-sets: 170x58 art cards, desaturated until hovered or chosen, bottom-aligned name and trait count.</summary>

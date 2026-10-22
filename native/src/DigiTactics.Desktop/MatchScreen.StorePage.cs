@@ -36,10 +36,9 @@ internal sealed partial class MatchScreen
         StoreTabs(collection,MatchCosmeticsVisible?extent.X:extent.X-2);
         var bodyAt=ImGui.GetCursorScreenPos();
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(0,0));ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing,new float2(0,0));
-        ImGui.BeginChild("collectionItems"u8,new(MatchCosmeticsVisible?extent.X:extent.X-2,origin.Y+extent.Y-1-bodyAt.Y),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground|ImGuiWindowFlags.NoScrollbar);
+        ImGui.BeginChild("collectionItems"u8,new(MatchCosmeticsVisible?extent.X:extent.X-2,origin.Y+extent.Y-1-bodyAt.Y),ImGuiChildFlags.None,ImGuiWindowFlags.NoBackground);
         try
         {
-            CollectionOverlayScrollbar();
             if(collectionResetScroll){ImGui.SetScrollY(0);collectionResetScroll=false;}
             CollectionListBounds=(ImGui.GetWindowPos(),ImGui.GetWindowPos()+ImGui.GetWindowSize());CollectionDetailBounds=CollectionListBounds;
             // .dts-body padding: 14px 16px 24px
@@ -59,7 +58,7 @@ internal sealed partial class MatchScreen
             }
             ImGui.Dummy(new(width,0));
         }
-        finally{ImGui.EndChild();ImGui.PopStyleVar(2);}
+        finally{CssScrollbar();ImGui.EndChild();ImGui.PopStyleVar(2);}
     }
     /// <summary>.dts-head over store-hero art: STORE/LOCKER modes, daily mission chips and the Bits wallet with History.</summary>
     private void StoreHeader(CosmeticCollection collection,float width)
