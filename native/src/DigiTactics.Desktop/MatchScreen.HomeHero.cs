@@ -126,6 +126,9 @@ internal sealed partial class MatchScreen
         float blockHeight=eyebrowHeight+8+titleLines.Count*titleLine+(metaHeight>0?8+metaHeight:0)+(descriptionLines.Count>0?8+descriptionLines.Count*14*1.45f:0)+8+6+ctaHeight;
         // .hero-txt and .hero-thumbs are positioned inside the hero's 1px border.
         float y=hi.Y-1-(shortWindow?62:70)-blockHeight,left=at.X+1+padX;
+        // .hero-txt children animate in (transform), so Chromium draws the eyebrow, title, meta and description with
+        // grayscale anti-aliasing; the CTA below keeps ClearType.
+        SubpixelText.Grayscale(new(left,y-14),new(left+textWidth,y+blockHeight-ctaHeight-6));
         float Rise(int child,out float alpha){alpha=(float)HomeCarousel.TextProgress(now-homeCarousel.RenderedAt,child,ClientMotion);return 14*(1-alpha);}
         int index=0;float lift,alpha;
         lift=Rise(index++,out alpha);ImGui.PushStyleVar(ImGuiStyleVar.Alpha,alpha);

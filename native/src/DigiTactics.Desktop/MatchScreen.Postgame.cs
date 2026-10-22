@@ -96,6 +96,8 @@ internal sealed partial class MatchScreen
         if (!PostgamePending || Session is null || showProfile || showCollection || showFarm || showAbout
             || showSettings || showSaveData || showHomePlay || showMultiplayer || codexFull) return false;
         PostgameVisible = true; PostgameStandings = PostgameVisibleStandings = PostgameUnitPortraits = PostgameMissionCount = PostgameAvatarCount = 0;
+        // The result screen rises in with a CSS animation, so Chromium composites it (and the bar above) with grayscale text.
+        SubpixelText.Grayscale(new(0,0),new(size.X,size.Y));
         postgameControls.Clear();
         bool outNow = !IsSpectating && !Human.Alive && PostgameStillPlaying;
         int place = Human.Placement;
@@ -433,8 +435,10 @@ internal sealed partial class MatchScreen
                 // .dts-award-f: wallet and the small Store button.
                 ResultAdvance(8);var at=ResultCursor;float width=ResultWidth;
                 float x=ClientCss.Text(draw,ClientCss.Face.Body,13,at+new float2(0,3.3f),ClientCss.Muted,"Wallet:",0,17.55f);
-                BitIcon(draw,at+new float2(x+4+5.5f,3.3f+9.5f));
-                ClientCss.Text(draw,ClientCss.Face.BodyBold,13,at+new float2(x+4+15,3.3f),ClientCss.Muted,(profile?.Progress.Bits ?? 0).ToString(),0,17.55f);
+                // "Wallet: <i.bit> <b>n</b>": a space, the 11px gem with 1px/3px margins, another space.
+                float space=ClientCss.Width(ClientCss.Face.Body,13," ");
+                BitIcon(draw,at+new float2(x+space+1+5.5f,3.3f+9.5f));
+                ClientCss.Text(draw,ClientCss.Face.BodyBold,13,at+new float2(x+space+1+11+3+space,3.3f),ClientCss.Muted,(profile?.Progress.Bits ?? 0).ToString(),0,17.55f);
                 float storeWidth=ClientCss.Width(ClientCss.Face.BodySemi,12,"Store")+22+2;var storeAt=at+new float2(width-storeWidth,0);
                 postgameControls["resultStore"]=(storeAt,storeAt+new float2(storeWidth,24.2f));
                 if(SmallButton("resultStore","Store",storeAt,new(storeWidth,24.2f)))

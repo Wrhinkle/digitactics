@@ -87,6 +87,8 @@ internal sealed partial class MatchScreen
         ImGui.BeginChild("Codex sets"u8,new(width,60),ImGuiChildFlags.None,ImGuiWindowFlags.HorizontalScrollbar|ImGuiWindowFlags.NoScrollbar|ImGuiWindowFlags.NoBackground);
         ImGui.PopStyleVar(2);
         var draw=ImGui.GetWindowDrawList();var origin=ImGui.GetCursorScreenPos()+new float2(1,1);float x=0;
+        // The tiles' CSS filter composites them, so Chromium draws their labels with grayscale anti-aliasing.
+        SubpixelText.Grayscale(start,start+new float2(width,60));
         var nameType=S.Display(14,.06f);var small=S.Body(10,false,.04f);
         foreach(var set in codexCatalog.Value.Variants.GroupBy(v=>v.SetId).Select(group=>group.FirstOrDefault(v=>v.Pace==data.Pace)??group.First()))
         {

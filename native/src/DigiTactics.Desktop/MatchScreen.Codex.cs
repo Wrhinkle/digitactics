@@ -123,7 +123,7 @@ internal sealed partial class MatchScreen
         // bottom padding is inside the scrolled content.
         ImGui.SetCursorScreenPos(new(left+1,ImGui.GetCursorScreenPos().Y));
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding,new float2(16,0));
-        ImGui.BeginChild("Codex body"u8,new(width-2,size.Y-16-1-ImGui.GetCursorScreenPos().Y),ImGuiChildFlags.AlwaysUseWindowPadding);
+        ImGui.BeginChild("Codex body"u8,new(width-2,size.Y-16-1-ImGui.GetCursorScreenPos().Y),ImGuiChildFlags.AlwaysUseWindowPadding,ImGuiWindowFlags.NoBackground);
         ImGui.PopStyleVar();
         CodexBodyMin=ImGui.GetWindowDrawList().GetClipRectMin();CodexBodyMax=ImGui.GetWindowDrawList().GetClipRectMax();
         if(codexResetScroll){ImGui.SetScrollY(0);codexResetScroll=false;}

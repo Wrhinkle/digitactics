@@ -19,12 +19,24 @@ internal sealed unsafe class SubpixelText : IDisposable
     private GlProgram program;
     private GlVertexArray array;
     private readonly GlBuffer[] buffers = new GlBuffer[2];
-    private int projection, linesRect, whitePixel;
+    private const int MaxGrayscale = 16;
+    private int projection, linesRect, whitePixel, grayscaleRects, grayscaleCount;
     private bool ready, failed;
+    private static readonly List<(float X0, float Y0, float X1, float Y1)> grayscale = [];
+
+    /// <summary>
+    /// Chromium draws text in composited layers (animated or transformed boxes, such as the result screen, the Home
+    /// hero or the docked Codex window) with grayscale anti-aliasing. Screens mark those areas, in ImGui display
+    /// coordinates, for the frame being built.
+    /// </summary>
+    internal static void Grayscale(Brutal.Numerics.float2 min, Brutal.Numerics.float2 max)
+    {
+        if (grayscale.Count < MaxGrayscale && max.X > min.X && max.Y > min.Y) grayscale.Add((min.X, min.Y, max.X, max.Y));
+    }
 
     public void Render(OpenGlBackend backend, ImDrawDataPtr drawData)
     {
-        if (failed) { backend.RenderDrawData(drawData); return; }
+        if (failed) { grayscale.Clear(); backend.RenderDrawData(drawData); return; }
         var source = drawData;
         // Texture creation, updates and destruction for this frame.
         var textures = new ImDrawData { Valid = true, DisplayPos = source.DisplayPos, DisplaySize = source.DisplaySize, FramebufferScale = source.FramebufferScale,
@@ -41,6 +53,7 @@ internal sealed unsafe class SubpixelText : IDisposable
             Console.Error.WriteLine($"Subpixel text is unavailable, using the ImGui backend: {error.Message}");
             backend.RenderDrawData(drawData);
         }
+        finally { grayscale.Clear(); }
     }
 
     private void Draw(ImDrawDataPtr data)
@@ -81,6 +94,16 @@ internal sealed unsafe class SubpixelText : IDisposable
             }
             OpenGl.Native.glProgramUniform4f(program, linesRect, x0, y0, x1, y1);
             OpenGl.Native.glProgramUniform2f(program, whitePixel, atlas.TexUvWhitePixel.X, atlas.TexUvWhitePixel.Y);
+            // Grayscale areas in framebuffer pixels with a bottom-left origin, as gl_FragCoord reports them.
+            Span<float> rects = stackalloc float[MaxGrayscale * 4];
+            for (int i = 0; i < grayscale.Count; i++)
+            {
+                var g = grayscale[i];
+                rects[i * 4] = (g.X0 - data.DisplayPos.X) * data.FramebufferScale.X; rects[i * 4 + 2] = (g.X1 - data.DisplayPos.X) * data.FramebufferScale.X;
+                rects[i * 4 + 1] = height - (g.Y1 - data.DisplayPos.Y) * data.FramebufferScale.Y; rects[i * 4 + 3] = height - (g.Y0 - data.DisplayPos.Y) * data.FramebufferScale.Y;
+            }
+            fixed (float* values = rects) OpenGl.Native.glProgramUniform4fv(program, grayscaleRects, MaxGrayscale, values);
+            OpenGl.Native.glProgramUniform1i(program, grayscaleCount, grayscale.Count);
             program.Use(); array.Bind();
             var clipOffset = data.DisplayPos; var clipScale = data.FramebufferScale;
             for (int n = 0; n < data.CmdListsCount; n++)
@@ -150,6 +173,9 @@ internal sealed unsafe class SubpixelText : IDisposable
             uniform sampler2D Texture;
             uniform vec4 LinesRect;
             uniform vec2 WhitePixel;
+            uniform vec4 GrayscaleRects[16];
+            uniform int GrayscaleCount;
+            const float ChromaGain = 1.5;
             layout (location = 0, index = 0) out vec4 Out_Color;
             layout (location = 0, index = 1) out vec4 Out_Cover;
             void main()
@@ -157,12 +183,15 @@ internal sealed unsafe class SubpixelText : IDisposable
                 vec4 texel = texture(Texture, Frag_UV);
                 float alpha = Frag_Color.a * texel.a;
                 vec3 cover = vec3(alpha);
-                bool shape = all(lessThan(abs(Frag_UV - WhitePixel), vec2(1e-6))) ||
+                bool plain = all(lessThan(abs(Frag_UV - WhitePixel), vec2(1e-6))) ||
                     (Frag_UV.x >= LinesRect.x && Frag_UV.y >= LinesRect.y && Frag_UV.x <= LinesRect.z && Frag_UV.y <= LinesRect.w);
-                if (!shape && all(greaterThan(texel.rgb, vec3(0.996))))
+                for (int i = 0; i < GrayscaleCount; i++)
+                    if (all(greaterThanEqual(gl_FragCoord.xy, GrayscaleRects[i].xy)) && all(lessThan(gl_FragCoord.xy, GrayscaleRects[i].zw))) plain = true;
+                if (!plain && all(greaterThan(texel.rgb, vec3(0.996))))
                 {
                     vec2 third = dFdx(Frag_UV) / 3.0;
-                    cover = Frag_Color.a * vec3(texture(Texture, Frag_UV - third).a, texel.a, texture(Texture, Frag_UV + third).a);
+                    vec3 subpixels = vec3(texture(Texture, Frag_UV - third).a, texel.a, texture(Texture, Frag_UV + third).a);
+                    cover = Frag_Color.a * clamp(texel.a + (subpixels - texel.a) * ChromaGain, 0.0, 1.0);
                 }
                 Out_Color = vec4(Frag_Color.rgb * texel.rgb * cover, alpha);
                 Out_Cover = vec4(cover, alpha);
@@ -173,6 +202,8 @@ internal sealed unsafe class SubpixelText : IDisposable
         projection = Location(program, "Projection"u8);
         linesRect = Location(program, "LinesRect"u8);
         whitePixel = Location(program, "WhitePixel"u8);
+        grayscaleRects = Location(program, "GrayscaleRects"u8);
+        grayscaleCount = Location(program, "GrayscaleCount"u8);
         OpenGl.Native.glProgramUniform1i(program, Location(program, "Texture"u8), 0);
         Span<GlVertexArray> arrays = stackalloc GlVertexArray[1]; OpenGl.CreateVertexArrays(arrays); array = arrays[0];
         OpenGl.CreateBuffers(buffers);

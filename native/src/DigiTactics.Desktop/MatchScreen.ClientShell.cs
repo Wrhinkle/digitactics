@@ -130,6 +130,9 @@ internal sealed partial class MatchScreen
         ImGui.BeginDisabled(ClientNavigationBlocked);
         DrawClientPlay(nav);
         float x=nav.PlayLeft+ClientPlayWidth(nav)+10+(width<1200?0:4);
+        // Measured on the original: with Collection, Loot, Store, Digi-Farm or Codex open, Chromium draws the nav tab
+        // labels with grayscale anti-aliasing (a composited layer overlaps them); Home, Modes, Profile and Settings keep ClearType.
+        if(showCollection||showFarm||codexFull)SubpixelText.Grayscale(new(x,0),new(profileLeft,height));
         foreach(var tab in new[]{("homeOverview","HOME","home"),("clientModes","MODES","play"),("collection","COLLECTION","collection"),("clientLoot","LOOT","loot"),
             ("clientStore","STORE","store"),("farm","DIGI-FARM","farm"),("codex","CODEX","codex")})
         {
