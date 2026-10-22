@@ -176,6 +176,7 @@ internal sealed unsafe class SubpixelText : IDisposable
             uniform vec4 GrayscaleRects[16];
             uniform int GrayscaleCount;
             const float ChromaGain = 1.5;
+            const float Contrast = 0.6;
             layout (location = 0, index = 0) out vec4 Out_Color;
             layout (location = 0, index = 1) out vec4 Out_Cover;
             void main()
@@ -191,7 +192,8 @@ internal sealed unsafe class SubpixelText : IDisposable
                 {
                     vec2 third = dFdx(Frag_UV) / 3.0;
                     vec3 subpixels = vec3(texture(Texture, Frag_UV - third).a, texel.a, texture(Texture, Frag_UV + third).a);
-                    cover = Frag_Color.a * clamp(texel.a + (subpixels - texel.a) * ChromaGain, 0.0, 1.0);
+                    vec3 c = clamp(texel.a + (subpixels - texel.a) * ChromaGain, 0.0, 1.0);
+                    cover = Frag_Color.a * mix(c, c * c * (3.0 - 2.0 * c), Contrast);
                 }
                 Out_Color = vec4(Frag_Color.rgb * texel.rgb * cover, alpha);
                 Out_Cover = vec4(cover, alpha);

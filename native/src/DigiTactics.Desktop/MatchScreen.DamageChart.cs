@@ -24,8 +24,11 @@ internal sealed partial class MatchScreen
         double maximum = Math.Max(1, units.Select(Value).DefaultIfEmpty().Max());
         ImGui.Dummy(new(0,10-ImGui.GetStyle().ItemSpacing.Y));
         var min=HudSnap(ImGui.GetCursorScreenPos());float width=ImGui.GetContentRegionAvail().X;
-        float header=2+11*1.35f+6,tabs=11*1.35f+4+2,rowsHeight=units.Length*(22+4);
-        float height=1+8+header+tabs+6+rowsHeight-(units.Length>0?4:0)+8+1;
+        // .row: grid items centred; the middle cell (11px name on the 1.35 line, 1px gap, 7px bar) is taller than the 22px
+        // portrait, and every row keeps its 4px bottom margin, the last one included.
+        const float rowHeight=11*1.35f+1+7;
+        float header=2+11*1.35f+6,tabs=11*1.35f+4+2,rowsHeight=units.Length*(rowHeight+4);
+        float height=1+8+header+tabs+6+rowsHeight+8+1;
         var max=min+new float2(width,height);
         var draw=ImGui.GetWindowDrawList();
         draw.AddRectFilled(min,max,CssPanel,8);draw.AddRect(min,max,CssLine,8);
@@ -47,15 +50,16 @@ internal sealed partial class MatchScreen
         foreach (var unit in units)
         {
             var row=new float2(x,y);
-            ImGui.SetCursorScreenPos(row);ImGui.Dummy(new(inner,22));
+            ImGui.SetCursorScreenPos(row);ImGui.Dummy(new(inner,rowHeight));
             bool hovered = ImGui.IsItemHovered();
             float alpha=unit.Alive?1:.5f;
-            HudPortraitTile(draw,row,22,HudOver(FamilyColor(unit.Line.Id),CssPanel,alpha),4);
-            portraits.Draw(Rules.Id, unit.Line.Id, unit.Stage, row, 22, unit.Alive ? (byte)255 : (byte)128);
+            var portrait=row+new float2(0,(rowHeight-22)/2);
+            HudPortraitTile(draw,portrait,22,HudOver(FamilyColor(unit.Line.Id),CssPanel,alpha),4);
+            portraits.Draw(Rules.Id, unit.Line.Id, unit.Stage, portrait, 22, unit.Alive ? (byte)255 : (byte)128);
             string value = UnitValues.Round(Value(unit)).ToString(System.Globalization.CultureInfo.InvariantCulture);
-            HudRunRight(draw,HudWeight(700),12,row.X+inner,row.Y,22,value,HudOver(CssText,CssPanel,alpha));
+            HudRunRight(draw,HudWeight(700),12,row.X+inner,row.Y,rowHeight,value,HudOver(CssText,CssPanel,alpha));
             float middle=row.X+22+6,middleWidth=inner-22-6-6-38;
-            float textTop=row.Y+(22-11*1.35f-1-7)/2;
+            float textTop=row.Y;
             HudRun(draw,HudWeight(400),11,middle,textTop,11*1.35f,unit.Line.Forms[unit.Stage],HudOver(CssMuted,CssPanel,alpha),middleWidth);
             var bar=new float2(middle,textTop+11*1.35f+1);
             draw.AddRectFilled(bar,bar+new float2(middleWidth,7),HudOver(HudHex("262e40"),CssPanel,alpha),3);
@@ -67,7 +71,7 @@ internal sealed partial class MatchScreen
                 ImGui.Text($"Dealt {UnitValues.Round(unit.Dealt)} / Taken {UnitValues.Round(unit.Taken)} / Healed {UnitValues.Round(unit.Healed)}");
                 ImGui.EndTooltip();
             }
-            y+=22+4;
+            y+=rowHeight+4;
         }
         ImGui.SetCursorScreenPos(min);ImGui.Dummy(new(width,height));
     }
