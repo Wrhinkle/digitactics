@@ -40,9 +40,14 @@ async function main(){
       for(const f of [0,.31,.67,.93]){
         a.setTime(clip.duration*f);b.setTime(ref.duration*f);gltf.scene.updateMatrixWorld(true);sibling.scene.updateMatrixWorld(true);
         // Joint positions relative to the skeleton's first joint: independent of import containers (UprightFix).
-        const base=[...own.keys()][0],pa=own.get(base).bone.getWorldPosition(new THREE.Vector3()),pb=other.get(base).bone.getWorldPosition(new THREE.Vector3());
-        const qa=own.get(base).bone.getWorldQuaternion(new THREE.Quaternion()).invert(),qb=other.get(base).bone.getWorldQuaternion(new THREE.Quaternion()).invert();
+        // V-mon's borrowed special/win travel is anchored to its hex by moving the shared body parent J_root
+        // (model-motion.js boardRootTravel); compare its joints inside that parent so only the travel differs.
+        const anchor=key==='catalog:TS_V_mon:chr114'?'J_root':null;
+        const base=[...own.keys()][0],nodeA=anchor?gltf.scene.getObjectByName(anchor):own.get(base).bone,nodeB=anchor?sibling.scene.getObjectByName(anchor):other.get(base).bone;
+        const pa=nodeA.getWorldPosition(new THREE.Vector3()),pb=nodeB.getWorldPosition(new THREE.Vector3());
+        const qa=nodeA.getWorldQuaternion(new THREE.Quaternion()).invert(),qb=nodeB.getWorldQuaternion(new THREE.Quaternion()).invert();
         for(const [n,j] of own){
+          if(anchor){let under=false;for(let o=j.bone;o;o=o.parent)if(o===nodeA)under=true;if(!under)continue;}
           const va=j.bone.getWorldPosition(new THREE.Vector3()).sub(pa).applyQuaternion(qa),vb=other.get(n).bone.getWorldPosition(new THREE.Vector3()).sub(pb).applyQuaternion(qb);
           // Compare each joint's movement from the clip's opening frame; joint lengths may differ slightly.
           va.multiplyScalar(1/extentA);vb.multiplyScalar(1/extentB);

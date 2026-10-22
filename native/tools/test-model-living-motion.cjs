@@ -21,7 +21,9 @@ async function main(){
           mixer.setTime(clip.duration*i/32);
           for(let j=0;j<rest.length;j++){
             const {o,q,p,s}=rest[j];assert.deepEqual(o.position.toArray(),p,'Swimming must not stretch body joints');assert.deepEqual(o.scale.toArray(),s,'Swimming must not grow the body');
-            assert.ok(o.quaternion.angleTo(q)<.25,'Swimming joint exceeds gentle14degree envelope');seen[j].push(o.quaternion.clone());
+            // The held serpent pose turns the raised neck .5 rad and each coiled tail joint .75 rad (model-motion.js serpentClips).
+            const held=/^J_chine_[efgij]$/.test(o.name)?.5:o.name==='J_chine_h'?0:.75,angle=o.quaternion.angleTo(q);
+            assert.ok(Math.abs(angle-held)<.25,'Swimming joint exceeds gentle14degree envelope around its held pose');seen[j].push(o.quaternion.clone());
           }
         }
         for(let j=0;j<rest.length;j++){

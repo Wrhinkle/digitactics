@@ -8082,8 +8082,8 @@
     // last rips (tools/convert/maps/autochess-final.json, dragonlands-final.json): long dragon, wide-legged crab
     'ac:DexDorugreymon': { maxFootprint: 3.4 }, 'drg:Crabmon': { maxFootprint: 3.2 },
     'biyomon:1': { yOffset: 0.3 },
-    // long, thin sea serpent that swims in the air: hovers two body heights above its tile (idle bob: model-motion.js serpentClips)
-    'catalog:CS_Seadramon:chr347': { yOffset: 2 },
+    // sea serpent that swims in the air, neck raised and tail coiled: hovers a quarter of its height above its tile (pose and idle bob: model-motion.js serpentClips)
+    'catalog:CS_Seadramon:chr347': { yOffset: 0.25, posedBounds: true },
     'falcomon:2': { maxFootprint: 3 }, 'dracomon:2': { maxFootprint: 3 }, 'zubamon:1': { maxFootprint: 2.9 }, 'vorvomon:1': { maxFootprint: 3 },
     'jazamon:1': { maxFootprint: 3 }, 'jazamon:2': { maxFootprint: 3, yOffset: 0.07 }, 'armadillomon:1': { maxFootprint: 2.6 }, 'numemon:2': { maxFootprint: 2.6 },
     'veedramon:1': { maxFootprint: 2.6 }, 'hackmon:1': { maxFootprint: 3 }, 'lobomon:1': { maxFootprint: 2.8 },

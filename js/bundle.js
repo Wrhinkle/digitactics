@@ -43463,11 +43463,11 @@ void main() {
     })));
   }
   function modelClips(gltf, src, borrowed = null) {
-    if (borrowed && !gltf.animations.length) return retargetClips(borrowed, gltf.scene);
+    if (borrowed && !gltf.animations.length) return boardRootTravel(gltf, src, retargetClips(borrowed, gltf.scene));
     const rigid = rigidPartClips(gltf, src);
     if (rigid) return rigid;
     if (src?.uid === "rip-l_garurumon_greymon_statue") return statueClips(gltf.scene);
-    const authored = livelyIdle(src, generatedBipedClips(gltf, src, blobBodyClips(gltf, src, heldWeaponOrigin(gltf, src, sampledRootAnchor(gltf, src, boardRootTravel(gltf, src, boardBodyScale(gltf, src))))))).filter((c) => !src?.fallbackRoles?.includes(c.name));
+    const authored = tumbleDamp(src, livelyIdle(src, generatedBipedClips(gltf, src, blobBodyClips(gltf, src, heldWeaponOrigin(gltf, src, sampledRootAnchor(gltf, src, boardRootTravel(gltf, src, boardBodyScale(gltf, src)))))))).filter((c) => !src?.fallbackRoles?.includes(c.name));
     if (authored.length && src?.anim !== false) {
       const staticIdle = src?.uid === "rip-cat_cs_seadramon_chr347";
       const missing = ["idle", "attack", "special", "win"].filter((role) => staticIdle && role === "idle" || !authored.some((c) => c.name === role));
@@ -43511,6 +43511,27 @@ void main() {
           if (s < 1e-9) continue;
           const axis2 = new Vector3(delta.x / s, delta.y / s, delta.z / s);
           opening.clone().multiply(new Quaternion().setFromAxisAngle(axis2, angle * gain)).normalize().toArray(track2.values, i);
+        }
+      }
+      return corrected;
+    });
+  }
+  function tumbleDamp(src, clips) {
+    const policy = { "rip-no_shamanmon": ["attack", 0.3, "J_center", "J_spine01"], "rip-no_snowgoblimon": ["attack", 0.3, "J_center", "J_spine01"] }[src?.uid];
+    if (!policy) return clips;
+    const [role, gain, ...roots] = policy;
+    return clips.map((clip2) => {
+      if (clip2.name !== role) return clip2;
+      const corrected = clip2.clone(), opening = new Quaternion(), key2 = new Quaternion();
+      for (const track2 of corrected.tracks) {
+        if (!roots.some((root4) => track2.name === root4 + ".quaternion")) continue;
+        opening.fromArray(track2.values, 0);
+        const inverse = opening.clone().invert();
+        for (let i = 0; i < track2.values.length; i += 4) {
+          key2.fromArray(track2.values, i);
+          const delta = inverse.clone().multiply(key2);
+          if (delta.w < 0) delta.set(-delta.x, -delta.y, -delta.z, -delta.w);
+          opening.clone().multiply(new Quaternion().slerp(delta, gain)).normalize().toArray(track2.values, i);
         }
       }
       return corrected;
@@ -43602,10 +43623,16 @@ void main() {
     scene2.updateMatrixWorld(true);
     const box3 = new Box3().setFromObject(scene2), inverse = root4?.parent.matrixWorld.clone().invert();
     const lift = root4 && new Vector3(0, (box3.max.y - box3.min.y) * 0.4, 0).applyMatrix4(inverse).sub(V().applyMatrix4(inverse));
+    const curl = { J_chine_e: [X, -0.5], J_chine_f: [X, -0.5], J_chine_g: [X, -0.5], J_chine_i: [X, 0.5], J_chine_j: [X, 0.5] };
+    for (const name2 of names.slice(6)) curl[name2] = [Y, 0.75];
+    const rest = new Map(segments.map(({ bone }) => {
+      const turn = curl[bone.name], world = bone.getWorldQuaternion(Q());
+      return [bone, turn ? bone.quaternion.clone().multiply(world.clone().invert().multiply(Q().setFromAxisAngle(...turn)).multiply(world)) : bone.quaternion.clone()];
+    }));
     return clips.map((clip2) => {
       const corrected = clip2.clone(), idle = clip2.name === "idle";
       for (const { bone, phase } of segments) {
-        const times = [], values = [], base = bone.quaternion.clone();
+        const times = [], values = [], base = rest.get(bone);
         for (let i = 0; i <= 32; i++) {
           const u = i / 32, pulse3 = Math.sin(u * Math.PI) ** 2, boost = idle ? 0 : clip2.name === "attack" ? 0.03 : 0.06;
           const angle = ((idle ? 0.05 : 0.12) + boost * pulse3) * Math.sin(u * Math.PI * 2 - phase), q = base.clone().multiply(Q().setFromAxisAngle(Y, angle));
@@ -43787,7 +43814,13 @@ void main() {
       "rip-cat_l_aquilamon_chr015": ["mass", "special"],
       "rip-cat_l_gaomon_chr055": ["J_root", "special"],
       "rip-cat_cs_ginryumon_chr191": ["J_center", "special", "win"],
-      "rip-cat_cs_imperialdramon_paladin_mode_chr420": ["J_center", "special"]
+      "rip-cat_cs_imperialdramon_paladin_mode_chr420": ["J_center", "special"],
+      // Flagged sweep: with its borrowed Veemon clips, V-mon dashes 1.6 and hops
+      // back 1.7 idle heights (and ends there); CatchMamemon's win hovers 3-3.5
+      // idle heights up, so its body left the frame. Both have sibling roots (V-mon's upper/lower body halves,
+      // CatchMamemon's dropped eggs), so the shared parent moves (below).
+      "rip-cat_ts_v_mon_chr114": ["J_center", "special", "win"],
+      "rip-cs_catchmamemon": ["J_center", "win"]
     }[src?.uid];
     if (!policy) return clips;
     const [body2, ...roles] = policy, idle = clips.find((c) => c.name === "idle"), name2 = body2 + ".position", node = gltf.scene.getObjectByName(body2);
@@ -43798,7 +43831,7 @@ void main() {
     gltf.scene.updateMatrixWorld(true);
     const origin = node.getWorldPosition(V()), parent = node.parent.matrixWorld.clone(), inverse = parent.clone().invert();
     const box3 = new Box3().setFromObject(gltf.scene), height = Math.max(1e-9, box3.max.y - box3.min.y);
-    const shared = ["rip-puppetmon", "rip-ryudamon", "rip-ginryumon"].includes(src.uid) ? node.parent : null;
+    const shared = ["rip-puppetmon", "rip-ryudamon", "rip-ginryumon", "rip-cat_ts_v_mon_chr114", "rip-cs_catchmamemon"].includes(src.uid) ? node.parent : null;
     const sharedInverse = shared ? new Matrix3().setFromMatrix4(shared.parent.matrixWorld.clone().invert()) : null;
     const result = clips.map((action2) => {
       const role = action2.name, track2 = action2.tracks.find((t) => t.name === name2);
@@ -44149,7 +44182,7 @@ void main() {
       m.update(0);
     }
     scene2.updateMatrixWorld(true);
-    const box3 = new Box3().setFromObject(scene2);
+    const box3 = new Box3().setFromObject(scene2, !!(src && src.posedBounds));
     const size = box3.getSize(new Vector3());
     const h = Math.max(size.y, 1e-3);
     const wrapper = new Group();

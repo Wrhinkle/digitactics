@@ -60,11 +60,13 @@ function retargetClips(borrowed, scene) {
 }
 
 export function modelClips(gltf, src, borrowed = null) {
-  if (borrowed && !gltf.animations.length) return retargetClips(borrowed, gltf.scene);
+  // A borrowed action's root travel is anchored per borrowing rig (boardRootTravel
+  // policy by this rig's uid), leaving the source rig's own clips as they are.
+  if (borrowed && !gltf.animations.length) return boardRootTravel(gltf, src, retargetClips(borrowed, gltf.scene));
   const rigid = rigidPartClips(gltf, src);
   if (rigid) return rigid;
   if(src?.uid==='rip-l_garurumon_greymon_statue')return statueClips(gltf.scene);
-  const authored = livelyIdle(src,generatedBipedClips(gltf,src,blobBodyClips(gltf,src,heldWeaponOrigin(gltf,src,sampledRootAnchor(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src))))))).filter(c=>!src?.fallbackRoles?.includes(c.name));
+  const authored = tumbleDamp(src,livelyIdle(src,generatedBipedClips(gltf,src,blobBodyClips(gltf,src,heldWeaponOrigin(gltf,src,sampledRootAnchor(gltf,src,boardRootTravel(gltf,src,boardBodyScale(gltf,src)))))))).filter(c=>!src?.fallbackRoles?.includes(c.name));
   if (authored.length && src?.anim !== false) {
     // This Seadramon export labels a single unchanging pose "idle". Build a
     // gentle skeletal loop from that assembled pose, retaining other actions.
@@ -123,6 +125,33 @@ function livelyIdle(src,clips){
         if(s<1e-9)continue;
         const axis=new THREE.Vector3(delta.x/s,delta.y/s,delta.z/s);
         opening.clone().multiply(new THREE.Quaternion().setFromAxisAngle(axis,angle*gain)).normalize().toArray(track.values,i);
+      }
+    }
+    return corrected;
+  });
+}
+
+// These Next Order goblins' attack (a0_atck_fa0, the converter's attack pick) is
+// a tumbling club smash: the body root turns 143 degrees on top of a 64 degree
+// spine bend, and the board's 0.55 s attack shows the body upside down and then
+// flat on the tile. The source's other attack takes tumble as far or run 3-6 s.
+// Scale the named roots' rotation offsets from their opening key, so the smash
+// stays a forward lunge; every limb, translation and other clip stays exact.
+function tumbleDamp(src,clips){
+  const policy={'rip-no_shamanmon':['attack',.3,'J_center','J_spine01'],'rip-no_snowgoblimon':['attack',.3,'J_center','J_spine01']}[src?.uid];
+  if(!policy)return clips;
+  const [role,gain,...roots]=policy;
+  return clips.map(clip=>{
+    if(clip.name!==role)return clip;
+    const corrected=clip.clone(),opening=new THREE.Quaternion(),key=new THREE.Quaternion();
+    for(const track of corrected.tracks){
+      if(!roots.some(root=>track.name===root+'.quaternion'))continue;
+      opening.fromArray(track.values,0);
+      const inverse=opening.clone().invert();
+      for(let i=0;i<track.values.length;i+=4){
+        key.fromArray(track.values,i);
+        const delta=inverse.clone().multiply(key);if(delta.w<0)delta.set(-delta.x,-delta.y,-delta.z,-delta.w);
+        opening.clone().multiply(new THREE.Quaternion().slerp(delta,gain)).normalize().toArray(track.values,i);
       }
     }
     return corrected;
@@ -196,10 +225,22 @@ function serpentClips(scene,clips){
   scene.updateMatrixWorld(true);
   const box=new THREE.Box3().setFromObject(scene),inverse=root?.parent.matrixWorld.clone().invert();
   const lift=root&&new THREE.Vector3(0,(box.max.y-box.min.y)*.4,0).applyMatrix4(inverse).sub(V().applyMatrix4(inverse));
+  // The export lies straight along its facing, 11 body heights long, so the
+  // board camera behind it saw only its end, shrunk to the 1.9-tile footprint,
+  // and the portrait framed its tail. Every role holds a sea-serpent pose
+  // instead: the neck rises in an S to a level head (the generated J_head
+  // motion stays as authored) and the tail coils beside the body. Each segment
+  // turns about one world axis at its own joint, so lengths and skin are unchanged.
+  const curl={J_chine_e:[X,-.5],J_chine_f:[X,-.5],J_chine_g:[X,-.5],J_chine_i:[X,.5],J_chine_j:[X,.5]};
+  for(const name of names.slice(6))curl[name]=[Y,.75];
+  const rest=new Map(segments.map(({bone})=>{
+    const turn=curl[bone.name],world=bone.getWorldQuaternion(Q());
+    return [bone,turn?bone.quaternion.clone().multiply(world.clone().invert().multiply(Q().setFromAxisAngle(...turn)).multiply(world)):bone.quaternion.clone()];
+  }));
   return clips.map(clip=>{
     const corrected=clip.clone(),idle=clip.name==='idle';
     for(const {bone,phase} of segments){
-      const times=[],values=[],base=bone.quaternion.clone();
+      const times=[],values=[],base=rest.get(bone);
       for(let i=0;i<=32;i++){
         const u=i/32,pulse=Math.sin(u*Math.PI)**2,boost=idle?0:clip.name==='attack'?.03:.06;
         const angle=((idle?.05:.12)+boost*pulse)*Math.sin(u*Math.PI*2-phase),q=base.clone().multiply(Q().setFromAxisAngle(Y,angle));
@@ -355,6 +396,11 @@ function boardRootTravel(gltf,src,clips){
     'rip-cat_cs_zubaeagermon_chr698':['J_center','special','win'], 'rip-cat_l_aquilamon_chr015':['mass','special'],
     'rip-cat_l_gaomon_chr055':['J_root','special'],
     'rip-cat_cs_ginryumon_chr191':['J_center','special','win'], 'rip-cat_cs_imperialdramon_paladin_mode_chr420':['J_center','special'],
+    // Flagged sweep: with its borrowed Veemon clips, V-mon dashes 1.6 and hops
+    // back 1.7 idle heights (and ends there); CatchMamemon's win hovers 3-3.5
+    // idle heights up, so its body left the frame. Both have sibling roots (V-mon's upper/lower body halves,
+    // CatchMamemon's dropped eggs), so the shared parent moves (below).
+    'rip-cat_ts_v_mon_chr114':['J_center','special','win'], 'rip-cs_catchmamemon':['J_center','win'],
   }[src?.uid];
   if(!policy)return clips;
   const [body,...roles]=policy,idle=clips.find(c=>c.name==='idle'),name=body+'.position',node=gltf.scene.getObjectByName(body);
@@ -363,9 +409,9 @@ function boardRootTravel(gltf,src,clips){
   const origin=node.getWorldPosition(V()),parent=node.parent.matrixWorld.clone(),inverse=parent.clone().invert();
   const box=new THREE.Box3().setFromObject(gltf.scene),height=Math.max(1e-9,box.max.y-box.min.y);
   // Puppetmon's mallet (Ryudamon's thrown blade, Ginryumon's lance) is a sibling
-  // of the body subtree. Move their unanimated common parent so every authored
-  // weapon/body relationship survives.
-  const shared=['rip-puppetmon','rip-ryudamon','rip-ginryumon'].includes(src.uid)?node.parent:null;
+  // of the body subtree; so are V-mon's upper body root and CatchMamemon's eggs.
+  // Move their unanimated common parent so every authored relationship survives.
+  const shared=['rip-puppetmon','rip-ryudamon','rip-ginryumon','rip-cat_ts_v_mon_chr114','rip-cs_catchmamemon'].includes(src.uid)?node.parent:null;
   const sharedInverse=shared?new THREE.Matrix3().setFromMatrix4(shared.parent.matrixWorld.clone().invert()):null;
   const result=clips.map(action=>{
     const role=action.name,track=action.tracks.find(t=>t.name===name);

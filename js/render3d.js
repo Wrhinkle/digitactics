@@ -127,7 +127,9 @@ export function prepareTemplate(gltf, src, borrowed = null) {
     m.update(0);
   }
   scene.updateMatrixWorld(true);
-  const box = new THREE.Box3().setFromObject(scene);
+  // posedBounds (js/models.js MODEL-OPTIONS): measure the skinned idle vertices, for an idle that reshapes the
+  // bind pose (Seadramon's raised neck and coiled tail); the default box reads the bind-pose geometry bounds.
+  const box = new THREE.Box3().setFromObject(scene, !!(src && src.posedBounds));
   const size = box.getSize(new THREE.Vector3());
   const h = Math.max(size.y, 1e-3);
   const wrapper = new THREE.Group();

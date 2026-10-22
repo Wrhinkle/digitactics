@@ -41,7 +41,7 @@ async function main(){
     ['catalog:CS_Wanyamon:chr321','J_center','special'],['catalog:CS_Zubamon:chr697','J_center','special'],
     ['catalog:CS_ZubaEagermon:chr698','J_center','special'],['catalog:CS_ZubaEagermon:chr698','J_center','win'],['catalog:L_Aquilamon:chr015','mass','special'],
     ['catalog:L_Gaomon:chr055','J_root','special'],['catalog:CS_Ginryumon:chr191','J_center','special'],['catalog:CS_Ginryumon:chr191','J_center','win'],
-    ['catalog:CS_Imperialdramon_Paladin_Mode:chr420','J_center','special']]){
+    ['catalog:CS_Imperialdramon_Paladin_Mode:chr420','J_center','special'],['drg:CatchMamemon','J_center','win']]){
     if(requested.size&&!requested.has(key))continue;
     visited.add(key);
     const source=catalog.sources[key],bytes=zlib.gunzipSync(fs.readFileSync(path.join(root,'native/artifacts/model-content',catalog.assets[source.asset].file))),length=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+length)),binary=bytes.subarray(28+length);
