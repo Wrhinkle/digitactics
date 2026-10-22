@@ -93,6 +93,19 @@ RECOVERIES = {
                         "chr782_2": "chr782a02.png", "chr782_3": "chr782a02.png",
                         "chr782_4": "chr782a01.png"},
         "keepUvMeshes": ["chr782_0"]
+    },
+    # Next Order: one source geometry is split across two atlases by material. The rip
+    # merged both polylists into one primitive bound to g018_c00, so the armor (whose
+    # UVs sit at u -1..0 and wrap) showed the wrong atlas. The input is the reviewed
+    # eye-decal repair of this asset (recover-model-eye-decals.py).
+    "boltboutamon": {
+        "asset": "models/files/rip_no_boltboutamon.glb",
+        "originalSha256": "8cd08fee79a4f0dc87666c173b18dec6cc96ec8e327d4c370d3180051793d593",
+        "repairedSha256": "0f1b1f691be7585464d3e7150032dce37ddff6f9e0b01daee860a3e28af78074",
+        "archiveSha256": "b2edab3b36f846e6d293c9fbf3b4902df9d3b66db2aa9b5af9d8f5810c5eba3e",
+        "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342147/",
+        "dae": "Boltboutamon/g018.dae", "splitPrimitive": True,
+        "keptAtlas": "g018_c00.png", "addedAtlas": "g018_c01.png", "addedMaterial": "g018_c01"
     }
 }
 spec = importlib.util.spec_from_file_location("material_repair", Path(__file__).with_name("repair-model-materials.py"))
@@ -373,6 +386,124 @@ def recover(archive_data, original, recipe):
     return result, report
 
 
+def recover_split(archive_data, original, recipe):
+    """Split one merged primitive by its source materials and embed the missing atlas.
+
+    Every surviving triangle is matched to exactly one source triangle by its UV0
+    corners. Vertex attributes stay shared and byte-identical (meshopt streams
+    included); only new index lists, the source atlas and one material are added.
+    """
+    if digest(archive_data) != recipe["archiveSha256"] or digest(original) != recipe["originalSha256"]:
+        raise ValueError("Archive or original asset differs from reviewed bytes")
+    archive = zipfile.ZipFile(io.BytesIO(archive_data))
+    dae_data = archive.read(recipe["dae"])
+    folder = recipe["dae"].rsplit("/", 1)[0] + "/"
+    atlas = archive.read(folder + recipe["addedAtlas"])
+    spec = importlib.util.spec_from_file_location("eye_decals", Path(__file__).with_name("recover-model-eye-decals.py"))
+    decals = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(decals)
+    source = decals.dae_triangles(dae_data)
+    if set(source) != {recipe["keptAtlas"], recipe["addedAtlas"]}:
+        raise ValueError("Source DAE does not bind exactly the reviewed two atlases")
+    document, chunks = glb.read_glb(original)
+    if len(chunks) != 1 or chunks[0][0] != 0x004E4942:
+        raise ValueError("Expected one embedded binary chunk")
+    before = copy.deepcopy(document)
+    decoded, decoded_chunks = glb.read_glb(decode_original(original))
+    decoded_data = decoded_chunks[0][1]
+    if len(document["meshes"]) != 1 or len(document["meshes"][0]["primitives"]) != 1:
+        raise ValueError("Expected one merged primitive")
+    primitive = document["meshes"][0]["primitives"][0]
+    material = document["materials"][primitive["material"]]
+    if glb.image_name(document, material["pbrMetallicRoughness"]["baseColorTexture"]["index"]) != recipe["keptAtlas"]:
+        raise ValueError("Merged primitive is not bound to the reviewed atlas")
+    decoded_primitive = decoded["meshes"][0]["primitives"][0]
+    indices = accessor(decoded, decoded_data, decoded_primitive["indices"]).reshape(-1, 3).astype(int)
+    uv = accessor(decoded, decoded_data, decoded_primitive["attributes"]["TEXCOORD_0"], True).astype(float)
+    corners = uv[indices]  # glTF orientation (v down)
+    labels, uvs = [], []
+    for label, name in enumerate((recipe["keptAtlas"], recipe["addedAtlas"])):
+        triangles = source[name][0].reshape(-1, 3, 2).copy()
+        triangles[..., 1] = 1 - triangles[..., 1]
+        uvs.append(triangles)
+        labels.append(np.full(len(triangles), label))
+    uvs, labels = np.concatenate(uvs), np.concatenate(labels)
+    tree = cKDTree(uvs.mean(1))
+    distances, candidates = tree.query(corners.mean(1), k=8)
+    assignment = np.full(len(corners), -1)
+    worst, ambiguous_labels = 0.0, 0
+    for t in range(len(corners)):
+        matches = []
+        for c in candidates[t]:
+            # Corner sets must agree regardless of the starting corner or winding.
+            error = min(np.abs(np.roll(order, shift, 0) - corners[t]).max()
+                        for order in (uvs[c], uvs[c][::-1]) for shift in range(3))
+            if error < 0.0005:
+                matches.append((error, c))
+        if not matches:
+            raise ValueError("Surviving triangle %d has no source triangle" % t)
+        found = {int(labels[c]) for _, c in matches}
+        if len(found) != 1:
+            raise ValueError("Surviving triangle %d matches both source atlases" % t)
+        if len(matches) > 1:
+            ambiguous_labels += 1  # mirrored halves share UVs; always within one atlas
+        assignment[t] = found.pop()
+        worst = max(worst, min(m[0] for m in matches))
+    counts = [int((assignment == label).sum()) for label in (0, 1)]
+    data = bytearray(chunks[0][1])
+
+    def append_view(blob):
+        data.extend(b"\0" * (-len(data) % 4))
+        document["bufferViews"].append({"buffer": 0, "byteOffset": len(data), "byteLength": len(blob)})
+        data.extend(blob)
+        return len(document["bufferViews"]) - 1
+
+    original_indices = document["accessors"][primitive["indices"]]
+    dtype = np.dtype(TYPES[original_indices["componentType"]])
+    lists = [indices[assignment == label].reshape(-1).astype(dtype) for label in (0, 1)]
+    # The kept primitive's accessor now reads a plain list of its own triangles.
+    original_indices.pop("byteOffset", None)
+    original_indices.update(bufferView=append_view(lists[0].tobytes()), count=len(lists[0]))
+    added = copy.deepcopy(original_indices)
+    added.update(bufferView=append_view(lists[1].tobytes()), count=len(lists[1]))
+    document["accessors"].append(added)
+    image = len(document["images"])
+    document["images"].append({"name": recipe["addedAtlas"], "mimeType": "image/png", "bufferView": append_view(atlas)})
+    texture = len(document["textures"])
+    document["textures"].append({"source": image, "sampler": document["textures"][0]["sampler"]})
+    new_material = copy.deepcopy(material)
+    new_material["name"] = recipe["addedMaterial"]
+    new_material["pbrMetallicRoughness"]["baseColorTexture"] = {"index": texture}
+    document["materials"].append(new_material)
+    split = copy.deepcopy(primitive)
+    split.update(indices=len(document["accessors"]) - 1, material=len(document["materials"]) - 1)
+    document["meshes"][0]["primitives"].append(split)
+    document["buffers"][0]["byteLength"] = len(data)
+    for key in ("nodes", "skins", "animations", "scenes"):
+        if document.get(key) != before.get(key):
+            raise ValueError("Rig or animation metadata changed")
+    result = glb.write_glb(document, [(0x004E4942, bytes(data) + b"\0" * (-len(data) % 4))])
+    after, after_chunks = glb.read_glb(result)
+    for i, view in enumerate(before["bufferViews"]):
+        if i != original_indices["bufferView"] and decals.view_bytes(before, chunks[0][1], view) != decals.view_bytes(after, after_chunks[0][1], after["bufferViews"][i]):
+            raise ValueError("Existing buffer data changed")
+    rejoined = np.sort(np.concatenate([np.flatnonzero(assignment == 0), np.flatnonzero(assignment == 1)]))
+    if not np.array_equal(rejoined, np.arange(len(indices))):
+        raise ValueError("Split does not partition the original triangles")
+    report = {"schemaVersion": 1, "asset": recipe["asset"], "originalSha256": recipe["originalSha256"],
+              "repairedSha256": digest(result), "sourceUrl": recipe["sourceUrl"],
+              "archiveSha256": recipe["archiveSha256"], "daeSha256": digest(dae_data),
+              "albedos": [{"name": recipe["addedAtlas"], "sha256": digest(atlas), "embedded": True}],
+              "keptAtlas": recipe["keptAtlas"], "sourceTriangles": {recipe["keptAtlas"]: len(source[recipe["keptAtlas"]][0]) // 3,
+                                                                      recipe["addedAtlas"]: len(source[recipe["addedAtlas"]][0]) // 3},
+              "matchedTriangles": {recipe["keptAtlas"]: counts[0], recipe["addedAtlas"]: counts[1]},
+              "sharedUvSourceMatches": ambiguous_labels, "maximumUvError": worst,
+              "preservedVertexAttributes": True, "preservedRigAndAnimation": True}
+    if recipe["repairedSha256"] and report["repairedSha256"] != recipe["repairedSha256"]:
+        raise ValueError("Repair output differs from the reviewed bytes")
+    return result, report
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", choices=RECOVERIES, required=True)
@@ -384,13 +515,16 @@ def main():
     recipe = RECOVERIES[options.model]
     asset = ROOT / recipe["asset"]
     original = (options.original or asset).read_bytes()
-    result, report = recover(options.archive.read_bytes(), original, recipe)
+    result, report = (recover_split if recipe.get("splitPrimitive") else recover)(options.archive.read_bytes(), original, recipe)
     evidence = ROOT / ("native/artifacts/" + options.model + "-material-recovery.json")
     evidence.write_text(json.dumps(report, indent=2) + "\n")
     if options.apply:
         if asset.read_bytes() not in (original, result):
             raise ValueError("Current asset is neither the pinned original nor this exact repair")
         backup = ROOT / "native/artifacts/model-material-originals" / asset.name
+        if recipe.get("splitPrimitive"):
+            # Chained after the eye-decal repair, whose backup holds the earlier original.
+            backup = backup.with_name(asset.stem + "." + recipe["originalSha256"][:12] + ".glb")
         backup.parent.mkdir(parents=True, exist_ok=True)
         if backup.exists() and backup.read_bytes() != original:
             raise ValueError("Original backup already exists with different bytes")

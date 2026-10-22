@@ -360,10 +360,16 @@ def main():
         asset = ROOT / entry["asset"]
         current = asset.read_bytes()
         backup = ROOT / "native/artifacts/model-material-originals" / asset.name
-        if digest(current) == entry.get("repairedSha256") and not backup.exists():
-            reports.append({"asset": entry["asset"], "state": "correct", "sha256": entry["repairedSha256"]})
+        # A later reviewed step (recover-model-materials.py boltboutamon) may start from
+        # this repair; the tracked asset then carries that step's output instead.
+        later = digest(current) not in (entry["originalSha256"], entry.get("repairedSha256"))
+        if (digest(current) == entry.get("repairedSha256") or later) and not backup.exists():
+            reports.append({"asset": entry["asset"], "state": "superseded" if later else "correct",
+                            "sha256": entry["repairedSha256"]})
             continue
-        original = backup.read_bytes() if digest(current) == entry.get("repairedSha256") else current
+        if later and options.apply:
+            raise ValueError(name + ": the asset carries a later reviewed repair; reproduce with --preview only")
+        original = backup.read_bytes() if digest(current) == entry.get("repairedSha256") or later else current
         result, report, baked = recover(name, entry, (options.rips / entry["archive"]).read_bytes(), original)
         if options.preview:
             options.preview.mkdir(parents=True, exist_ok=True)

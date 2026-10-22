@@ -2287,10 +2287,6 @@
   "file": "giz_SistermonNoirAwakened.01e74805.webp",
   "src": "models/files/rip_cs_sistermon_noir_awakened.glb"
  },
- "giz:Boltboutamon": {
-  "file": "giz_Boltboutamon.ab0cf5eb.webp",
-  "src": "models/files/rip_no_boltboutamon.glb"
- },
  "giz:Yggdrasil": {
   "file": "giz_Yggdrasil.1d7475ff.webp",
   "src": "models/files/rip_l_yggdrasil_7d6.glb"
@@ -3147,14 +3143,6 @@
   "file": "catalog_TS_Solarmon_Hagurumon_chr728.22c1e526.webp",
   "src": "models/files/rip_cat_ts_solarmon_hagurumon_chr728.glb"
  },
- "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701": {
-  "file": "catalog_TS_Terriermon_Lopmon_and_Assistant_chr701.9233f213.webp",
-  "src": "models/files/rip_cat_ts_terriermon_lopmon_and_assistant_chr701.glb"
- },
- "catalog:TS_Terriermon_Lopmon_and_Assistant:chr750": {
-  "file": "catalog_TS_Terriermon_Lopmon_and_Assistant_chr750.0906ac97.webp",
-  "src": "models/files/rip_cat_ts_terriermon_lopmon_and_assistant_chr750.glb"
- },
  "catalog:TS_Tyumon:chr020": {
   "file": "catalog_TS_Tyumon_chr020.a0c555e3.webp",
   "src": "models/files/rip_cat_ts_tyumon_chr020.glb"
@@ -3423,10 +3411,6 @@
   "file": "catalog_TS_Koromon_chr322.3374eed2.webp",
   "src": "models/files/rip_cat_ts_koromon_chr322.glb"
  },
- "catalog:TS_Mochimon:chr388": {
-  "file": "catalog_TS_Mochimon_chr388.1584a529.webp",
-  "src": "models/files/rip_cat_ts_mochimon_chr388.glb"
- },
  "catalog:TS_Nyaromon:chr515": {
   "file": "catalog_TS_Nyaromon_chr515.63137848.webp",
   "src": "models/files/rip_cat_ts_nyaromon_chr515.glb"
@@ -3527,10 +3511,6 @@
   "file": "catalog_TS_Otamamon_chr582.981b77b3.webp",
   "src": "models/files/rip_cat_ts_otamamon_chr582.glb"
  },
- "catalog:TS_Palmon:chr348": {
-  "file": "catalog_TS_Palmon_chr348.c19a29f0.webp",
-  "src": "models/files/rip_cat_ts_palmon_chr348.glb"
- },
  "catalog:TS_Patamon:chr096": {
   "file": "catalog_TS_Patamon_chr096.0ee9b41a.webp",
   "src": "models/files/rip_cat_ts_patamon_chr096.glb"
@@ -3570,10 +3550,6 @@
  "catalog:TS_ToyAgumon:chr708": {
   "file": "catalog_TS_ToyAgumon_chr708.77cda5cd.webp",
   "src": "models/files/rip_cat_ts_toyagumon_chr708.glb"
- },
- "catalog:TS_V_mon:chr114": {
-  "file": "catalog_TS_V_mon_chr114.1a1f7007.webp",
-  "src": "models/files/rip_cat_ts_v_mon_chr114.glb"
  },
  "catalog:TS_Wormmon:chr392": {
   "file": "catalog_TS_Wormmon_chr392.8f785c28.webp",
@@ -3618,5 +3594,29 @@
  "giz:RapidmonArmor": {
   "file": "giz_RapidmonArmor.306f47cf.webp",
   "src": "models/files/rip_cs_rapidmon_armor.glb"
+ },
+ "giz:Boltboutamon": {
+  "file": "giz_Boltboutamon.a687de9f.webp",
+  "src": "models/files/rip_no_boltboutamon.glb"
+ },
+ "catalog:TS_Mochimon:chr388": {
+  "file": "catalog_TS_Mochimon_chr388.98792c9a.webp",
+  "src": "models/files/rip_cat_ts_mochimon_chr388.glb"
+ },
+ "catalog:TS_Palmon:chr348": {
+  "file": "catalog_TS_Palmon_chr348.fbe41115.webp",
+  "src": "models/files/rip_cat_ts_palmon_chr348.glb"
+ },
+ "catalog:TS_Terriermon_Lopmon_and_Assistant:chr701": {
+  "file": "catalog_TS_Terriermon_Lopmon_and_Assistant_chr701.0dd98341.webp",
+  "src": "models/files/rip_cat_ts_terriermon_lopmon_and_assistant_chr701.glb"
+ },
+ "catalog:TS_Terriermon_Lopmon_and_Assistant:chr750": {
+  "file": "catalog_TS_Terriermon_Lopmon_and_Assistant_chr750.f357a796.webp",
+  "src": "models/files/rip_cat_ts_terriermon_lopmon_and_assistant_chr750.glb"
+ },
+ "catalog:TS_V_mon:chr114": {
+  "file": "catalog_TS_V_mon_chr114.55dda81c.webp",
+  "src": "models/files/rip_cat_ts_v_mon_chr114.glb"
  }
 }

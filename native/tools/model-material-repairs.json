@@ -881,6 +881,35 @@
           "sha256": "a0e6780c1c6187cd1d10c10d9ea0c57cad86d36a094bf9a4417e9adfdc68394b"
         }
       ]
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_boltboutamon.glb",
+      "originalSha256": "8cd08fee79a4f0dc87666c173b18dec6cc96ec8e327d4c370d3180051793d593",
+      "repairedSha256": "0f1b1f691be7585464d3e7150032dce37ddff6f9e0b01daee860a3e28af78074",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342147/",
+      "archiveSha256": "b2edab3b36f846e6d293c9fbf3b4902df9d3b66db2aa9b5af9d8f5810c5eba3e",
+      "daeSha256": "41214f545c367ab5bbf67ebca08afef07a7d3610f0c2d9b35641b44ae016d784",
+      "albedos": [
+        {
+          "name": "g018_c01.png",
+          "sha256": "2c0b13abcf2628eb7343c5f5fe73fcd06fb7a3d40084b8be27eec3d61314fe88",
+          "embedded": true
+        }
+      ],
+      "keptAtlas": "g018_c00.png",
+      "sourceTriangles": {
+        "g018_c00.png": 10031,
+        "g018_c01.png": 15760
+      },
+      "matchedTriangles": {
+        "g018_c00.png": 10032,
+        "g018_c01.png": 15760
+      },
+      "sharedUvSourceMatches": 23878,
+      "maximumUvError": 1.593750000028482e-07,
+      "preservedVertexAttributes": true,
+      "preservedRigAndAnimation": true
     }
   ],
   "geometryRecoveries": [
@@ -1631,6 +1660,293 @@
         0.5
       ],
       "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    }
+  ],
+  "eyeGlintAdditions": [
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cat_ts_mochimon_chr388.glb",
+      "originalSha256": "9a62a5ac40109ac3085ac49fadec82cd230fca0ce5cfe27a92eb4dc5003cef9c",
+      "repairedSha256": "8fcf1534c591bc931eaa8618fa52c1dfddafdb936b093c60d7ce86c262c6c184",
+      "eyeImage": "chr388p01.png",
+      "glints": [
+        {
+          "offset": [
+            -0.36,
+            0.38
+          ],
+          "radius": 0.25,
+          "softness": 0.35,
+          "opacity": 0.95
+        },
+        {
+          "offset": [
+            0.38,
+            -0.4
+          ],
+          "radius": 0.09,
+          "softness": 0.45,
+          "opacity": 0.75
+        }
+      ],
+      "glintColor": [
+        255,
+        255,
+        252
+      ],
+      "eyes": [
+        {
+          "mesh": "eye_L",
+          "irisCenterUv": [
+            0.34473,
+            0.125
+          ],
+          "irisRadiusScreen": 0.040352,
+          "glintTexels": 265
+        },
+        {
+          "mesh": "eye_R",
+          "irisCenterUv": [
+            0.14941,
+            0.125
+          ],
+          "irisRadiusScreen": 0.04037,
+          "glintTexels": 263
+        }
+      ],
+      "imageSize": [
+        512,
+        512
+      ],
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cat_ts_palmon_chr348.glb",
+      "originalSha256": "868a034c3ec6dca14733fe5d45ec8b648cbc37d5612b5ae79eb8f37319398e9b",
+      "repairedSha256": "5b1eeaca3c8927d89fc7e31290fcd073d940b98387d955faa26ac6d6fd468b55",
+      "eyeImage": "chr348p01.png",
+      "glints": [
+        {
+          "offset": [
+            -0.36,
+            0.38
+          ],
+          "radius": 0.25,
+          "softness": 0.35,
+          "opacity": 0.95
+        },
+        {
+          "offset": [
+            0.38,
+            -0.4
+          ],
+          "radius": 0.09,
+          "softness": 0.45,
+          "opacity": 0.75
+        }
+      ],
+      "glintColor": [
+        255,
+        255,
+        252
+      ],
+      "eyes": [
+        {
+          "mesh": "eye_L",
+          "irisCenterUv": [
+            0.37305,
+            0.15137
+          ],
+          "irisRadiusScreen": 0.060472,
+          "glintTexels": 261
+        },
+        {
+          "mesh": "eye_R",
+          "irisCenterUv": [
+            0.12598,
+            0.15137
+          ],
+          "irisRadiusScreen": 0.060042,
+          "glintTexels": 262
+        }
+      ],
+      "imageSize": [
+        512,
+        512
+      ],
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cat_ts_terriermon_lopmon_and_assistant_chr701.glb",
+      "originalSha256": "9b96a3fb83d9557c31f8a2ef55e3ef2757fb25be9c2ac6875259412e8f0cc01b",
+      "repairedSha256": "f376bb74e1d1f4ffb3f9b456e79562065d5f6c7d76827e78f6ae0a64d3a15ddc",
+      "eyeImage": "chr701p01.png",
+      "glints": [
+        {
+          "offset": [
+            -0.36,
+            0.38
+          ],
+          "radius": 0.25,
+          "softness": 0.35,
+          "opacity": 0.95
+        },
+        {
+          "offset": [
+            0.38,
+            -0.4
+          ],
+          "radius": 0.09,
+          "softness": 0.45,
+          "opacity": 0.75
+        }
+      ],
+      "glintColor": [
+        255,
+        255,
+        252
+      ],
+      "eyes": [
+        {
+          "mesh": "eye_L",
+          "irisCenterUv": [
+            0.36914,
+            0.11719
+          ],
+          "irisRadiusScreen": 0.04429,
+          "glintTexels": 457
+        },
+        {
+          "mesh": "eye_R",
+          "irisCenterUv": [
+            0.13477,
+            0.11719
+          ],
+          "irisRadiusScreen": 0.043738,
+          "glintTexels": 449
+        }
+      ],
+      "imageSize": [
+        512,
+        512
+      ],
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cat_ts_terriermon_lopmon_and_assistant_chr750.glb",
+      "originalSha256": "1b7abb42bf8ae17db5e02ced7f638258d98c7c2b7ab446531a5af1cf86b14648",
+      "repairedSha256": "8d30f25cfd4523dee24fad5bced54d14b8c1f5245fd1ba69fbf717ca49f474b0",
+      "eyeImage": "chr750p01.png",
+      "glints": [
+        {
+          "offset": [
+            -0.36,
+            0.38
+          ],
+          "radius": 0.25,
+          "softness": 0.35,
+          "opacity": 0.95
+        },
+        {
+          "offset": [
+            0.38,
+            -0.4
+          ],
+          "radius": 0.09,
+          "softness": 0.45,
+          "opacity": 0.75
+        }
+      ],
+      "glintColor": [
+        255,
+        255,
+        252
+      ],
+      "eyes": [
+        {
+          "mesh": "eye_L",
+          "irisCenterUv": [
+            0.36914,
+            0.11719
+          ],
+          "irisRadiusScreen": 0.04429,
+          "glintTexels": 457
+        },
+        {
+          "mesh": "eye_R",
+          "irisCenterUv": [
+            0.13477,
+            0.11719
+          ],
+          "irisRadiusScreen": 0.043738,
+          "glintTexels": 449
+        }
+      ],
+      "imageSize": [
+        512,
+        512
+      ],
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cat_ts_v_mon_chr114.glb",
+      "originalSha256": "21b58f9493f16d5475fe498a669b88e171e564f66897640d15c3c863f1bfcd2b",
+      "repairedSha256": "79e8ebef1d8d24190bbcb01603102671b415af117e8ac0ea29a5d594e4d9e1be",
+      "eyeImage": "chr114p01.png",
+      "glints": [
+        {
+          "offset": [
+            -0.36,
+            0.38
+          ],
+          "radius": 0.25,
+          "softness": 0.35,
+          "opacity": 0.95
+        },
+        {
+          "offset": [
+            0.38,
+            -0.4
+          ],
+          "radius": 0.09,
+          "softness": 0.45,
+          "opacity": 0.75
+        }
+      ],
+      "glintColor": [
+        255,
+        255,
+        252
+      ],
+      "eyes": [
+        {
+          "mesh": "eye_L",
+          "irisCenterUv": [
+            0.37305,
+            0.12402
+          ],
+          "irisRadiusScreen": 0.00502,
+          "glintTexels": 356
+        },
+        {
+          "mesh": "eye_R",
+          "irisCenterUv": [
+            0.12695,
+            0.12402
+          ],
+          "irisRadiusScreen": 0.00502,
+          "glintTexels": 354
+        }
+      ],
+      "imageSize": [
+        512,
+        512
+      ],
       "preservedGeometryRigAndAnimation": true
     }
   ]

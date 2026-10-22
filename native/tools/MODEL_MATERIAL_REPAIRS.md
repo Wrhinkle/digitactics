@@ -230,6 +230,7 @@ Source archive pages:
 - [MachGaogamon](https://models.spriters-resource.com/mobile/digimonlinks/asset/304020/)
 - [MagnaGarurumon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331597/)
 - [Sistermon Blanc (Awakened)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324398/)
+- [Boltboutamon](https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342147/)
 
 ## Eyes and second atlases (October 22)
 
@@ -250,9 +251,42 @@ triangles; the conversion kept one UV set and dropped the decal.
 composites the decal's open-eye cell into the embedded body atlas (upsampled 2x)
 from the source DAE triangles. Only the image bytes change; the
 `eyeDecalRecoveries` entries pin each result. Piddomon's archive has no decal.
-Boltboutamon's source also binds a second atlas (`g018_c01`) that the rip never
-embedded; that is not repaired here.
+
+Boltboutamon's source DAE splits its one geometry into two polylists: body cloth
+on `g018_c00` and the gold armor, cape and weapon on `g018_c01` (UVs at u -1..0,
+wrapped). The rip merged both into one primitive bound to `g018_c00` and never
+embedded `g018_c01`. `recover-model-materials.py --model boltboutamon` starts from
+the eye-decal repair above, matches every surviving triangle to one source
+triangle by its UV0 corners (10,032 + 15,760; one surviving triangle is a
+duplicate), splits the indices into two primitives that share the unchanged
+vertex streams, and embeds the source `g018_c01.png` unchanged with its own
+material. The archive's `g018_c01_smalledit.png` is a later edit, not the
+source binding, and is not used. The manifest keeps both steps; `--check`
+treats the eye-decal entry as superseded by the step that starts from it.
+
+```powershell
+python native/tools/recover-model-materials.py --model boltboutamon --archive C:/path/NO_Boltboutamon.zip --apply
+```
 
 Time Stranger eyes have their pupils, but the game's eye-glint layer (`e01h`) is
-positioned by shader constants that are not stored in the mesh or archive, so the
-glints are not reproduced.
+positioned by shader constants that are not stored in the mesh or archive. The
+glint cannot be reproduced from the source, so `add-model-eye-glints.py` paints
+the glint that Cyber Sleuth models carry in their baked eye textures. Front
+rest-pose views of CS Motimon, Palmon, Lopmon, Veemon, Agumon and Betamon show
+one round white glint in the upper quadrant of the iris, on the same side for
+both eyes, and most put it upper-left from the viewer, plus a small dim glint
+diagonally opposite. The tool places a glint of 0.25 iris radii at (-0.36, +0.38)
+radii and one of 0.09 radii at (+0.38, -0.40) in screen space. It converts these
+into the eye texture through each eye mesh's rest-pose UV-to-position Jacobian
+and clips them to the painted iris. Only the embedded eye image changes
+(re-encoded losslessly); `eyeGlintAdditions` pins each result. Palmon's entry
+starts from its geometry recovery. This is an inferred appearance, not a
+reproduction of the game's projected glint.
+
+```powershell
+python native/tools/add-model-eye-glints.py --preview C:/path/preview   # candidate PNGs and GLBs
+python native/tools/add-model-eye-glints.py --apply
+```
+
+Applied to TS Motimon, Palmon, Terriermon, Lopmon and Veemon. Other TS rips with
+an `e01h` texture can be added as recipes after reviewing their previews.

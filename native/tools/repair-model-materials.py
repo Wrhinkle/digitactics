@@ -164,8 +164,19 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     rows = [repair(entry, options.apply) for entry in manifest["repairs"]]
     rows += [alpha_repair(entry, options.apply) for entry in manifest.get("alphaRepairs", [])]
-    for entry in (manifest.get("sourceRecoveries", []) + manifest.get("geometryRecoveries", []) +
-                  manifest.get("uvRecoveries", []) + manifest.get("eyeDecalRecoveries", [])):
+    pinned = (manifest.get("sourceRecoveries", []) + manifest.get("geometryRecoveries", []) +
+              manifest.get("uvRecoveries", []) + manifest.get("eyeDecalRecoveries", []) +
+              manifest.get("eyeGlintAdditions", []))
+    for entry in pinned:
+        # A later reviewed step may start from this entry's output (for example an eye
+        # glint over a geometry recovery); only the last step must match the file.
+        later = [e for e in pinned if e is not entry and e["asset"] == entry["asset"] and
+                 e.get("originalSha256") == entry["repairedSha256"]]
+        if len(later) > 1:
+            raise ValueError("Ambiguous repair chain: " + entry["asset"])
+        if later:
+            rows.append({"asset": entry["asset"], "state": "superseded", "sha256": entry["repairedSha256"]})
+            continue
         path = (ROOT / entry["asset"]).resolve()
         if not path.is_relative_to(ROOT / "models") or hashlib.sha256(path.read_bytes()).hexdigest() != entry["repairedSha256"]:
             raise ValueError("Recovered source asset differs from its verified repair: " + entry["asset"])
