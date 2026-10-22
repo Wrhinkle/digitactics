@@ -51,6 +51,16 @@ const anatomy = {
   'rip-ts_terriermon_assistant': {body:'J_spine01',chest:'J_spine02',head:'J_neck',headRange:.6,jaw:'J_mouth',bodyLean:.3,armRange:.25,
     elbowAttack:.7,elbowWin:.7,family:'biped',arms:pair('J_arm_l','J_arm_r'),elbows:pair('J_elbow_l','J_elbow_r'),
     chains:['l','r'].map(side=>chain([1,2,3,4].map(i=>`J_ear0${i}_${side}`),.12,.6,'x'))},
+  // Clipless Time Stranger crab. Its legs are modeled arched, but both claw arms
+  // sit in the export's bind pose: shoulder, elbow and pincer joints unrotated,
+  // straight out sideways at one height (1.4 body widths each), so every
+  // generated clip read as a T-pose. Swing the upper arms forward and bend the
+  // elbows so the pincers come up in front of the face; legs keep their shape.
+  'rip-ts_crabmon': {body:'J_center',jaw:'J_mouth',armRange:.5,elbowAxis:'y',elbowSigns:[-1,1],elbowAttack:.45,elbowWin:.5,family:'biped',
+    arms:pair('J_hand01_L','J_hand01_R'),elbows:pair('J_hand02_L','J_hand02_R'),
+    neutral:[['J_hand01_L','y',-.75],['J_hand01_R','y',.75],['J_hand01_L','z',.3],['J_hand01_R','z',-.3],
+      ['J_hand02_L','y',-.9],['J_hand02_R','y',.9]],
+    chains:['A','B','C'].flatMap(row=>['L','R'].map(side=>chain([`J_foot01_${row}_${side}`,`J_foot02_${row}_${side}`],.035,.9,'x')))},
   // Its Noesis reel is unrelated (anim:false). The visible creature is the
   // core sphere and its eight-link chain arms, which generic fallback never
   // reaches; rock the core and send traveling waves along each chain.

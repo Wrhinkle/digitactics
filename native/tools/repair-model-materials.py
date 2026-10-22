@@ -164,7 +164,8 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     rows = [repair(entry, options.apply) for entry in manifest["repairs"]]
     rows += [alpha_repair(entry, options.apply) for entry in manifest.get("alphaRepairs", [])]
-    for entry in manifest.get("sourceRecoveries", []) + manifest.get("geometryRecoveries", []) + manifest.get("uvRecoveries", []):
+    for entry in (manifest.get("sourceRecoveries", []) + manifest.get("geometryRecoveries", []) +
+                  manifest.get("uvRecoveries", []) + manifest.get("eyeDecalRecoveries", [])):
         path = (ROOT / entry["asset"]).resolve()
         if not path.is_relative_to(ROOT / "models") or hashlib.sha256(path.read_bytes()).hexdigest() != entry["repairedSha256"]:
             raise ValueError("Recovered source asset differs from its verified repair: " + entry["asset"])

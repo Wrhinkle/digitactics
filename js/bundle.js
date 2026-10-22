@@ -42564,6 +42564,32 @@ void main() {
       elbows: pair("J_elbow_l", "J_elbow_r"),
       chains: ["l", "r"].map((side) => chain([1, 2, 3, 4].map((i) => `J_ear0${i}_${side}`), 0.12, 0.6, "x"))
     },
+    // Clipless Time Stranger crab. Its legs are modeled arched, but both claw arms
+    // sit in the export's bind pose: shoulder, elbow and pincer joints unrotated,
+    // straight out sideways at one height (1.4 body widths each), so every
+    // generated clip read as a T-pose. Swing the upper arms forward and bend the
+    // elbows so the pincers come up in front of the face; legs keep their shape.
+    "rip-ts_crabmon": {
+      body: "J_center",
+      jaw: "J_mouth",
+      armRange: 0.5,
+      elbowAxis: "y",
+      elbowSigns: [-1, 1],
+      elbowAttack: 0.45,
+      elbowWin: 0.5,
+      family: "biped",
+      arms: pair("J_hand01_L", "J_hand01_R"),
+      elbows: pair("J_hand02_L", "J_hand02_R"),
+      neutral: [
+        ["J_hand01_L", "y", -0.75],
+        ["J_hand01_R", "y", 0.75],
+        ["J_hand01_L", "z", 0.3],
+        ["J_hand01_R", "z", -0.3],
+        ["J_hand02_L", "y", -0.9],
+        ["J_hand02_R", "y", 0.9]
+      ],
+      chains: ["A", "B", "C"].flatMap((row) => ["L", "R"].map((side) => chain([`J_foot01_${row}_${side}`, `J_foot02_${row}_${side}`], 0.035, 0.9, "x")))
+    },
     // Its Noesis reel is unrelated (anim:false). The visible creature is the
     // core sphere and its eight-link chain arms, which generic fallback never
     // reaches; rock the core and send traveling waves along each chain.
@@ -43572,17 +43598,31 @@ void main() {
       "J_chine_n"
     ];
     const segments = names.map((name2, i) => ({ bone: scene2.getObjectByName(name2), phase: (i < 6 ? i + 1 : 5 - i) * 0.75 })).filter((s) => s.bone);
+    const root4 = scene2.getObjectByName("J_root");
+    scene2.updateMatrixWorld(true);
+    const box3 = new Box3().setFromObject(scene2), inverse = root4?.parent.matrixWorld.clone().invert();
+    const lift = root4 && new Vector3(0, (box3.max.y - box3.min.y) * 0.4, 0).applyMatrix4(inverse).sub(V().applyMatrix4(inverse));
     return clips.map((clip2) => {
-      const corrected = clip2.clone();
+      const corrected = clip2.clone(), idle = clip2.name === "idle";
       for (const { bone, phase } of segments) {
         const times = [], values = [], base = bone.quaternion.clone();
         for (let i = 0; i <= 32; i++) {
-          const u = i / 32, pulse3 = Math.sin(u * Math.PI) ** 2, boost = clip2.name === "idle" ? 0 : clip2.name === "attack" ? 0.03 : 0.06;
-          const angle = (0.12 + boost * pulse3) * Math.sin(u * Math.PI * 2 - phase), q = base.clone().multiply(Q().setFromAxisAngle(Y, angle));
+          const u = i / 32, pulse3 = Math.sin(u * Math.PI) ** 2, boost = idle ? 0 : clip2.name === "attack" ? 0.03 : 0.06;
+          const angle = ((idle ? 0.05 : 0.12) + boost * pulse3) * Math.sin(u * Math.PI * 2 - phase), q = base.clone().multiply(Q().setFromAxisAngle(Y, angle));
           times.push(clip2.duration * u);
           values.push(q.x, q.y, q.z, q.w);
         }
         corrected.tracks.push(new QuaternionKeyframeTrack(bone.name + ".quaternion", times, values));
+      }
+      if (idle && lift) {
+        const times = [], values = [];
+        for (let i = 0; i <= 32; i++) {
+          const u = i / 32, p = root4.position.clone().addScaledVector(lift, 0.5 - 0.5 * Math.cos(u * Math.PI * 2));
+          times.push(clip2.duration * u);
+          values.push(p.x, p.y, p.z);
+        }
+        corrected.tracks = corrected.tracks.filter((t) => t.name !== root4.name + ".position");
+        corrected.tracks.push(new VectorKeyframeTrack(root4.name + ".position", times, values));
       }
       return corrected;
     });

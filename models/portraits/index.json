@@ -520,7 +520,7 @@
   "src": "models/files/rip_kendogarurumon.glb"
  },
  "hackmon:0": {
-  "file": "hackmon_0.2f916910.webp",
+  "file": "hackmon_0.0840df14.webp",
   "src": "models/files/rip_hackmon.glb"
  },
  "hackmon:1": {
@@ -1416,7 +1416,7 @@
   "src": "models/files/rip_l_paildramon.glb"
  },
  "ac:Shamanmon": {
-  "file": "ac_Shamanmon.b4c49383.webp",
+  "file": "ac_Shamanmon.8396ed45.webp",
   "src": "models/files/rip_no_shamanmon.glb"
  },
  "ac:Sorcermon": {
@@ -1436,7 +1436,7 @@
   "src": "models/files/rip_cs_kyubimon.glb"
  },
  "ac:Psychemon": {
-  "file": "ac_Psychemon.f7b638e7.webp",
+  "file": "ac_Psychemon.ff5c513b.webp",
   "src": "models/files/rip_no_psychemon.glb"
  },
  "ac:MegaGargomon": {
@@ -1512,7 +1512,7 @@
   "src": "models/files/rip_l_whamon.glb"
  },
  "drg:Psychemon": {
-  "file": "drg_Psychemon.f7b638e7.webp",
+  "file": "drg_Psychemon.ff5c513b.webp",
   "src": "models/files/rip_no_psychemon.glb"
  },
  "ac:Tyrannomon": {
@@ -1592,7 +1592,7 @@
   "src": "models/files/rip_cs_toyagumon.glb"
  },
  "drg:Saberdramon": {
-  "file": "drg_Saberdramon.cfcbbde7.webp",
+  "file": "drg_Saberdramon.79d25eeb.webp",
   "src": "models/files/rip_no_saberdramon.glb"
  },
  "drg:GuardromonGold": {
@@ -1612,7 +1612,7 @@
   "src": "models/files/rip_cs_icedevimon.glb"
  },
  "drg:Gururumon": {
-  "file": "drg_Gururumon.3a93e431.webp",
+  "file": "drg_Gururumon.bd709b21.webp",
   "src": "models/files/rip_no_gururumon.glb"
  },
  "drg:AncientGarurumon": {
@@ -1660,7 +1660,7 @@
   "src": "models/files/rip_l_gallantmon_x.glb"
  },
  "drg:RedVegiemon": {
-  "file": "drg_RedVegiemon.be51e897.webp",
+  "file": "drg_RedVegiemon.9ff352e2.webp",
   "src": "models/files/rip_no_redvegiemon.glb"
  },
  "drg:JesmonX": {
@@ -1668,7 +1668,7 @@
   "src": "models/files/rip_l_jesmon_x.glb"
  },
  "drg:Aruraumon": {
-  "file": "drg_Aruraumon.49774d3b.webp",
+  "file": "drg_Aruraumon.b7a7aa76.webp",
   "src": "models/files/rip_no_aruraumon.glb"
  },
  "drg:WarGreymonX": {
@@ -1736,11 +1736,11 @@
   "src": "models/files/rip_cs_mushroomon.glb"
  },
  "drg:KyubimonSilver": {
-  "file": "drg_KyubimonSilver.6276d5ab.webp",
+  "file": "drg_KyubimonSilver.6d8fb8be.webp",
   "src": "models/files/rip_no_kyubimon_silver.glb"
  },
  "drg:SnowGoblimon": {
-  "file": "drg_SnowGoblimon.edf102fa.webp",
+  "file": "drg_SnowGoblimon.5e06b8b2.webp",
   "src": "models/files/rip_no_snowgoblimon.glb"
  },
  "drg:SkullMeramon": {
@@ -1752,7 +1752,7 @@
   "src": "models/files/rip_l_gumdramon.glb"
  },
  "drg:RedVeedramon": {
-  "file": "drg_RedVeedramon.7d187876.webp",
+  "file": "drg_RedVeedramon.bad4fef3.webp",
   "src": "models/files/rip_no_redveedramon.glb"
  },
  "ac:Volcanicdramon": {
@@ -1776,7 +1776,7 @@
   "src": "models/files/rip_cs_tentomon.glb"
  },
  "drg:CatchMamemon": {
-  "file": "drg_CatchMamemon.fd6e994e.webp",
+  "file": "drg_CatchMamemon.276f908e.webp",
   "src": "models/files/rip_cs_catchmamemon.glb"
  },
  "drg:Justimon": {
@@ -1872,7 +1872,7 @@
   "src": "models/files/rip_l_metallicdramon.glb"
  },
  "drg:Growlmon (Yellow)": {
-  "file": "drg_Growlmon__Yellow_.c6345c16.webp",
+  "file": "drg_Growlmon__Yellow_.c980441e.webp",
   "src": "models/files/rip_no_growlmon_yellow.glb"
  },
  "drg:Kentaurosmon": {
@@ -2104,11 +2104,11 @@
   "src": "models/files/rip_cs_raremon.glb"
  },
  "ac:SnowGoblimon": {
-  "file": "ac_SnowGoblimon.edf102fa.webp",
+  "file": "ac_SnowGoblimon.5e06b8b2.webp",
   "src": "models/files/rip_no_snowgoblimon.glb"
  },
  "ac:Hyogamon": {
-  "file": "ac_Hyogamon.8ae7a6ec.webp",
+  "file": "ac_Hyogamon.a1054f9b.webp",
   "src": "models/files/rip_no_hyogamon.glb"
  },
  "ac:Gazimon": {
@@ -2160,7 +2160,7 @@
   "src": "models/files/rip_cs_phantomon.glb"
  },
  "drg:KingSukamon": {
-  "file": "drg_KingSukamon.3cbdc48a.webp",
+  "file": "drg_KingSukamon.5bd7df58.webp",
   "src": "models/files/rip_no_kingsukamon.glb"
  },
  "drg:Hudiemon": {
@@ -2176,7 +2176,7 @@
   "src": "models/files/rip_l_kuzuhamon.glb"
  },
  "drg:Youkomon": {
-  "file": "drg_Youkomon.61e55b87.webp",
+  "file": "drg_Youkomon.7c82db77.webp",
   "src": "models/files/rip_no_youkomon.glb"
  },
  "ac:Mekanorimon": {
@@ -2280,7 +2280,7 @@
   "src": "models/files/rip_cs_sistermon_blanc.glb"
  },
  "giz:SistermonBlancAwakened": {
-  "file": "giz_SistermonBlancAwakened.44cf7c07.webp",
+  "file": "giz_SistermonBlancAwakened.bc50323f.webp",
   "src": "models/files/rip_cs_sistermon_blanc_awakened.glb"
  },
  "giz:SistermonNoirAwakened": {
@@ -2288,7 +2288,7 @@
   "src": "models/files/rip_cs_sistermon_noir_awakened.glb"
  },
  "giz:Boltboutamon": {
-  "file": "giz_Boltboutamon.d6c7b21e.webp",
+  "file": "giz_Boltboutamon.ab0cf5eb.webp",
   "src": "models/files/rip_no_boltboutamon.glb"
  },
  "giz:Yggdrasil": {
@@ -2568,7 +2568,7 @@
   "src": "models/files/rip_ts_terriermon_assistant.glb"
  },
  "unique:NO_WarGrowlmon_Yellow": {
-  "file": "unique_NO_WarGrowlmon_Yellow.ec3a128b.webp",
+  "file": "unique_NO_WarGrowlmon_Yellow.eec155f2.webp",
   "src": "models/files/rip_no_wargrowlmon_yellow.glb"
  },
  "catalog:NeoDevimon:main": {

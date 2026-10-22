@@ -79,6 +79,20 @@ RECOVERIES = {
         "prefix": "Neptunemon/chr075", "base": "chr075",
         "meshAtlases": {"chr075_0": "chr075a01.png", "chr075_1": "chr075a01.png",
                         "chr075_2": "chr075a01.png", "chr075_3": "chr075a01.png"}
+    },
+    # One converted material bound chr782a01 to every mesh; the source DAE binds the
+    # hair, hands and staff to the separate chr782a02 atlas, which was never embedded.
+    "sistermonblancawakened": {
+        "asset": "models/files/rip_cs_sistermon_blanc_awakened.glb",
+        "originalSha256": "e8bc41555188ef62a7354870e94c411d93d975d3c7485b05d7caf3f9171d9464",
+        "repairedSha256": "1f5b815a5dfa84638ad4067fe1530ea4db4ec2e2497c1d639f0ba9acf0854e0e",
+        "archiveSha256": "df45d4bbb99e58525a4bf464773a7ed12770dee8796225b295988ff149c080d4",
+        "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324398/",
+        "prefix": "Sistermon Blanc (Awakened)/chr782", "base": "chr782",
+        "meshAtlases": {"chr782_0": "chr782a01.png", "chr782_1": "chr782a02.png",
+                        "chr782_2": "chr782a02.png", "chr782_3": "chr782a02.png",
+                        "chr782_4": "chr782a01.png"},
+        "keepUvMeshes": ["chr782_0"]
     }
 }
 spec = importlib.util.spec_from_file_location("material_repair", Path(__file__).with_name("repair-model-materials.py"))
@@ -189,6 +203,13 @@ def recover(archive_data, original, recipe):
 
     geometries = source.findall(".//c:library_geometries/c:geometry", NS)
     for mesh in document["meshes"]:
+        if mesh["name"] in recipe.get("keepUvMeshes", ()):
+            # Reviewed surviving UVs already land on this mesh's source atlas; only its
+            # binding changes. Its quantized coincident faces cannot be re-matched uniquely.
+            if any("TEXCOORD_0" not in p["attributes"] for p in mesh["primitives"]):
+                raise ValueError("Kept mesh must retain its UVs")
+            rows.append({"mesh": mesh["name"], "albedoImage": mesh_atlases[mesh["name"]], "keptSurvivingUvs": True})
+            continue
         geometry = next(g for g in geometries if g.get("name") == mesh["name"])
         arrays = {s.get("id"): np.fromstring(s.find("c:float_array", NS).text, sep=" ").reshape(
             -1, int(s.find("c:technique_common/c:accessor", NS).get("stride")))
@@ -226,9 +247,13 @@ def recover(archive_data, original, recipe):
         points = accessor(document, old_data, primitive["attributes"]["POSITION"], True)
         indices = accessor(document, old_data, primitive["indices"]).reshape(-1).astype(int)
         distances, nearest = cKDTree(points).query((positions - center) / scale)
+        keys = [tuple(x) for x in np.round(points * 32767).astype(int)]
+        # Zero-area source faces (corners sharing a quantized point) were dropped by
+        # the conversion; they carry no surface and are counted, not matched.
+        collapsed = np.array([len({keys[nearest[x[inputs["VERTEX"][0]]]] for x in face}) < 3 for face in faces], bool)
+        faces = faces[~collapsed]
         if distances.max() > 0.00015 or len(faces) * 3 != len(indices):
             raise ValueError("Source topology or quantized positions differ")
-        keys = [tuple(x) for x in np.round(points * 32767).astype(int)]
         existing = (accessor(document, old_data, primitive["attributes"]["TEXCOORD_0"], True)[indices]
                     if "TEXCOORD_0" in primitive["attributes"] else None)
         triangles = {}
@@ -266,6 +291,7 @@ def recover(archive_data, original, recipe):
         restored = np.asarray(restored, dtype="<f4")
         restored[:, 1] = 1 - restored[:, 1]  # Collada vs glTF texture origin.
         row = {"mesh": mesh["name"], "matchedTriangles": len(faces),
+               **({"droppedZeroAreaSourceTriangles": int(collapsed.sum())} if collapsed.any() else {}),
                "maximumNormalizedPositionError": float(distances.max()), "ambiguousTriangles": 0}
         if "meshAtlases" in recipe:
             row.update(albedoImage=mesh_atlases[mesh["name"]],

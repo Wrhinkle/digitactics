@@ -189,16 +189,32 @@ function serpentClips(scene,clips){
   const names=['J_chine_e','J_chine_f','J_chine_g','J_chine_h','J_chine_i','J_chine_j',
     'J_chine_a','J_chine_b','J_chine_c','J_chine','J_chine_k','J_chine_l','J_chine_m','J_chine_n'];
   const segments=names.map((name,i)=>({bone:scene.getObjectByName(name),phase:(i<6?i+1:5-i)*.75})).filter(s=>s.bone);
+  // Seadramon swims in the air: its idle hovers (MODEL-OPTIONS lifts it off the
+  // board) with a slow whole-body bob and only a faint ripple, instead of a
+  // ground slither. The bob moves the skeleton root, so the shape is unchanged.
+  const root=scene.getObjectByName('J_root');
+  scene.updateMatrixWorld(true);
+  const box=new THREE.Box3().setFromObject(scene),inverse=root?.parent.matrixWorld.clone().invert();
+  const lift=root&&new THREE.Vector3(0,(box.max.y-box.min.y)*.4,0).applyMatrix4(inverse).sub(V().applyMatrix4(inverse));
   return clips.map(clip=>{
-    const corrected=clip.clone();
+    const corrected=clip.clone(),idle=clip.name==='idle';
     for(const {bone,phase} of segments){
       const times=[],values=[],base=bone.quaternion.clone();
       for(let i=0;i<=32;i++){
-        const u=i/32,pulse=Math.sin(u*Math.PI)**2,boost=clip.name==='idle'?0:clip.name==='attack'?.03:.06;
-        const angle=(.12+boost*pulse)*Math.sin(u*Math.PI*2-phase),q=base.clone().multiply(Q().setFromAxisAngle(Y,angle));
+        const u=i/32,pulse=Math.sin(u*Math.PI)**2,boost=idle?0:clip.name==='attack'?.03:.06;
+        const angle=((idle?.05:.12)+boost*pulse)*Math.sin(u*Math.PI*2-phase),q=base.clone().multiply(Q().setFromAxisAngle(Y,angle));
         times.push(clip.duration*u);values.push(q.x,q.y,q.z,q.w);
       }
       corrected.tracks.push(new THREE.QuaternionKeyframeTrack(bone.name+'.quaternion',times,values));
+    }
+    if(idle&&lift){
+      const times=[],values=[];
+      for(let i=0;i<=32;i++){
+        const u=i/32,p=root.position.clone().addScaledVector(lift,.5-.5*Math.cos(u*Math.PI*2));
+        times.push(clip.duration*u);values.push(p.x,p.y,p.z);
+      }
+      corrected.tracks=corrected.tracks.filter(t=>t.name!==root.name+'.position');
+      corrected.tracks.push(new THREE.VectorKeyframeTrack(root.name+'.position',times,values));
     }
     return corrected;
   });

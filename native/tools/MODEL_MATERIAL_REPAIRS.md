@@ -229,3 +229,30 @@ Source archive pages:
 - [Ravemon / Burst Mode](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324581/)
 - [MachGaogamon](https://models.spriters-resource.com/mobile/digimonlinks/asset/304020/)
 - [MagnaGarurumon](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/331597/)
+- [Sistermon Blanc (Awakened)](https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324398/)
+
+## Eyes and second atlases (October 22)
+
+Hackmon and CatchMamemon bound the reflection gradient (`a01s`) to the body and
+face meshes, so the bodies read as one flat color with no eyes. Both embedded
+albedos fit the surviving UVs exactly; the `repairs` entries swap the binding only.
+
+Sistermon Blanc (Awakened) embedded only `chr782a01` and bound it to every mesh.
+Its source DAE binds the hair, hands and staff to `chr782a02`, which was never
+embedded. `recover-model-materials.py --model sistermonblancawakened` restores it
+from the source archive. Four zero-area source faces dropped by the conversion are
+counted, and the armor mesh keeps its surviving UVs (already on `chr782a01`).
+
+Next Order rips (`rip_no_*`) lost their pupils. The game draws eyes as an RGBA
+decal (`<code>_e00.png`) through the mesh's second UV set on a few eye-quad
+triangles; the conversion kept one UV set and dropped the decal.
+`recover-model-eye-decals.py --rips <dir with NO_*.zip> [--model shamanmon]`
+composites the decal's open-eye cell into the embedded body atlas (upsampled 2x)
+from the source DAE triangles. Only the image bytes change; the
+`eyeDecalRecoveries` entries pin each result. Piddomon's archive has no decal.
+Boltboutamon's source also binds a second atlas (`g018_c01`) that the rip never
+embedded; that is not repaired here.
+
+Time Stranger eyes have their pupils, but the game's eye-glint layer (`e01h`) is
+positioned by shader constants that are not stored in the mesh or archive, so the
+glints are not reproduced.

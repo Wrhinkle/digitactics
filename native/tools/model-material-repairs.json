@@ -29,6 +29,24 @@
       "reason": "The textured armor surfaces retain atlas UVs and their red/gold albedo is embedded. Separate cube material meshes have no UVs and are not changed by this repair."
     },
     {
+      "asset": "models/files/rip_hackmon.glb",
+      "originalSha256": "14d2c80db82b2b82b294ff4180c0ebd0bee1cc6f507248116f9b5de7397e0ed8",
+      "repairedSha256": "9939f4008abe076043b4beaeeded40f0719afefac321ad5775d96f9484e9546c",
+      "material": "chr687spec_01",
+      "incorrectImage": "chr687a01s.png",
+      "albedoImage": "chr687a01.png",
+      "reason": "The body/head mesh retains atlas UVs that land on the embedded albedo's armor, red cape, face and eye; the reflection gradient was used as diffuse, so the body read as flat pink with no eyes. The separate untextured cube material is unchanged."
+    },
+    {
+      "asset": "models/files/rip_cs_catchmamemon.glb",
+      "originalSha256": "2b989c17f72b49f38f550f470128b4f83cfaa7cf9db432dfc33002876f507217",
+      "repairedSha256": "a6d643e5494f716695ff123515a98a4967f6a0013e52f11f91714b6e53cf3661",
+      "material": "chr044spec_01",
+      "incorrectImage": "chr044a01s.png",
+      "albedoImage": "chr044a01.png",
+      "reason": "The face sphere, eye rims and glove surfaces retain atlas UVs that land on the embedded albedo's face, eyes, lightning mark and gloves; the reflection gradient was used as diffuse, so the face rendered without eyes."
+    },
+    {
       "asset": "models/files/rip_cat_ts_tentomon_chr303.glb",
       "material": "chr303_b02.001",
       "incorrectImage": null,
@@ -791,6 +809,78 @@
         "scope": "Source recovery only; no whole-model action or identity approval",
         "catalogSha256": "7d7ecc00436c2b6815ab7778d0a1f088e097a75cd2d9f91f780a54f63bc25a1e"
       }
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_cs_sistermon_blanc_awakened.glb",
+      "originalSha256": "e8bc41555188ef62a7354870e94c411d93d975d3c7485b05d7caf3f9171d9464",
+      "repairedSha256": "1f5b815a5dfa84638ad4067fe1530ea4db4ec2e2497c1d639f0ba9acf0854e0e",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonstorycybersleuthcompleteedition/asset/324398/",
+      "archiveSha256": "df45d4bbb99e58525a4bf464773a7ed12770dee8796225b295988ff149c080d4",
+      "daeSha256": "8ddc18be2d6b5b157c4cf3d8cae9941f2a7e5c375aaaf58b796adb0e66fd2fc4",
+      "preservedOriginalTriangleAttributes": true,
+      "preservedRigAndAnimation": true,
+      "meshes": [
+        {
+          "mesh": "chr782_0",
+          "albedoImage": "chr782a01.png",
+          "keptSurvivingUvs": true
+        },
+        {
+          "mesh": "chr782_1",
+          "matchedTriangles": 4492,
+          "maximumNormalizedPositionError": 0.00011421200318196233,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr782a02.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr782_1-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.00012970168612191912
+        },
+        {
+          "mesh": "chr782_2",
+          "matchedTriangles": 1194,
+          "maximumNormalizedPositionError": 0.00011895022694223689,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr782a02.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr782_2-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.00011424149456995547
+        },
+        {
+          "mesh": "chr782_3",
+          "matchedTriangles": 172,
+          "maximumNormalizedPositionError": 8.429057282366999e-05,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr782a02.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr782_3-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 0,
+          "existingUvMaximumError": 0.0001215003343871604
+        },
+        {
+          "mesh": "chr782_4",
+          "matchedTriangles": 872,
+          "maximumNormalizedPositionError": 0.00010742824310238097,
+          "ambiguousTriangles": 0,
+          "albedoImage": "chr782a01.png",
+          "sourceUvSet": 0,
+          "sourceUvInput": "chr782_4-mesh-map-0",
+          "coincidentTrianglesMatchedByExistingUvs": 430,
+          "existingUvMaximumError": 1.1920928955078125e-07
+        }
+      ],
+      "albedos": [
+        {
+          "name": "chr782a01.png",
+          "sha256": "3b5a5dfdb6f47d72cd46151597e4d74829dfb870889fb65344a5607ae9ebe8c9"
+        },
+        {
+          "name": "chr782a02.png",
+          "sha256": "a0e6780c1c6187cd1d10c10d9ea0c57cad86d36a094bf9a4417e9adfdc68394b"
+        }
+      ]
     }
   ],
   "geometryRecoveries": [
@@ -1150,6 +1240,398 @@
         "scope": "Material/identity correction only",
         "catalogSha256": "0e7024946e51de425ac9f52f815ba6f72d7c9ca1b708adfb4efd50b0212c5b90"
       }
+    }
+  ],
+  "eyeDecalRecoveries": [
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_aruraumon.glb",
+      "originalSha256": "940686beddc7fbee0c38be329ca26ad9794d0427f76db614965102627055a89d",
+      "repairedSha256": "fb02d491e9562a48ec6b88ff6a4999fdb28e113bb9e30b9dfe5977c0c39bfdc1",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342143/",
+      "archiveSha256": "8b3566996f1fafcd1617ce379905f905df9c9320e4aa524074c8791c1e3828bf",
+      "daeSha256": "a462188eac964d49c6928c1dbcf5ed449e1038b6d2809fb85cbdc73f1e62074c",
+      "decalSha256": "9a7bbb1dc0303f7315e92d17ba3868f12eb65c65e9fe2d5f72ad91c10accde8f",
+      "decal": "c035_e00.png",
+      "bodyAtlas": "c035_c00.png",
+      "sourceTriangles": 4381,
+      "eyeQuadTriangles": 126,
+      "decalTexels": 10235,
+      "maximumUv0Error": 0.00016660777984920785,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_boltboutamon.glb",
+      "originalSha256": "7c10bd0a014fddbb29e15016294e0ab45e349e4a7e26d56a386af4e4b582aab6",
+      "repairedSha256": "8cd08fee79a4f0dc87666c173b18dec6cc96ec8e327d4c370d3180051793d593",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342147/",
+      "archiveSha256": "b2edab3b36f846e6d293c9fbf3b4902df9d3b66db2aa9b5af9d8f5810c5eba3e",
+      "daeSha256": "41214f545c367ab5bbf67ebca08afef07a7d3610f0c2d9b35641b44ae016d784",
+      "decalSha256": "cdb37a20672f597b8d2e941d9542eae56df41290d718315ee0bbc9ed073a141f",
+      "decal": "g018_e00.png",
+      "bodyAtlas": "g018_c00.png",
+      "sourceTriangles": 10031,
+      "eyeQuadTriangles": 12,
+      "decalTexels": 114938,
+      "maximumUv0Error": 2.0417281201788403e-07,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_growlmon_yellow.glb",
+      "originalSha256": "ea0136041e48af1e29743a3f739fe86a60bc9a4f4133ee0a3015111878369508",
+      "repairedSha256": "2f05e393cc4aadf9ff9f8400caea07f1053b1aa56737acb2f6488f5d5aea0e14",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342133/",
+      "archiveSha256": "11c7672ce9fca0df02331f4e270b7746a8e4a5837d225b04a99293a9714f9ee7",
+      "daeSha256": "971872dc8362dc635c8359b550ac5ebd2a70083f6c624c6f21a8d8a1936fb94b",
+      "decalSha256": "41f194f2950e627bc0c8129183d2fed593e863a35d450ca0f8a1e54c432e88c6",
+      "decal": "d052_e00.png",
+      "bodyAtlas": "d052_c00.png",
+      "sourceTriangles": 4740,
+      "eyeQuadTriangles": 110,
+      "decalTexels": 4601,
+      "maximumUv0Error": 0.00016170117923153648,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_gururumon.glb",
+      "originalSha256": "30b260275f69534b4570b67230c97584da5731842153868856d9c7778c899e8d",
+      "repairedSha256": "63244aeb28c2b313d860a2da1dd9903515a551ed051d234d073913a812c2a0fc",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342134/",
+      "archiveSha256": "d4965dc09cb3564c165ca23f89086b709cfa0a14982cbab74b3f958d6ebc728e",
+      "daeSha256": "8d9273d222fe60c977c85d81a89768611a484a7a4d2d8057f73f47a4f3da6ec4",
+      "decalSha256": "9a661ccb384c07774eca3d58e119bed11a0e6909f88d3a051f3730b7af3043d4",
+      "decal": "d043_e00.png",
+      "bodyAtlas": "d043_c00.png",
+      "sourceTriangles": 4986,
+      "eyeQuadTriangles": 96,
+      "decalTexels": 1052,
+      "maximumUv0Error": 0.00016668551992022004,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_hyogamon.glb",
+      "originalSha256": "2f5c1711ac406e16fdb4a9059b92250250f16fbec342e50f6a95aaf97e3afd97",
+      "repairedSha256": "8db1f073ffe19b5220da7c087d07d0d4dc4fe004ddd28217d4bf4c47e9cb6cf0",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342135/",
+      "archiveSha256": "d4d7ae46ea79e9936fe29f6e5f60b52b42f3c449e8aa7f234e5d1ef3e02b45b9",
+      "daeSha256": "dde53940d8c74d29ffa11e1d454687fda3a457238d111927585b1acca6ba2cac",
+      "decalSha256": "c606539e4d2cf05c5891172f69599c5b654b106426c8000aba580b3be9dd8de3",
+      "decal": "d040_e00.png",
+      "bodyAtlas": "d040_c00.png",
+      "sourceTriangles": 3774,
+      "eyeQuadTriangles": 34,
+      "decalTexels": 8606,
+      "maximumUv0Error": 0.0001667249225657553,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_kingsukamon.glb",
+      "originalSha256": "17f708f5e79e3187c22a5bcc9482517f171d1c02726a940ecad977ff13334fbe",
+      "repairedSha256": "020e234500fb7664dfc8c53cc76c5396c38e026212dacc2428b3cf6ccb625a63",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342141/",
+      "archiveSha256": "3c1e6ad5ffa7c899ae4c8b91337a58c5aa8195e26475175793ae95eb108e00c3",
+      "daeSha256": "ca2deb46da4318712dd477433d6d42ad236adb3a5575318647c8fc9ef228449a",
+      "decalSha256": "1eb07bf79a423c4de48d2327df86a4c164017b24236fc95cc66d11b3622e1122",
+      "decal": "f062_e00.png",
+      "bodyAtlas": "f062_c00.png",
+      "sourceTriangles": 2870,
+      "eyeQuadTriangles": 66,
+      "decalTexels": 9706,
+      "maximumUv0Error": 0.0001665937648909153,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_kyubimon_silver.glb",
+      "originalSha256": "4910664b0646b0d6e56595c87466ba1c7dccd193045d2ffa75c907cd188e2655",
+      "repairedSha256": "37df49bbd26d5eafabc9f79ba24b315fd46cc83474e32f527e6def1990b2e3e4",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342140/",
+      "archiveSha256": "608db6a6b6663aadc7cfd45628bc227cc6ffa1a2ac99a7a555d98ed5079270be",
+      "daeSha256": "ff290b72733121ea0d2e1fb7856445c27c916a0e4f79231de353f9bb5c5402b4",
+      "decalSha256": "ca2fb92d77b92b9a322d28c0dbe6ca82417fd5927ca6e6159ed7c77bbcbd68dc",
+      "decal": "d042_e00.png",
+      "bodyAtlas": "d042_c00.png",
+      "sourceTriangles": 5650,
+      "eyeQuadTriangles": 12,
+      "decalTexels": 481,
+      "maximumUv0Error": 0.00017275727896761146,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_psychemon.glb",
+      "originalSha256": "f8d37f175152bff9c36d38a618b74c6f9353ceaf171709873c45af2ee88ab64c",
+      "repairedSha256": "a062498223ff43b94233385f2f92d0d80ee4273bfe1e1b317ffb5d664a7e7268",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342144/",
+      "archiveSha256": "822a6be1794178d001d4810955ce154de4c4ad248b8d0839d9030933e1043867",
+      "daeSha256": "5cf27de693420758d31be5883f12c863b0e5ccf7acde6bac3d096c175ca7d8d2",
+      "decalSha256": "2d6836f949afe50dda350ab54e16180750e220cba29a69c56194246159fb9884",
+      "decal": "c033_e00.png",
+      "bodyAtlas": "c033_c00.png",
+      "sourceTriangles": 5188,
+      "eyeQuadTriangles": 202,
+      "decalTexels": 5198,
+      "maximumUv0Error": 0.0001667419321778431,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_redveedramon.glb",
+      "originalSha256": "7c675c070d7d9819f16b5a583d247f24479e3aac6cc09a2cfedf4f7140326d6f",
+      "repairedSha256": "19e9a7a3711e441a16452b38bef9f7fb070ae37a3d20d770e49983d28d730b8a",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342137/",
+      "archiveSha256": "c311567919bbb1f2f96b1d61da6ba1a063e9c85ed65431e52afb4bce2a7db77d",
+      "daeSha256": "1e20be2f8d1714739fcad5101cf2c1ac139e991748fb09ff5a5e674e7adc17d2",
+      "decalSha256": "d8089bf47b592a2d2447da2a6ab37ed517be275eee083ddb20b3d9fa653a9e88",
+      "decal": "d050_e00.png",
+      "bodyAtlas": "d050_c00.png",
+      "sourceTriangles": 3196,
+      "eyeQuadTriangles": 145,
+      "decalTexels": 2923,
+      "maximumUv0Error": 0.00016651134429230576,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_redvegiemon.glb",
+      "originalSha256": "86453755588c23e09d42de5dbe0a45ec213cb2c0f67b97649ca92be47c682875",
+      "repairedSha256": "99261b97e727d7d44eaa371a6c7056ea4b528ed7f38a0eeba12a3be2b13d02da",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342138/",
+      "archiveSha256": "aae97d6a44afee5f4bcca711ba9597cf62d4dca865584e4c3242b3450c37f790",
+      "daeSha256": "c390b482461dd8cd0b145e684e2392fde89bf4a1911b3e8c225a6b3781c9403b",
+      "decalSha256": "063a426e7fcfdd61376056dcbb2da8159405eb8a20129d4963f48e639ce769fd",
+      "decal": "d055_e00.png",
+      "bodyAtlas": "d055_c00.png",
+      "sourceTriangles": 2502,
+      "eyeQuadTriangles": 10,
+      "decalTexels": 3011,
+      "maximumUv0Error": 0.00016153333285950648,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_saberdramon.glb",
+      "originalSha256": "0635c97161b4bf9ce7bfa74e6eadad4e5dd2948cf8d82ba5b5d585216e62cb04",
+      "repairedSha256": "0e68c1e44841be7b026dd4291c418701c663dff5f3d4178995f2a0812e08b94d",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342139/",
+      "archiveSha256": "a34ec7109d0ef7cc757f7964e45264d36222166c57c3139bdf23d09a4113835e",
+      "daeSha256": "39242f8ff8f955f78b9051b31d879c7be3aa21a824032851f2e864af0877f576",
+      "decalSha256": "3810dc3bd35a0430c53ac4d6f75630c70717a476d2d39d82d456704de5bce23c",
+      "decal": "d044_e00.png",
+      "bodyAtlas": "d044_c00.png",
+      "sourceTriangles": 5050,
+      "eyeQuadTriangles": 84,
+      "decalTexels": 1081,
+      "maximumUv0Error": 0.00016704469157646684,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_shamanmon.glb",
+      "originalSha256": "d777eb3b22c217b62800bc5211ba819f8bdec797269a39f75642b407219a029a",
+      "repairedSha256": "603e5bd9b1aa4c49336657f66536e9449184dcc3e6cbcd890f5dec5fa07b6e3a",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342145/",
+      "archiveSha256": "7a2d585a6d8acdc64eb98216c72ad8fa8f834d24450ddc0f38a9bc0c33eb32d3",
+      "daeSha256": "b4c23e6363c3eff7adfa0c54a290ce1a1bc83db85a1292b0ad96f289391a1f8d",
+      "decalSha256": "b3d22874102d7cdcdb9593a39397277dfb639316c014ad8c34517898758b60b5",
+      "decal": "c042_e00.png",
+      "bodyAtlas": "c042_c00.png",
+      "sourceTriangles": 4306,
+      "eyeQuadTriangles": 8,
+      "decalTexels": 500,
+      "maximumUv0Error": 0.00016703532082194258,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_snowgoblimon.glb",
+      "originalSha256": "9c8c3715942f80b18f4e1d74f5de7087ee15253ebdabc60f3ad7795b9d6758df",
+      "repairedSha256": "0e381a879e9af2faaf5e6003723c81565bfaf8916e4213c6cc98b9bc179b6281",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342146/",
+      "archiveSha256": "946eb24166065188e65d09834efe8c19410ac548528a650c146fbbd0e0b842fc",
+      "daeSha256": "7e2af2961fabe986426c7a91ff75ba702392398d3e4ba836269760f41a642092",
+      "decalSha256": "d29c8dc10e9f5ad32a9b3147c9575cbf09e947117fd88157273f05d4549941ed",
+      "decal": "c041_e00.png",
+      "bodyAtlas": "c041_c00.png",
+      "sourceTriangles": 3930,
+      "eyeQuadTriangles": 72,
+      "decalTexels": 463,
+      "maximumUv0Error": 0.00016703532082194258,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_wargrowlmon_yellow.glb",
+      "originalSha256": "2d7e593cf1dab1fe34842cdaf2b089efc0b68d7e0a568a3cfabf6921a9a8882a",
+      "repairedSha256": "07723e6265e58989c1f765234f6afd64454ea029e92e35e7598773a677a1f023",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342142/",
+      "archiveSha256": "4284ac4eb075b4d225f019d4d810e6130edf31b03dc08fe5eaef09f5b9d8fe79",
+      "daeSha256": "feb5ab6b8063cb3ca3b8f904b1d7dff1c7cd62952cdc42ee054a785a581421b0",
+      "decalSha256": "51ddc4b10cf633465d1e9dcb3fa1f50dceb6c6c7178bd32e4b9f1d8cdc82fe23",
+      "decal": "e048_e00.png",
+      "bodyAtlas": "e048_c00.png",
+      "sourceTriangles": 6608,
+      "eyeQuadTriangles": 88,
+      "decalTexels": 2166,
+      "maximumUv0Error": 0.00016172393857934544,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
+    },
+    {
+      "schemaVersion": 1,
+      "asset": "models/files/rip_no_youkomon.glb",
+      "originalSha256": "bcc441bd4a69acc4b478148ced270341b59ef5a904edc641456744c2d4c9442b",
+      "repairedSha256": "531cf27ed1f3478101d07661a8a04d6af600149538eca7a5769eb54de9a60123",
+      "sourceUrl": "https://models.spriters-resource.com/pc_computer/digimonworldnextorder/asset/342140/",
+      "archiveSha256": "608db6a6b6663aadc7cfd45628bc227cc6ffa1a2ac99a7a555d98ed5079270be",
+      "daeSha256": "ff290b72733121ea0d2e1fb7856445c27c916a0e4f79231de353f9bb5c5402b4",
+      "decalSha256": "ca2fb92d77b92b9a322d28c0dbe6ca82417fd5927ca6e6159ed7c77bbcbd68dc",
+      "decal": "d042_e00.png",
+      "bodyAtlas": "d042_c00.png",
+      "sourceTriangles": 5650,
+      "eyeQuadTriangles": 12,
+      "decalTexels": 481,
+      "maximumUv0Error": 0.00017275727896761146,
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "decalCell": [
+        0.0,
+        0.5
+      ],
+      "decalScale": 0.5,
+      "preservedGeometryRigAndAnimation": true
     }
   ]
 }
