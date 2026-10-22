@@ -73,7 +73,7 @@ internal static class MatchApplication
                 using var customMusic = options.Smoke ? null : new CustomMusicController(audio, profile!, options.MusicDecoder ?? Path.Combine(AppContext.BaseDirectory,"media","ffmpeg.exe"));
                 using var farmPointer = options.FarmPointerSmoke ? new FarmPointerSmoke(profile!, options.ProfileDirectory!) : null;
                 var caretakerDriver = options.FarmCaretakerSmoke ? new FarmCaretakerUiSmoke(profile!, options.ProfileDirectory!) : null;
-                using var renderer = new OpenGlBackend(); using var screen = new MatchScreen(catalog, audio, options.Smoke ? 143u : null, options.Duos, profile);
+                using var renderer = new OpenGlBackend(); using var uiText = new SubpixelText(); using var screen = new MatchScreen(catalog, audio, options.Smoke ? 143u : null, options.Duos, profile);
                 var mysteryDriver=options.MysteryLootUiSmoke?new MysteryLootUiSmoke(screen,profile!):null;
                 var selectionDriver=options.SetSelectionSmoke?new SetSelectionSmoke(catalog,screen,profile!,audio,options.SteamLibrary!):null;
                 using var keyboardDriver=options.MatchKeyboardSmoke?new MatchKeyboardSmoke(screen,profile!,audio):null;
@@ -132,7 +132,7 @@ internal static class MatchApplication
                     var size = window.FramebufferSize;
                     OpenGl.Viewport(0, 0, size.X, size.Y); OpenGl.ClearColor(new float4(.025f, .035f, .06f, 1)); OpenGl.Clear(GlClearBit.Color);
                     screen.RenderEliminationComposite(renderer);
-                    screen.Render(size); OpenGl.Viewport(0, 0, size.X, size.Y); renderer.RenderDrawData(ImGui.GetDrawData());
+                    screen.Render(size); OpenGl.Viewport(0, 0, size.X, size.Y); uiText.Render(renderer, ImGui.GetDrawData());
                     updateDriver?.Verify(screen,size,options.Capture);
                     if(eliminationDriver is not null && eliminationDriver.Verify(screen,size,options.Capture))break;
                     if(postgameDriver is not null && postgameDriver.Verify(screen,size,options.Capture))break;

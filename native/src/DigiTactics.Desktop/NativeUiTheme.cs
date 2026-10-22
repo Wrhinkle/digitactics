@@ -205,8 +205,9 @@ internal static class NativeUiTheme
         using var stream = File.OpenRead(path);
         if (!Convert.ToHexStringLower(SHA256.HashData(stream)).Equals(sha256, StringComparison.Ordinal))
             throw new InvalidDataException($"The bundled UI font has changed: {relative}");
-        // ImFontConfig's constructor defaults, plus the coverage boost; AddFontFromFileTTF copies the template.
-        var config = new ImFontConfig { FontDataOwnedByAtlas = true, GlyphMaxAdvanceX = float.MaxValue, RasterizerMultiply = RasterizerMultiply, RasterizerDensity = 1 };
+        // ImFontConfig's constructor defaults, plus the coverage boost and one texel per subpixel for SubpixelText;
+        // AddFontFromFileTTF copies the template.
+        var config = new ImFontConfig { FontDataOwnedByAtlas = true, GlyphMaxAdvanceX = float.MaxValue, RasterizerMultiply = RasterizerMultiply, RasterizerDensity = 1, OversampleH = SubpixelText.Oversample, OversampleV = 1, PixelSnapV = true };
         var font = ImGui.GetIO().Fonts.AddFontFromFileTTF(path, size, new ImFontConfigPtr(&config), default);
         if (font.IsNull()) throw new InvalidOperationException($"Could not load the bundled UI font: {relative}");
         return font;

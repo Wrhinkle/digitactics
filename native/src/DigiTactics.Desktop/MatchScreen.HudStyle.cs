@@ -45,7 +45,7 @@ internal sealed partial class MatchScreen
     // Chromium draws this text with ClearType; a heavier rasterizer keeps grayscale ImGui text as bright and crisp.
     private static unsafe ImFontPtr AddHudFont(string path)
     {
-        var config=new ImFontConfig{FontDataOwnedByAtlas=true,GlyphMaxAdvanceX=float.MaxValue,RasterizerMultiply=1.3f,RasterizerDensity=1};
+        var config=new ImFontConfig{FontDataOwnedByAtlas=true,GlyphMaxAdvanceX=float.MaxValue,RasterizerMultiply=1.3f,RasterizerDensity=1,OversampleH=SubpixelText.Oversample,OversampleV=1,PixelSnapV=true};
         return ImGui.GetIO().Fonts.AddFontFromFileTTF(path,NativeUiTheme.BodySize,new ImFontConfigPtr(&config),default);
     }
     // hhea ascender and descender over unitsPerEm: stb_truetype sizes a face by their sum.
