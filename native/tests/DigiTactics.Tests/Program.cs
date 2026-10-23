@@ -11,6 +11,7 @@ if(args.Length==2 && args[0]=="--native-supervisor-child") {await NativeSupervis
 string root = args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetFullPath("native");
 if(args.Contains("--unit-notes-only")){UnitNoteChecks.Run(root);return;}
 if(args.Contains("--cast-feed-only")){CastFeedChecks.Run(root);return;}
+if(args.Contains("--special-cinematic-only")){SpecialCinematicChecks.Run(root);return;}
 if(args.Contains("--loot-notices-only")){LootNoticeChecks.Run(root);return;}
 if(args.Contains("--live-missions-only")){LiveMissionChecks.Run();return;}
 if(args.Contains("--match-hud-only")){MatchHudProjectionChecks.Run(root);return;}
@@ -272,6 +273,7 @@ foreach (var trace in damageFixtures.RootElement.EnumerateArray())
 assertions += ModelAssetParity.Run(root);
 UnitNoteChecks.Run(root);
 CastFeedChecks.Run(root);
+SpecialCinematicChecks.Run(root);
 LootNoticeChecks.Run(root);
 LiveMissionChecks.Run();
 MatchHudProjectionChecks.Run(root);
