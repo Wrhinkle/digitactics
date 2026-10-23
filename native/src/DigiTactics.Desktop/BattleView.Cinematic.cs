@@ -11,7 +11,7 @@ internal sealed partial class BattleView
 {
     internal readonly record struct CasterFrame(WorldPosition Min,WorldPosition Max,WorldPosition Head,double HeadSize,double Facing,string HeadSource);
     private readonly SpecialCinematicDirector cinematic=new();
-    private readonly Dictionary<GpuModel,(HeadChoice? Head,int Stride)> headRigs=[];
+    private readonly Dictionary<GpuModel,(bool[] InHead,bool Named,int Stride)> headRigs=[];
     private SpecialCutInView? cutInView;
     private int cinematicSpeed=1;
     private CasterFrame? framedCaster;
@@ -52,31 +52,65 @@ internal sealed partial class BattleView
         {
             var nodes=model.Rig.Nodes.Select(n=>(n.Name,Depth(model.Rig,n))).ToArray();
             int vertices=model.Mesh.Meshes.Sum(group=>group.Sum(p=>p.VertexCount));
-            headRigs[model]=rig=(SpecialCinematic.PickHead(nodes),Math.Max(1,vertices/6000));
+            // The head is the chosen joint and everything under it (jaw, ears, horns, eyes).
+            int joint=SpecialCinematic.HeadJoint(nodes);var inHead=new bool[nodes.Length];
+            if(joint>=0)for(int i=0;i<nodes.Length;i++)for(int p=i;p>=0;p=model.Rig.Nodes[p].Parent)if(p==joint){inHead[i]=true;break;}
+            headRigs[model]=rig=(inHead,joint>=0,Math.Max(1,vertices/6000));
         }
         var placement=model.Place(visual,actor.Unit.Stage,actor.Unit.Line.Tier);
-        var (lo,hi)=model.Mesh.Bounds(model.Rig,pose,precise:true,stride:rig.Stride);
-        if(!double.IsFinite(lo.X)||!double.IsFinite(hi.X))return null;
+        SampleVertices(model,pose,placement,rig.InHead,rig.Stride);
+        if(samples.Count==0)return null;
         var min=new WorldPosition(double.PositiveInfinity,double.PositiveInfinity,double.PositiveInfinity);var max=new WorldPosition(double.NegativeInfinity,double.NegativeInfinity,double.NegativeInfinity);
-        for(int corner=0;corner<8;corner++)
+        foreach(var p in samples){min=new(Math.Min(min.X,p.X),Math.Min(min.Y,p.Y),Math.Min(min.Z,p.Z));max=new(Math.Max(max.X,p.X),Math.Max(max.Y,p.Y),Math.Max(max.Z,p.Z));}
+        if(!double.IsFinite(min.X)||!double.IsFinite(max.X))return null;
+        // Face from the head joint's own vertices; without one, from the top-front of the body; else a bounds guess.
+        string source="head";
+        var face=rig.Named?SpecialCinematic.FaceFrom(headSamples,visual.Yaw):null;
+        if(face is null){source="top-front";face=SpecialCinematic.FaceFrom(SpecialCinematic.TopFront(samples,min,max,visual.Yaw),visual.Yaw);}
+        if(face is null){source="bounds";var guess=SpecialCinematic.HeadEstimate(min,max,visual.Yaw);face=guess with{Point=guess.Point with{Y=max.Y-.3*(max.Y-min.Y)}};}
+        return new(min,max,face.Value.Point,face.Value.Size*SpecialCinematic.HeadScale(source),visual.Yaw,source);
+    }
+    private readonly List<WorldPosition> samples=[],headSamples=[];
+    private Matrix4D[] skinPalette=[];
+    /// <summary>World positions of every stride-th vertex in its current skinned pose, split into the head joint's
+    /// vertices (by the joint with the largest weight, or the node of a rigid part) and the rest.</summary>
+    private void SampleVertices(GpuModel model,RigPose pose,Matrix4D placement,bool[] inHead,int stride)
+    {
+        samples.Clear();headSamples.Clear();
+        var rig=model.Rig;var mesh=model.Mesh;
+        foreach(var instance in mesh.Instances)
         {
-            var p=Apply(placement,new((corner&1)==0?lo.X:hi.X,(corner&2)==0?lo.Y:hi.Y,(corner&4)==0?lo.Z:hi.Z));
-            min=new(Math.Min(min.X,p.X),Math.Min(min.Y,p.Y),Math.Min(min.Z,p.Z));max=new(Math.Max(max.X,p.X),Math.Max(max.Y,p.Y),Math.Max(max.Z,p.Z));
+            int[]? joints=null;
+            if(instance.Skin>=0)
+            {
+                joints=rig.Skins[instance.Skin].Joints;
+                if(skinPalette.Length<joints.Length)skinPalette=new Matrix4D[joints.Length];
+                pose.SkinMatrices(instance.Skin,instance.Node,skinPalette.AsSpan(0,joints.Length));
+            }
+            var world=pose.World[instance.Node]*placement;
+            foreach(var primitive in mesh.Meshes[instance.Mesh])
+            {
+                bool skinned=joints is not null&&primitive.HasSkin;
+                for(int vertex=0;vertex<primitive.VertexCount;vertex+=stride)
+                {
+                    var values=primitive.Vertices.AsSpan(vertex*GltfPrimitive.Stride,GltfPrimitive.Stride);
+                    var point=new Vector3D(values[0],values[1],values[2]);int owner=instance.Node;
+                    if(skinned)
+                    {
+                        double x=0,y=0,z=0,heaviest=-1;
+                        for(int c=0;c<4;c++)
+                        {
+                            int slot=checked((int)values[8+c]);double weight=values[12+c];if(weight<=0)continue;
+                            var p=Apply(skinPalette[slot],point);x+=p.X*weight;y+=p.Y*weight;z+=p.Z*weight;
+                            if(weight>heaviest){heaviest=weight;owner=joints![slot];}
+                        }
+                        point=new(x,y,z);
+                    }
+                    var at=Apply(world,point);samples.Add(at);
+                    if(inHead[owner])headSamples.Add(at);
+                }
+            }
         }
-        var estimate=SpecialCinematic.HeadEstimate(min,max,visual.Yaw);
-        WorldPosition? head=null;
-        if(rig.Head is {} choice)
-        {
-            WorldPosition Node(int index)=>Apply(placement,new(pose.World[index].M41,pose.World[index].M42,pose.World[index].M43));
-            var point=choice.Indices.Select(Node).Aggregate((a,b)=>new(a.X+b.X,a.Y+b.Y,a.Z+b.Z));
-            point=new(point.X/choice.Indices.Length,point.Y/choice.Indices.Length,point.Z/choice.Indices.Length);
-            int parent=model.Rig.Nodes[choice.Indices[0]].Parent;
-            head=SpecialCinematic.HeadFromBone(choice.Kind,point,parent>=0?Node(parent):null,min,max,estimate.Size);
-        }
-        string source=head is null?"bounds":rig.Head!.Value.Kind;
-        // A face on a round or rigid-part body sits lower than the top quarter: aim at the upper third.
-        var aim=head??estimate.Point with{Y=max.Y-.3*(max.Y-min.Y)};
-        return new(min,max,aim,estimate.Size*SpecialCinematic.HeadScale(source),visual.Yaw,source);
     }
     private static int Depth(GltfRig rig,RigNode node){int depth=0;for(int p=node.Parent;p>=0&&depth<512;p=rig.Nodes[p].Parent)depth++;return depth;}
     private static WorldPosition Apply(Matrix4D m,Vector3D v)=>new(v.X*m.M11+v.Y*m.M21+v.Z*m.M31+m.M41,v.X*m.M12+v.Y*m.M22+v.Z*m.M32+m.M42,v.X*m.M13+v.Y*m.M23+v.Z*m.M33+m.M43);
@@ -107,9 +141,9 @@ internal sealed partial class BattleView
     internal void DrawCutIn(bool faceLeft,Vector3 rim)
     {
         if(cutInView is null||cinematic.CutIn is null||cinematic.Unit is not {} id||!actors.TryGetValue(id,out var actor)||framedCaster is not {} caster)return;
-        if(cinematic.HeadFrame(caster.Head,caster.HeadSize,caster.Facing,faceLeft,caster.HeadSource=="bounds") is not {} pose)return;
+        if(cinematic.HeadFrame(caster.Head,caster.HeadSize,caster.Facing,faceLeft,caster.HeadSource!="head") is not {} pose)return;
         CombatVisual? found=null;foreach(var view in choreography.Views)if(view.UnitId==id){found=view;break;}
         if(found is not {} visual)return;
-        cutInView.Draw(actor.Model,actor.Animator.Pose,actor.Model.Place(visual,actor.Unit.Stage,actor.Unit.Line.Tier),V(pose.Eye),V(pose.Target),rim);
+        cutInView.Draw(actor.Model,actor.Animator.Pose,actor.Model.Place(visual,actor.Unit.Stage,actor.Unit.Line.Tier),V(pose.Eye),V(pose.Target),rim,(float)(Math.Sqrt(Math.Pow(pose.Eye.X-caster.Head.X,2)+Math.Pow(pose.Eye.Y-caster.Head.Y,2)+Math.Pow(pose.Eye.Z-caster.Head.Z,2))-1.25*caster.HeadSize));
     }
 }

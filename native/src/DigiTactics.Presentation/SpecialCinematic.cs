@@ -18,9 +18,9 @@ public static class SpecialCinematic
     public const double CutIn=.62,SlideIn=.12,SlideOut=.12,Dim=.35,CameraLead=.22,Follow=.9,MinTrack=1.2,MaxTrack=2.5,ReturnLimit=1.6,
         GlobalCooldown=6,UnitCooldown=18,WeightOmega=6.5,FrameOmega=9,SpecialMax=1.1,TrackSide=1.25,TrackPitch=.34,
         HeadSide=Math.PI/2-.5,FrontSide=.55,HeadPitch=.1,HeadFov=30*Math.PI/180;
-    /// <summary>Head-shot size factor by anchor: face and eye anchors sit on the face itself, and a bounds estimate
-    /// is only roughly placed, so both get a looser frame than a skull joint.</summary>
-    public static double HeadScale(string source)=>source switch{"face" or "eye"=>1.3,"bounds"=>1.6,_=>1};
+    /// <summary>Head-shot size factor by anchor: the head joint's own vertices are sized exactly, the top-front stand-in
+    /// a little looser, and a bounds estimate is only roughly placed.</summary>
+    public static double HeadScale(string source)=>source switch{"top-front"=>1.15,"bounds"=>1.6,_=>1};
     public static CutInMode Mode(string? value)=>value switch{"all"=>CutInMode.All,"off"=>CutInMode.Off,_=>CutInMode.Mine};
     public static string Name(CutInMode mode)=>mode switch{CutInMode.All=>"all",CutInMode.Off=>"off",_=>"mine"};
     /// <summary>Playback speed to timeline rate; 0 skips the cinematic.</summary>
@@ -67,6 +67,42 @@ public static class SpecialCinematic
         if(best is not {} chosen)return null;
         if(chosen.Kind=="eye")return new("eye",Enumerable.Range(0,nodes.Count).Where(i=>HeadScore(nodes[i].Name)?.Kind=="eye").ToArray());
         return new(chosen.Kind,[chosen.Index]);
+    }
+    /// <summary>The joint whose skinned vertices form the head: the best head-named joint, else the deepest neck joint.
+    /// Face and eye helper nodes carry no vertices, so they are not candidates.</summary>
+    public static int HeadJoint(IReadOnlyList<(string Name,int Depth)> nodes)
+    {
+        int best=-1,bestScore=0,bestDepth=-1;
+        for(int i=0;i<nodes.Count;i++)
+        {
+            if(HeadScore(nodes[i].Name) is not {Kind:"head" or "neck"} s)continue;
+            if(s.Score>bestScore||s.Kind=="neck"&&s.Score==bestScore&&nodes[i].Depth>bestDepth){best=i;bestScore=s.Score;bestDepth=nodes[i].Depth;}
+        }
+        return best;
+    }
+    /// <summary>Face point and frame size from the current positions of the head's vertices. Percentiles drop stray
+    /// samples; the face sits toward the facing direction of the cluster. Null with too few samples.</summary>
+    public static HeadPoint? FaceFrom(IReadOnlyList<WorldPosition> points,double facing)
+    {
+        if(points.Count<8)return null;
+        double fx=Math.Sin(facing),fz=Math.Cos(facing);
+        double[] Sorted(Func<WorldPosition,double> axis){var v=points.Select(axis).ToArray();Array.Sort(v);return v;}
+        double At(double[] v,double q)=>v[Math.Min(v.Length-1,(int)(v.Length*q))];
+        var ys=Sorted(p=>p.Y);var along=Sorted(p=>p.X*fx+p.Z*fz);var across=Sorted(p=>p.X*fz-p.Z*fx);
+        // The 10-90% spread sizes the head: crests, plumes, horns and long ears are sparse and barely move it.
+        double height=At(ys,.9)-At(ys,.1),depth=At(along,.9)-At(along,.1),width=At(across,.9)-At(across,.1);
+        double size=Clamp(.62*Math.Max(height,Math.Max(depth*.8,width*.6)),.08,2.5);
+        // Medians of the vertices (dense where the face is), moved forward to the muzzle side.
+        double a=At(along,.5)+.15*depth,c=At(across,.5),y=At(ys,.5);
+        return new(new(a*fx+c*fz,y,a*fz-c*fx),size);
+    }
+    /// <summary>Head stand-in when no joint is named: the samples in the top of the body toward the facing direction.</summary>
+    public static List<WorldPosition> TopFront(IReadOnlyList<WorldPosition> points,WorldPosition min,WorldPosition max,double facing)
+    {
+        double fx=Math.Sin(facing),fz=Math.Cos(facing),pMin=double.PositiveInfinity,pMax=double.NegativeInfinity;
+        foreach(var p in points){double t=p.X*fx+p.Z*fz;pMin=Math.Min(pMin,t);pMax=Math.Max(pMax,t);}
+        double top=max.Y-.38*(max.Y-min.Y),front=pMax-.35*(pMax-pMin);
+        return points.Where(p=>p.Y>=top&&p.X*fx+p.Z*fz>=front).ToList();
     }
     public static HeadPoint HeadEstimate(WorldPosition min,WorldPosition max,double facing)
     {

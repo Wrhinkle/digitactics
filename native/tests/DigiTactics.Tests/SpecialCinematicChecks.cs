@@ -21,6 +21,15 @@ internal static class SpecialCinematicChecks
         Check(SpecialCinematic.PickHead([("J_root",0),("eye_L",2),("eye_R",2),("J_kuchi",2)]) is {Kind:"eye"} e&&e.Indices.SequenceEqual([1,2]),"eyes are averaged");
         Check(SpecialCinematic.PickHead([("neck",1),("neck_2",3),("neck_1",2)]) is {Kind:"neck"} n&&n.Indices.SequenceEqual([1]),"deepest neck joint");
         Check(SpecialCinematic.PickHead([("TMD object #0, VRAM page #5",0)]) is null,"rigid parts fall back to the bounds");
+        Check(SpecialCinematic.HeadJoint([("J_root",0),("CharacterFaceCenterTarget",1),("J_neck",1),("J_head",2)])==3&&SpecialCinematic.HeadJoint([("neck",1),("neck_2",3)])==1&&SpecialCinematic.HeadJoint([("eye_L",1)])==-1,"head joint for the vertex cluster");
+        // Face from a head cluster: a skull facing +Z with a muzzle and a sparse tall crest.
+        var skull=new List<WorldPosition>();
+        for(int i=0;i<400;i++){double u=i%20/19.0,w=i/20/19.0;skull.Add(new(-.15+.3*u,1+.3*w,-.1+.35*((u+w)%1)));}
+        for(int i=0;i<6;i++)skull.Add(new(0,1.3+i*.3,0));
+        Check(SpecialCinematic.FaceFrom(skull,0) is {} faceAt&&faceAt.Point.Y is >1.05 and <1.3&&faceAt.Point.Z>.05&&faceAt.Size<.3,"face from the head cluster ignores the crest and sits toward the muzzle");
+        Check(SpecialCinematic.FaceFrom(skull.Take(5).ToList(),0) is null,"too few head samples fall back");
+        var body=skull.Select(p=>p with{Y=p.Y-1}).Concat(skull).ToList();
+        Check(SpecialCinematic.TopFront(body,new(-.15,0,-.1),new(.15,2.8,.25),0).All(p=>p.Y>=2.8-.38*2.8&&p.Z>=.25-.35*.35-1e-9),"top-front stand-in");
         // Cut-in curve.
         var start=SpecialCinematic.Curve(0);var held=SpecialCinematic.Curve(.3);var end=SpecialCinematic.Curve(SpecialCinematic.CutIn);
         Check(start.Offset==-1&&start.Dim==0&&held.Offset==0&&held.Dim==SpecialCinematic.Dim&&Math.Abs(end.Offset-1)<1e-12&&end.Dim<1e-12,"panel slides in, holds, slides out");

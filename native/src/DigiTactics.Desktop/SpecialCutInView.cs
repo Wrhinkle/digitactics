@@ -59,7 +59,9 @@ internal sealed class SpecialCutInView : IDisposable
     }
 
     /// <summary>Draws <paramref name="model"/> in its current pose and board placement from <paramref name="eye"/>.</summary>
-    public void Draw(GpuModel model,RigPose pose,Matrix4D placement,Vector3 eye,Vector3 target,Vector3 rim)
+    /// <param name="near">Near clip distance: geometry between the camera and the head (a swinging arm, a collar or
+    /// cape) is cut away so the face stays visible.</param>
+    public void Draw(GpuModel model,RigPose pose,Matrix4D placement,Vector3 eye,Vector3 target,Vector3 rim,float near=.02f)
     {
         DrawCalls=0;if(Width==0)return;
         Span<int> value=stackalloc int[1],viewport=stackalloc int[4];
@@ -69,7 +71,7 @@ internal sealed class SpecialCutInView : IDisposable
         {
             OpenGl.BindFramebuffer(OpenGl.GL_FRAMEBUFFER,frame);OpenGl.Viewport(0,0,Width,Height);
             OpenGl.ClearColor(new(0,0,0,0));OpenGl.Clear(GlClearBit.Color|GlClearBit.Depth);
-            var camera=Matrix4x4.CreateLookAt(eye,target,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView((float)Presentation.SpecialCinematic.HeadFov,(float)Width/Height,.02f,80);
+            var camera=Matrix4x4.CreateLookAt(eye,target,Vector3.UnitY)*Matrix4x4.CreatePerspectiveFieldOfView((float)Presentation.SpecialCinematic.HeadFov,(float)Width/Height,Math.Max(.02f,near),80);
             renderer.FarmEye=eye;renderer.ShadowTexture=0;renderer.BoardLight=null;renderer.EliminationRim=rim;renderer.EliminationRimIntensity=3.4f;
             ModelRenderer.Begin(Width,Height);
             try
