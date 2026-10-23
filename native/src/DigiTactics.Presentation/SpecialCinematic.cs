@@ -17,7 +17,10 @@ public static class SpecialCinematic
 {
     public const double CutIn=.62,SlideIn=.12,SlideOut=.12,Dim=.35,CameraLead=.22,Follow=.9,MinTrack=1.2,MaxTrack=2.5,ReturnLimit=1.6,
         GlobalCooldown=6,UnitCooldown=18,WeightOmega=6.5,FrameOmega=9,SpecialMax=1.1,TrackSide=1.25,TrackPitch=.34,
-        HeadSide=Math.PI/2-.5,HeadPitch=.1,HeadFov=30*Math.PI/180;
+        HeadSide=Math.PI/2-.5,FrontSide=.55,HeadPitch=.1,HeadFov=30*Math.PI/180;
+    /// <summary>Head-shot size factor by anchor: face and eye anchors sit on the face itself, and a bounds estimate
+    /// is only roughly placed, so both get a looser frame than a skull joint.</summary>
+    public static double HeadScale(string source)=>source switch{"face" or "eye"=>1.3,"bounds"=>1.6,_=>1};
     public static CutInMode Mode(string? value)=>value switch{"all"=>CutInMode.All,"off"=>CutInMode.Off,_=>CutInMode.Mine};
     public static string Name(CutInMode mode)=>mode switch{CutInMode.All=>"all",CutInMode.Off=>"off",_=>"mine"};
     /// <summary>Playback speed to timeline rate; 0 skips the cinematic.</summary>
@@ -121,9 +124,11 @@ public static class SpecialCinematic
         }
         return new(eye with{Y=Math.Max(eye.Y,1.2)},c);
     }
-    public static CameraPose HeadPose(WorldPosition head,double size,double facing,bool faceLeft,double push)
+    /// <param name="front">A front three-quarter view instead of the side view: used when the head was estimated from
+    /// the bounds, so a round or rigid-part body still shows its face.</param>
+    public static CameraPose HeadPose(WorldPosition head,double size,double facing,bool faceLeft,double push,bool front=false)
     {
-        double az=facing+(faceLeft?HeadSide:-HeadSide),fx=Math.Sin(facing),fz=Math.Cos(facing);
+        double turn=front?FrontSide:HeadSide,az=facing+(faceLeft?turn:-turn),fx=Math.Sin(facing),fz=Math.Cos(facing);
         var target=new WorldPosition(head.X+fx*size*.12,head.Y-.1*size,head.Z+fz*size*.12);
         double d=1.2*size/Math.Tan(HeadFov/2)*(1-.12*push);
         return new(new(target.X+d*Math.Cos(HeadPitch)*Math.Sin(az),target.Y+d*Math.Sin(HeadPitch),target.Z+d*Math.Cos(HeadPitch)*Math.Cos(az)),target);
@@ -190,6 +195,6 @@ public sealed class SpecialCinematicDirector
     }
     /// <summary>Head camera for the cut-in panel; it follows the head bone exactly (a smoothed close-up would fall
     /// behind a leap or lunge in the special).</summary>
-    public CameraPose? HeadFrame(WorldPosition head,double size,double facing,bool faceLeft)
-        =>CutIn is {} curve?SpecialCinematic.HeadPose(head,size,facing,faceLeft,curve.Push):null;
+    public CameraPose? HeadFrame(WorldPosition head,double size,double facing,bool faceLeft,bool front=false)
+        =>CutIn is {} curve?SpecialCinematic.HeadPose(head,size,facing,faceLeft,curve.Push,front):null;
 }

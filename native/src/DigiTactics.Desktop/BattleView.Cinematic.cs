@@ -73,7 +73,8 @@ internal sealed partial class BattleView
             int parent=model.Rig.Nodes[choice.Indices[0]].Parent;
             head=SpecialCinematic.HeadFromBone(choice.Kind,point,parent>=0?Node(parent):null,min,max,estimate.Size);
         }
-        return new(min,max,head??estimate.Point,estimate.Size,visual.Yaw,head is null?"bounds":rig.Head!.Value.Kind);
+        string source=head is null?"bounds":rig.Head!.Value.Kind;
+        return new(min,max,head??estimate.Point,estimate.Size*SpecialCinematic.HeadScale(source),visual.Yaw,source);
     }
     private static int Depth(GltfRig rig,RigNode node){int depth=0;for(int p=node.Parent;p>=0&&depth<512;p=rig.Nodes[p].Parent)depth++;return depth;}
     private static WorldPosition Apply(Matrix4D m,Vector3D v)=>new(v.X*m.M11+v.Y*m.M21+v.Z*m.M31+m.M41,v.X*m.M12+v.Y*m.M22+v.Z*m.M32+m.M42,v.X*m.M13+v.Y*m.M23+v.Z*m.M33+m.M43);
@@ -104,7 +105,7 @@ internal sealed partial class BattleView
     internal void DrawCutIn(bool faceLeft,Vector3 rim)
     {
         if(cutInView is null||cinematic.CutIn is null||cinematic.Unit is not {} id||!actors.TryGetValue(id,out var actor)||framedCaster is not {} caster)return;
-        if(cinematic.HeadFrame(caster.Head,caster.HeadSize,caster.Facing,faceLeft) is not {} pose)return;
+        if(cinematic.HeadFrame(caster.Head,caster.HeadSize,caster.Facing,faceLeft,caster.HeadSource=="bounds") is not {} pose)return;
         CombatVisual? found=null;foreach(var view in choreography.Views)if(view.UnitId==id){found=view;break;}
         if(found is not {} visual)return;
         cutInView.Draw(actor.Model,actor.Animator.Pose,actor.Model.Place(visual,actor.Unit.Stage,actor.Unit.Line.Tier),V(pose.Eye),V(pose.Target),rim);

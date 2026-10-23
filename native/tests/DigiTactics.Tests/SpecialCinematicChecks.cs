@@ -55,6 +55,8 @@ internal static class SpecialCinematicChecks
         // faceLeft: facing +Z must project to the camera's left (sin(facing - azimuth) < 0).
         double az=Math.Atan2(leftPose.Eye.X-leftPose.Target.X,leftPose.Eye.Z-leftPose.Target.Z);
         Check(Math.Sin(0-az)<0&&Dist(pushed)<Dist(leftPose),"head shot faces into the panel and pushes in");
+        var frontPose=SpecialCinematic.HeadPose(guess.Point,guess.Size,0,true,0,front:true);
+        Check(Math.Cos(Math.Atan2(frontPose.Eye.X-frontPose.Target.X,frontPose.Eye.Z-frontPose.Target.Z))>Math.Cos(az)&&SpecialCinematic.HeadScale("bounds")>SpecialCinematic.HeadScale("head"),"estimated heads get a looser front three-quarter shot");
         // Director policy.
         var director=new SpecialCinematicDirector();
         Check(!director.Offer(1,false,CutInMode.Mine,true,1,1)&&!director.Offer(1,true,CutInMode.Off,true,1,1)&&!director.Offer(1,true,CutInMode.All,false,1,1)&&!director.Offer(1,true,CutInMode.All,true,1,4),"mine-only, off, disallowed and 4x skip");
