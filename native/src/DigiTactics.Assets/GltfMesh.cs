@@ -114,10 +114,8 @@ public sealed record GltfMesh(GltfPrimitive[][] Meshes, MeshInstance[] Instances
         return new(meshes.ToArray(), instances.ToArray());
     }
 
-    /// <param name="stride">Samples every stride-th vertex; per-frame callers bound the skinning cost with it.</param>
-    public (Vector3D Min, Vector3D Max) Bounds(GltfRig rig, RigPose pose, bool precise = true, int stride = 1)
+    public (Vector3D Min, Vector3D Max) Bounds(GltfRig rig, RigPose pose, bool precise = true)
     {
-        if (stride < 1) throw new ArgumentOutOfRangeException(nameof(stride));
         var min = new Vector3D(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity);
         var max = new Vector3D(double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
         foreach (var instance in Instances)
@@ -128,7 +126,7 @@ public sealed record GltfMesh(GltfPrimitive[][] Meshes, MeshInstance[] Instances
             {
                 var localMin = new Vector3D(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity);
                 var localMax = new Vector3D(double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
-                for (int vertex = 0; vertex < primitive.VertexCount; vertex += stride)
+                for (int vertex = 0; vertex < primitive.VertexCount; vertex++)
                 {
                     var values = primitive.Vertices.AsSpan(vertex * GltfPrimitive.Stride, GltfPrimitive.Stride);
                     var point = new Vector3D(values[0], values[1], values[2]);

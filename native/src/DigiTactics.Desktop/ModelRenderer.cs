@@ -100,9 +100,11 @@ internal sealed partial class ModelRenderer : IDisposable
     }
     /// <param name="opacity">render3d.js UnitView.applyAlpha: below 1 every material joins the transparent pass with
     /// its opacity scaled and depth writes off (planning previews of the next opponent).</param>
-    public unsafe void Draw(GpuModel model, RigPose pose, Matrix4D placement, Matrix4x4 camera, bool transparent, double emission = 0, int onlyNode = -1, int onlyPrimitive = -1, double opacity = 1)
+    /// <param name="tint">Linear colour of <paramref name="emission"/> (white by default). render3d.js UnitView tints the
+    /// cast glow with the special's element colour, while the hit flash stays white.</param>
+    public unsafe void Draw(GpuModel model, RigPose pose, Matrix4D placement, Matrix4x4 camera, bool transparent, double emission = 0, int onlyNode = -1, int onlyPrimitive = -1, double opacity = 1, Vector3? tint = null)
     {
-        if (collecting && transparent && !ShadowPass) { QueueModel(model, pose, placement, camera, emission, opacity); return; }
+        if (collecting && transparent && !ShadowPass) { QueueModel(model, pose, placement, camera, emission, opacity, tint); return; }
         var rig = model.Rig; var mesh = model.Mesh; var textures = model.Textures; var primitives = model.Primitives;
         int required = Math.Max(1, rig.Skins.Select(s => s.Joints.Length).DefaultIfEmpty(0).Max());
         if (palette.Length < required)
@@ -112,7 +114,7 @@ internal sealed partial class ModelRenderer : IDisposable
         }
         program.Use(); OpenGl.BindBufferBase(OpenGl.GL_SHADER_STORAGE_BUFFER, 0, bones);
         SetFarmLight();
-        Matrix(4, From(camera)); program.Uniform(14, (float)emission); DrawCalls = 0;
+        Matrix(4, From(camera)); program.Uniform(14, (float)emission); var glow = tint ?? Vector3.One; program.Uniform(43, new Brutal.Numerics.float4(glow.X, glow.Y, glow.Z, 0)); DrawCalls = 0;
         // The caller controls opaque and transparent passes across all models.
         foreach (var instance in mesh.Instances)
         {
@@ -283,6 +285,7 @@ internal sealed partial class ModelRenderer : IDisposable
         layout(location=12) uniform vec4 color;
         layout(location=13) uniform int textured;
         layout(location=14) uniform float emission;
+        layout(location=43) uniform vec4 emissionTint;
         layout(location=15) uniform int farmLighting;
         layout(location=16) uniform vec4 farmIntensity;
         layout(location=17) uniform vec4 materialEmission;
@@ -401,7 +404,7 @@ internal sealed partial class ModelRenderer : IDisposable
                     light*=1-surface.y;
                 }
             }
-            vec3 linear=max(c.rgb*light+vec3(unlit!=0?0:emission),vec3(0));
+            vec3 linear=max(c.rgb*light+(unlit!=0?vec3(0):emission*emissionTint.rgb),vec3(0));
             if(unlit==0) linear+=materialEmission.rgb*(hasEmissiveMap!=0?texture(emissiveTexture,texCoord).rgb:vec3(1));
             if(farmLighting!=0 && unlit==0) linear+=specular;
             vec3 srgb=mix(12.92*linear,1.055*pow(linear,vec3(1.0/2.4))-.055,step(vec3(.0031308),linear));

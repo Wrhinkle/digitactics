@@ -179,7 +179,9 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
                     }
                     continue;
                 }
-                renderer.Draw(actor.Model,actor.Animator.Pose,actor.Model.Place(view,unit.Stage,unit.Line.Tier),viewCamera,transparent,view.Flash>0?view.Flash:view.Glow);
+                // A hit flash is white; the cast glow takes the special's element colour (render3d.js UnitView.update).
+                Vector3? tint=view.Flash<=0&&view.Glow>0&&CastColor is {} glowColor?BoardLighting.Linear(glowColor(unit)):null;
+                renderer.Draw(actor.Model,actor.Animator.Pose,actor.Model.Place(view,unit.Stage,unit.Line.Tier),viewCamera,transparent,view.Flash>0?view.Flash:view.Glow,tint:tint);
                 if(!renderer.ShadowPass) DrawCalls+=renderer.DrawCalls;
             }
             if(!renderer.ShadowPass)DrawCalls+=moveEffects!.DrawLit(renderer,viewCamera,transparent);
