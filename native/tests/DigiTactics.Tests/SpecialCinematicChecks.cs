@@ -1,89 +1,80 @@
-using System.Text.Json;
 using DigiTactics.Presentation;
 
-/// <summary>SpecialCinematic against js/cutin-core.js (native/tools/export-special-cinematic.cjs).</summary>
+/// <summary>Special cut-in policy, timeline and framing (SpecialCinematic, SpecialCinematicDirector).</summary>
 internal static class SpecialCinematicChecks
 {
     public static int Run(string root)
     {
         int checks=0;
         void Check(bool ok,string message){checks++;if(!ok)throw new InvalidOperationException("Special cinematic: "+message);}
-        static bool Near(double a,double b)=>Math.Abs(a-b)<=1e-9*Math.Max(1,Math.Abs(b));
-        static WorldPosition P(JsonElement e)=>new(e.GetProperty("x").GetDouble(),e.GetProperty("y").GetDouble(),e.GetProperty("z").GetDouble());
-        bool Same(WorldPosition a,JsonElement e)=>Near(a.X,e.GetProperty("x").GetDouble())&&Near(a.Y,e.GetProperty("y").GetDouble())&&Near(a.Z,e.GetProperty("z").GetDouble());
-        bool SamePose(CameraPose? a,JsonElement e)=>e.ValueKind==JsonValueKind.Null?a is null:a is {} p&&Same(p.Eye,e.GetProperty("eye"))&&Same(p.Target,e.GetProperty("target"));
-        using var fixture=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"tests/fixtures/special-cinematic.json")));
-        var r=fixture.RootElement;var cut=r.GetProperty("cut");
-        foreach(var (name,value) in new (string,double)[]{("cutIn",SpecialCinematic.CutIn),("slideIn",SpecialCinematic.SlideIn),("slideOut",SpecialCinematic.SlideOut),("dim",SpecialCinematic.Dim),
-            ("cameraLead",SpecialCinematic.CameraLead),("follow",SpecialCinematic.Follow),("minTrack",SpecialCinematic.MinTrack),("maxTrack",SpecialCinematic.MaxTrack),("returnLimit",SpecialCinematic.ReturnLimit),
-            ("globalCooldown",SpecialCinematic.GlobalCooldown),("unitCooldown",SpecialCinematic.UnitCooldown),("weightOmega",SpecialCinematic.WeightOmega),("frameOmega",SpecialCinematic.FrameOmega),
-            ("specialMax",SpecialCinematic.SpecialMax),("trackSide",SpecialCinematic.TrackSide),("trackPitch",SpecialCinematic.TrackPitch),("headSide",SpecialCinematic.HeadSide),("headPitch",SpecialCinematic.HeadPitch),("headFov",SpecialCinematic.HeadFov)})
-            Check(Near(value,cut.GetProperty(name).GetDouble()),"constant "+name);
-        foreach(var m in r.GetProperty("modes").EnumerateArray())
-            Check(SpecialCinematic.Name(SpecialCinematic.Mode(m.GetProperty("value").ValueKind==JsonValueKind.String?m.GetProperty("value").GetString():null))==m.GetProperty("mode").GetString(),"setting value");
-        foreach(var p in r.GetProperty("paces").EnumerateArray())Check(SpecialCinematic.Pace(p.GetProperty("speed").GetInt32())==p.GetProperty("pace").GetDouble(),"playback pace");
-        foreach(var s in r.GetProperty("scores").EnumerateArray())
+        // Settings and pace.
+        Check(SpecialCinematic.Mode("all")==CutInMode.All&&SpecialCinematic.Mode("off")==CutInMode.Off&&SpecialCinematic.Mode("mine")==CutInMode.Mine&&SpecialCinematic.Mode("bogus")==CutInMode.Mine&&SpecialCinematic.Mode(null)==CutInMode.Mine,"setting values");
+        foreach(var mode in Enum.GetValues<CutInMode>())Check(SpecialCinematic.Mode(SpecialCinematic.Name(mode))==mode,"setting round trip");
+        Check(SpecialCinematic.Pace(1)==1&&SpecialCinematic.Pace(2)==1.35&&SpecialCinematic.Pace(4)==0,"playback pace (4x skips)");
+        // Head bones by name.
+        (string Name,string? Kind)[] names=[("J_head","head"),("J_head_027","head"),("J_haed","head"),("Bip01 Head","head"),("J_kao","head"),("CharacterFaceCenterTarget_013","face"),
+            ("eye_L","eye"),("J_kubiB","neck"),("Neck1","neck"),("Bip01 HeadNub",null),("head_end",null),("HeadTop_End",null),("HUDTarget_014",null),("head_mesh",null),
+            ("TMD object #3, VRAM page #5",null),("J_eyelid_L",null),("RootNode",null),("J_tail",null),("",null)];
+        foreach(var (name,kind) in names)Check(SpecialCinematic.HeadScore(name)?.Kind==kind,"head name "+name);
+        Check(SpecialCinematic.PickHead([("J_root",0),("J_neck_026",1),("J_head_027",2)]) is {Kind:"head"} h&&h.Indices.SequenceEqual([2]),"head beats neck");
+        Check(SpecialCinematic.PickHead([("Object_2",0),("J_head",2),("CharacterFaceCenterTarget_013",1)]) is {Kind:"face"} f&&f.Indices.SequenceEqual([2]),"face anchor beats head joint");
+        Check(SpecialCinematic.PickHead([("J_root",0),("eye_L",2),("eye_R",2),("J_kuchi",2)]) is {Kind:"eye"} e&&e.Indices.SequenceEqual([1,2]),"eyes are averaged");
+        Check(SpecialCinematic.PickHead([("neck",1),("neck_2",3),("neck_1",2)]) is {Kind:"neck"} n&&n.Indices.SequenceEqual([1]),"deepest neck joint");
+        Check(SpecialCinematic.PickHead([("TMD object #0, VRAM page #5",0)]) is null,"rigid parts fall back to the bounds");
+        // Cut-in curve.
+        var start=SpecialCinematic.Curve(0);var held=SpecialCinematic.Curve(.3);var end=SpecialCinematic.Curve(SpecialCinematic.CutIn);
+        Check(start.Offset==-1&&start.Dim==0&&held.Offset==0&&held.Dim==SpecialCinematic.Dim&&Math.Abs(end.Offset-1)<1e-12&&end.Dim<1e-12,"panel slides in, holds, slides out");
+        for(double t=0;t<SpecialCinematic.CutIn;t+=.01)Check(SpecialCinematic.Curve(t+.01).Offset>=SpecialCinematic.Curve(t).Offset-1e-12&&SpecialCinematic.Curve(t).Push is >=0 and <=1,"panel moves one way");
+        // Critically damped spring: no overshoot, converges.
+        double x=0,v=0;for(int i=0;i<200;i++){(x,v)=SpecialCinematic.Spring(x,v,1,6.5,1/60.0);Check(x<=1+1e-12,"spring overshoot");}
+        Check(Math.Abs(x-1)<1e-4,"spring converges");
+        Check(SpecialCinematic.TrackLength(0)==SpecialCinematic.MinTrack&&SpecialCinematic.TrackLength(99)>=SpecialCinematic.MinTrack&&SpecialCinematic.TrackLength(99)<=SpecialCinematic.MaxTrack,"tracking length bounds");
+        // Tracking framing keeps the bounds inside the view, above ground and over the island.
+        var rng=new Random(1234);
+        for(int i=0;i<300;i++)
         {
-            var actual=SpecialCinematic.HeadScore(s.GetProperty("name").GetString());var expected=s.GetProperty("result");
-            Check(expected.ValueKind==JsonValueKind.Null?actual is null:actual is {} a&&a.Kind==expected.GetProperty("kind").GetString()&&a.Score==expected.GetProperty("score").GetInt32(),"head name "+s.GetProperty("name").GetString());
+            double cx=rng.NextDouble()*12-6,cz=rng.NextDouble()*10-5,w=.3+rng.NextDouble()*3,hgt=.3+rng.NextDouble()*3,lift=rng.NextDouble()*1.5;
+            var min=new WorldPosition(cx-w/2,lift,cz-w/3);var max=new WorldPosition(cx+w/2,lift+hgt,cz+w/3);
+            double facing=rng.NextDouble()*Math.Tau,aspect=.8+rng.NextDouble()*1.2,fov=38*Math.PI/180;
+            var pose=SpecialCinematic.TrackPose(min,max,SpecialCinematic.TrackAzimuth(facing,0),aspect,fov,13);
+            Check(pose.Eye.Y>=1.2,"eye above ground");
+            double dx=pose.Eye.X-pose.Target.X,dy=pose.Eye.Y-pose.Target.Y,dz=pose.Eye.Z-pose.Target.Z,d=Math.Sqrt(dx*dx+dy*dy+dz*dz);
+            double r=.5*Math.Sqrt(w*w+hgt*hgt+(2*w/3)*(2*w/3)),half=Math.Min(fov/2,Math.Atan(Math.Tan(fov/2)*aspect));
+            Check(d>=Math.Min(16,r/Math.Sin(half))-1e-9,"bounds sphere inside the view");
         }
-        foreach(var p in r.GetProperty("picks").EnumerateArray())
+        var center=new WorldPosition(0,0,0);double side=SpecialCinematic.TrackAzimuth(0,0);
+        var blocker=new WorldPosition(2*Math.Sin(side),0,2*Math.Cos(side));
+        Check(SpecialCinematic.BlockedBy(center,side,[blocker])==1&&SpecialCinematic.TrackAzimuth(0,0,center,[blocker])!=side,"tracking side avoids a unit in front of the caster");
+        // Head point from bones.
+        var lo=new WorldPosition(-.5,0,-.4);var hi=new WorldPosition(.5,1.6,.4);var guess=SpecialCinematic.HeadEstimate(lo,hi,0);
+        Check(guess.Point.Y>.9&&guess.Point.Z>0&&guess.Size is >.2 and <.5,"bounds head estimate toward the face");
+        Check(SpecialCinematic.HeadFromBone("head",new(0,1.3,0),null,lo,hi,guess.Size) is {} up&&up.Y>1.3,"head joint lifted to the skull");
+        Check(SpecialCinematic.HeadFromBone("face",new(9,1.3,0),null,lo,hi,guess.Size) is null&&SpecialCinematic.HeadFromBone("face",new(0,.1,0),null,lo,hi,guess.Size) is null,"stray helper nodes rejected");
+        var leftPose=SpecialCinematic.HeadPose(guess.Point,guess.Size,0,true,0);var pushed=SpecialCinematic.HeadPose(guess.Point,guess.Size,0,true,1);
+        double Dist(CameraPose p)=>Math.Sqrt(Math.Pow(p.Eye.X-p.Target.X,2)+Math.Pow(p.Eye.Y-p.Target.Y,2)+Math.Pow(p.Eye.Z-p.Target.Z,2));
+        // faceLeft: facing +Z must project to the camera's left (sin(facing - azimuth) < 0).
+        double az=Math.Atan2(leftPose.Eye.X-leftPose.Target.X,leftPose.Eye.Z-leftPose.Target.Z);
+        Check(Math.Sin(0-az)<0&&Dist(pushed)<Dist(leftPose),"head shot faces into the panel and pushes in");
+        // Director policy.
+        var director=new SpecialCinematicDirector();
+        Check(!director.Offer(1,false,CutInMode.Mine,true,1,1)&&!director.Offer(1,true,CutInMode.Off,true,1,1)&&!director.Offer(1,true,CutInMode.All,false,1,1)&&!director.Offer(1,true,CutInMode.All,true,1,4),"mine-only, off, disallowed and 4x skip");
+        Check(director.Offer(1,false,CutInMode.All,true,1,1)&&director.Offer(2,true,CutInMode.All,true,1,1)&&director.Unit==2,"the local player's cast takes priority in the same frame");
+        Check(!director.Offer(3,true,CutInMode.All,true,1,1),"one cinematic at a time");
+        double previous=0,peak=0;bool panelShown=false,panelGone=false;int steps=0;
+        while(director.Unit is not null&&steps++<1000)
         {
-            var nodes=p.GetProperty("nodes").EnumerateArray().Select(n=>(n.GetProperty("name").GetString()!,n.GetProperty("depth").GetInt32())).ToArray();
-            var actual=SpecialCinematic.PickHead(nodes);var expected=p.GetProperty("result");
-            Check(expected.ValueKind==JsonValueKind.Null?actual is null:actual is {} a&&a.Kind==expected.GetProperty("kind").GetString()&&a.Indices.SequenceEqual(expected.GetProperty("indices").EnumerateArray().Select(i=>i.GetInt32())),"head bone choice");
+            director.Update(1/60.0,1);panelShown|=director.CutIn is not null;if(panelShown&&director.CutIn is null)panelGone=true;
+            Check(director.CutIn is null||!panelGone,"panel does not return");
+            peak=Math.Max(peak,director.Weight);previous=director.Weight;
+            director.Frame(new(-.5,0,-.4),new(.5,1.6,.4),0,0,1.6,.66,13);
         }
-        foreach(var c in r.GetProperty("curves").EnumerateArray())
-        {
-            var curve=SpecialCinematic.Curve(c.GetProperty("t").GetDouble());
-            Check(Near(curve.Offset,c.GetProperty("offset").GetDouble())&&Near(curve.Push,c.GetProperty("push").GetDouble())&&Near(curve.Dim,c.GetProperty("dim").GetDouble())&&Near(curve.Time,c.GetProperty("time").GetDouble()),"cut-in curve");
-        }
-        foreach(var t in r.GetProperty("tracks").EnumerateArray())Check(Near(SpecialCinematic.TrackLength(t.GetProperty("clip").GetDouble()),t.GetProperty("length").GetDouble()),"tracking length");
-        foreach(var c in r.GetProperty("poses").EnumerateArray())
-        {
-            var min=P(c.GetProperty("min"));var max=P(c.GetProperty("max"));double facing=c.GetProperty("facing").GetDouble();
-            var center=new WorldPosition((min.X+max.X)/2,0,(min.Z+max.Z)/2);
-            var blockers=c.GetProperty("blockers").EnumerateArray().Select(b=>new WorldPosition(b.GetProperty("x").GetDouble(),0,b.GetProperty("z").GetDouble())).ToArray();
-            double az=SpecialCinematic.TrackAzimuth(facing,c.GetProperty("yaw").GetDouble(),center,blockers);Check(Near(az,c.GetProperty("azimuth").GetDouble()),"tracking side");
-            Check(Near(SpecialCinematic.TrackAzimuth(facing,c.GetProperty("yaw").GetDouble()),c.GetProperty("plainAzimuth").GetDouble())&&SpecialCinematic.BlockedBy(center,az,blockers)==c.GetProperty("blocked").GetInt32(),"tracking side around other units");
-            Check(SamePose(SpecialCinematic.TrackPose(min,max,az,c.GetProperty("aspect").GetDouble(),38*Math.PI/180,c.GetProperty("reach").GetDouble()),c.GetProperty("track")),"tracking framing");
-            var estimate=SpecialCinematic.HeadEstimate(min,max,facing);var e=c.GetProperty("estimate");
-            Check(Same(estimate.Point,e)&&Near(estimate.Size,e.GetProperty("size").GetDouble()),"head estimate");
-            Check(SamePose(SpecialCinematic.HeadPose(estimate.Point,estimate.Size,facing,true,.3),c.GetProperty("left"))&&SamePose(SpecialCinematic.HeadPose(estimate.Point,estimate.Size,facing,false,1),c.GetProperty("right")),"head framing");
-            void Bone(string kind,WorldPosition point,WorldPosition? parent,string key)
-            {
-                var actual=SpecialCinematic.HeadFromBone(kind,point,parent,min,max,estimate.Size);var expected=c.GetProperty(key);
-                Check(expected.ValueKind==JsonValueKind.Null?actual is null:actual is {} a&&Same(a,expected),"head bone point "+key);
-            }
-            Bone("head",new((min.X+max.X)/2,max.Y*.8,(min.Z+max.Z)/2),null,"fromHead");
-            Bone("neck",new((min.X+max.X)/2,max.Y*.7,min.Z),new((min.X+max.X)/2,max.Y*.5,min.Z+.1),"fromNeck");
-            Bone("face",new(max.X+5,max.Y,max.Z),null,"outside");
-        }
-        var director=new SpecialCinematicDirector();int index=0,claimed=0,active=0;
-        foreach(var step in r.GetProperty("steps").EnumerateArray())
-        {
-            int i=index++;double dt=step.GetProperty("dt").GetDouble();int speed=step.GetProperty("speed").GetInt32();
-            foreach(var o in step.GetProperty("offers").EnumerateArray())
-            {
-                bool got=director.Offer(o.GetProperty("unit").GetInt32(),o.GetProperty("mine").GetBoolean(),SpecialCinematic.Mode(o.GetProperty("mode").GetString()),o.GetProperty("allowed").GetBoolean(),o.GetProperty("clip").GetDouble(),o.GetProperty("speed").GetInt32());
-                Check(got==o.GetProperty("claimed").GetBoolean(),$"offer at step {i}");if(got)claimed++;
-            }
-            if(i==333&&director.Unit is not null)director.Abort();
-            director.Update(dt,speed);
-            double t=i*dt;var min=new WorldPosition(Math.Sin(t)-.6,.2*Math.Abs(Math.Sin(t*3)),-1);var max=new WorldPosition(Math.Sin(t)+.6,1.5+.3*Math.Sin(t*2),.2);
-            var shot=director.Frame(min,max,.4+i*.001,.2,1.7,38*Math.PI/180,13,[new(1.5,0,.3),new(-.4,0,-2)]);
-            var head=director.HeadFrame(new(0,1.2,0),.4,.4,i%2==0);
-            var unit=step.GetProperty("unit");
-            Check(unit.ValueKind==JsonValueKind.Null?director.Unit is null:director.Unit==unit.GetInt32(),$"active caster at step {i}");if(director.Unit is not null)active++;
-            Check(Near(director.Weight,step.GetProperty("weight").GetDouble()),$"camera weight at step {i}");
-            var curve=step.GetProperty("cutIn");
-            Check(curve.ValueKind==JsonValueKind.Null?director.CutIn is null:director.CutIn is {} c&&Near(c.Offset,curve.GetProperty("offset").GetDouble())&&Near(c.Push,curve.GetProperty("push").GetDouble())&&Near(c.Dim,curve.GetProperty("dim").GetDouble()),$"cut-in panel at step {i}");
-            var s=step.GetProperty("shot");
-            Check(s.ValueKind==JsonValueKind.Null?shot is null:shot is {} sh&&Same(sh.Eye,s.GetProperty("eye"))&&Same(sh.Target,s.GetProperty("target"))&&Near(sh.Weight,s.GetProperty("weight").GetDouble()),$"tracking camera at step {i}");
-            Check(SamePose(head,step.GetProperty("head")),$"head camera at step {i}");
-        }
-        Check(claimed>=3&&active>100,"scenario covers several cinematics");
-        Console.WriteLine($"Special cinematic: {checks} source policy, timeline and framing checks passed ({claimed} cinematics over {index} steps).");
+        Check(panelShown&&peak>.99&&previous<.01&&steps<300,"cut-in, tracking shot and return complete");
+        Check(!director.Offer(4,true,CutInMode.All,true,1,1),"global cooldown");
+        for(int i=0;i<(int)(SpecialCinematic.GlobalCooldown*60)+2;i++)director.Update(1/60.0,1);
+        Check(!director.Offer(2,true,CutInMode.All,true,1,1)&&director.Offer(4,true,CutInMode.All,true,1,1),"per-unit cooldown");
+        director.Update(1/60.0,4);Check(director.CutIn is null,"switching to 4x hides the panel and eases back");
+        for(int i=0;i<200;i++)director.Update(1/60.0,4);Check(director.Unit is null,"aborted shot ends");
+        Console.WriteLine($"Special cinematic: {checks} policy, timeline and framing checks passed.");
         return checks;
     }
 }

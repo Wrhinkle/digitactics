@@ -5,7 +5,7 @@ using DigiTactics.Rules;
 
 namespace DigiTactics.Desktop;
 
-/// <summary>Special cut-in and tracking shot (js/cutin.js). Reads the shown fight and its model poses only; the
+/// <summary>Special cut-in and tracking shot. Reads the shown fight and its model poses only; the
 /// simulation, its RNG and lockstep never see it.</summary>
 internal sealed partial class BattleView
 {

@@ -8,7 +8,7 @@ public readonly record struct CinematicCamera(WorldPosition Eye, WorldPosition T
 public readonly record struct HeadChoice(string Kind, int[] Indices);
 public readonly record struct HeadPoint(WorldPosition Point, double Size);
 
-/// <summary>Port of js/cutin-core.js: who gets a special cut-in, its timeline and the camera framing.
+/// <summary>Who gets a special cut-in, its timeline and the camera framing.
 /// Presentation only; it reads combat state and never changes the fight, RNG or lockstep.</summary>
 /// <remarks>Phase A (cut-in) slides a slanted panel with a live side view of the caster's head; phase B eases the
 /// arena camera onto a three-quarter view that frames the caster's animated bounds every frame, then back.
@@ -130,7 +130,7 @@ public static class SpecialCinematic
     }
 }
 
-/// <summary>One director per shown fight (CutInDirector in js/cutin-core.js). Wall-clock seconds in, camera blend
+/// <summary>One director per shown fight. Wall-clock seconds in, camera blend
 /// and cut-in curve out.</summary>
 public sealed class SpecialCinematicDirector
 {

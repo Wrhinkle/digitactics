@@ -162,7 +162,7 @@ internal sealed partial class MatchScreen
         if(caption is not null)NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,11,new(at.X+52,textTop+labelHeight),captionHeight,NativeUiTheme.Text3,SocialEllipsis(caption,NativeUiTheme.BodyFont,11,width-52));
         return rowHeight;
     }
-    // js/client.js .segs row: "Special cut-ins" with All / Mine only / Off; Animations off also turns them off.
+    // Native-only row (the web client has no counterpart): "Special cut-ins" with All / Mine only / Off; Animations off also turns them off.
     private static readonly (string Id,string Label)[] CutInChoices=[("all","All"),("mine","Mine only"),("off","Off")];
     private float SettingsCutIns(float2 at,float width,bool measure)
     {

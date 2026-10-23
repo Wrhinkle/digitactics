@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace DigiTactics.Storage;
 
-/// <param name="CutIns">Special cut-ins: "all", "mine" (default) or "off" (js/client.js prefs.cutIns).</param>
+/// <param name="CutIns">Special cut-ins: "all", "mine" (default) or "off" stored natively as prefs.cutIns.</param>
 public sealed record ClientPreferences(bool Motion = true, bool UiSfx = true, bool Social = true, string CutIns = "mine")
 {
     public static ClientPreferences Read(string? json)
@@ -25,7 +25,7 @@ public sealed record ClientPreferences(bool Motion = true, bool UiSfx = true, bo
         }
         return true;
     }
-    // js/cutin-core.js cutInMode: anything but a known mode reads as the default.
+    // Anything but a known mode reads as the default.
     private static string CutInValue(JsonObject? prefs)
         => prefs?["cutIns"] is JsonValue value && value.TryGetValue<string>(out var text) && text is "all" or "mine" or "off" ? text : "mine";
     private static JsonObject Parse(string? json) => json is null ? new() : JsonNode.Parse(json) as JsonObject ?? throw new JsonException("Client settings must be an object.");

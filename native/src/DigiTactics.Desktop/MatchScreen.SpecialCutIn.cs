@@ -5,7 +5,7 @@ using DigiTactics.Rules;
 
 namespace DigiTactics.Desktop;
 
-/// <summary>Special cut-in panel (js/cutin.js drawPanel): a tilted band with speed lines, the caster's live head
+/// <summary>Special cut-in panel: a tilted band with speed lines, the caster's live head
 /// view in a slanted window, and the Digimon and special names. The board dims behind it.</summary>
 internal sealed partial class MatchScreen
 {
