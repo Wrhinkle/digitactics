@@ -4,6 +4,8 @@ using DigiTactics.Storage;
 
 try
 {
+    GameAudio.Silenced = Environment.GetEnvironmentVariable("DT_MUTE") == "1" || args.Any(arg => arg.EndsWith("-smoke", StringComparison.Ordinal) ||
+        arg is "--parity-capture" or "--capture" or "--transition-strips" or "--animation-stability" || arg.StartsWith("--model-", StringComparison.Ordinal) || arg.StartsWith("--mystery-board", StringComparison.Ordinal));
     string? Option(string name)
     {
         int index = Array.IndexOf(args, name);
