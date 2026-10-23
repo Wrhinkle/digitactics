@@ -16,7 +16,7 @@ public readonly record struct HeadPoint(WorldPosition Point, double Size);
 public static class SpecialCinematic
 {
     public const double CutIn=.62,SlideIn=.12,SlideOut=.12,Dim=.35,CameraLead=.22,Follow=.9,MinTrack=1.2,MaxTrack=2.5,ReturnLimit=1.6,
-        GlobalCooldown=6,UnitCooldown=18,WeightOmega=6.5,FrameOmega=9,SpecialMax=1.1,TrackSide=1.25,TrackPitch=.34,
+        GlobalCooldown=6,UnitCooldown=18,WeightOmega=6.5,FrameOmega=14,SpecialMax=1.1,TrackSide=1.25,TrackPitch=.34,
         HeadSide=Math.PI/2-.5,FrontSide=.55,HeadPitch=.1,HeadFov=30*Math.PI/180;
     /// <summary>Head-shot size factor by anchor: the head joint's own vertices are sized exactly, the top-front stand-in
     /// a little looser, and a bounds estimate is only roughly placed.</summary>
@@ -91,9 +91,17 @@ public static class SpecialCinematic
         var ys=Sorted(p=>p.Y);var along=Sorted(p=>p.X*fx+p.Z*fz);var across=Sorted(p=>p.X*fz-p.Z*fx);
         // The 10-90% spread sizes the head: crests, plumes, horns and long ears are sparse and barely move it.
         double height=At(ys,.9)-At(ys,.1),depth=At(along,.9)-At(along,.1),width=At(across,.9)-At(across,.1);
-        double size=Clamp(.62*Math.Max(height,Math.Max(depth*.8,width*.6)),.08,2.5);
-        // Medians of the vertices (dense where the face is), moved forward to the muzzle side.
-        double a=At(along,.5)+.15*depth,c=At(across,.5),y=At(ys,.5);
+        double whole=.62*Math.Max(height,Math.Max(depth*.8,width*.6));
+        // The front half (face plate, eyes, muzzle) sizes and places the shot, so a helmet, collar or crest behind the
+        // face does not shrink it. The frame never gets tighter than the front half's length, so a long beak
+        // or muzzle keeps its tip in view.
+        double middle=At(along,.5);
+        var front=points.Where(p=>p.X*fx+p.Z*fz>=middle).ToArray();
+        var fy=front.Select(p=>p.Y).OrderBy(v=>v).ToArray();var fa=front.Select(p=>p.X*fx+p.Z*fz).OrderBy(v=>v).ToArray();var fc=front.Select(p=>p.X*fz-p.Z*fx).OrderBy(v=>v).ToArray();
+        double faceSize=.62*1.3*Math.Max(At(fy,.9)-At(fy,.1),Math.Max((At(fa,.9)-At(fa,.1))*.8,(At(fc,.9)-At(fc,.1))*.6));
+        double size=Clamp(Math.Min(whole,Math.Max(faceSize,1.1*(At(fa,.95)-At(fa,.05)))),.08,2.5);
+        // Halfway between the head's median and the face's median.
+        double a=(middle+.15*depth+At(fa,.5))/2,c=(At(across,.5)+At(fc,.5))/2,y=(At(ys,.5)+At(fy,.5))/2;
         return new(new(a*fx+c*fz,y,a*fz-c*fx),size);
     }
     /// <summary>Head stand-in when no joint is named: the samples in the top of the body toward the facing direction.</summary>
@@ -144,13 +152,13 @@ public static class SpecialCinematic
         double Score(double az)=>Math.Cos(az-cameraYaw)-2*(center is {} c?BlockedBy(c,az,blockers):0);
         return Score(a)>=Score(b)?a:b;
     }
-    public static CameraPose TrackPose(WorldPosition min,WorldPosition max,double azimuth,double aspect,double fovY,double reach)
+    public static CameraPose TrackPose(WorldPosition min,WorldPosition max,double azimuth,double aspect,double fovY,double reach,double lift=0)
     {
         var c=new WorldPosition((min.X+max.X)/2,(min.Y+max.Y)/2,(min.Z+max.Z)/2);
         double ex=max.X-min.X,ey=max.Y-min.Y,ez=max.Z-min.Z;
         double r=Math.Max(.5*Math.Sqrt(ex*ex+ey*ey+ez*ez),.55);
         double half=Math.Min(fovY/2,Math.Atan(Math.Tan(fovY/2)*aspect));
-        double d=Clamp(r*1.3/Math.Sin(half),3.2,16),pitch=TrackPitch;
+        double d=Clamp((r*1.3+.35)/Math.Sin(half),3.2,18),pitch=TrackPitch+lift;
         WorldPosition eye;
         for(int i=0;;i++)
         {
@@ -187,7 +195,7 @@ public sealed class SpecialCinematicDirector
     private sealed class Active(int unit,bool mine,double pace,double track)
     {
         public readonly int Unit=unit;public readonly bool Mine=mine;public readonly double Pace=pace,Track=track;
-        public double T,Step,Weight,Velocity,ReturnT;public bool Returning,Aborted;public double? Azimuth;
+        public double T,Step,Weight,Velocity,ReturnT;public bool Returning,Aborted;public double? Azimuth;public double Lift;
         public Spring3? Eye,Target;
     }
     private readonly Dictionary<int,double> lastStart=[];
@@ -223,8 +231,14 @@ public sealed class SpecialCinematicDirector
     public CinematicCamera? Frame(WorldPosition min,WorldPosition max,double facing,double cameraYaw,double aspect,double fovY,double reach,IReadOnlyList<WorldPosition>? blockers=null)
     {
         if(active is not {} a)return null;
-        a.Azimuth??=SpecialCinematic.TrackAzimuth(facing,cameraYaw,new((min.X+max.X)/2,0,(min.Z+max.Z)/2),blockers);
-        var pose=SpecialCinematic.TrackPose(min,max,a.Azimuth.Value,aspect,fovY,reach);
+        if(a.Azimuth is null)
+        {
+            var center=new WorldPosition((min.X+max.X)/2,0,(min.Z+max.Z)/2);
+            a.Azimuth=SpecialCinematic.TrackAzimuth(facing,cameraYaw,center,blockers);
+            // A unit still standing in front of the caster on the chosen side: look over it from higher up.
+            if(SpecialCinematic.BlockedBy(center,a.Azimuth.Value,blockers)>0)a.Lift=.3;
+        }
+        var pose=SpecialCinematic.TrackPose(min,max,a.Azimuth.Value,aspect,fovY,reach,a.Lift);
         if(a.Eye is null||a.Target is null){a.Eye=new(pose.Eye);a.Target=new(pose.Target);}
         else{a.Eye.Step(pose.Eye,SpecialCinematic.FrameOmega,a.Step);a.Target.Step(pose.Target,SpecialCinematic.FrameOmega,a.Step);}
         return new(a.Eye.P,a.Target.P,a.Weight);

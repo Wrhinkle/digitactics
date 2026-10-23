@@ -262,7 +262,7 @@ internal sealed class ParityCaptureDriver
             string numbered = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, $"{Path.GetFileNameWithoutExtension(path)}_{sequenceSaved:D3}.png");
             FrameCapture.SavePng(numbered, size.X, size.Y);
             if (sequenceCutIn && screen.ShownBattle is { } shown)
-                Console.WriteLine($"cut-in frame {sequenceSaved:D3}: weight {shown.Cinematic.Weight:0.000} panel {(shown.Cinematic.CutIn is { } c ? c.Offset.ToString("0.00") : "-")} head {shown.FramedCaster?.HeadSource ?? "-"} {shown.FramedCaster?.Head} size {shown.FramedCaster?.HeadSize:0.00} min {shown.FramedCaster?.Min} max {shown.FramedCaster?.Max} yaw {shown.FramedCaster?.Facing:0.00} model draws {shown.CutInDrawCalls} combat {shown.Combat.Time:0.00}s done {shown.Combat.Done}");
+                Console.WriteLine($"cut-in frame {sequenceSaved:D3}: weight {shown.Cinematic.Weight:0.000} panel {(shown.Cinematic.CutIn is { } c ? c.Offset.ToString("0.00") : "-")} head {shown.FramedCaster?.HeadSource ?? "-"} {shown.FramedCaster?.Head} size {shown.FramedCaster?.HeadSize:0.00} min {shown.FramedCaster?.Min} max {shown.FramedCaster?.Max} yaw {shown.FramedCaster?.Facing:0.00} occl {shown.LastOcclusion} model draws {shown.CutInDrawCalls} combat {shown.Combat.Time:0.00}s done {shown.Combat.Done}");
             if (++sequenceSaved < sequenceFrames) return false;
             Console.WriteLine($"Parity sequence {sequenceLine}: {sequenceSaved} frames at {size.X}x{size.Y} ({phase})");
             return true;
