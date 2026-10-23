@@ -8,7 +8,6 @@ import { Fx, elemColor } from './fx.js';
 import { Moves } from './moveprims.js';
 import { itemCanvas } from './icons.js';
 import { modelClips, borrowedClips } from './model-motion.js';
-import { CutIn } from './cutin.js';
 
 const DT = window.DT;
 const sfx = (name, opts) => DT.Sfx && DT.Sfx.play(name, opts);
@@ -490,8 +489,6 @@ class Renderer3D {
     this.otLabel.className = 'overtime hidden';
     this.labels.appendChild(this.otLabel);
     this.buildArena();
-    // special cut-in and tracking shot (js/cutin.js); after the labels, so its names sit above them
-    this.cutin = new CutIn(this);
   }
 
   buildArena() {
@@ -1025,7 +1022,6 @@ class Renderer3D {
     this.setCombatWidth(cb.cols || COLS);
     const dt = this.tick();
     this.fxNow = cb.t;
-    this.cineCtx = { game, ui };
     const out = [];
     for (const u of cb.units) {
       const dying = !u.alive && this.deathT[u.id] != null && cb.t - this.deathT[u.id] < 0.5;
@@ -1050,7 +1046,6 @@ class Renderer3D {
     this.drawDuoExtras(game, cb, p, ui, dt);
     this.highlight(ui, false);
     this.updateFx(cb.t);
-    if (this.cutin) this.cutin.frame(dt);
     this.updateViews(dt, cb);
     if (cb.overtime > 1) {
       this.otLabel.textContent = `OVERTIME x${cb.overtime.toFixed(1)} damage`;
@@ -1112,11 +1107,9 @@ class Renderer3D {
     if (off) this.camera.position.add(off);
     this.r.render(this.scene, this.camera);
     if (off) this.camera.position.sub(off);
-    if (this.cutin) this.cutin.render();
   }
 
   resetFx() {
-    this.cutin && this.cutin.reset();
     this.ult && this.ult.clear();
     this.moves && this.moves.clear();
     this.castCtx = null;
@@ -1195,7 +1188,6 @@ class Renderer3D {
             v.castUntil = e.t + 1.5;
             v.play('special');
           }
-          if (this.cutin) this.cutin.offer(u, v, this.cineCtx, col);
           if (this.onCast) this.onCast({ unit: u, name, team, elem: this.castCtx.elem, color: col });
           break;
         }
