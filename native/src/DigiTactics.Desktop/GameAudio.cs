@@ -53,6 +53,8 @@ internal sealed unsafe partial class GameAudio : IDisposable
     public float MusicVolume { get; set; } = .6f;
     public bool Suspended { get; private set; }
     public bool Muted { get; set; }
+    /// <summary>Automated runs (smokes, captures, sweeps) and DT_MUTE=1 still mix and queue every buffer, but send silence to the device.</summary>
+    public static bool Silenced { get; set; }
     public bool MusicOff { get; set; }
     public float BoardVolume { get; set; } = .8f;
     public bool MuteOthers { get; set; }
@@ -248,7 +250,7 @@ internal sealed unsafe partial class GameAudio : IDisposable
             }
             voices.RemoveAll(v => !v.Music && v.Position >= v.Samples.Length || v.Music && v.Target == 0 && v.Gain <= 0);
             MixCustomMusic();
-            for (int i = 0; i < buffer.Length; i++) buffer[i] = Math.Clamp(buffer[i], -1, 1);
+            for (int i = 0; i < buffer.Length; i++) buffer[i] = Silenced ? 0 : Math.Clamp(buffer[i], -1, 1);
             fixed (float* ptr = buffer)
                 if (Sdl.PInvoke.PutAudioStreamData(stream, ptr, buffer.Length * sizeof(float)) == 0) { DeviceFailed("Audio queue failed."); return; }
             frame += buffer.Length / 2; ApplyScheduledBoardDucks(frame); queued += buffer.Length * sizeof(float);
