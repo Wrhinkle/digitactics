@@ -65,9 +65,10 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
     }
     public void Create(CombatUnit unit)
     {
-        var source = catalog.Resolve(rules.Id, unit.Line.Id, unit.Stage); if (source is null) return;
+        string? overrideKey = CaptureModelSource is { } forced && catalog.Sources.ContainsKey(forced) ? forced : null;
+        var source = overrideKey is not null ? catalog.Sources[overrideKey] : catalog.Resolve(rules.Id, unit.Line.Id, unit.Stage); if (source is null) return;
         if (!models.TryGetValue(source, out var model)) { model = new(catalog, source); models.Add(source, model); }
-        string key=catalog.Variants[rules.Id][unit.Line.Id][unit.Stage]!;
+        string key=overrideKey ?? catalog.Variants[rules.Id][unit.Line.Id][unit.Stage]!;
         actors[unit.Id] = (model, new CombatModelAnimator(model.Rig,key,(ModelAnimator.FindIdle(model.Rig)?.Duration ?? 0) * .17),unit);
     }
     public void Remove(int unit) => actors.Remove(unit);
@@ -81,7 +82,11 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
                 .Select(e => (e.Unit, CombatLayout.Bench(e.Spot.Index, true, true))));
         bench.Update(rules, entries, delta);
     }
-    public bool Play(int unit, string role) => actors.TryGetValue(unit, out var actor) && actor.Animator.Play(role);
+    public bool Play(int unit, string role)
+    {
+        if (role == "special") OfferCutIn(unit);
+        return actors.TryGetValue(unit, out var actor) && actor.Animator.Play(role);
+    }
     public void Update(int unit, double delta)
     {
         if(actors.TryGetValue(unit,out var actor))actor.Animator.Update(delta,actor.Unit.Alive&&actor.Unit.MoveElapsed<actor.Unit.MoveDuration&&actor.Unit.MoveDuration>=.3&&actor.Unit.MoveOrigin!=actor.Unit.Cell);
@@ -94,7 +99,7 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
         double playbackDelta = Math.Clamp(delta, 0, .1) * speed;
         accumulator += playbackDelta;
         while (accumulator >= CombatSimulation.Tick && !Combat.Done) { Combat.Step(); accumulator -= CombatSimulation.Tick; }
-        choreography.Update(delta, mirror, HoveredUnit); AdvanceMoveEffects(playbackDelta);
+        choreography.Update(delta, mirror, HoveredUnit); AdvanceMoveEffects(playbackDelta); UpdateCinematic(delta, speed);
     }
     public void Controls(Brutal.Numerics.int2 size)
     {
@@ -152,7 +157,7 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
     public void Draw(int width, int height, int left = 0, int bottom = 0)
     {
         if (width <= 0 || height <= 0) return;
-        var camera=MoveCamera(board.Camera.Matrix(width,height,Combat.Columns)); board.SetTheme(BoardTheme); DrawCalls=FallbackDrawCalls=0;
+        FrameCinematic(width,height); var camera=MoveCamera(board.Camera.Matrix(width,height,Combat.Columns)); board.SetTheme(BoardTheme); DrawCalls=FallbackDrawCalls=0;
         bench.RenderedUnits.Clear();
         board.Feedback.Time=Combat.Time;
         boardBursts.Update(Combat.Events,flash=>board.Feedback.Flash(flash.Column,flash.Row,flash.Until,flash.ViewTeam==0?allyBurst:enemyBurst));
@@ -182,5 +187,5 @@ internal sealed partial class BattleView : ICombatModelDriver, IDisposable
         board.Draw(renderer,camera,board.Camera.Eye(width,height,Combat.Columns),Combat.Columns,false,left,bottom,width,height,Units);
         DrawMoveEffects(camera,width,height);
     }
-    public void Dispose() { combatMoves?.Clear();moveEffects?.Dispose(); placeholder?.Dispose();ring.Dispose();bench.Dispose(); foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
+    public void Dispose() { if (board.Camera.Cinematic is not null) board.Camera.Cinematic = null; cutInView?.Dispose(); combatMoves?.Clear();moveEffects?.Dispose(); placeholder?.Dispose();ring.Dispose();bench.Dispose(); foreach (var model in models.Values) model.Dispose(); models.Clear(); if(ownsBoard) board.Dispose(); renderer.Dispose(); }
 }

@@ -13,19 +13,24 @@ internal sealed class ArenaCamera
     /// before any shop card exists, so the canvas keeps a taller boot-time height and the shop bar clips its bottom.
     /// Projection uses that taller canvas, anchored to the arena top.</summary>
     public double CanvasStretch { get; set; } = 1;
+    /// <summary>Special cut-in tracking shot (BattleView.Cinematic): eye and look target blended over the player's own
+    /// view by Weight. The orbit state stays untouched, so the shot eases back to exactly where the player left it.</summary>
+    public (Vector3 Eye, Vector3 Target, float Weight)? Cinematic { get; set; }
     public void Reset() { Target = new(0, 0, 1.8f); Zoom = 1; Yaw = 0; Pitch = Math.Atan2(16.5, 15.5); }
     public Vector3 Eye(int width, int height, int columns)
     {
         double canvasHeight = height * CanvasStretch;
         double distance = Math.Sqrt(16.5 * 16.5 + 15.5 * 15.5) * Math.Max(1, 1.35 * canvasHeight / width) * Zoom * (columns > 7 ? 1.65 : 1);
-        return Target + new Vector3((float)(Math.Sin(Yaw) * Math.Cos(Pitch) * distance), (float)(Math.Sin(Pitch) * distance), (float)(Math.Cos(Yaw) * Math.Cos(Pitch) * distance));
+        var eye = Target + new Vector3((float)(Math.Sin(Yaw) * Math.Cos(Pitch) * distance), (float)(Math.Sin(Pitch) * distance), (float)(Math.Cos(Yaw) * Math.Cos(Pitch) * distance));
+        return Cinematic is { } shot ? Vector3.Lerp(eye, shot.Eye, shot.Weight) : eye;
     }
+    private Vector3 LookTarget => Cinematic is { } shot ? Vector3.Lerp(Target, shot.Target, shot.Weight) : Target;
     public Matrix4x4 Matrix(int width, int height, int columns)
     {
         float stretch = (float)CanvasStretch;
         // Crop the taller canvas to the arena: its top rows map to the arena, clip y' = k*y + (1 - k)*w.
         var crop = Matrix4x4.Identity; crop.M22 = stretch; crop.M42 = 1 - stretch;
-        return Matrix4x4.CreateLookAt(Eye(width, height, columns), Target, Vector3.UnitY)
+        return Matrix4x4.CreateLookAt(Eye(width, height, columns), LookTarget, Vector3.UnitY)
             * Matrix4x4.CreatePerspectiveFieldOfView(38 * MathF.PI / 180, width / (height * stretch), .1f, 200) * crop;
     }
     private void Translate(double x, double z) => Target = new((float)Math.Clamp(Target.X + x, -8, 8), 0, (float)Math.Clamp(Target.Z + z, -8, 9));

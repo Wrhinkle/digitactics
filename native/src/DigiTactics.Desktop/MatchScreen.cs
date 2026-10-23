@@ -182,7 +182,7 @@ internal sealed partial class MatchScreen : IDisposable
         bool wasResult = Session.Rounds.Phase == MatchPhase.Result;
         if (Session.Rounds.Phase == MatchPhase.Combat)
         {
-            battle?.Advance(delta, ReplaySpeed); backgroundTime += Math.Clamp(delta, 0, .1) * ReplaySpeed;
+            SyncCutIns(); battle?.Advance(delta, ReplaySpeed); backgroundTime += Math.Clamp(delta, 0, .1) * ReplaySpeed;
             castFeed?.Observe(ReplaySpeed);
             combatAudio?.Update(audio.Play);
             while (backgroundTime >= CombatSimulation.Tick)
@@ -192,7 +192,7 @@ internal sealed partial class MatchScreen : IDisposable
             }
             if (Session.Battles.All(m => m.Combat.Done)) { if (networkRoom is null) Finish(); else NetworkReplayDone(); }
         }
-        else if (Session.Rounds.Phase == MatchPhase.Result) {battle?.Advance(delta, ReplaySpeed);castFeed?.Observe(ReplaySpeed);}
+        else if (Session.Rounds.Phase == MatchPhase.Result) {SyncCutIns();battle?.Advance(delta, ReplaySpeed);castFeed?.Observe(ReplaySpeed);}
         if (wasResult) UpdateResultCountdown(wallDelta ?? delta);
         else UpdatePlanningCountdown(delta);
         planning.Update(Rules, Session.State.Players[viewed], delta, PlanningPreviewSide());
@@ -511,6 +511,7 @@ internal sealed partial class MatchScreen : IDisposable
         int left = multisampled ? 0 : x, bottom = multisampled ? 0 : y;
         try { if (battle is not null) battle.Draw(w, h, left, bottom); else planning.Draw(Rules, Session.State.Players[viewed], left, bottom, w, h); }
         finally { if (multisampled) arenaFrame.End(x, y); }
+        RenderSpecialCutIn();
     }
     public void Dispose() { DisposeHome(); galaxyIntroArtwork.Dispose(); choiceArtwork.Dispose(); ClearEliminationCinematics(); DisposeCollectionPreview(); ReleaseRetiredCollectionPreviews(); eggArtwork.Dispose(); collectionArtwork.Dispose(); postgameArtwork.Dispose(); ClearEvolutionPreview(); lootOrbs.Dispose(); itemArtwork.Dispose(); portraits.Dispose(); DetachNetworkMatch(); opponentCompanion?.Dispose(); arenaCompanion?.Dispose(); emoteArtwork.Dispose(); ClearLobbyAvatars(); DisposeSteamConnection(); farmMoodTexture?.Dispose(); farmSymbolTexture?.Dispose(); farmUiIconTexture?.Dispose(); farmView?.Dispose(); battle?.Dispose(); planning.Dispose(); arenaEnvironment.Dispose(); arenaFrame.Dispose(); }
 }

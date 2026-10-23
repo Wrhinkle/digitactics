@@ -162,6 +162,33 @@ internal sealed partial class MatchScreen
         if(caption is not null)NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,11,new(at.X+52,textTop+labelHeight),captionHeight,NativeUiTheme.Text3,SocialEllipsis(caption,NativeUiTheme.BodyFont,11,width-52));
         return rowHeight;
     }
+    // js/client.js .segs row: "Special cut-ins" with All / Mine only / Off; Animations off also turns them off.
+    private static readonly (string Id,string Label)[] CutInChoices=[("all","All"),("mine","Mine only"),("off","Off")];
+    private float SettingsCutIns(float2 at,float width,bool measure)
+    {
+        float labelHeight=NativeUiTheme.TextLine(14),captionHeight=NativeUiTheme.TextLine(11),segment=26;
+        float rowHeight=8+labelHeight+captionHeight+6+segment+8;
+        if(measure)return rowHeight;
+        var draw=ImGui.GetWindowDrawList();float y=at.Y+8;
+        NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyBoldFont,14,new(at.X,y),labelHeight,NativeUiTheme.Text1,"Special cut-ins");
+        string caption=clientPreferences.Motion?"Anime cut-in and close-up camera when a Digimon casts its special":"Off while Animations are off";
+        NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodyFont,11,new(at.X,y+labelHeight),captionHeight,NativeUiTheme.Text3,SocialEllipsis(caption,NativeUiTheme.BodyFont,11,width));
+        y+=labelHeight+captionHeight+6;
+        float each=MathF.Floor((width-8)/3);
+        for(int i=0;i<CutInChoices.Length;i++)
+        {
+            var (id,label)=CutInChoices[i];bool on=SpecialCinematic.Name(CutInSetting)==id;
+            var lo=new float2(at.X+i*(each+4),y);var hi=lo+new float2(each,segment);
+            ImGui.SetCursorScreenPos(lo);bool pressed=ClientHitButton("setCutIns/"+id,each,segment);bool hot=ImGui.IsItemHovered();
+            if(on)NativeUiPaint.HorizontalGradient(draw,lo,hi,new ImColor8(10,95,122),new ImColor8(11,58,74));
+            else draw.AddRectFilled(lo,hi,NativeUiPaint.Fade(new ImColor8(1,10,19,230)));
+            draw.AddRect(lo,hi,NativeUiPaint.Fade(on||hot?NativeUiTheme.Gold:NativeUiTheme.GoldBorder));
+            float textWidth=NativeUiPaint.TrackedWidth(NativeUiTheme.BodySemiBoldFont,12.5f,label,0);
+            NativeUiPaint.TrackedIn(draw,NativeUiTheme.BodySemiBoldFont,12.5f,new(lo.X+MathF.Round((each-textWidth)/2),lo.Y+MathF.Round((segment-NativeUiTheme.TextLine(12.5f))/2)),NativeUiTheme.TextLine(12.5f),on?NativeUiTheme.AccentInk:NativeUiTheme.Text1,label);
+            if(pressed&&!on)SaveClientPreferences(clientPreferences with{CutIns=id});
+        }
+        return rowHeight;
+    }
     /// <summary>.srow: 130px label | range (accent-color gold-2) | 36px value, 6px vertical padding.</summary>
     private float SettingsSlider(string id,string label,ref float value,float2 at,float width,bool measure,out bool changed)
     {
@@ -247,6 +274,7 @@ internal sealed partial class MatchScreen
         if(!measure&&sound!=clientPreferences.UiSfx)SaveClientPreferences(clientPreferences with{UiSfx=sound});
         y+=SettingsToggle("setSocial","Friends list","The social column on the right",ref social,new(x,y),inner,measure);
         if(!measure&&social!=clientPreferences.Social){SaveClientPreferences(clientPreferences with{Social=social});audio.PlayClient("tick");}
+        y+=SettingsCutIns(new(x,y),inner,measure);
         if(clientPreferenceStore?.Error is {} preferenceError){y+=6;y+=SettingsNote(draw,new(x,y),inner,preferenceError,measure,NativeUiTheme.Danger);}
         if(profile is not null)
         {

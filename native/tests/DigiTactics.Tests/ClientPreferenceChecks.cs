@@ -20,6 +20,10 @@ internal static class ClientPreferenceChecks
             Check(gate.TryPlay(sample.GetProperty("milliseconds").GetDouble(),sample.GetProperty("enabled").GetBoolean(),sample.GetProperty("quiet").GetBoolean()) == sample.GetProperty("played").GetBoolean(),"source quiet gate and nonquiet clock");
         foreach(var sample in fixture.RootElement.GetProperty("motion").EnumerateArray())
             Check(Math.Abs(ClientMotion.PedestalYaw(sample.GetProperty("seconds").GetDouble(),sample.GetProperty("enabled").GetBoolean())-sample.GetProperty("yaw").GetDouble())<1e-12,"source pedestal motion");
+        // js/client.js prefs.cutIns (js/cutin-core.js cutInMode): known values only, merged back into the record.
+        foreach(var (json,mode) in new[]{("{\"prefs\":{\"cutIns\":\"all\"}}","all"),("{\"prefs\":{\"cutIns\":\"off\"}}","off"),("{\"prefs\":{\"cutIns\":\"bogus\"}}","mine"),("{\"prefs\":{\"cutIns\":3}}","mine"),("{}","mine")})
+            Check(ClientPreferences.Read(json).CutIns==mode,"special cut-in setting "+json);
+        Check(JsonNode.Parse(new ClientPreferences(CutIns:"off").Merge("{\"prefs\":{\"future\":1}}"))!["prefs"]!["cutIns"]!.GetValue<string>()=="off","special cut-in setting saved");
         Check(ClientMotion.CssDuration(.3,false)==.001 && ClientMotion.CssDuration(.3,true)==.3,"source reduced CSS duration");
         var boundary = new ClientMenuSoundGate();
         Check(!boundary.TryPlay(0,true,true) && !boundary.TryPlay(69,true,true) && boundary.TryPlay(70,true,true),"initial and exact 70 ms boundary");

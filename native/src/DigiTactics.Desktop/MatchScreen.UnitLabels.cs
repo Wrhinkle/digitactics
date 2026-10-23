@@ -118,6 +118,7 @@ internal sealed partial class MatchScreen
                 new CombatBars(!battle.IsAlly(unit),unit.Health,unit.Shield,unit.MaxHealth,unit.Mana,unit.MaxMana,unit.Stun>0),cast);
         }
         FloatingCombatText(draw,bottom);
+        CutInPanelsDrawn=0;DrawSpecialCutIn(draw);
         draw.PopClipRect();
     }
 

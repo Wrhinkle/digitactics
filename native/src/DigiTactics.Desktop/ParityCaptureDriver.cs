@@ -38,6 +38,8 @@ internal sealed class ParityCaptureDriver
     private readonly double sequenceStart;
     private bool sequencePlaced;
     private int sequenceSaved;
+    // ...:cutin[:<model source>] starts saving when a special cut-in begins (and forces that model on every fighter).
+    private readonly bool sequenceCutIn;
     public string Pending => $"parity {state}: {phase}";
 
     public ParityCaptureDriver(string state, ContentCatalog catalog, NativeProfileStore? profile, int settleFrames, double combatSeconds)
@@ -45,7 +47,9 @@ internal sealed class ParityCaptureDriver
         if (state.StartsWith("combat-sequence:", StringComparison.Ordinal))
         {
             var parts = state.Split(':');
-            if (parts.Length is < 4 or > 5) throw new ArgumentException("Use combat-sequence:<line>:<stage>:<frames>[:<start seconds>].");
+            sequenceCutIn = parts.Length >= 5 && parts[4] == "cutin";
+            if (sequenceCutIn) { if (parts.Length > 5) BattleView.CaptureModelSource = string.Join(':', parts[5..]); parts = parts[..4]; }
+            if (parts.Length is < 4 or > 5) throw new ArgumentException("Use combat-sequence:<line>:<stage>:<frames>[:<start seconds>|:cutin[:<model source>]].");
             sequenceLine = parts[1]; sequenceStage = int.Parse(parts[2], System.Globalization.CultureInfo.InvariantCulture);
             sequenceFrames = int.Parse(parts[3], System.Globalization.CultureInfo.InvariantCulture);
             sequenceStart = parts.Length == 5 ? double.Parse(parts[4], System.Globalization.CultureInfo.InvariantCulture) : 0;
@@ -202,6 +206,11 @@ internal sealed class ParityCaptureDriver
                 if (sequenceLine is not null && !sequencePlaced) { PlaceSequence(session); sequencePlaced = true; cooldown = 10; return; }
                 Press(ImGuiKey.Space); combatElapsed = 0; return;
             case MatchPhase.Combat:
+                if (state == "match-combat" && sequenceCutIn)
+                {
+                    if (screen.ShownBattle?.Cinematic.Unit is { } caster) { ready = true; phase = $"cut-in by unit {caster}"; }
+                    return;
+                }
                 if (state == "match-combat")
                 {
                     combatElapsed += CombatSimulation.Tick;
@@ -252,6 +261,8 @@ internal sealed class ParityCaptureDriver
         {
             string numbered = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, $"{Path.GetFileNameWithoutExtension(path)}_{sequenceSaved:D3}.png");
             FrameCapture.SavePng(numbered, size.X, size.Y);
+            if (sequenceCutIn && screen.ShownBattle is { } shown)
+                Console.WriteLine($"cut-in frame {sequenceSaved:D3}: weight {shown.Cinematic.Weight:0.000} panel {(shown.Cinematic.CutIn is { } c ? c.Offset.ToString("0.00") : "-")} head {shown.FramedCaster?.HeadSource ?? "-"} {shown.FramedCaster?.Head} size {shown.FramedCaster?.HeadSize:0.00} min {shown.FramedCaster?.Min} max {shown.FramedCaster?.Max} yaw {shown.FramedCaster?.Facing:0.00} model draws {shown.CutInDrawCalls}");
             if (++sequenceSaved < sequenceFrames) return false;
             Console.WriteLine($"Parity sequence {sequenceLine}: {sequenceSaved} frames at {size.X}x{size.Y} ({phase})");
             return true;
