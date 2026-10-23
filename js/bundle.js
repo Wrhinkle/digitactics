@@ -44080,6 +44080,512 @@ void main() {
     return [make("idle", 2.4), make("attack", 0.65), make("special", 1.2), make("win", 2)];
   }
 
+  // js/cutin-core.js
+  var CUT = {
+    cutIn: 0.62,
+    slideIn: 0.12,
+    slideOut: 0.12,
+    dim: 0.35,
+    cameraLead: 0.22,
+    follow: 0.9,
+    minTrack: 1.2,
+    maxTrack: 2.5,
+    returnLimit: 1.6,
+    globalCooldown: 6,
+    unitCooldown: 18,
+    weightOmega: 6.5,
+    frameOmega: 9,
+    specialMax: 1.1,
+    trackSide: 1.25,
+    trackPitch: 0.34,
+    headSide: Math.PI / 2 - 0.5,
+    headPitch: 0.1,
+    headFov: 30 * Math.PI / 180
+  };
+  var CUT_IN_MODES = ["all", "mine", "off"];
+  var cutInMode = (value) => CUT_IN_MODES.includes(value) ? value : "mine";
+  var cutInPace = (speed) => speed >= 4 ? 0 : speed >= 2 ? 1.35 : 1;
+  var cutClamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  var cutEaseOut = (t) => 1 - (1 - t) ** 3;
+  var cutEaseIn = (t) => t ** 3;
+  function spring(x, v, target, omega, dt) {
+    const y = x - target, j = v + omega * y, e = Math.exp(-omega * dt);
+    return [target + (y + j * dt) * e, (v - omega * j * dt) * e];
+  }
+  var trackLength = (clipSeconds) => cutClamp(Math.min(clipSeconds || 0, CUT.specialMax) - CUT.cutIn + CUT.follow, CUT.minTrack, CUT.maxTrack);
+  function cutInCurve(t) {
+    const p = cutEaseOut(cutClamp(t / CUT.slideIn, 0, 1));
+    const q = t > CUT.cutIn - CUT.slideOut ? cutEaseIn(cutClamp((t - (CUT.cutIn - CUT.slideOut)) / CUT.slideOut, 0, 1)) : 0;
+    const push2 = cutClamp((t - CUT.slideIn) / (CUT.cutIn - CUT.slideIn - CUT.slideOut), 0, 1);
+    return { offset: p - 1 + q, push: push2, dim: CUT.dim * cutClamp(t / 0.1, 0, 1) * (1 - q), time: t };
+  }
+  function headScore(name2) {
+    const n4 = String(name2 || "").toLowerCase();
+    if (/mesh|geo|material|vram|tmd /.test(n4)) return null;
+    if (/face.?center/.test(n4)) return { kind: "face", score: 100 };
+    const skip2 = /end|top|nub|tip|hair|target|hud|look|null/.test(n4);
+    if (!skip2 && /(^|[^a-z])(head|haed)([^a-z]|$)/.test(n4)) return { kind: "head", score: 90 };
+    if (!skip2 && /head|haed/.test(n4)) return { kind: "head", score: 80 };
+    if (!skip2 && /(^|[^a-z])(kao|atama)([^a-z]|$)/.test(n4)) return { kind: "head", score: 70 };
+    if (/(^|[^a-z])eye/.test(n4) && !/brow|lid|lash|light|target/.test(n4)) return { kind: "eye", score: 60 };
+    if (!skip2 && /neck|kubi/.test(n4)) return { kind: "neck", score: 50 };
+    return null;
+  }
+  function pickHead(nodes) {
+    let best = null;
+    nodes.forEach((node, i) => {
+      const s = headScore(node.name);
+      if (!s) return;
+      if (!best || s.score > best.score || s.kind === "neck" && s.score === best.score && node.depth > best.depth) best = { ...s, depth: node.depth, index: i };
+    });
+    if (!best) return null;
+    if (best.kind === "eye") return { kind: "eye", indices: nodes.map((n4, i) => i).filter((i) => headScore(nodes[i].name)?.kind === "eye") };
+    return { kind: best.kind, indices: [best.index] };
+  }
+  function headEstimate(min, max, facing) {
+    const ex = max.x - min.x, ey = max.y - min.y, ez = max.z - min.z;
+    const fx2 = Math.sin(facing), fz = Math.cos(facing);
+    const along = 0.5 * (Math.abs(fx2) * ex + Math.abs(fz) * ez);
+    const size = cutClamp(0.2 * Math.max(ey, Math.max(ex, ez) * 0.5), 0.18, 2);
+    return { x: (min.x + max.x) / 2 + fx2 * along * 0.55, y: max.y - 0.6 * size, z: (min.z + max.z) / 2 + fz * along * 0.55, size };
+  }
+  function headFromBone(kind2, point2, parent, min, max, size) {
+    let p = point2;
+    if (kind2 === "head") p = { x: point2.x, y: point2.y + 0.35 * size, z: point2.z };
+    else if (kind2 === "neck") {
+      const d = parent ? { x: point2.x - parent.x, y: point2.y - parent.y, z: point2.z - parent.z } : { x: 0, y: 1, z: 0 };
+      const l = Math.hypot(d.x, d.y, d.z) || 1;
+      p = { x: point2.x + d.x / l * 0.8 * size, y: point2.y + d.y / l * 0.8 * size, z: point2.z + d.z / l * 0.8 * size };
+    }
+    const pad2 = (a, b) => 0.25 * (b - a);
+    const inside = (v, a, b) => v >= a - pad2(a, b) && v <= b + pad2(a, b);
+    if (!inside(p.x, min.x, max.x) || !inside(p.y, min.y, max.y) || !inside(p.z, min.z, max.z) || p.y < min.y + 0.2 * (max.y - min.y)) return null;
+    return p;
+  }
+  function blockedBy(center, azimuth, blockers) {
+    const dx = Math.sin(azimuth), dz = Math.cos(azimuth);
+    let n4 = 0;
+    for (const b of blockers || []) {
+      const x = b.x - center.x, z = b.z - center.z, t = x * dx + z * dz;
+      if (t > 0.4 && t < 7 && Math.abs(x * dz - z * dx) < 1.1) n4++;
+    }
+    return n4;
+  }
+  function trackAzimuth(facing, cameraYaw, center, blockers) {
+    const a = facing + CUT.trackSide, b = facing - CUT.trackSide;
+    const score = (az) => Math.cos(az - cameraYaw) - 2 * (center ? blockedBy(center, az, blockers) : 0);
+    return score(a) >= score(b) ? a : b;
+  }
+  function trackPose(min, max, azimuth, aspect2, fovY, reach2) {
+    const c = { x: (min.x + max.x) / 2, y: (min.y + max.y) / 2, z: (min.z + max.z) / 2 };
+    const r = Math.max(0.5 * Math.hypot(max.x - min.x, max.y - min.y, max.z - min.z), 0.55);
+    const half = Math.min(fovY / 2, Math.atan(Math.tan(fovY / 2) * aspect2));
+    const d = cutClamp(r * 1.3 / Math.sin(half), 3.2, 16);
+    let pitch = CUT.trackPitch, eye2;
+    for (let i = 0; ; i++) {
+      eye2 = { x: c.x + d * Math.cos(pitch) * Math.sin(azimuth), y: c.y + d * Math.sin(pitch), z: c.z + d * Math.cos(pitch) * Math.cos(azimuth) };
+      if (Math.hypot(eye2.x, eye2.z) <= reach2 || pitch >= 1.1 || i >= 8) break;
+      pitch += 0.1;
+    }
+    eye2.y = Math.max(eye2.y, 1.2);
+    return { eye: eye2, target: c };
+  }
+  function headPose(head, size, facing, faceLeft, push2) {
+    const az = facing + (faceLeft ? CUT.headSide : -CUT.headSide);
+    const fx2 = Math.sin(facing), fz = Math.cos(facing);
+    const target = { x: head.x + fx2 * size * 0.12, y: head.y - 0.1 * size, z: head.z + fz * size * 0.12 };
+    const d = 1.2 * size / Math.tan(CUT.headFov / 2) * (1 - 0.12 * push2);
+    const eye2 = { x: target.x + d * Math.cos(CUT.headPitch) * Math.sin(az), y: target.y + d * Math.sin(CUT.headPitch), z: target.z + d * Math.cos(CUT.headPitch) * Math.cos(az) };
+    return { eye: eye2, target };
+  }
+  var cutSpring3 = (s, goal, omega, dt) => {
+    for (const k of ["x", "y", "z"]) [s.p[k], s.v[k]] = spring(s.p[k], s.v[k], goal[k], omega, dt);
+  };
+  var cutState3 = (p) => ({ p: { ...p }, v: { x: 0, y: 0, z: 0 } });
+  var CutInDirector = class {
+    constructor() {
+      this.clock = 0;
+      this.active = null;
+      this.lastEnd = -1e9;
+      this.lastStart = /* @__PURE__ */ new Map();
+    }
+    // A special cast. mine: the local player's unit. allowed: false while hidden/minimised or reduced motion.
+    offer(unit, mine2, mode, allowed, clipSeconds, speed) {
+      mode = cutInMode(mode);
+      if (!allowed || mode === "off" || mode === "mine" && !mine2) return false;
+      const pace2 = cutInPace(speed);
+      if (!pace2 || this.clock - (this.lastStart.get(unit) ?? -1e9) < CUT.unitCooldown) return false;
+      const a = this.active;
+      if (a && !(a.t === 0 && !a.mine && mine2)) return false;
+      if (!a && this.clock - this.lastEnd < CUT.globalCooldown) return false;
+      this.active = { unit, mine: mine2, pace: pace2, t: 0, step: 0, track: trackLength(clipSeconds), weight: 0, velocity: 0, returning: false, aborted: false, returnT: 0, az: null, cam: null };
+      this.lastStart.set(unit, this.clock);
+      return true;
+    }
+    update(dt, speed) {
+      this.clock += dt;
+      const a = this.active;
+      if (!a) return;
+      if (!cutInPace(speed)) this.abort();
+      a.step = dt * a.pace;
+      a.t += a.step;
+      if (!a.returning && a.t >= CUT.cutIn + a.track) a.returning = true;
+      if (a.returning) a.returnT += a.step;
+      const goal = !a.returning && a.t >= CUT.cameraLead ? 1 : 0;
+      [a.weight, a.velocity] = spring(a.weight, a.velocity, goal, CUT.weightOmega, a.step);
+      if (a.returning && (a.weight < 4e-3 && a.returnT > 0.2 || a.returnT >= CUT.returnLimit)) {
+        this.active = null;
+        this.lastEnd = this.clock;
+      }
+    }
+    // The caster died, left the view or playback went to 4x: hide the panel and ease back.
+    abort() {
+      if (this.active) {
+        this.active.returning = true;
+        this.active.aborted = true;
+      }
+    }
+    get unit() {
+      return this.active ? this.active.unit : null;
+    }
+    get weight() {
+      return this.active ? this.active.weight : 0;
+    }
+    get cutIn() {
+      const a = this.active;
+      return a && !a.aborted && a.t < CUT.cutIn ? cutInCurve(a.t) : null;
+    }
+    // Tracking camera for this frame from the caster's animated bounds; null when no cinematic runs.
+    frame(min, max, facing, cameraYaw, aspect2, fovY, reach2, blockers) {
+      const a = this.active;
+      if (!a) return null;
+      if (a.az == null) a.az = trackAzimuth(facing, cameraYaw, { x: (min.x + max.x) / 2, z: (min.z + max.z) / 2 }, blockers);
+      const pose = trackPose(min, max, a.az, aspect2, fovY, reach2);
+      if (!a.cam) a.cam = { eye: cutState3(pose.eye), target: cutState3(pose.target) };
+      else {
+        cutSpring3(a.cam.eye, pose.eye, CUT.frameOmega, a.step);
+        cutSpring3(a.cam.target, pose.target, CUT.frameOmega, a.step);
+      }
+      return { eye: { ...a.cam.eye.p }, target: { ...a.cam.target.p }, weight: a.weight };
+    }
+    // Head camera for the cut-in panel this frame. It follows the head bone exactly: a leap or lunge in the
+    // special would leave a smoothed close-up behind.
+    headFrame(head, size, facing, faceLeft) {
+      const curve = this.cutIn;
+      return curve ? headPose(head, size, facing, faceLeft, curve.push) : null;
+    }
+  };
+
+  // js/cutin.js
+  var LAYER = 5;
+  var STRIPS = 24;
+  var LINES = 30;
+  var BURST = 22;
+  var cutHash = (i) => {
+    const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+    return x - Math.floor(x);
+  };
+  var cutMix = (a, b, t) => {
+    const x = a.getRGB({}, SRGBColorSpace), y = b.getRGB({}, SRGBColorSpace);
+    return new Color().setRGB(x.r * t + y.r * (1 - t), x.g * t + y.g * (1 - t), x.b * t + y.b * (1 - t), SRGBColorSpace);
+  };
+  var CutIn = class {
+    constructor(r3d) {
+      this.r3d = r3d;
+      this.director = new CutInDirector();
+      this.camera = new PerspectiveCamera(CUT.headFov * 180 / Math.PI, 2, 0.02, 80);
+      this.camera.layers.set(LAYER);
+      const hemi = new HemisphereLight("#ffffff", "#334455", 2.2);
+      const key2 = new DirectionalLight("#ffffff", 2.2);
+      key2.position.set(2, 4, 5);
+      this.rim = new DirectionalLight("#ffffff", 3.4);
+      this.rim.position.set(-3, 2, -4);
+      for (const light of [hemi, key2, this.rim]) {
+        light.layers.set(LAYER);
+        r3d.scene.add(light);
+      }
+      this.lights = [key2, this.rim];
+      this.target = new WebGLRenderTarget(16, 16, { samples: 4 });
+      this.ortho = new OrthographicCamera(0, 1, 0, -1, -1, 1);
+      this.overlay = new Scene();
+      const root4 = new Group();
+      root4.scale.y = -1;
+      this.overlay.add(root4);
+      const layer3 = (tris, order) => {
+        const g2 = new BufferGeometry();
+        g2.setAttribute("position", new BufferAttribute(new Float32Array(tris * 9), 3));
+        g2.setAttribute("color", new BufferAttribute(new Float32Array(tris * 12), 4));
+        const m = new Mesh(g2, new MeshBasicMaterial({ vertexColors: true, transparent: true, side: DoubleSide, depthTest: false, depthWrite: false }));
+        m.frustumCulled = false;
+        m.renderOrder = order;
+        root4.add(m);
+        return { mesh: m, count: 0 };
+      };
+      this.back = layer3(2 + STRIPS * 2 + LINES * 2 + 2 + BURST, 0);
+      this.front = layer3(16, 2);
+      const pg = new BufferGeometry();
+      pg.setAttribute("position", new BufferAttribute(new Float32Array(18), 3));
+      pg.setAttribute("uv", new BufferAttribute(new Float32Array(12), 2));
+      this.picture = new Mesh(pg, new MeshBasicMaterial({ map: this.target.texture, transparent: true, side: DoubleSide, depthTest: false, depthWrite: false }));
+      this.picture.frustumCulled = false;
+      this.picture.renderOrder = 1;
+      root4.add(this.picture);
+      if (!document.getElementById("cutinStyle")) {
+        const style4 = document.createElement("style");
+        style4.id = "cutinStyle";
+        style4.textContent = `.cutin-text{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}.cutin-text.hidden{display:none}
+.cutin-text b,.cutin-text i{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;font-family:var(--font-display);font-style:normal;text-shadow:3px 3px 0 rgba(0,0,0,.8)}
+.cutin-text b{font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.06em}.cutin-text i{font-weight:500;letter-spacing:.04em}`;
+        document.head.appendChild(style4);
+      }
+      this.text = document.createElement("div");
+      this.text.className = "cutin-text hidden";
+      this.text.innerHTML = "<b></b><i></i>";
+      r3d.arena.appendChild(this.text);
+      this.view = null;
+      this.shot = false;
+      this.frameData = null;
+    }
+    // A new fight on screen (render3d resetFx).
+    reset() {
+      this.end();
+      this.director = new CutInDirector();
+    }
+    // render3d consume() 'cast': maybe start a cinematic for this caster.
+    offer(u, v, ctx2, color) {
+      if (!v || v.hasModel !== true) return;
+      const prefs = window.DT.Client && window.DT.Client.cutIns && window.DT.Client.cutIns() || { mode: "mine", motion: true };
+      const { game: game7, ui: ui2 } = ctx2 || {};
+      const mine2 = !!game7 && (!ui2 || ui2.viewing == null) && this.r3d.viewTeam(u.team) === 0 && (u.owner == null || !game7.human || u.owner === game7.human.id);
+      const allowed = prefs.motion !== false && !document.hidden && !!game7 && game7.phase === "combat";
+      const clip2 = v.clips && v.clips.special ? v.clips.special.duration : 0;
+      if (this.director.offer(u.id, mine2, prefs.mode, allowed, clip2, this.r3d.speed || 1)) {
+        this.end();
+        this.view = v;
+        this.unit = u;
+        this.color = color;
+      }
+    }
+    // Before labels project: advance the timeline and blend the arena camera onto the caster.
+    frame(dt) {
+      const d = this.director, r = this.r3d;
+      d.update(dt, r.speed || 1);
+      if (d.unit == null || !this.view || !this.unit || !this.unit.alive || r.viewOf(d.unit) !== this.view) d.abort();
+      if (d.unit == null) {
+        this.end();
+        return;
+      }
+      const f = this.caster(this.view);
+      if (!f) {
+        d.abort();
+        return;
+      }
+      this.frameData = f;
+      r.applyView();
+      const shot = d.frame(f.min, f.max, f.facing, r.view.yaw, r.camera.aspect, r.camera.fov * Math.PI / 180, r.wide ? 18 : 13, [...r.views.values()].filter((o) => o !== this.view && o.d && o.d.cu).map((o) => o.group.position));
+      if (!shot) return;
+      const w = MathUtils.clamp(shot.weight, 0, 1);
+      const base = r.camera.position.clone(), look2 = r.view.target.clone();
+      r.camera.position.lerpVectors(base, new Vector3(shot.eye.x, shot.eye.y, shot.eye.z), w);
+      r.camera.lookAt(look2.lerp(new Vector3(shot.target.x, shot.target.y, shot.target.z), w));
+      r.camera.updateMatrixWorld();
+      this.shot = true;
+      const panel3 = d.cutIn;
+      r.labels.style.opacity = panel3 ? String(1 - 2 * panel3.dim) : "";
+    }
+    // The caster's animated world bounds (skinned vertices sampled, so root motion, flight and scale count),
+    // head point and facing.
+    caster(v) {
+      const obj2 = v.visual;
+      if (!obj2) return null;
+      v.group.updateWorldMatrix(true, true);
+      const box3 = new Box3(), p = new Vector3(), part3 = new Box3();
+      if (!v.cutRig) {
+        const nodes = [], objects = [];
+        let vertices = 0;
+        obj2.traverse((o) => {
+          let depth2 = 0;
+          for (let q = o.parent; q && q !== obj2; q = q.parent) depth2++;
+          nodes.push({ name: o.name, depth: depth2 });
+          objects.push(o);
+          if (o.isMesh && o.geometry.attributes.position) vertices += o.geometry.attributes.position.count;
+        });
+        const head2 = pickHead(nodes);
+        v.cutRig = { head: head2 && { kind: head2.kind, objects: head2.indices.map((i) => objects[i]) }, stride: Math.max(1, Math.floor(vertices / 6e3)) };
+      }
+      const stride = v.cutRig.stride;
+      obj2.traverse((o) => {
+        if (!o.isMesh || !o.visible || !o.geometry.attributes.position) return;
+        if (o.isSkinnedMesh) {
+          const n4 = o.geometry.attributes.position.count;
+          for (let i = 0; i < n4; i += stride) {
+            o.getVertexPosition(i, p);
+            box3.expandByPoint(p.applyMatrix4(o.matrixWorld));
+          }
+        } else {
+          if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+          box3.union(part3.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld));
+        }
+      });
+      if (box3.isEmpty()) return null;
+      const min = { x: box3.min.x, y: box3.min.y, z: box3.min.z }, max = { x: box3.max.x, y: box3.max.y, z: box3.max.z };
+      const facing = v.body.rotation.y;
+      const estimate = headEstimate(min, max, facing);
+      let head = null;
+      const rig = v.cutRig.head;
+      if (rig) {
+        const sum = new Vector3();
+        for (const o of rig.objects) sum.add(o.getWorldPosition(p));
+        sum.multiplyScalar(1 / rig.objects.length);
+        const parent = rig.objects[0].parent && rig.objects[0].parent !== obj2 ? rig.objects[0].parent.getWorldPosition(new Vector3()) : null;
+        head = headFromBone(rig.kind, { x: sum.x, y: sum.y, z: sum.z }, parent && { x: parent.x, y: parent.y, z: parent.z }, min, max, estimate.size);
+      }
+      return { min, max, facing, head: head || { x: estimate.x, y: estimate.y, z: estimate.z }, size: estimate.size, source: head ? rig.kind : "bounds" };
+    }
+    // After the arena render: the caster's head view and the panel over the board.
+    render() {
+      const d = this.director, panel3 = d.cutIn, r = this.r3d;
+      if (!panel3 || !this.frameData) {
+        this.text.classList.add("hidden");
+        return;
+      }
+      const W7 = r.canvas.clientWidth, H = r.canvas.clientHeight, u = this.unit;
+      const ally = r.viewTeam(u.team) === 0;
+      const element = new Color(this.color || "#ffd6a8");
+      const tier = new Color(window.DT.TIER_COLORS[u.line.tier] || "#9aa4b1");
+      const deep = new Color("#0a1020"), white = new Color("#ffffff");
+      const bh = MathUtils.clamp(H * 0.34, 130, 330), k = 0.45, dir = ally ? 1 : -1, half = W7 * 0.5 + bh;
+      const angle = -7 * Math.PI / 180, ax = Math.cos(angle), ay = Math.sin(angle), cx = W7 * 0.5, cy = H * 0.42;
+      const shift = panel3.offset * (half + W7 * 0.5 + bh) * dir;
+      const P2 = (uu, v) => [cx + ax * (uu + shift) - ay * v, cy + ay * (uu + shift) + ax * v];
+      const upper = (uu) => P2(uu + k * bh / 2, -bh / 2), lower = (uu) => P2(uu - k * bh / 2, bh / 2);
+      const begin = (L2) => {
+        L2.count = 0;
+      };
+      const tri = (L2, a, b, c, col3, alpha) => {
+        const pos2 = L2.mesh.geometry.attributes.position.array, cl = L2.mesh.geometry.attributes.color.array;
+        for (const [x, y] of [a, b, c]) {
+          const i = L2.count++;
+          pos2.set([x, y, 0], i * 3);
+          cl.set([col3.r, col3.g, col3.b, alpha], i * 4);
+        }
+      };
+      const quad = (L2, a, b, c, d2, col3, alpha) => {
+        tri(L2, a, b, c, col3, alpha);
+        tri(L2, a, c, d2, col3, alpha);
+      };
+      const finish2 = (L2) => {
+        const g2 = L2.mesh.geometry;
+        g2.setDrawRange(0, L2.count);
+        g2.attributes.position.needsUpdate = true;
+        g2.attributes.color.needsUpdate = true;
+      };
+      const B = this.back, F2 = this.front;
+      begin(B);
+      begin(F2);
+      quad(B, [0, 0], [W7, 0], [W7, H], [0, H], new Color(0, 0, 0), panel3.dim);
+      for (let i = 0; i < STRIPS; i++) {
+        const u0 = -half + 2 * half * i / STRIPS, u1 = -half + 2 * half * (i + 1) / STRIPS + 0.5, toward = ally ? (i + 0.5) / STRIPS : 1 - (i + 0.5) / STRIPS;
+        quad(B, upper(u0), upper(u1), lower(u1), lower(u0), cutMix(element, deep, 0.18 + 0.5 * toward * toward), 0.94);
+      }
+      for (let i = 0; i < LINES; i++) {
+        const a = cutHash(i * 3 + 1), b = cutHash(i * 3 + 2), c = cutHash(i * 3 + 3);
+        const v = (a - 0.5) * (bh - 14), length = W7 * (0.12 + 0.3 * b), thick = 1.2 + 2.2 * c, span = 2 * half + length;
+        const travel = (c * span + panel3.time * (1400 + 900 * a)) % span, uu = ally ? half - travel : -half + travel - length;
+        quad(B, P2(uu, v), P2(uu + length, v), P2(uu + length, v + thick), P2(uu, v + thick), white, (40 + 90 * b) / 255);
+      }
+      const win = W7 * 0.46, mu0 = ally ? W7 * 0.02 : -win - W7 * 0.02, mu1 = mu0 + win;
+      quad(B, upper(mu0), upper(mu1), lower(mu1), lower(mu0), cutMix(element, white, 0.72), 0.96);
+      const focus = (mu0 + mu1) / 2;
+      for (let i = 0; i < BURST; i++) {
+        const ang = Math.PI * 2 * i / BURST + panel3.time * 0.6, s = Math.sin(ang), cs = Math.cos(ang);
+        const reach2 = Math.min(win * 0.75, bh * 0.48 / Math.max(Math.abs(s), 0.05)), w = reach2 * 0.05;
+        const tx = focus + cs * reach2, ty = s * reach2;
+        tri(B, P2(focus + cs * bh * 0.16, s * bh * 0.16), P2(tx - s * w, ty + cs * w), P2(tx + s * w, ty - cs * w), white, 0.6);
+      }
+      const line = (L2, a, b, width, col3, alpha) => {
+        const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1, nx2 = -dy / l * width / 2, ny2 = dx / l * width / 2;
+        quad(L2, [a[0] + nx2, a[1] + ny2], [b[0] + nx2, b[1] + ny2], [b[0] - nx2, b[1] - ny2], [a[0] - nx2, a[1] - ny2], col3, alpha);
+      };
+      line(F2, upper(mu0), lower(mu0), 4, white, 0.92);
+      line(F2, upper(mu1), lower(mu1), 4, white, 0.92);
+      line(F2, upper(-half), upper(half), 3, white, 0.94);
+      line(F2, lower(-half), lower(half), 3, white, 0.94);
+      quad(F2, P2(-half + k * bh / 2, -bh / 2 + 6), P2(half + k * bh / 2, -bh / 2 + 6), P2(half + k * bh / 2, -bh / 2 + 11), P2(-half + k * bh / 2, -bh / 2 + 11), tier, 0.95);
+      finish2(B);
+      finish2(F2);
+      const t0 = mu0 - k * bh / 2, tw = win + k * bh;
+      const corners = [[mu0 + k * bh / 2, -bh / 2], [mu1 + k * bh / 2, -bh / 2], [mu1 - k * bh / 2, bh / 2], [mu0 - k * bh / 2, bh / 2]];
+      const pos = this.picture.geometry.attributes.position.array, uv = this.picture.geometry.attributes.uv.array;
+      [0, 1, 2, 0, 2, 3].forEach((c, i) => {
+        const [uu, v] = corners[c], [x, y] = P2(uu, v);
+        pos.set([x, y, 0], i * 3);
+        uv.set([(uu - t0) / tw, 0.5 - v / bh], i * 2);
+      });
+      this.picture.geometry.attributes.position.needsUpdate = true;
+      this.picture.geometry.attributes.uv.needsUpdate = true;
+      const pr = r.r.getPixelRatio(), tw2 = Math.max(64, Math.ceil(tw * pr)), th2 = Math.max(64, Math.ceil(bh * pr));
+      if (this.target.width !== tw2 || this.target.height !== th2) this.target.setSize(tw2, th2);
+      const f = this.frameData, pose = d.headFrame(f.head, f.size, f.facing, ally);
+      this.rim.color.copy(element);
+      this.setLayer(true);
+      if (pose) {
+        this.camera.aspect = tw / bh;
+        this.camera.updateProjectionMatrix();
+        this.camera.position.set(pose.eye.x, pose.eye.y, pose.eye.z);
+        this.camera.lookAt(pose.target.x, pose.target.y, pose.target.z);
+        this.camera.updateMatrixWorld();
+        const bg2 = r.scene.background, clear2 = r.r.getClearColor(new Color()), alpha = r.r.getClearAlpha();
+        r.scene.background = null;
+        r.r.setRenderTarget(this.target);
+        r.r.setClearColor(0, 0);
+        r.r.clear();
+        r.r.render(r.scene, this.camera);
+        r.r.setRenderTarget(null);
+        r.r.setClearColor(clear2, alpha);
+        r.scene.background = bg2;
+      }
+      this.ortho.right = W7;
+      this.ortho.bottom = -H;
+      this.ortho.updateProjectionMatrix();
+      const auto = r.r.autoClear;
+      r.r.autoClear = false;
+      r.r.clearDepth();
+      r.r.render(this.overlay, this.ortho);
+      r.r.autoClear = auto;
+      const textU = ally ? -W7 * 0.24 : W7 * 0.24, size = MathUtils.clamp(bh * 0.22, 22, 54);
+      const [nx, ny] = P2(textU, -bh * 0.12), [sx, sy] = P2(textU, bh * 0.2);
+      const el2 = this.text, name2 = el2.firstChild, ability = el2.lastChild;
+      if (name2.textContent !== u.line.forms[u.stage]) {
+        name2.textContent = u.line.forms[u.stage];
+        ability.textContent = u.line.abil[u.stage];
+      }
+      name2.style.cssText = `left:${nx}px;top:${ny}px;font-size:${size}px`;
+      ability.style.cssText = `left:${sx}px;top:${sy}px;font-size:${size * 0.56}px;color:#${cutMix(element, new Color("#fff4d8"), 0.55).getHexString()}`;
+      el2.classList.remove("hidden");
+    }
+    setLayer(on) {
+      if (!this.view || !this.view.visual || this.layered === on) return;
+      this.layered = on;
+      this.view.visual.traverse((o) => {
+        if (o.isMesh) on ? o.layers.enable(LAYER) : o.layers.disable(LAYER);
+      });
+    }
+    end() {
+      this.setLayer(false);
+      this.text.classList.add("hidden");
+      if (this.shot) {
+        this.shot = false;
+        this.r3d.applyView();
+      }
+      this.r3d.labels.style.opacity = "";
+      this.view = null;
+      this.unit = null;
+      this.frameData = null;
+      this.layered = false;
+    }
+  };
+
   // js/render3d.js
   var DT7 = window.DT;
   var sfx = (name2, opts) => DT7.Sfx && DT7.Sfx.play(name2, opts);
@@ -44550,6 +45056,7 @@ void main() {
       this.otLabel.className = "overtime hidden";
       this.labels.appendChild(this.otLabel);
       this.buildArena();
+      this.cutin = new CutIn(this);
     }
     buildArena() {
       const s = this.scene;
@@ -45133,6 +45640,7 @@ void main() {
       this.setCombatWidth(cb.cols || COLS);
       const dt = this.tick();
       this.fxNow = cb.t;
+      this.cineCtx = { game: game7, ui: ui2 };
       const out = [];
       for (const u of cb.units) {
         const dying = !u.alive && this.deathT[u.id] != null && cb.t - this.deathT[u.id] < 0.5;
@@ -45171,6 +45679,7 @@ void main() {
       this.drawDuoExtras(game7, cb, p, ui2, dt);
       this.highlight(ui2, false);
       this.updateFx(cb.t);
+      if (this.cutin) this.cutin.frame(dt);
       this.updateViews(dt, cb);
       if (cb.overtime > 1) {
         this.otLabel.textContent = `OVERTIME x${cb.overtime.toFixed(1)} damage`;
@@ -45234,8 +45743,10 @@ void main() {
       if (off) this.camera.position.add(off);
       this.r.render(this.scene, this.camera);
       if (off) this.camera.position.sub(off);
+      if (this.cutin) this.cutin.render();
     }
     resetFx() {
+      this.cutin && this.cutin.reset();
       this.ult && this.ult.clear();
       this.moves && this.moves.clear();
       this.castCtx = null;
@@ -45321,6 +45832,7 @@ void main() {
               v.castUntil = e.t + 1.5;
               v.play("special");
             }
+            if (this.cutin) this.cutin.offer(u, v, this.cineCtx, col3);
             if (this.onCast) this.onCast({ unit: u, name: name2, team, elem: this.castCtx.elem, color: col3 });
             break;
           }
@@ -57262,7 +57774,7 @@ void main() {
     { id: "mega", name: "Mega", emblem: "emblem-mega" }
   ];
   var KEY3 = "dt.client.v1";
-  var save2 = { profile: { avatar: null, banner: "profile-1" }, matches: [], recent: [], totals: { games: 0, top4: 0, wins: 0, placeSum: 0, traits: {}, units: {} }, prefs: { motion: true, uiSfx: true, social: true } };
+  var save2 = { profile: { avatar: null, banner: "profile-1" }, matches: [], recent: [], totals: { games: 0, top4: 0, wins: 0, placeSum: 0, traits: {}, units: {} }, prefs: { motion: true, uiSfx: true, social: true, cutIns: "mine" } };
   try {
     const s = JSON.parse(localStorage.getItem(KEY3));
     if (s && typeof s === "object") {
@@ -59037,6 +59549,8 @@ void main() {
         ${sw("setMotion", save2.prefs.motion, "Animations", "Page transitions and the turning pedestal")}
         ${sw("setUiSfx", save2.prefs.uiSfx, "Menu sounds", "Clicks and hovers in the menus")}
         ${sw("setSocial", save2.prefs.social, "Friends list", "The social column on the right")}
+        <div class="segrow"><span class="tl"><b>Special cut-ins</b><small>${save2.prefs.motion ? "Anime cut-in and close-up camera when a Digimon casts its special" : "Off while Animations are off"}</small></span>
+          <div class="segs">${[["all", "All"], ["mine", "Mine only"], ["off", "Off"]].map(([k, l]) => `<button type="button" data-cutins="${k}" class="${(save2.prefs.cutIns || "mine") === k ? "on" : ""}">${l}</button>`).join("")}</div></div>
         <h3 class="card-h sp">Data</h3>
         <p class="muted small">Your Bits, cosmetics, Little Legend levels, farm and match history are saved in this browser only.</p>
         <button class="btn btn-danger" id="setReset">Reset save...</button>
@@ -59067,6 +59581,7 @@ void main() {
       save2.prefs.motion = e.target.checked;
       persist2();
       applyPrefs();
+      RENDER.settings();
     }
     if (id2 === "setUiSfx") {
       save2.prefs.uiSfx = e.target.checked;
@@ -59076,6 +59591,13 @@ void main() {
   });
   $("pgSettings").addEventListener("click", (e) => {
     if (e.target.closest("#setReset")) return confirmReset();
+    const cut = e.target.closest("[data-cutins]");
+    if (cut) {
+      save2.prefs.cutIns = cut.dataset.cutins;
+      persist2();
+      RENDER.settings();
+      return;
+    }
     const own2 = e.target.closest("#setOwn");
     if (own2 && DT15.SoundUI) {
       DT15.SoundUI.open();
@@ -59371,7 +59893,9 @@ void main() {
     stats: stats2,
     level: tamerLevel,
     rank: tamerRank,
-    _save: () => save2
+    _save: () => save2,
+    // js/cutin.js: the Special cut-ins setting and the Animations (reduced motion) preference
+    cutIns: () => ({ mode: save2.prefs.cutIns || "mine", motion: !!save2.prefs.motion })
   };
 
   // js/profile-backup.js
@@ -69027,7 +69551,13 @@ kbd { font-family: var(--font-body); background: var(--c-surface-3); border: 1px
 .toggle input:checked + .tg::after { transform: translateX(20px); background: #cdfafa; box-shadow: 0 0 8px var(--c-accent); }
 .toggle input:focus-visible + .tg { outline: 2px solid var(--c-accent); outline-offset: 2px; }
 .toggle .tl { display: flex; flex-direction: column; }
-.toggle .tl small { color: var(--c-text-3); font-size: var(--fs-xs); }
+.segrow { padding: 8px 0; }
+.segrow .tl { display: flex; flex-direction: column; margin-bottom: 6px; }
+.segs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.segs button { height: 26px; padding: 0; background: rgba(1, 10, 19, 0.9); border: 1px solid var(--lc-gold-4); border-radius: 0; color: var(--c-text-1, #f0e6d2); font-weight: 600; font-size: 12.5px; cursor: pointer; }
+.segs button:hover { border-color: var(--lc-gold-2); }
+.segs button.on { background: linear-gradient(90deg, #0a5f7a, #0b3a4a); border-color: var(--lc-gold-2); color: #cdfafa; }
+.toggle .tl small, .segrow .tl small { color: var(--c-text-3); font-size: var(--fs-xs); }
 .srow { display: grid; grid-template-columns: 130px 1fr 36px; align-items: center; gap: var(--sp-3); padding: 6px 0; }
 .srow span { color: var(--c-text-2); font-size: var(--fs-sm); }
 .srow output { text-align: right; font-variant-numeric: tabular-nums; color: var(--c-text-2); font-size: var(--fs-sm); }

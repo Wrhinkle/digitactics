@@ -58,7 +58,7 @@ const RANKS = [
 
 // ---------- save ----------
 const KEY = 'dt.client.v1';
-let save = { profile: { avatar: null, banner: 'profile-1' }, matches: [], recent: [], totals: { games: 0, top4: 0, wins: 0, placeSum: 0, traits: {}, units: {} }, prefs: { motion: true, uiSfx: true, social: true } };
+let save = { profile: { avatar: null, banner: 'profile-1' }, matches: [], recent: [], totals: { games: 0, top4: 0, wins: 0, placeSum: 0, traits: {}, units: {} }, prefs: { motion: true, uiSfx: true, social: true, cutIns: 'mine' } };
 try {
   const s = JSON.parse(localStorage.getItem(KEY));
   if (s && typeof s === 'object') {
@@ -1564,6 +1564,8 @@ RENDER.settings = () => {
         ${sw('setMotion', save.prefs.motion, 'Animations', 'Page transitions and the turning pedestal')}
         ${sw('setUiSfx', save.prefs.uiSfx, 'Menu sounds', 'Clicks and hovers in the menus')}
         ${sw('setSocial', save.prefs.social, 'Friends list', 'The social column on the right')}
+        <div class="segrow"><span class="tl"><b>Special cut-ins</b><small>${save.prefs.motion ? 'Anime cut-in and close-up camera when a Digimon casts its special' : 'Off while Animations are off'}</small></span>
+          <div class="segs">${[['all', 'All'], ['mine', 'Mine only'], ['off', 'Off']].map(([k, l]) => `<button type="button" data-cutins="${k}" class="${(save.prefs.cutIns || 'mine') === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
         <h3 class="card-h sp">Data</h3>
         <p class="muted small">Your Bits, cosmetics, Little Legend levels, farm and match history are saved in this browser only.</p>
         <button class="btn btn-danger" id="setReset">Reset save...</button>
@@ -1590,12 +1592,14 @@ $('pgSettings').addEventListener('change', (e) => {
   if (id === 'setMute') DT.Sfx.set({ muted: e.target.checked });
   if (id === 'setMusicOn') DT.Sfx.set({ musicOff: !e.target.checked });
   if (id === 'setOthers') DT.Sfx.set({ muteOthers: e.target.checked });
-  if (id === 'setMotion') { save.prefs.motion = e.target.checked; persist(); applyPrefs(); }
+  if (id === 'setMotion') { save.prefs.motion = e.target.checked; persist(); applyPrefs(); RENDER.settings(); }
   if (id === 'setUiSfx') { save.prefs.uiSfx = e.target.checked; persist(); }
   if (id === 'setSocial') toggleSocial(e.target.checked);
 });
 $('pgSettings').addEventListener('click', (e) => {
   if (e.target.closest('#setReset')) return confirmReset();
+  const cut = e.target.closest('[data-cutins]');
+  if (cut) { save.prefs.cutIns = cut.dataset.cutins; persist(); RENDER.settings(); return; }
   const own = e.target.closest('#setOwn');
   if (own && DT.SoundUI) {
     DT.SoundUI.open();
@@ -1823,4 +1827,6 @@ DT.Client = {
   level: tamerLevel,
   rank: tamerRank,
   _save: () => save,
+  // js/cutin.js: the Special cut-ins setting and the Animations (reduced motion) preference
+  cutIns: () => ({ mode: save.prefs.cutIns || 'mine', motion: !!save.prefs.motion }),
 };

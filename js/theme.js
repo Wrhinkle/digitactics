@@ -138,7 +138,13 @@ kbd { font-family: var(--font-body); background: var(--c-surface-3); border: 1px
 .toggle input:checked + .tg::after { transform: translateX(20px); background: #cdfafa; box-shadow: 0 0 8px var(--c-accent); }
 .toggle input:focus-visible + .tg { outline: 2px solid var(--c-accent); outline-offset: 2px; }
 .toggle .tl { display: flex; flex-direction: column; }
-.toggle .tl small { color: var(--c-text-3); font-size: var(--fs-xs); }
+.segrow { padding: 8px 0; }
+.segrow .tl { display: flex; flex-direction: column; margin-bottom: 6px; }
+.segs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.segs button { height: 26px; padding: 0; background: rgba(1, 10, 19, 0.9); border: 1px solid var(--lc-gold-4); border-radius: 0; color: var(--c-text-1, #f0e6d2); font-weight: 600; font-size: 12.5px; cursor: pointer; }
+.segs button:hover { border-color: var(--lc-gold-2); }
+.segs button.on { background: linear-gradient(90deg, #0a5f7a, #0b3a4a); border-color: var(--lc-gold-2); color: #cdfafa; }
+.toggle .tl small, .segrow .tl small { color: var(--c-text-3); font-size: var(--fs-xs); }
 .srow { display: grid; grid-template-columns: 130px 1fr 36px; align-items: center; gap: var(--sp-3); padding: 6px 0; }
 .srow span { color: var(--c-text-2); font-size: var(--fs-sm); }
 .srow output { text-align: right; font-variant-numeric: tabular-nums; color: var(--c-text-2); font-size: var(--fs-sm); }
