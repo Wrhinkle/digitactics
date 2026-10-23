@@ -86,9 +86,16 @@ internal sealed partial class BattleView
         if(cinematic.Unit is not {} id){board.Camera.Cinematic=null;return;}
         if(Caster(id) is not {} caster){cinematic.Abort();return;}
         framedCaster=caster;
-        double aspect=width/(height*board.Camera.CanvasStretch);
-        if(cinematic.Frame(caster.Min,caster.Max,caster.Facing,board.Camera.Yaw,aspect,38*Math.PI/180,Combat.Columns>7?18:13,choreography.Views.Where(v=>v.UnitId!=id).Select(v=>v.Position).ToArray()) is {} shot)
-            board.Camera.Cinematic=(V(shot.Eye),V(shot.Target),(float)Math.Clamp(shot.Weight,0,1));
+        // Fit to the visible part of the stretched canvas: its own vertical field of view and aspect.
+        double stretch=Math.Max(1,board.Camera.CanvasStretch),aspect=(double)width/height,fov=2*Math.Atan(Math.Tan(19*Math.PI/180)/stretch);
+        if(cinematic.Frame(caster.Min,caster.Max,caster.Facing,board.Camera.Yaw,aspect,fov,Combat.Columns>7?18:13,choreography.Views.Where(v=>v.UnitId!=id).Select(v=>v.Position).ToArray()) is {} shot)
+        {
+            // The arena crops a taller canvas from the top (ArenaCamera.CanvasStretch), so the projection centre sits
+            // below the visible centre; lower the shot by that much so the caster is centred in what is shown.
+            Vector3 eye=V(shot.Eye),target=V(shot.Target);
+            float drop=Vector3.Distance(eye,target)*MathF.Tan(19*MathF.PI/180)*(1-1/(float)Math.Max(1,board.Camera.CanvasStretch));
+            board.Camera.Cinematic=(eye-Vector3.UnitY*drop,target-Vector3.UnitY*drop,(float)Math.Clamp(shot.Weight,0,1));
+        }
     }
 
     /// <summary>The cut-in texture for a <paramref name="width"/> x <paramref name="height"/> panel window.</summary>
